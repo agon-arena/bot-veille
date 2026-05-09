@@ -13,3 +13,4 @@ sessions-mixte.json
 *.backup.js
 *.before-tabs.js
 *.save
+*.before-history-button.js
