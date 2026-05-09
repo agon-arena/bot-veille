@@ -1,0 +1,18 @@
+[
+  {
+    "nom": "Franceinfo",
+    "rss": "https://www.francetvinfo.fr/titres.rss"
+  },
+  {
+    "nom": "Le Monde",
+    "rss": "https://www.lemonde.fr/rss/une.xml"
+  },
+  {
+    "nom": "Libération",
+    "rss": "https://www.liberation.fr/arc/outboundfeeds/rss-all/"
+  },
+  {
+    "nom": "Le Figaro",
+    "rss": "https://www.lefigaro.fr/rss/figaro_actualites.xml"
+  }
+]
