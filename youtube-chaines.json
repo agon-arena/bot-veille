@@ -1,0 +1,22 @@
+[
+  {
+    "nom": "HugoDécrypte",
+    "orientation": "actualité / jeunesse",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCAcAnMF0OrCtUep3Y4M-ZPw"
+  },
+  {
+    "nom": "Franceinfo",
+    "orientation": "service public",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCO6K_kkdP-lnSCiO3tPx7WA"
+  },
+  {
+    "nom": "Le Monde",
+    "orientation": "centre-gauche / généraliste",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCYpRDnhk5H8h16jpS84uqsA"
+  },
+  {
+    "nom": "Le Figaro",
+    "orientation": "droite / généraliste",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCXK1qa4lzf9d1qZp8GZYaZw"
+  }
+]

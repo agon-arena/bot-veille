@@ -2,7 +2,11 @@ const { spawn } = require("child_process");
 
 console.log("Démarrage du bot de veille...");
 
-const veilleProcess = spawn("node", ["veille.js"], {
+const veilleArticlesProcess = spawn("node", ["veille.js"], {
+  stdio: "inherit"
+});
+
+const veilleYoutubeProcess = spawn("node", ["veille-youtube.js"], {
   stdio: "inherit"
 });
 
@@ -12,7 +16,8 @@ const serverProcess = spawn("node", ["server.js"], {
 
 function stopChildren() {
   console.log("Arrêt du bot de veille...");
-  veilleProcess.kill();
+  veilleArticlesProcess.kill();
+  veilleYoutubeProcess.kill();
   serverProcess.kill();
   process.exit();
 }
