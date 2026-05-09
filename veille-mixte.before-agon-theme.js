@@ -25,16 +25,6 @@ const UPDATE_INTERVAL_MINUTES = 720;
 const MAX_SESSIONS_TO_KEEP = 12;
 const MAX_SUBJECTS_TO_ANALYZE_WITH_AI = 25;
 
-const AGON_THEMES = [
-  "Politique, économie et relations internationales",
-  "Société, éducation et justice",
-  "Sciences, technologies et environnement",
-  "Culture, modes et médias",
-  "Santé, corps et bien-être",
-  "Sport, loisirs et passions",
-  "Vie personnelle et modes de vie"
-];
-
 const openai = process.env.OPENAI_API_KEY
   ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
   : null;
@@ -406,8 +396,7 @@ function fallbackAiAnalysis(subject) {
       ? "Ce sujet est repris à la fois par la presse et par YouTube, ce qui indique un potentiel de discussion publique."
       : "Ce sujet est repris par plusieurs sources, mais son potentiel polémique doit être vérifié.",
     angles: ["enjeux publics", "responsabilités", "effets concrets"],
-    targetAudience: "grand public",
-    agonTheme: "Politique, économie et relations internationales"
+    targetAudience: "grand public"
   };
 }
 
@@ -456,8 +445,7 @@ Tu dois répondre uniquement en JSON valide avec ces champs :
   "debateQuestion": "question de débat courte, claire et clivante",
   "whyDebatable": "explication en 1 ou 2 phrases",
   "angles": ["angle 1", "angle 2", "angle 3"],
-  "targetAudience": "public le plus susceptible de réagir",
-  "agonTheme": "une thématique Agôn exacte"
+  "targetAudience": "public le plus susceptible de réagir"
 }
 
 Critères :
@@ -467,11 +455,6 @@ Critères :
 - 9 à 10 : sujet très clivant, fort potentiel de réactions
 Favorise les sujets politiques, sociaux, économiques, éducatifs, écologiques, internationaux ou liés aux libertés publiques.
 Pénalise les simples faits divers non politiques, résultats sportifs, annonces culturelles ou sujets purement descriptifs.
-
-Pour le champ "agonTheme", tu dois choisir uniquement une valeur exacte dans cette liste :
-${AGON_THEMES.map(theme => `- ${theme}`).join("\n")}
-
-Ne crée jamais une autre thématique.
 `;
 
   try {
@@ -491,10 +474,7 @@ Ne crée jamais une autre thématique.
       debateQuestion: parsed.debateQuestion || `Faut-il débattre de ce sujet : ${subject.subject} ?`,
       whyDebatable: parsed.whyDebatable || "Analyse indisponible.",
       angles: Array.isArray(parsed.angles) ? parsed.angles.slice(0, 5) : [],
-      targetAudience: parsed.targetAudience || "grand public",
-      agonTheme: AGON_THEMES.includes(parsed.agonTheme)
-        ? parsed.agonTheme
-        : "Politique, économie et relations internationales"
+      targetAudience: parsed.targetAudience || "grand public"
     };
   } catch (error) {
     console.error(`Erreur IA pour le sujet "${subject.subject}" :`, error.message);
@@ -664,7 +644,6 @@ function generateHtml(sessions) {
                 : ""
             }
             <p class="target"><strong>Public susceptible de réagir :</strong> ${escapeHtml(ai.targetAudience)}</p>
-            <p class="agon-theme"><strong>Thématique Agôn proposée :</strong> ${escapeHtml(ai.agonTheme || "Politique, économie et relations internationales")}</p>
           </div>
 
           <div class="subject-stats">
@@ -964,17 +943,6 @@ function generateHtml(sessions) {
 
     .target {
       color: #444;
-    }
-
-    .agon-theme {
-      display: inline-block;
-      background: white;
-      border: 1px solid #ddd;
-      border-radius: 999px;
-      padding: 6px 10px;
-      margin: 4px 0 0;
-      color: #111;
-      font-size: 0.95rem;
     }
 
     .subject-stats {
