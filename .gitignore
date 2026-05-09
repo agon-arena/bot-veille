@@ -7,3 +7,9 @@ veille-youtube.html
 veille-youtube.json
 sessions-youtube.json
 seen-items.json
+veille-mixte.html
+veille-mixte.json
+sessions-mixte.json
+*.backup.js
+*.before-tabs.js
+*.save
