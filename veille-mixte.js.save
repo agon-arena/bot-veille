@@ -1,0 +1,300 @@
+      padding: 8px 12px;
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 999px;
+      text-decoration: none;
+      color: #111;
+    }
+
+    .status {
+      background: #111;
+      color: white;
+      border-radius: 14px;
+      padding: 14px 18px;
+      margin-bottom: 24px;
+    }
+
+    .session {
+      border-top: 4px solid #ccc;
+      padding-top: 20px;
+      margin-bottom: 44px;
+    }
+
+    .session.latest {
+      border-top-color: #111;
+    }
+
+    .session-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: center;
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 14px;
+      padding: 18px;
+      margin-bottom: 18px;
+    }
+
+    .session-header h2 {
+      margin: 0 0 4px;
+    }
+
+    .session-header p {
+      margin: 0;
+      color: #555;
+    }
+
+    .session-stats {
+      min-width: 130px;
+      text-align: center;
+      border-left: 1px solid #ddd;
+      padding-left: 16px;
+    }
+
+    .session-stats strong {
+      display: block;
+      font-size: 2rem;
+    }
+
+    .session-stats span {
+      color: #555;
+      font-size: 0.9rem;
+    }
+
+    .subject {
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 14px;
+      padding: 20px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+
+    .subject h3 {
+      margin-top: 0;
+      font-size: 1.25rem;
+    }
+
+    .subject h4 {
+      margin-bottom: 8px;
+      border-top: 1px solid #eee;
+      padding-top: 14px;
+    }
+
+    .subject-stats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .subject-stats span {
+      background: #f1f1f1;
+      border-radius: 999px;
+      padding: 5px 10px;
+      font-size: 0.9rem;
+    }
+
+    .sources {
+      color: #555;
+      font-size: 0.95rem;
+    }
+
+    ul {
+      padding-left: 0;
+    }
+
+    .content-item {
+      display: flex;
+      gap: 14px;
+      list-style: none;
+      margin-bottom: 16px;
+      align-items: flex-start;
+    }
+
+    .thumb {
+      width: 160px;
+      max-width: 35vw;
+      border-radius: 10px;
+      background: #ddd;
+    }
+
+    .badge {
+      display: inline-block;
+      min-width: 70px;
+      text-align: center;
+      font-size: 0.8rem;
+      font-weight: 700;
+      border-radius: 999px;
+      padding: 5px 8px;
+      background: #eee;
+    }
+
+    .badge.article {
+      background: #e8eefc;
+    }
+
+    .badge.youtube {
+      background: #ffe8e8;
+    }
+
+    .orientation {
+      color: #666;
+      font-size: 0.95rem;
+    }
+
+    a {
+      color: #0645ad;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .empty {
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 14px;
+      padding: 20px;
+      color: #555;
+    }
+
+    @media (max-width: 700px) {
+      body {
+        margin: 20px auto;
+      }
+
+      .session-header {
+        display: block;
+      }
+
+      .session-stats {
+        border-left: none;
+        border-top: 1px solid #ddd;
+        margin-top: 14px;
+        padding-left: 0;
+        padding-top: 14px;
+      }
+
+      .content-item {
+        display: block;
+      }
+
+      .thumb {
+        width: 100%;
+        max-width: 100%;
+        margin-bottom: 8px;
+      }
+
+      .badge {
+        margin-bottom: 8px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Veille mixte presse + YouTube</h1>
+
+  <div class="nav">
+    <a href="/">Presse seule</a>
+    <a href="/youtube">YouTube seul</a>
+    <a href="/mixte">Veille mixte</a>
+  </div>
+
+  <p class="intro">
+    Les articles de presse et les vidéos YouTube sont regroupés dans les mêmes sujets.
+    Seuls les sujets repris par au moins ${MIN_DISTINCT_SOURCES} sources différentes sont affichés.
+  </p>
+
+  <div class="status">
+    Dernière génération du fichier :
+    <strong>${escapeHtml(generatedAt)}</strong>
+    <br>
+    Presse : dernières <strong>${HOURS_BACK_ARTICLES} h</strong> —
+    YouTube : dernières <strong>${HOURS_BACK_YOUTUBE} h</strong>
+    <br>
+    Mise à jour automatique toutes les
+    <strong>${UPDATE_INTERVAL_MINUTES} minutes</strong>.
+  </div>
+
+  ${
+    sessions.length
+      ? sessionBlocks
+      : `<div class="empty">Aucune session mixte pour le moment.</div>`
+  }
+</body>
+</html>
+`;
+}
+
+async function runWatchSession() {
+  const startedAt = dayjs();
+
+  console.log("");
+  console.log("======================================");
+  console.log(`Nouvelle session mixte : ${startedAt.format("DD/MM/YYYY HH:mm:ss")}`);
+  console.log("======================================");
+
+  console.log("Collecte des articles...");
+  const articles = await collectArticles();
+
+  console.log("Collecte des vidéos YouTube...");
+  const videos = await collectYouTubeVideos();
+
+  const contents = [...articles, ...videos];
+
+  console.log(`${articles.length} article(s) récupéré(s).`);
+  console.log(`${videos.length} vidéo(s) récupérée(s).`);
+  console.log(`${contents.length} contenu(s) au total.`);
+
+  console.log("Regroupement des sujets mixtes...");
+  const groups = groupContentsBySubject(contents);
+
+  console.log(`${groups.length} groupe(s) détecté(s).`);
+
+  const subjects = filterMultiSourceSubjects(groups);
+
+  console.log(`${subjects.length} sujet(s) repris par plusieurs sources.`);
+
+  const session = {
+    generatedAt: startedAt.toISOString(),
+    generatedAtLabel: startedAt.format("DD/MM/YYYY à HH:mm:ss"),
+    articleCount: articles.length,
+    youtubeCount: videos.length,
+    contentCount: contents.length,
+    groupCount: groups.length,
+    subjectCount: subjects.length,
+    subjects
+  };
+
+  const sessions = loadSessions();
+
+  sessions.unshift(session);
+
+  const limitedSessions = sessions.slice(0, MAX_SESSIONS_TO_KEEP);
+
+  saveSessions(limitedSessions);
+
+  fs.writeFileSync(OUTPUT_JSON, JSON.stringify(subjects, null, 2), "utf8");
+  fs.writeFileSync(OUTPUT_HTML, generateHtml(limitedSessions), "utf8");
+
+  console.log(`Fichier généré : ${OUTPUT_HTML}`);
+  console.log(`Historique généré : ${HISTORY_FILE}`);
+  console.log(`Prochaine mise à jour mixte dans ${UPDATE_INTERVAL_MINUTES} minutes.`);
+}
+
+async function main() {
+  await runWatchSession();
+
+  setInterval(async () => {
+    try {
+      await runWatchSession();
+    } catch (error) {
+      console.error("Erreur pendant la mise à jour automatique mixte :", error.message);
+    }
+  }, UPDATE_INTERVAL_MINUTES * 60 * 1000);
+}
+
+main();

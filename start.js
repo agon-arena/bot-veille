@@ -10,6 +10,10 @@ const veilleYoutubeProcess = spawn("node", ["veille-youtube.js"], {
   stdio: "inherit"
 });
 
+const veilleMixteProcess = spawn("node", ["veille-mixte.js"], {
+  stdio: "inherit"
+});
+
 const serverProcess = spawn("node", ["server.js"], {
   stdio: "inherit"
 });
@@ -18,6 +22,7 @@ function stopChildren() {
   console.log("Arrêt du bot de veille...");
   veilleArticlesProcess.kill();
   veilleYoutubeProcess.kill();
+  veilleMixteProcess.kill();
   serverProcess.kill();
   process.exit();
 }

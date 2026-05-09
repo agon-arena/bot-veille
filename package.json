@@ -3,17 +3,18 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
- "scripts": {
-  "start": "node start.js",
-  "watch": "node veille.js",
-  "server": "node server.js"
-},
+  "scripts": {
+    "start": "node start.js",
+    "watch": "node veille.js",
+    "server": "node server.js"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "dayjs": "^1.11.20",
     "express": "^5.2.1",
+    "openai": "^6.37.0",
     "rss-parser": "^3.13.0",
     "string-similarity": "^4.0.4"
   }

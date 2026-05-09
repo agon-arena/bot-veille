@@ -8,6 +8,7 @@ const PORT = process.env.PORT || 3000;
 
 const VEILLE_HTML = path.join(__dirname, "veille.html");
 const VEILLE_YOUTUBE_HTML = path.join(__dirname, "veille-youtube.html");
+const VEILLE_MIXTE_HTML = path.join(__dirname, "veille-mixte.html");
 
 function sendMissingPage(res, title, message) {
   return res.send(`
@@ -49,6 +50,18 @@ app.get("/youtube", (req, res) => {
   }
 
   res.sendFile(VEILLE_YOUTUBE_HTML);
+});
+
+app.get("/mixte", (req, res) => {
+  if (!fs.existsSync(VEILLE_MIXTE_HTML)) {
+    return sendMissingPage(
+      res,
+      "Veille mixte",
+      "La veille mixte n'a pas encore été générée."
+    );
+  }
+
+  res.sendFile(VEILLE_MIXTE_HTML);
 });
 
 app.get("/veille.json", (req, res) => {

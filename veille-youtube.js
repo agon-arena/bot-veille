@@ -10,7 +10,7 @@ const OUTPUT_JSON = "veille-youtube.json";
 const OUTPUT_HTML = "veille-youtube.html";
 const HISTORY_FILE = "sessions-youtube.json";
 
-const HOURS_BACK = 72;
+const HOURS_BACK = 168;
 const SIMILARITY_THRESHOLD = 0.52;
 const MIN_SHARED_KEYWORDS = 2;
 const MIN_DISTINCT_CHANNELS = 2;
@@ -37,7 +37,7 @@ function getKeywords(text) {
     "nouvelle", "nouvelles", "direct", "video", "videos", "youtube", "short",
     "shorts", "replay", "live", "emission", "debat", "analyse", "actualite",
     "actualites", "france", "monde", "politique", "international", "economie",
-    "societe", "sport", "culture"
+    "societe", "sport", "culture", "invite", "invites", "interview"
   ]);
 
   return cleanText(text)
@@ -93,6 +93,48 @@ function saveSessions(sessions) {
   fs.writeFileSync(HISTORY_FILE, JSON.stringify(sessions, null, 2), "utf8");
 }
 
+async function getRssUrlFromChannel(channel) {
+  if (channel.rss) {
+    return channel.rss;
+  }
+
+  if (!channel.url) {
+    throw new Error("Aucun champ rss ou url fourni");
+  }
+
+  const response = await fetch(channel.url, {
+    headers: {
+      "User-Agent": "Mozilla/5.0"
+    }
+  });
+
+  if (!response.ok) {
+    throw new Error(`Impossible d'ouvrir la chaîne YouTube : ${response.status}`);
+  }
+
+  const html = await response.text();
+
+  const canonicalMatch = html.match(/<link rel="canonical" href="https:\/\/www\.youtube\.com\/channel\/([^"]+)"/);
+
+  if (canonicalMatch && canonicalMatch[1]) {
+    return `https://www.youtube.com/feeds/videos.xml?channel_id=${canonicalMatch[1]}`;
+  }
+
+  const channelIdMatch = html.match(/"channelId":"(UC[^"]+)"/);
+
+  if (channelIdMatch && channelIdMatch[1]) {
+    return `https://www.youtube.com/feeds/videos.xml?channel_id=${channelIdMatch[1]}`;
+  }
+
+  const externalIdMatch = html.match(/"externalId":"(UC[^"]+)"/);
+
+  if (externalIdMatch && externalIdMatch[1]) {
+    return `https://www.youtube.com/feeds/videos.xml?channel_id=${externalIdMatch[1]}`;
+  }
+
+  throw new Error("Impossible de trouver le channel_id YouTube");
+}
+
 function extractYouTubeVideoId(link) {
   const value = String(link || "");
 
@@ -113,7 +155,8 @@ async function collectVideos() {
     try {
       console.log(`Lecture de ${channel.nom}...`);
 
-      const feed = await parser.parseURL(channel.rss);
+      const rssUrl = await getRssUrlFromChannel(channel);
+      const feed = await parser.parseURL(rssUrl);
 
       for (const item of feed.items || []) {
         const date = getVideoDate(item);
