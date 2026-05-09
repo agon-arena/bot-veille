@@ -401,13 +401,15 @@ function fallbackAiAnalysis(subject) {
   return {
     debateScore: hasBoth ? 6 : 4,
     controversyLevel: hasBoth ? "moyen" : "faible",
-    debateQuestion: `Ce sujet mérite-t-il un débat public : ${subject.subject} ?`,
+    debateQuestion: limitText(`Ce sujet mérite-t-il un débat public : ${subject.subject} ?`, 90),
     whyDebatable: hasBoth
       ? "Ce sujet est repris à la fois par la presse et par YouTube, ce qui indique un potentiel de discussion publique."
       : "Ce sujet est repris par plusieurs sources, mais son potentiel polémique doit être vérifié.",
     angles: ["enjeux publics", "responsabilités", "effets concrets"],
     targetAudience: "grand public",
-    agonTheme: "Politique, économie et relations internationales"
+    agonTheme: "Politique, économie et relations internationales",
+    positionA: "",
+    positionB: ""
   };
 }
 
@@ -423,6 +425,16 @@ function safeJsonParse(text) {
 
     throw error;
   }
+}
+
+function limitText(text, maxLength) {
+  const value = String(text || "").trim();
+
+  if (value.length <= maxLength) {
+    return value;
+  }
+
+  return value.slice(0, maxLength - 1).trimEnd() + "…";
 }
 
 async function analyzeOneSubjectWithAI(subject) {
@@ -453,11 +465,13 @@ Tu dois répondre uniquement en JSON valide avec ces champs :
 {
   "debateScore": nombre entier de 0 à 10,
   "controversyLevel": "faible" | "moyen" | "fort" | "très fort",
-  "debateQuestion": "question de débat courte, claire et clivante",
+  "debateQuestion": "question de débat courte, claire et clivante, 90 caractères maximum",
   "whyDebatable": "explication en 1 ou 2 phrases",
   "angles": ["angle 1", "angle 2", "angle 3"],
   "targetAudience": "public le plus susceptible de réagir",
-  "agonTheme": "une thématique Agôn exacte"
+  "agonTheme": "une thématique Agôn exacte",
+  "positionA": "position favorable courte si debateScore >= 7, sinon chaîne vide",
+  "positionB": "position opposée courte si debateScore >= 7, sinon chaîne vide"
 }
 
 Critères :
@@ -472,6 +486,14 @@ Pour le champ "agonTheme", tu dois choisir uniquement une valeur exacte dans cet
 ${AGON_THEMES.map(theme => `- ${theme}`).join("\n")}
 
 Ne crée jamais une autre thématique.
+
+Pour les champs "positionA" et "positionB" :
+- si debateScore est inférieur à 7, renvoie "" pour les deux champs ;
+- si debateScore est supérieur ou égal à 7, propose deux positions opposées, claires, courtes et directement utilisables dans une arène à positions ;
+- positionA doit défendre une réponse affirmative ou favorable à la question ;
+- positionB doit défendre une réponse négative ou opposée à la question ;
+- la question de débat doit faire 90 caractères maximum ;
+- chaque position doit faire 90 caractères maximum.
 `;
 
   try {
@@ -488,13 +510,22 @@ Ne crée jamais une autre thématique.
     return {
       debateScore: Number.isInteger(parsed.debateScore) ? parsed.debateScore : 0,
       controversyLevel: parsed.controversyLevel || "faible",
-      debateQuestion: parsed.debateQuestion || `Faut-il débattre de ce sujet : ${subject.subject} ?`,
+      debateQuestion: limitText(
+        parsed.debateQuestion || `Faut-il débattre de ce sujet : ${subject.subject} ?`,
+        90
+      ),
       whyDebatable: parsed.whyDebatable || "Analyse indisponible.",
       angles: Array.isArray(parsed.angles) ? parsed.angles.slice(0, 5) : [],
       targetAudience: parsed.targetAudience || "grand public",
       agonTheme: AGON_THEMES.includes(parsed.agonTheme)
         ? parsed.agonTheme
-        : "Politique, économie et relations internationales"
+        : "Politique, économie et relations internationales",
+      positionA: parsed.debateScore >= 7 && typeof parsed.positionA === "string"
+        ? limitText(parsed.positionA, 90)
+        : "",
+      positionB: parsed.debateScore >= 7 && typeof parsed.positionB === "string"
+        ? limitText(parsed.positionB, 90)
+        : ""
     };
   } catch (error) {
     console.error(`Erreur IA pour le sujet "${subject.subject}" :`, error.message);
@@ -665,6 +696,17 @@ function generateHtml(sessions) {
             }
             <p class="target"><strong>Public susceptible de réagir :</strong> ${escapeHtml(ai.targetAudience)}</p>
             <p class="agon-theme"><strong>Thématique Agôn proposée :</strong> ${escapeHtml(ai.agonTheme || "Politique, économie et relations internationales")}</p>
+            ${
+              Number(ai.debateScore) >= 7 && (ai.positionA || ai.positionB)
+                ? `
+                  <div class="positions-box">
+                    <p><strong>Positions proposées pour une arène à positions :</strong></p>
+                    ${ai.positionA ? `<p><strong>A —</strong> ${escapeHtml(ai.positionA)}</p>` : ""}
+                    ${ai.positionB ? `<p><strong>B —</strong> ${escapeHtml(ai.positionB)}</p>` : ""}
+                  </div>
+                `
+                : ""
+            }
           </div>
 
           <div class="subject-stats">
@@ -975,6 +1017,18 @@ function generateHtml(sessions) {
       margin: 4px 0 0;
       color: #111;
       font-size: 0.95rem;
+    }
+
+    .positions-box {
+      margin-top: 12px;
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 12px;
+      padding: 12px;
+    }
+
+    .positions-box p {
+      margin: 6px 0;
     }
 
     .subject-stats {
