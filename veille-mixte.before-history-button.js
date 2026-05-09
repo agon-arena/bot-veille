@@ -22,7 +22,7 @@ const MIN_SHARED_KEYWORDS = 1;
 const MIN_DISTINCT_SOURCES = 2;
 
 const UPDATE_INTERVAL_MINUTES = 720;
-const MAX_SESSIONS_TO_KEEP = 12;
+const MAX_SESSIONS_TO_KEEP = 20;
 const MAX_SUBJECTS_TO_ANALYZE_WITH_AI = 25;
 
 const openai = process.env.OPENAI_API_KEY
@@ -532,8 +532,6 @@ function escapeHtml(text) {
 function generateHtml(sessions) {
   const generatedAt = dayjs().format("DD/MM/YYYY HH:mm:ss");
 
-  const visibleTabCount = 6;
-
   const sessionTabs = sessions.map((session, index) => {
     const label = session.generatedAtLabel || `Session ${index + 1}`;
     const shortLabel = label
@@ -542,7 +540,7 @@ function generateHtml(sessions) {
 
     return `
       <button
-        class="session-tab ${index === 0 ? "active" : ""} ${index >= visibleTabCount ? "older-tab hidden-tab" : ""}"
+        class="session-tab ${index === 0 ? "active" : ""}"
         type="button"
         data-session-index="${index}"
       >
@@ -550,14 +548,6 @@ function generateHtml(sessions) {
       </button>
     `;
   }).join("");
-
-  const olderTabsButton = sessions.length > visibleTabCount
-    ? `
-      <button class="show-older-tabs" type="button">
-        Voir les anciennes mises à jour
-      </button>
-    `
-    : "";
 
   const sessionBlocks = sessions.map((session, index) => {
     const subjects = session.subjects || [];
@@ -790,30 +780,6 @@ function generateHtml(sessions) {
       color: white;
       border-color: #111;
       font-weight: 700;
-    }
-
-    .hidden-tab {
-      display: none;
-    }
-
-    .show-older-tabs {
-      margin-top: 12px;
-      border: 1px solid #ddd;
-      background: white;
-      color: #111;
-      border-radius: 999px;
-      padding: 9px 13px;
-      font: inherit;
-      font-size: 0.95rem;
-      cursor: pointer;
-    }
-
-    .show-older-tabs:hover {
-      background: #eee;
-    }
-
-    .show-older-tabs.hidden {
-      display: none;
     }
 
     .hidden-session {
@@ -1101,7 +1067,6 @@ function generateHtml(sessions) {
           <div class="session-tabs">
             ${sessionTabs}
           </div>
-          ${olderTabsButton}
         </div>
 
         ${sessionBlocks}
@@ -1130,18 +1095,6 @@ function generateHtml(sessions) {
         });
       });
     });
-
-    const showOlderButton = document.querySelector(".show-older-tabs");
-
-    if (showOlderButton) {
-      showOlderButton.addEventListener("click", () => {
-        document.querySelectorAll(".older-tab").forEach((tab) => {
-          tab.classList.remove("hidden-tab");
-        });
-
-        showOlderButton.classList.add("hidden");
-      });
-    }
   </script>
 </body>
 </html>
