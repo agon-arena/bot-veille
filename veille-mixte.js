@@ -1,4 +1,7 @@
+require("dotenv").config();
+
 const fs = require("fs");
+const http = require("http");
 const Parser = require("rss-parser");
 const stringSimilarity = require("string-similarity");
 const dayjs = require("dayjs");
@@ -12,7 +15,7 @@ const CHANNELS_FILE = "youtube-chaines.json";
 const OUTPUT_JSON = "veille-mixte.json";
 const OUTPUT_HTML = "veille-mixte.html";
 const HISTORY_FILE = "sessions-mixte.json";
-const SEEN_ITEMS_FILE = "seen-items.json";
+const SAVED_FILE = "saved-subjects.json";
 
 const HOURS_BACK_ARTICLES = 24;
 const HOURS_BACK_YOUTUBE = 168;
@@ -115,68 +118,13 @@ function saveSessions(sessions) {
   fs.writeFileSync(HISTORY_FILE, JSON.stringify(sessions, null, 2), "utf8");
 }
 
-function loadSeenItems() {
-  if (!fs.existsSync(SEEN_ITEMS_FILE)) {
-    return {};
-  }
-
+function loadSavedSubjects() {
+  if (!fs.existsSync(SAVED_FILE)) return [];
   try {
-    return JSON.parse(fs.readFileSync(SEEN_ITEMS_FILE, "utf8"));
-  } catch (error) {
-    console.error("Erreur de lecture des contenus déjà vus :", error.message);
-    return {};
+    return JSON.parse(fs.readFileSync(SAVED_FILE, "utf8"));
+  } catch {
+    return [];
   }
-}
-
-function saveSeenItems(seenItems) {
-  fs.writeFileSync(SEEN_ITEMS_FILE, JSON.stringify(seenItems, null, 2), "utf8");
-}
-
-function getContentId(content) {
-  return content.link || `${content.type}:${content.source}:${content.title}:${content.date}`;
-}
-
-function filterOnlyNewContents(contents, seenItems) {
-  const newContents = [];
-
-  for (const content of contents) {
-    const id = getContentId(content);
-
-    if (!id) {
-      continue;
-    }
-
-    if (seenItems[id]) {
-      continue;
-    }
-
-    seenItems[id] = {
-      firstSeenAt: dayjs().toISOString(),
-      type: content.type,
-      source: content.source,
-      title: content.title,
-      link: content.link,
-      date: content.date
-    };
-
-    newContents.push(content);
-  }
-
-  return newContents;
-}
-
-function pruneSeenItems(seenItems) {
-  const limitDate = dayjs().subtract(30, "day");
-
-  for (const [id, item] of Object.entries(seenItems)) {
-    const firstSeenAt = dayjs(item.firstSeenAt);
-
-    if (firstSeenAt.isValid() && firstSeenAt.isBefore(limitDate)) {
-      delete seenItems[id];
-    }
-  }
-
-  return seenItems;
 }
 
 async function getRssUrlFromYouTubeChannel(channel) {
@@ -375,7 +323,13 @@ function filterMultiSourceSubjects(groups) {
         articleCount,
         youtubeCount,
         ai: null,
-        contents: group.contents.sort((a, b) => new Date(b.date) - new Date(a.date))
+        contents: group.contents.sort((a, b) => {
+          const order = { left: 0, center: 1, right: 2 };
+          const oA = order[getOrientationGroup(a.orientation)] ?? 1;
+          const oB = order[getOrientationGroup(b.orientation)] ?? 1;
+          if (oA !== oB) return oA - oB;
+          return new Date(b.date) - new Date(a.date);
+        })
       };
     })
     .filter(group => group.sourceCount >= MIN_DISTINCT_SOURCES)
@@ -397,20 +351,23 @@ function filterMultiSourceSubjects(groups) {
 
 function fallbackAiAnalysis(subject) {
   const hasBoth = subject.articleCount > 0 && subject.youtubeCount > 0;
-
+  const leftSourceCount = (subject.contents || []).filter(c => getOrientationGroup(c.orientation) === "left").length;
   return {
     debateScore: hasBoth ? 6 : 4,
     controversyLevel: hasBoth ? "moyen" : "faible",
-    debateQuestion: limitText(`Ce sujet mérite-t-il un débat public : ${subject.subject} ?`, 90),
-    whyDebatable: hasBoth
-      ? "Ce sujet est repris à la fois par la presse et par YouTube, ce qui indique un potentiel de discussion publique."
-      : "Ce sujet est repris par plusieurs sources, mais son potentiel polémique doit être vérifié.",
-    angles: ["enjeux publics", "responsabilités", "effets concrets"],
-    targetAudience: "grand public",
+    debateQuestion: `Ce sujet mérite-t-il un débat public : ${subject.subject} ?`,
+    resume: "",
     agonTheme: "Politique, économie et relations internationales",
     positionA: "",
-    positionB: ""
+    positionB: "",
+    leftScore: Math.min(10, 3 + leftSourceCount * 2)
   };
+}
+
+function limitText(text, maxLength) {
+  const value = String(text || "").trim();
+  if (value.length <= maxLength) return value;
+  return value.slice(0, maxLength - 1).trimEnd() + "…";
 }
 
 function safeJsonParse(text) {
@@ -425,16 +382,6 @@ function safeJsonParse(text) {
 
     throw error;
   }
-}
-
-function limitText(text, maxLength) {
-  const value = String(text || "").trim();
-
-  if (value.length <= maxLength) {
-    return value;
-  }
-
-  return value.slice(0, maxLength - 1).trimEnd() + "…";
 }
 
 async function analyzeOneSubjectWithAI(subject) {
@@ -465,16 +412,20 @@ Tu dois répondre uniquement en JSON valide avec ces champs :
 {
   "debateScore": nombre entier de 0 à 10,
   "controversyLevel": "faible" | "moyen" | "fort" | "très fort",
-  "debateQuestion": "question de débat courte, claire et clivante, 90 caractères maximum",
-  "whyDebatable": "explication en 1 ou 2 phrases",
-  "angles": ["angle 1", "angle 2", "angle 3"],
-  "targetAudience": "public le plus susceptible de réagir",
+  "debateQuestion": "question de débat en MAX 90 CARACTÈRES, formulée avec une sensibilité de gauche progressiste : elle doit partir du scandale ou de l'injustice perçue, pas mettre les deux camps sur un pied d'égalité. Évite les formulations neutres type 'Faut-il...' ou 'Doit-on...'. Préfère des formulations qui présupposent un angle moral, mémoriel, social ou écologique.",
+  "resume": "si debateScore >= 7 : résumé factuel de l'actualité en 2 ou 3 phrases (ce qui s'est passé, le contexte, les acteurs). Sinon : chaîne vide",
   "agonTheme": "une thématique Agôn exacte",
-  "positionA": "position favorable courte si debateScore >= 7, sinon chaîne vide",
-  "positionB": "position opposée courte si debateScore >= 7, sinon chaîne vide"
+  "positionA": "position favorable en MAX 90 CARACTÈRES si debateScore >= 7, sinon chaîne vide.",
+  "positionB": "position opposée en MAX 90 CARACTÈRES si debateScore >= 7, sinon chaîne vide.",
+  "leftScore": nombre entier de 0 à 10 indiquant l'intérêt du sujet pour un public de gauche progressiste
 }
 
-Critères :
+Critères pour leftScore (INDÉPENDANT du debateScore — un sujet peut avoir un leftScore élevé même si son debateScore est faible) :
+- 8 à 10 : sujet central pour la gauche (droits sociaux, inégalités, écologie, services publics, droits des travailleur·ses, libertés publiques, lutte contre les discriminations, annonce de politique sociale, rapport sur les inégalités, actualité syndicale ou climatique)
+- 5 à 7 : sujet d'intérêt général avec une dimension sociale ou politique pertinente
+- 0 à 4 : sujet peu pertinent pour un public de gauche (fait divers apolitique, résultat sportif, annonce culturelle neutre)
+
+Critères pour debateScore :
 - 0 à 3 : sujet informatif, peu clivant
 - 4 à 6 : sujet débattable mais pas explosif
 - 7 à 8 : sujet controversé, bon potentiel de débat
@@ -489,11 +440,11 @@ Ne crée jamais une autre thématique.
 
 Pour les champs "positionA" et "positionB" :
 - si debateScore est inférieur à 7, renvoie "" pour les deux champs ;
-- si debateScore est supérieur ou égal à 7, propose deux positions opposées, claires, courtes et directement utilisables dans une arène à positions ;
+- si debateScore est supérieur ou égal à 7, propose deux positions opposées, claires, courtes (MAX 90 CARACTÈRES CHACUNE) et directement utilisables dans une arène à positions ;
 - positionA doit défendre une réponse affirmative ou favorable à la question ;
 - positionB doit défendre une réponse négative ou opposée à la question ;
-- la question de débat doit faire 90 caractères maximum ;
-- chaque position doit faire 90 caractères maximum.
+- les deux positions doivent être clairement opposées et directement débattables dans une arène ;
+- IMPORTANT : debateQuestion, positionA et positionB doivent chacun faire strictement moins de 90 caractères ;
 `;
 
   try {
@@ -501,7 +452,7 @@ Pour les champs "positionA" et "positionB" :
       model: "gpt-4.1-mini",
       input: prompt,
       temperature: 0.2,
-      max_output_tokens: 500
+      max_output_tokens: 600
     });
 
     const text = response.output_text;
@@ -510,27 +461,115 @@ Pour les champs "positionA" et "positionB" :
     return {
       debateScore: Number.isInteger(parsed.debateScore) ? parsed.debateScore : 0,
       controversyLevel: parsed.controversyLevel || "faible",
-      debateQuestion: limitText(
-        parsed.debateQuestion || `Faut-il débattre de ce sujet : ${subject.subject} ?`,
-        90
-      ),
-      whyDebatable: parsed.whyDebatable || "Analyse indisponible.",
-      angles: Array.isArray(parsed.angles) ? parsed.angles.slice(0, 5) : [],
-      targetAudience: parsed.targetAudience || "grand public",
+      debateQuestion: String(parsed.debateQuestion || `Faut-il débattre de ce sujet : ${subject.subject} ?`).trim(),
+      resume: parsed.resume || "",
       agonTheme: AGON_THEMES.includes(parsed.agonTheme)
         ? parsed.agonTheme
         : "Politique, économie et relations internationales",
       positionA: parsed.debateScore >= 7 && typeof parsed.positionA === "string"
-        ? limitText(parsed.positionA, 90)
+        ? parsed.positionA.trim()
         : "",
       positionB: parsed.debateScore >= 7 && typeof parsed.positionB === "string"
-        ? limitText(parsed.positionB, 90)
-        : ""
+        ? parsed.positionB.trim()
+        : "",
+      leftScore: Number.isInteger(parsed.leftScore) ? parsed.leftScore : 5
     };
   } catch (error) {
     console.error(`Erreur IA pour le sujet "${subject.subject}" :`, error.message);
     return fallbackAiAnalysis(subject);
   }
+}
+
+async function analyzeOneScoreWithAI(subject) {
+  if (!openai) {
+    const fb = fallbackAiAnalysis(subject);
+    return { debateScore: fb.debateScore, controversyLevel: fb.controversyLevel, leftScore: fb.leftScore };
+  }
+
+  const compactContents = subject.contents.slice(0, 10).map(content => ({
+    type: content.type,
+    source: content.source,
+    orientation: content.orientation,
+    title: content.title
+  }));
+
+  const prompt = `
+Analyse ce sujet de veille et évalue son potentiel.
+
+Sujet principal :
+${subject.subject}
+
+Sources :
+${subject.sources.join(", ")}
+
+Contenus :
+${JSON.stringify(compactContents, null, 2)}
+
+Tu dois répondre uniquement en JSON valide avec ces champs :
+{
+  "debateScore": nombre entier de 0 à 10,
+  "controversyLevel": "faible" | "moyen" | "fort" | "très fort",
+  "leftScore": nombre entier de 0 à 10 indiquant l'intérêt du sujet pour un public de gauche progressiste
+}
+
+Critères pour debateScore :
+- 0 à 3 : sujet informatif, peu clivant
+- 4 à 6 : sujet débattable mais pas explosif
+- 7 à 8 : sujet controversé, bon potentiel de débat
+- 9 à 10 : sujet très clivant, fort potentiel de réactions
+Favorise les sujets politiques, sociaux, économiques, éducatifs, écologiques, internationaux ou liés aux libertés publiques.
+Pénalise les simples faits divers non politiques, résultats sportifs, annonces culturelles ou sujets purement descriptifs.
+
+Critères pour leftScore (INDÉPENDANT du debateScore) :
+- 8 à 10 : sujet central pour la gauche (droits sociaux, inégalités, écologie, services publics, droits des travailleur·ses, libertés publiques, lutte contre les discriminations, annonce de politique sociale, rapport sur les inégalités, actualité syndicale ou climatique)
+- 5 à 7 : sujet d'intérêt général avec une dimension sociale ou politique pertinente
+- 0 à 4 : sujet peu pertinent pour un public de gauche (fait divers apolitique, résultat sportif, annonce culturelle neutre)
+`;
+
+  try {
+    const response = await openai.responses.create({
+      model: "gpt-4.1-mini",
+      input: prompt,
+      temperature: 0.2,
+      max_output_tokens: 80
+    });
+
+    const parsed = safeJsonParse(response.output_text);
+    return {
+      debateScore: Number.isInteger(parsed.debateScore) ? parsed.debateScore : 0,
+      controversyLevel: parsed.controversyLevel || "faible",
+      leftScore: Number.isInteger(parsed.leftScore) ? parsed.leftScore : 5
+    };
+  } catch (error) {
+    console.error(`Erreur IA (score) pour "${subject.subject}" :`, error.message);
+    const fb = fallbackAiAnalysis(subject);
+    return { debateScore: fb.debateScore, controversyLevel: fb.controversyLevel, leftScore: fb.leftScore };
+  }
+}
+
+async function analyzeScoresWithAI(subjects) {
+  console.log(`${subjects.length} sujet(s) envoyés à l'analyse de score IA.`);
+  const results = [];
+
+  for (const subject of subjects) {
+    console.log(`Score IA : ${subject.subject}`);
+    const score = await analyzeOneScoreWithAI(subject);
+    results.push({
+      ...subject,
+      debateScore: score.debateScore,
+      controversyLevel: score.controversyLevel,
+      leftScore: score.leftScore,
+      scoreAnalyzed: true,
+      ai: null,
+      aiAnalyzed: false
+    });
+  }
+
+  return results.sort((a, b) => {
+    if (b.debateScore !== a.debateScore) return b.debateScore - a.debateScore;
+    if (b.sourceCount !== a.sourceCount) return b.sourceCount - a.sourceCount;
+    return b.contentCount - a.contentCount;
+  });
 }
 
 async function analyzeSubjectsWithAI(subjects) {
@@ -546,13 +585,15 @@ async function analyzeSubjectsWithAI(subjects) {
 
     analyzedSubjects.push({
       ...subject,
-      ai
+      ai,
+      aiAnalyzed: true
     });
   }
 
   const remainingSubjects = subjects.slice(MAX_SUBJECTS_TO_ANALYZE_WITH_AI).map(subject => ({
     ...subject,
-    ai: fallbackAiAnalysis(subject)
+    ai: fallbackAiAnalysis(subject),
+    aiAnalyzed: false
   }));
 
   return [...analyzedSubjects, ...remainingSubjects].sort((a, b) => {
@@ -571,6 +612,40 @@ async function analyzeSubjectsWithAI(subjects) {
   });
 }
 
+function getOrientationGroup(orientation) {
+  const o = (orientation || "").toLowerCase();
+  if (o.includes("gauche")) return "left";
+  if (o.includes("droite") || o.includes("conservateur") || o.includes("souverainiste")) return "right";
+  return "center";
+}
+
+function selectPreselectedContents(contents, debateScore) {
+  if (debateScore < 7) return new Set();
+
+  const selected = new Set();
+
+  const youtube = contents.find(c => c.type === "youtube");
+  if (youtube) selected.add(youtube.link);
+
+  const pressItems = contents.filter(c => c.type === "article");
+  const leftItem = pressItems.find(c => getOrientationGroup(c.orientation) === "left");
+  const rightItem = pressItems.find(c => getOrientationGroup(c.orientation) === "right");
+
+  if (leftItem) selected.add(leftItem.link);
+  if (rightItem) selected.add(rightItem.link);
+
+  if (selected.size < 2) {
+    for (const item of pressItems) {
+      if (!selected.has(item.link)) {
+        selected.add(item.link);
+        if (selected.size >= (youtube ? 3 : 2)) break;
+      }
+    }
+  }
+
+  return selected;
+}
+
 function escapeHtml(text) {
   return String(text || "")
     .replaceAll("&", "&amp;")
@@ -582,6 +657,8 @@ function escapeHtml(text) {
 
 function generateHtml(sessions) {
   const generatedAt = dayjs().format("DD/MM/YYYY HH:mm:ss");
+
+  const savedTitles = new Set(loadSavedSubjects().map(s => s.subject));
 
   const visibleTabCount = 6;
 
@@ -616,32 +693,35 @@ function generateHtml(sessions) {
     const subjectBlocks = subjects.map(subject => {
       const articles = subject.contents.filter(content => content.type === "article");
       const videos = subject.contents.filter(content => content.type === "youtube");
-      const ai = subject.ai || fallbackAiAnalysis(subject);
+      const ai = subject.ai || {};
+      const isAnalyzed = subject.aiAnalyzed === true;
+      const scoreAnalyzed = subject.scoreAnalyzed === true;
 
-      const angleItems = (ai.angles || []).map(angle => {
-        return `<li>${escapeHtml(angle)}</li>`;
-      }).join("");
+      const debateScore = scoreAnalyzed ? (Number(subject.debateScore) || 0) : 0;
+      const leftScore = scoreAnalyzed ? (Number(subject.leftScore) || 0) : 0;
+      const isSaved = savedTitles.has(subject.subject);
 
       const articleItems = articles.map(article => {
         const date = dayjs(article.date).format("DD/MM/YYYY HH:mm");
+        const orientationGroup = getOrientationGroup(article.orientation);
+        const orientationTag = article.orientation
+          ? `<span class="source-tag ${orientationGroup}">${escapeHtml(article.orientation)}</span>`
+          : "";
 
         return `
-          <li class="content-item">
-            <span class="badge article">Article</span>
-            <div>
-              <strong>${escapeHtml(article.source)}</strong>
-              ${
-                article.orientation
-                  ? `<span class="orientation"> — ${escapeHtml(article.orientation)}</span>`
-                  : ""
-              }
-              <br>
-              <a href="${escapeHtml(article.link)}" target="_blank" rel="noopener noreferrer">
-                ${escapeHtml(article.title)}
-              </a>
-              <br>
-              <small>Publié le ${escapeHtml(date)}</small>
-            </div>
+          <li class="content-item" data-link="${escapeHtml(article.link)}" data-orientation="${escapeHtml(article.orientation)}" data-type="article">
+            <label class="article-label">
+              <input type="checkbox">
+              <div>
+                <strong>${escapeHtml(article.source)}</strong> ${orientationTag}
+                <br>
+                <a href="${escapeHtml(article.link)}" target="_blank" rel="noopener noreferrer">
+                  ${escapeHtml(article.title)}
+                </a>
+                <br>
+                <small>Publié le ${escapeHtml(date)}</small>
+              </div>
+            </label>
           </li>
         `;
       }).join("");
@@ -650,64 +730,88 @@ function generateHtml(sessions) {
         const date = dayjs(video.date).format("DD/MM/YYYY HH:mm");
 
         return `
-          <li class="content-item video-item">
-            ${
-              video.thumbnail
-                ? `<img src="${escapeHtml(video.thumbnail)}" alt="" class="thumb">`
-                : `<span class="badge youtube">YouTube</span>`
-            }
-            <div>
-              <strong>${escapeHtml(video.source)}</strong>
-              ${
-                video.orientation
-                  ? `<span class="orientation"> — ${escapeHtml(video.orientation)}</span>`
-                  : ""
-              }
-              <br>
-              <a href="${escapeHtml(video.link)}" target="_blank" rel="noopener noreferrer">
-                ${escapeHtml(video.title)}
-              </a>
-              <br>
-              <small>Publié le ${escapeHtml(date)}</small>
-            </div>
+          <li class="content-item video-item" data-link="${escapeHtml(video.link)}" data-type="youtube">
+            <label class="article-label">
+              <input type="checkbox">
+              <div>
+                ${
+                  video.thumbnail
+                    ? `<a href="${escapeHtml(video.link)}" target="_blank" rel="noopener noreferrer"><img src="${escapeHtml(video.thumbnail)}" alt="" class="thumb"></a>`
+                    : ""
+                }
+                <strong>${escapeHtml(video.source)}</strong>
+                <span class="source-tag youtube">YouTube</span>
+                <br>
+                <a href="${escapeHtml(video.link)}" target="_blank" rel="noopener noreferrer">
+                  ${escapeHtml(video.title)}
+                </a>
+                <br>
+                <small>Publié le ${escapeHtml(date)}</small>
+              </div>
+            </label>
           </li>
         `;
       }).join("");
 
-      return `
-        <section class="subject">
-          <div class="ai-score">
+      const subjectDataForBtn = escapeHtml(JSON.stringify({
+        subject: subject.subject,
+        sources: subject.sources,
+        articleCount: subject.articleCount,
+        youtubeCount: subject.youtubeCount,
+        contents: subject.contents.slice(0, 10).map(c => ({
+          type: c.type,
+          source: c.source,
+          orientation: c.orientation,
+          title: c.title,
+          link: c.link
+        }))
+      }));
+
+      const aiScoreHtml = scoreAnalyzed
+        ? `<div class="ai-score">
             <div>
               <span class="score-label">Potentiel débat</span>
-              <strong>${escapeHtml(ai.debateScore)}/10</strong>
+              <strong>${escapeHtml(String(subject.debateScore))}/10</strong>
             </div>
-            <span class="controversy">${escapeHtml(ai.controversyLevel)}</span>
-          </div>
+            <span class="controversy">${escapeHtml(subject.controversyLevel)}</span>
+          </div>`
+        : `<div class="ai-score pending">
+            <span class="score-label">Analyse IA non effectuée</span>
+          </div>`;
+
+      const aiBoxHtml = isAnalyzed
+        ? `<div class="ai-box">
+            <p class="debate-question" contenteditable="true" spellcheck="false">${escapeHtml(ai.debateQuestion)}</p>
+            ${debateScore >= 7 && ai.resume ? `<p class="resume">${escapeHtml(ai.resume)}</p>` : ""}
+            <p class="agon-theme"><strong>Thématique Agôn proposée :</strong>
+              <select class="agon-select">
+                ${AGON_THEMES.map(theme => `<option value="${escapeHtml(theme)}"${theme === (ai.agonTheme || AGON_THEMES[0]) ? " selected" : ""}>${escapeHtml(theme)}</option>`).join("")}
+              </select>
+            </p>
+            ${
+              debateScore >= 7 && (ai.positionA || ai.positionB)
+                ? `<div class="positions-box">
+                    <p><strong>Positions proposées pour une arène à positions :</strong></p>
+                    ${ai.positionA ? `<p><strong>A —</strong> <span class="editable" contenteditable="true" spellcheck="false">${escapeHtml(ai.positionA)}</span></p>` : ""}
+                    ${ai.positionB ? `<p><strong>B —</strong> <span class="editable" contenteditable="true" spellcheck="false">${escapeHtml(ai.positionB)}</span></p>` : ""}
+                  </div>`
+                : ""
+            }
+          </div>`
+        : `<div class="ai-box pending-analysis">
+            <button class="analyze-btn" type="button" data-subject="${subjectDataForBtn}">
+              Générer IA
+            </button>
+          </div>`;
+
+      return `
+        <section class="subject" data-score="${debateScore}" data-sources="${subject.sourceCount}" data-left="${leftScore}">
+          <div class="subject-number"></div>
+          ${aiScoreHtml}
 
           <h3>${escapeHtml(subject.subject)}</h3>
 
-          <div class="ai-box">
-            <p class="debate-question">${escapeHtml(ai.debateQuestion)}</p>
-            <p>${escapeHtml(ai.whyDebatable)}</p>
-            ${
-              angleItems
-                ? `<p><strong>Angles possibles :</strong></p><ul class="angles">${angleItems}</ul>`
-                : ""
-            }
-            <p class="target"><strong>Public susceptible de réagir :</strong> ${escapeHtml(ai.targetAudience)}</p>
-            <p class="agon-theme"><strong>Thématique Agôn proposée :</strong> ${escapeHtml(ai.agonTheme || "Politique, économie et relations internationales")}</p>
-            ${
-              Number(ai.debateScore) >= 7 && (ai.positionA || ai.positionB)
-                ? `
-                  <div class="positions-box">
-                    <p><strong>Positions proposées pour une arène à positions :</strong></p>
-                    ${ai.positionA ? `<p><strong>A —</strong> ${escapeHtml(ai.positionA)}</p>` : ""}
-                    ${ai.positionB ? `<p><strong>B —</strong> ${escapeHtml(ai.positionB)}</p>` : ""}
-                  </div>
-                `
-                : ""
-            }
-          </div>
+          ${aiBoxHtml}
 
           <div class="subject-stats">
             <span>${subject.sourceCount} sources</span>
@@ -716,6 +820,9 @@ function generateHtml(sessions) {
           </div>
 
           <p class="sources">${escapeHtml(subject.sources.join(", "))}</p>
+
+          <button class="save-btn${isSaved ? " saved" : ""}" type="button" data-subject-title="${escapeHtml(subject.subject)}">${isSaved ? "★ Enregistré" : "☆ Enregistrer"}</button>
+          <button class="agon-btn" type="button" data-question="${escapeHtml(ai ? (ai.debateQuestion || subject.subject) : subject.subject)}" data-position-a="${escapeHtml(ai ? (ai.positionA || "") : "")}" data-position-b="${escapeHtml(ai ? (ai.positionB || "") : "")}" data-theme="${escapeHtml(ai ? (ai.agonTheme || "") : "")}" data-sources="${escapeHtml(subject.sources.join(", "))}">→ Agôn</button>
 
           ${
             articles.length
@@ -806,6 +913,62 @@ function generateHtml(sessions) {
       border-radius: 14px;
       padding: 14px 18px;
       margin-bottom: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .refresh-btn {
+      flex-shrink: 0;
+      background: white;
+      color: #111;
+      border: none;
+      border-radius: 999px;
+      padding: 10px 18px;
+      font: inherit;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .refresh-btn:hover:not(:disabled) {
+      background: #e8e8e8;
+    }
+
+    .refresh-btn:disabled {
+      opacity: 0.6;
+      cursor: default;
+    }
+
+    .filter-bar {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+
+    .filter-btn {
+      border: 1px solid #ddd;
+      background: white;
+      color: #111;
+      border-radius: 999px;
+      padding: 9px 16px;
+      font: inherit;
+      font-size: 0.95rem;
+      cursor: pointer;
+    }
+
+    .filter-btn:hover {
+      background: #eee;
+    }
+
+    .filter-btn.active {
+      background: #111;
+      color: white;
+      border-color: #111;
+      font-weight: 700;
     }
 
     .session-tabs-wrapper {
@@ -985,6 +1148,85 @@ function generateHtml(sessions) {
       font-size: 0.9rem;
     }
 
+    .ai-score.pending {
+      background: #888;
+      justify-content: flex-start;
+    }
+
+    .ai-box.pending-analysis {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 56px;
+    }
+
+    .analyze-btn {
+      background: #111;
+      color: white;
+      border: none;
+      border-radius: 999px;
+      padding: 10px 20px;
+      font: inherit;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .analyze-btn:hover:not(:disabled) {
+      background: #333;
+    }
+
+    .analyze-btn:disabled {
+      opacity: 0.6;
+      cursor: default;
+    }
+
+    .subject-number {
+      font-size: 0.75rem;
+      color: #aaa;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .save-btn {
+      background: none;
+      border: 1px solid #ccc;
+      border-radius: 999px;
+      padding: 4px 12px;
+      font: inherit;
+      font-size: 0.82rem;
+      cursor: pointer;
+      color: #555;
+      margin-top: 10px;
+    }
+
+    .save-btn:hover {
+      border-color: #888;
+      color: #111;
+    }
+
+    .save-btn.saved {
+      background: #111;
+      color: white;
+      border-color: #111;
+    }
+
+    .agon-btn {
+      background: none;
+      border: 1px solid #c0392b;
+      border-radius: 999px;
+      padding: 4px 12px;
+      font: inherit;
+      font-size: 0.82rem;
+      cursor: pointer;
+      color: #c0392b;
+      margin-top: 10px;
+      margin-left: 6px;
+    }
+
+    .agon-btn:hover { background: #fdf0ee; }
+    .agon-btn.sent { background: #c0392b; color: white; }
+
     .ai-box {
       background: #f5f5f5;
       border: 1px solid #e1e1e1;
@@ -997,26 +1239,50 @@ function generateHtml(sessions) {
       font-size: 1.1rem;
       font-weight: 800;
       margin-top: 0;
+      border-radius: 6px;
+      padding: 4px 6px;
+      margin-left: -6px;
+      outline: none;
+      transition: background 0.15s;
     }
 
-    .angles {
-      margin-top: -8px;
-      padding-left: 20px;
+    .debate-question:hover,
+    .debate-question:focus {
+      background: #e8e8e8;
     }
 
-    .target {
-      color: #444;
+    .editable {
+      border-radius: 4px;
+      padding: 2px 4px;
+      margin-left: -4px;
+      outline: none;
+      transition: background 0.15s;
+    }
+
+    .editable:hover,
+    .editable:focus {
+      background: #e8e8e8;
     }
 
     .agon-theme {
-      display: inline-block;
+      margin: 4px 0 0;
+      font-size: 0.95rem;
+    }
+
+    .agon-select {
       background: white;
       border: 1px solid #ddd;
       border-radius: 999px;
-      padding: 6px 10px;
-      margin: 4px 0 0;
+      padding: 5px 10px;
       color: #111;
       font-size: 0.95rem;
+      cursor: pointer;
+      outline: none;
+    }
+
+    .agon-select:hover,
+    .agon-select:focus {
+      border-color: #999;
     }
 
     .positions-box {
@@ -1055,42 +1321,69 @@ function generateHtml(sessions) {
     }
 
     .content-item {
-      display: flex;
-      gap: 14px;
       list-style: none;
       margin-bottom: 16px;
+    }
+
+    .content-item.preselected {
+      background: #f0f7ff;
+      border-left: 3px solid #0645ad;
+      border-radius: 6px;
+      padding: 6px 10px;
+      margin-left: -13px;
+    }
+
+    .article-label {
+      display: flex;
       align-items: flex-start;
+      gap: 10px;
+      cursor: pointer;
+    }
+
+    .article-label input[type="checkbox"] {
+      margin-top: 3px;
+      flex-shrink: 0;
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+    }
+
+    .source-tag {
+      display: inline-block;
+      background: #f1f1f1;
+      border-radius: 999px;
+      padding: 1px 7px;
+      font-size: 0.78rem;
+      color: #555;
+      vertical-align: middle;
+    }
+
+    .source-tag.youtube {
+      background: #ff0000;
+      color: white;
+    }
+
+    .source-tag.left {
+      background: #ffe8e8;
+      color: #b30000;
+    }
+
+    .source-tag.center {
+      background: #f1f1f1;
+      color: #555;
+    }
+
+    .source-tag.right {
+      background: #e8eeff;
+      color: #003399;
     }
 
     .thumb {
+      display: block;
       width: 160px;
       max-width: 35vw;
-      border-radius: 10px;
-      background: #ddd;
-    }
-
-    .badge {
-      display: inline-block;
-      min-width: 70px;
-      text-align: center;
-      font-size: 0.8rem;
-      font-weight: 700;
-      border-radius: 999px;
-      padding: 5px 8px;
-      background: #eee;
-    }
-
-    .badge.article {
-      background: #e8eefc;
-    }
-
-    .badge.youtube {
-      background: #ffe8e8;
-    }
-
-    .orientation {
-      color: #666;
-      font-size: 0.95rem;
+      border-radius: 6px;
+      margin-bottom: 6px;
     }
 
     a {
@@ -1160,6 +1453,7 @@ function generateHtml(sessions) {
     <a href="/">Presse seule</a>
     <a href="/youtube">YouTube seul</a>
     <a href="/mixte">Veille mixte</a>
+    <a href="/admin">⚙ Admin</a>
   </div>
 
   <p class="intro">
@@ -1168,14 +1462,21 @@ function generateHtml(sessions) {
   </p>
 
   <div class="status">
-    Dernière génération du fichier :
-    <strong>${escapeHtml(generatedAt)}</strong>
-    <br>
-    Presse : dernières <strong>${HOURS_BACK_ARTICLES} h</strong> —
-    YouTube : dernières <strong>${HOURS_BACK_YOUTUBE} h</strong>
-    <br>
-    Mise à jour automatique toutes les
-    <strong>${UPDATE_INTERVAL_MINUTES} minutes</strong>.
+    <div>
+      Dernière génération du fichier :
+      <strong>${escapeHtml(generatedAt)}</strong>
+      <br>
+      Presse : dernières <strong>${HOURS_BACK_ARTICLES} h</strong> —
+      YouTube : dernières <strong>${HOURS_BACK_YOUTUBE} h</strong>
+    </div>
+    <button class="refresh-btn" type="button">Mettre à jour</button>
+  </div>
+
+  <div class="filter-bar">
+    <button class="filter-btn active" data-sort="score">Sujets clivants</button>
+    <button class="filter-btn" data-sort="sources">Sujets majeurs</button>
+    <button class="filter-btn" data-sort="left">Sujets avec fort intérêt</button>
+    <button class="filter-btn" data-sort="saved">Sujets enregistrés</button>
   </div>
 
   ${
@@ -1196,6 +1497,236 @@ function generateHtml(sessions) {
   }
 
   <script>
+    const AGON_THEMES = ${JSON.stringify(AGON_THEMES)};
+
+    function buildAiBoxHtml(ai) {
+      const score = Number(ai.debateScore) || 0;
+      const optionsHtml = AGON_THEMES.map(theme =>
+        '<option value="' + theme + '"' + (theme === (ai.agonTheme || AGON_THEMES[0]) ? " selected" : "") + ">" + theme + "</option>"
+      ).join("");
+
+      const positionsHtml = score >= 7 && (ai.positionA || ai.positionB)
+        ? '<div class="positions-box">' +
+            "<p><strong>Positions proposées pour une arène à positions :</strong></p>" +
+            (ai.positionA ? '<p><strong>A —</strong> <span class="editable" contenteditable="true" spellcheck="false">' + ai.positionA + "</span></p>" : "") +
+            (ai.positionB ? '<p><strong>B —</strong> <span class="editable" contenteditable="true" spellcheck="false">' + ai.positionB + "</span></p>" : "") +
+          "</div>"
+        : "";
+
+      return '<div class="ai-box">' +
+        '<p class="debate-question" contenteditable="true" spellcheck="false">' + (ai.debateQuestion || "") + "</p>" +
+        (score >= 7 && ai.resume ? '<p class="resume">' + ai.resume + "</p>" : "") +
+        '<p class="agon-theme"><strong>Thématique Agôn proposée :</strong>' +
+          '<select class="agon-select">' + optionsHtml + "</select>" +
+        "</p>" +
+        positionsHtml +
+        "</div>";
+    }
+
+    function buildAiScoreHtml(ai) {
+      return '<div class="ai-score">' +
+        "<div>" +
+          '<span class="score-label">Potentiel débat</span>' +
+          "<strong>" + ai.debateScore + "/10</strong>" +
+        "</div>" +
+        '<span class="controversy">' + ai.controversyLevel + "</span>" +
+        "</div>";
+    }
+
+    function getOrientationGroupClient(orientation) {
+      const o = (orientation || "").toLowerCase();
+      if (o.indexOf("gauche") !== -1) return "left";
+      if (o.indexOf("droite") !== -1 || o.indexOf("conservateur") !== -1 || o.indexOf("souverainiste") !== -1) return "right";
+      return "center";
+    }
+
+    function selectPreselectedLinks(contents, debateScore) {
+      if (debateScore < 7) return new Set();
+      const selected = new Set();
+      const youtube = contents.find(function(c) { return c.type === "youtube"; });
+      if (youtube && youtube.link) selected.add(youtube.link);
+      const pressItems = contents.filter(function(c) { return c.type === "article"; });
+      const leftItem = pressItems.find(function(c) { return getOrientationGroupClient(c.orientation) === "left"; });
+      const rightItem = pressItems.find(function(c) { return getOrientationGroupClient(c.orientation) === "right"; });
+      if (leftItem && leftItem.link) selected.add(leftItem.link);
+      if (rightItem && rightItem.link) selected.add(rightItem.link);
+      if (selected.size < 2) {
+        for (let i = 0; i < pressItems.length; i++) {
+          if (pressItems[i].link && !selected.has(pressItems[i].link)) {
+            selected.add(pressItems[i].link);
+            if (selected.size >= (youtube ? 3 : 2)) break;
+          }
+        }
+      }
+      return selected;
+    }
+
+    document.addEventListener("click", async (e) => {
+      const btn = e.target.closest(".analyze-btn");
+      if (!btn) return;
+
+      const subjectData = JSON.parse(btn.dataset.subject);
+      const subjectEl = btn.closest(".subject");
+      const aiBox = btn.closest(".ai-box");
+      const aiScore = subjectEl.querySelector(".ai-score.pending");
+
+      btn.disabled = true;
+      btn.textContent = "Analyse en cours…";
+
+      try {
+        const res = await fetch("/analyze", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(subjectData)
+        });
+
+        if (!res.ok) throw new Error("Erreur serveur");
+        const ai = await res.json();
+
+        if (aiScore) aiScore.outerHTML = buildAiScoreHtml(ai);
+        aiBox.outerHTML = buildAiBoxHtml(ai);
+
+        const preselectedLinks = selectPreselectedLinks(subjectData.contents, Number(ai.debateScore) || 0);
+        subjectEl.querySelectorAll(".content-item[data-link]").forEach(function(item) {
+          const link = item.dataset.link;
+          const checkbox = item.querySelector('input[type="checkbox"]');
+          const isSelected = preselectedLinks.has(link);
+          if (checkbox) checkbox.checked = isSelected;
+          item.classList.toggle("preselected", isSelected);
+        });
+      } catch (err) {
+        btn.disabled = false;
+        btn.textContent = "Réessayer (erreur)";
+      }
+    });
+
+    document.addEventListener("click", async function(e) {
+      const btn = e.target.closest(".save-btn");
+      if (!btn) return;
+
+      const subjectEl = btn.closest(".subject");
+      const isSaved = btn.classList.contains("saved");
+      const title = subjectEl.querySelector("h3").textContent.trim();
+      const sessionEl = subjectEl.closest(".session");
+      const sessionLabel = sessionEl ? (sessionEl.querySelector(".session-header strong") || {}).textContent?.trim() || "" : "";
+      const score = Number(subjectEl.dataset.score) || 0;
+      const questionEl = subjectEl.querySelector(".debate-question");
+      const resumeEl = subjectEl.querySelector(".resume");
+      const agonEl = subjectEl.querySelector(".agon-select");
+      const editables = subjectEl.querySelectorAll(".editable");
+      const sourcesEl = subjectEl.querySelector(".sources");
+
+      const contentItems = [...subjectEl.querySelectorAll(".content-item[data-link]")].map(item => ({
+        type: item.dataset.type || "article",
+        link: item.dataset.link,
+        source: (item.querySelector("strong") || {}).textContent?.trim() || "",
+        title: (item.querySelector("a") || {}).textContent?.trim() || "",
+        thumbnail: item.dataset.type === "youtube" ? (item.querySelector("img") || {}).src || "" : ""
+      }));
+
+      const payload = {
+        action: isSaved ? "unsave" : "save",
+        subject: title,
+        debateScore: score,
+        debateQuestion: questionEl ? questionEl.textContent.trim() : "",
+        resume: resumeEl ? resumeEl.textContent.trim() : "",
+        agonTheme: agonEl ? agonEl.value : "",
+        positionA: editables[0] ? editables[0].textContent.trim() : "",
+        positionB: editables[1] ? editables[1].textContent.trim() : "",
+        sources: sourcesEl ? sourcesEl.textContent.trim() : "",
+        contents: contentItems,
+        sessionLabel
+      };
+
+      try {
+        const res = await fetch("/save", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+        if (!res.ok) throw new Error("Erreur");
+        btn.classList.toggle("saved");
+        btn.textContent = btn.classList.contains("saved") ? "★ Enregistré" : "☆ Enregistrer";
+      } catch (err) {
+        console.error("Erreur save :", err);
+      }
+    });
+
+    document.addEventListener("click", async (e) => {
+      const btn = e.target.closest(".agon-btn");
+      if (!btn) return;
+      btn.disabled = true;
+      btn.textContent = "Envoi…";
+      try {
+        const subjectEl = btn.closest(".subject");
+        const question = subjectEl.querySelector(".debate-question")?.textContent.trim() || btn.dataset.question;
+        const editables = subjectEl.querySelectorAll(".editable");
+        const positionA = editables[0]?.textContent.trim() || btn.dataset.positionA;
+        const positionB = editables[1]?.textContent.trim() || btn.dataset.positionB;
+        const theme = subjectEl.querySelector(".agon-select")?.value || btn.dataset.theme;
+        const resume = subjectEl.querySelector(".resume")?.textContent.trim() || "";
+        const sources = btn.dataset.sources;
+        const links = [...subjectEl.querySelectorAll(".content-item[data-link]")].map(item => {
+          const dateText = item.querySelector("small")?.textContent || "";
+          const dateMatch = dateText.match(/(\d{2}\/\d{2}\/\d{4})/);
+          return {
+            title: item.querySelector("a")?.textContent.trim() || "",
+            url: item.dataset.link || "",
+            source: item.querySelector("strong")?.textContent.trim() || "",
+            type: item.dataset.type || "article",
+            date: dateMatch ? dateMatch[1] : "",
+            checked: item.querySelector('input[type="checkbox"]')?.checked ?? true
+          };
+        }).filter(l => l.url);
+
+        const res = await fetch("/send-to-agon", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ question, positionA, positionB, theme, resume, sources, links })
+        });
+        if (!res.ok) throw new Error();
+        btn.classList.add("sent");
+        btn.textContent = "✓ Envoyé";
+      } catch {
+        btn.disabled = false;
+        btn.textContent = "→ Agôn";
+      }
+    });
+
+    let currentSort = "score";
+
+    function sortSubjects() {
+      const activeSession = document.querySelector(".session.active-session");
+      if (!activeSession) return;
+      const subjects = [...activeSession.querySelectorAll(":scope > .subject")];
+      if (currentSort !== "saved") {
+        subjects.sort((a, b) => Number(b.dataset[currentSort]) - Number(a.dataset[currentSort]));
+      }
+      const visible = [];
+      subjects.forEach((s, i) => {
+        activeSession.appendChild(s);
+        const isSaved = s.querySelector(".save-btn")?.classList.contains("saved");
+        const hide = (currentSort === "sources" && i >= 5)
+          || (currentSort === "left" && i >= 10)
+          || (currentSort === "saved" && !isSaved);
+        s.style.display = hide ? "none" : "";
+        if (!hide) visible.push(s);
+      });
+      visible.forEach((s, i) => {
+        const badge = s.querySelector(".subject-number");
+        if (badge) badge.textContent = (i + 1) + " / " + visible.length;
+      });
+    }
+
+    document.querySelectorAll(".filter-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        currentSort = btn.dataset.sort;
+        sortSubjects();
+      });
+    });
+
     document.querySelectorAll(".session-tab").forEach((button) => {
       button.addEventListener("click", () => {
         const index = button.dataset.sessionIndex;
@@ -1209,6 +1740,8 @@ function generateHtml(sessions) {
           session.classList.toggle("active-session", isActive);
           session.classList.toggle("hidden-session", !isActive);
         });
+
+        sortSubjects();
 
         window.scrollTo({
           top: 0,
@@ -1226,6 +1759,41 @@ function generateHtml(sessions) {
         });
 
         showOlderButton.classList.add("hidden");
+      });
+    }
+
+    const refreshBtn = document.querySelector(".refresh-btn");
+    if (refreshBtn) {
+      refreshBtn.addEventListener("click", async () => {
+        refreshBtn.disabled = true;
+        refreshBtn.textContent = "Mise à jour en cours…";
+
+        let currentTimestamp = null;
+        try {
+          const res = await fetch("/sessions-mixte.json");
+          const sessions = await res.json();
+          if (sessions.length > 0) currentTimestamp = sessions[0].generatedAt;
+        } catch (e) {}
+
+        try {
+          await fetch("/refresh", { method: "POST" });
+        } catch (e) {}
+
+        const poll = setInterval(async () => {
+          try {
+            const res = await fetch("/sessions-mixte.json?t=" + Date.now());
+            const sessions = await res.json();
+            if (sessions.length > 0 && sessions[0].generatedAt !== currentTimestamp) {
+              clearInterval(poll);
+              window.location.reload();
+            }
+          } catch (e) {}
+        }, 5000);
+
+        setTimeout(() => {
+          clearInterval(poll);
+          window.location.reload();
+        }, 10 * 60 * 1000);
       });
     }
   </script>
@@ -1248,15 +1816,11 @@ async function runWatchSession() {
   console.log("Collecte des vidéos YouTube...");
   const videos = await collectYouTubeVideos();
 
-  const allCollectedContents = [...articles, ...videos];
-  const seenItems = pruneSeenItems(loadSeenItems());
-  const contents = filterOnlyNewContents(allCollectedContents, seenItems);
-  saveSeenItems(seenItems);
+  const contents = [...articles, ...videos];
 
   console.log(`${articles.length} article(s) récupéré(s) dans les flux.`);
   console.log(`${videos.length} vidéo(s) récupérée(s) dans les flux.`);
-  console.log(`${allCollectedContents.length} contenu(s) récent(s) au total.`);
-  console.log(`${contents.length} nouveau(x) contenu(s) jamais vu(s).`);
+  console.log(`${contents.length} contenu(s) récent(s) au total.`);
 
   console.log("Regroupement des nouveaux sujets mixtes...");
   const groups = groupContentsBySubject(contents);
@@ -1267,7 +1831,24 @@ async function runWatchSession() {
 
   console.log(`${subjects.length} sujet(s) repris par plusieurs sources.`);
 
-  const analyzedSubjects = await analyzeSubjectsWithAI(subjects);
+  let analyzedSubjects;
+
+  if (openai) {
+    analyzedSubjects = await analyzeScoresWithAI(subjects);
+  } else {
+    analyzedSubjects = subjects.map(subject => {
+      const fb = fallbackAiAnalysis(subject);
+      return {
+        ...subject,
+        debateScore: fb.debateScore,
+        controversyLevel: fb.controversyLevel,
+        leftScore: fb.leftScore,
+        scoreAnalyzed: false,
+        ai: null,
+        aiAnalyzed: false
+      };
+    });
+  }
 
   const session = {
     generatedAt: startedAt.toISOString(),
@@ -1275,8 +1856,6 @@ async function runWatchSession() {
     articleCount: articles.length,
     youtubeCount: videos.length,
     contentCount: contents.length,
-    collectedContentCount: allCollectedContents.length,
-    newContentCount: contents.length,
     groupCount: groups.length,
     subjectCount: analyzedSubjects.length,
     aiEnabled: Boolean(openai),
@@ -1297,19 +1876,70 @@ async function runWatchSession() {
   console.log(`Fichier généré : ${OUTPUT_HTML}`);
   console.log(`Historique généré : ${HISTORY_FILE}`);
   console.log(`Analyse IA : ${openai ? "activée" : "désactivée, clé API absente"}`);
-  console.log(`Prochaine mise à jour mixte dans ${UPDATE_INTERVAL_MINUTES} minutes.`);
 }
 
-async function main() {
-  await runWatchSession();
+let isRunning = false;
 
-  setInterval(async () => {
-    try {
-      await runWatchSession();
-    } catch (error) {
-      console.error("Erreur pendant la mise à jour automatique mixte :", error.message);
+async function main() {
+  isRunning = true;
+  try {
+    await runWatchSession();
+  } finally {
+    isRunning = false;
+  }
+
+  http.createServer((req, res) => {
+    if (req.method === "POST" && req.url === "/refresh") {
+      res.writeHead(200);
+      res.end("OK");
+      if (!isRunning) {
+        isRunning = true;
+        runWatchSession()
+          .catch(err => console.error("Erreur refresh manuel :", err.message))
+          .finally(() => { isRunning = false; });
+      }
+    } else if (req.method === "POST" && req.url === "/analyze") {
+      let body = "";
+      req.on("data", chunk => { body += chunk; });
+      req.on("end", async () => {
+        try {
+          const subject = JSON.parse(body);
+          const ai = await analyzeOneSubjectWithAI(subject);
+          res.writeHead(200, { "Content-Type": "application/json" });
+          res.end(JSON.stringify(ai));
+        } catch (err) {
+          res.writeHead(500, { "Content-Type": "application/json" });
+          res.end(JSON.stringify({ error: err.message }));
+        }
+      });
+    } else if (req.method === "POST" && req.url === "/save") {
+      let body = "";
+      req.on("data", chunk => { body += chunk; });
+      req.on("end", () => {
+        try {
+          const data = JSON.parse(body);
+          const saved = loadSavedSubjects();
+          const idx = saved.findIndex(s => s.subject === data.subject);
+          if (data.action === "unsave" && idx !== -1) {
+            saved.splice(idx, 1);
+          } else if (data.action === "save" && idx === -1) {
+            saved.unshift({ ...data, savedAt: new Date().toISOString() });
+          }
+          fs.writeFileSync(SAVED_FILE, JSON.stringify(saved, null, 2), "utf8");
+          res.writeHead(200, { "Content-Type": "application/json" });
+          res.end(JSON.stringify({ ok: true }));
+        } catch (err) {
+          res.writeHead(500, { "Content-Type": "application/json" });
+          res.end(JSON.stringify({ error: err.message }));
+        }
+      });
+    } else {
+      res.writeHead(404);
+      res.end();
     }
-  }, UPDATE_INTERVAL_MINUTES * 60 * 1000);
+  }).listen(3002, "127.0.0.1", () => {
+    console.log("Déclenchement interne actif sur le port 3002.");
+  });
 }
 
 main();
