@@ -894,17 +894,37 @@ function generateHtml(sessions) {
 
     .nav {
       margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
     }
 
     .nav a {
       display: inline-block;
-      margin-right: 10px;
       padding: 8px 12px;
       background: white;
       border: 1px solid #ddd;
       border-radius: 999px;
       text-decoration: none;
       color: #111;
+    }
+
+    .nav-refresh-btn {
+      margin-left: auto;
+      background: #111;
+      color: white;
+      border: none;
+      border-radius: 999px;
+      padding: 8px 14px;
+      font: inherit;
+      font-size: 0.9rem;
+      cursor: pointer;
+      display: none;
+    }
+
+    @media (max-width: 600px) {
+      .nav-refresh-btn { display: inline-block; }
     }
 
     .status {
@@ -1471,6 +1491,7 @@ function generateHtml(sessions) {
     <a href="/youtube">YouTube seul</a>
     <a href="/mixte">Veille mixte</a>
     <a href="/admin">⚙ Admin</a>
+    <button class="nav-refresh-btn" onclick="startRefresh()">↻ Actualiser</button>
   </div>
 
   <p class="intro">
