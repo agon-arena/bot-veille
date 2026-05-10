@@ -14,7 +14,7 @@ const HOURS_BACK = 168;
 const SIMILARITY_THRESHOLD = 0.52;
 const MIN_SHARED_KEYWORDS = 2;
 const MIN_DISTINCT_CHANNELS = 2;
-const UPDATE_INTERVAL_MINUTES = 30;
+const UPDATE_INTERVAL_MINUTES = 720;
 const MAX_SESSIONS_TO_KEEP = 20;
 
 function cleanText(text) {
@@ -513,6 +513,14 @@ function generateHtml(sessions) {
   </style>
 </head>
 <body>
+  <nav style="margin-bottom:20px;">
+    <a href="/" style="display:inline-block;margin-right:10px;padding:8px 12px;background:white;border:1px solid #ddd;border-radius:999px;text-decoration:none;color:#111;font-size:0.9rem;">Presse seule</a>
+    <a href="/youtube" style="display:inline-block;margin-right:10px;padding:8px 12px;background:white;border:1px solid #ddd;border-radius:999px;text-decoration:none;color:#111;font-size:0.9rem;">YouTube seul</a>
+    <a href="/mixte" style="display:inline-block;margin-right:10px;padding:8px 12px;background:white;border:1px solid #ddd;border-radius:999px;text-decoration:none;color:#111;font-size:0.9rem;">Veille mixte</a>
+    <a href="/mixte#saved" style="display:inline-block;margin-right:10px;padding:8px 12px;background:white;border:1px solid #ddd;border-radius:999px;text-decoration:none;color:#111;font-size:0.9rem;">Sujets enregistrés</a>
+    <a href="/admin" style="display:inline-block;margin-right:10px;padding:8px 12px;background:#111;border:1px solid #111;border-radius:999px;text-decoration:none;color:white;font-size:0.9rem;">⚙ Admin</a>
+  </nav>
+
   <h1>Veille YouTube</h1>
 
   <p class="intro">
@@ -524,9 +532,7 @@ function generateHtml(sessions) {
     Dernière génération du fichier :
     <strong>${escapeHtml(generatedAt)}</strong>
     <br>
-    Mise à jour automatique toutes les
-    <strong>${UPDATE_INTERVAL_MINUTES} minutes</strong>,
-    tant que le service Render reste actif.
+    Mise à jour manuelle uniquement via le bouton.
   </div>
 
   ${
@@ -583,19 +589,10 @@ async function runWatchSession() {
 
   console.log(`Fichier généré : ${OUTPUT_HTML}`);
   console.log(`Historique généré : ${HISTORY_FILE}`);
-  console.log(`Prochaine mise à jour YouTube dans ${UPDATE_INTERVAL_MINUTES} minutes.`);
 }
 
 async function main() {
   await runWatchSession();
-
-  setInterval(async () => {
-    try {
-      await runWatchSession();
-    } catch (error) {
-      console.error("Erreur pendant la mise à jour automatique YouTube :", error.message);
-    }
-  }, UPDATE_INTERVAL_MINUTES * 60 * 1000);
 }
 
 main();
