@@ -772,18 +772,18 @@ app.post("/api/youtube-chaines", (req, res) => {
   }
 });
 
-const AGON_PENDING_FILE = path.join(__dirname, "../SUPABASE copie 3/data/veille-pending.json");
+const AGON_URL = (process.env.AGON_URL || "http://localhost:3001").trim();
 
-app.post("/send-to-agon", (req, res) => {
+app.post("/send-to-agon", async (req, res) => {
   try {
     const { question, positionA, positionB, theme, resume, sources, links } = req.body;
     if (!question) return res.status(400).json({ ok: false, error: "question manquante" });
-    let pending = [];
-    if (fs.existsSync(AGON_PENDING_FILE)) {
-      try { pending = JSON.parse(fs.readFileSync(AGON_PENDING_FILE, "utf8")); } catch {}
-    }
-    pending.unshift({ id: Date.now(), question, positionA, positionB, theme, resume, sources, links: links || [], addedAt: new Date().toISOString() });
-    fs.writeFileSync(AGON_PENDING_FILE, JSON.stringify(pending, null, 2), "utf8");
+    const r = await fetch(`${AGON_URL}/api/veille/receive`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ question, positionA, positionB, theme, resume, sources, links: links || [] })
+    });
+    if (!r.ok) throw new Error(`Agôn a répondu ${r.status}`);
     res.json({ ok: true });
   } catch (err) {
     res.status(500).json({ ok: false, error: err.message });
