@@ -6,6 +6,62 @@ const app = express();
 app.use(express.json());
 
 const PORT = process.env.PORT || 3000;
+const MIXTE_PASSWORD = process.env.MIXTE_PASSWORD || "";
+
+function getMixteCookie(req) {
+  const raw = req.headers.cookie || "";
+  const match = raw.match(/(?:^|;\s*)mixte_auth=([^;]+)/);
+  return match ? match[1] : "";
+}
+
+function requireMixteAuth(req, res, next) {
+  if (!MIXTE_PASSWORD) return next();
+  if (getMixteCookie(req) === MIXTE_PASSWORD) return next();
+  if (req.query.token === MIXTE_PASSWORD) {
+    res.setHeader("Set-Cookie", `mixte_auth=${MIXTE_PASSWORD}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${60 * 60 * 24 * 30}`);
+    const clean = req.path;
+    return res.redirect(clean);
+  }
+  res.status(401).send(`<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Accès restreint — Veille mixte</title>
+  <style>
+    body { font-family: system-ui, sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; background: #f7f7f7; }
+    .box { background: white; border: 1px solid #ddd; border-radius: 14px; padding: 36px 40px; text-align: center; max-width: 360px; width: 100%; }
+    h2 { margin: 0 0 8px; }
+    p { color: #666; font-size: 0.9rem; margin: 0 0 24px; }
+    input { width: 100%; padding: 10px 14px; border: 1px solid #ddd; border-radius: 8px; font: inherit; font-size: 0.95rem; box-sizing: border-box; margin-bottom: 12px; }
+    button { width: 100%; padding: 11px; background: #111; color: white; border: none; border-radius: 8px; font: inherit; font-weight: 700; cursor: pointer; }
+    .err { color: #c0392b; font-size: 0.85rem; margin-top: 10px; }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h2>Veille mixte</h2>
+    <p>Accès réservé</p>
+    <form method="POST" action="/mixte-login">
+      <input type="password" name="password" placeholder="Mot de passe" autofocus>
+      <input type="hidden" name="redirect" value="${req.originalUrl}">
+      <button type="submit">Accéder</button>
+      ${req.query.err ? '<p class="err">Mot de passe incorrect.</p>' : ''}
+    </form>
+  </div>
+</body>
+</html>`);
+}
+
+app.use(express.urlencoded({ extended: false }));
+
+app.post("/mixte-login", (req, res) => {
+  const { password, redirect } = req.body;
+  if (password === MIXTE_PASSWORD) {
+    res.setHeader("Set-Cookie", `mixte_auth=${MIXTE_PASSWORD}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${60 * 60 * 24 * 30}`);
+    return res.redirect(redirect || "/mixte");
+  }
+  res.redirect("/mixte?err=1");
+});
 
 const VEILLE_MIXTE_HTML = path.join(__dirname, "veille-mixte.html");
 const VEILLE_HTML = path.join(__dirname, "veille.html");
@@ -43,7 +99,7 @@ app.get("/youtube", (req, res) => {
   res.sendFile(VEILLE_YOUTUBE_HTML);
 });
 
-app.get("/mixte", (req, res) => {
+app.get("/mixte", requireMixteAuth, (req, res) => {
   if (!fs.existsSync(VEILLE_MIXTE_HTML)) {
     return sendMissingPage(res, "Veille mixte", "La veille mixte n'a pas encore été générée.");
   }
@@ -60,7 +116,7 @@ app.get("/veille-mixte.json", (req, res) => {
   res.sendFile(filePath);
 });
 
-app.post("/refresh", async (req, res) => {
+app.post("/refresh", requireMixteAuth, async (req, res) => {
   try {
     await fetch("http://127.0.0.1:3002/refresh", { method: "POST" });
     res.json({ ok: true });
@@ -69,7 +125,7 @@ app.post("/refresh", async (req, res) => {
   }
 });
 
-app.post("/save", async (req, res) => {
+app.post("/save", requireMixteAuth, async (req, res) => {
   try {
     const response = await fetch("http://127.0.0.1:3002/save", {
       method: "POST",
@@ -83,7 +139,7 @@ app.post("/save", async (req, res) => {
   }
 });
 
-app.post("/analyze", async (req, res) => {
+app.post("/analyze", requireMixteAuth, async (req, res) => {
   try {
     const response = await fetch("http://127.0.0.1:3002/analyze", {
       method: "POST",
@@ -97,7 +153,7 @@ app.post("/analyze", async (req, res) => {
   }
 });
 
-app.get("/sessions-mixte.json", (req, res) => {
+app.get("/sessions-mixte.json", requireMixteAuth, (req, res) => {
   const filePath = path.join(__dirname, "sessions-mixte.json");
 
   if (!fs.existsSync(filePath)) {
@@ -107,7 +163,7 @@ app.get("/sessions-mixte.json", (req, res) => {
   res.sendFile(filePath);
 });
 
-app.get("/saved", (req, res) => {
+app.get("/saved", requireMixteAuth, (req, res) => {
   const savedFile = path.join(__dirname, "saved-subjects.json");
   let saved = [];
   if (fs.existsSync(savedFile)) {
@@ -774,7 +830,7 @@ app.post("/api/youtube-chaines", (req, res) => {
 
 const AGON_URL = (process.env.AGON_URL || "http://localhost:3001").trim();
 
-app.post("/send-to-agon", async (req, res) => {
+app.post("/send-to-agon", requireMixteAuth, async (req, res) => {
   try {
     const { question, positionA, positionB, theme, resume, sources, links } = req.body;
     if (!question) return res.status(400).json({ ok: false, error: "question manquante" });
