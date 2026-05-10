@@ -415,8 +415,8 @@ Tu dois répondre uniquement en JSON valide avec ces champs :
   "debateQuestion": "question de débat en MAX 90 CARACTÈRES, formulée avec une sensibilité de gauche progressiste : elle doit partir du scandale ou de l'injustice perçue, pas mettre les deux camps sur un pied d'égalité. Évite les formulations neutres type 'Faut-il...' ou 'Doit-on...'. Préfère des formulations qui présupposent un angle moral, mémoriel, social ou écologique.",
   "resume": "si debateScore >= 7 : résumé factuel de l'actualité en 2 ou 3 phrases (ce qui s'est passé, le contexte, les acteurs). Sinon : chaîne vide",
   "agonTheme": "une thématique Agôn exacte",
-  "positionA": "position favorable en MAX 90 CARACTÈRES si debateScore >= 7, sinon chaîne vide.",
-  "positionB": "position opposée en MAX 90 CARACTÈRES si debateScore >= 7, sinon chaîne vide.",
+  "positionA": "prise de position tranchée, courte (MAX 60 CARACTÈRES), formulée comme un slogan ou une conviction immédiatement compréhensible. Si debateScore < 7, chaîne vide.",
+  "positionB": "prise de position opposée, même format : courte (MAX 60 CARACTÈRES), percutante, compréhensible sans contexte. Si debateScore < 7, chaîne vide.",
   "leftScore": nombre entier de 0 à 10 indiquant l'intérêt du sujet pour un public de gauche progressiste
 }
 
@@ -440,11 +440,11 @@ Ne crée jamais une autre thématique.
 
 Pour les champs "positionA" et "positionB" :
 - si debateScore est inférieur à 7, renvoie "" pour les deux champs ;
-- si debateScore est supérieur ou égal à 7, propose deux positions opposées, claires, courtes (MAX 90 CARACTÈRES CHACUNE) et directement utilisables dans une arène à positions ;
-- positionA doit défendre une réponse affirmative ou favorable à la question ;
-- positionB doit défendre une réponse négative ou opposée à la question ;
-- les deux positions doivent être clairement opposées et directement débattables dans une arène ;
-- IMPORTANT : debateQuestion, positionA et positionB doivent chacun faire strictement moins de 90 caractères ;
+- si debateScore est supérieur ou égal à 7, propose deux positions opposées formulées comme des slogans ou convictions : courtes (MAX 60 CARACTÈRES CHACUNE), percutantes, immédiatement compréhensibles sans avoir lu l'article ;
+- positionA défend une réponse affirmative ou favorable à la question ;
+- positionB défend une réponse négative ou opposée ;
+- évite les formulations longues, abstraites ou trop nuancées : une position doit pouvoir être lue en 2 secondes et comprise d'emblée ;
+- IMPORTANT : positionA et positionB doivent chacune faire strictement moins de 60 caractères ;
 `;
 
   try {
