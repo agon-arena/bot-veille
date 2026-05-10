@@ -942,6 +942,23 @@ function generateHtml(sessions) {
       cursor: default;
     }
 
+    .ptr-indicator {
+      position: fixed; top: -60px; left: 50%; transform: translateX(-50%);
+      background: #333; color: white; padding: 10px 20px; border-radius: 999px;
+      font-size: 0.85rem; transition: top 0.25s ease; z-index: 200; white-space: nowrap;
+      pointer-events: none;
+    }
+    .ptr-indicator.visible { top: 16px; }
+
+    .update-banner {
+      position: fixed; top: 16px; left: 50%; transform: translateX(-50%);
+      background: #2563eb; color: white; padding: 13px 26px; border-radius: 999px;
+      font-size: 0.9rem; font-weight: 700; cursor: pointer; z-index: 200;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.22); display: none; white-space: nowrap;
+      border: none; font-family: inherit;
+    }
+    .update-banner:hover { background: #1d4ed8; }
+
     .filter-bar {
       display: flex;
       gap: 10px;
@@ -1470,6 +1487,8 @@ function generateHtml(sessions) {
       YouTube : dernières <strong>${HOURS_BACK_YOUTUBE} h</strong>
     </div>
     <button class="refresh-btn" type="button">Mettre à jour</button>
+    <div class="ptr-indicator" id="ptr-indicator"></div>
+    <button class="update-banner" id="update-banner" onclick="window.location.reload()">Nouvelle session disponible — Charger</button>
   </div>
 
   <div class="filter-bar">
@@ -1762,40 +1781,92 @@ function generateHtml(sessions) {
       });
     }
 
-    const refreshBtn = document.querySelector(".refresh-btn");
-    if (refreshBtn) {
-      refreshBtn.addEventListener("click", async () => {
-        refreshBtn.disabled = true;
-        refreshBtn.textContent = "Mise à jour en cours…";
+    var ptrIsRefreshing = false;
+    var ptrBaseTimestamp = null;
 
-        let currentTimestamp = null;
-        try {
-          const res = await fetch("/sessions-mixte.json");
-          const sessions = await res.json();
-          if (sessions.length > 0) currentTimestamp = sessions[0].generatedAt;
-        } catch (e) {}
-
-        try {
-          await fetch("/refresh", { method: "POST" });
-        } catch (e) {}
-
-        const poll = setInterval(async () => {
-          try {
-            const res = await fetch("/sessions-mixte.json?t=" + Date.now());
-            const sessions = await res.json();
-            if (sessions.length > 0 && sessions[0].generatedAt !== currentTimestamp) {
-              clearInterval(poll);
-              window.location.reload();
-            }
-          } catch (e) {}
-        }, 5000);
-
-        setTimeout(() => {
-          clearInterval(poll);
-          window.location.reload();
-        }, 10 * 60 * 1000);
-      });
+    function showUpdateBanner() {
+      var banner = document.getElementById("update-banner");
+      if (banner) banner.style.display = "block";
     }
+
+    function setPtrIndicator(text) {
+      var el = document.getElementById("ptr-indicator");
+      if (!el) return;
+      if (text) { el.textContent = text; el.classList.add("visible"); }
+      else { el.classList.remove("visible"); }
+    }
+
+    async function startRefresh() {
+      if (ptrIsRefreshing) return;
+      ptrIsRefreshing = true;
+
+      var refreshBtn = document.querySelector(".refresh-btn");
+      if (refreshBtn) { refreshBtn.disabled = true; refreshBtn.textContent = "En cours…"; }
+      setPtrIndicator("↻ Génération en cours…");
+
+      try {
+        var r0 = await fetch("/sessions-mixte.json");
+        var s0 = await r0.json();
+        if (s0.length > 0) ptrBaseTimestamp = s0[0].generatedAt;
+      } catch (e) {}
+
+      try { await fetch("/refresh", { method: "POST" }); } catch (e) {}
+
+      var poll = setInterval(async function() {
+        try {
+          var r = await fetch("/sessions-mixte.json?t=" + Date.now());
+          var s = await r.json();
+          if (s.length > 0 && s[0].generatedAt !== ptrBaseTimestamp) {
+            clearInterval(poll);
+            ptrIsRefreshing = false;
+            setPtrIndicator(null);
+            if (refreshBtn) { refreshBtn.disabled = false; refreshBtn.textContent = "Mettre à jour"; }
+            showUpdateBanner();
+          }
+        } catch (e) {}
+      }, 5000);
+
+      setTimeout(function() {
+        clearInterval(poll);
+        ptrIsRefreshing = false;
+        setPtrIndicator(null);
+        if (refreshBtn) { refreshBtn.disabled = false; refreshBtn.textContent = "Mettre à jour"; }
+        showUpdateBanner();
+      }, 10 * 60 * 1000);
+    }
+
+    var refreshBtn = document.querySelector(".refresh-btn");
+    if (refreshBtn) {
+      refreshBtn.addEventListener("click", function() { startRefresh(); });
+    }
+
+    var ptrTouchStartY = 0;
+    var ptrPullDist = 0;
+    var PTR_THRESHOLD = 80;
+
+    document.addEventListener("touchstart", function(e) {
+      ptrTouchStartY = window.scrollY === 0 ? e.touches[0].clientY : 0;
+      ptrPullDist = 0;
+    }, { passive: true });
+
+    document.addEventListener("touchmove", function(e) {
+      if (ptrTouchStartY === 0 || ptrIsRefreshing) return;
+      ptrPullDist = e.touches[0].clientY - ptrTouchStartY;
+      if (ptrPullDist > 0 && window.scrollY === 0) {
+        setPtrIndicator(ptrPullDist > PTR_THRESHOLD ? "↑ Relâchez pour actualiser" : "↓ Tirez pour actualiser");
+      }
+    }, { passive: true });
+
+    document.addEventListener("touchend", function() {
+      if (ptrTouchStartY === 0) return;
+      if (ptrPullDist > PTR_THRESHOLD && window.scrollY === 0 && !ptrIsRefreshing) {
+        startRefresh();
+      } else {
+        setPtrIndicator(null);
+      }
+      ptrTouchStartY = 0;
+      ptrPullDist = 0;
+    }, { passive: true });
   </script>
 </body>
 </html>
