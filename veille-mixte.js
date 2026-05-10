@@ -1668,7 +1668,7 @@ function generateHtml(sessions) {
         const sources = btn.dataset.sources;
         const links = [...subjectEl.querySelectorAll(".content-item[data-link]")].map(item => {
           const dateText = item.querySelector("small")?.textContent || "";
-          const dateMatch = dateText.match(/(\d{2}\/\d{2}\/\d{4})/);
+          const dateMatch = dateText.match(/(\\d{2}\\/\\d{2}\\/\\d{4})/);
           return {
             title: item.querySelector("a")?.textContent.trim() || "",
             url: item.dataset.link || "",
