@@ -15,3 +15,5 @@ sessions-mixte.json
 *.save
 *.before-history-button.js
 *.before-*.js
+
+.env

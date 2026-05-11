@@ -1,0 +1,455 @@
+[
+  {
+    "action": "save",
+    "subject": "Test sujet",
+    "debateScore": 8,
+    "debateQuestion": "Question test",
+    "resume": "",
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "",
+    "contents": [],
+    "sessionLabel": "Test",
+    "savedAt": "2026-05-10T15:23:50.172Z"
+  },
+  {
+    "action": "save",
+    "subject": "Bally Bagayoko : \"Il fait appel à une guerre civile\" analyse Eric Revel",
+    "debateScore": 8,
+    "debateQuestion": "",
+    "resume": "",
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "Europe 1, Frontières",
+    "contents": [
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/watch?v=NrHYSS7ZOD0",
+        "source": "Europe 1",
+        "title": "",
+        "thumbnail": "https://i.ytimg.com/vi/NrHYSS7ZOD0/hqdefault.jpg"
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/watch?v=wrpkAFKTcO8",
+        "source": "Europe 1",
+        "title": "",
+        "thumbnail": "https://i.ytimg.com/vi/wrpkAFKTcO8/hqdefault.jpg"
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/shorts/oda7rudMmOw",
+        "source": "Frontières",
+        "title": "LES JOURNALISTES ONT PEUR D'ENQUÊTER SUR BALLY BAGAYOKO À CAUSE DES INTIMIDATIONS DE LFI",
+        "thumbnail": ""
+      }
+    ],
+    "sessionLabel": "10/05/2026 à 16:13:21",
+    "savedAt": "2026-05-10T13:30:17.878Z"
+  },
+  {
+    "action": "save",
+    "subject": "Accusations de violences sexuelles visant Patrick Bruel : un collectif féministe manifeste dans le Vaucluse",
+    "debateScore": 8,
+    "debateQuestion": "Comment briser l'impunité des violences sexuelles dans le milieu du spectacle ?",
+    "resume": "Des accusations de violences sexuelles visent Patrick Bruel, suscitant une manifestation d'un collectif féministe dans le Vaucluse. Ce mouvement interpelle sur la protection des victimes et la responsabilité des figures publiques.",
+    "agonTheme": "Société, éducation et justice",
+    "positionA": "Soutenir les victimes et renforcer les sanctions contre les auteurs dans le spectacle.",
+    "positionB": "Respecter la présomption d'innocence avant toute condamnation publique.",
+    "sources": "Franceinfo, BFMTV",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.bfmtv.com/marseille/vaucluse/violeur-on-te-voit-des-dizaines-de-personnes-manifestent-devant-l-hotel-de-patrick-bruel-dans-le-vaucluse_AN-202605100199.html",
+        "source": "BFMTV",
+        "title": "\"Violeur, on te voit\": des dizaines de personnes manifestent devant l'hôtel de Patrick Bruel dans le Vaucluse",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.franceinfo.fr/societe/harcelement-sexuel/accusations-de-violences-sexuelles-visant-patrick-bruel-un-collectif-feministe-manifeste-dans-le-vaucluse_7995245.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "title": "Accusations de violences sexuelles visant Patrick Bruel : un collectif féministe manifeste dans le Vaucluse",
+        "thumbnail": ""
+      }
+    ],
+    "sessionLabel": "10/05/2026 à 15:47:26",
+    "savedAt": "2026-05-10T12:01:12.742Z"
+  },
+  {
+    "action": "save",
+    "subject": "Interdiction de la manifestation du Comité du 9-Mai à Paris : 97 militants d'ultradroite et d'ultragauche interpellés, 46 placés en garde à vue",
+    "debateScore": 8,
+    "debateQuestion": "Comment tolérer l'interdiction d'une manifestation face à la répression des militants antifascistes ?",
+    "resume": "La manifestation du Comité du 9-Mai à Paris a été interdite. 97 militants d'ultradroite et d'ultragauche ont été interpellés, dont 46 placés en garde à vue. Le Comité appelle malgré tout à maintenir la réunion.",
+    "agonTheme": "Société, éducation et justice",
+    "positionA": "La répression des militants antifascistes est une atteinte aux libertés publiques.",
+    "positionB": "Interdire ces manifestations extrémistes est nécessaire pour préserver l'ordre public.",
+    "sources": "Franceinfo, Libération, L'Obs",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.liberation.fr/politique/manifestation-interdite-du-c9m-a-paris-39-gardes-a-vue-chez-les-neofascistes-comme-les-antifascistes-20260509_HPELJZXTZFBPJPGZ7RIGXQNE7Y/",
+        "source": "Libération",
+        "title": "Manifestation interdite du «C9M» à Paris : 47 gardes à vue chez les néofascistes comme les antifascistes",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.nouvelobs.com/societe/20260509.OBS114795/extreme-droite-malgre-l-interdiction-de-sa-manifestation-a-paris-le-comite-du-9-mai-appelle-a-sa-reunion.html",
+        "source": "L'Obs",
+        "title": "Extrême droite : malgré l’interdiction de sa manifestation à Paris, le Comité du 9-Mai appelle à sa réunion",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.franceinfo.fr/faits-divers/interdiction-des-manifestations-d-ultradroite-et-d-antifascistes-a-paris-neuf-personnes-placees-en-garde-a-vue_7993634.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "title": "Interdiction de la manifestation du Comité du 9-Mai à Paris : 97 militants d'ultradroite et d'ultragauche interpellés, 46 placés en garde à vue",
+        "thumbnail": ""
+      }
+    ],
+    "sessionLabel": "10/05/2026 à 15:47:26",
+    "savedAt": "2026-05-10T11:52:37.561Z"
+  },
+  {
+    "action": "save",
+    "subject": "Vladimir Poutine affirme que la guerre en Ukraine \"touche à sa fin\", et fustige le soutien des pays occidentaux à Kiev",
+    "debateScore": 8,
+    "debateQuestion": "Comment tolérer que la guerre en Ukraine soit prolongée par le soutien occidental ?",
+    "resume": "Vladimir Poutine affirme que la guerre en Ukraine \"touche à sa fin\" tout en critiquant le soutien occidental à Kiev. Ce conflit oppose la Russie à l'Ukraine depuis 2022, avec un fort engagement des pays occidentaux en faveur de l'Ukraine. La déclaration russe soulève des interrogations sur l'avenir du conflit et les enjeux géopolitiques.",
+    "agonTheme": "Politique, économie et relations internationales",
+    "positionA": "Le soutien occidental prolonge inutilement un conflit meurtrier et doit cesser.",
+    "positionB": "Soutenir l'Ukraine est essentiel pour défendre la démocratie face à l'agression russe.",
+    "sources": "Franceinfo, BFMTV, CNews, RFI, Euronews FR, 20 Minutes",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.rfi.fr/fr/europe/20260510-russie-la-guerre-ukraine-poutine-touche-fin-poutine-role-europeens-cadre-bounat-decryptage",
+        "source": "RFI",
+        "title": "Russie: la guerre en Ukraine «touche à sa fin», selon Poutine, mais dans quel cadre?",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.bfmtv.com/international/asie/russie/video-guerre-en-ukraine-vladimir-poutine-pense-que-le-conflit-touche-a-sa-fin_VN-202605100195.html",
+        "source": "BFMTV",
+        "title": "Guerre en Ukraine: Vladimir Poutine pense que le conflit \"touche à sa fin\"",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.franceinfo.fr/monde/europe/manifestations-en-ukraine/vladimir-poutine-affirme-que-la-guerre-en-ukraine-touche-a-sa-fin-et-fustige-le-soutien-des-pays-occidentaux-a-kiev_7995170.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "title": "Vladimir Poutine affirme que la guerre en Ukraine \"touche à sa fin\", et fustige le soutien des pays occidentaux à Kiev",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "http://fr.euronews.com/2026/05/10/poutine-affirme-que-la-guerre-en-ukraine-pourrait-toucher-a-sa-fin",
+        "source": "Euronews FR",
+        "title": "Poutine affirme que la guerre en Ukraine pourrait toucher à sa fin",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.20minutes.fr/monde/ukraine/4222681-20260509-guerre-ukraine-vladimir-poutine-croit-cause-juste?at_medium=display&at_campaign=149",
+        "source": "20 Minutes",
+        "title": "Guerre en Ukraine : Vladimir Poutine croit que sa « cause est juste »",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.cnews.fr/monde/2026-05-09/guerre-en-ukraine-vladimir-poutine-assure-que-le-conflit-touche-sa-fin-1859538",
+        "source": "CNews",
+        "title": "Guerre en Ukraine : Vladimir Poutine assure que le conflit «touche à sa fin»",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.cnews.fr/monde/2026-05-09/pour-vladimir-poutine-la-guerre-en-ukraine-est-une-cause-juste-1859481",
+        "source": "CNews",
+        "title": "Pour Vladimir Poutine, la guerre en Ukraine est une «cause juste»",
+        "thumbnail": ""
+      }
+    ],
+    "sessionLabel": "10/05/2026 à 15:23:38",
+    "savedAt": "2026-05-10T11:38:12.358Z"
+  },
+  {
+    "action": "save",
+    "subject": "Mélenchon : un « handicap » pour faire gagner la gauche en 2027 selon un sondage",
+    "debateScore": 8,
+    "debateQuestion": "",
+    "resume": "",
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "Valeurs actuelles, CNews, 20 Minutes, HuffPost France, LCI",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.huffingtonpost.fr/politique/article/a-un-an-de-la-presidentielle-ce-sondage-dit-tout-le-chemin-a-parcourir-pour-jean-luc-melenchon_263563.html",
+        "source": "HuffPost France",
+        "title": "Ce sondage sur Jean-Luc Mélenchon pour la présidentielle 2027 dit tout le chemin qu’il a à parcourir",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.20minutes.fr/politique/4222700-20260510-presidentielle-2027-agressivite-polemique-melenchon-percu-comme-handicap-gauche?at_medium=display&at_campaign=149",
+        "source": "20 Minutes",
+        "title": "Présidentielle 2027 : « Agressivité », « polémique »… Mélenchon perçu comme un « handicap » pour la gauche",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.valeursactuelles.com/politique/melenchon-un-handicap-pour-faire-gagner-la-gauche-en-2027-selon-un-sondage",
+        "source": "Valeurs actuelles",
+        "title": "Mélenchon : un « handicap » pour faire gagner la gauche en 2027 selon un sondage",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.cnews.fr/france/2026-05-10/presidentielle-2027-70-des-francais-voient-jean-luc-melenchon-comme-un-handicap",
+        "source": "CNews",
+        "title": "Présidentielle 2027 : 70% des Français voient Jean-Luc Mélenchon comme «un handicap» pour la gauche, selon un sondage",
+        "thumbnail": ""
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/shorts/Glr14R5mgPM",
+        "source": "LCI",
+        "title": "\"Moi Président, la France ne sera plus membre de l'OTAN\" : Jean-Luc Mélenchon｜LCI",
+        "thumbnail": ""
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/watch?v=748yNproIHE",
+        "source": "LCI",
+        "title": "",
+        "thumbnail": "https://i.ytimg.com/vi/748yNproIHE/hqdefault.jpg"
+      }
+    ],
+    "sessionLabel": "10/05/2026 à 15:23:38",
+    "savedAt": "2026-05-10T11:28:04.275Z"
+  },
+  {
+    "action": "save",
+    "subject": "Cher : la nouvelle municipalité d'extrême droite de Vierzon annule la commémoration de l'abolition de l'esclavage du 10 mai",
+    "debateScore": 9,
+    "debateQuestion": "",
+    "resume": "",
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "Franceinfo, Libération",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.liberation.fr/politique/a-vierzon-la-nouvelle-municipalite-dextreme-droite-annule-la-ceremonie-en-memoire-de-lesclavage-20260510_QPIYNLQRKFANBMNEZB45WDOVVM/",
+        "source": "Libération",
+        "title": "A Vierzon, la nouvelle municipalité d’extrême droite annule la cérémonie en mémoire de l’esclavage",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.franceinfo.fr/politique/cher-la-nouvelle-municipalite-d-extreme-droite-de-vierzon-annule-la-commemoration-de-l-abolition-de-l-esclavage-du-10-mai_7995122.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "title": "Cher : la nouvelle municipalité d'extrême droite de Vierzon annule la commémoration de l'abolition de l'esclavage du 10 mai",
+        "thumbnail": ""
+      }
+    ],
+    "sessionLabel": "10/05/2026 à 15:03:57",
+    "savedAt": "2026-05-10T11:18:09.873Z"
+  },
+  {
+    "action": "save",
+    "subject": "Le rapport Alloncle sur l’audiovisuel public a «tous les ingrédients d’une mise au pas», critique la patronne de Radio France",
+    "debateScore": 8,
+    "debateQuestion": "",
+    "resume": "",
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "Libération, Blast, Off Investigation, Thinkerview, Boulevard Voltaire",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.liberation.fr/economie/medias/le-rapport-alloncle-sur-laudiovisuel-public-a-tous-les-ingredients-dune-mise-au-pas-critique-la-patronne-de-radio-france-20260510_IT4ZD2LTPFDDFGIXJQNZHE4R74/",
+        "source": "Libération",
+        "title": "Le rapport Alloncle sur l’audiovisuel public a «tous les ingrédients d’une mise au pas», critique la patronne de Radio France",
+        "thumbnail": ""
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/watch?v=kGbgnQUobhk",
+        "source": "Blast",
+        "title": "",
+        "thumbnail": "https://i.ytimg.com/vi/kGbgnQUobhk/hqdefault.jpg"
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/watch?v=UANv1T-zpb4",
+        "source": "Off Investigation",
+        "title": "",
+        "thumbnail": "https://i.ytimg.com/vi/UANv1T-zpb4/hqdefault.jpg"
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/watch?v=95xFL7_nRDk",
+        "source": "Thinkerview",
+        "title": "",
+        "thumbnail": "https://i.ytimg.com/vi/95xFL7_nRDk/hqdefault.jpg"
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/shorts/nSWRgIy2N5A",
+        "source": "Boulevard Voltaire",
+        "title": "Cabale contre le Canon français : le service public s’y met aussi | L’article du jour",
+        "thumbnail": ""
+      }
+    ],
+    "sessionLabel": "10/05/2026 à 14:19:20",
+    "savedAt": "2026-05-10T10:45:45.464Z"
+  },
+  {
+    "action": "save",
+    "subject": "Présidentielle 2027 : « Agressivité », « polémique »… Mélenchon perçu comme un « handicap » pour la gauche",
+    "debateScore": 8,
+    "debateQuestion": "",
+    "resume": "",
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "20 Minutes, HuffPost France, Le Média, LCI, Sud Radio, Frontières",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.huffingtonpost.fr/politique/article/a-un-an-de-la-presidentielle-ce-sondage-dit-tout-le-chemin-a-parcourir-pour-jean-luc-melenchon_263563.html",
+        "source": "HuffPost France",
+        "title": "À un an de la présidentielle, ce sondage dit tout le chemin à parcourir pour Jean-Luc Mélenchon",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.20minutes.fr/politique/4222700-20260510-presidentielle-2027-agressivite-polemique-melenchon-percu-comme-handicap-gauche?at_medium=display&at_campaign=149",
+        "source": "20 Minutes",
+        "title": "Présidentielle 2027 : « Agressivité », « polémique »… Mélenchon perçu comme un « handicap » pour la gauche",
+        "thumbnail": ""
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/watch?v=nlaNalq7D0k",
+        "source": "Le Média",
+        "title": "",
+        "thumbnail": "https://i.ytimg.com/vi/nlaNalq7D0k/hqdefault.jpg"
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/shorts/Glr14R5mgPM",
+        "source": "LCI",
+        "title": "\"Moi Président, la France ne sera plus membre de l'OTAN\" : Jean-Luc Mélenchon｜LCI",
+        "thumbnail": ""
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/watch?v=748yNproIHE",
+        "source": "LCI",
+        "title": "",
+        "thumbnail": "https://i.ytimg.com/vi/748yNproIHE/hqdefault.jpg"
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/watch?v=PCMPQ00lIzc",
+        "source": "Sud Radio",
+        "title": "",
+        "thumbnail": "https://i.ytimg.com/vi/PCMPQ00lIzc/hqdefault.jpg"
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/shorts/4v7LBDgAzFE",
+        "source": "Frontières",
+        "title": "POUR CE MILITANT JEAN-LUC MÉLENCHON N’EST PAS ASSEZ À GAUCHE !",
+        "thumbnail": ""
+      }
+    ],
+    "sessionLabel": "10/05/2026 à 14:19:20",
+    "savedAt": "2026-05-10T10:32:12.959Z"
+  },
+  {
+    "action": "save",
+    "subject": "Une association française porte plainte pour homophobie contre Elon Musk",
+    "debateScore": 8,
+    "debateQuestion": "",
+    "resume": "",
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "20 Minutes, HuffPost France",
+    "savedAt": "2026-05-10T09:46:17.778Z"
+  },
+  {
+    "action": "save",
+    "subject": "RAPPORT ALLONCLE : COMMENT L'AUDIOVISUEL PUBLIC SE SOUMET À L'EXTRÊME DROITE",
+    "debateScore": 8,
+    "debateQuestion": "",
+    "resume": "",
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "Blast, Thinkerview, BFMTV",
+    "savedAt": "2026-05-10T09:45:53.627Z"
+  },
+  {
+    "action": "save",
+    "subject": "Enquête ouverte sur des comportements racistes dans un navire de secours aux migrants en Manche",
+    "debateScore": 8,
+    "debateQuestion": "",
+    "resume": "",
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "Libération, RFI, HuffPost France",
+    "savedAt": "2026-05-10T09:45:50.456Z"
+  },
+  {
+    "action": "save",
+    "subject": "Présidentielle 2027 : Edouard Philippe espère court-circuiter la candidature de Bruno Retailleau",
+    "debateScore": 7,
+    "debateQuestion": "",
+    "resume": "",
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "Le Monde, Libération, Le Figaro, Valeurs actuelles, CNews",
+    "savedAt": "2026-05-10T09:45:30.527Z"
+  },
+  {
+    "action": "save",
+    "subject": "EN DIRECT, hantavirus : l’évacuation des premiers passagers du navire de croisière MV « Hondius » a commencé",
+    "debateScore": 7,
+    "debateQuestion": "Comment l'inaction des autorités face à la gestion sanitaire des navires de croisière révèle-t-elle une mise en danger injustifiable des passagers et des équipages, exacerbant les inégalités d'accès à la santé et la protection collective ?",
+    "resume": "Le navire de croisière MV « Hondius » a dû évacuer ses premiers passagers après la détection d'un cas de hantavirus à bord, soulevant des inquiétudes sanitaires majeures. Cette situation met en lumière les risques liés à la gestion des épidémies sur des navires isolés, ainsi que les responsabilités des autorités sanitaires et des compagnies maritimes. Plusieurs médias français suivent en direct l'évolution de cette crise sanitaire.",
+    "agonTheme": "Santé, corps et bien-être",
+    "positionA": "Il est indispensable que les autorités renforcent immédiatement les protocoles sanitaires et les contrôles sur les navires de croisière pour protéger la santé des passagers et des équipages, en garantissant un accès équitable aux soins et en évitant toute mise en danger par négligence.",
+    "positionB": "Les mesures actuelles sont suffisantes et une réaction excessive pourrait nuire à l'industrie du tourisme et à l'économie sans preuve claire d'une menace sanitaire généralisée, il faut donc éviter la panique et les restrictions disproportionnées.",
+    "sources": "Le Monde, Libération, L'Obs, La Croix, Euronews FR, France 24",
+    "savedAt": "2026-05-10T09:45:13.386Z",
+    "controversyLevel": "fort"
+  },
+  {
+    "action": "save",
+    "subject": "Guerre au Moyen-Orient : l'Iran menace d'une \"lourde riposte\" après l'attaque de deux de ses pétroliers par les Etats-Unis",
+    "debateScore": 8,
+    "debateQuestion": "Comment tolérer que les États-Unis continuent d'imposer leur domination militaire au Moyen-Orient, provoquant des escalades meurtrières et mettant en danger les populations civiles au nom d'intérêts géopolitiques et économiques ?",
+    "resume": "Après l'attaque de deux pétroliers iraniens attribuée aux États-Unis, l'Iran a menacé d'une \"lourde riposte\", exacerbant les tensions déjà vives au Moyen-Orient. Ce nouvel épisode s'inscrit dans un contexte de rivalités géopolitiques intenses entre Washington et Téhéran, avec des risques accrus d'escalade militaire dans une région stratégique pour l'approvisionnement énergétique mondial.",
+    "agonTheme": "Politique, économie et relations internationales",
+    "positionA": "Il est urgent de dénoncer et de stopper l'ingérence militaire américaine au Moyen-Orient qui aggrave les conflits, viole la souveraineté des États et met en péril la vie des populations civiles innocentes.",
+    "positionB": "Les actions militaires américaines sont nécessaires pour contenir les ambitions régionales de l'Iran et protéger la stabilité et les intérêts stratégiques internationaux dans une zone instable.",
+    "sources": "Franceinfo, Le Monde, Libération, L'Obs, Le Figaro, La Croix, BFMTV",
+    "savedAt": "2026-05-10T09:45:05.988Z",
+    "controversyLevel": "fort"
+  }
+]
