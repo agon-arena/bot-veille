@@ -834,14 +834,21 @@ app.post("/send-to-agon", requireMixteAuth, async (req, res) => {
   try {
     const { question, positionA, positionB, theme, resume, sources, links } = req.body;
     if (!question) return res.status(400).json({ ok: false, error: "question manquante" });
+    console.log(`[send-to-agon] Envoi vers ${AGON_URL}/api/veille/receive`);
     const r = await fetch(`${AGON_URL}/api/veille/receive`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ question, positionA, positionB, theme, resume, sources, links: links || [] })
     });
-    if (!r.ok) throw new Error(`Agôn a répondu ${r.status}`);
+    if (!r.ok) {
+      const body = await r.text().catch(() => "");
+      console.error(`[send-to-agon] Erreur ${r.status}: ${body}`);
+      throw new Error(`Agôn a répondu ${r.status}: ${body}`);
+    }
+    console.log("[send-to-agon] Succès");
     res.json({ ok: true });
   } catch (err) {
+    console.error("[send-to-agon] Exception:", err.message);
     res.status(500).json({ ok: false, error: err.message });
   }
 });
