@@ -1,10 +1,14 @@
 require("dotenv").config();
 
+const express = require("express");
 const fs = require("fs");
 const Parser = require("rss-parser");
 const stringSimilarity = require("string-similarity");
 const dayjs = require("dayjs");
 const OpenAI = require("openai");
+
+const apiApp = express();
+apiApp.use(express.json({ limit: "2mb" }));
 
 const parser = new Parser();
 
@@ -15,6 +19,7 @@ const OUTPUT_JSON = "veille-mixte.json";
 const OUTPUT_HTML = "veille-mixte.html";
 const HISTORY_FILE = "sessions-mixte.json";
 const SAVED_FILE = "saved-subjects.json";
+const API_PORT = 3002;
 
 const HOURS_BACK_ARTICLES = 24;
 const HOURS_BACK_YOUTUBE = 168;
@@ -26,6 +31,7 @@ const MIN_DISTINCT_SOURCES = 2;
 const UPDATE_INTERVAL_MINUTES = 720;
 const MAX_SESSIONS_TO_KEEP = 12;
 const MAX_SUBJECTS_TO_ANALYZE_WITH_AI = 25;
+const FEED_TIMEOUT_MS = 15000;
 
 const AGON_THEMES = [
   "Politique, économie et relations internationales",
@@ -40,6 +46,49 @@ const AGON_THEMES = [
 const openai = process.env.OPENAI_API_KEY
   ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
   : null;
+
+function withTimeout(promise, timeoutMs, label) {
+  let timeoutId = null;
+
+  const timeoutPromise = new Promise((_, reject) => {
+    timeoutId = setTimeout(() => {
+      reject(new Error(`${label} a dépassé ${Math.round(timeoutMs / 1000)}s`));
+    }, timeoutMs);
+  });
+
+  return Promise.race([promise, timeoutPromise]).finally(() => {
+    if (timeoutId) clearTimeout(timeoutId);
+  });
+}
+
+async function fetchTextWithTimeout(url, options, label, timeoutMs = FEED_TIMEOUT_MS) {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+
+  try {
+    const response = await fetch(url, {
+      ...options,
+      signal: controller.signal
+    });
+
+    if (!response.ok) {
+      throw new Error(`${label} a répondu ${response.status}`);
+    }
+
+    return await response.text();
+  } catch (error) {
+    if (error && error.name === "AbortError") {
+      throw new Error(`${label} a dépassé ${Math.round(timeoutMs / 1000)}s`);
+    }
+    throw error;
+  } finally {
+    clearTimeout(timeoutId);
+  }
+}
+
+function parseFeedWithTimeout(url, label, timeoutMs = FEED_TIMEOUT_MS) {
+  return withTimeout(parser.parseURL(url), timeoutMs, label);
+}
 
 function cleanText(text) {
   return String(text || "")
@@ -149,6 +198,44 @@ function loadSavedSubjects() {
   }
 }
 
+function saveSavedSubjects(items) {
+  fs.writeFileSync(SAVED_FILE, JSON.stringify(items, null, 2), "utf8");
+}
+
+function upsertSavedSubject(payload) {
+  const saved = loadSavedSubjects();
+  const subject = String(payload?.subject || "").trim();
+  if (!subject) {
+    throw new Error("Sujet manquant");
+  }
+
+  const action = String(payload?.action || "save").trim();
+  const existingIndex = saved.findIndex((item) => item.subject === subject);
+
+  if (action === "unsave") {
+    if (existingIndex !== -1) {
+      saved.splice(existingIndex, 1);
+      saveSavedSubjects(saved);
+    }
+    return { ok: true, saved: false };
+  }
+
+  const nextItem = {
+    ...(existingIndex !== -1 ? saved[existingIndex] : {}),
+    ...payload,
+    subject
+  };
+
+  if (existingIndex !== -1) {
+    saved[existingIndex] = nextItem;
+  } else {
+    saved.unshift(nextItem);
+  }
+
+  saveSavedSubjects(saved);
+  return { ok: true, saved: true };
+}
+
 async function getRssUrlFromYouTubeChannel(channel) {
   if (channel.rss) {
     return channel.rss;
@@ -158,17 +245,11 @@ async function getRssUrlFromYouTubeChannel(channel) {
     throw new Error("Aucun champ rss ou url fourni");
   }
 
-  const response = await fetch(channel.url, {
+  const html = await fetchTextWithTimeout(channel.url, {
     headers: {
       "User-Agent": "Mozilla/5.0"
     }
-  });
-
-  if (!response.ok) {
-    throw new Error(`Impossible d'ouvrir la chaîne YouTube : ${response.status}`);
-  }
-
-  const html = await response.text();
+  }, `Lecture de la chaîne YouTube ${channel.nom || channel.url}`);
 
   const canonicalMatch = html.match(/<link rel="canonical" href="https:\/\/www\.youtube\.com\/channel\/([^"]+)"/);
 
@@ -210,7 +291,7 @@ async function collectArticles(lastSessionCutoff = null) {
     try {
       console.log(`Article — lecture de ${media.nom}...`);
 
-      const feed = await parser.parseURL(media.rss);
+      const feed = await parseFeedWithTimeout(media.rss, `Flux RSS ${media.nom}`);
 
       for (const item of feed.items || []) {
         const date = getItemDate(item);
@@ -255,7 +336,7 @@ async function collectYouTubeVideos(lastSessionCutoff = null) {
       console.log(`YouTube — lecture de ${channel.nom}...`);
 
       const rssUrl = await getRssUrlFromYouTubeChannel(channel);
-      const feed = await parser.parseURL(rssUrl);
+      const feed = await parseFeedWithTimeout(rssUrl, `Flux YouTube ${channel.nom}`);
 
       for (const item of feed.items || []) {
         const date = getItemDate(item);
@@ -386,6 +467,7 @@ function fallbackAiAnalysis(subject, arenaMode = "positions") {
     ? limitText(subject.subject, 100)
     : `Ce sujet mérite-t-il un débat public : ${subject.subject} ?`;
   return {
+    arenaMode,
     debateScore: hasBoth ? 6 : 4,
     controversyLevel: hasBoth ? "moyen" : "faible",
     debateQuestion: fallbackText,
@@ -451,7 +533,7 @@ Tu dois répondre uniquement en JSON valide avec ces champs :
   "debateScore": nombre entier de 0 à 10,
   "controversyLevel": "faible" | "moyen" | "fort" | "très fort",
   "debateQuestion": "si le mode demandé est arène à positions : une seule ligne de 100 caractères maximum, espaces compris. Elle doit résumer le sujet en quelques mots puis poser une question très clivante. Si le mode demandé est arène libre : une seule ligne de 100 caractères maximum, espaces compris, qui résume factuellement le sujet sans question.",
-  "resume": "si debateScore >= 7 : résumé factuel de l'actualité en 2 ou 3 phrases. Sinon : chaîne vide",
+  "resume": "si debateScore >= 7 : matière factuelle brève pour écrire ensuite un contexte narratif d'actualité. Donne 2 ou 3 phrases maximum, concrètes, utiles, sans effet de style artificiel. Sinon : chaîne vide",
   "agonTheme": "une thématique Agôn exacte",
   "positionA": "position franche, très courte, sans argument. MAX 60 CARACTÈRES. Si debateScore < 7, chaîne vide.",
   "positionB": "position opposée franche, très courte, sans argument. MAX 60 CARACTÈRES. Si debateScore < 7, chaîne vide.",
@@ -552,10 +634,11 @@ Mauvais exemples :
       : `Faut-il débattre de ce sujet : ${subject.subject} ?`;
 
     return {
+      arenaMode,
       debateScore: Number.isInteger(parsed.debateScore) ? parsed.debateScore : 0,
       controversyLevel: parsed.controversyLevel || "faible",
       debateQuestion: arenaMode === "libre"
-        ? limitText(String(parsed.debateQuestion || fallbackQuestion).replace(/\?+$/g, "").trim(), 100)
+        ? limitText(subject.subject || String(parsed.debateQuestion || fallbackQuestion).replace(/\?+$/g, "").trim(), 100)
         : String(parsed.debateQuestion || fallbackQuestion).trim(),
       resume: parsed.resume || "",
       agonTheme: AGON_THEMES.includes(parsed.agonTheme)
@@ -641,6 +724,69 @@ Critères pour leftScore (INDÉPENDANT du debateScore) :
     return { debateScore: fb.debateScore, controversyLevel: fb.controversyLevel, leftScore: fb.leftScore };
   }
 }
+
+function buildAnalyzePayload(body) {
+  const contents = Array.isArray(body?.contents) ? body.contents : [];
+  const articleCount = Number.isFinite(Number(body?.articleCount))
+    ? Number(body.articleCount)
+    : contents.filter((item) => item.type === "article").length;
+  const youtubeCount = Number.isFinite(Number(body?.youtubeCount))
+    ? Number(body.youtubeCount)
+    : contents.filter((item) => item.type === "youtube").length;
+  const sources = Array.isArray(body?.sources)
+    ? body.sources
+    : [...new Set(contents.map((item) => item.source).filter(Boolean))];
+
+  return {
+    subject: String(body?.subject || "").trim(),
+    sources,
+    articleCount,
+    youtubeCount,
+    contents: contents.map((item) => ({
+      type: item.type || "article",
+      source: item.source || "",
+      orientation: item.orientation || "",
+      title: item.title || "",
+      link: item.link || "",
+      summary: item.summary || ""
+    })),
+    arenaMode: body?.arenaMode === "libre" ? "libre" : "positions"
+  };
+}
+
+apiApp.post("/analyze", async (req, res) => {
+  try {
+    const payload = buildAnalyzePayload(req.body);
+    if (!payload.subject) {
+      return res.status(400).json({ error: "Sujet manquant" });
+    }
+
+    const ai = await analyzeOneSubjectWithAI(payload);
+    res.json(ai);
+  } catch (error) {
+    res.status(500).json({ error: error.message || "Erreur analyse IA" });
+  }
+});
+
+apiApp.post("/refresh", async (req, res) => {
+  if (isRunning) {
+    return res.json({ ok: true, running: true });
+  }
+
+  main().catch((error) => {
+    console.error("Erreur refresh mixte :", error.message);
+  });
+
+  res.json({ ok: true, started: true });
+});
+
+apiApp.post("/save", (req, res) => {
+  try {
+    res.json(upsertSavedSubject(req.body || {}));
+  } catch (error) {
+    res.status(500).json({ error: error.message || "Erreur sauvegarde" });
+  }
+});
 
 async function analyzeScoresWithAI(subjects) {
   console.log(`${subjects.length} sujet(s) envoyés à l'analyse de score IA.`);
@@ -877,14 +1023,14 @@ function generateHtml(sessions) {
       const aiBoxHtml = isAnalyzed
         ? `<div class="ai-box">
             <p class="debate-question" contenteditable="true" spellcheck="false">${escapeHtml(ai.debateQuestion)}</p>
-            ${debateScore >= 7 && ai.resume ? `<p class="resume">${escapeHtml(ai.resume)}</p>` : ""}
+            ${ai.resume ? `<p class="resume">${escapeHtml(ai.resume)}</p>` : ""}
             <p class="agon-theme"><strong>Thématique Agôn proposée :</strong>
               <select class="agon-select">
                 ${AGON_THEMES.map(theme => `<option value="${escapeHtml(theme)}"${theme === (ai.agonTheme || AGON_THEMES[0]) ? " selected" : ""}>${escapeHtml(theme)}</option>`).join("")}
               </select>
             </p>
             ${
-              debateScore >= 7 && (ai.positionA || ai.positionB)
+              debateScore >= 7 && (ai.positionA || ai.positionB) && ai.arenaMode !== "libre"
                 ? `<div class="positions-box">
                     <p><strong>Positions proposées pour une arène à positions :</strong></p>
                     ${ai.positionA ? `<p><strong>A —</strong> <span class="editable" contenteditable="true" spellcheck="false">${escapeHtml(ai.positionA)}</span></p>` : ""}
@@ -896,6 +1042,9 @@ function generateHtml(sessions) {
         : `<div class="ai-box pending-analysis">
             <button class="analyze-btn" type="button" data-mode="positions" data-subject="${subjectDataForBtn}">
               Générer arène à positions IA
+            </button>
+            <button class="analyze-btn analyze-btn-secondary" type="button" data-mode="libre" data-subject="${subjectDataForBtn}">
+              Générer arène libre IA
             </button>
           </div>`;
 
@@ -1315,10 +1464,115 @@ function generateHtml(sessions) {
       cursor: default;
     }
 
+    .analyze-btn-secondary {
+      background: white;
       color: #111;
       border: 1px solid #ddd;
     }
 
+    .analyze-btn-secondary:hover:not(:disabled) {
+      background: #f0f0f0;
+    }
+
+    .story-link-box {
+      margin-top: 12px;
+      background: white;
+      border: 1px solid #d8dee8;
+      border-radius: 12px;
+      padding: 12px;
+    }
+
+    .story-link-header {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #555;
+      margin-bottom: 8px;
+    }
+
+    .story-link-status {
+      display: inline-flex;
+      align-items: center;
+      min-height: 34px;
+      padding: 7px 12px;
+      border-radius: 999px;
+      font-size: 0.84rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .story-link-status.is-existing {
+      background: #e8f7ee;
+      color: #196a42;
+    }
+
+    .story-link-status.is-uncertain {
+      background: #fff4e5;
+      color: #9a5b00;
+    }
+
+    .story-link-status.is-new {
+      background: #eef4ff;
+      color: #2157a5;
+    }
+
+    .story-link-card {
+      border: 1px solid #e6eaf0;
+      border-radius: 10px;
+      padding: 10px 12px;
+      background: #fafbfd;
+    }
+
+    .story-link-card.selected {
+      border-color: #b8cae8;
+      background: #eef4ff;
+    }
+
+    .story-link-card p,
+    .story-link-card small {
+      display: block;
+      margin: 6px 0 0;
+      color: #555;
+    }
+
+    .story-choice-row {
+      margin-top: 10px;
+      font-size: 0.92rem;
+    }
+
+    .story-choice-row input {
+      margin-right: 6px;
+    }
+
+    .story-draft-fields {
+      margin-top: 10px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .story-draft-fields label {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #555;
+    }
+
+    .story-draft-fields input,
+    .story-draft-fields textarea {
+      width: 100%;
+      border: 1px solid #d7dbe2;
+      border-radius: 10px;
+      padding: 9px 10px;
+      font: inherit;
+      background: white;
+      color: #111;
+    }
+
+    .story-draft-fields textarea {
+      resize: vertical;
+      min-height: 84px;
+    }
+
+    .hidden {
+      display: none !important;
     }
 
     .subject-number {
@@ -1642,13 +1896,173 @@ function generateHtml(sessions) {
   <script>
     const AGON_THEMES = ${JSON.stringify(AGON_THEMES)};
 
+    function escapeHtmlClient(value) {
+      return String(value || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function encodeStoryData(value) {
+      return encodeURIComponent(JSON.stringify(value || {}));
+    }
+
+    function decodeStoryData(value) {
+      if (!value) return null;
+      try {
+        return JSON.parse(decodeURIComponent(value));
+      } catch (error) {
+        return null;
+      }
+    }
+
+    function buildStoryLinkHtml(storyLink) {
+      if (!storyLink) return "";
+
+      const storyDecision = storyLink.story_decision || "new_story";
+      const confidence = Number(storyLink.confidence || 0);
+      const matchedTitle = escapeHtmlClient(storyLink.matched_story_title || "");
+      const matchedSummary = escapeHtmlClient(storyLink.matched_story_summary || "");
+      const reason = escapeHtmlClient(storyLink.reason || "");
+      const newStory = storyLink.new_story || {};
+      const groupName = "story-choice-" + Math.random().toString(36).slice(2, 9);
+      const encodedCriteria = escapeHtmlClient(encodeStoryData(storyLink.criteria || {}));
+      const encodedNewStory = escapeHtmlClient(encodeStoryData(newStory));
+      const storyStatusHtml = storyDecision === "existing_story"
+        ? '<div class="story-link-status is-existing">Histoire liée : ' + matchedTitle + '</div>'
+        : storyDecision === "uncertain"
+          ? '<div class="story-link-status is-uncertain">Histoire possible : choix requis</div>'
+          : '<div class="story-link-status is-new">Nouvelle histoire proposée</div>';
+
+      if (storyDecision === "existing_story") {
+        return '<div class="story-link-box" data-story-decision="existing_story" data-matched-story-id="' + escapeHtmlClient(storyLink.matched_story_id || "") + '" data-matched-story-title="' + matchedTitle + '" data-confidence="' + confidence + '" data-reason="' + reason + '" data-criteria="' + encodedCriteria + '" data-new-story="' + encodedNewStory + '">' +
+          storyStatusHtml +
+          '<div class="story-link-header">Histoire proposée</div>' +
+          '<div class="story-link-card selected">' +
+            '<strong>' + matchedTitle + '</strong>' +
+            (matchedSummary ? '<p>' + matchedSummary + '</p>' : "") +
+            '<small>Sélectionnée par défaut.</small>' +
+          '</div>' +
+        '</div>';
+      }
+
+      const newStoryFields = '<div class="story-draft-fields">' +
+        '<label>Titre de la nouvelle histoire</label>' +
+        '<input type="text" class="story-title-input" value="' + escapeHtmlClient(newStory.story_title || "") + '" placeholder="Question large pour suivre plusieurs épisodes">' +
+        '<label>Résumé de la nouvelle histoire</label>' +
+        '<textarea class="story-summary-input" rows="3" placeholder="Résumé court de l’histoire">' + escapeHtmlClient(newStory.story_summary || "") + '</textarea>' +
+      '</div>';
+
+      if (storyDecision === "uncertain") {
+        return '<div class="story-link-box" data-story-decision="uncertain" data-matched-story-id="' + escapeHtmlClient(storyLink.matched_story_id || "") + '" data-matched-story-title="' + matchedTitle + '" data-confidence="' + confidence + '" data-reason="' + reason + '" data-criteria="' + encodedCriteria + '" data-new-story="' + encodedNewStory + '">' +
+          storyStatusHtml +
+          '<div class="story-link-header">Lien avec une histoire existante incertain</div>' +
+          '<div class="story-link-card">' +
+            '<strong>L’IA propose :</strong> ' + matchedTitle +
+            (matchedSummary ? '<p>' + matchedSummary + '</p>' : "") +
+            (reason ? '<small>Raison : ' + reason + '</small>' : "") +
+          '</div>' +
+          '<div class="story-choice-row"><label><input type="radio" class="story-choice-input" name="' + groupName + '" value="existing"> Rattacher à cette histoire existante</label></div>' +
+          '<div class="story-choice-row"><label><input type="radio" class="story-choice-input" name="' + groupName + '" value="new"> Créer une nouvelle histoire</label></div>' +
+          '<div class="story-link-card story-new-preview hidden">' +
+            '<strong>Nouvelle histoire proposée</strong>' +
+            newStoryFields +
+          '</div>' +
+        '</div>';
+      }
+
+      return '<div class="story-link-box" data-story-decision="new_story" data-confidence="' + confidence + '" data-reason="' + reason + '" data-criteria="' + encodedCriteria + '" data-new-story="' + encodedNewStory + '">' +
+        storyStatusHtml +
+        '<div class="story-link-header">Nouvelle histoire proposée</div>' +
+        '<div class="story-link-card selected">' +
+          '<strong>' + escapeHtmlClient(newStory.story_title || "") + '</strong>' +
+          (newStory.story_summary ? '<p>' + escapeHtmlClient(newStory.story_summary) + '</p>' : "") +
+          '<small>Sélectionnée par défaut.</small>' +
+        '</div>' +
+        newStoryFields +
+      '</div>';
+    }
+
+    function syncStoryChoiceUi(box) {
+      if (!box) return;
+      const preview = box.querySelector(".story-new-preview");
+      if (!preview) return;
+      const selectedValue = box.querySelector(".story-choice-input:checked")?.value || "";
+      preview.classList.toggle("hidden", selectedValue !== "new");
+    }
+
+    function initializeStoryBoxes(root) {
+      (root || document).querySelectorAll(".story-link-box").forEach(function(box) {
+        syncStoryChoiceUi(box);
+      });
+    }
+
+    function collectStorySelection(subjectEl) {
+      const box = subjectEl.querySelector(".story-link-box");
+      if (!box) return null;
+
+      const storyDecision = box.dataset.storyDecision || "";
+      const matchedStoryId = box.dataset.matchedStoryId || null;
+      const matchedStoryTitle = box.dataset.matchedStoryTitle || "";
+      const confidence = Number(box.dataset.confidence || 0);
+      const reason = box.dataset.reason || "";
+      const criteria = decodeStoryData(box.dataset.criteria) || {};
+      const baseNewStory = decodeStoryData(box.dataset.newStory) || {};
+
+      let selectionMode = storyDecision === "existing_story"
+        ? "existing"
+        : storyDecision === "new_story"
+          ? "new"
+          : (box.querySelector(".story-choice-input:checked")?.value || "");
+
+      if (!selectionMode) {
+        throw new Error("Choisis d'abord si cette arène doit être rattachée à l'histoire proposée ou à une nouvelle histoire.");
+      }
+
+      const payload = {
+        storyDecision,
+        matchedStoryId,
+        matchedStoryTitle,
+        confidence,
+        reason,
+        criteria,
+        selectionMode
+      };
+
+      if (selectionMode === "new") {
+        const title = box.querySelector(".story-title-input")?.value.trim() || "";
+        const summary = box.querySelector(".story-summary-input")?.value.trim() || "";
+        if (!title) {
+          throw new Error("Renseigne le titre de la nouvelle histoire avant l'envoi.");
+        }
+        if (!/[?]\s*$/.test(title)) {
+          throw new Error("Le titre de la nouvelle histoire doit rester une question.");
+        }
+        if (!summary) {
+          throw new Error("Renseigne le résumé de la nouvelle histoire avant l'envoi.");
+        }
+        payload.newStory = {
+          story_title: title,
+          story_summary: summary,
+          main_actors: Array.isArray(baseNewStory.main_actors) ? baseNewStory.main_actors : [],
+          central_tension: baseNewStory.central_tension || "",
+          keywords: Array.isArray(baseNewStory.keywords) ? baseNewStory.keywords : [],
+          status: "active"
+        };
+      }
+
+      return payload;
+    }
+
     function buildAiBoxHtml(ai) {
       const score = Number(ai.debateScore) || 0;
       const optionsHtml = AGON_THEMES.map(theme =>
         '<option value="' + theme + '"' + (theme === (ai.agonTheme || AGON_THEMES[0]) ? " selected" : "") + ">" + theme + "</option>"
       ).join("");
 
-      const positionsHtml = score >= 7 && (ai.positionA || ai.positionB)
+      const positionsHtml = score >= 7 && (ai.positionA || ai.positionB) && ai.arenaMode !== "libre"
         ? '<div class="positions-box">' +
             "<p><strong>Positions proposées pour une arène à positions :</strong></p>" +
             (ai.positionA ? '<p><strong>A —</strong> <span class="editable" contenteditable="true" spellcheck="false">' + ai.positionA + "</span></p>" : "") +
@@ -1658,10 +2072,11 @@ function generateHtml(sessions) {
 
       return '<div class="ai-box">' +
         '<p class="debate-question" contenteditable="true" spellcheck="false">' + (ai.debateQuestion || "") + "</p>" +
-        (score >= 7 && ai.resume ? '<p class="resume">' + ai.resume + "</p>" : "") +
+        (ai.resume ? '<p class="resume">' + ai.resume + "</p>" : "") +
         '<p class="agon-theme"><strong>Thématique Agôn proposée :</strong>' +
           '<select class="agon-select">' + optionsHtml + "</select>" +
         "</p>" +
+        buildStoryLinkHtml(ai.storyLink) +
         positionsHtml +
         "</div>";
     }
@@ -1714,6 +2129,9 @@ function generateHtml(sessions) {
       const aiBox = btn.closest(".ai-box");
       const aiScore = subjectEl.querySelector(".ai-score.pending");
 
+      aiBox.querySelectorAll(".analyze-btn").forEach(function(button) {
+        button.disabled = true;
+      });
       btn.disabled = true;
       btn.textContent = "Analyse en cours…";
 
@@ -1726,9 +2144,16 @@ function generateHtml(sessions) {
 
         if (!res.ok) throw new Error("Erreur serveur");
         const ai = await res.json();
+        if (subjectData.arenaMode === "libre") {
+          ai.arenaMode = "libre";
+          ai.debateQuestion = subjectData.subject || ai.debateQuestion || "";
+          ai.positionA = "";
+          ai.positionB = "";
+        }
 
         if (aiScore) aiScore.outerHTML = buildAiScoreHtml(ai);
         aiBox.outerHTML = buildAiBoxHtml(ai);
+        initializeStoryBoxes(subjectEl);
 
         const agonBtn = subjectEl.querySelector(".agon-btn");
         if (agonBtn) {
@@ -1811,6 +2236,7 @@ function generateHtml(sessions) {
       btn.textContent = "Envoi…";
       try {
         const subjectEl = btn.closest(".subject");
+        const storySelection = collectStorySelection(subjectEl);
         const question = subjectEl.querySelector(".debate-question")?.textContent.trim() || btn.dataset.question;
         const editables = subjectEl.querySelectorAll(".editable");
         const positionA = editables[0]?.textContent.trim() || btn.dataset.positionA;
@@ -1834,15 +2260,23 @@ function generateHtml(sessions) {
         const res = await fetch("/send-to-agon", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ question, positionA, positionB, theme, resume, sources, links })
+          body: JSON.stringify({ question, positionA, positionB, theme, resume, sources, links, storySelection })
         });
         if (!res.ok) throw new Error();
         btn.classList.add("sent");
         btn.textContent = "✓ Envoyé";
-      } catch {
+      } catch (error) {
         btn.disabled = false;
         btn.textContent = "→ Agôn";
+        if (error && error.message) {
+          alert(error.message);
+        }
       }
+    });
+
+    document.addEventListener("change", function(e) {
+      if (!e.target.classList.contains("story-choice-input")) return;
+      syncStoryChoiceUi(e.target.closest(".story-link-box"));
     });
 
     let currentSort = "score";
@@ -1973,6 +2407,8 @@ function generateHtml(sessions) {
       refreshBtn.addEventListener("click", function() { startRefresh(); });
     }
 
+    initializeStoryBoxes(document);
+
     var ptrTouchStartY = 0;
     var ptrPullDist = 0;
     var PTR_THRESHOLD = 80;
@@ -2098,5 +2534,9 @@ async function main() {
     isRunning = false;
   }
 }
+
+apiApp.listen(API_PORT, "127.0.0.1", () => {
+  console.log(`API mixte lancée sur 127.0.0.1:${API_PORT}`);
+});
 
 main();

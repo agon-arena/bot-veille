@@ -1,12 +1,417 @@
 const express = require("express");
 const path = require("path");
 const fs = require("fs");
+const OpenAI = require("openai");
 
 const app = express();
 app.use(express.json());
 
 const PORT = process.env.PORT || 3000;
 const MIXTE_PASSWORD = process.env.MIXTE_PASSWORD || "";
+const AGON_URL = (process.env.AGON_URL || "http://localhost:3001").trim();
+const openai = process.env.OPENAI_API_KEY
+  ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
+  : null;
+
+function normalizeStoryText(value) {
+  return String(value || "")
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^\p{L}\p{N}\s]/gu, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function getStoryKeywords(value) {
+  const stopWords = new Set([
+    "avec", "dans", "pour", "contre", "entre", "apres", "avant", "plus", "moins",
+    "encore", "comme", "leurs", "leurs", "cette", "celui", "celle", "ceux", "elles",
+    "nous", "vous", "eux", "mais", "donc", "etre", "avoir", "faire", "selon",
+    "sujet", "histoire", "episode", "actualite", "actualites", "debats", "debat",
+    "arene", "arenes", "question", "resume", "gauche", "droite", "politique", "france"
+  ]);
+
+  return normalizeStoryText(value)
+    .split(" ")
+    .filter(Boolean)
+    .filter((word) => word.length >= 4)
+    .filter((word) => !stopWords.has(word));
+}
+
+function limitStoryText(text, maxLength) {
+  const value = String(text || "").trim();
+  if (value.length <= maxLength) return value;
+  return value.slice(0, maxLength - 1).trimEnd() + "…";
+}
+
+function buildFallbackStoryTitle(subject, theme) {
+  const topic = limitStoryText(subject || theme || "ce sujet", 70).replace(/[?!.]+$/g, "").trim();
+  if (!topic) return "Quelle histoire politique est en train de se jouer ?";
+  if (/peut|doit|faut|va|est|sont|reste|risque/i.test(topic)) {
+    return limitStoryText(topic.endsWith("?") ? topic : `${topic} ?`, 90);
+  }
+  return limitStoryText(`Quel tournant se joue autour de ${topic} ?`, 90);
+}
+
+function buildFallbackStorySummary(subject, resume) {
+  const base = String(resume || "").trim() || String(subject || "").trim();
+  return limitStoryText(base || "Nouvel épisode à suivre.", 220);
+}
+
+function buildFallbackNarrativeContext(payload, storySuggestion) {
+  const storySummary = String(
+    storySuggestion?.matched_story_summary
+      || storySuggestion?.new_story?.story_summary
+      || payload.ai?.resume
+      || ""
+  ).trim();
+  const previousEpisode = String(storySuggestion?.previous_episode_summary || "").trim();
+  const latestEvent = String(payload.ai?.resume || payload.subject || "").trim();
+  const opening = String(
+    storySuggestion?.reason
+      || "Le prochain mouvement des acteurs en présence dira si la tension retombe ou monte encore."
+  ).trim();
+
+  const historyLine = storySummary
+    ? limitStoryText(storySummary, 180)
+    : limitStoryText(`Le sujet met aux prises ${payload.sources?.slice(0, 2).join(" et ") || "plusieurs acteurs"} autour d'une tension encore mouvante.`, 180);
+  const previousLine = previousEpisode
+    ? limitStoryText(previousEpisode, 180)
+    : "Épisode précédent : aucun épisode clairement établi n'était encore rattaché à cette histoire.";
+  const latestLine = latestEvent
+    ? limitStoryText(latestEvent, 800)
+    : limitStoryText(String(payload.subject || "").trim(), 800);
+
+  const parts = [
+    `L’histoire jusqu’ici : ${historyLine}`,
+    previousLine.startsWith("Épisode précédent :") ? previousLine : `Épisode précédent : ${previousLine}`,
+    `Nouvel épisode : ${latestLine}`,
+    `Ouverture : ${limitStoryText(opening, 140)}`
+  ];
+  return parts.join("\n");
+}
+
+async function generateNarrativeContext(payload, storySuggestion) {
+  const fallback = buildFallbackNarrativeContext(payload, storySuggestion);
+
+  if (!openai) {
+    return fallback;
+  }
+
+  const storyUntilNow = String(
+    storySuggestion?.matched_story_summary
+      || storySuggestion?.new_story?.story_summary
+      || ""
+  ).trim();
+  const previousEpisode = String(storySuggestion?.previous_episode_summary || "").trim();
+
+  const prompt = `
+Tu es un redacteur d'actualite narrative.
+
+Ta mission :
+Transformer une actualite en episode court d'une histoire suivie.
+
+Objectif :
+Rendre l'actualite palpitante mais serieuse. Le lecteur doit avoir l'impression de suivre une serie du reel : une histoire avance, un nouvel episode vient de tomber, et la suite donne envie d'etre suivie.
+
+Important :
+Que l'arene finale soit une arene libre ou une arene a positions, tu rediges toujours ce contexte sous la meme forme narrative.
+
+Regle absolue :
+Le suspense doit venir uniquement des faits, des tensions reelles, des rapports de force et des incertitudes verifiables.
+Ne jamais inventer, exagerer, dramatiser artificiellement ou faire du putaclic.
+
+L'histoire jusqu'ici :
+${storyUntilNow || "Pas d'histoire anterieure clairement etablie."}
+
+Episode precedent :
+${previousEpisode || "Pas d'episode precedent confirme."}
+
+Nouvel episode :
+${JSON.stringify({
+  subject: payload.subject || "",
+  currentArenaTitle: payload.ai?.debateQuestion || "",
+  rawResume: payload.ai?.resume || "",
+  theme: payload.ai?.agonTheme || "",
+  sources: payload.sources || [],
+  contents: (payload.contents || []).slice(0, 8).map((item) => ({
+    source: item.source,
+    title: item.title,
+    type: item.type,
+    summary: item.summary || ""
+  }))
+}, null, 2)}
+
+Reponds uniquement en texte brut, sans puces, sous cette structure exacte :
+L’histoire jusqu’ici : ...
+Épisode précédent : ...
+Nouvel épisode : ...
+Ouverture : ...
+
+Consignes de redaction :
+- "L’histoire jusqu’ici" : 2 lignes maximum. Resume l'histoire generale avec les acteurs principaux et la tension centrale.
+- "Épisode précédent" : 2 lignes maximum. Resume tres brievement ce qui s'etait passe juste avant.
+- "Nouvel épisode" : 800 caracteres maximum. Raconte le nouvel article comme la suite logique de l'histoire : contexte immediat, evenement, acteurs, tension, ce qui change.
+- "Ouverture" : 1 phrase courte qui donne envie de connaitre la suite : ce qui peut basculer, ce qu'il faut surveiller, ou la prochaine question concrete.
+
+Contraintes :
+- tu ne rediges pas le titre ici, seulement le contexte ;
+- le texte doit etre vivant, nerveux, clair, serieux ;
+- ne jamais inventer d'information ;
+- ne pas annoncer de catastrophe non etayee ;
+- ne pas ecrire comme une depeche froide ;
+- ne pas employer un ton complotiste ;
+- eviter les formules vagues du type "affaire a suivre" ;
+- utiliser des verbes d'action ;
+- distinguer les faits confirmes des hypotheses ;
+- priorite au nouvel episode : les rappels doivent rester tres courts ;
+- si une information manque, rester vague plutot que completer ;
+- le bloc "Nouvel épisode" doit rester le morceau le plus developpe.
+`;
+
+  try {
+    const response = await openai.responses.create({
+      model: "gpt-4.1-mini",
+      input: prompt,
+      temperature: 0.35,
+      max_output_tokens: 900
+    });
+    return String(response.output_text || "").trim() || fallback;
+  } catch (error) {
+    return fallback;
+  }
+}
+
+function buildFallbackStorySuggestion(payload, stories = []) {
+  const text = [
+    payload.subject,
+    payload.ai?.debateQuestion,
+    payload.ai?.resume,
+    ...(payload.sources || []),
+    ...((payload.contents || []).map((item) => item.title))
+  ].filter(Boolean).join(" ");
+  const keywords = [...new Set(getStoryKeywords(text))].slice(0, 6);
+  const storyTitle = buildFallbackStoryTitle(payload.subject, payload.ai?.agonTheme);
+  const newStory = {
+    story_title: storyTitle,
+    story_summary: buildFallbackStorySummary(payload.subject, payload.ai?.resume),
+    main_actors: keywords.slice(0, 3),
+    central_tension: limitStoryText(payload.ai?.debateQuestion || payload.subject || "Tension politique à suivre.", 140),
+    keywords,
+    status: "active"
+  };
+
+  if (!stories.length) {
+    return {
+      story_decision: "new_story",
+      matched_story_id: null,
+      matched_story_title: null,
+      confidence: 0.2,
+      reason: "Aucune histoire existante n'est disponible pour ce sujet.",
+      criteria: {
+        main_actors_match: false,
+        central_tension_match: false,
+        temporal_continuity: false,
+        editorial_theme_match: false,
+        strong_keywords_match: false
+      },
+      new_story: newStory
+    };
+  }
+
+  let bestStory = null;
+  let bestScore = 0;
+  const sourceKeywords = new Set(keywords);
+  for (const story of stories) {
+    const storyKeywords = new Set(getStoryKeywords([
+      story.story_title,
+      story.story_summary,
+      ...(story.main_actors || []),
+      story.central_tension,
+      ...(story.keywords || [])
+    ].filter(Boolean).join(" ")));
+    const shared = [...sourceKeywords].filter((word) => storyKeywords.has(word)).length;
+    const score = storyKeywords.size ? shared / Math.max(3, Math.min(storyKeywords.size, sourceKeywords.size || 1)) : 0;
+    if (score > bestScore) {
+      bestScore = score;
+      bestStory = story;
+    }
+  }
+
+  if (bestStory && bestScore >= 0.55) {
+    return {
+      story_decision: bestScore >= 0.8 ? "existing_story" : "uncertain",
+      matched_story_id: bestStory.story_id,
+      matched_story_title: bestStory.story_title,
+      matched_story_summary: bestStory.story_summary || "",
+      previous_episode_title: bestStory.latest_episode_title || "",
+      previous_episode_summary: bestStory.latest_episode_summary || "",
+      confidence: Number(bestScore.toFixed(2)),
+      reason: bestScore >= 0.8
+        ? "Les mots-clés forts et la tension centrale recoupent nettement une histoire active."
+        : "Le sujet semble proche d'une histoire active, mais la continuité narrative reste à confirmer.",
+      criteria: {
+        main_actors_match: bestScore >= 0.55,
+        central_tension_match: bestScore >= 0.55,
+        temporal_continuity: bestScore >= 0.7,
+        editorial_theme_match: true,
+        strong_keywords_match: bestScore >= 0.55
+      },
+      new_story: newStory
+    };
+  }
+
+  return {
+    story_decision: "new_story",
+    matched_story_id: null,
+    matched_story_title: null,
+    confidence: Number(bestScore.toFixed(2)),
+    reason: "Aucune continuité narrative nette n'a été détectée avec les histoires existantes.",
+    criteria: {
+      main_actors_match: false,
+      central_tension_match: false,
+      temporal_continuity: false,
+      editorial_theme_match: false,
+      strong_keywords_match: false
+    },
+    new_story: newStory
+  };
+}
+
+async function loadAgonStories() {
+  try {
+    const response = await fetch(`${AGON_URL}/api/veille/stories`);
+    if (!response.ok) return [];
+    const data = await response.json();
+    return Array.isArray(data?.stories) ? data.stories : [];
+  } catch (error) {
+    return [];
+  }
+}
+
+async function suggestStoryLink(payload) {
+  const stories = await loadAgonStories();
+  const compactStories = stories.slice(0, 80).map((story) => ({
+    story_id: story.story_id,
+    story_title: story.story_title,
+    story_summary: story.story_summary,
+    main_actors: Array.isArray(story.main_actors) ? story.main_actors.slice(0, 5) : [],
+    central_tension: story.central_tension || "",
+    keywords: Array.isArray(story.keywords) ? story.keywords.slice(0, 8) : [],
+    latest_episode_title: story.latest_episode_title || "",
+    latest_episode_summary: story.latest_episode_summary || "",
+    updated_at: story.updated_at || ""
+  }));
+
+  const fallback = buildFallbackStorySuggestion(payload, compactStories);
+
+  if (!openai) {
+    return fallback;
+  }
+
+  const compactContents = (payload.contents || []).slice(0, 8).map((item) => ({
+    source: item.source,
+    type: item.type,
+    orientation: item.orientation,
+    title: item.title
+  }));
+
+  const prompt = `
+Tu aides a rattacher une actualite a une histoire suivie dans un bot de veille.
+
+Regle absolue :
+- Le meme theme general ne suffit pas.
+- Il faut une vraie continuite narrative : memes forces en presence, meme tension centrale, nouveau developpement.
+- Si tu hesites, reponds "uncertain".
+
+Actualite a classer :
+${JSON.stringify({
+  subject: payload.subject || "",
+  debate_question: payload.ai?.debateQuestion || "",
+  resume: payload.ai?.resume || "",
+  agon_theme: payload.ai?.agonTheme || "",
+  sources: payload.sources || [],
+  positions: {
+    positionA: payload.ai?.positionA || "",
+    positionB: payload.ai?.positionB || ""
+  },
+  contents: compactContents
+}, null, 2)}
+
+Histoires existantes :
+${JSON.stringify(compactStories, null, 2)}
+
+Reponds uniquement en JSON valide sous cette forme :
+{
+  "story_decision": "existing_story" ou "new_story" ou "uncertain",
+  "matched_story_id": "id ou null",
+  "matched_story_title": "titre ou null",
+  "confidence": 0.0,
+  "reason": "justification courte",
+  "criteria": {
+    "main_actors_match": true,
+    "central_tension_match": true,
+    "temporal_continuity": true,
+    "editorial_theme_match": true,
+    "strong_keywords_match": true
+  },
+  "new_story": {
+    "story_title": "question large",
+    "story_summary": "resume court",
+    "main_actors": ["..."],
+    "central_tension": "...",
+    "keywords": ["..."],
+    "status": "active"
+  }
+}
+
+Contraintes :
+- story_title doit toujours etre une question.
+- Si aucune histoire ne correspond clairement, cree une nouvelle histoire.
+- Si confidence >= 0.80 et correspondance nette : existing_story.
+- Si confidence entre 0.60 et 0.79 : uncertain.
+- Si confidence < 0.60 : new_story.
+`;
+
+  try {
+    const response = await openai.responses.create({
+      model: "gpt-4.1-mini",
+      input: prompt,
+      temperature: 0.2,
+      max_output_tokens: 900
+    });
+    const parsed = JSON.parse(String(response.output_text || "{}").match(/\{[\s\S]*\}/)?.[0] || "{}");
+    const matchedStory = compactStories.find((story) => story.story_id === parsed.matched_story_id) || null;
+    return {
+      story_decision: ["existing_story", "new_story", "uncertain"].includes(parsed.story_decision) ? parsed.story_decision : fallback.story_decision,
+      matched_story_id: matchedStory ? matchedStory.story_id : null,
+      matched_story_title: matchedStory ? matchedStory.story_title : null,
+      matched_story_summary: matchedStory ? matchedStory.story_summary || "" : "",
+      previous_episode_title: matchedStory ? matchedStory.latest_episode_title || "" : "",
+      previous_episode_summary: matchedStory ? matchedStory.latest_episode_summary || "" : "",
+      confidence: Number.isFinite(Number(parsed.confidence)) ? Math.max(0, Math.min(1, Number(parsed.confidence))) : fallback.confidence,
+      reason: String(parsed.reason || fallback.reason || "").trim(),
+      criteria: {
+        main_actors_match: Boolean(parsed.criteria?.main_actors_match),
+        central_tension_match: Boolean(parsed.criteria?.central_tension_match),
+        temporal_continuity: Boolean(parsed.criteria?.temporal_continuity),
+        editorial_theme_match: Boolean(parsed.criteria?.editorial_theme_match),
+        strong_keywords_match: Boolean(parsed.criteria?.strong_keywords_match)
+      },
+      new_story: {
+        story_title: buildFallbackStoryTitle(parsed.new_story?.story_title || payload.subject, payload.ai?.agonTheme),
+        story_summary: buildFallbackStorySummary(payload.subject, parsed.new_story?.story_summary || payload.ai?.resume),
+        main_actors: Array.isArray(parsed.new_story?.main_actors) ? parsed.new_story.main_actors.slice(0, 6) : fallback.new_story.main_actors,
+        central_tension: limitStoryText(parsed.new_story?.central_tension || fallback.new_story.central_tension, 180),
+        keywords: Array.isArray(parsed.new_story?.keywords) ? parsed.new_story.keywords.slice(0, 8) : fallback.new_story.keywords,
+        status: "active"
+      }
+    };
+  } catch (error) {
+    return fallback;
+  }
+}
 
 function getMixteCookie(req) {
   const raw = req.headers.cookie || "";
@@ -146,8 +551,33 @@ app.post("/analyze", requireMixteAuth, async (req, res) => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(req.body)
     });
+    if (!response.ok) {
+      const text = await response.text().catch(() => "");
+      throw new Error(text || "Erreur analyse IA");
+    }
     const data = await response.json();
-    res.json(data);
+    const isLibreMode = String(req.body?.arenaMode || "").trim() === "libre";
+    const normalizedData = {
+      ...data,
+      arenaMode: isLibreMode ? "libre" : "positions",
+      debateQuestion: isLibreMode
+        ? limitStoryText(req.body?.subject || data.debateQuestion || "", 100)
+        : String(data.debateQuestion || "").trim(),
+      positionA: isLibreMode ? "" : String(data.positionA || ""),
+      positionB: isLibreMode ? "" : String(data.positionB || "")
+    };
+    const storySuggestion = await suggestStoryLink({
+      ...req.body,
+      ai: normalizedData
+    });
+    normalizedData.resume = await generateNarrativeContext({
+      ...req.body,
+      ai: normalizedData
+    }, storySuggestion);
+    res.json({
+      ...normalizedData,
+      storyLink: storySuggestion
+    });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -195,6 +625,7 @@ app.get("/saved", requireMixteAuth, (req, res) => {
       const subjectData = JSON.stringify({ subject: s.subject, sources: (s.sources || "").split(", ").filter(Boolean), contents: [] }).replace(/"/g, "&quot;");
       return `<div class="ai-box pending-analysis">
         <button class="analyze-btn" type="button" data-mode="positions" data-subject="${subjectData}">Générer arène à positions IA</button>
+        <button class="analyze-btn analyze-btn-secondary" type="button" data-mode="libre" data-subject="${subjectData}">Générer arène libre IA</button>
       </div>`;
     }
     const optionsHtml = AGON_THEMES.map(theme =>
@@ -205,7 +636,7 @@ app.get("/saved", requireMixteAuth, (req, res) => {
       : "";
     return `<div class="ai-box">
       <p class="debate-question" contenteditable="true" spellcheck="false">${esc(s.debateQuestion)}</p>
-      ${score >= 7 && s.resume ? `<p class="resume">${esc(s.resume)}</p>` : ""}
+      ${s.resume ? `<p class="resume">${esc(s.resume)}</p>` : ""}
       <p class="agon-theme"><strong>Thématique Agôn proposée :</strong><select class="agon-select">${optionsHtml}</select></p>
       ${positionsHtml}
     </div>`;
@@ -296,6 +727,8 @@ app.get("/saved", requireMixteAuth, (req, res) => {
     .analyze-btn { background: #111; color: white; border: none; border-radius: 999px; padding: 10px 22px; font: inherit; font-size: 0.95rem; font-weight: 700; cursor: pointer; }
     .analyze-btn:hover:not(:disabled) { background: #333; }
     .analyze-btn:disabled { opacity: 0.6; cursor: default; }
+    .analyze-btn-secondary { background: white; color: #111; border: 1px solid #ddd; }
+    .analyze-btn-secondary:hover:not(:disabled) { background: #f0f0f0; }
     .sources { font-size: 0.8rem; color: #999; margin: 10px 0 6px; }
     .date { font-size: 0.78rem; color: #bbb; }
     .unsave-btn { margin-top: 12px; background: none; border: 1px solid #ddd; border-radius: 999px; padding: 6px 14px; font: inherit; font-size: 0.85rem; cursor: pointer; color: #c0392b; }
@@ -355,7 +788,7 @@ app.get("/saved", requireMixteAuth, (req, res) => {
       : '';
     return '<div class="ai-box">' +
       '<p class="debate-question" contenteditable="true" spellcheck="false">' + (ai.debateQuestion || '') + '</p>' +
-      (score >= 7 && ai.resume ? '<p class="resume">' + ai.resume + '</p>' : '') +
+      (ai.resume ? '<p class="resume">' + ai.resume + '</p>' : '') +
       '<p class="agon-theme"><strong>Thématique Agôn proposée :</strong><select class="agon-select">' + optionsHtml + '</select></p>' +
       positionsHtml +
       '</div>';
@@ -905,17 +1338,15 @@ app.post("/api/youtube-chaines", (req, res) => {
   }
 });
 
-const AGON_URL = (process.env.AGON_URL || "http://localhost:3001").trim();
-
 app.post("/send-to-agon", requireMixteAuth, async (req, res) => {
   try {
-    const { question, positionA, positionB, theme, resume, sources, links } = req.body;
+    const { question, positionA, positionB, theme, resume, sources, links, storySelection } = req.body;
     if (!question) return res.status(400).json({ ok: false, error: "question manquante" });
     console.log(`[send-to-agon] Envoi vers ${AGON_URL}/api/veille/receive`);
     const r = await fetch(`${AGON_URL}/api/veille/receive`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ question, positionA, positionB, theme, resume, sources, links: links || [] })
+      body: JSON.stringify({ question, positionA, positionB, theme, resume, sources, links: links || [], storySelection: storySelection || null })
     });
     if (!r.ok) {
       const body = await r.text().catch(() => "");

@@ -1,6 +1,35 @@
 [
   {
     "action": "save",
+    "subject": "EN DIRECT - Guerre au Moyen-Orient : les frappes israéliennes au Liban ont fait 380 morts depuis l’entrée en vigueur du cessez-le-feu",
+    "debateScore": 9,
+    "debateQuestion": "",
+    "resume": "",
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "Libération, Le Figaro",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.liberation.fr/international/moyen-orient/en-direct-guerre-au-moyen-orient-liran-pourrait-enrichir-de-luranium-a-des-fins-militaires-sil-etait-attaque-avertit-un-parlementaire-20260512_FV5VU6ZSN5DADCJLY4DI26HQIY/",
+        "source": "Libération",
+        "title": "EN DIRECT - Guerre au Moyen-Orient : les frappes israéliennes au Liban ont fait 380 morts depuis l’entrée en vigueur du cessez-le-feu",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.lefigaro.fr/international/en-direct-guerre-moyen-orient-conflit-etats-unis-iran-donald-trump-cessez-le-feu-israel-liban-emirats-arabes-unis-qatar-20260512",
+        "source": "Le Figaro",
+        "title": "EN DIRECT - Guerre au Moyen-Orient : les gardiens de la révolution organisent des manœuvres à Téhéran",
+        "thumbnail": ""
+      }
+    ],
+    "sessionLabel": "12/05/2026 à 17:54:33",
+    "savedAt": "2026-05-12T17:47:19.238Z"
+  },
+  {
+    "action": "save",
     "subject": "En Cisjordanie, un enfant palestinien tué en moyenne chaque semaine depuis janvier 2025, selon l’Unicef",
     "debateScore": 8,
     "debateQuestion": "",
