@@ -1,7 +1,6 @@
 require("dotenv").config();
 
 const fs = require("fs");
-const http = require("http");
 const Parser = require("rss-parser");
 const stringSimilarity = require("string-similarity");
 const dayjs = require("dayjs");
@@ -101,6 +100,29 @@ function isRecent(date, hoursBack) {
   return date.isAfter(dayjs().subtract(hoursBack, "hour"));
 }
 
+function getLastSessionCutoff() {
+  const sessions = loadSessions();
+  if (!Array.isArray(sessions) || !sessions.length) {
+    return null;
+  }
+
+  const lastGeneratedAt = sessions[0] && sessions[0].generatedAt;
+  if (!lastGeneratedAt) {
+    return null;
+  }
+
+  const parsed = dayjs(lastGeneratedAt);
+  return parsed.isValid() ? parsed : null;
+}
+
+function isFreshSinceLastSession(date, lastSessionCutoff) {
+  if (!lastSessionCutoff) {
+    return true;
+  }
+
+  return date.isAfter(lastSessionCutoff);
+}
+
 function loadSessions() {
   if (!fs.existsSync(HISTORY_FILE)) {
     return [];
@@ -180,7 +202,7 @@ function extractYouTubeVideoId(link) {
   return "";
 }
 
-async function collectArticles() {
+async function collectArticles(lastSessionCutoff = null) {
   const medias = JSON.parse(fs.readFileSync(MEDIA_FILE, "utf8"));
   const contents = [];
 
@@ -194,6 +216,10 @@ async function collectArticles() {
         const date = getItemDate(item);
 
         if (!isRecent(date, HOURS_BACK_ARTICLES)) {
+          continue;
+        }
+
+        if (!isFreshSinceLastSession(date, lastSessionCutoff)) {
           continue;
         }
 
@@ -220,7 +246,7 @@ async function collectArticles() {
   return contents;
 }
 
-async function collectYouTubeVideos() {
+async function collectYouTubeVideos(lastSessionCutoff = null) {
   const channels = JSON.parse(fs.readFileSync(CHANNELS_FILE, "utf8"));
   const contents = [];
 
@@ -235,6 +261,10 @@ async function collectYouTubeVideos() {
         const date = getItemDate(item);
 
         if (!isRecent(date, HOURS_BACK_YOUTUBE)) {
+          continue;
+        }
+
+        if (!isFreshSinceLastSession(date, lastSessionCutoff)) {
           continue;
         }
 
@@ -349,13 +379,16 @@ function filterMultiSourceSubjects(groups) {
     });
 }
 
-function fallbackAiAnalysis(subject) {
+function fallbackAiAnalysis(subject, arenaMode = "positions") {
   const hasBoth = subject.articleCount > 0 && subject.youtubeCount > 0;
   const leftSourceCount = (subject.contents || []).filter(c => getOrientationGroup(c.orientation) === "left").length;
+  const fallbackText = arenaMode === "libre"
+    ? limitText(subject.subject, 100)
+    : `Ce sujet mérite-t-il un débat public : ${subject.subject} ?`;
   return {
     debateScore: hasBoth ? 6 : 4,
     controversyLevel: hasBoth ? "moyen" : "faible",
-    debateQuestion: `Ce sujet mérite-t-il un débat public : ${subject.subject} ?`,
+    debateQuestion: fallbackText,
     resume: "",
     agonTheme: "Politique, économie et relations internationales",
     positionA: "",
@@ -386,7 +419,7 @@ function safeJsonParse(text) {
 
 async function analyzeOneSubjectWithAI(subject) {
   if (!openai) {
-    return fallbackAiAnalysis(subject);
+    return fallbackAiAnalysis(subject, subject.arenaMode);
   }
 
   const compactContents = subject.contents.slice(0, 10).map(content => ({
@@ -396,8 +429,12 @@ async function analyzeOneSubjectWithAI(subject) {
     title: content.title
   }));
 
+  const arenaMode = subject.arenaMode === "libre" ? "libre" : "positions";
   const prompt = `
 Analyse ce sujet de veille et évalue son potentiel de débat public.
+
+Mode d'arène demandé :
+${arenaMode === "libre" ? "arène libre" : "arène à positions"}
 
 Sujet principal :
 ${subject.subject}
@@ -413,7 +450,7 @@ Tu dois répondre uniquement en JSON valide avec ces champs :
 {
   "debateScore": nombre entier de 0 à 10,
   "controversyLevel": "faible" | "moyen" | "fort" | "très fort",
-  "debateQuestion": "une seule ligne de 100 caractères maximum, espaces compris. Elle doit résumer le sujet en quelques mots puis poser une question très clivante. Varie fortement la forme des questions. Format conseillé : mini-résumé : question clivante ?",
+  "debateQuestion": "si le mode demandé est arène à positions : une seule ligne de 100 caractères maximum, espaces compris. Elle doit résumer le sujet en quelques mots puis poser une question très clivante. Si le mode demandé est arène libre : une seule ligne de 100 caractères maximum, espaces compris, qui résume factuellement le sujet sans question.",
   "resume": "si debateScore >= 7 : résumé factuel de l'actualité en 2 ou 3 phrases. Sinon : chaîne vide",
   "agonTheme": "une thématique Agôn exacte",
   "positionA": "position franche, très courte, sans argument. MAX 60 CARACTÈRES. Si debateScore < 7, chaîne vide.",
@@ -443,9 +480,11 @@ Ne crée jamais une autre thématique.
 Pour "debateQuestion" :
 - écris une seule ligne ;
 - maximum 100 caractères, espaces compris ;
+- ne mets pas les mots "Résumé" ou "Question".
+
+Si le mode demandé est "arène à positions" :
 - commence par un mini-résumé concret du sujet ;
 - termine par une question très clivante ;
-- ne mets pas les mots "Résumé" ou "Question" ;
 - évite les questions molles ou trop neutres ;
 - la question doit opposer deux camps clairement ;
 - varie fortement la forme des questions d’un sujet à l’autre ;
@@ -453,16 +492,29 @@ Pour "debateQuestion" :
 - alterne entre plusieurs formes : "Faut-il...", "Est-ce que...", "Peut-on...", "Doit-on...", "Qui doit...", "Jusqu’où...", "Encore...", "Trop...", "Vrai scandale ou...", "Mesure juste ou..." ;
 - évite de répéter deux fois de suite la même structure de question.
 
-Bons exemples :
+Bons exemples en arène à positions :
 - Macron coupe un discours au sommet Afrique-France : respect ou mépris ?
 - Trump menace l’Iran, le pétrole grimpe : fermeté ou folie ?
 - Fièvre après une croisière : faut-il isoler les contacts ?
 - Le PS se déchire encore : qui peut encore y croire ?
 - Pétrole en hausse : doit-on craindre une crise mondiale ?
 
+Si le mode demandé est "arène libre" :
+- résume factuellement le sujet ;
+- n’écris aucune question ;
+- n’oppose pas deux camps ;
+- reste neutre et concret ;
+- vise une phrase courte, claire, immédiatement compréhensible.
+
+Bons exemples en arène libre :
+- Macron interrompt un discours au sommet Afrique-France
+- Trump relance les tensions avec l’Iran et fait grimper le pétrole
+- Une fièvre après une croisière déclenche un suivi sanitaire
+
 Pour "positionA" et "positionB" :
+- si le mode demandé est "arène libre", renvoie "" pour les deux champs ;
 - si debateScore < 7, renvoie "" pour les deux champs ;
-- si debateScore >= 7, propose deux camps opposés ;
+- si le mode demandé est "arène à positions" et debateScore >= 7, propose deux camps opposés ;
 - chaque position doit être une étiquette de camp, pas un argument ;
 - aucune justification, aucune explication ;
 - pas de "car", "parce que", "afin de", "pour éviter" ;
@@ -495,25 +547,31 @@ Mauvais exemples :
     const text = response.output_text;
     const parsed = safeJsonParse(text);
 
+    const fallbackQuestion = arenaMode === "libre"
+      ? limitText(subject.subject, 100)
+      : `Faut-il débattre de ce sujet : ${subject.subject} ?`;
+
     return {
       debateScore: Number.isInteger(parsed.debateScore) ? parsed.debateScore : 0,
       controversyLevel: parsed.controversyLevel || "faible",
-      debateQuestion: String(parsed.debateQuestion || `Faut-il débattre de ce sujet : ${subject.subject} ?`).trim(),
+      debateQuestion: arenaMode === "libre"
+        ? limitText(String(parsed.debateQuestion || fallbackQuestion).replace(/\?+$/g, "").trim(), 100)
+        : String(parsed.debateQuestion || fallbackQuestion).trim(),
       resume: parsed.resume || "",
       agonTheme: AGON_THEMES.includes(parsed.agonTheme)
         ? parsed.agonTheme
         : "Politique, économie et relations internationales",
-      positionA: parsed.debateScore >= 7 && typeof parsed.positionA === "string"
+      positionA: arenaMode === "positions" && parsed.debateScore >= 7 && typeof parsed.positionA === "string"
         ? parsed.positionA.trim()
         : "",
-      positionB: parsed.debateScore >= 7 && typeof parsed.positionB === "string"
+      positionB: arenaMode === "positions" && parsed.debateScore >= 7 && typeof parsed.positionB === "string"
         ? parsed.positionB.trim()
         : "",
       leftScore: Number.isInteger(parsed.leftScore) ? parsed.leftScore : 5
     };
   } catch (error) {
     console.error(`Erreur IA pour le sujet "${subject.subject}" :`, error.message);
-    return fallbackAiAnalysis(subject);
+    return fallbackAiAnalysis(subject, arenaMode);
   }
 }
 
@@ -836,8 +894,8 @@ function generateHtml(sessions) {
             }
           </div>`
         : `<div class="ai-box pending-analysis">
-            <button class="analyze-btn" type="button" data-subject="${subjectDataForBtn}">
-              Générer IA
+            <button class="analyze-btn" type="button" data-mode="positions" data-subject="${subjectDataForBtn}">
+              Générer arène à positions IA
             </button>
           </div>`;
 
@@ -1231,6 +1289,8 @@ function generateHtml(sessions) {
       display: flex;
       align-items: center;
       justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
       min-height: 56px;
     }
 
@@ -1253,6 +1313,12 @@ function generateHtml(sessions) {
     .analyze-btn:disabled {
       opacity: 0.6;
       cursor: default;
+    }
+
+      color: #111;
+      border: 1px solid #ddd;
+    }
+
     }
 
     .subject-number {
@@ -1643,6 +1709,7 @@ function generateHtml(sessions) {
       if (!btn) return;
 
       const subjectData = JSON.parse(btn.dataset.subject);
+      subjectData.arenaMode = btn.dataset.mode || "positions";
       const subjectEl = btn.closest(".subject");
       const aiBox = btn.closest(".ai-box");
       const aiScore = subjectEl.querySelector(".ai-score.pending");
@@ -1662,6 +1729,14 @@ function generateHtml(sessions) {
 
         if (aiScore) aiScore.outerHTML = buildAiScoreHtml(ai);
         aiBox.outerHTML = buildAiBoxHtml(ai);
+
+        const agonBtn = subjectEl.querySelector(".agon-btn");
+        if (agonBtn) {
+          agonBtn.dataset.question = ai.debateQuestion || subjectData.subject || "";
+          agonBtn.dataset.positionA = ai.positionA || "";
+          agonBtn.dataset.positionB = ai.positionB || "";
+          agonBtn.dataset.theme = ai.agonTheme || "";
+        }
 
         const preselectedLinks = selectPreselectedLinks(subjectData.contents, Number(ai.debateScore) || 0);
         subjectEl.querySelectorAll(".content-item[data-link]").forEach(function(item) {
@@ -1933,17 +2008,23 @@ function generateHtml(sessions) {
 
 async function runWatchSession() {
   const startedAt = dayjs();
+  const lastSessionCutoff = getLastSessionCutoff();
 
   console.log("");
   console.log("======================================");
   console.log(`Nouvelle session mixte : ${startedAt.format("DD/MM/YYYY HH:mm:ss")}`);
   console.log("======================================");
+  if (lastSessionCutoff) {
+    console.log("Filtre fraîcheur actif : seulement les contenus publiés après " + lastSessionCutoff.format("DD/MM/YYYY HH:mm:ss") + ".");
+  } else {
+    console.log("Aucune session précédente : première collecte sur la fenêtre récente habituelle.");
+  }
 
   console.log("Collecte des articles...");
-  const articles = await collectArticles();
+  const articles = await collectArticles(lastSessionCutoff);
 
   console.log("Collecte des vidéos YouTube...");
-  const videos = await collectYouTubeVideos();
+  const videos = await collectYouTubeVideos(lastSessionCutoff);
 
   const contents = [...articles, ...videos];
 
@@ -2016,59 +2097,6 @@ async function main() {
   } finally {
     isRunning = false;
   }
-
-  http.createServer((req, res) => {
-    if (req.method === "POST" && req.url === "/refresh") {
-      res.writeHead(200);
-      res.end("OK");
-      if (!isRunning) {
-        isRunning = true;
-        runWatchSession()
-          .catch(err => console.error("Erreur refresh manuel :", err.message))
-          .finally(() => { isRunning = false; });
-      }
-    } else if (req.method === "POST" && req.url === "/analyze") {
-      let body = "";
-      req.on("data", chunk => { body += chunk; });
-      req.on("end", async () => {
-        try {
-          const subject = JSON.parse(body);
-          const ai = await analyzeOneSubjectWithAI(subject);
-          res.writeHead(200, { "Content-Type": "application/json" });
-          res.end(JSON.stringify(ai));
-        } catch (err) {
-          res.writeHead(500, { "Content-Type": "application/json" });
-          res.end(JSON.stringify({ error: err.message }));
-        }
-      });
-    } else if (req.method === "POST" && req.url === "/save") {
-      let body = "";
-      req.on("data", chunk => { body += chunk; });
-      req.on("end", () => {
-        try {
-          const data = JSON.parse(body);
-          const saved = loadSavedSubjects();
-          const idx = saved.findIndex(s => s.subject === data.subject);
-          if (data.action === "unsave" && idx !== -1) {
-            saved.splice(idx, 1);
-          } else if (data.action === "save" && idx === -1) {
-            saved.unshift({ ...data, savedAt: new Date().toISOString() });
-          }
-          fs.writeFileSync(SAVED_FILE, JSON.stringify(saved, null, 2), "utf8");
-          res.writeHead(200, { "Content-Type": "application/json" });
-          res.end(JSON.stringify({ ok: true }));
-        } catch (err) {
-          res.writeHead(500, { "Content-Type": "application/json" });
-          res.end(JSON.stringify({ error: err.message }));
-        }
-      });
-    } else {
-      res.writeHead(404);
-      res.end();
-    }
-  }).listen(3002, "127.0.0.1", () => {
-    console.log("Déclenchement interne actif sur le port 3002.");
-  });
 }
 
 main();

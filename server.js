@@ -193,7 +193,9 @@ app.get("/saved", requireMixteAuth, (req, res) => {
     const score = Number(s.debateScore) || 0;
     if (!s.debateQuestion) {
       const subjectData = JSON.stringify({ subject: s.subject, sources: (s.sources || "").split(", ").filter(Boolean), contents: [] }).replace(/"/g, "&quot;");
-      return `<div class="ai-box pending-analysis"><button class="analyze-btn" type="button" data-subject="${subjectData}">Générer IA</button></div>`;
+      return `<div class="ai-box pending-analysis">
+        <button class="analyze-btn" type="button" data-mode="positions" data-subject="${subjectData}">Générer arène à positions IA</button>
+      </div>`;
     }
     const optionsHtml = AGON_THEMES.map(theme =>
       `<option value="${esc(theme)}"${theme === (s.agonTheme || AGON_THEMES[0]) ? " selected" : ""}>${esc(theme)}</option>`
@@ -281,7 +283,7 @@ app.get("/saved", requireMixteAuth, (req, res) => {
     .ai-score strong { font-size: 1.1rem; }
     .controversy { font-size: 0.82rem; background: #eee; border-radius: 999px; padding: 3px 10px; }
     .ai-box { background: #f9f9f9; border: 1px solid #e8e8e8; border-radius: 12px; padding: 14px 16px; margin-bottom: 14px; }
-    .ai-box.pending-analysis { display: flex; align-items: center; justify-content: center; min-height: 56px; }
+    .ai-box.pending-analysis { display: flex; align-items: center; justify-content: center; gap: 10px; min-height: 56px; flex-wrap: wrap; }
     .debate-question { font-weight: 600; margin: 0 0 10px; padding: 6px 8px; border-radius: 6px; outline: none; }
     .debate-question:hover, .debate-question:focus { background: #fff; box-shadow: 0 0 0 2px #ddd; }
     .resume { color: #444; font-size: 0.9rem; border-left: 3px solid #ddd; padding-left: 10px; margin: 8px 0; }
@@ -363,9 +365,11 @@ app.get("/saved", requireMixteAuth, (req, res) => {
     const btn = e.target.closest('.analyze-btn');
     if (!btn) return;
     const subjectData = JSON.parse(btn.dataset.subject);
+    subjectData.arenaMode = btn.dataset.mode || 'positions';
     const subjectEl = btn.closest('.subject');
     const aiBox = btn.closest('.ai-box');
     const aiScore = subjectEl.querySelector('.ai-score');
+    aiBox.querySelectorAll('.analyze-btn').forEach(button => { button.disabled = true; });
     btn.disabled = true;
     btn.textContent = 'Analyse en cours…';
     try {
@@ -482,8 +486,6 @@ app.get("/admin", (req, res) => {
     input { width: 100%; padding: 9px 12px; border: 1px solid #ddd; border-radius: 8px; font: inherit; font-size: 0.9rem; }
     input:focus { outline: 2px solid #111; outline-offset: 1px; }
     .form-actions { display: flex; gap: 10px; }
-    .save-bar { position: sticky; bottom: 24px; display: flex; justify-content: flex-end; margin-top: 16px; }
-    .save-bar button { padding: 12px 28px; font-size: 1rem; }
     .toast { position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%); background: #111; color: white; padding: 12px 24px; border-radius: 999px; font-size: 0.9rem; opacity: 0; pointer-events: none; transition: opacity 0.3s; z-index: 999; }
     .toast.show { opacity: 1; }
     .group-header { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 6px 12px; border-radius: 999px; display: inline-block; margin: 18px 0 10px; }
@@ -524,7 +526,6 @@ app.get("/admin", (req, res) => {
         </div>
       </div>
     </details>
-    <div class="save-bar"><button class="btn btn-primary" onclick="savePresse()">💾 Sauvegarder les médias presse</button></div>
   </div>
 
   <!-- Onglet YouTube -->
@@ -548,7 +549,6 @@ app.get("/admin", (req, res) => {
         </div>
       </div>
     </details>
-    <div class="save-bar"><button class="btn btn-primary" onclick="saveYoutube()">💾 Sauvegarder les chaînes YouTube</button></div>
   </div>
 
   <div class="toast" id="toast"></div>
@@ -558,6 +558,7 @@ let medias = [];
 let chaines = [];
 let editingPresse = null;
 let editingYoutube = null;
+let hasUnsavedFormChanges = false;
 
 const ORIENT_GROUPS = [
   { key: 0, label: "Gauche",              bg: "#c0392b", color: "#fff" },
@@ -602,6 +603,7 @@ async function init() {
   chaines = r2;
   renderPresse();
   renderYoutube();
+  bindUnsavedFormWarning();
 }
 
 function switchTab(name) {
@@ -614,6 +616,27 @@ function switchTab(name) {
 
 function esc(s) {
   return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function markUnsavedFormChanges() {
+  hasUnsavedFormChanges = true;
+}
+
+function clearUnsavedFormChanges() {
+  hasUnsavedFormChanges = false;
+}
+
+function bindUnsavedFormWarning() {
+  ['p-nom', 'p-orientation', 'p-rss', 'y-nom', 'y-orientation', 'y-url', 'y-rss'].forEach(id => {
+    const input = document.getElementById(id);
+    if (input) input.addEventListener('input', markUnsavedFormChanges);
+  });
+
+  window.addEventListener('beforeunload', event => {
+    if (!hasUnsavedFormChanges) return;
+    event.preventDefault();
+    event.returnValue = '';
+  });
 }
 
 function sortedWithOriginalIndex(arr) {
@@ -696,33 +719,60 @@ function cancelPresse() {
   document.getElementById('p-rss').value = '';
   document.getElementById('form-presse-title').textContent = 'Nouveau média';
   document.getElementById('form-presse-wrap').open = false;
+  clearUnsavedFormChanges();
 }
 
-function submitPresse() {
+async function submitPresse() {
   const nom = document.getElementById('p-nom').value.trim();
   const orientation = document.getElementById('p-orientation').value.trim();
   const rss = document.getElementById('p-rss').value.trim();
   if (!nom || !rss) { alert('Nom et URL RSS requis.'); return; }
+
+  const previous = medias.slice();
   const entry = { nom, orientation, rss };
   if (editingPresse !== null) {
     medias[editingPresse] = entry;
   } else {
     medias.push(entry);
   }
+
   renderPresse();
   cancelPresse();
+
+  const saved = await savePresse();
+  if (!saved) {
+    medias = previous;
+    renderPresse();
+    hasUnsavedFormChanges = true;
+  } else {
+    clearUnsavedFormChanges();
+  }
 }
 
-function deletePresse(i) {
+async function deletePresse(i) {
   if (!confirm(\`Supprimer "\${medias[i].nom}" ?\`)) return;
+
+  const previous = medias.slice();
   medias.splice(i, 1);
   renderPresse();
+
+  const saved = await savePresse();
+  if (!saved) {
+    medias = previous;
+    renderPresse();
+  }
 }
 
 async function savePresse() {
-  const r = await fetch('/api/medias', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(medias) });
-  const d = await r.json();
-  showToast(d.ok ? 'Médias presse sauvegardés ✓' : 'Erreur : ' + d.error);
+  try {
+    const r = await fetch('/api/medias', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(medias) });
+    const d = await r.json();
+    showToast(d.ok ? 'Médias presse sauvegardés ✓' : 'Erreur : ' + d.error);
+    return !!d.ok;
+  } catch (err) {
+    showToast('Erreur : ' + err.message);
+    return false;
+  }
 }
 
 function editYoutube(i) {
@@ -745,34 +795,61 @@ function cancelYoutube() {
   document.getElementById('y-rss').value = '';
   document.getElementById('form-youtube-title').textContent = 'Nouvelle chaîne';
   document.getElementById('form-youtube-wrap').open = false;
+  clearUnsavedFormChanges();
 }
 
-function submitYoutube() {
+async function submitYoutube() {
   const nom = document.getElementById('y-nom').value.trim();
   const orientation = document.getElementById('y-orientation').value.trim();
   const url = document.getElementById('y-url').value.trim();
   const rss = document.getElementById('y-rss').value.trim();
   if (!nom || !url || !rss) { alert('Nom, URL chaîne et URL RSS requis.'); return; }
+
+  const previous = chaines.slice();
   const entry = { nom, orientation, url, rss };
   if (editingYoutube !== null) {
     chaines[editingYoutube] = entry;
   } else {
     chaines.push(entry);
   }
+
   renderYoutube();
   cancelYoutube();
+
+  const saved = await saveYoutube();
+  if (!saved) {
+    chaines = previous;
+    renderYoutube();
+    hasUnsavedFormChanges = true;
+  } else {
+    clearUnsavedFormChanges();
+  }
 }
 
-function deleteYoutube(i) {
+async function deleteYoutube(i) {
   if (!confirm(\`Supprimer "\${chaines[i].nom}" ?\`)) return;
+
+  const previous = chaines.slice();
   chaines.splice(i, 1);
   renderYoutube();
+
+  const saved = await saveYoutube();
+  if (!saved) {
+    chaines = previous;
+    renderYoutube();
+  }
 }
 
 async function saveYoutube() {
-  const r = await fetch('/api/youtube-chaines', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(chaines) });
-  const d = await r.json();
-  showToast(d.ok ? 'Chaînes YouTube sauvegardées ✓' : 'Erreur : ' + d.error);
+  try {
+    const r = await fetch('/api/youtube-chaines', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(chaines) });
+    const d = await r.json();
+    showToast(d.ok ? 'Chaînes YouTube sauvegardées ✓' : 'Erreur : ' + d.error);
+    return !!d.ok;
+  } catch (err) {
+    showToast('Erreur : ' + err.message);
+    return false;
+  }
 }
 
 function showToast(msg) {

@@ -118,5 +118,10 @@
     "nom": "Slate France",
     "orientation": "centre-gauche / analyse",
     "rss": "https://www.slate.fr/rss.xml"
+  },
+  {
+    "nom": "Alternatives économiques",
+    "orientation": "gauche",
+    "rss": "https://www.alternatives-economiques.fr/rss.xml"
   }
 ]

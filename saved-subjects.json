@@ -1,6 +1,92 @@
 [
   {
     "action": "save",
+    "subject": "En Cisjordanie, un enfant palestinien tué en moyenne chaque semaine depuis janvier 2025, selon l’Unicef",
+    "debateScore": 8,
+    "debateQuestion": "",
+    "resume": "",
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "Le Monde, Le Figaro",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.lemonde.fr/international/article/2026/05/12/en-cisjordanie-un-enfant-palestinien-tue-en-moyenne-chaque-semaine-depuis-janvier-2025-selon-l-unicef_6688235_3210.html",
+        "source": "Le Monde",
+        "title": "En Cisjordanie, un enfant palestinien tué en moyenne chaque semaine depuis janvier 2025, selon l’Unicef",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.lefigaro.fr/international/cisjordanie-un-enfant-palestinien-tue-en-moyenne-chaque-semaine-depuis-janvier-2025-20260512",
+        "source": "Le Figaro",
+        "title": "Cisjordanie : un enfant palestinien tué en moyenne chaque semaine depuis janvier 2025",
+        "thumbnail": ""
+      }
+    ],
+    "sessionLabel": "12/05/2026 à 16:40:42",
+    "savedAt": "2026-05-12T12:49:46.463Z"
+  },
+  {
+    "action": "save",
+    "subject": "Attaque du 7 Octobre : un rapport israélien accuse le Hamas de violences sexuelles «systématiques» et «à grande échelle»",
+    "debateScore": 9,
+    "debateQuestion": "Rapport israélien accuse le Hamas de violences sexuelles : vérité ou propagande ?",
+    "resume": "Un rapport israélien accuse le Hamas d'avoir commis des violences sexuelles « systémiques » et « à grande échelle » lors de l'attaque du 7 octobre et pendant la captivité des otages à Gaza. Ce sujet est relayé par plusieurs médias aux orientations diverses, soulignant l'ampleur et la gravité des accusations.",
+    "agonTheme": "Politique, économie et relations internationales",
+    "positionA": "Crimes avérés du Hamas",
+    "positionB": "Manipulation et propagande israélienne",
+    "sources": "Libération, Mediapart, L'Obs, Valeurs actuelles, BFMTV, CNews",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.nouvelobs.com/monde/20260512.OBS114859/7-octobre-un-rapport-israelien-accuse-le-hamas-de-violences-sexuelles-systematiques-et-a-grande-echelle.html",
+        "source": "L'Obs",
+        "title": "7-Octobre : un rapport israélien accuse le Hamas de violences sexuelles « systématiques » et « à grande échelle »",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.liberation.fr/international/moyen-orient/attaque-du-7-octobre-un-rapport-israelien-accuse-le-hamas-de-violences-sexuelles-systematiques-et-a-grande-echelle-20260512_62SKEXWF25HNPFQDE7TUJXJRWE/",
+        "source": "Libération",
+        "title": "Attaque du 7 Octobre : un rapport israélien accuse le Hamas de violences sexuelles «systématiques» et «à grande échelle»",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.mediapart.fr/journal/international/120526/7-octobre-un-nouveau-rapport-accuse-le-hamas-de-violences-sexuelles-systematiques-et-grande-echelle",
+        "source": "Mediapart",
+        "title": "7-Octobre: un nouveau rapport accuse le Hamas de violences sexuelles «systématiques» et «à grande échelle»",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.bfmtv.com/international/moyen-orient/palestine/video-un-rapport-israelien-accuse-le-hamas-de-violences-sexuelles-systematiques-et-de-torture-lors-des-attaques-du-7-octobre-et-pendant-la-captivite-des-otages-a-gaza_VN-202605120461.html",
+        "source": "BFMTV",
+        "title": "Un rapport israélien accuse le Hamas de violences sexuelles “systématiques” et “de torture” lors des attaques du 7-Octobre et pendant la captivité des otages à Gaza",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.valeursactuelles.com/monde/viols-mutilations-et-tortures-une-enquete-documente-les-crimes-de-guerre-commis-par-le-hamas-sur-les-otages-et-les-victimes-du-7-octobre",
+        "source": "Valeurs actuelles",
+        "title": "« Viols, mutilations et tortures » : une enquête documente les « crimes de guerre » commis par le Hamas sur les otages et les victimes du 7 octobre",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.cnews.fr/monde/2026-05-12/7-octobre-un-rapport-israelien-denonce-les-violences-sexuelles-systematiques",
+        "source": "CNews",
+        "title": "7-Octobre : un rapport israélien dénonce les «violences sexuelles systématiques, à grande échelle» des terroristes du Hamas",
+        "thumbnail": ""
+      }
+    ],
+    "sessionLabel": "12/05/2026 à 16:40:42",
+    "savedAt": "2026-05-12T12:47:03.885Z"
+  },
+  {
+    "action": "save",
     "subject": "Les jeunes actifs financent le train de vie des riches ?",
     "debateScore": 8,
     "debateQuestion": "",
