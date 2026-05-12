@@ -1,6 +1,142 @@
 [
   {
     "action": "save",
+    "subject": "Les jeunes actifs financent le train de vie des riches ?",
+    "debateScore": 8,
+    "debateQuestion": "",
+    "resume": "",
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "Le Crayon, Sud Radio",
+    "contents": [
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/shorts/szjGrKiCQiU",
+        "source": "Le Crayon",
+        "title": "Les jeunes actifs financent le train de vie des riches ?",
+        "thumbnail": ""
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/watch?v=RNb8xiR41_o",
+        "source": "Sud Radio",
+        "title": "",
+        "thumbnail": "https://i.ytimg.com/vi/RNb8xiR41_o/hqdefault.jpg"
+      }
+    ],
+    "sessionLabel": "12/05/2026 à 14:13:18",
+    "savedAt": "2026-05-12T10:22:16.834Z"
+  },
+  {
+    "action": "save",
+    "subject": "Cadmium dans l'alimentation : l'Assemblée nationale va-t-elle se saisir ou au contraire enterrer la proposition de loi ?",
+    "debateScore": 7,
+    "debateQuestion": "",
+    "resume": "",
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "Franceinfo, Libération, 20 Minutes, LCP - Assemblée nationale",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.liberation.fr/culture/cinema/assemblee-nationale-le-projet-de-loi-pour-le-droit-dauteur-sur-lia-attendra-20260512_7RIAAKKD4FDCNBPOMIK6PWF53A/",
+        "source": "Libération",
+        "title": "Assemblée nationale : le projet de loi pour le droit d’auteur sur l’IA attendra",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.liberation.fr/environnement/pollution/cadmium-la-droite-et-lextreme-droite-feront-elles-encore-obstruction-au-texte-visant-a-reduire-les-risques-dans-lalimentation-20260512_LCG4RFDYBBA6JIO4VDOROGHBEU/",
+        "source": "Libération",
+        "title": "Cadmium : le texte visant à réduire les risques dans l’alimentation sera examiné à l’Assemblée début juin",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.franceinfo.fr/replay-radio/le-billet-vert/caldium-dans-l-alimentation-l-assemblee-nationale-va-t-elle-se-saisir-ou-au-contraire-enterrer-la-proposition-de-loi_7999196.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "title": "Cadmium dans l'alimentation : l'Assemblée nationale va-t-elle se saisir ou au contraire enterrer la proposition de loi ?",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.20minutes.fr/politique/assemblee_nationale/4222923-20260512-pourquoi-large-contamination-population-francaise-cadmium-fait-unanimite-assemblee?at_medium=display&at_campaign=149",
+        "source": "20 Minutes",
+        "title": "Pourquoi la large contamination de la population française au cadmium ne fait-elle pas l’unanimité à l’assemblée ?",
+        "thumbnail": ""
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/watch?v=92UiRONPuZM",
+        "source": "LCP - Assemblée nationale",
+        "title": "",
+        "thumbnail": "https://i.ytimg.com/vi/92UiRONPuZM/hqdefault.jpg"
+      }
+    ],
+    "sessionLabel": "12/05/2026 à 14:13:18",
+    "savedAt": "2026-05-12T10:21:57.874Z"
+  },
+  {
+    "action": "save",
+    "subject": "Présidentielle 2027 : \"Je souhaite qu'une primaire de la gauche ait lieu mais s'il n'y en a pas, j'y vais\", assure François Ruffin",
+    "debateScore": 7,
+    "debateQuestion": "",
+    "resume": "",
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "Franceinfo, Le Monde, Libération, L'Obs, CNews, 20 Minutes",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.lemonde.fr/politique/article/2026/05/12/francois-ruffin-annonce-qu-il-sera-candidat-a-la-presidentielle-s-il-n-y-a-pas-de-primaire-a-gauche_6688219_823448.html",
+        "source": "Le Monde",
+        "title": "François Ruffin annonce qu’il sera candidat à la présidentielle s’il n’y a pas de primaire à gauche",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.liberation.fr/politique/elections/francois-ruffin-sera-candidat-a-lelection-presidentielle-de-2027-sil-ny-a-pas-de-primaire-de-la-gauche-20260512_NBKYLZQ35RB3HJLNQBRXLYIWDQ/",
+        "source": "Libération",
+        "title": "François Ruffin sera candidat à l’élection présidentielle de 2027 s’il n’y a pas de primaire de la gauche",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.nouvelobs.com/opinions/20260511.OBS114836/il-est-minuit-la-gauche-une-troisieme-defaite-consecutive-au-premier-tour-de-la-presidentielle-se-profile.html",
+        "source": "L'Obs",
+        "title": "Il est minuit, la gauche : une troisième défaite consécutive au premier tour de la présidentielle se profile",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.20minutes.fr/politique/4223100-20260512-presidentielle-2027-melenchon-francois-ruffin-bien-candidat-si-primaire-echoue?at_medium=display&at_campaign=149",
+        "source": "20 Minutes",
+        "title": "Présidentielle 2027 : « Il y a Mélenchon et il y a moi… » François Ruffin sera bien candidat si la primaire échoue",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.franceinfo.fr/elections/presidentielle/presidentielle-2027-je-souhaite-qu-une-primaire-de-la-gauche-ait-lieu-mais-s-il-n-y-en-a-pas-j-y-vais-assure-francois-ruffin_7999316.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "title": "Présidentielle 2027 : \"Je souhaite qu'une primaire de la gauche ait lieu mais s'il n'y en a pas, j'y vais\", assure François Ruffin",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.cnews.fr/france/2026-05-12/presidentielle-2027-sil-ny-pas-de-primaire-jy-vais-promet-le-depute-francois",
+        "source": "CNews",
+        "title": "Présidentielle 2027 : «S’il n’y a pas de primaire, j’y vais», promet le député François Ruffin",
+        "thumbnail": ""
+      }
+    ],
+    "sessionLabel": "12/05/2026 à 14:13:18",
+    "savedAt": "2026-05-12T10:20:11.027Z"
+  },
+  {
+    "action": "save",
     "subject": "Test sujet",
     "debateScore": 8,
     "debateQuestion": "Question test",
