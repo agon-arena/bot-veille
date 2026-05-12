@@ -408,44 +408,81 @@ ${subject.sources.join(", ")}
 Contenus :
 ${JSON.stringify(compactContents, null, 2)}
 
+
 Tu dois répondre uniquement en JSON valide avec ces champs :
 {
   "debateScore": nombre entier de 0 à 10,
   "controversyLevel": "faible" | "moyen" | "fort" | "très fort",
-  "debateQuestion": "question de débat en MAX 90 CARACTÈRES, formulée avec une sensibilité de gauche progressiste : elle doit partir du scandale ou de l'injustice perçue, pas mettre les deux camps sur un pied d'égalité. Évite les formulations neutres type 'Faut-il...' ou 'Doit-on...'. Préfère des formulations qui présupposent un angle moral, mémoriel, social ou écologique.",
-  "resume": "si debateScore >= 7 : résumé factuel de l'actualité en 2 ou 3 phrases (ce qui s'est passé, le contexte, les acteurs). Sinon : chaîne vide",
+  "debateQuestion": "une seule ligne de 100 caractères maximum, espaces compris. Elle doit résumer le sujet en quelques mots puis poser une question très clivante. Varie fortement la forme des questions. Format conseillé : mini-résumé : question clivante ?",
+  "resume": "si debateScore >= 7 : résumé factuel de l'actualité en 2 ou 3 phrases. Sinon : chaîne vide",
   "agonTheme": "une thématique Agôn exacte",
-  "positionA": "prise de position tranchée, courte (MAX 60 CARACTÈRES), formulée comme un slogan ou une conviction immédiatement compréhensible. Si debateScore < 7, chaîne vide.",
-  "positionB": "prise de position opposée, même format : courte (MAX 60 CARACTÈRES), percutante, compréhensible sans contexte. Si debateScore < 7, chaîne vide.",
+  "positionA": "position franche, très courte, sans argument. MAX 60 CARACTÈRES. Si debateScore < 7, chaîne vide.",
+  "positionB": "position opposée franche, très courte, sans argument. MAX 60 CARACTÈRES. Si debateScore < 7, chaîne vide.",
   "leftScore": nombre entier de 0 à 10 indiquant l'intérêt du sujet pour un public de gauche progressiste
 }
 
-Critères pour leftScore (INDÉPENDANT du debateScore — un sujet peut avoir un leftScore élevé même si son debateScore est faible) :
-- 8 à 10 : sujet central pour la gauche (droits sociaux, inégalités, écologie, services publics, droits des travailleur·ses, libertés publiques, lutte contre les discriminations, annonce de politique sociale, rapport sur les inégalités, actualité syndicale ou climatique)
-- 5 à 7 : sujet d'intérêt général avec une dimension sociale ou politique pertinente
-- 0 à 4 : sujet peu pertinent pour un public de gauche (fait divers apolitique, résultat sportif, annonce culturelle neutre)
+Critères pour leftScore :
+- 8 à 10 : sujet central pour la gauche progressiste ;
+- 5 à 7 : sujet d’intérêt général avec dimension sociale ou politique ;
+- 0 à 4 : sujet peu pertinent pour ce public.
 
 Critères pour debateScore :
-- 0 à 3 : sujet informatif, peu clivant
-- 4 à 6 : sujet débattable mais pas explosif
-- 7 à 8 : sujet controversé, bon potentiel de débat
-- 9 à 10 : sujet très clivant, fort potentiel de réactions
-Favorise les sujets politiques, sociaux, économiques, éducatifs, écologiques, internationaux ou liés aux libertés publiques.
-Pénalise les simples faits divers non politiques, résultats sportifs, annonces culturelles ou sujets purement descriptifs.
+- 0 à 3 : sujet informatif, peu clivant ;
+- 4 à 6 : sujet débattable mais peu explosif ;
+- 7 à 8 : sujet controversé, bon potentiel de débat ;
+- 9 à 10 : sujet très clivant, fort potentiel de réactions.
 
-Pour le champ "agonTheme", tu dois choisir uniquement une valeur exacte dans cette liste :
+Favorise les sujets politiques, sociaux, économiques, éducatifs, écologiques, internationaux ou liés aux libertés publiques.
+Pénalise les faits divers non politiques, résultats sportifs, annonces culturelles neutres ou sujets purement descriptifs.
+
+Pour le champ "agonTheme", choisis uniquement une valeur exacte dans cette liste :
 ${AGON_THEMES.map(theme => `- ${theme}`).join("\n")}
 
 Ne crée jamais une autre thématique.
 
-Pour les champs "positionA" et "positionB" :
-- si debateScore est inférieur à 7, renvoie "" pour les deux champs ;
-- si debateScore est supérieur ou égal à 7, propose deux positions opposées formulées comme des slogans ou convictions : courtes (MAX 60 CARACTÈRES CHACUNE), percutantes, immédiatement compréhensibles sans avoir lu l'article ;
-- positionA défend une réponse affirmative ou favorable à la question ;
-- positionB défend une réponse négative ou opposée ;
-- évite les formulations longues, abstraites ou trop nuancées : une position doit pouvoir être lue en 2 secondes et comprise d'emblée ;
-- IMPORTANT : positionA et positionB doivent chacune faire strictement moins de 60 caractères ;
+Pour "debateQuestion" :
+- écris une seule ligne ;
+- maximum 100 caractères, espaces compris ;
+- commence par un mini-résumé concret du sujet ;
+- termine par une question très clivante ;
+- ne mets pas les mots "Résumé" ou "Question" ;
+- évite les questions molles ou trop neutres ;
+- la question doit opposer deux camps clairement ;
+- varie fortement la forme des questions d’un sujet à l’autre ;
+- n’utilise pas toujours "Faut-il..." ;
+- alterne entre plusieurs formes : "Faut-il...", "Est-ce que...", "Peut-on...", "Doit-on...", "Qui doit...", "Jusqu’où...", "Encore...", "Trop...", "Vrai scandale ou...", "Mesure juste ou..." ;
+- évite de répéter deux fois de suite la même structure de question.
+
+Bons exemples :
+- Macron coupe un discours au sommet Afrique-France : respect ou mépris ?
+- Trump menace l’Iran, le pétrole grimpe : fermeté ou folie ?
+- Fièvre après une croisière : faut-il isoler les contacts ?
+- Le PS se déchire encore : qui peut encore y croire ?
+- Pétrole en hausse : doit-on craindre une crise mondiale ?
+
+Pour "positionA" et "positionB" :
+- si debateScore < 7, renvoie "" pour les deux champs ;
+- si debateScore >= 7, propose deux camps opposés ;
+- chaque position doit être une étiquette de camp, pas un argument ;
+- aucune justification, aucune explication ;
+- pas de "car", "parce que", "afin de", "pour éviter" ;
+- maximum 60 caractères chacune ;
+- positionA et positionB doivent pouvoir servir de noms de colonnes dans Agôn.
+
+Bons exemples :
+- Isolement obligatoire
+- Liberté de circulation
+- Fermeté assumée
+- Provocation dangereuse
+- Sanction immédiate
+- Défense des libertés
+
+Mauvais exemples :
+- Isoler les contacts pour protéger la population
+- Refuser l’isolement car il menace les libertés
+- Il faut agir vite avant que la situation empire
 `;
+
 
   try {
     const response = await openai.responses.create({
