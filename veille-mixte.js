@@ -32,6 +32,13 @@ const UPDATE_INTERVAL_MINUTES = 720;
 const MAX_SESSIONS_TO_KEEP = 12;
 const MAX_SUBJECTS_TO_ANALYZE_WITH_AI = 25;
 const FEED_TIMEOUT_MS = 15000;
+const DEFAULT_FETCH_HEADERS = {
+  "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+  "Accept": "application/rss+xml, application/xml, text/xml, application/atom+xml, text/html;q=0.9, */*;q=0.8",
+  "Accept-Language": "fr-FR,fr;q=0.9,en;q=0.8",
+  "Cache-Control": "no-cache",
+  "Pragma": "no-cache"
+};
 
 const AGON_THEMES = [
   "Politique, économie et relations internationales",
@@ -88,6 +95,36 @@ async function fetchTextWithTimeout(url, options, label, timeoutMs = FEED_TIMEOU
 
 function parseFeedWithTimeout(url, label, timeoutMs = FEED_TIMEOUT_MS) {
   return withTimeout(parser.parseURL(url), timeoutMs, label);
+}
+
+function parseFeedTextWithTimeout(feedText, label, timeoutMs = FEED_TIMEOUT_MS) {
+  return withTimeout(parser.parseString(feedText), timeoutMs, label);
+}
+
+function looksLikeXmlFeed(text) {
+  const value = String(text || "").trimStart();
+  if (!value) return false;
+  return value.startsWith("<?xml") || value.startsWith("<rss") || value.startsWith("<feed");
+}
+
+async function fetchFeedWithFallback(url, label, timeoutMs = FEED_TIMEOUT_MS) {
+  try {
+    return await parseFeedWithTimeout(url, label, timeoutMs);
+  } catch (initialError) {
+    const feedText = await fetchTextWithTimeout(url, {
+      headers: DEFAULT_FETCH_HEADERS
+    }, label, timeoutMs);
+
+    if (!looksLikeXmlFeed(feedText)) {
+      throw new Error(`${label} ne renvoie pas un flux XML exploitable`);
+    }
+
+    try {
+      return await parseFeedTextWithTimeout(feedText, label, timeoutMs);
+    } catch (parseError) {
+      throw new Error(`${label} n'a pas pu être analysé (${parseError.message || initialError.message})`);
+    }
+  }
 }
 
 function cleanText(text) {
@@ -246,9 +283,7 @@ async function getRssUrlFromYouTubeChannel(channel) {
   }
 
   const html = await fetchTextWithTimeout(channel.url, {
-    headers: {
-      "User-Agent": "Mozilla/5.0"
-    }
+    headers: DEFAULT_FETCH_HEADERS
   }, `Lecture de la chaîne YouTube ${channel.nom || channel.url}`);
 
   const canonicalMatch = html.match(/<link rel="canonical" href="https:\/\/www\.youtube\.com\/channel\/([^"]+)"/);
@@ -272,6 +307,60 @@ async function getRssUrlFromYouTubeChannel(channel) {
   throw new Error("Impossible de trouver le channel_id YouTube");
 }
 
+function persistYoutubeRssUrl(channelName, rssUrl) {
+  if (!channelName || !rssUrl) return;
+  try {
+    const channels = JSON.parse(fs.readFileSync(CHANNELS_FILE, "utf8"));
+    const index = channels.findIndex((item) => String(item.nom || "").trim() === String(channelName).trim());
+    if (index === -1) return;
+    if (channels[index].rss === rssUrl) return;
+    channels[index].rss = rssUrl;
+    fs.writeFileSync(CHANNELS_FILE, JSON.stringify(channels, null, 2), "utf8");
+  } catch (error) {
+    console.error(`Impossible de mettre à jour le flux YouTube pour ${channelName}:`, error.message);
+  }
+}
+
+async function getWorkingYouTubeRssUrl(channel) {
+  const attempts = [];
+  if (channel.rss) {
+    attempts.push({ kind: "stored", url: channel.rss });
+  }
+
+  if (channel.url) {
+    try {
+      const rebuilt = await getRssUrlFromYouTubeChannel({ ...channel, rss: "" });
+      if (!attempts.some((item) => item.url === rebuilt)) {
+        attempts.push({ kind: "rebuilt", url: rebuilt });
+      }
+    } catch (error) {
+      if (!attempts.length) {
+        throw error;
+      }
+    }
+  }
+
+  if (!attempts.length) {
+    throw new Error("Aucun flux YouTube utilisable n'a pu être déterminé");
+  }
+
+  let lastError = null;
+
+  for (const attempt of attempts) {
+    try {
+      const feed = await fetchFeedWithFallback(attempt.url, `Flux YouTube ${channel.nom}`);
+      if (attempt.kind === "rebuilt") {
+        persistYoutubeRssUrl(channel.nom, attempt.url);
+      }
+      return { rssUrl: attempt.url, feed };
+    } catch (error) {
+      lastError = error;
+    }
+  }
+
+  throw lastError || new Error("Impossible de lire le flux YouTube");
+}
+
 function extractYouTubeVideoId(link) {
   const value = String(link || "");
   const match = value.match(/[?&]v=([^&]+)/);
@@ -291,7 +380,7 @@ async function collectArticles(lastSessionCutoff = null) {
     try {
       console.log(`Article — lecture de ${media.nom}...`);
 
-      const feed = await parseFeedWithTimeout(media.rss, `Flux RSS ${media.nom}`);
+      const feed = await fetchFeedWithFallback(media.rss, `Flux RSS ${media.nom}`);
 
       for (const item of feed.items || []) {
         const date = getItemDate(item);
@@ -335,8 +424,7 @@ async function collectYouTubeVideos(lastSessionCutoff = null) {
     try {
       console.log(`YouTube — lecture de ${channel.nom}...`);
 
-      const rssUrl = await getRssUrlFromYouTubeChannel(channel);
-      const feed = await parseFeedWithTimeout(rssUrl, `Flux YouTube ${channel.nom}`);
+      const { feed } = await getWorkingYouTubeRssUrl(channel);
 
       for (const item of feed.items || []) {
         const date = getItemDate(item);
@@ -1563,6 +1651,112 @@ function generateHtml(sessions) {
       padding: 9px 10px;
       font: inherit;
       background: white;
+    }
+
+    .story-link-toggle {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 8px 0 12px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .story-link-toggle input {
+      width: 16px;
+      height: 16px;
+      margin: 0;
+    }
+
+    .story-link-disabled {
+      opacity: 0.55;
+    }
+
+    .story-manual-picker {
+      margin-top: 12px;
+      border-top: 1px solid #e7ebf2;
+      padding-top: 12px;
+    }
+
+    .story-manual-picker label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #555;
+      margin-bottom: 6px;
+    }
+
+    .story-manual-picker select,
+    .story-manual-picker textarea {
+      width: 100%;
+      border: 1px solid #d7dbe2;
+      border-radius: 10px;
+      padding: 9px 10px;
+      font: inherit;
+      background: white;
+    }
+
+    .story-manual-summary {
+      margin-top: 10px;
+    }
+
+    .story-manual-picker small {
+      display: block;
+      margin-top: 6px;
+      color: #666;
+    }
+
+    .story-save-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 8px;
+      flex-wrap: wrap;
+    }
+
+    .story-save-btn {
+      border: 1px solid #d7dbe2;
+      background: #f7f9fc;
+      color: #223;
+      border-radius: 999px;
+      padding: 8px 12px;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .story-save-btn:hover {
+      background: #eef3fb;
+    }
+
+    .story-save-feedback {
+      font-size: 0.82rem;
+      color: #196a42;
+      font-weight: 600;
+    }
+
+    .episode-nav-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 10px;
+      padding: 9px 12px;
+      border-radius: 999px;
+      border: 1px solid #d7dbe2;
+      background: #fff;
+      color: #223;
+      font-size: 0.84rem;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .episode-nav-link:hover {
+      background: #f5f8fd;
+    }
+
+    .hidden {
+      display: none !important;
       color: #111;
     }
 
@@ -1918,6 +2112,40 @@ function generateHtml(sessions) {
       }
     }
 
+    let agonStoriesCache = null;
+
+    async function loadAgonStoriesClient() {
+      if (agonStoriesCache) return agonStoriesCache;
+      const response = await fetch("/api/agon-stories");
+      const data = await response.json().catch(function() { return { ok: false, stories: [] }; });
+      if (!response.ok || data.ok === false) {
+        throw new Error(data.error || "Impossible de charger les histoires existantes.");
+      }
+      agonStoriesCache = Array.isArray(data.stories) ? data.stories : [];
+      return agonStoriesCache;
+    }
+
+    function buildManualStoryPickerHtml() {
+      return '<div class="story-manual-picker">' +
+        '<label>Choisir manuellement une autre histoire existante</label>' +
+        '<select class="story-manual-select">' +
+          '<option value="">Conserver le rattachement proposé</option>' +
+        '</select>' +
+        '<div class="story-manual-summary hidden">' +
+          '<label>Résumé de l’histoire choisie</label>' +
+          '<textarea class="story-manual-summary-input" rows="3" placeholder="Résumé stable des grands enjeux de l’histoire"></textarea>' +
+          '<small class="story-manual-meta"></small>' +
+        '</div>' +
+      '</div>';
+    }
+
+    function buildPreviousEpisodeLinkHtml(storyLink) {
+      const previousUrl = String(storyLink?.previous_episode_url || "").trim();
+      if (!previousUrl) return "";
+      const previousTitle = escapeHtmlClient(storyLink?.previous_episode_title || "Épisode précédent");
+      return '<a class="episode-nav-link" href="' + escapeHtmlClient(previousUrl) + '" target="_blank" rel="noopener noreferrer" title="' + previousTitle + '">Voir l’épisode précédent</a>';
+    }
+
     function buildStoryLinkHtml(storyLink) {
       if (!storyLink) return "";
 
@@ -1925,6 +2153,8 @@ function generateHtml(sessions) {
       const confidence = Number(storyLink.confidence || 0);
       const matchedTitle = escapeHtmlClient(storyLink.matched_story_title || "");
       const matchedSummary = escapeHtmlClient(storyLink.matched_story_summary || "");
+      const previousEpisodeTitle = escapeHtmlClient(storyLink.previous_episode_title || "");
+      const previousEpisodeUrl = escapeHtmlClient(storyLink.previous_episode_url || "");
       const reason = escapeHtmlClient(storyLink.reason || "");
       const newStory = storyLink.new_story || {};
       const groupName = "story-choice-" + Math.random().toString(36).slice(2, 9);
@@ -1935,29 +2165,42 @@ function generateHtml(sessions) {
         : storyDecision === "uncertain"
           ? '<div class="story-link-status is-uncertain">Histoire possible : choix requis</div>'
           : '<div class="story-link-status is-new">Nouvelle histoire proposée</div>';
+      const storyToggleHtml = '<label class="story-link-toggle"><input type="checkbox" class="story-enabled-input" checked> Relier cette arène à une histoire</label>';
+      const manualPickerHtml = buildManualStoryPickerHtml();
+
+      const existingStoryFields = '<div class="story-draft-fields">' +
+        '<label>Résumé de l’histoire</label>' +
+        '<textarea class="story-summary-input" rows="3" placeholder="Résumé stable des grands enjeux de l’histoire">' + matchedSummary + '</textarea>' +
+        '<div class="story-save-actions"><button type="button" class="story-save-btn">Enregistrer les modifications</button><span class="story-save-feedback hidden">Modifications enregistrées</span></div>' +
+      '</div>';
 
       if (storyDecision === "existing_story") {
-        return '<div class="story-link-box" data-story-decision="existing_story" data-matched-story-id="' + escapeHtmlClient(storyLink.matched_story_id || "") + '" data-matched-story-title="' + matchedTitle + '" data-confidence="' + confidence + '" data-reason="' + reason + '" data-criteria="' + encodedCriteria + '" data-new-story="' + encodedNewStory + '">' +
+        return '<div class="story-link-box" data-story-decision="existing_story" data-matched-story-id="' + escapeHtmlClient(storyLink.matched_story_id || "") + '" data-matched-story-title="' + matchedTitle + '" data-previous-episode-title="' + previousEpisodeTitle + '" data-previous-episode-url="' + previousEpisodeUrl + '" data-confidence="' + confidence + '" data-reason="' + reason + '" data-criteria="' + encodedCriteria + '" data-new-story="' + encodedNewStory + '">' +
           storyStatusHtml +
+          storyToggleHtml +
           '<div class="story-link-header">Histoire proposée</div>' +
           '<div class="story-link-card selected">' +
             '<strong>' + matchedTitle + '</strong>' +
             (matchedSummary ? '<p>' + matchedSummary + '</p>' : "") +
             '<small>Sélectionnée par défaut.</small>' +
           '</div>' +
+          existingStoryFields +
+          manualPickerHtml +
         '</div>';
       }
 
       const newStoryFields = '<div class="story-draft-fields">' +
         '<label>Titre de la nouvelle histoire</label>' +
-        '<input type="text" class="story-title-input" value="' + escapeHtmlClient(newStory.story_title || "") + '" placeholder="Question large pour suivre plusieurs épisodes">' +
+        '<input type="text" class="story-title-input" value="' + escapeHtmlClient(newStory.story_title || "") + '" placeholder="Titre court et général de l’histoire">' +
         '<label>Résumé de la nouvelle histoire</label>' +
-        '<textarea class="story-summary-input" rows="3" placeholder="Résumé court de l’histoire">' + escapeHtmlClient(newStory.story_summary || "") + '</textarea>' +
+        '<textarea class="story-summary-input" rows="3" placeholder="Résumé stable des grands enjeux de l’histoire">' + escapeHtmlClient(newStory.story_summary || "") + '</textarea>' +
+        '<div class="story-save-actions"><button type="button" class="story-save-btn">Enregistrer les modifications</button><span class="story-save-feedback hidden">Modifications enregistrées</span></div>' +
       '</div>';
 
       if (storyDecision === "uncertain") {
-        return '<div class="story-link-box" data-story-decision="uncertain" data-matched-story-id="' + escapeHtmlClient(storyLink.matched_story_id || "") + '" data-matched-story-title="' + matchedTitle + '" data-confidence="' + confidence + '" data-reason="' + reason + '" data-criteria="' + encodedCriteria + '" data-new-story="' + encodedNewStory + '">' +
+        return '<div class="story-link-box" data-story-decision="uncertain" data-matched-story-id="' + escapeHtmlClient(storyLink.matched_story_id || "") + '" data-matched-story-title="' + matchedTitle + '" data-previous-episode-title="' + previousEpisodeTitle + '" data-previous-episode-url="' + previousEpisodeUrl + '" data-confidence="' + confidence + '" data-reason="' + reason + '" data-criteria="' + encodedCriteria + '" data-new-story="' + encodedNewStory + '">' +
           storyStatusHtml +
+          storyToggleHtml +
           '<div class="story-link-header">Lien avec une histoire existante incertain</div>' +
           '<div class="story-link-card">' +
             '<strong>L’IA propose :</strong> ' + matchedTitle +
@@ -1966,50 +2209,161 @@ function generateHtml(sessions) {
           '</div>' +
           '<div class="story-choice-row"><label><input type="radio" class="story-choice-input" name="' + groupName + '" value="existing"> Rattacher à cette histoire existante</label></div>' +
           '<div class="story-choice-row"><label><input type="radio" class="story-choice-input" name="' + groupName + '" value="new"> Créer une nouvelle histoire</label></div>' +
+          '<div class="story-link-card story-existing-preview hidden">' +
+            '<strong>Histoire existante</strong>' +
+            existingStoryFields +
+          '</div>' +
           '<div class="story-link-card story-new-preview hidden">' +
             '<strong>Nouvelle histoire proposée</strong>' +
             newStoryFields +
           '</div>' +
+          manualPickerHtml +
         '</div>';
       }
 
-      return '<div class="story-link-box" data-story-decision="new_story" data-confidence="' + confidence + '" data-reason="' + reason + '" data-criteria="' + encodedCriteria + '" data-new-story="' + encodedNewStory + '">' +
+      return '<div class="story-link-box" data-story-decision="new_story" data-previous-episode-title="' + previousEpisodeTitle + '" data-previous-episode-url="' + previousEpisodeUrl + '" data-confidence="' + confidence + '" data-reason="' + reason + '" data-criteria="' + encodedCriteria + '" data-new-story="' + encodedNewStory + '">' +
         storyStatusHtml +
+        storyToggleHtml +
         '<div class="story-link-header">Nouvelle histoire proposée</div>' +
-        '<div class="story-link-card selected">' +
-          '<strong>' + escapeHtmlClient(newStory.story_title || "") + '</strong>' +
-          (newStory.story_summary ? '<p>' + escapeHtmlClient(newStory.story_summary) + '</p>' : "") +
-          '<small>Sélectionnée par défaut.</small>' +
-        '</div>' +
         newStoryFields +
+        manualPickerHtml +
       '</div>';
     }
 
     function syncStoryChoiceUi(box) {
       if (!box) return;
-      const preview = box.querySelector(".story-new-preview");
-      if (!preview) return;
+      const enabled = box.querySelector(".story-enabled-input")?.checked !== false;
+      const newPreview = box.querySelector(".story-new-preview");
+      const existingPreview = box.querySelector(".story-existing-preview");
+      const picker = box.querySelector(".story-manual-picker");
       const selectedValue = box.querySelector(".story-choice-input:checked")?.value || "";
-      preview.classList.toggle("hidden", selectedValue !== "new");
+      const manualSelect = box.querySelector(".story-manual-select");
+      const hasManualChoice = Boolean(manualSelect && manualSelect.value);
+      box.classList.toggle("story-link-disabled", !enabled);
+      if (picker) picker.classList.toggle("hidden", !enabled);
+      if (newPreview) newPreview.classList.toggle("hidden", !enabled || hasManualChoice || selectedValue !== "new");
+      if (existingPreview) existingPreview.classList.toggle("hidden", !enabled || hasManualChoice || selectedValue !== "existing");
+      const manualSummary = box.querySelector(".story-manual-summary");
+      if (manualSummary) manualSummary.classList.toggle("hidden", !(enabled && hasManualChoice));
+    }
+
+    async function populateManualStoryPicker(box) {
+      if (!box) return;
+      const select = box.querySelector(".story-manual-select");
+      if (!select || select.dataset.loaded === "true") return;
+      const stories = await loadAgonStoriesClient();
+      const options = ['<option value="">Conserver le rattachement proposé</option>'];
+      stories.forEach(function(story) {
+        const storyId = escapeHtmlClient(story.story_id || "");
+        const title = escapeHtmlClient(story.story_title || "Histoire sans titre");
+        const summary = escapeHtmlClient(story.story_summary || "");
+        const latest = escapeHtmlClient(story.latest_episode_title || "");
+        options.push('<option value="' + storyId + '" data-title="' + title + '" data-summary="' + summary + '" data-latest="' + latest + '" data-url="' + escapeHtmlClient(story.latest_episode_url || "") + '">' + title + (latest ? ' - ' + latest : '') + '</option>');
+      });
+      select.innerHTML = options.join("");
+      select.dataset.loaded = "true";
+    }
+
+    function updateManualStorySelection(box) {
+      if (!box) return;
+      const select = box.querySelector(".story-manual-select");
+      const summaryWrap = box.querySelector(".story-manual-summary");
+      const summaryInput = box.querySelector(".story-manual-summary-input");
+      const meta = box.querySelector(".story-manual-meta");
+      if (!select || !summaryWrap || !summaryInput || !meta) return;
+      const option = select.options[select.selectedIndex];
+      const hasValue = Boolean(select.value);
+      if (!hasValue) {
+        summaryInput.value = "";
+        meta.textContent = "";
+        syncStoryChoiceUi(box);
+        return;
+      }
+      summaryInput.value = option?.dataset.summary || "";
+      meta.textContent = option?.dataset.latest ? "Dernier épisode : " + option.dataset.latest : "";
+      syncStoryChoiceUi(box);
     }
 
     function initializeStoryBoxes(root) {
       (root || document).querySelectorAll(".story-link-box").forEach(function(box) {
         syncStoryChoiceUi(box);
+        void populateManualStoryPicker(box).catch(function(error) {
+          console.error("Erreur chargement histoires :", error);
+        });
       });
+    }
+
+    function saveStoryEdits(box) {
+      if (!box) return;
+      const feedback = box.querySelector(".story-save-feedback");
+      const selectedMode = box.querySelector(".story-choice-input:checked")?.value || "";
+      const existingSummaryInput = box.querySelector(".story-existing-preview .story-summary-input, .story-summary-input");
+      const titleInput = box.querySelector(".story-title-input");
+      const newSummaryInput = box.querySelector(".story-new-preview .story-summary-input, .story-draft-fields .story-summary-input");
+      const newStory = decodeStoryData(box.dataset.newStory) || {};
+
+      if (titleInput) {
+        newStory.story_title = titleInput.value.trim();
+      }
+      if (newSummaryInput && (box.dataset.storyDecision === "new_story" || selectedMode === "new")) {
+        newStory.story_summary = newSummaryInput.value.trim();
+        box.dataset.newStory = encodeStoryData(newStory);
+      }
+
+      const selectedCard = box.querySelector(".story-link-card.selected");
+      if (selectedCard && existingSummaryInput && box.dataset.storyDecision === "existing_story") {
+        const paragraph = selectedCard.querySelector("p");
+        if (paragraph) {
+          paragraph.textContent = existingSummaryInput.value.trim();
+        }
+      }
+
+      if (feedback) {
+        feedback.classList.remove("hidden");
+        clearTimeout(feedback._timer);
+        feedback._timer = setTimeout(function() {
+          feedback.classList.add("hidden");
+        }, 1800);
+      }
     }
 
     function collectStorySelection(subjectEl) {
       const box = subjectEl.querySelector(".story-link-box");
       if (!box) return null;
+      if (box.querySelector(".story-enabled-input")?.checked === false) {
+        return null;
+      }
 
       const storyDecision = box.dataset.storyDecision || "";
       const matchedStoryId = box.dataset.matchedStoryId || null;
       const matchedStoryTitle = box.dataset.matchedStoryTitle || "";
+      const previousEpisodeTitle = box.dataset.previousEpisodeTitle || "";
+      const previousEpisodeUrl = box.dataset.previousEpisodeUrl || "";
       const confidence = Number(box.dataset.confidence || 0);
       const reason = box.dataset.reason || "";
       const criteria = decodeStoryData(box.dataset.criteria) || {};
       const baseNewStory = decodeStoryData(box.dataset.newStory) || {};
+      const manualSelect = box.querySelector(".story-manual-select");
+      const manualOption = manualSelect?.options[manualSelect.selectedIndex] || null;
+
+      if (manualSelect && manualSelect.value) {
+        const manualSummary = box.querySelector(".story-manual-summary-input")?.value.trim() || "";
+        if (!manualSummary) {
+          throw new Error("Renseigne le résumé de l’histoire choisie avant l'envoi.");
+        }
+        return {
+          storyDecision: "existing_story",
+          matchedStoryId: manualSelect.value,
+          matchedStoryTitle: manualOption?.dataset.title || "",
+          previousEpisodeTitle: manualOption?.dataset.latest || "",
+          previousEpisodeUrl: manualOption?.dataset.url || "",
+          confidence: 1,
+          reason: "Histoire choisie manuellement.",
+          criteria,
+          selectionMode: "existing",
+          storySummary: manualSummary
+        };
+      }
 
       let selectionMode = storyDecision === "existing_story"
         ? "existing"
@@ -2025,27 +2379,32 @@ function generateHtml(sessions) {
         storyDecision,
         matchedStoryId,
         matchedStoryTitle,
+        previousEpisodeTitle,
+        previousEpisodeUrl,
         confidence,
         reason,
         criteria,
         selectionMode
       };
 
+      const newSummary = box.querySelector(".story-new-preview .story-summary-input, .story-draft-fields .story-summary-input")?.value.trim() || "";
+      const existingSummary = box.querySelector(".story-existing-preview .story-summary-input, .story-summary-input")?.value.trim() || "";
+
+      if (selectionMode === "existing") {
+        payload.storySummary = existingSummary;
+      }
+
       if (selectionMode === "new") {
         const title = box.querySelector(".story-title-input")?.value.trim() || "";
-        const summary = box.querySelector(".story-summary-input")?.value.trim() || "";
         if (!title) {
           throw new Error("Renseigne le titre de la nouvelle histoire avant l'envoi.");
         }
-        if (!/[?]\s*$/.test(title)) {
-          throw new Error("Le titre de la nouvelle histoire doit rester une question.");
-        }
-        if (!summary) {
+        if (!newSummary) {
           throw new Error("Renseigne le résumé de la nouvelle histoire avant l'envoi.");
         }
         payload.newStory = {
           story_title: title,
-          story_summary: summary,
+          story_summary: newSummary,
           main_actors: Array.isArray(baseNewStory.main_actors) ? baseNewStory.main_actors : [],
           central_tension: baseNewStory.central_tension || "",
           keywords: Array.isArray(baseNewStory.keywords) ? baseNewStory.keywords : [],
@@ -2073,6 +2432,7 @@ function generateHtml(sessions) {
       return '<div class="ai-box">' +
         '<p class="debate-question" contenteditable="true" spellcheck="false">' + (ai.debateQuestion || "") + "</p>" +
         (ai.resume ? '<p class="resume">' + ai.resume + "</p>" : "") +
+        buildPreviousEpisodeLinkHtml(ai.storyLink) +
         '<p class="agon-theme"><strong>Thématique Agôn proposée :</strong>' +
           '<select class="agon-select">' + optionsHtml + "</select>" +
         "</p>" +
@@ -2275,8 +2635,19 @@ function generateHtml(sessions) {
     });
 
     document.addEventListener("change", function(e) {
-      if (!e.target.classList.contains("story-choice-input")) return;
-      syncStoryChoiceUi(e.target.closest(".story-link-box"));
+      if (e.target.classList.contains("story-choice-input") || e.target.classList.contains("story-enabled-input")) {
+        syncStoryChoiceUi(e.target.closest(".story-link-box"));
+        return;
+      }
+      if (e.target.classList.contains("story-manual-select")) {
+        updateManualStorySelection(e.target.closest(".story-link-box"));
+      }
+    });
+
+    document.addEventListener("click", function(e) {
+      const saveBtn = e.target.closest(".story-save-btn");
+      if (!saveBtn) return;
+      saveStoryEdits(saveBtn.closest(".story-link-box"));
     });
 
     let currentSort = "score";
@@ -2535,8 +2906,12 @@ async function main() {
   }
 }
 
-apiApp.listen(API_PORT, "127.0.0.1", () => {
+const localApiServer = apiApp.listen(API_PORT, "127.0.0.1", () => {
   console.log(`API mixte lancée sur 127.0.0.1:${API_PORT}`);
+});
+
+localApiServer.on("error", (error) => {
+  console.error("Erreur API mixte locale :", error.message);
 });
 
 main();

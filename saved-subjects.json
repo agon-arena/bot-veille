@@ -1,6 +1,41 @@
 [
   {
     "action": "save",
+    "subject": "Guerre au Moyen-Orient : l'Iran écarte tout compromis après le rejet de sa proposition par Donal Trump",
+    "debateScore": 8,
+    "debateQuestion": "",
+    "resume": "",
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "Franceinfo, Libération, BFMTV",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.liberation.fr/international/moyen-orient/en-direct-guerre-au-moyen-orient-liran-pourrait-enrichir-de-luranium-a-des-fins-militaires-sil-etait-attaque-avertit-un-parlementaire-20260512_FV5VU6ZSN5DADCJLY4DI26HQIY/",
+        "source": "Libération",
+        "title": "Guerre au Moyen-Orient : la France va prendre «une initiative» à l’ONU sur sa proposition de mission «neutre» dans le détroit d’Ormuz, dit Macron",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.bfmtv.com/international/video-la-france-va-prendre-une-initiative-a-l-onu-sur-sa-proposition-de-mission-neutre-de-securisation-du-detroit-d-ormuz_VN-202605130093.html",
+        "source": "BFMTV",
+        "title": "La France va prendre \"une initiative\" à l'ONU sur sa proposition de mission \"neutre\" de sécurisation du détroit d'Ormuz",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.franceinfo.fr/monde/iran/guerre-entre-les-etats-unis-israel-et-l-iran/guerre-au-moyen-orient-l-iran-refuse-de-modifier-sa-proposition-de-paix-rejetee-par-donald-trump_7999649.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "title": "Guerre au Moyen-Orient : l'Iran écarte tout compromis après le rejet de sa proposition par Donal Trump",
+        "thumbnail": ""
+      }
+    ],
+    "sessionLabel": "13/05/2026 à 08:24:53"
+  },
+  {
+    "action": "save",
     "subject": "EN DIRECT - Guerre au Moyen-Orient : les frappes israéliennes au Liban ont fait 380 morts depuis l’entrée en vigueur du cessez-le-feu",
     "debateScore": 9,
     "debateQuestion": "",

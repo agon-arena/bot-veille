@@ -13,6 +13,12 @@ const openai = process.env.OPENAI_API_KEY
   ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
   : null;
 
+function buildAgonDebateUrl(debateId) {
+  const normalizedId = String(debateId || "").trim();
+  if (!normalizedId) return "";
+  return `${AGON_URL.replace(/\/$/, "")}/debate?id=${encodeURIComponent(normalizedId)}`;
+}
+
 function normalizeStoryText(value) {
   return String(value || "")
     .toLowerCase()
@@ -46,12 +52,34 @@ function limitStoryText(text, maxLength) {
 }
 
 function buildFallbackStoryTitle(subject, theme) {
-  const topic = limitStoryText(subject || theme || "ce sujet", 70).replace(/[?!.]+$/g, "").trim();
-  if (!topic) return "Quelle histoire politique est en train de se jouer ?";
-  if (/peut|doit|faut|va|est|sont|reste|risque/i.test(topic)) {
-    return limitStoryText(topic.endsWith("?") ? topic : `${topic} ?`, 90);
+  const rawTopic = String(subject || "").trim();
+  const normalizedTheme = String(theme || "").trim();
+
+  const themeMap = {
+    "Politique, économie et relations internationales": "Actualité politique",
+    "Société, éducation et justice": "Débat de société",
+    "Sciences, technologies et environnement": "Actualité scientifique",
+    "Culture, modes et médias": "Actualité culturelle",
+    "Santé, corps et bien-être": "Actualité santé",
+    "Sport, loisirs et passions": "Actualité sportive",
+    "Vie personnelle et modes de vie": "Modes de vie"
+  };
+
+  const cleaned = rawTopic
+    .replace(/^EN DIRECT\s*[-:]\s*/i, "")
+    .replace(/^DIRECT\s*[-:]\s*/i, "")
+    .replace(/[?!.]+$/g, "")
+    .trim();
+
+  const beforeColon = cleaned.split(":")[0].trim();
+  const shortBase = beforeColon || cleaned;
+  const compact = limitStoryText(shortBase, 42).replace(/[?!.]+$/g, "").trim();
+
+  if (compact && compact.split(/\s+/).length <= 6) {
+    return compact;
   }
-  return limitStoryText(`Quel tournant se joue autour de ${topic} ?`, 90);
+
+  return themeMap[normalizedTheme] || "Actualité en cours";
 }
 
 function buildFallbackStorySummary(subject, resume) {
@@ -59,51 +87,57 @@ function buildFallbackStorySummary(subject, resume) {
   return limitStoryText(base || "Nouvel épisode à suivre.", 220);
 }
 
-function buildFallbackNarrativeContext(payload, storySuggestion) {
+function buildStableStoryLine(payload, storySuggestion) {
   const storySummary = String(
     storySuggestion?.matched_story_summary
       || storySuggestion?.new_story?.story_summary
+      || payload.storySummaryOverride
       || payload.ai?.resume
       || ""
   ).trim();
+
+  if (storySummary) {
+    return limitStoryText(storySummary, 180);
+  }
+
+  return limitStoryText(`Le sujet met aux prises ${payload.sources?.slice(0, 2).join(" et ") || "plusieurs acteurs"} autour d'une tension encore mouvante.`, 180);
+}
+
+function buildFallbackNarrativeContext(payload, storySuggestion) {
   const previousEpisode = String(storySuggestion?.previous_episode_summary || "").trim();
   const latestEvent = String(payload.ai?.resume || payload.subject || "").trim();
   const opening = String(
     storySuggestion?.reason
-      || "Le prochain mouvement des acteurs en présence dira si la tension retombe ou monte encore."
+      || "Le prochain geste des acteurs en presence peut faire basculer la sequence dans les prochaines heures."
   ).trim();
-
-  const historyLine = storySummary
-    ? limitStoryText(storySummary, 180)
-    : limitStoryText(`Le sujet met aux prises ${payload.sources?.slice(0, 2).join(" et ") || "plusieurs acteurs"} autour d'une tension encore mouvante.`, 180);
+  const historyLine = buildStableStoryLine(payload, storySuggestion);
   const previousLine = previousEpisode
     ? limitStoryText(previousEpisode, 180)
-    : "Épisode précédent : aucun épisode clairement établi n'était encore rattaché à cette histoire.";
+    : "Jusqu'ici, aucun épisode clairement établi n'était encore rattaché à cette histoire.";
   const latestLine = latestEvent
     ? limitStoryText(latestEvent, 800)
     : limitStoryText(String(payload.subject || "").trim(), 800);
 
   const parts = [
     `L’histoire jusqu’ici : ${historyLine}`,
-    previousLine.startsWith("Épisode précédent :") ? previousLine : `Épisode précédent : ${previousLine}`,
-    `Nouvel épisode : ${latestLine}`,
-    `Ouverture : ${limitStoryText(opening, 140)}`
+    previousLine.replace(/^Épisode précédent\s*:\s*/i, ""),
+    latestLine.replace(/^Nouvel épisode\s*:\s*/i, ""),
+    limitStoryText(opening, 160)
   ];
   return parts.join("\n");
 }
 
 async function generateNarrativeContext(payload, storySuggestion) {
-  const fallback = buildFallbackNarrativeContext(payload, storySuggestion);
+  const historyLine = buildStableStoryLine(payload, storySuggestion);
+  const fallback = buildFallbackNarrativeContext({
+    ...payload,
+    storySummaryOverride: historyLine
+  }, storySuggestion);
 
   if (!openai) {
     return fallback;
   }
 
-  const storyUntilNow = String(
-    storySuggestion?.matched_story_summary
-      || storySuggestion?.new_story?.story_summary
-      || ""
-  ).trim();
   const previousEpisode = String(storySuggestion?.previous_episode_summary || "").trim();
 
   const prompt = `
@@ -122,8 +156,8 @@ Regle absolue :
 Le suspense doit venir uniquement des faits, des tensions reelles, des rapports de force et des incertitudes verifiables.
 Ne jamais inventer, exagerer, dramatiser artificiellement ou faire du putaclic.
 
-L'histoire jusqu'ici :
-${storyUntilNow || "Pas d'histoire anterieure clairement etablie."}
+L'histoire jusqu'ici (a conserver tel quel, sans le reecrire) :
+${historyLine}
 
 Episode precedent :
 ${previousEpisode || "Pas d'episode precedent confirme."}
@@ -144,16 +178,15 @@ ${JSON.stringify({
 }, null, 2)}
 
 Reponds uniquement en texte brut, sans puces, sous cette structure exacte :
-L’histoire jusqu’ici : ...
-Épisode précédent : ...
-Nouvel épisode : ...
-Ouverture : ...
+[un premier paragraphe tres court, sans label, qui rappelle discretement ce qui s'etait passe juste avant]
+[un deuxieme paragraphe, sans label, qui raconte ce qui vient de changer maintenant]
+[une derniere phrase seule, sans label, qui sert de chute et donne envie de suivre la suite]
 
 Consignes de redaction :
-- "L’histoire jusqu’ici" : 2 lignes maximum. Resume l'histoire generale avec les acteurs principaux et la tension centrale.
-- "Épisode précédent" : 2 lignes maximum. Resume tres brievement ce qui s'etait passe juste avant.
-- "Nouvel épisode" : 800 caracteres maximum. Raconte le nouvel article comme la suite logique de l'histoire : contexte immediat, evenement, acteurs, tension, ce qui change.
-- "Ouverture" : 1 phrase courte qui donne envie de connaitre la suite : ce qui peut basculer, ce qu'il faut surveiller, ou la prochaine question concrete.
+- Ne reecris jamais "L’histoire jusqu’ici". Cette ligne sera injectee telle quelle a partir du resume d'histoire deja valide.
+- Premier paragraphe : 2 lignes maximum. Resume tres brievement ce qui s'etait passe juste avant, sans ecrire "Épisode précédent".
+- Deuxieme paragraphe : 800 caracteres maximum. Raconte le nouvel article comme la suite logique de l'histoire : contexte immediat, evenement, acteurs, tension, ce qui change, sans ecrire "Nouvel épisode".
+- Termine par une seule phrase courte, sans label visible, qui fait office de cliffhanger factuel : ce qui peut basculer maintenant, ce qu'il faut surveiller, ou le prochain point de rupture possible.
 
 Contraintes :
 - tu ne rediges pas le titre ici, seulement le contexte ;
@@ -167,7 +200,9 @@ Contraintes :
 - distinguer les faits confirmes des hypotheses ;
 - priorite au nouvel episode : les rappels doivent rester tres courts ;
 - si une information manque, rester vague plutot que completer ;
-- le bloc "Nouvel épisode" doit rester le morceau le plus developpe.
+- le deuxieme paragraphe doit rester le morceau le plus developpe ;
+- la derniere phrase doit etre plus palpitante que descriptive, avec une vraie sensation de bascule imminente, mais toujours fondee sur des faits et sans exageration ;
+- n'ecris jamais les mots "Ouverture", "Épisode précédent" ou "Nouvel épisode" dans le texte final.
 `;
 
   try {
@@ -177,7 +212,9 @@ Contraintes :
       temperature: 0.35,
       max_output_tokens: 900
     });
-    return String(response.output_text || "").trim() || fallback;
+    const tail = String(response.output_text || "").trim();
+    if (!tail) return fallback;
+    return [`L’histoire jusqu’ici : ${historyLine}`, tail].join("\n");
   } catch (error) {
     return fallback;
   }
@@ -245,8 +282,10 @@ function buildFallbackStorySuggestion(payload, stories = []) {
       matched_story_id: bestStory.story_id,
       matched_story_title: bestStory.story_title,
       matched_story_summary: bestStory.story_summary || "",
+      previous_episode_id: bestStory.latest_episode_id || "",
       previous_episode_title: bestStory.latest_episode_title || "",
       previous_episode_summary: bestStory.latest_episode_summary || "",
+      previous_episode_url: buildAgonDebateUrl(bestStory.latest_episode_id || ""),
       confidence: Number(bestScore.toFixed(2)),
       reason: bestScore >= 0.8
         ? "Les mots-clés forts et la tension centrale recoupent nettement une histoire active."
@@ -299,6 +338,7 @@ async function suggestStoryLink(payload) {
     main_actors: Array.isArray(story.main_actors) ? story.main_actors.slice(0, 5) : [],
     central_tension: story.central_tension || "",
     keywords: Array.isArray(story.keywords) ? story.keywords.slice(0, 8) : [],
+    latest_episode_id: story.latest_episode_id || "",
     latest_episode_title: story.latest_episode_title || "",
     latest_episode_summary: story.latest_episode_summary || "",
     updated_at: story.updated_at || ""
@@ -357,7 +397,7 @@ Reponds uniquement en JSON valide sous cette forme :
     "strong_keywords_match": true
   },
   "new_story": {
-    "story_title": "question large",
+    "story_title": "titre très court et général",
     "story_summary": "resume court",
     "main_actors": ["..."],
     "central_tension": "...",
@@ -367,7 +407,9 @@ Reponds uniquement en JSON valide sous cette forme :
 }
 
 Contraintes :
-- story_title doit toujours etre une question.
+- story_title doit etre tres court, tres general, et pouvoir accueillir plusieurs episodes.
+- privilegie une formule nominale simple, de 2 a 5 mots si possible.
+- exemples de bons story_title : "Guerre en Iran", "Fin de vie", "Primaire de la gauche", "Crise au Liban".
 - Si aucune histoire ne correspond clairement, cree une nouvelle histoire.
 - Si confidence >= 0.80 et correspondance nette : existing_story.
 - Si confidence entre 0.60 et 0.79 : uncertain.
@@ -388,8 +430,10 @@ Contraintes :
       matched_story_id: matchedStory ? matchedStory.story_id : null,
       matched_story_title: matchedStory ? matchedStory.story_title : null,
       matched_story_summary: matchedStory ? matchedStory.story_summary || "" : "",
+      previous_episode_id: matchedStory ? matchedStory.latest_episode_id || "" : "",
       previous_episode_title: matchedStory ? matchedStory.latest_episode_title || "" : "",
       previous_episode_summary: matchedStory ? matchedStory.latest_episode_summary || "" : "",
+      previous_episode_url: matchedStory ? buildAgonDebateUrl(matchedStory.latest_episode_id || "") : "",
       confidence: Number.isFinite(Number(parsed.confidence)) ? Math.max(0, Math.min(1, Number(parsed.confidence))) : fallback.confidence,
       reason: String(parsed.reason || fallback.reason || "").trim(),
       criteria: {
@@ -1338,6 +1382,26 @@ app.post("/api/youtube-chaines", (req, res) => {
   }
 });
 
+app.get("/api/agon-stories", requireMixteAuth, async (req, res) => {
+  try {
+    const stories = await loadAgonStories();
+    res.json({
+      ok: true,
+      stories: stories.map((story) => ({
+        story_id: story.story_id,
+        story_title: story.story_title,
+        story_summary: story.story_summary || "",
+        updated_at: story.updated_at || "",
+        latest_episode_id: story.latest_episode_id || "",
+        latest_episode_title: story.latest_episode_title || "",
+        latest_episode_url: buildAgonDebateUrl(story.latest_episode_id || "")
+      }))
+    });
+  } catch (err) {
+    res.status(500).json({ ok: false, error: err.message || "Erreur chargement histoires" });
+  }
+});
+
 app.post("/send-to-agon", requireMixteAuth, async (req, res) => {
   try {
     const { question, positionA, positionB, theme, resume, sources, links, storySelection } = req.body;
@@ -1361,6 +1425,10 @@ app.post("/send-to-agon", requireMixteAuth, async (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
+const httpServer = app.listen(PORT, () => {
   console.log(`Serveur lancé sur le port ${PORT}`);
+});
+
+httpServer.on("error", (error) => {
+  console.error("Erreur serveur bot veille :", error.message);
 });
