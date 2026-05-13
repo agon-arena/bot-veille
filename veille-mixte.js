@@ -563,7 +563,8 @@ function fallbackAiAnalysis(subject, arenaMode = "positions") {
     agonTheme: "Politique, économie et relations internationales",
     positionA: "",
     positionB: "",
-    leftScore: Math.min(10, 3 + leftSourceCount * 2)
+    leftScore: Math.min(10, 3 + leftSourceCount * 2),
+    keywords: extractNewsKeywords(subject)
   };
 }
 
@@ -571,6 +572,49 @@ function limitText(text, maxLength) {
   const value = String(text || "").trim();
   if (value.length <= maxLength) return value;
   return value.slice(0, maxLength - 1).trimEnd() + "…";
+}
+
+function normalizeKeywordList(values, max = 8) {
+  const seen = new Set();
+  const results = [];
+  (Array.isArray(values) ? values : []).forEach((value) => {
+    const keyword = String(value || "")
+      .replace(/^[-–—•\s]+/, "")
+      .replace(/[?!.;,:\s]+$/g, "")
+      .trim();
+    if (!keyword) return;
+    if (keyword.length < 2 || keyword.length > 40) return;
+    const lower = keyword.toLowerCase();
+    if (seen.has(lower)) return;
+    seen.add(lower);
+    results.push(keyword);
+  });
+  return results.slice(0, max);
+}
+
+function extractNewsKeywords(subject) {
+  const text = [
+    subject.subject || "",
+    ...((subject.contents || []).slice(0, 10).map((content) => content.title || ""))
+  ].join(" ");
+  const rawMatches = String(text).match(/\b(?:[A-ZÀ-ÖØ-Ý][\p{L}'’\-]+(?:\s+[A-ZÀ-ÖØ-Ý][\p{L}'’\-]+){0,2}|[A-Z]{2,}(?:\s+[A-Z]{2,})*)\b/gu) || [];
+  const blacklist = new Set([
+    "EN DIRECT",
+    "DIRECT",
+    "France",
+    "Français",
+    "Française",
+    "Mardi",
+    "Mercredi",
+    "Jeudi",
+    "Vendredi",
+    "Samedi",
+    "Dimanche",
+    "Lundi"
+  ].map((item) => item.toLowerCase()));
+
+  const cleaned = rawMatches.filter((item) => !blacklist.has(String(item || "").trim().toLowerCase()));
+  return normalizeKeywordList(cleaned, 8);
 }
 
 function safeJsonParse(text) {
@@ -622,6 +666,7 @@ Tu dois répondre uniquement en JSON valide avec ces champs :
   "controversyLevel": "faible" | "moyen" | "fort" | "très fort",
   "debateQuestion": "si le mode demandé est arène à positions : une seule ligne de 100 caractères maximum, espaces compris. Elle doit résumer le sujet en quelques mots puis poser une question très clivante. Si le mode demandé est arène libre : une seule ligne de 100 caractères maximum, espaces compris, qui résume factuellement le sujet sans question.",
   "resume": "si debateScore >= 7 : matière factuelle brève pour écrire ensuite un contexte narratif d'actualité. Donne 2 ou 3 phrases maximum, concrètes, utiles, sans effet de style artificiel. Sinon : chaîne vide",
+  "keywords": ["4 à 8 mots-clés concrets liés à l'actualité : acteurs, lieux, institutions, pays, organisations ou objets du conflit"],
   "agonTheme": "une thématique Agôn exacte",
   "positionA": "position franche, très courte, sans argument. MAX 60 CARACTÈRES. Si debateScore < 7, chaîne vide.",
   "positionB": "position opposée franche, très courte, sans argument. MAX 60 CARACTÈRES. Si debateScore < 7, chaîne vide.",
@@ -681,6 +726,14 @@ Bons exemples en arène libre :
 - Trump relance les tensions avec l’Iran et fait grimper le pétrole
 - Une fièvre après une croisière déclenche un suivi sanitaire
 
+Pour "keywords" :
+- donne 4 à 8 mots-clés maximum ;
+- privilégie les noms propres et repères concrets ;
+- relève surtout les acteurs, lieux, institutions, pays, organisations ou objets de crise ;
+- évite les mots trop génériques comme "politique", "débat", "actualité", "France" seuls s'ils n'apportent rien ;
+- n'écris ni phrase complète, ni explication ;
+- chaque mot-clé doit tenir sur quelques mots au maximum.
+
 Pour "positionA" et "positionB" :
 - si le mode demandé est "arène libre", renvoie "" pour les deux champs ;
 - si debateScore < 7, renvoie "" pour les deux champs ;
@@ -729,6 +782,9 @@ Mauvais exemples :
         ? limitText(subject.subject || String(parsed.debateQuestion || fallbackQuestion).replace(/\?+$/g, "").trim(), 100)
         : String(parsed.debateQuestion || fallbackQuestion).trim(),
       resume: parsed.resume || "",
+      keywords: normalizeKeywordList(parsed.keywords, 8).length
+        ? normalizeKeywordList(parsed.keywords, 8)
+        : extractNewsKeywords(subject),
       agonTheme: AGON_THEMES.includes(parsed.agonTheme)
         ? parsed.agonTheme
         : "Politique, économie et relations internationales",
@@ -1673,6 +1729,46 @@ function generateHtml(sessions) {
       opacity: 0.55;
     }
 
+    .story-selected-row {
+      margin-bottom: 10px;
+    }
+
+    .story-selected-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 36px;
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: #eef4ff;
+      border: 1px solid #b8cae8;
+      color: #2157a5;
+      font-size: 0.84rem;
+      font-weight: 700;
+    }
+
+    .story-selected-remove-btn,
+    .story-create-btn {
+      border: 1px solid #d7dbe2;
+      background: white;
+      color: #223;
+      border-radius: 999px;
+      padding: 7px 12px;
+      font: inherit;
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .story-selected-remove-btn {
+      border: none;
+      background: transparent;
+      color: #2157a5;
+      padding: 0;
+      font-size: 1rem;
+      line-height: 1;
+    }
+
     .story-manual-picker {
       margin-top: 12px;
       border-top: 1px solid #e7ebf2;
@@ -1823,6 +1919,72 @@ function generateHtml(sessions) {
       margin-bottom: 14px;
     }
 
+    .news-keywords {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 10px 0 4px;
+    }
+
+    .news-keywords-label {
+      width: 100%;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #555;
+    }
+
+    .news-keyword-chip {
+      display: inline-flex;
+      align-items: center;
+      min-height: 30px;
+      padding: 0 10px;
+      border-radius: 999px;
+      background: #f3f4f7;
+      border: 1px solid #e2e4ea;
+      color: #2b2e38;
+      font-size: 0.82rem;
+      font-weight: 600;
+      line-height: 1.2;
+    }
+    .news-keyword-chip button {
+      margin-left: 8px;
+      border: none;
+      background: transparent;
+      color: #666;
+      cursor: pointer;
+      font: inherit;
+      font-size: 0.9rem;
+      line-height: 1;
+      padding: 0;
+    }
+    .news-keyword-add-row {
+      display: flex;
+      gap: 8px;
+      width: 100%;
+    }
+    .news-keyword-input {
+      flex: 1;
+      min-width: 0;
+      border: 1px solid #d7dbe2;
+      border-radius: 10px;
+      padding: 8px 10px;
+      font: inherit;
+      font-size: 0.84rem;
+      background: #fff;
+    }
+    .news-keyword-add-btn {
+      border: 1px solid #d7dbe2;
+      background: #fff;
+      color: #223;
+      border-radius: 10px;
+      padding: 8px 12px;
+      font: inherit;
+      font-size: 0.84rem;
+      font-weight: 700;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
     .debate-question {
       font-size: 1.1rem;
       font-weight: 800;
@@ -1837,6 +1999,27 @@ function generateHtml(sessions) {
     .debate-question:hover,
     .debate-question:focus {
       background: #e8e8e8;
+    }
+
+    .resume[contenteditable="true"] {
+      border-radius: 8px;
+      padding: 8px 10px;
+      margin-left: -10px;
+      outline: none;
+      transition: background 0.15s;
+      white-space: pre-wrap;
+    }
+
+    .resume[contenteditable="true"]:hover,
+    .resume[contenteditable="true"]:focus {
+      background: #e8e8e8;
+    }
+
+    .field-counter {
+      margin-top: 4px;
+      font-size: 0.78rem;
+      color: #6b7280;
+      text-align: right;
     }
 
     .editable {
@@ -2132,8 +2315,8 @@ function generateHtml(sessions) {
           '<option value="">Conserver le rattachement proposé</option>' +
         '</select>' +
         '<div class="story-manual-summary hidden">' +
-          '<label>Résumé de l’histoire choisie</label>' +
-          '<textarea class="story-manual-summary-input" rows="3" placeholder="Résumé stable des grands enjeux de l’histoire"></textarea>' +
+          '<label>Résumé de l’histoire choisie depuis le début</label>' +
+          '<textarea class="story-manual-summary-input" rows="3" placeholder="Résumé cumulé de l’histoire depuis le début, en 2 ou 3 lignes"></textarea>' +
           '<small class="story-manual-meta"></small>' +
         '</div>' +
       '</div>';
@@ -2144,6 +2327,70 @@ function generateHtml(sessions) {
       if (!previousUrl) return "";
       const previousTitle = escapeHtmlClient(storyLink?.previous_episode_title || "Épisode précédent");
       return '<a class="episode-nav-link" href="' + escapeHtmlClient(previousUrl) + '" target="_blank" rel="noopener noreferrer" title="' + previousTitle + '">Voir l’épisode précédent</a>';
+    }
+
+    function buildSelectedStoryTagHtml(title) {
+      if (!title) return "";
+      return '<div class="story-selected-row"><span class="story-selected-tag"><span class="story-selected-title">' + escapeHtmlClient(title) + '</span><button type="button" class="story-selected-remove-btn" aria-label="Supprimer le rattachement">×</button></span></div>';
+    }
+
+    function normalizeKeywordListClient(values, max = 10) {
+      const seen = new Set();
+      const list = [];
+      (Array.isArray(values) ? values : []).forEach(function(value) {
+        const keyword = String(value || "")
+          .replace(/^[-–—•\s]+/, "")
+          .replace(/[?!.;,:\s]+$/g, "")
+          .trim();
+        if (!keyword || keyword.length < 2 || keyword.length > 40) return;
+        const lower = keyword.toLowerCase();
+        if (seen.has(lower)) return;
+        seen.add(lower);
+        list.push(keyword);
+      });
+      return list.slice(0, max);
+    }
+
+    function buildKeywordsHtml(ai) {
+      const keywords = Array.isArray(ai?.keywords) ? ai.keywords.filter(Boolean) : [];
+      if (!keywords.length) return "";
+      return '<div class="news-keywords">' +
+        '<div class="news-keywords-label">Mots-clés relevés</div>' +
+        keywords.map(function(keyword) {
+          return '<span class="news-keyword-chip" data-keyword="' + escapeHtmlClient(keyword) + '">' + escapeHtmlClient(keyword) + '<button type="button" class="news-keyword-remove-btn" aria-label="Supprimer le mot-clé">×</button></span>';
+        }).join("") +
+        '<div class="news-keyword-add-row">' +
+          '<input type="text" class="news-keyword-input" placeholder="Ajouter un mot-clé">' +
+          '<button type="button" class="news-keyword-add-btn">Ajouter</button>' +
+        '</div>' +
+      '</div>';
+    }
+
+    function getKeywordsFromEditor(subjectEl) {
+      return normalizeKeywordListClient(
+        [...subjectEl.querySelectorAll(".news-keyword-chip[data-keyword]")].map(function(el) {
+          return el.dataset.keyword || "";
+        }),
+        10
+      );
+    }
+
+    function addKeywordToEditor(subjectEl, value) {
+      const keywordsWrap = subjectEl.querySelector(".news-keywords");
+      if (!keywordsWrap) return;
+      const keywords = getKeywordsFromEditor(subjectEl);
+      const normalized = normalizeKeywordListClient(keywords.concat([value]), 10);
+      const addRow = keywordsWrap.querySelector(".news-keyword-add-row");
+      keywordsWrap.querySelectorAll(".news-keyword-chip").forEach(function(chip) { chip.remove(); });
+      normalized.forEach(function(keyword) {
+        const chip = document.createElement("span");
+        chip.className = "news-keyword-chip";
+        chip.dataset.keyword = keyword;
+        chip.innerHTML = escapeHtmlClient(keyword) + '<button type="button" class="news-keyword-remove-btn" aria-label="Supprimer le mot-clé">×</button>';
+        keywordsWrap.insertBefore(chip, addRow);
+      });
+      const input = keywordsWrap.querySelector(".news-keyword-input");
+      if (input) input.value = "";
     }
 
     function buildStoryLinkHtml(storyLink) {
@@ -2157,94 +2404,62 @@ function generateHtml(sessions) {
       const previousEpisodeUrl = escapeHtmlClient(storyLink.previous_episode_url || "");
       const reason = escapeHtmlClient(storyLink.reason || "");
       const newStory = storyLink.new_story || {};
-      const groupName = "story-choice-" + Math.random().toString(36).slice(2, 9);
       const encodedCriteria = escapeHtmlClient(encodeStoryData(storyLink.criteria || {}));
       const encodedNewStory = escapeHtmlClient(encodeStoryData(newStory));
-      const storyStatusHtml = storyDecision === "existing_story"
+      const hasMatchedStory = Boolean(storyLink.matched_story_id && matchedTitle);
+      const storyStatusHtml = hasMatchedStory
         ? '<div class="story-link-status is-existing">Histoire liée : ' + matchedTitle + '</div>'
-        : storyDecision === "uncertain"
-          ? '<div class="story-link-status is-uncertain">Histoire possible : choix requis</div>'
-          : '<div class="story-link-status is-new">Nouvelle histoire proposée</div>';
-      const storyToggleHtml = '<label class="story-link-toggle"><input type="checkbox" class="story-enabled-input" checked> Relier cette arène à une histoire</label>';
+        : '<div class="story-link-status is-new">Nouvelle histoire à définir</div>';
       const manualPickerHtml = buildManualStoryPickerHtml();
 
       const existingStoryFields = '<div class="story-draft-fields">' +
-        '<label>Résumé de l’histoire</label>' +
-        '<textarea class="story-summary-input" rows="3" placeholder="Résumé stable des grands enjeux de l’histoire">' + matchedSummary + '</textarea>' +
+        '<label>Résumé de l’histoire depuis le début</label>' +
+        '<textarea class="story-summary-input" rows="3" placeholder="Résumé cumulé de l’histoire depuis le début, en 2 ou 3 lignes">' + matchedSummary + '</textarea>' +
         '<div class="story-save-actions"><button type="button" class="story-save-btn">Enregistrer les modifications</button><span class="story-save-feedback hidden">Modifications enregistrées</span></div>' +
       '</div>';
 
-      if (storyDecision === "existing_story") {
-        return '<div class="story-link-box" data-story-decision="existing_story" data-matched-story-id="' + escapeHtmlClient(storyLink.matched_story_id || "") + '" data-matched-story-title="' + matchedTitle + '" data-previous-episode-title="' + previousEpisodeTitle + '" data-previous-episode-url="' + previousEpisodeUrl + '" data-confidence="' + confidence + '" data-reason="' + reason + '" data-criteria="' + encodedCriteria + '" data-new-story="' + encodedNewStory + '">' +
-          storyStatusHtml +
-          storyToggleHtml +
-          '<div class="story-link-header">Histoire proposée</div>' +
-          '<div class="story-link-card selected">' +
-            '<strong>' + matchedTitle + '</strong>' +
-            (matchedSummary ? '<p>' + matchedSummary + '</p>' : "") +
-            '<small>Sélectionnée par défaut.</small>' +
-          '</div>' +
-          existingStoryFields +
-          manualPickerHtml +
-        '</div>';
-      }
-
-      const newStoryFields = '<div class="story-draft-fields">' +
+      const newStoryFields = '<div class="story-draft-fields story-new-fields">' +
         '<label>Titre de la nouvelle histoire</label>' +
         '<input type="text" class="story-title-input" value="' + escapeHtmlClient(newStory.story_title || "") + '" placeholder="Titre court et général de l’histoire">' +
-        '<label>Résumé de la nouvelle histoire</label>' +
-        '<textarea class="story-summary-input" rows="3" placeholder="Résumé stable des grands enjeux de l’histoire">' + escapeHtmlClient(newStory.story_summary || "") + '</textarea>' +
+        '<label>Résumé de la nouvelle histoire depuis le début</label>' +
+        '<textarea class="story-summary-input" rows="3" placeholder="Résumé cumulé de l’histoire depuis le début, en 2 ou 3 lignes">' + escapeHtmlClient(newStory.story_summary || "") + '</textarea>' +
         '<div class="story-save-actions"><button type="button" class="story-save-btn">Enregistrer les modifications</button><span class="story-save-feedback hidden">Modifications enregistrées</span></div>' +
       '</div>';
 
-      if (storyDecision === "uncertain") {
-        return '<div class="story-link-box" data-story-decision="uncertain" data-matched-story-id="' + escapeHtmlClient(storyLink.matched_story_id || "") + '" data-matched-story-title="' + matchedTitle + '" data-previous-episode-title="' + previousEpisodeTitle + '" data-previous-episode-url="' + previousEpisodeUrl + '" data-confidence="' + confidence + '" data-reason="' + reason + '" data-criteria="' + encodedCriteria + '" data-new-story="' + encodedNewStory + '">' +
-          storyStatusHtml +
-          storyToggleHtml +
-          '<div class="story-link-header">Lien avec une histoire existante incertain</div>' +
-          '<div class="story-link-card">' +
-            '<strong>L’IA propose :</strong> ' + matchedTitle +
-            (matchedSummary ? '<p>' + matchedSummary + '</p>' : "") +
-            (reason ? '<small>Raison : ' + reason + '</small>' : "") +
-          '</div>' +
-          '<div class="story-choice-row"><label><input type="radio" class="story-choice-input" name="' + groupName + '" value="existing"> Rattacher à cette histoire existante</label></div>' +
-          '<div class="story-choice-row"><label><input type="radio" class="story-choice-input" name="' + groupName + '" value="new"> Créer une nouvelle histoire</label></div>' +
-          '<div class="story-link-card story-existing-preview hidden">' +
-            '<strong>Histoire existante</strong>' +
-            existingStoryFields +
-          '</div>' +
-          '<div class="story-link-card story-new-preview hidden">' +
-            '<strong>Nouvelle histoire proposée</strong>' +
-            newStoryFields +
-          '</div>' +
-          manualPickerHtml +
-        '</div>';
-      }
+      const selectedMode = hasMatchedStory ? "existing" : "new";
+      const currentStoryId = escapeHtmlClient(storyLink.matched_story_id || "");
+      const currentStoryTitle = matchedTitle;
+      const currentStorySummary = matchedSummary;
+      const statusReason = reason ? '<div class="story-link-header">' + reason + '</div>' : '';
 
-      return '<div class="story-link-box" data-story-decision="new_story" data-previous-episode-title="' + previousEpisodeTitle + '" data-previous-episode-url="' + previousEpisodeUrl + '" data-confidence="' + confidence + '" data-reason="' + reason + '" data-criteria="' + encodedCriteria + '" data-new-story="' + encodedNewStory + '">' +
-        storyStatusHtml +
-        storyToggleHtml +
-        '<div class="story-link-header">Nouvelle histoire proposée</div>' +
-        newStoryFields +
-        manualPickerHtml +
+      return '<div class="story-link-box" data-story-decision="' + escapeHtmlClient(storyDecision) + '" data-selected-mode="' + selectedMode + '" data-default-mode="' + selectedMode + '" data-matched-story-id="' + currentStoryId + '" data-matched-story-title="' + matchedTitle + '" data-current-story-id="' + currentStoryId + '" data-current-story-title="' + currentStoryTitle + '" data-current-story-summary="' + currentStorySummary + '" data-previous-episode-title="' + previousEpisodeTitle + '" data-previous-episode-url="' + previousEpisodeUrl + '" data-confidence="' + confidence + '" data-reason="' + reason + '" data-criteria="' + encodedCriteria + '" data-new-story="' + encodedNewStory + '">' +
+          storyStatusHtml +
+          statusReason +
+          buildSelectedStoryTagHtml(currentStoryTitle) +
+          '<div class="story-existing-fields">' + existingStoryFields + '</div>' +
+          '<div class="story-save-actions"><button type="button" class="story-create-btn">Créer une nouvelle histoire</button></div>' +
+          newStoryFields +
+          manualPickerHtml +
       '</div>';
     }
 
     function syncStoryChoiceUi(box) {
       if (!box) return;
-      const enabled = box.querySelector(".story-enabled-input")?.checked !== false;
-      const newPreview = box.querySelector(".story-new-preview");
-      const existingPreview = box.querySelector(".story-existing-preview");
+      const mode = box.dataset.selectedMode || "";
+      const hasExisting = mode === "existing" && String(box.dataset.currentStoryId || "").trim();
+      const selectedRow = box.querySelector(".story-selected-row");
+      const existingPreview = box.querySelector(".story-existing-fields");
+      const newPreview = box.querySelector(".story-new-fields");
       const picker = box.querySelector(".story-manual-picker");
-      const selectedValue = box.querySelector(".story-choice-input:checked")?.value || "";
+      box.classList.toggle("story-link-disabled", !mode);
+      if (picker) picker.classList.remove("hidden");
+      if (selectedRow) selectedRow.classList.toggle("hidden", !hasExisting);
+      if (existingPreview) existingPreview.classList.toggle("hidden", !hasExisting);
+      if (newPreview) newPreview.classList.toggle("hidden", mode !== "new");
+      const manualSummary = box.querySelector(".story-manual-summary");
       const manualSelect = box.querySelector(".story-manual-select");
       const hasManualChoice = Boolean(manualSelect && manualSelect.value);
-      box.classList.toggle("story-link-disabled", !enabled);
-      if (picker) picker.classList.toggle("hidden", !enabled);
-      if (newPreview) newPreview.classList.toggle("hidden", !enabled || hasManualChoice || selectedValue !== "new");
-      if (existingPreview) existingPreview.classList.toggle("hidden", !enabled || hasManualChoice || selectedValue !== "existing");
-      const manualSummary = box.querySelector(".story-manual-summary");
-      if (manualSummary) manualSummary.classList.toggle("hidden", !(enabled && hasManualChoice));
+      if (manualSummary) manualSummary.classList.toggle("hidden", !hasManualChoice);
     }
 
     async function populateManualStoryPicker(box) {
@@ -2252,7 +2467,7 @@ function generateHtml(sessions) {
       const select = box.querySelector(".story-manual-select");
       if (!select || select.dataset.loaded === "true") return;
       const stories = await loadAgonStoriesClient();
-      const options = ['<option value="">Conserver le rattachement proposé</option>'];
+      const options = ['<option value="">Choisir une autre histoire existante</option>'];
       stories.forEach(function(story) {
         const storyId = escapeHtmlClient(story.story_id || "");
         const title = escapeHtmlClient(story.story_title || "Histoire sans titre");
@@ -2276,9 +2491,22 @@ function generateHtml(sessions) {
       if (!hasValue) {
         summaryInput.value = "";
         meta.textContent = "";
+        if (!String(box.dataset.currentStoryId || "").trim() && (box.dataset.defaultMode || "") !== "new") {
+          box.dataset.selectedMode = "";
+        }
         syncStoryChoiceUi(box);
         return;
       }
+      box.dataset.selectedMode = "existing";
+      box.dataset.currentStoryId = select.value;
+      box.dataset.currentStoryTitle = option?.dataset.title || "";
+      box.dataset.currentStorySummary = option?.dataset.summary || "";
+      box.dataset.previousEpisodeTitle = option?.dataset.latest || "";
+      box.dataset.previousEpisodeUrl = option?.dataset.url || "";
+      const tagTitle = box.querySelector(".story-selected-title");
+      if (tagTitle) tagTitle.textContent = option?.dataset.title || "";
+      const existingSummaryInput = box.querySelector(".story-existing-fields .story-summary-input");
+      if (existingSummaryInput) existingSummaryInput.value = option?.dataset.summary || "";
       summaryInput.value = option?.dataset.summary || "";
       meta.textContent = option?.dataset.latest ? "Dernier épisode : " + option.dataset.latest : "";
       syncStoryChoiceUi(box);
@@ -2296,26 +2524,22 @@ function generateHtml(sessions) {
     function saveStoryEdits(box) {
       if (!box) return;
       const feedback = box.querySelector(".story-save-feedback");
-      const selectedMode = box.querySelector(".story-choice-input:checked")?.value || "";
-      const existingSummaryInput = box.querySelector(".story-existing-preview .story-summary-input, .story-summary-input");
+      const selectedMode = box.dataset.selectedMode || "";
+      const existingSummaryInput = box.querySelector(".story-existing-fields .story-summary-input");
       const titleInput = box.querySelector(".story-title-input");
-      const newSummaryInput = box.querySelector(".story-new-preview .story-summary-input, .story-draft-fields .story-summary-input");
+      const newSummaryInput = box.querySelector(".story-new-fields .story-summary-input");
       const newStory = decodeStoryData(box.dataset.newStory) || {};
 
-      if (titleInput) {
+      if (titleInput && selectedMode === "new") {
         newStory.story_title = titleInput.value.trim();
       }
-      if (newSummaryInput && (box.dataset.storyDecision === "new_story" || selectedMode === "new")) {
+      if (newSummaryInput && selectedMode === "new") {
         newStory.story_summary = newSummaryInput.value.trim();
         box.dataset.newStory = encodeStoryData(newStory);
       }
 
-      const selectedCard = box.querySelector(".story-link-card.selected");
-      if (selectedCard && existingSummaryInput && box.dataset.storyDecision === "existing_story") {
-        const paragraph = selectedCard.querySelector("p");
-        if (paragraph) {
-          paragraph.textContent = existingSummaryInput.value.trim();
-        }
+      if (existingSummaryInput && selectedMode === "existing") {
+        box.dataset.currentStorySummary = existingSummaryInput.value.trim();
       }
 
       if (feedback) {
@@ -2330,13 +2554,10 @@ function generateHtml(sessions) {
     function collectStorySelection(subjectEl) {
       const box = subjectEl.querySelector(".story-link-box");
       if (!box) return null;
-      if (box.querySelector(".story-enabled-input")?.checked === false) {
-        return null;
-      }
 
       const storyDecision = box.dataset.storyDecision || "";
-      const matchedStoryId = box.dataset.matchedStoryId || null;
-      const matchedStoryTitle = box.dataset.matchedStoryTitle || "";
+      const matchedStoryId = box.dataset.currentStoryId || box.dataset.matchedStoryId || null;
+      const matchedStoryTitle = box.dataset.currentStoryTitle || box.dataset.matchedStoryTitle || "";
       const previousEpisodeTitle = box.dataset.previousEpisodeTitle || "";
       const previousEpisodeUrl = box.dataset.previousEpisodeUrl || "";
       const confidence = Number(box.dataset.confidence || 0);
@@ -2345,35 +2566,8 @@ function generateHtml(sessions) {
       const baseNewStory = decodeStoryData(box.dataset.newStory) || {};
       const manualSelect = box.querySelector(".story-manual-select");
       const manualOption = manualSelect?.options[manualSelect.selectedIndex] || null;
-
-      if (manualSelect && manualSelect.value) {
-        const manualSummary = box.querySelector(".story-manual-summary-input")?.value.trim() || "";
-        if (!manualSummary) {
-          throw new Error("Renseigne le résumé de l’histoire choisie avant l'envoi.");
-        }
-        return {
-          storyDecision: "existing_story",
-          matchedStoryId: manualSelect.value,
-          matchedStoryTitle: manualOption?.dataset.title || "",
-          previousEpisodeTitle: manualOption?.dataset.latest || "",
-          previousEpisodeUrl: manualOption?.dataset.url || "",
-          confidence: 1,
-          reason: "Histoire choisie manuellement.",
-          criteria,
-          selectionMode: "existing",
-          storySummary: manualSummary
-        };
-      }
-
-      let selectionMode = storyDecision === "existing_story"
-        ? "existing"
-        : storyDecision === "new_story"
-          ? "new"
-          : (box.querySelector(".story-choice-input:checked")?.value || "");
-
-      if (!selectionMode) {
-        throw new Error("Choisis d'abord si cette arène doit être rattachée à l'histoire proposée ou à une nouvelle histoire.");
-      }
+      const selectionMode = box.dataset.selectedMode || "";
+      if (!selectionMode) return null;
 
       const payload = {
         storyDecision,
@@ -2387,11 +2581,16 @@ function generateHtml(sessions) {
         selectionMode
       };
 
-      const newSummary = box.querySelector(".story-new-preview .story-summary-input, .story-draft-fields .story-summary-input")?.value.trim() || "";
-      const existingSummary = box.querySelector(".story-existing-preview .story-summary-input, .story-summary-input")?.value.trim() || "";
+      const newSummary = box.querySelector(".story-new-fields .story-summary-input")?.value.trim() || "";
+      const existingSummary = box.querySelector(".story-existing-fields .story-summary-input")?.value.trim() || "";
 
       if (selectionMode === "existing") {
+        if (!matchedStoryId) return null;
+        if (!existingSummary) {
+          throw new Error("Renseigne le résumé de l’histoire avant l'envoi.");
+        }
         payload.storySummary = existingSummary;
+        payload.reason = manualSelect && manualSelect.value ? "Histoire choisie manuellement." : reason;
       }
 
       if (selectionMode === "new") {
@@ -2415,6 +2614,9 @@ function generateHtml(sessions) {
       return payload;
     }
 
+    const AI_TITLE_MAX = 100;
+    const AI_RESUME_MAX = 1800;
+
     function buildAiBoxHtml(ai) {
       const score = Number(ai.debateScore) || 0;
       const optionsHtml = AGON_THEMES.map(theme =>
@@ -2431,7 +2633,11 @@ function generateHtml(sessions) {
 
       return '<div class="ai-box">' +
         '<p class="debate-question" contenteditable="true" spellcheck="false">' + (ai.debateQuestion || "") + "</p>" +
-        (ai.resume ? '<p class="resume">' + ai.resume + "</p>" : "") +
+        '<div class="field-counter question-counter">0 / 100</div>' +
+        (ai.resume ? '<p class="resume" contenteditable="true" spellcheck="false">' + ai.resume + "</p>" : "") +
+        (ai.resume ? '<div class="field-counter resume-counter">0 / 1800</div>' : "") +
+        (ai.resume ? '<div class="story-save-actions"><button type="button" class="story-save-btn context-save-btn">Enregistrer les modifications</button><span class="story-save-feedback context-save-feedback hidden">Modifications enregistrées</span></div>' : "") +
+        buildKeywordsHtml(ai) +
         buildPreviousEpisodeLinkHtml(ai.storyLink) +
         '<p class="agon-theme"><strong>Thématique Agôn proposée :</strong>' +
           '<select class="agon-select">' + optionsHtml + "</select>" +
@@ -2451,11 +2657,56 @@ function generateHtml(sessions) {
         "</div>";
     }
 
+    function saveContextEdits(subjectEl) {
+      if (!subjectEl) return;
+      const feedback = subjectEl.querySelector(".context-save-feedback");
+      const questionEl = subjectEl.querySelector(".debate-question");
+      const resumeEl = subjectEl.querySelector(".resume");
+      updateAiEditorCounters(subjectEl);
+      if (questionEl) {
+        questionEl.dataset.savedValue = questionEl.textContent.trim();
+      }
+      if (resumeEl) {
+        resumeEl.dataset.savedValue = resumeEl.textContent.trim();
+      }
+      if (feedback) {
+        feedback.classList.remove("hidden");
+        clearTimeout(feedback._timer);
+        feedback._timer = setTimeout(function() {
+          feedback.classList.add("hidden");
+        }, 1800);
+      }
+    }
+
     function getOrientationGroupClient(orientation) {
       const o = (orientation || "").toLowerCase();
       if (o.indexOf("gauche") !== -1) return "left";
       if (o.indexOf("droite") !== -1 || o.indexOf("conservateur") !== -1 || o.indexOf("souverainiste") !== -1) return "right";
       return "center";
+    }
+
+    function clampEditableText(element, maxLength) {
+      if (!element) return "";
+      const safeValue = (element.textContent || "").trim().slice(0, maxLength);
+      if ((element.textContent || "").trim() !== safeValue) {
+        element.textContent = safeValue;
+      }
+      return safeValue;
+    }
+
+    function updateCounter(subjectEl, selector, counterSelector, maxLength) {
+      const element = subjectEl.querySelector(selector);
+      const counter = subjectEl.querySelector(counterSelector);
+      if (!element || !counter) return;
+      const safeValue = clampEditableText(element, maxLength);
+      counter.textContent = safeValue.length + " / " + maxLength;
+      counter.style.color = safeValue.length >= maxLength ? "#b42318" : "#6b7280";
+    }
+
+    function updateAiEditorCounters(subjectEl) {
+      if (!subjectEl) return;
+      updateCounter(subjectEl, ".debate-question", ".question-counter", AI_TITLE_MAX);
+      updateCounter(subjectEl, ".resume", ".resume-counter", AI_RESUME_MAX);
     }
 
     function selectPreselectedLinks(contents, debateScore) {
@@ -2513,6 +2764,7 @@ function generateHtml(sessions) {
 
         if (aiScore) aiScore.outerHTML = buildAiScoreHtml(ai);
         aiBox.outerHTML = buildAiBoxHtml(ai);
+        updateAiEditorCounters(subjectEl);
         initializeStoryBoxes(subjectEl);
 
         const agonBtn = subjectEl.querySelector(".agon-btn");
@@ -2549,6 +2801,8 @@ function generateHtml(sessions) {
       const score = Number(subjectEl.dataset.score) || 0;
       const questionEl = subjectEl.querySelector(".debate-question");
       const resumeEl = subjectEl.querySelector(".resume");
+      updateAiEditorCounters(subjectEl);
+      const keywords = getKeywordsFromEditor(subjectEl);
       const agonEl = subjectEl.querySelector(".agon-select");
       const editables = subjectEl.querySelectorAll(".editable");
       const sourcesEl = subjectEl.querySelector(".sources");
@@ -2565,8 +2819,9 @@ function generateHtml(sessions) {
         action: isSaved ? "unsave" : "save",
         subject: title,
         debateScore: score,
-        debateQuestion: questionEl ? questionEl.textContent.trim() : "",
-        resume: resumeEl ? resumeEl.textContent.trim() : "",
+        debateQuestion: questionEl ? questionEl.textContent.trim().slice(0, AI_TITLE_MAX) : "",
+        resume: resumeEl ? resumeEl.textContent.trim().slice(0, AI_RESUME_MAX) : "",
+        keywords,
         agonTheme: agonEl ? agonEl.value : "",
         positionA: editables[0] ? editables[0].textContent.trim() : "",
         positionB: editables[1] ? editables[1].textContent.trim() : "",
@@ -2597,12 +2852,14 @@ function generateHtml(sessions) {
       try {
         const subjectEl = btn.closest(".subject");
         const storySelection = collectStorySelection(subjectEl);
-        const question = subjectEl.querySelector(".debate-question")?.textContent.trim() || btn.dataset.question;
+        updateAiEditorCounters(subjectEl);
+        const question = (subjectEl.querySelector(".debate-question")?.textContent.trim() || btn.dataset.question || "").slice(0, AI_TITLE_MAX);
         const editables = subjectEl.querySelectorAll(".editable");
         const positionA = editables[0]?.textContent.trim() || btn.dataset.positionA;
         const positionB = editables[1]?.textContent.trim() || btn.dataset.positionB;
         const theme = subjectEl.querySelector(".agon-select")?.value || btn.dataset.theme;
-        const resume = subjectEl.querySelector(".resume")?.textContent.trim() || "";
+        const resume = (subjectEl.querySelector(".resume")?.textContent.trim() || "").slice(0, AI_RESUME_MAX);
+        const keywords = getKeywordsFromEditor(subjectEl);
         const sources = btn.dataset.sources;
         const links = [...subjectEl.querySelectorAll(".content-item[data-link]")].map(item => {
           const dateText = item.querySelector("small")?.textContent || "";
@@ -2620,7 +2877,7 @@ function generateHtml(sessions) {
         const res = await fetch("/send-to-agon", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ question, positionA, positionB, theme, resume, sources, links, storySelection })
+          body: JSON.stringify({ question, positionA, positionB, theme, resume, sources, links, storySelection, keywords })
         });
         if (!res.ok) throw new Error();
         btn.classList.add("sent");
@@ -2635,19 +2892,79 @@ function generateHtml(sessions) {
     });
 
     document.addEventListener("change", function(e) {
-      if (e.target.classList.contains("story-choice-input") || e.target.classList.contains("story-enabled-input")) {
-        syncStoryChoiceUi(e.target.closest(".story-link-box"));
-        return;
-      }
       if (e.target.classList.contains("story-manual-select")) {
         updateManualStorySelection(e.target.closest(".story-link-box"));
+        return;
+      }
+      if (e.target.classList.contains("news-keyword-add-btn")) {
+        const subjectEl = e.target.closest(".subject");
+        const input = subjectEl?.querySelector(".news-keyword-input");
+        addKeywordToEditor(subjectEl, input?.value || "");
+      }
+    });
+
+    document.addEventListener("input", function(e) {
+      if (e.target.classList.contains("debate-question") || e.target.classList.contains("resume")) {
+        updateAiEditorCounters(e.target.closest(".subject"));
       }
     });
 
     document.addEventListener("click", function(e) {
       const saveBtn = e.target.closest(".story-save-btn");
-      if (!saveBtn) return;
-      saveStoryEdits(saveBtn.closest(".story-link-box"));
+      if (saveBtn && !saveBtn.classList.contains("context-save-btn")) {
+        saveStoryEdits(saveBtn.closest(".story-link-box"));
+        return;
+      }
+      const contextSaveBtn = e.target.closest(".context-save-btn");
+      if (contextSaveBtn) {
+        saveContextEdits(contextSaveBtn.closest(".subject"));
+        return;
+      }
+      const createStoryBtn = e.target.closest(".story-create-btn");
+      if (createStoryBtn) {
+        const box = createStoryBtn.closest(".story-link-box");
+        if (box) {
+          box.dataset.selectedMode = "new";
+          box.dataset.currentStoryId = "";
+          box.dataset.currentStoryTitle = "";
+          box.dataset.currentStorySummary = "";
+          const select = box.querySelector(".story-manual-select");
+          if (select) select.value = "";
+          syncStoryChoiceUi(box);
+        }
+        return;
+      }
+      const removeStoryBtn = e.target.closest(".story-selected-remove-btn");
+      if (removeStoryBtn) {
+        const box = removeStoryBtn.closest(".story-link-box");
+        if (box) {
+          box.dataset.selectedMode = "";
+          box.dataset.currentStoryId = "";
+          box.dataset.currentStoryTitle = "";
+          box.dataset.currentStorySummary = "";
+          const select = box.querySelector(".story-manual-select");
+          if (select) select.value = "";
+          const summaryWrap = box.querySelector(".story-manual-summary");
+          const summaryInput = box.querySelector(".story-manual-summary-input");
+          const meta = box.querySelector(".story-manual-meta");
+          if (summaryWrap) summaryWrap.classList.add("hidden");
+          if (summaryInput) summaryInput.value = "";
+          if (meta) meta.textContent = "";
+          syncStoryChoiceUi(box);
+        }
+        return;
+      }
+      const removeBtn = e.target.closest(".news-keyword-remove-btn");
+      if (!removeBtn) return;
+      const chip = removeBtn.closest(".news-keyword-chip");
+      if (chip) chip.remove();
+    });
+
+    document.addEventListener("keydown", function(e) {
+      if (!e.target.classList.contains("news-keyword-input")) return;
+      if (e.key !== "Enter") return;
+      e.preventDefault();
+      addKeywordToEditor(e.target.closest(".subject"), e.target.value || "");
     });
 
     let currentSort = "score";

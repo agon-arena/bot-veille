@@ -84,7 +84,7 @@ function buildFallbackStoryTitle(subject, theme) {
 
 function buildFallbackStorySummary(subject, resume) {
   const base = String(resume || "").trim() || String(subject || "").trim();
-  return limitStoryText(base || "Nouvel épisode à suivre.", 220);
+  return limitStoryText(base || "Histoire en cours à suivre dans ses développements successifs.", 320);
 }
 
 function buildStableStoryLine(payload, storySuggestion) {
@@ -97,38 +97,59 @@ function buildStableStoryLine(payload, storySuggestion) {
   ).trim();
 
   if (storySummary) {
-    return limitStoryText(storySummary, 180);
+    return limitStoryText(storySummary, 320);
   }
 
-  return limitStoryText(`Le sujet met aux prises ${payload.sources?.slice(0, 2).join(" et ") || "plusieurs acteurs"} autour d'une tension encore mouvante.`, 180);
+  return limitStoryText(`Le sujet met aux prises ${payload.sources?.slice(0, 2).join(" et ") || "plusieurs acteurs"} autour d'une tension encore mouvante, dont les épisodes successifs peuvent reconfigurer le rapport de force.`, 320);
+}
+
+function buildFallbackClosingLine(payload, storySuggestion) {
+  const theme = String(payload.ai?.agonTheme || "").trim();
+
+  const candidates = [
+    theme ? `Ce nouvel episode peut-il faire basculer ${theme.toLowerCase()} ?` : "",
+    "Ce nouvel episode peut-il rebattre les cartes dans les prochains jours ?",
+    "Cette sequence peut-elle fragiliser l'un des acteurs centraux ?",
+    "Qui sortira reellement affaibli de cette nouvelle etape ?"
+  ].map((item) => String(item || "").trim()).filter(Boolean);
+
+  return limitStoryText(candidates[0], 160);
 }
 
 function buildFallbackNarrativeContext(payload, storySuggestion) {
   const previousEpisode = String(storySuggestion?.previous_episode_summary || "").trim();
   const latestEvent = String(payload.ai?.resume || payload.subject || "").trim();
-  const opening = String(
-    storySuggestion?.reason
-      || "Le prochain geste des acteurs en presence peut faire basculer la sequence dans les prochaines heures."
-  ).trim();
   const historyLine = buildStableStoryLine(payload, storySuggestion);
-  const previousLine = previousEpisode
-    ? limitStoryText(previousEpisode, 180)
-    : "Jusqu'ici, aucun épisode clairement établi n'était encore rattaché à cette histoire.";
-  const latestLine = latestEvent
-    ? limitStoryText(latestEvent, 800)
-    : limitStoryText(String(payload.subject || "").trim(), 800);
+  const opening = buildFallbackClosingLine(payload, storySuggestion);
+  const isFirstEpisode = !previousEpisode && String(storySuggestion?.story_decision || "").trim() === "new_story";
+  const normalizedPrevious = previousEpisode
+    ? limitStoryText(previousEpisode, 180).replace(/^Épisode précédent\s*:\s*/i, "")
+    : "";
+  let latestLine = latestEvent
+    ? limitStoryText(latestEvent, 1000)
+    : limitStoryText(String(payload.subject || "").trim(), 1000);
+
+  if (latestLine && historyLine) {
+    const compactLatest = latestLine.toLowerCase();
+    const compactHistory = historyLine.toLowerCase();
+    if (compactLatest === compactHistory || compactLatest.startsWith(compactHistory)) {
+      latestLine = limitStoryText(String(payload.subject || latestEvent || "").trim(), 800);
+    }
+  }
 
   const parts = [
-    `L’histoire jusqu’ici : ${historyLine}`,
-    previousLine.replace(/^Épisode précédent\s*:\s*/i, ""),
+    isFirstEpisode ? "" : `L’histoire jusqu’ici : ${historyLine}`,
+    normalizedPrevious,
     latestLine.replace(/^Nouvel épisode\s*:\s*/i, ""),
     limitStoryText(opening, 160)
-  ];
+  ].filter(Boolean);
   return parts.join("\n");
 }
 
 async function generateNarrativeContext(payload, storySuggestion) {
   const historyLine = buildStableStoryLine(payload, storySuggestion);
+  const isFirstEpisode = !String(storySuggestion?.previous_episode_summary || "").trim()
+    && String(storySuggestion?.story_decision || "").trim() === "new_story";
   const fallback = buildFallbackNarrativeContext({
     ...payload,
     storySummaryOverride: historyLine
@@ -151,6 +172,7 @@ Rendre l'actualite palpitante mais serieuse. Le lecteur doit avoir l'impression 
 
 Important :
 Que l'arene finale soit une arene libre ou une arene a positions, tu rediges toujours ce contexte sous la meme forme narrative.
+${isFirstEpisode ? "Ici, il s'agit du tout premier episode d'une nouvelle histoire. N'ecris donc pas de rappel du type \"L’histoire jusqu’ici\" et n'invente pas d'episodes anterieurs." : ""}
 
 Regle absolue :
 Le suspense doit venir uniquement des faits, des tensions reelles, des rapports de force et des incertitudes verifiables.
@@ -184,9 +206,16 @@ Reponds uniquement en texte brut, sans puces, sous cette structure exacte :
 
 Consignes de redaction :
 - Ne reecris jamais "L’histoire jusqu’ici". Cette ligne sera injectee telle quelle a partir du resume d'histoire deja valide.
-- Premier paragraphe : 2 lignes maximum. Resume tres brievement ce qui s'etait passe juste avant, sans ecrire "Épisode précédent".
-- Deuxieme paragraphe : 800 caracteres maximum. Raconte le nouvel article comme la suite logique de l'histoire : contexte immediat, evenement, acteurs, tension, ce qui change, sans ecrire "Nouvel épisode".
-- Termine par une seule phrase courte, sans label visible, qui fait office de cliffhanger factuel : ce qui peut basculer maintenant, ce qu'il faut surveiller, ou le prochain point de rupture possible.
+- Si c'est le tout premier episode d'une nouvelle histoire, ne commence pas par "L’histoire jusqu’ici" : entre directement dans l'actualite.
+- Cette ligne doit etre comprise comme un resume cumule de l'histoire depuis le debut, en 2 ou 3 lignes maximum, construit a partir des episodes precedents deja analyses.
+- N'utilise jamais dans les paragraphes des formulations meta comme "aucune continuite narrative", "aucun episode rattache", "pas d'episode precedent confirme" ou tout autre commentaire de systeme.
+- Ne repete pas le contenu de "L’histoire jusqu’ici" dans les paragraphes suivants : ils doivent apporter du mouvement, pas redire le socle.
+- Premier paragraphe : 2 lignes maximum. Resume tres brievement ce qui s'etait passe juste avant, sans ecrire "Épisode précédent". S'il n'y a pas vraiment d'episode precedent etabli, saute ce paragraphe au lieu de commenter cette absence.
+- Le contexte complet doit faire entre 400 et 1000 caracteres environ.
+- Deuxieme paragraphe : c'est le coeur du texte. Raconte le nouvel article comme la suite logique de l'histoire : contexte immediat, evenement, acteurs, tension, ce qui change, sans ecrire "Nouvel épisode".
+- Termine par une seule phrase courte, sans label visible, qui fait office de cliffhanger factuel.
+- Cette derniere phrase doit idealement prendre la forme d'une question breve et tendue, du type : "Cela va-t-il affaiblir Glucksmann ?", "Qui sort fragilise de cette sequence ?", "Ce nouvel episode peut-il faire basculer le rapport de force ?"
+- Interdiction d'utiliser des tournures molles ou mecaniques comme "La suite se jouera maintenant...", "Tout se joue desormais..." ou "Le prochain mouvement dira si..."
 
 Contraintes :
 - tu ne rediges pas le titre ici, seulement le contexte ;
@@ -201,7 +230,9 @@ Contraintes :
 - priorite au nouvel episode : les rappels doivent rester tres courts ;
 - si une information manque, rester vague plutot que completer ;
 - le deuxieme paragraphe doit rester le morceau le plus developpe ;
+- vise un texte sensiblement plus developpe qu'avant, avec plus de chair factuelle, tant que tu restes sous 1000 caracteres environ ;
 - la derniere phrase doit etre plus palpitante que descriptive, avec une vraie sensation de bascule imminente, mais toujours fondee sur des faits et sans exageration ;
+- privilegie pour la derniere phrase une formulation interrogative courte, concrete et memorisable ;
 - n'ecris jamais les mots "Ouverture", "Épisode précédent" ou "Nouvel épisode" dans le texte final.
 `;
 
@@ -214,7 +245,7 @@ Contraintes :
     });
     const tail = String(response.output_text || "").trim();
     if (!tail) return fallback;
-    return [`L’histoire jusqu’ici : ${historyLine}`, tail].join("\n");
+    return [isFirstEpisode ? "" : `L’histoire jusqu’ici : ${historyLine}`, tail].filter(Boolean).join("\n");
   } catch (error) {
     return fallback;
   }
@@ -398,7 +429,7 @@ Reponds uniquement en JSON valide sous cette forme :
   },
   "new_story": {
     "story_title": "titre très court et général",
-    "story_summary": "resume court",
+    "story_summary": "resume cumule de l'histoire depuis le debut, en 2 ou 3 lignes",
     "main_actors": ["..."],
     "central_tension": "...",
     "keywords": ["..."],
@@ -408,6 +439,8 @@ Reponds uniquement en JSON valide sous cette forme :
 
 Contraintes :
 - story_title doit etre tres court, tres general, et pouvoir accueillir plusieurs episodes.
+- story_summary doit resumer l'histoire depuis le debut, pas seulement l'article du jour.
+- story_summary doit faire 2 ou 3 lignes maximum, etre stable, general, et pouvoir etre repris tel quel au debut des episodes suivants.
 - privilegie une formule nominale simple, de 2 a 5 mots si possible.
 - exemples de bons story_title : "Guerre en Iran", "Fin de vie", "Primaire de la gauche", "Crise au Liban".
 - Si aucune histoire ne correspond clairement, cree une nouvelle histoire.
@@ -663,6 +696,12 @@ app.get("/saved", requireMixteAuth, (req, res) => {
     return `<div class="ai-score"><div><span class="score-label">Potentiel débat</span><strong>${esc(String(s.debateScore))}/10</strong></div><span class="controversy">${esc(s.controversyLevel || "")}</span></div>`;
   }
 
+  function buildKeywordsHtml(s) {
+    const keywords = Array.isArray(s.keywords) ? s.keywords.filter(Boolean) : [];
+    if (!keywords.length) return "";
+    return `<div class="news-keywords"><div class="news-keywords-label">Mots-clés relevés</div>${keywords.map((keyword) => `<span class="news-keyword-chip">${esc(keyword)}</span>`).join("")}</div>`;
+  }
+
   function buildAiBoxHtml(s) {
     const score = Number(s.debateScore) || 0;
     if (!s.debateQuestion) {
@@ -680,7 +719,8 @@ app.get("/saved", requireMixteAuth, (req, res) => {
       : "";
     return `<div class="ai-box">
       <p class="debate-question" contenteditable="true" spellcheck="false">${esc(s.debateQuestion)}</p>
-      ${s.resume ? `<p class="resume">${esc(s.resume)}</p>` : ""}
+      ${s.resume ? `<p class="resume" contenteditable="true" spellcheck="false">${esc(s.resume)}</p>` : ""}
+      ${buildKeywordsHtml(s)}
       <p class="agon-theme"><strong>Thématique Agôn proposée :</strong><select class="agon-select">${optionsHtml}</select></p>
       ${positionsHtml}
     </div>`;
@@ -762,6 +802,11 @@ app.get("/saved", requireMixteAuth, (req, res) => {
     .debate-question { font-weight: 600; margin: 0 0 10px; padding: 6px 8px; border-radius: 6px; outline: none; }
     .debate-question:hover, .debate-question:focus { background: #fff; box-shadow: 0 0 0 2px #ddd; }
     .resume { color: #444; font-size: 0.9rem; border-left: 3px solid #ddd; padding-left: 10px; margin: 8px 0; }
+    .resume[contenteditable="true"] { border-radius: 8px; padding: 8px 10px; margin-left: -10px; outline: none; transition: background 0.15s; white-space: pre-wrap; }
+    .resume[contenteditable="true"]:hover, .resume[contenteditable="true"]:focus { background: #fff; box-shadow: 0 0 0 2px #ddd; }
+    .news-keywords { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0 4px; }
+    .news-keywords-label { width: 100%; font-size: 0.82rem; font-weight: 700; color: #555; }
+    .news-keyword-chip { display: inline-flex; align-items: center; min-height: 30px; padding: 0 10px; border-radius: 999px; background: #f3f4f7; border: 1px solid #e2e4ea; color: #2b2e38; font-size: 0.82rem; font-weight: 600; line-height: 1.2; }
     .agon-theme { font-size: 0.88rem; color: #555; margin: 10px 0 0; }
     .agon-select { margin-left: 6px; border: 1px solid #ddd; border-radius: 6px; padding: 3px 6px; font: inherit; font-size: 0.85rem; }
     .positions-box { background: white; border-radius: 8px; padding: 10px 14px; margin-top: 10px; border: 1px solid #eee; font-size: 0.9rem; }
@@ -832,7 +877,7 @@ app.get("/saved", requireMixteAuth, (req, res) => {
       : '';
     return '<div class="ai-box">' +
       '<p class="debate-question" contenteditable="true" spellcheck="false">' + (ai.debateQuestion || '') + '</p>' +
-      (ai.resume ? '<p class="resume">' + ai.resume + '</p>' : '') +
+      (ai.resume ? '<p class="resume" contenteditable="true" spellcheck="false">' + ai.resume + '</p>' : '') +
       '<p class="agon-theme"><strong>Thématique Agôn proposée :</strong><select class="agon-select">' + optionsHtml + '</select></p>' +
       positionsHtml +
       '</div>';
@@ -1404,13 +1449,13 @@ app.get("/api/agon-stories", requireMixteAuth, async (req, res) => {
 
 app.post("/send-to-agon", requireMixteAuth, async (req, res) => {
   try {
-    const { question, positionA, positionB, theme, resume, sources, links, storySelection } = req.body;
+    const { question, positionA, positionB, theme, resume, sources, links, storySelection, keywords } = req.body;
     if (!question) return res.status(400).json({ ok: false, error: "question manquante" });
     console.log(`[send-to-agon] Envoi vers ${AGON_URL}/api/veille/receive`);
     const r = await fetch(`${AGON_URL}/api/veille/receive`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ question, positionA, positionB, theme, resume, sources, links: links || [], storySelection: storySelection || null })
+      body: JSON.stringify({ question, positionA, positionB, theme, resume, sources, links: links || [], storySelection: storySelection || null, keywords: Array.isArray(keywords) ? keywords : [] })
     });
     if (!r.ok) {
       const body = await r.text().catch(() => "");
