@@ -1,0 +1,794 @@
+[
+  {
+    "subject": "Intelligence artificielle : comment SpaceX, OpenAI et Anthropic préparent une entrée en Bourse historique",
+    "sessionLabel": "17/05/2026 à 19:44:35",
+    "question": "L'entrée en Bourse des géants de l'IA est-elle une opportunité ou un risque ?",
+    "positionA": "Une opportunité pour accélérer l'innovation",
+    "positionB": "Un risque de spéculation excessive",
+    "theme": "Politique, économie et relations internationales",
+    "resume": "SpaceX, OpenAI et Anthropic s'apprêtent à franchir une étape majeure en annonçant leur entrée prochaine en Bourse, un événement qui pourrait marquer un tournant historique dans le secteur de l'intelligence artificielle. Ces entreprises, déjà reconnues pour leurs avancées technologiques majeures, cherchent à lever des fonds importants via ces introductions en Bourse, attirant ainsi l'attention d'investisseurs désireux de miser sur l'avenir de l'IA. Cette démarche illustre leur volonté commune de capitaliser sur leurs innovations tout en consolidant leur position sur un marché en pleine expansion.\n\nAu-delà de la simple levée de capitaux, ces opérations financières sont destinées à financer des projets de recherche et développement ambitieux, accélérant la croissance et l'influence de ces acteurs dans un domaine stratégique. L'entrée en Bourse de ces sociétés est perçue comme un événement d'envergure, susceptible de redéfinir les dynamiques économiques et technologiques autour de l'intelligence artificielle, et de remodeler les équilibres du secteur à l'échelle mondiale.\n\nL'entrée en Bourse des géants de l'IA est-elle une opportunité ou un risque ?\n\nJ.L Grasso",
+    "sources": "L'Humanité, CNews",
+    "links": [
+      {
+        "title": "Intelligence artificielle : comment SpaceX, OpenAI et Anthropic préparent une entrée en Bourse historique",
+        "url": "https://www.humanite.fr/social-et-economie/intelligence-artificielle/intelligence-artificielle-comment-spacex-openai-et-anthropic-preparent-une-entree-en-bourse-historique",
+        "source": "L'Humanité",
+        "type": "article",
+        "date": "17/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Seth Rogen critique les scénaristes ayant recours à l'intelligence artificielle à Hollywood",
+        "url": "https://www.cnews.fr/culture/2026-05-17/seth-rogen-critique-les-scenaristes-ayant-recours-lintelligence-artificielle",
+        "source": "CNews",
+        "type": "article",
+        "date": "17/05/2026",
+        "checked": false
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "23-l-intelligence-artificielle-transforme-le-travail-l-ecole-la-creation-et-le-pouv",
+      "matchedStoryTitle": "L’intelligence artificielle transforme le travail, l’école, la création et le pouvoir économique",
+      "previousEpisodeTitle": "",
+      "previousEpisodeUrl": "",
+      "confidence": 0.85,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {
+        "main_actors_match": true,
+        "central_tension_match": true,
+        "temporal_continuity": true,
+        "editorial_theme_match": true,
+        "strong_keywords_match": true
+      },
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "SpaceX",
+      "OpenAI",
+      "Anthropic",
+      "entrée en Bourse",
+      "intelligence artificielle",
+      "marché financier",
+      "technologie",
+      "régulation"
+    ],
+    "sentAt": "2026-05-17T17:52:58.508Z"
+  },
+  {
+    "subject": "« Comment peut-on gouverner une France communiste ? » : quand Franz-Olivier Giesbert voit arriver « la révolution… et la guillotine » en 2027",
+    "sessionLabel": "17/05/2026 à 19:44:35",
+    "question": "La France peut-elle être gouvernée efficacement sous un régime communiste ?",
+    "positionA": "Oui, un régime communiste peut stabiliser la France",
+    "positionB": "Non, le communisme mènerait à la violence et au chaos",
+    "theme": "Politique, économie et relations internationales",
+    "resume": "Franz-Olivier Giesbert anticipe un bouleversement politique majeur en France d’ici 2027, marqué par l’arrivée au pouvoir d’un régime communiste. Il s’interroge sur la capacité à gouverner un pays sous cette idéologie, évoquant une situation profondément instable où la révolution bouleverserait les fondements mêmes de la société. Cette transformation radicale ne serait pas seulement politique, mais aussi sociale, plongeant la France dans une période de tensions extrêmes.\n\nPour Giesbert, cette nouvelle ère pourrait s’accompagner d’une radicalisation inquiétante, symbolisée par le retour de la guillotine, image forte d’un climat de violence et de répression. Ce pronostic traduit une vision sombre des conséquences d’un tel changement, où le pouvoir communiste ne se limiterait pas à une simple alternance politique, mais deviendrait un facteur de rupture intense, générant conflits internes et risques majeurs pour la stabilité du pays.\n\nLa France peut-elle être gouvernée efficacement sous un régime communiste ?\n\nM. Camus",
+    "sources": "L'Humanité, Marianne",
+    "links": [
+      {
+        "title": "« Comment peut-on gouverner une France communiste ? » : quand Franz-Olivier Giesbert voit arriver « la révolution… et la guillotine » en 2027",
+        "url": "https://www.humanite.fr/politique/le-billet-de-maurice-ulrich/comment-peut-on-gouverner-une-france-communiste-quand-franz-olivier-giesbert-voit-arriver-la-revolution-et-la-guillotine-en-2027",
+        "source": "L'Humanité",
+        "type": "article",
+        "date": "17/05/2026",
+        "checked": true
+      },
+      {
+        "title": "\"Dernières nouvelles d’Éros\", d'Olivier Guez : \"Un geste littéraire qui peut être vu comme un manifeste anti-Bolloré\"",
+        "url": "https://www.marianne.net/culture/litterature/dernieres-nouvelles-deros-d-olivier-guez-un-geste-litteraire-qui-peut-etre-vu-comme-un-manifeste-anti-bollore#utm_source=RSS-MARIANNE&utm_medium=Flux-Rss&utm_campaign=RSS_general",
+        "source": "Marianne",
+        "type": "article",
+        "date": "17/05/2026",
+        "checked": false
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "05-la-vie-politique-francaise-traverse-une-periode-d-instabilite-et-de-recompositio",
+      "matchedStoryTitle": "La vie politique française traverse une période d’instabilité et de recomposition",
+      "previousEpisodeTitle": "La modification du corps électoral en Nouvelle-Calédonie garantit-elle une démocratie juste ?",
+      "previousEpisodeUrl": "http://localhost:3001/debate?id=445",
+      "confidence": 0.85,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {
+        "main_actors_match": true,
+        "central_tension_match": true,
+        "temporal_continuity": true,
+        "editorial_theme_match": true,
+        "strong_keywords_match": true
+      },
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "Franz-Olivier Giesbert",
+      "révolution 2027",
+      "France communiste",
+      "guillotine"
+    ],
+    "sentAt": "2026-05-17T17:49:17.883Z"
+  },
+  {
+    "subject": "Guerre au Moyen-Orient : Benyamin Nétanyahou affirme qu'Israël est proche de son objectif de tuer tous les responsables du 7-Octobre",
+    "sessionLabel": "17/05/2026 à 19:44:35",
+    "question": "Israël est-il proche de son objectif de tuer tous les responsables du 7-Octobre ?",
+    "positionA": "Soutien à la stratégie ciblée de Nétanyahou",
+    "positionB": "Critique de l'escalade militaire et ses risques",
+    "theme": "Politique, économie et relations internationales",
+    "resume": "Le Premier ministre israélien Benyamin Nétanyahou affirme que son pays se rapproche de son objectif majeur dans le conflit au Moyen-Orient : éliminer tous les responsables des attaques du 7 octobre. Cette déclaration témoigne d'une volonté ferme de cibler précisément les dirigeants impliqués dans cette offensive, marquant une étape importante dans la dynamique actuelle du conflit.\n\nDans le même temps, les opérations militaires israéliennes se poursuivent avec une intensité accrue, notamment par des bombardements renforcés dans le sud du Liban, signe d'une stratégie visant à étendre la pression sur les groupes armés liés à l'attaque. Par ailleurs, une explosion mystérieuse sur le sol israélien a provoqué une certaine panique, avant d'être attribuée à une expérience menée par une entreprise locale. Ce dernier incident ajoute une couche d'incertitude à un contexte déjà tendu, où la nature exacte des événements reste difficile à interpréter.\n\nAucune information ne vient contredire directement les propos de Nétanyahou, mais la situation demeure fragile et susceptible d’évolutions rapides, illustrant la complexité et la volatilité du cadre sécuritaire actuel.\n\nLa guerre au Moyen-Orient : Israël est-il proche de son objectif de tuer tous les responsables du 7-Octobre ?",
+    "sources": "Franceinfo, Le Monde, Le Figaro",
+    "links": [
+      {
+        "title": "EN DIRECT, guerre au Moyen-Orient : frappe d’un drone près de la centrale nucléaire de Barakah, aux Emirats arabes unis ; Israël intensifie ses bombardements dans le sud du Liban",
+        "url": "https://www.lemonde.fr/international/live/2026/05/17/en-direct-guerre-au-moyen-orient-un-drone-frappe-pres-de-la-centrale-nucleaire-de-barakah-aux-emirats-arabes-unis-israel-intensifie-ses-bombardements-sur-le-sud-du-liban_6688992_3210.html",
+        "source": "Le Monde",
+        "type": "article",
+        "date": "17/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Guerre au Moyen-Orient : Benyamin Nétanyahou affirme qu'Israël est proche de son objectif de tuer tous les responsables du 7-Octobre",
+        "url": "https://www.franceinfo.fr/monde/iran/guerre-entre-les-etats-unis-israel-et-l-iran/direct-guerre-au-moyen-orient-c-etait-le-calme-avant-la-tempete-previent-donald-trump_8009534.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "type": "article",
+        "date": "17/05/2026",
+        "checked": true
+      },
+      {
+        "title": "EN DIRECT - Guerre au Moyen-Orient : incendie à Abu Dhabi après une frappe de drone près de la centrale nucléaire de Barakah",
+        "url": "https://www.lefigaro.fr/international/en-direct-apres-l-annonce-d-une-extension-de-45-jours-de-la-treve-avec-israel-le-liban-espere-obtenir-une-paix-durable-20260516",
+        "source": "Le Figaro",
+        "type": "article",
+        "date": "17/05/2026",
+        "checked": false
+      },
+      {
+        "title": "Guerre au Moyen-Orient : une explosion mystérieuse en Israël sème la panique, une entreprise israélienne à l’origine de «l’expérience»",
+        "url": "https://www.lefigaro.fr/international/guerre-au-moyen-orient-une-explosion-mysterieuse-en-israel-seme-la-panique-une-entreprise-israelienne-a-l-origine-de-l-experience-20260517",
+        "source": "Le Figaro",
+        "type": "article",
+        "date": "17/05/2026",
+        "checked": true
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "01-les-conflits-au-moyen-orient-recomposent-les-equilibres-regionaux",
+      "matchedStoryTitle": "Les conflits au Moyen-Orient recomposent les équilibres régionaux",
+      "previousEpisodeTitle": "Peut-on réellement garantir la sécurité des centrales nucléaires en zones de conflit ?",
+      "previousEpisodeUrl": "http://localhost:3001/debate?id=443",
+      "confidence": 0.9,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {
+        "main_actors_match": true,
+        "central_tension_match": true,
+        "temporal_continuity": true,
+        "editorial_theme_match": true,
+        "strong_keywords_match": true
+      },
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "Benyamin Nétanyahou",
+      "Israël",
+      "7-Octobre",
+      "Moyen-Orient",
+      "bombardements sud Liban",
+      "drone Barakah",
+      "Emirats arabes uni"
+    ],
+    "sentAt": "2026-05-17T16:42:02.459Z"
+  },
+  {
+    "subject": "Nouvelle-Calédonie : devant le Sénat, l’obstination du gouvernement pour modifier le corps électoral",
+    "sessionLabel": "17/05/2026 à 19:44:35",
+    "question": "La modification du corps électoral en Nouvelle-Calédonie garantit-elle une démocratie juste ?",
+    "positionA": "Soutien à l’élargissement du corps électoral",
+    "positionB": "Opposition au changement pour préserver l’équilibre",
+    "theme": "Politique, économie et relations internationales",
+    "resume": "Le gouvernement français maintient son projet de révision du corps électoral en Nouvelle-Calédonie, une initiative qui a récemment suscité de vifs échanges au Sénat. L’objectif affiché consiste à élargir la liste électorale spéciale, celle qui détermine les votants lors des consultations sur l’avenir institutionnel du territoire, en intégrant davantage de résidents installés depuis plusieurs années, afin de mieux refléter une réalité démographique en évolution.\n\nCependant, cette proposition rencontre une résistance marquée, notamment de la part des indépendantistes et de certains élus locaux, qui y voient une tentative de rééquilibrage politique en faveur des partisans du maintien dans la République française. Ce débat met en lumière une fracture profonde entre la volonté d’élargir la reconnaissance électorale et la crainte de fragiliser un processus démocratique encadré par les accords antérieurs.\n\nSur le plan juridique, la modification du corps électoral soulève des questions complexes quant au respect des accords de Nouméa, qui définissent strictement les conditions de participation aux scrutins référendaires.\n\nLa modification du corps électoral en Nouvelle-Calédonie garantit-elle une démocratie juste ?",
+    "sources": "Le Monde, L'Humanité",
+    "links": [
+      {
+        "title": "Ramy Shaath, militant palestinien menacé d’expulsion par le gouvernement Lecornu",
+        "url": "https://www.humanite.fr/monde/egypte/ramy-shaath-militant-palestinien-menace-dexpulsion-par-le-gouvernement-lecornu",
+        "source": "L'Humanité",
+        "type": "article",
+        "date": "17/05/2026",
+        "checked": false
+      },
+      {
+        "title": "Nouvelle-Calédonie : devant le Sénat, l’obstination du gouvernement pour modifier le corps électoral",
+        "url": "https://www.lemonde.fr/politique/article/2026/05/17/nouvelle-caledonie-devant-le-senat-l-obstination-du-gouvernement-pour-modifier-le-corps-electoral_6690252_823448.html",
+        "source": "Le Monde",
+        "type": "article",
+        "date": "17/05/2026",
+        "checked": true
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "05-la-vie-politique-francaise-traverse-une-periode-d-instabilite-et-de-recompositio",
+      "matchedStoryTitle": "La vie politique française traverse une période d’instabilité et de recomposition",
+      "previousEpisodeTitle": "La gauche peut-elle encore s’unir sans primaire en 2027 ?",
+      "previousEpisodeUrl": "http://localhost:3001/debate?id=442",
+      "confidence": 0.85,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {
+        "main_actors_match": true,
+        "central_tension_match": true,
+        "temporal_continuity": true,
+        "editorial_theme_match": true,
+        "strong_keywords_match": true
+      },
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "Nouvelle-Calédonie",
+      "Sénat",
+      "corps électoral",
+      "gouvernement Lecornu",
+      "référendum",
+      "indépendantisme"
+    ],
+    "sentAt": "2026-05-17T16:41:15.627Z"
+  },
+  {
+    "subject": "Les plaintes pour violences sexuelles contre Patrick Bruel \"seront regroupées\" au parquet de Nanterre, annonce la procureure de Paris",
+    "sessionLabel": "17/05/2026 à 17:09:48",
+    "question": "La centralisation des plaintes facilite-t-elle ou complique-t-elle la justice ?",
+    "positionA": "Centralisation garantit cohérence et coordination",
+    "positionB": "Concentration risque surcharge et inefficacité",
+    "theme": "Société, éducation et justice",
+    "resume": "Les plaintes pour violences sexuelles visant Patrick Bruel ont été centralisées au parquet de Nanterre, a annoncé la procureure de Paris. Cette décision, qui consiste à regrouper l’ensemble des dossiers, vise à garantir une gestion cohérente et coordonnée de l’enquête. Le choix du parquet de Nanterre, compétent pour ce type d’affaires, traduit une volonté institutionnelle d’organiser le traitement judiciaire de ces accusations de manière structurée. Toutefois, aucun détail n’a été communiqué sur le nombre exact de plaintes déposées ni sur l’état d’avancement des investigations. Cette centralisation intervient dans un contexte où les procédures liées aux violences sexuelles font l’objet d’une attention soutenue, soulignant la complexité et la délicatesse du traitement judiciaire. Si aucune divergence n’a été signalée concernant la décision de regrouper les plaintes, cette concentration des dossiers pourrait néanmoins poser des difficultés en termes de ressources et de gestion, en raison de la médiatisation et de la pression sociale qui entourent cette affaire. L’évolution de cette procédure reste à suivre avec attention.",
+    "sources": "BFMTV, France 24, 20 Minutes",
+    "links": [
+      {
+        "title": "Affaire Patrick Bruel : Les plaintes contre le chanteur « seront regroupées » au parquet de Nanterre",
+        "url": "https://www.20minutes.fr/justice/4223839-20260517-affaire-patrick-bruel-plaintes-contre-chanteur-regroupees-parquet-nanterre?at_medium=display&at_campaign=149",
+        "source": "20 Minutes",
+        "type": "article",
+        "date": "17/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Affaire Epstein : \"une dizaine\" de nouvelles victimes se sont manifestées auprès du parquet de Paris",
+        "url": "https://www.france24.com/fr/france/20260517-affaire-epstein-une-dizaine-de-nouvelles-victimes-se-sont-manifest%C3%A9es-aupr%C3%A8s-du-parquet-de-paris",
+        "source": "France 24",
+        "type": "article",
+        "date": "17/05/2026",
+        "checked": false
+      },
+      {
+        "title": "Les plaintes pour violences sexuelles contre Patrick Bruel \"seront regroupées\" au parquet de Nanterre, annonce la procureure de Paris",
+        "url": "https://www.bfmtv.com/police-justice/les-plaintes-pour-violences-sexuelles-contre-patrick-bruel-seront-regroupees-au-parquet-de-nanterre-annonce-la-procureure-de-paris_AD-202605170200.html",
+        "source": "BFMTV",
+        "type": "article",
+        "date": "17/05/2026",
+        "checked": true
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "54-les-grandes-affaires-judiciaires-et-mediatiques-deviennent-des-debats-de-societe",
+      "matchedStoryTitle": "Les grandes affaires judiciaires et médiatiques deviennent des débats de société",
+      "previousEpisodeTitle": "",
+      "previousEpisodeUrl": "",
+      "confidence": 0.85,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {
+        "main_actors_match": true,
+        "central_tension_match": true,
+        "temporal_continuity": true,
+        "editorial_theme_match": true,
+        "strong_keywords_match": true
+      },
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "Patrick Bruel",
+      "parquet de Nanterre",
+      "procureure de Pari",
+      "violences sexuelle",
+      "plaintes regroupée",
+      "justice française"
+    ],
+    "sentAt": "2026-05-17T13:24:15.732Z"
+  },
+  {
+    "subject": "Guerre au Moyen-Orient : l'AIEA exprime \"sa profonde préoccupation\" après la frappe près d'une centrale nucléaire aux Emirats arabes unis",
+    "sessionLabel": "17/05/2026 à 17:09:48",
+    "question": "Peut-on réellement garantir la sécurité des centrales nucléaires en zones de conflit ?",
+    "positionA": "La sécurité nucléaire est insuffisante en zones de conflit",
+    "positionB": "Les dispositifs actuels assurent une protection adéquate",
+    "theme": "Politique, économie et relations internationales",
+    "resume": "L’Agence internationale de l’énergie atomique (AIEA) a exprimé une inquiétude profonde suite à une frappe survenue à proximité d’une centrale nucléaire aux Émirats arabes unis, dans un contexte marqué par une montée des tensions militaires au Moyen-Orient. Cet événement ravive les appréhensions quant à la vulnérabilité des infrastructures nucléaires civiles dans une région où le risque d’incidents graves semble désormais tangible. L’AIEA met en lumière la fragilité de ces sites face à des attaques susceptibles de compromettre leur intégrité, tout en appelant à une vigilance renforcée pour éviter une escalade aux conséquences potentiellement dramatiques. Pourtant, l’identité des auteurs et les motivations de cette frappe restent inconnues, nourrissant une incertitude persistante sur la dynamique exacte de l’incident. Par ailleurs, l’absence d’informations précises sur l’étendue des dégâts ou sur les mesures prises pour sécuriser la centrale laisse planer un doute sur la gravité réelle de la menace. Cette situation souligne les difficultés à protéger des installations sensibles en zones de conflit, ainsi que les limites des dispositifs internationaux actuels face à de telles menaces. Le voile reste donc levé sur les suites à venir de cet incident aux implications lourdes.",
+    "sources": "Franceinfo, L'Humanité, L'Obs",
+    "links": [
+      {
+        "title": "Guerre en Ukraine : 4 morts, 500 drones abattus… Moscou dit avoir subi une des attaques les plus massives depuis le début du conflit",
+        "url": "https://www.humanite.fr/monde/guerre-en-ukraine/guerre-en-ukraine-4-morts-500-drones-abattus-moscou-dit-avoir-subi-une-des-attaques-les-plus-massives-depuis-le-debut-du-conflit",
+        "source": "L'Humanité",
+        "type": "article",
+        "date": "17/05/2026",
+        "checked": false
+      },
+      {
+        "title": "La Russie attaquée par près de 600 drones ukrainiens, en riposte à des frappes meurtrières sur Kiev",
+        "url": "https://www.nouvelobs.com/monde/20260517.OBS115001/la-russie-attaquee-par-pres-de-600-drones-ukrainiens-en-riposte-a-des-frappes-meurtrieres-sur-kiev.html",
+        "source": "L'Obs",
+        "type": "article",
+        "date": "17/05/2026",
+        "checked": false
+      },
+      {
+        "title": "Guerre en Ukraine : la Russie a abattu près de 600 drones ukrainiens dans la nuit de samedi à dimanche, au moins trois morts dans la région de Moscou",
+        "url": "https://www.franceinfo.fr/monde/europe/manifestations-en-ukraine/guerre-en-ukraine-la-russie-affirme-avoir-abattu-plus-de-500-drones-ukrainiens-dans-la-nuit-de-samedi-a-dimanche_8009489.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "type": "article",
+        "date": "17/05/2026",
+        "checked": false
+      },
+      {
+        "title": "Guerre au Moyen-Orient : l'AIEA exprime \"sa profonde préoccupation\" après la frappe près d'une centrale nucléaire aux Emirats arabes unis",
+        "url": "https://www.franceinfo.fr/monde/iran/guerre-entre-les-etats-unis-israel-et-l-iran/direct-guerre-au-moyen-orient-c-etait-le-calme-avant-la-tempete-previent-donald-trump_8009534.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "type": "article",
+        "date": "17/05/2026",
+        "checked": true
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "01-les-conflits-au-moyen-orient-recomposent-les-equilibres-regionaux",
+      "matchedStoryTitle": "Les conflits au Moyen-Orient recomposent les équilibres régionaux",
+      "previousEpisodeTitle": "",
+      "previousEpisodeUrl": "",
+      "confidence": 0.85,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {
+        "main_actors_match": true,
+        "central_tension_match": true,
+        "temporal_continuity": true,
+        "editorial_theme_match": true,
+        "strong_keywords_match": true
+      },
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "AIEA",
+      "centrale nucléaire",
+      "Emirats arabes uni",
+      "frappe militaire",
+      "Moyen-Orient",
+      "écurité nucléaire",
+      "conflit régional"
+    ],
+    "sentAt": "2026-05-17T13:24:06.806Z"
+  },
+  {
+    "subject": "Négociations entre l’Iran et les Etats-Unis, incendie près d’une centrale aux Emirats, frappes au Liban… L’actu de la guerre au Moyen-Orient ce dimanche 17 mai",
+    "sessionLabel": "17/05/2026 à 17:09:48",
+    "question": "Les négociations diplomatiques peuvent-elles réellement freiner l’escalade au Moyen-Orient ?",
+    "positionA": "Le dialogue diplomatique reste essentiel",
+    "positionB": "La diplomatie est inefficace face aux violences",
+    "theme": "Politique, économie et relations internationales",
+    "resume": "Ce dimanche 17 mai, la région du Moyen-Orient demeure le théâtre d’une tension palpable, où les efforts diplomatiques peinent à dessiner une voie claire vers la paix. Les pourparlers entre l’Iran et les États-Unis semblent s’enliser dans une impasse, reflétant une difficulté profonde à surmonter les divergences malgré la volonté affichée de dialogue. Cette stagnation nourrit un climat d’incertitude, renforçant les craintes d’une escalade incontrôlée. Parallèlement, un incendie déclenché par une frappe de drone près de la centrale nucléaire de Barakah, aux Émirats arabes unis, ravive les inquiétudes sur la vulnérabilité des infrastructures stratégiques dans une région déjà marquée par la fragilité. Au Liban, des frappes, dont les détails restent flous, s’ajoutent à cette atmosphère de violences récurrentes, soulignant la complexité et la multiplicité des foyers de conflit. L’absence de précisions sur les auteurs des attaques et sur l’issue des négociations laisse planer une ombre sur l’avenir, où chaque incident semble exacerber les tensions sans offrir de perspective apaisante.",
+    "sources": "Libération, Le Figaro, La Croix, BFMTV, RFI, HuffPost France",
+    "links": [
+      {
+        "title": "Négociations entre l’Iran et les Etats-Unis, incendie près d’une centrale aux Emirats, frappes au Liban… L’actu de la guerre au Moyen-Orient ce dimanche 17 mai",
+        "url": "https://www.liberation.fr/international/moyen-orient/incendie-pres-dune-centrale-nucleaire-aux-emirats-frappes-israeliennes-au-liban-lactu-de-la-guerre-au-moyen-orient-ce-dimanche-17-mai-20260517_GWE2RZI67BAYRPE7SLZ77YMREQ/",
+        "source": "Libération",
+        "type": "article",
+        "date": "17/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Présidentielle : Gabriel Attal appelé à se présenter par 500 élus locaux dans « La Tribune dimanche »",
+        "url": "https://www.huffingtonpost.fr/politique/article/presidentielle-gabriel-attal-appele-a-se-presenter-par-500-elus-locaux-dans-la-tribune-dimanche_263802.html",
+        "source": "HuffPost France",
+        "type": "article",
+        "date": "17/05/2026",
+        "checked": false
+      },
+      {
+        "title": "Une frappe de drone provoque un incendie près d'une centrale nucléaire aux Émirats arabes unis",
+        "url": "https://www.bfmtv.com/international/moyen-orient/une-frappe-de-drone-provoque-un-incendie-pres-d-une-centrale-nucleaire-aux-emirats-arabes-unis_AP-202605170245.html",
+        "source": "BFMTV",
+        "type": "article",
+        "date": "17/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Guerre au Moyen-Orient: une frappe à proximité d'une centrale nucléaire aux Émirats",
+        "url": "https://www.bfmtv.com/international/moyen-orient/iran/video-guerre-au-moyen-orient-une-frappe-a-proximite-d-une-centrale-nucleaire-aux-emirats_VN-202605170238.html",
+        "source": "BFMTV",
+        "type": "article",
+        "date": "17/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Guerre au Moyen-Orient: les négociations \"dans l'impasse\"",
+        "url": "https://www.bfmtv.com/international/moyen-orient/iran/video-guerre-au-moyen-orient-les-negociations-dans-l-impasse_VN-202605170229.html",
+        "source": "BFMTV",
+        "type": "article",
+        "date": "17/05/2026",
+        "checked": true
+      },
+      {
+        "title": "[En direct] Moyen-Orient: Un incendie proche d'une centrale nucléaire aux Émirats arabes unis après une frappe de drone",
+        "url": "https://www.rfi.fr/fr/moyen-orient/20260517-en-direct-moyen-orient-un-incendie-proche-d-une-centrale-nucl%C3%A9aire-aux-%C3%A9mirats-arabes-unis-apr%C3%A8s-une-frappe-de-drone",
+        "source": "RFI",
+        "type": "article",
+        "date": "17/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Émirats arabes unis: une frappe de drone près de la centrale nucléaire de Barakah provoque un incendie",
+        "url": "https://www.bfmtv.com/international/moyen-orient/iran/video-emirats-arabes-unis-une-frappe-de-drone-pres-de-la-centrale-nucleaire-de-barakah-provoque-un-incendie_VN-202605170199.html",
+        "source": "BFMTV",
+        "type": "article",
+        "date": "17/05/2026",
+        "checked": true
+      },
+      {
+        "title": "En Corée du Sud, un objecteur de conscience face à l’armée : « Nulle part la guerre n’a permis d’instaurer la paix »",
+        "url": "https://www.la-croix.com/international/en-coree-du-sud-un-objecteur-de-conscience-face-a-l-armee-nulle-part-la-guerre-na-permis-dinstaurer-la-paix-20260517",
+        "source": "La Croix",
+        "type": "article",
+        "date": "17/05/2026",
+        "checked": false
+      },
+      {
+        "title": "EN DIRECT - Guerre au Moyen-Orient : incendie à Abu Dhabi après une frappe de drone près de la centrale nucléaire de Barakah",
+        "url": "https://www.lefigaro.fr/international/en-direct-apres-l-annonce-d-une-extension-de-45-jours-de-la-treve-avec-israel-le-liban-espere-obtenir-une-paix-durable-20260516",
+        "source": "Le Figaro",
+        "type": "article",
+        "date": "17/05/2026",
+        "checked": true
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "01-les-conflits-au-moyen-orient-recomposent-les-equilibres-regionaux",
+      "matchedStoryTitle": "Les conflits au Moyen-Orient recomposent les équilibres régionaux",
+      "previousEpisodeTitle": "",
+      "previousEpisodeUrl": "",
+      "confidence": 0.9,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {
+        "main_actors_match": true,
+        "central_tension_match": true,
+        "temporal_continuity": true,
+        "editorial_theme_match": true,
+        "strong_keywords_match": true
+      },
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "Iran",
+      "États-Uni",
+      "Émirats arabes uni",
+      "centrale nucléaire de Barakah",
+      "frappes de drone",
+      "Liban",
+      "négociations diplomatique",
+      "guerre au Moyen-Orient"
+    ],
+    "sentAt": "2026-05-17T13:23:58.918Z"
+  },
+  {
+    "subject": "Un variant hautement mortel, des centaines de cas suspects... Ce que l'on sait de la nouvelle épidémie d'Ebola en République démocratique du Congo",
+    "sessionLabel": "17/05/2026 à 17:09:48",
+    "question": "Faut-il renforcer immédiatement les mesures internationales contre Ebola en RDC ?",
+    "positionA": "Mobilisation internationale urgente nécessaire",
+    "positionB": "Mesures actuelles suffisantes pour l’instant",
+    "theme": "Santé, corps et bien-être",
+    "resume": "Une nouvelle épidémie d’Ebola frappe actuellement la République démocratique du Congo, marquée par un variant d’une virulence exceptionnelle. Plusieurs centaines de cas suspects ont été signalés, poussant l’Organisation mondiale de la santé à élever son niveau d’alerte au rang d’« urgence internationale ». Cette mesure traduit l’ampleur de la menace et appelle à une mobilisation globale renforcée. Le ministère de la Santé affirme maintenir un dialogue permanent avec des experts pour évaluer le risque de propagation vers d’autres régions, notamment Mayotte, témoignant d’une vigilance accrue face à la possible diffusion du virus. Pourtant, l’efficacité des dispositifs déployés reste incertaine, tout comme l’évolution précise du nombre de cas confirmés, ce qui entretient une zone d’ombre sur la capacité à contenir cette flambée. Si aucun désaccord majeur ne semble diviser les institutions sur la gravité de la situation, la fragilité et le caractère évolutif de la crise soulignent des enjeux cruciaux pour la santé publique à l’échelle régionale et mondiale. Le cours des événements reste à suivre de près, dans un contexte où chaque nouvelle donnée pourrait modifier la donne.",
+    "sources": "Franceinfo, L'Obs",
+    "links": [
+      {
+        "title": "Face à une 17ᵉ épidémie d’Ebola en RDC, l’OMS relève son niveau d’alerte à « urgence internationale »",
+        "url": "https://www.nouvelobs.com/monde/20260516.OBS114987/une-17-epidemie-d-ebola-en-rdc-frappee-par-un-variant-hautement-letal-et-sans-vaccin.html",
+        "source": "L'Obs",
+        "type": "article",
+        "date": "17/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Les plaintes contre Patrick Bruel \"a priori\" regroupées au parquet de Nanterre, selon la procureure de la République de Paris",
+        "url": "https://www.franceinfo.fr/culture/musique/patrick-bruel/les-plaintes-contre-patrick-bruel-a-priori-regroupees-au-parquet-de-nanterre-selon-la-procureure-de-la-republique-de-paris_8009789.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "type": "article",
+        "date": "17/05/2026",
+        "checked": false
+      },
+      {
+        "title": "Un variant hautement mortel, des centaines de cas suspects... Ce que l'on sait de la nouvelle épidémie d'Ebola en République démocratique du Congo",
+        "url": "https://www.franceinfo.fr/sante/maladie/ebola/un-variant-hautement-mortel-des-centaines-de-cas-suspects-ce-que-l-on-sait-de-la-nouvelle-epidemie-d-ebola-en-republique-democratique-du-congo_8009585.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "type": "article",
+        "date": "17/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Le ministère de la Santé assure être \"en lien constant avec les experts afin d’évaluer le niveau de risque\" d'importation de l'épidémie d'Ebola à Mayotte",
+        "url": "https://www.franceinfo.fr/sante/maladie/ebola/risque-d-epidemie-d-ebola-a-mayotte-le-ministere-de-la-sante-assure-etre-en-lien-constant-avec-les-experts-afin-d-evaluer-le-niveau-de-risque_8009741.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "type": "article",
+        "date": "17/05/2026",
+        "checked": true
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "29-le-systeme-de-sante-fait-face-a-des-tensions-d-acces-aux-soins-de-moyens-et-de-c",
+      "matchedStoryTitle": "Le système de santé fait face à des tensions d’accès aux soins, de moyens et de confiance",
+      "previousEpisodeTitle": "",
+      "previousEpisodeUrl": "",
+      "confidence": 0.85,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {
+        "main_actors_match": true,
+        "central_tension_match": true,
+        "temporal_continuity": true,
+        "editorial_theme_match": true,
+        "strong_keywords_match": true
+      },
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "Ebola",
+      "République démocratique du Congo",
+      "OMS",
+      "ministère de la Santé",
+      "urgence internationale",
+      "variant hautement mortel",
+      "Mayotte"
+    ],
+    "sentAt": "2026-05-17T13:23:47.654Z"
+  },
+  {
+    "subject": "Présidentielle 2027 : Yannick Jadot affirme que « tout le monde a abandonné » l’idée d’une primaire à gauche, « chez les écologistes comme au PS »",
+    "sessionLabel": "17/05/2026 à 17:09:48",
+    "question": "La gauche peut-elle encore s’unir sans primaire en 2027 ?",
+    "positionA": "Oui, l’unité peut émerger autrement",
+    "positionB": "Non, la primaire est indispensable",
+    "theme": "Politique, économie et relations internationales",
+    "resume": "À l’aube de la présidentielle de 2027, Yannick Jadot fait part d’un constat amer : l’idée d’une primaire à gauche, jadis envisagée comme un levier pour fédérer écologistes et socialistes, semble aujourd’hui abandonnée. Cette décision, loin d’être isolée, reflète une réalité partagée au sein des deux camps, où les divergences et les tensions internes ont eu raison de tout projet commun. Ce renoncement illustre les difficultés persistantes à bâtir une alliance solide, alors que la gauche peine à s’accorder sur un mode de désignation unique. L’absence d’un accord clair souligne non seulement les hésitations stratégiques, mais aussi les fractures qui minent la préparation collective face à une échéance cruciale. La perspective d’un front uni s’éloigne, laissant planer une incertitude sur la capacité des forces de gauche à se présenter ensemble au scrutin à venir.",
+    "sources": "Le Monde, Libération",
+    "links": [
+      {
+        "title": "Qui sont les candidats à la primaire de gauche, dont la tenue est compromise ?",
+        "url": "https://www.liberation.fr/politique/elections/qui-sont-les-candidats-a-la-primaire-de-gauche-dont-la-tenue-est-compromise-20260517_GV5DXCJCBFBXZDXNKDDHWL4KLA/",
+        "source": "Libération",
+        "type": "article",
+        "date": "17/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Présidentielle 2027 : Yannick Jadot affirme que « tout le monde a abandonné » l’idée d’une primaire à gauche, « chez les écologistes comme au PS »",
+        "url": "https://www.lemonde.fr/politique/article/2026/05/17/presidentielle-2027-yannick-jadot-affirme-que-tout-le-monde-a-abandonne-l-idee-d-une-primaire-a-gauche-chez-les-ecologistes-comme-au-ps_6690227_823448.html",
+        "source": "Le Monde",
+        "type": "article",
+        "date": "17/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Lettre ouverte au président du Sénégal : «Ce climat de haine et de violence contre les homosexuels est en contradiction avec le panafricanisme de gauche»",
+        "url": "https://www.liberation.fr/idees-et-debats/tribunes/lettre-ouverte-au-president-du-senegal-ce-climat-de-haine-et-de-violence-contre-les-homosexuels-est-en-contradiction-avec-le-panafricanisme-de-gauche-20260517_FTMXJBQNSZF75FPIXF2VL36ABI/",
+        "source": "Libération",
+        "type": "article",
+        "date": "17/05/2026",
+        "checked": false
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "05-la-vie-politique-francaise-traverse-une-periode-d-instabilite-et-de-recompositio",
+      "matchedStoryTitle": "La vie politique française traverse une période d’instabilité et de recomposition",
+      "previousEpisodeTitle": "",
+      "previousEpisodeUrl": "",
+      "confidence": 0.85,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {
+        "main_actors_match": true,
+        "central_tension_match": true,
+        "temporal_continuity": true,
+        "editorial_theme_match": true,
+        "strong_keywords_match": true
+      },
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "Yannick Jadot",
+      "primaire à gauche",
+      "écologiste",
+      "Parti Socialiste",
+      "présidentielle 2027",
+      "gauche politique"
+    ],
+    "sentAt": "2026-05-17T13:23:23.079Z"
+  },
+  {
+    "subject": "A Londres, l’extrême droite fait à nouveau défiler des dizaines de milliers de ses sympathisants dans la rue",
+    "sessionLabel": "17/05/2026 à 17:09:48",
+    "question": "L’extrême droite doit-elle pouvoir s’exprimer librement dans l’espace public ?",
+    "positionA": "Liberté d’expression prioritaire",
+    "positionB": "Limiter les discours radicaux",
+    "theme": "Politique, économie et relations internationales",
+    "resume": "À Londres, des dizaines de milliers de sympathisants d’extrême droite ont de nouveau investi les rues, marquant un retour notable de ce courant dans l’espace public. Ce rassemblement, d’une ampleur remarquable, s’est fait le vecteur d’un discours radical, incarné par des slogans tels que « repartir en croisade » ou « remigration », qui traduisent une revendication identitaire forte. L’événement met en lumière une mobilisation importante, mais les contours précis de cette manifestation restent flous, notamment en ce qui concerne la composition exacte des participants ou les réactions des autorités. Aucun élément clair ne permet de mesurer les tensions éventuelles suscitées par ce défilé, ni son impact immédiat sur la vie sociale et politique locale. Ce retour massif dans la rue révèle une capacité renouvelée à s’affirmer publiquement, avec une volonté manifeste de porter des positions radicales sur des questions sensibles. Pourtant, les sources ne permettent pas d’éclairer les éventuelles dissensions internes ou débats qui pourraient traverser ce mouvement. Dans ce contexte, l’incertitude demeure quant à la portée réelle de cette démonstration de force.",
+    "sources": "Libération, L'Humanité, BFMTV",
+    "links": [
+      {
+        "title": "« Repartir en croisade », « remigration »… À Londres, une nouvelle marche d’extrême droite réunit des dizaines de milliers de sympathisants",
+        "url": "https://www.humanite.fr/monde/extreme-droite/repartir-en-croisade-remigration-a-londres-une-nouvelle-marche-dextreme-droite-reunit-des-dizaines-de-milliers-de-sympathisants",
+        "source": "L'Humanité",
+        "type": "article",
+        "date": "17/05/2026",
+        "checked": true
+      },
+      {
+        "title": "A Londres, l’extrême droite fait à nouveau défiler des dizaines de milliers de ses sympathisants dans la rue",
+        "url": "https://www.liberation.fr/international/europe/a-londres-lextreme-droite-fait-a-nouveau-defiler-des-dizaines-de-milliers-de-ses-sympathisants-dans-la-rue-20260517_VEHMDYAPZ5HMFHHEPJ5I6D3L2E/",
+        "source": "Libération",
+        "type": "article",
+        "date": "17/05/2026",
+        "checked": true
+      },
+      {
+        "title": "\"C'est un comportement qui fait des milliers de morts\": à Cannes, Javier Bardem cible la \"masculinité toxique\" de Vladimir Poutine, Donald Trump et Benjamin Netanyahu",
+        "url": "https://www.bfmtv.com/culture/cinema-series/festival-de-cannes/c-est-un-comportement-qui-fait-des-milliers-de-morts-a-cannes-javier-bardem-cible-la-masculinite-toxique-de-vladimir-poutine-donald-trump-et-benjamin-netanyahu_AD-202605170232.html",
+        "source": "BFMTV",
+        "type": "article",
+        "date": "17/05/2026",
+        "checked": false
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "06-les-droites-radicales-progressent-dans-plusieurs-democraties-europeennes",
+      "matchedStoryTitle": "Les droites radicales progressent dans plusieurs démocraties européennes",
+      "previousEpisodeTitle": "",
+      "previousEpisodeUrl": "",
+      "confidence": 0.85,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {
+        "main_actors_match": true,
+        "central_tension_match": true,
+        "temporal_continuity": true,
+        "editorial_theme_match": true,
+        "strong_keywords_match": true
+      },
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "extrême droite",
+      "Londre",
+      "manifestation",
+      "ympathisant",
+      "remigration",
+      "droite radicale",
+      "mouvements identitaire"
+    ],
+    "sentAt": "2026-05-17T13:15:28.435Z"
+  },
+  {
+    "subject": "« Il tire les ficelles… » Au procès libyen, le parquet général requiert sept ans de prison contre « l’instigateur » Nicolas Sarkozy",
+    "sessionLabel": "14/05/2026 à 10:08:56",
+    "question": "Procès Sarkozy pour financement libyen : justice impartiale ou chasse politique ?",
+    "positionA": "Justice impartiale et nécessaire",
+    "positionB": "Procès politique et persécution",
+    "theme": "Société, éducation et justice",
+    "resume": "Le parquet général a requis sept ans de prison contre Nicolas Sarkozy, accusé d'être l'instigateur du financement libyen illégal. Ce procès soulève des questions majeures sur la justice et la politique en France. Les sources convergent surtout sur ceci : « Il tire les ficelles… » Au procès libyen, le parquet général requiert sept ans de prison contre « l’instigateur » Nicolas Sarkozy. \"Sarkozy a tiré les ficelles et distribué les rôles\" : le parquet général requiert 7 ans de prison contre l'ex-président. Mathieu Geagea : \"Je trouve bien triste que les petits-fils du général de Gaulle envisagent de vendre La Boisserie\".\nLa contradiction ouverte autour de « Il tire les ficelles… » Au procès libyen, le parquet général requiert sept ans de priso… ne fait que commencer.\nProcès Sarkozy pour financement libyen : justice impartiale ou chasse politique ?",
+    "sources": "L'Obs, Marianne",
+    "links": [
+      {
+        "title": "« Il tire les ficelles… » Au procès libyen, le parquet général requiert sept ans de prison contre « l’instigateur » Nicolas Sarkozy",
+        "url": "https://www.nouvelobs.com/justice/20260514.OBS114908/il-tire-les-ficelles-au-proces-libyen-le-parquet-general-requiert-sept-ans-de-prison-contre-l-instigateur-nicolas-sarkozy.html",
+        "source": "L'Obs",
+        "type": "article",
+        "date": "14/05/2026",
+        "checked": true
+      },
+      {
+        "title": "\"Sarkozy a tiré les ficelles et distribué les rôles\" : le parquet général requiert 7 ans de prison contre l'ex-président",
+        "url": "https://www.marianne.net/societe/police-et-justice/sarkozy-a-tire-les-ficelles-et-distribue-les-roles-le-parquet-general-requiert-7-ans-de-prison-contre-l-ex-president#utm_source=RSS-MARIANNE&utm_medium=Flux-Rss&utm_campaign=RSS_general",
+        "source": "Marianne",
+        "type": "article",
+        "date": "14/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Mathieu Geagea : \"Je trouve bien triste que les petits-fils du général de Gaulle envisagent de vendre La Boisserie\"",
+        "url": "https://www.marianne.net/agora/entretiens-et-debats/mathieu-geagea-je-trouve-bien-triste-que-les-petits-fils-du-general-de-gaulle-envisagent-de-vendre-la-boisserie#utm_source=RSS-MARIANNE&utm_medium=Flux-Rss&utm_campaign=RSS_general",
+        "source": "Marianne",
+        "type": "article",
+        "date": "14/05/2026",
+        "checked": false
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "uncertain",
+      "matchedStoryId": "41-la-transition-energetique-souleve-des-tensions-entre-climat-prix-de-l-energie-so",
+      "matchedStoryTitle": "La transition énergétique soulève des tensions entre climat, prix de l’énergie, souveraineté et acceptabilité sociale",
+      "previousEpisodeTitle": "",
+      "previousEpisodeUrl": "",
+      "confidence": 0.64,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {
+        "main_actors_match": true,
+        "central_tension_match": true,
+        "temporal_continuity": true,
+        "editorial_theme_match": true,
+        "strong_keywords_match": true
+      },
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "Nicolas Sarkozy",
+      "procès libyen",
+      "financement illégal",
+      "parquet général",
+      "justice française",
+      "politique française"
+    ],
+    "sentAt": "2026-05-14T06:15:59.542Z"
+  },
+  {
+    "subject": "EN DIRECT - Guerre au Moyen-Orient : le bilan des frappes israéliennes au Liban monte à neuf morts",
+    "sessionLabel": "13/05/2026 à 20:28:44",
+    "question": "Frappes israéliennes au Liban causent morts : légitime défense ou agression injustifiée ?",
+    "positionA": "Légitime défense d'Israël",
+    "positionB": "Agression injustifiée contre le Liban",
+    "theme": "Politique, économie et relations internationales",
+    "resume": "L’histoire jusqu’ici : L'Iran a écarté tout compromis après le rejet de sa proposition par Donald Trump. La guerre au Moyen-Orient s'intensifie avec des frappes au Liban et des appels à la médiation internationale.\nL’histoire jusqu’ici : L'Iran a écarté tout compromis après le rejet de sa proposition par Donald Trump. La guerre au Moyen-Orient s'intensifie avec des frappes au Liban et des appels à la médiation int…\nJusqu'ici, aucu…\nLes frappes israéliennes au Liban ont fait entre neuf et douze morts selon les sources. Ces attaques interviennent avant des pourparlers diplomatiques dans la région.\nLe rapport de force vient d'entrer dans une zone beaucoup plus instable.\nCe nouvel episode peut-il faire basculer politique, économie et relations internationales ?",
+    "sources": "Le Figaro, France 24",
+    "links": [
+      {
+        "title": "Liban : des frappes israéliennes font 12 morts avant des pourparlers",
+        "url": "https://www.france24.com/fr/vid%C3%A9o/20260513-liban-des-frappes-isra%C3%A9liennes-font-12-morts-avant-des-pourparlers",
+        "source": "France 24",
+        "type": "article",
+        "date": "13/05/2026",
+        "checked": false
+      },
+      {
+        "title": "EN DIRECT - Guerre au Moyen-Orient : le bilan des frappes israéliennes au Liban monte à neuf morts",
+        "url": "https://www.lefigaro.fr/international/en-direct-guerre-moyen-orient-iran-israel-etats-unis-liban-benyamin-netanyahou-donald-trump-emirats-arabes-unis-detroit-ormuz-emmanuel-macron-nations-unies-20260513",
+        "source": "Le Figaro",
+        "type": "article",
+        "date": "13/05/2026",
+        "checked": false
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "uncertain",
+      "matchedStoryId": "guerre-au-moyen-orient-mp3lkhsc",
+      "matchedStoryTitle": "Guerre au Moyen-Orient",
+      "previousEpisodeTitle": "Guerre au Moyen-Orient : Iran refuse compromis, Trump rejette proposition, faut-il durcir le conflit ?",
+      "previousEpisodeUrl": "http://localhost:3001/debate?id=381",
+      "confidence": 0.67,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {
+        "main_actors_match": true,
+        "central_tension_match": true,
+        "temporal_continuity": false,
+        "editorial_theme_match": true,
+        "strong_keywords_match": true
+      },
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "Israël",
+      "Liban",
+      "frappes aérienne",
+      "Moyen-Orient",
+      "conflit",
+      "bilan humain",
+      "pourparler",
+      "guerre"
+    ],
+    "sentAt": "2026-05-13T16:44:16.236Z"
+  }
+]

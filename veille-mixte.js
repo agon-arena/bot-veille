@@ -19,6 +19,7 @@ const OUTPUT_JSON = "veille-mixte.json";
 const OUTPUT_HTML = "veille-mixte.html";
 const HISTORY_FILE = "sessions-mixte.json";
 const SAVED_FILE = "saved-subjects.json";
+const SENT_TO_AGON_FILE = "sent-to-agon.json";
 const API_PORT = 3002;
 
 const HOURS_BACK_ARTICLES = 24;
@@ -237,6 +238,15 @@ function loadSavedSubjects() {
 
 function saveSavedSubjects(items) {
   fs.writeFileSync(SAVED_FILE, JSON.stringify(items, null, 2), "utf8");
+}
+
+function loadSentToAgonItems() {
+  if (!fs.existsSync(SENT_TO_AGON_FILE)) return [];
+  try {
+    return JSON.parse(fs.readFileSync(SENT_TO_AGON_FILE, "utf8"));
+  } catch {
+    return [];
+  }
 }
 
 function upsertSavedSubject(payload) {
@@ -564,7 +574,8 @@ function fallbackAiAnalysis(subject, arenaMode = "positions") {
     positionA: "",
     positionB: "",
     leftScore: Math.min(10, 3 + leftSourceCount * 2),
-    keywords: extractNewsKeywords(subject)
+    keywords: extractNewsKeywords(subject),
+    selectedLinks: selectRelevantLinksForSubject(subject, [])
   };
 }
 
@@ -592,6 +603,29 @@ function normalizeKeywordList(values, max = 8) {
   return results.slice(0, max);
 }
 
+function filterKeywordNoise(subject, values, max = 8) {
+  const sourceNames = new Set(
+    (Array.isArray(subject?.contents) ? subject.contents : [])
+      .map((content) => String(content?.source || "").trim().toLowerCase())
+      .filter(Boolean)
+  );
+
+  const banned = new Set([
+    "france",
+    "francais",
+    "française",
+    "francaise"
+  ]);
+
+  return normalizeKeywordList(values, max).filter((keyword) => {
+    const lower = String(keyword || "").trim().toLowerCase();
+    if (!lower) return false;
+    if (banned.has(lower)) return false;
+    if (sourceNames.has(lower)) return false;
+    return true;
+  }).slice(0, max);
+}
+
 function extractNewsKeywords(subject) {
   const text = [
     subject.subject || "",
@@ -614,7 +648,77 @@ function extractNewsKeywords(subject) {
   ].map((item) => item.toLowerCase()));
 
   const cleaned = rawMatches.filter((item) => !blacklist.has(String(item || "").trim().toLowerCase()));
-  return normalizeKeywordList(cleaned, 8);
+  return filterKeywordNoise(subject, cleaned, 8);
+}
+
+function selectRelevantLinksForSubject(subject, aiSelectedLinks) {
+  const contents = Array.isArray(subject?.contents) ? subject.contents : [];
+  const validLinks = contents.map((content) => String(content.link || "").trim()).filter(Boolean);
+  const aiSelected = new Set(
+    (Array.isArray(aiSelectedLinks) ? aiSelectedLinks : [])
+      .map((item) => String(item || "").trim())
+      .filter((link) => validLinks.includes(link))
+  );
+
+  if (aiSelected.size > 0) {
+    return validLinks.filter((link) => aiSelected.has(link));
+  }
+
+  const subjectText = String(subject?.subject || "").trim();
+  const resumeText = String(subject?.ai?.resume || "").trim();
+  const referenceText = [subjectText, resumeText].filter(Boolean).join(" ").trim() || subjectText;
+  const subjectKeywords = new Set(getKeywords(referenceText));
+  const subjectNamedKeywords = [...subjectKeywords].filter((word) => word.length >= 5);
+  const scored = [];
+
+  contents.forEach((content) => {
+    const link = String(content?.link || "").trim();
+    const title = String(content?.title || "").trim();
+    if (!link || !title) return;
+
+    const candidateText = [title, content?.summary || ""].filter(Boolean).join(" ");
+    const sharedKeywords = countSharedKeywords(referenceText, candidateText);
+    const titleKeywords = getKeywords(candidateText);
+    const strongShared = subjectNamedKeywords.filter((word) => titleKeywords.includes(word)).length;
+    const similarity = stringSimilarity.compareTwoStrings(
+      cleanText(referenceText),
+      cleanText(candidateText)
+    );
+
+    const strongMatch = strongShared >= 2 || sharedKeywords >= 3 || similarity >= 0.62;
+
+    if (strongMatch) {
+      scored.push({ link, similarity, strongShared, sharedKeywords });
+    }
+  });
+
+  if (!scored.length) {
+    const best = contents
+      .map((content) => {
+        const link = String(content?.link || "").trim();
+        const title = String(content?.title || "").trim();
+        if (!link || !title) return null;
+        return {
+          link,
+          similarity: stringSimilarity.compareTwoStrings(cleanText(referenceText), cleanText(title)),
+          sharedKeywords: countSharedKeywords(referenceText, title),
+          strongShared: subjectNamedKeywords.filter((word) => getKeywords(title).includes(word)).length
+        };
+      })
+      .filter(Boolean)
+      .sort((a, b) => {
+        if (b.strongShared !== a.strongShared) return b.strongShared - a.strongShared;
+        if (b.sharedKeywords !== a.sharedKeywords) return b.sharedKeywords - a.sharedKeywords;
+        return b.similarity - a.similarity;
+      })[0];
+
+    if (best && (best.strongShared >= 2 || best.sharedKeywords >= 3 || best.similarity >= 0.62)) {
+      return [best.link];
+    }
+    return [];
+  }
+
+  return validLinks.filter((link) => scored.some((item) => item.link === link));
 }
 
 function safeJsonParse(text) {
@@ -633,14 +737,23 @@ function safeJsonParse(text) {
 
 async function analyzeOneSubjectWithAI(subject) {
   if (!openai) {
-    return fallbackAiAnalysis(subject, subject.arenaMode);
+    const fallback = fallbackAiAnalysis(subject, subject.arenaMode);
+    return {
+      ...fallback,
+      debateQuestion: "",
+      resume: "",
+      positionA: "",
+      positionB: ""
+    };
   }
 
   const compactContents = subject.contents.slice(0, 10).map(content => ({
     type: content.type,
     source: content.source,
     orientation: content.orientation,
-    title: content.title
+    title: content.title,
+    summary: content.summary || "",
+    link: content.link || ""
   }));
 
   const arenaMode = subject.arenaMode === "libre" ? "libre" : "positions";
@@ -664,12 +777,9 @@ Tu dois répondre uniquement en JSON valide avec ces champs :
 {
   "debateScore": nombre entier de 0 à 10,
   "controversyLevel": "faible" | "moyen" | "fort" | "très fort",
-  "debateQuestion": "si le mode demandé est arène à positions : une seule ligne de 100 caractères maximum, espaces compris. Elle doit résumer le sujet en quelques mots puis poser une question très clivante. Si le mode demandé est arène libre : une seule ligne de 100 caractères maximum, espaces compris, qui résume factuellement le sujet sans question.",
-  "resume": "si debateScore >= 7 : matière factuelle brève pour écrire ensuite un contexte narratif d'actualité. Donne 2 ou 3 phrases maximum, concrètes, utiles, sans effet de style artificiel. Sinon : chaîne vide",
   "keywords": ["4 à 8 mots-clés concrets liés à l'actualité : acteurs, lieux, institutions, pays, organisations ou objets du conflit"],
+  "selectedLinks": ["liste des URLs des sources qui évoquent bien ce sujet et doivent rester cochées"],
   "agonTheme": "une thématique Agôn exacte",
-  "positionA": "position franche, très courte, sans argument. MAX 60 CARACTÈRES. Si debateScore < 7, chaîne vide.",
-  "positionB": "position opposée franche, très courte, sans argument. MAX 60 CARACTÈRES. Si debateScore < 7, chaîne vide.",
   "leftScore": nombre entier de 0 à 10 indiquant l'intérêt du sujet pour un public de gauche progressiste
 }
 
@@ -692,40 +802,6 @@ ${AGON_THEMES.map(theme => `- ${theme}`).join("\n")}
 
 Ne crée jamais une autre thématique.
 
-Pour "debateQuestion" :
-- écris une seule ligne ;
-- maximum 100 caractères, espaces compris ;
-- ne mets pas les mots "Résumé" ou "Question".
-
-Si le mode demandé est "arène à positions" :
-- commence par un mini-résumé concret du sujet ;
-- termine par une question très clivante ;
-- évite les questions molles ou trop neutres ;
-- la question doit opposer deux camps clairement ;
-- varie fortement la forme des questions d’un sujet à l’autre ;
-- n’utilise pas toujours "Faut-il..." ;
-- alterne entre plusieurs formes : "Faut-il...", "Est-ce que...", "Peut-on...", "Doit-on...", "Qui doit...", "Jusqu’où...", "Encore...", "Trop...", "Vrai scandale ou...", "Mesure juste ou..." ;
-- évite de répéter deux fois de suite la même structure de question.
-
-Bons exemples en arène à positions :
-- Macron coupe un discours au sommet Afrique-France : respect ou mépris ?
-- Trump menace l’Iran, le pétrole grimpe : fermeté ou folie ?
-- Fièvre après une croisière : faut-il isoler les contacts ?
-- Le PS se déchire encore : qui peut encore y croire ?
-- Pétrole en hausse : doit-on craindre une crise mondiale ?
-
-Si le mode demandé est "arène libre" :
-- résume factuellement le sujet ;
-- n’écris aucune question ;
-- n’oppose pas deux camps ;
-- reste neutre et concret ;
-- vise une phrase courte, claire, immédiatement compréhensible.
-
-Bons exemples en arène libre :
-- Macron interrompt un discours au sommet Afrique-France
-- Trump relance les tensions avec l’Iran et fait grimper le pétrole
-- Une fièvre après une croisière déclenche un suivi sanitaire
-
 Pour "keywords" :
 - donne 4 à 8 mots-clés maximum ;
 - privilégie les noms propres et repères concrets ;
@@ -734,28 +810,19 @@ Pour "keywords" :
 - n'écris ni phrase complète, ni explication ;
 - chaque mot-clé doit tenir sur quelques mots au maximum.
 
-Pour "positionA" et "positionB" :
-- si le mode demandé est "arène libre", renvoie "" pour les deux champs ;
-- si debateScore < 7, renvoie "" pour les deux champs ;
-- si le mode demandé est "arène à positions" et debateScore >= 7, propose deux camps opposés ;
-- chaque position doit être une étiquette de camp, pas un argument ;
-- aucune justification, aucune explication ;
-- pas de "car", "parce que", "afin de", "pour éviter" ;
-- maximum 60 caractères chacune ;
-- positionA et positionB doivent pouvoir servir de noms de colonnes dans Agôn.
+Pour "selectedLinks" :
+- renvoie les URLs exactes des contenus qui parlent bien du sujet principal ;
+- si une source ne parle pas vraiment de ce sujet, ne la renvoie pas ;
+- une source qui mentionne seulement une même personnalité, un même pays ou une même institution ne suffit pas : elle doit parler du même événement, de la même décision, de la même déclaration ou du même conflit précis ;
+- ignore les sources qui traitent d'un autre épisode, d'un autre angle ou d'une information parallèle, même si elles concernent les mêmes acteurs ;
+- en cas de doute, exclue la source plutôt que de la garder ;
+- si plusieurs sources évoquent clairement le sujet, garde-les toutes ;
+- si toutes les sources parlent bien du sujet, tu peux toutes les renvoyer ;
+- n'invente jamais d'URL ;
+- utilise uniquement les valeurs exactes du champ "link" dans les contenus ;
+- garde l'ordre d'apparition des contenus quand c'est possible.
 
-Bons exemples :
-- Isolement obligatoire
-- Liberté de circulation
-- Fermeté assumée
-- Provocation dangereuse
-- Sanction immédiate
-- Défense des libertés
-
-Mauvais exemples :
-- Isoler les contacts pour protéger la population
-- Refuser l’isolement car il menace les libertés
-- Il faut agir vite avant que la situation empire
+Ne génère pas de question de débat, pas de positions A/B et pas de résumé narratif à cette étape.
 `;
 
 
@@ -770,35 +837,35 @@ Mauvais exemples :
     const text = response.output_text;
     const parsed = safeJsonParse(text);
 
-    const fallbackQuestion = arenaMode === "libre"
-      ? limitText(subject.subject, 100)
-      : `Faut-il débattre de ce sujet : ${subject.subject} ?`;
+    const selectedLinks = selectRelevantLinksForSubject(subject, parsed.selectedLinks);
 
     return {
       arenaMode,
       debateScore: Number.isInteger(parsed.debateScore) ? parsed.debateScore : 0,
       controversyLevel: parsed.controversyLevel || "faible",
-      debateQuestion: arenaMode === "libre"
-        ? limitText(subject.subject || String(parsed.debateQuestion || fallbackQuestion).replace(/\?+$/g, "").trim(), 100)
-        : String(parsed.debateQuestion || fallbackQuestion).trim(),
-      resume: parsed.resume || "",
-      keywords: normalizeKeywordList(parsed.keywords, 8).length
-        ? normalizeKeywordList(parsed.keywords, 8)
+      debateQuestion: "",
+      resume: "",
+      keywords: filterKeywordNoise(subject, parsed.keywords, 8).length
+        ? filterKeywordNoise(subject, parsed.keywords, 8)
         : extractNewsKeywords(subject),
+      selectedLinks,
       agonTheme: AGON_THEMES.includes(parsed.agonTheme)
         ? parsed.agonTheme
         : "Politique, économie et relations internationales",
-      positionA: arenaMode === "positions" && parsed.debateScore >= 7 && typeof parsed.positionA === "string"
-        ? parsed.positionA.trim()
-        : "",
-      positionB: arenaMode === "positions" && parsed.debateScore >= 7 && typeof parsed.positionB === "string"
-        ? parsed.positionB.trim()
-        : "",
+      positionA: "",
+      positionB: "",
       leftScore: Number.isInteger(parsed.leftScore) ? parsed.leftScore : 5
     };
   } catch (error) {
     console.error(`Erreur IA pour le sujet "${subject.subject}" :`, error.message);
-    return fallbackAiAnalysis(subject, arenaMode);
+    const fallback = fallbackAiAnalysis(subject, arenaMode);
+    return {
+      ...fallback,
+      debateQuestion: "",
+      resume: "",
+      positionA: "",
+      positionB: ""
+    };
   }
 }
 
@@ -932,6 +999,52 @@ apiApp.post("/save", (req, res) => {
   }
 });
 
+apiApp.post("/save-update", (req, res) => {
+  try {
+    const body = req.body || {};
+    const subjectTitle = String(body.subject || "").trim();
+    if (!subjectTitle) {
+      return res.status(400).json({ ok: false, error: "Sujet manquant" });
+    }
+
+    const sessions = loadSessions();
+    let updated = false;
+    const nextAi = body.ai && typeof body.ai === "object" ? body.ai : null;
+
+    sessions.forEach((session) => {
+      const subjects = Array.isArray(session?.subjects) ? session.subjects : [];
+      subjects.forEach((subject) => {
+        if (String(subject?.subject || "").trim() !== subjectTitle) return;
+        const nextScore = Number.isFinite(Number(body.debateScore)) ? Number(body.debateScore) : Number(subject.debateScore || nextAi?.debateScore || 0);
+        const nextLeft = Number.isFinite(Number(body.leftScore)) ? Number(body.leftScore) : Number(subject.leftScore || nextAi?.leftScore || 0);
+        const nextControversy = String(body.controversyLevel || subject.controversyLevel || nextAi?.controversyLevel || "").trim();
+        subject.debateScore = nextScore;
+        subject.leftScore = nextLeft;
+        subject.controversyLevel = nextControversy;
+        subject.scoreAnalyzed = true;
+        subject.aiAnalyzed = true;
+        subject.ai = {
+          ...(subject.ai || {}),
+          ...(nextAi || {}),
+          debateScore: nextScore,
+          leftScore: nextLeft,
+          controversyLevel: nextControversy
+        };
+        updated = true;
+      });
+    });
+
+    if (updated) {
+      saveSessions(sessions);
+      fs.writeFileSync(OUTPUT_HTML, generateHtml(sessions.slice(0, MAX_SESSIONS_TO_KEEP)), "utf8");
+    }
+
+    res.json({ ok: true, updated });
+  } catch (error) {
+    res.status(500).json({ ok: false, error: error.message || "Erreur mise à jour session" });
+  }
+});
+
 async function analyzeScoresWithAI(subjects) {
   console.log(`${subjects.length} sujet(s) envoyés à l'analyse de score IA.`);
   const results = [];
@@ -1044,6 +1157,7 @@ function generateHtml(sessions) {
   const generatedAt = dayjs().format("DD/MM/YYYY HH:mm:ss");
 
   const savedTitles = new Set(loadSavedSubjects().map(s => s.subject));
+  const sentKeys = new Set(loadSentToAgonItems().map((item) => String(item?.question || item?.subject || "").trim()).filter(Boolean));
 
   const visibleTabCount = 6;
 
@@ -1063,6 +1177,44 @@ function generateHtml(sessions) {
       </button>
     `;
   }).join("");
+
+  function encodeStoryDataServer(value) {
+    return encodeURIComponent(JSON.stringify(value || {}));
+  }
+
+  function buildKeywordsStaticHtml(ai) {
+    const keywords = Array.isArray(ai?.keywords) ? ai.keywords.filter(Boolean) : [];
+    if (!keywords.length) return "";
+    return '<div class="news-keywords">' +
+      '<div class="news-keywords-label">Mots-clés relevés</div>' +
+      keywords.map((keyword) => '<span class="news-keyword-chip" data-keyword="' + escapeHtml(keyword) + '">' + escapeHtml(keyword) + '<button type="button" class="news-keyword-remove-btn" aria-label="Supprimer le mot-clé">×</button></span>').join('') +
+      '<div class="news-keyword-add-row"><input type="text" class="news-keyword-input" placeholder="Ajouter un mot-clé"><button type="button" class="news-keyword-add-btn">Ajouter</button></div>' +
+    '</div>';
+  }
+
+  function buildStoryLinkStaticHtml(storyLink) {
+    if (!storyLink) return "";
+    const storyDecision = storyLink.story_decision || "new_story";
+    const confidence = Number(storyLink.confidence || 0);
+    const matchedTitle = escapeHtml(storyLink.matched_story_title || "");
+    const previousEpisodeTitle = escapeHtml(storyLink.previous_episode_title || "");
+    const previousEpisodeUrl = escapeHtml(storyLink.previous_episode_url || "");
+    const reason = escapeHtml(storyLink.reason || "");
+    const newStory = storyLink.new_story || {};
+    const encodedCriteria = escapeHtml(encodeStoryDataServer(storyLink.criteria || {}));
+    const encodedNewStory = escapeHtml(encodeStoryDataServer(newStory));
+    const hasMatchedStory = Boolean(storyLink.matched_story_id && matchedTitle);
+    const selectedMode = hasMatchedStory ? "existing" : "";
+    const currentStoryId = escapeHtml(storyLink.matched_story_id || "");
+    const currentStoryTitle = matchedTitle;
+    const statusReason = reason ? '<div class="story-link-header">' + reason + '</div>' : '';
+    return '<div class="story-link-box" data-story-decision="' + escapeHtml(storyDecision) + '" data-selected-mode="' + selectedMode + '" data-default-mode="' + selectedMode + '" data-matched-story-id="' + currentStoryId + '" data-matched-story-title="' + matchedTitle + '" data-current-story-id="' + currentStoryId + '" data-current-story-title="' + currentStoryTitle + '" data-current-story-summary="" data-previous-episode-title="' + previousEpisodeTitle + '" data-previous-episode-url="' + previousEpisodeUrl + '" data-confidence="' + confidence + '" data-reason="' + reason + '" data-criteria="' + encodedCriteria + '" data-new-story="' + encodedNewStory + '">' +
+      statusReason +
+      '<div class="story-manual-picker"><label>Histoire associée</label><div class="story-picker-row"><select class="story-manual-select" hidden><option value="">Sans histoire associée</option><option value="__new__">Créer une nouvelle histoire</option></select><button type="button" class="story-picker-trigger" aria-expanded="false"><span class="story-picker-trigger-label">Sans histoire associée</span><span class="story-picker-trigger-caret">▾</span></button><div class="story-dropdown hidden"><div class="story-dropdown-create-row"><button type="button" class="story-create-inline-btn">+ Créer une nouvelle histoire</button></div><div class="story-dropdown-search-row"><input type="text" class="story-search-input" placeholder="Rechercher une histoire"></div><div class="story-dropdown-list"></div></div></div><small class="story-manual-meta"></small></div>' +
+      '<div class="story-existing-fields"><div class="story-draft-fields story-existing-fields-empty"><p class="story-existing-note">Cette histoire sera seulement associée à l’actualité. Aucun résumé d’histoire n’est généré à cette étape.</p></div></div>' +
+      '<div class="story-draft-fields story-new-fields hidden"><label>Titre de la nouvelle histoire</label><input type="text" class="story-title-input" value="" placeholder="Titre court et général de l’histoire"><div class="story-save-actions"><button type="button" class="story-save-btn">Enregistrer les modifications</button><span class="story-save-feedback hidden">Modifications enregistrées</span></div></div>' +
+    '</div>';
+  }
 
   const olderTabsButton = sessions.length > visibleTabCount
     ? `
@@ -1085,6 +1237,8 @@ function generateHtml(sessions) {
       const debateScore = scoreAnalyzed ? (Number(subject.debateScore) || 0) : 0;
       const leftScore = scoreAnalyzed ? (Number(subject.leftScore) || 0) : 0;
       const isSaved = savedTitles.has(subject.subject);
+      const sentKey = String(ai ? (ai.debateQuestion || subject.subject) : subject.subject).trim() || String(subject.subject || "").trim();
+      const isSent = sentKeys.has(sentKey) || sentKeys.has(String(subject.subject || "").trim());
 
       const articleItems = articles.map(article => {
         const date = dayjs(article.date).format("DD/MM/YYYY HH:mm");
@@ -1166,13 +1320,10 @@ function generateHtml(sessions) {
 
       const aiBoxHtml = isAnalyzed
         ? `<div class="ai-box">
-            <p class="debate-question" contenteditable="true" spellcheck="false">${escapeHtml(ai.debateQuestion)}</p>
-            ${ai.resume ? `<p class="resume">${escapeHtml(ai.resume)}</p>` : ""}
-            <p class="agon-theme"><strong>Thématique Agôn proposée :</strong>
-              <select class="agon-select">
-                ${AGON_THEMES.map(theme => `<option value="${escapeHtml(theme)}"${theme === (ai.agonTheme || AGON_THEMES[0]) ? " selected" : ""}>${escapeHtml(theme)}</option>`).join("")}
-              </select>
-            </p>
+            <input type="hidden" class="full-article-state" value="${escapeHtml(ai.fullArticleState || "short")}">
+            <p class="generated-title-label">Titre généré par IA</p>
+            <p class="debate-question" contenteditable="true" spellcheck="false">${escapeHtml(ai.debateQuestion || "")}</p>
+            <div class="field-counter question-counter">0 / 100</div>
             ${
               debateScore >= 7 && (ai.positionA || ai.positionB) && ai.arenaMode !== "libre"
                 ? `<div class="positions-box">
@@ -1182,6 +1333,18 @@ function generateHtml(sessions) {
                   </div>`
                 : ""
             }
+            <p class="resume" contenteditable="true" spellcheck="false">${escapeHtml(ai.resume || "")}</p>
+            <div class="field-counter resume-counter">0 / 1500</div>
+            <div class="story-save-actions"><button type="button" class="story-save-btn context-save-btn">Enregistrer les modifications</button><span class="story-save-feedback context-save-feedback hidden">Modifications enregistrées</span></div>
+            ${buildKeywordsStaticHtml(ai)}
+            <p class="agon-theme"><strong>Thématique Agôn proposée :</strong>
+              <select class="agon-select">
+                ${AGON_THEMES.map(theme => `<option value="${escapeHtml(theme)}"${theme === (ai.agonTheme || AGON_THEMES[0]) ? " selected" : ""}>${escapeHtml(theme)}</option>`).join("")}
+              </select>
+            </p>
+            ${buildStoryLinkStaticHtml(ai.storyLink || null)}
+            <button type="button" class="full-article-btn">${["summary", "full"].includes(String(ai.fullArticleState || "")) ? "✓ Résumé généré" : "Générer résumé de l’article"}</button>
+            <button type="button" class="final-article-btn${["summary", "full"].includes(String(ai.fullArticleState || "")) ? "" : " hidden"}">${String(ai.fullArticleState || "") === "full" ? "✓ Article définitif généré" : "Générer article définitif"}</button>
           </div>`
         : `<div class="ai-box pending-analysis">
             <button class="analyze-btn" type="button" data-mode="positions" data-subject="${subjectDataForBtn}">
@@ -1210,7 +1373,8 @@ function generateHtml(sessions) {
           <p class="sources">${escapeHtml(subject.sources.join(", "))}</p>
 
           <button class="save-btn${isSaved ? " saved" : ""}" type="button" data-subject-title="${escapeHtml(subject.subject)}">${isSaved ? "★ Enregistré" : "☆ Enregistrer"}</button>
-          <button class="agon-btn" type="button" data-question="${escapeHtml(ai ? (ai.debateQuestion || subject.subject) : subject.subject)}" data-position-a="${escapeHtml(ai ? (ai.positionA || "") : "")}" data-position-b="${escapeHtml(ai ? (ai.positionB || "") : "")}" data-theme="${escapeHtml(ai ? (ai.agonTheme || "") : "")}" data-sources="${escapeHtml(subject.sources.join(", "))}">→ Agôn</button>
+          <button class="agon-btn${isSent ? " sent" : ""}" type="button" data-subject-title="${escapeHtml(subject.subject)}" data-question="${escapeHtml(ai ? (ai.debateQuestion || subject.subject) : subject.subject)}" data-position-a="${escapeHtml(ai ? (ai.positionA || "") : "")}" data-position-b="${escapeHtml(ai ? (ai.positionB || "") : "")}" data-theme="${escapeHtml(ai ? (ai.agonTheme || "") : "")}" data-sources="${escapeHtml(subject.sources.join(", "))}">${isSent ? "✓ Envoyé" : "→ Agôn"}</button>
+          <button class="republish-btn${isSent ? "" : " hidden"}" type="button" data-subject-title="${escapeHtml(subject.subject)}" data-question="${escapeHtml(ai ? (ai.debateQuestion || subject.subject) : subject.subject)}" data-position-a="${escapeHtml(ai ? (ai.positionA || "") : "")}" data-position-b="${escapeHtml(ai ? (ai.positionB || "") : "")}" data-theme="${escapeHtml(ai ? (ai.agonTheme || "") : "")}" data-sources="${escapeHtml(subject.sources.join(", "))}">↺ Republier</button>
 
           ${
             articles.length
@@ -1372,6 +1536,25 @@ function generateHtml(sessions) {
       gap: 10px;
       flex-wrap: wrap;
       margin-bottom: 24px;
+    }
+
+    .filter-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 9px 16px;
+      border: 1px solid #ddd;
+      border-radius: 999px;
+      background: white;
+      color: #555;
+      text-decoration: none;
+      font: inherit;
+      font-size: 0.88rem;
+      font-weight: 700;
+    }
+
+    .filter-link:hover {
+      background: #f3f4f6;
     }
 
     .filter-btn {
@@ -1911,6 +2094,21 @@ function generateHtml(sessions) {
     .agon-btn:hover { background: #fdf0ee; }
     .agon-btn.sent { background: #c0392b; color: white; }
 
+    .republish-btn {
+      background: #fff;
+      border: 1px solid #1d4ed8;
+      border-radius: 999px;
+      padding: 4px 12px;
+      font: inherit;
+      font-size: 0.82rem;
+      cursor: pointer;
+      color: #1d4ed8;
+      margin-top: 10px;
+      margin-left: 6px;
+    }
+
+    .republish-btn:hover { background: #eff6ff; }
+
     .ai-box {
       background: #f5f5f5;
       border: 1px solid #e1e1e1;
@@ -1999,6 +2197,312 @@ function generateHtml(sessions) {
     .debate-question:hover,
     .debate-question:focus {
       background: #e8e8e8;
+    }
+
+    .source-subject-title {
+      margin: 0 0 8px 0;
+      font-size: 1rem;
+      font-weight: 800;
+      line-height: 1.3;
+      color: #1f2937;
+    }
+
+    .generated-title-label {
+      margin: 0 0 4px 0;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      color: #6b7280;
+    }
+
+    .story-picker-row {
+      position: relative;
+      margin-top: 6px;
+    }
+
+    .story-picker-trigger {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      border: 1px solid #d1d5db;
+      background: #fff;
+      color: #111827;
+      border-radius: 12px;
+      padding: 10px 12px;
+      font: inherit;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: left;
+    }
+
+    .story-picker-trigger-label {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .story-picker-trigger-caret {
+      flex-shrink: 0;
+      color: #6b7280;
+      font-size: 0.8rem;
+    }
+
+    .story-dropdown.hidden {
+      display: none;
+    }
+
+    .story-dropdown {
+      position: absolute;
+      top: calc(100% + 8px);
+      left: 0;
+      width: min(860px, calc(100vw - 48px));
+      max-width: 100%;
+      background: #ffffff !important;
+      background-color: #ffffff !important;
+      opacity: 1 !important;
+      border: 1px solid #e5e7eb;
+      border-radius: 14px;
+      box-shadow: 0 20px 50px rgba(15, 23, 42, 0.16);
+      z-index: 40;
+      padding: 10px;
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
+    }
+
+    .story-dropdown-create-row {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 8px;
+    }
+
+    .story-create-inline-btn {
+      border: 1px solid #d1d5db;
+      background: #fff;
+      color: #111827;
+      border-radius: 999px;
+      padding: 6px 10px;
+      font: inherit;
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .story-dropdown-search-row {
+      padding: 0 4px 10px;
+      background: #ffffff !important;
+      opacity: 1 !important;
+    }
+
+    .story-search-input {
+      width: 100%;
+      padding: 9px 12px;
+      border: 1px solid #d6dae2;
+      border-radius: 8px;
+      font: inherit;
+      font-size: 0.9rem;
+      background: #ffffff;
+      color: #111827;
+    }
+
+    .story-dropdown-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      max-height: 320px;
+      overflow: auto;
+      background: #ffffff !important;
+      opacity: 1 !important;
+    }
+
+    .story-library-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 8px 10px;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      background: #ffffff !important;
+      background-color: #ffffff !important;
+      opacity: 1 !important;
+    }
+
+    .story-library-title {
+      font-size: 0.84rem;
+      font-weight: 600;
+      color: #1f2937;
+      min-width: 0;
+      flex: 1;
+    }
+
+    .story-library-actions {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .story-library-btn {
+      border: 1px solid #d1d5db;
+      background: #fff;
+      color: #111827;
+      border-radius: 999px;
+      padding: 5px 9px;
+      font: inherit;
+      font-size: 0.76rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .story-library-select-btn {
+      border: 0;
+      background: transparent;
+      padding: 0;
+      color: inherit;
+      font: inherit;
+      font-weight: inherit;
+      text-align: left;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    .story-library-row.is-selected {
+      border-color: #93c5fd;
+      background: #eff6ff;
+    }
+
+    .story-row-simple {
+      justify-content: flex-start;
+    }
+
+    .story-library-view-btn {
+      background: #eff6ff;
+      border-color: rgba(37, 99, 235, 0.18);
+      color: #1d4ed8;
+    }
+
+    .story-articles-modal.hidden {
+      display: none;
+    }
+
+    .story-articles-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.52);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .story-articles-dialog {
+      width: min(720px, 100%);
+      max-height: min(80vh, 760px);
+      overflow: auto;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 24px 60px rgba(15, 23, 42, 0.26);
+      padding: 18px 18px 16px;
+    }
+
+    .story-articles-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .story-articles-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #111827;
+      margin: 0;
+    }
+
+    .story-articles-close {
+      border: 0;
+      background: #f3f4f6;
+      color: #374151;
+      border-radius: 999px;
+      width: 32px;
+      height: 32px;
+      cursor: pointer;
+      font-size: 18px;
+      line-height: 1;
+    }
+
+    .story-articles-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .story-article-item {
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      border-radius: 12px;
+      padding: 12px;
+      background: #f8fafc;
+    }
+
+    .story-article-title {
+      margin: 0 0 6px;
+      font-size: 14px;
+      font-weight: 700;
+      color: #111827;
+    }
+
+    .story-article-meta {
+      font-size: 12px;
+      color: #6b7280;
+      margin-bottom: 6px;
+    }
+
+    .story-article-content {
+      font-size: 13px;
+      line-height: 1.45;
+      color: #374151;
+      margin: 0 0 8px;
+    }
+
+    .story-article-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #1d4ed8;
+      text-decoration: none;
+    }
+
+    .full-article-btn {
+      margin-top: 14px;
+      border: 1px solid rgba(37, 99, 235, 0.22);
+      background: #eff6ff;
+      color: #1d4ed8;
+      border-radius: 10px;
+      padding: 10px 12px;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .final-article-btn {
+      margin-top: 10px;
+      border: 1px solid rgba(17, 24, 39, 0.2);
+      background: #111827;
+      color: white;
+      border-radius: 999px;
+      padding: 8px 14px;
+      font: inherit;
+      font-size: 0.84rem;
+      font-weight: 700;
+      cursor: pointer;
     }
 
     .resume[contenteditable="true"] {
@@ -2251,6 +2755,7 @@ function generateHtml(sessions) {
     <button class="filter-btn" data-sort="sources">Sujets majeurs</button>
     <button class="filter-btn" data-sort="left">Sujets avec fort intérêt</button>
     <button class="filter-btn" data-sort="saved">Sujets enregistrés</button>
+    <a class="filter-link" href="/sent-to-agon">Articles envoyés vers Agôn</a>
   </div>
 
   ${
@@ -2296,6 +2801,7 @@ function generateHtml(sessions) {
     }
 
     let agonStoriesCache = null;
+    const agonStoryDebatesCache = new Map();
 
     async function loadAgonStoriesClient() {
       if (agonStoriesCache) return agonStoriesCache;
@@ -2308,30 +2814,103 @@ function generateHtml(sessions) {
       return agonStoriesCache;
     }
 
-    function buildManualStoryPickerHtml() {
+    async function loadStoryDebatesClient(storyId) {
+      const key = String(storyId || "").trim();
+      if (!key) return [];
+      if (agonStoryDebatesCache.has(key)) return agonStoryDebatesCache.get(key);
+      const response = await fetch("/api/agon-stories/" + encodeURIComponent(key) + "/debates");
+      const data = await response.json().catch(function() { return { ok: false, debates: [] }; });
+      if (!response.ok || data.ok === false) {
+        throw new Error(data.error || "Impossible de charger les articles de cette histoire.");
+      }
+      const debates = Array.isArray(data.debates) ? data.debates : [];
+      agonStoryDebatesCache.set(key, debates);
+      return debates;
+    }
+
+    function buildStoryPickerHtml() {
       return '<div class="story-manual-picker">' +
-        '<label>Choisir manuellement une autre histoire existante</label>' +
-        '<select class="story-manual-select">' +
-          '<option value="">Conserver le rattachement proposé</option>' +
-        '</select>' +
-        '<div class="story-manual-summary hidden">' +
-          '<label>Résumé de l’histoire choisie depuis le début</label>' +
-          '<textarea class="story-manual-summary-input" rows="3" placeholder="Résumé cumulé de l’histoire depuis le début, en 2 ou 3 lignes"></textarea>' +
-          '<small class="story-manual-meta"></small>' +
+        '<label>Histoire associée</label>' +
+        '<div class="story-picker-row">' +
+          '<select class="story-manual-select" hidden>' +
+            '<option value="">Sans histoire associée</option>' +
+            '<option value="__new__">Créer une nouvelle histoire</option>' +
+          '</select>' +
+          '<button type="button" class="story-picker-trigger" aria-expanded="false">' +
+            '<span class="story-picker-trigger-label">Sans histoire associée</span>' +
+            '<span class="story-picker-trigger-caret">▾</span>' +
+          '</button>' +
+          '<div class="story-dropdown hidden">' +
+            '<div class="story-dropdown-create-row">' +
+              '<button type="button" class="story-create-inline-btn">+ Créer une nouvelle histoire</button>' +
+            '</div>' +
+            '<div class="story-dropdown-search-row"><input type="text" class="story-search-input" placeholder="Rechercher une histoire"></div>' +
+            '<div class="story-dropdown-list"></div>' +
+          '</div>' +
         '</div>' +
+        '<small class="story-manual-meta"></small>' +
       '</div>';
     }
 
-    function buildPreviousEpisodeLinkHtml(storyLink) {
-      const previousUrl = String(storyLink?.previous_episode_url || "").trim();
-      if (!previousUrl) return "";
-      const previousTitle = escapeHtmlClient(storyLink?.previous_episode_title || "Épisode précédent");
-      return '<a class="episode-nav-link" href="' + escapeHtmlClient(previousUrl) + '" target="_blank" rel="noopener noreferrer" title="' + previousTitle + '">Voir l’épisode précédent</a>';
+    function formatStoryArticleDate(value) {
+      if (!value) return "";
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return "";
+      return date.toLocaleString("fr-FR");
     }
 
-    function buildSelectedStoryTagHtml(title) {
-      if (!title) return "";
-      return '<div class="story-selected-row"><span class="story-selected-tag"><span class="story-selected-title">' + escapeHtmlClient(title) + '</span><button type="button" class="story-selected-remove-btn" aria-label="Supprimer le rattachement">×</button></span></div>';
+    function ensureStoryArticlesModal() {
+      let modal = document.querySelector(".story-articles-modal");
+      if (modal) return modal;
+      modal = document.createElement("div");
+      modal.className = "story-articles-modal hidden";
+      modal.innerHTML = '<div class="story-articles-dialog" role="dialog" aria-modal="true" aria-labelledby="story-articles-title">' +
+        '<div class="story-articles-header">' +
+          '<div>' +
+            '<h3 id="story-articles-title" class="story-articles-title">Articles de l’histoire</h3>' +
+          '</div>' +
+          '<button type="button" class="story-articles-close" aria-label="Fermer">×</button>' +
+        '</div>' +
+        '<div class="story-articles-body"></div>' +
+      '</div>';
+      document.body.appendChild(modal);
+      return modal;
+    }
+
+    function closeStoryArticlesModal() {
+      const modal = document.querySelector(".story-articles-modal");
+      if (!modal) return;
+      modal.classList.add("hidden");
+      const body = modal.querySelector(".story-articles-body");
+      if (body) body.innerHTML = "";
+    }
+
+    function renderStoryArticlesModal(storyTitle, debates) {
+      const modal = ensureStoryArticlesModal();
+      const body = modal.querySelector(".story-articles-body");
+      const title = modal.querySelector(".story-articles-title");
+      if (title) {
+        title.textContent = storyTitle ? "Articles de " + storyTitle : "Articles de l’histoire";
+      }
+      if (body) {
+        if (!debates.length) {
+          body.innerHTML = '<p class="story-article-content">Aucun autre article n’est encore rattaché à cette histoire.</p>';
+        } else {
+          body.innerHTML = '<div class="story-articles-list">' + debates.map(function(debate) {
+            const meta = [];
+            if (debate.id) meta.push("Arène #" + debate.id);
+            const formattedDate = formatStoryArticleDate(debate.created_at);
+            if (formattedDate) meta.push(formattedDate);
+            return '<div class="story-article-item">' +
+              '<p class="story-article-title">' + escapeHtmlClient(debate.question || "Sans titre") + '</p>' +
+              (meta.length ? '<div class="story-article-meta">' + escapeHtmlClient(meta.join(" • ")) + '</div>' : "") +
+              (debate.content ? '<p class="story-article-content">' + escapeHtmlClient(String(debate.content).slice(0, 240)) + (String(debate.content).length > 240 ? "..." : "") + '</p>' : "") +
+              (debate.url ? '<a class="story-article-link" href="' + escapeHtmlClient(debate.url) + '" target="_blank" rel="noopener noreferrer">Ouvrir l’arène</a>' : "") +
+            '</div>';
+          }).join("") + '</div>';
+        }
+      }
+      modal.classList.remove("hidden");
     }
 
     function normalizeKeywordListClient(values, max = 10) {
@@ -2399,7 +2978,6 @@ function generateHtml(sessions) {
       const storyDecision = storyLink.story_decision || "new_story";
       const confidence = Number(storyLink.confidence || 0);
       const matchedTitle = escapeHtmlClient(storyLink.matched_story_title || "");
-      const matchedSummary = escapeHtmlClient(storyLink.matched_story_summary || "");
       const previousEpisodeTitle = escapeHtmlClient(storyLink.previous_episode_title || "");
       const previousEpisodeUrl = escapeHtmlClient(storyLink.previous_episode_url || "");
       const reason = escapeHtmlClient(storyLink.reason || "");
@@ -2407,39 +2985,28 @@ function generateHtml(sessions) {
       const encodedCriteria = escapeHtmlClient(encodeStoryData(storyLink.criteria || {}));
       const encodedNewStory = escapeHtmlClient(encodeStoryData(newStory));
       const hasMatchedStory = Boolean(storyLink.matched_story_id && matchedTitle);
-      const storyStatusHtml = hasMatchedStory
-        ? '<div class="story-link-status is-existing">Histoire liée : ' + matchedTitle + '</div>'
-        : '<div class="story-link-status is-new">Nouvelle histoire à définir</div>';
-      const manualPickerHtml = buildManualStoryPickerHtml();
+      const manualPickerHtml = buildStoryPickerHtml();
 
-      const existingStoryFields = '<div class="story-draft-fields">' +
-        '<label>Résumé de l’histoire depuis le début</label>' +
-        '<textarea class="story-summary-input" rows="3" placeholder="Résumé cumulé de l’histoire depuis le début, en 2 ou 3 lignes">' + matchedSummary + '</textarea>' +
-        '<div class="story-save-actions"><button type="button" class="story-save-btn">Enregistrer les modifications</button><span class="story-save-feedback hidden">Modifications enregistrées</span></div>' +
+      const existingStoryFields = '<div class="story-draft-fields story-existing-fields-empty">' +
+        '<p class="story-existing-note">Cette histoire sera seulement associée à l’actualité. Aucun résumé d’histoire n’est généré à cette étape.</p>' +
       '</div>';
 
       const newStoryFields = '<div class="story-draft-fields story-new-fields">' +
         '<label>Titre de la nouvelle histoire</label>' +
         '<input type="text" class="story-title-input" value="' + escapeHtmlClient(newStory.story_title || "") + '" placeholder="Titre court et général de l’histoire">' +
-        '<label>Résumé de la nouvelle histoire depuis le début</label>' +
-        '<textarea class="story-summary-input" rows="3" placeholder="Résumé cumulé de l’histoire depuis le début, en 2 ou 3 lignes">' + escapeHtmlClient(newStory.story_summary || "") + '</textarea>' +
         '<div class="story-save-actions"><button type="button" class="story-save-btn">Enregistrer les modifications</button><span class="story-save-feedback hidden">Modifications enregistrées</span></div>' +
       '</div>';
 
-      const selectedMode = hasMatchedStory ? "existing" : "new";
+      const selectedMode = hasMatchedStory ? "existing" : "";
       const currentStoryId = escapeHtmlClient(storyLink.matched_story_id || "");
       const currentStoryTitle = matchedTitle;
-      const currentStorySummary = matchedSummary;
       const statusReason = reason ? '<div class="story-link-header">' + reason + '</div>' : '';
 
-      return '<div class="story-link-box" data-story-decision="' + escapeHtmlClient(storyDecision) + '" data-selected-mode="' + selectedMode + '" data-default-mode="' + selectedMode + '" data-matched-story-id="' + currentStoryId + '" data-matched-story-title="' + matchedTitle + '" data-current-story-id="' + currentStoryId + '" data-current-story-title="' + currentStoryTitle + '" data-current-story-summary="' + currentStorySummary + '" data-previous-episode-title="' + previousEpisodeTitle + '" data-previous-episode-url="' + previousEpisodeUrl + '" data-confidence="' + confidence + '" data-reason="' + reason + '" data-criteria="' + encodedCriteria + '" data-new-story="' + encodedNewStory + '">' +
-          storyStatusHtml +
+      return '<div class="story-link-box" data-story-decision="' + escapeHtmlClient(storyDecision) + '" data-selected-mode="' + selectedMode + '" data-default-mode="' + selectedMode + '" data-matched-story-id="' + currentStoryId + '" data-matched-story-title="' + matchedTitle + '" data-current-story-id="' + currentStoryId + '" data-current-story-title="' + currentStoryTitle + '" data-current-story-summary="" data-previous-episode-title="' + previousEpisodeTitle + '" data-previous-episode-url="' + previousEpisodeUrl + '" data-confidence="' + confidence + '" data-reason="' + reason + '" data-criteria="' + encodedCriteria + '" data-new-story="' + encodedNewStory + '">' +
           statusReason +
-          buildSelectedStoryTagHtml(currentStoryTitle) +
-          '<div class="story-existing-fields">' + existingStoryFields + '</div>' +
-          '<div class="story-save-actions"><button type="button" class="story-create-btn">Créer une nouvelle histoire</button></div>' +
-          newStoryFields +
           manualPickerHtml +
+          '<div class="story-existing-fields">' + existingStoryFields + '</div>' +
+          newStoryFields +
       '</div>';
     }
 
@@ -2447,69 +3014,250 @@ function generateHtml(sessions) {
       if (!box) return;
       const mode = box.dataset.selectedMode || "";
       const hasExisting = mode === "existing" && String(box.dataset.currentStoryId || "").trim();
-      const selectedRow = box.querySelector(".story-selected-row");
       const existingPreview = box.querySelector(".story-existing-fields");
       const newPreview = box.querySelector(".story-new-fields");
-      const picker = box.querySelector(".story-manual-picker");
       box.classList.toggle("story-link-disabled", !mode);
-      if (picker) picker.classList.remove("hidden");
-      if (selectedRow) selectedRow.classList.toggle("hidden", !hasExisting);
       if (existingPreview) existingPreview.classList.toggle("hidden", !hasExisting);
       if (newPreview) newPreview.classList.toggle("hidden", mode !== "new");
-      const manualSummary = box.querySelector(".story-manual-summary");
-      const manualSelect = box.querySelector(".story-manual-select");
-      const hasManualChoice = Boolean(manualSelect && manualSelect.value);
-      if (manualSummary) manualSummary.classList.toggle("hidden", !hasManualChoice);
     }
 
     async function populateManualStoryPicker(box) {
       if (!box) return;
       const select = box.querySelector(".story-manual-select");
+      const dropdownList = box.querySelector(".story-dropdown-list");
       if (!select || select.dataset.loaded === "true") return;
       const stories = await loadAgonStoriesClient();
-      const options = ['<option value="">Choisir une autre histoire existante</option>'];
+      const options = [
+        '<option value="">Sans histoire associée</option>',
+        '<option value="__new__">Créer une nouvelle histoire</option>'
+      ];
+      const matchedId = String(box.dataset.matchedStoryId || "").trim();
       stories.forEach(function(story) {
         const storyId = escapeHtmlClient(story.story_id || "");
         const title = escapeHtmlClient(story.story_title || "Histoire sans titre");
         const summary = escapeHtmlClient(story.story_summary || "");
         const latest = escapeHtmlClient(story.latest_episode_title || "");
-        options.push('<option value="' + storyId + '" data-title="' + title + '" data-summary="' + summary + '" data-latest="' + latest + '" data-url="' + escapeHtmlClient(story.latest_episode_url || "") + '">' + title + (latest ? ' - ' + latest : '') + '</option>');
+        const selected = matchedId && String(story.story_id || "") === matchedId ? ' selected' : '';
+        options.push('<option value="' + storyId + '"' + selected + ' data-title="' + title + '" data-summary="' + summary + '" data-latest="' + latest + '" data-url="' + escapeHtmlClient(story.latest_episode_url || "") + '">' + title + '</option>');
       });
       select.innerHTML = options.join("");
       select.dataset.loaded = "true";
+      if (dropdownList) {
+        dropdownList.innerHTML = '<div class="story-library-row story-row-simple" data-story-id="">' +
+          '<button type="button" class="story-library-select-btn">Sans histoire associée</button>' +
+        '</div>' + stories.map(function(story) {
+          const storyId = escapeHtmlClient(story.story_id || "");
+          const title = escapeHtmlClient(story.story_title || "Histoire sans titre");
+          return '<div class="story-library-row" data-story-id="' + storyId + '">' +
+            '<button type="button" class="story-library-select-btn story-library-title">' + title + '</button>' +
+            '<div class="story-library-actions">' +
+              '<button type="button" class="story-library-btn story-library-view-btn story-view-btn">Voir les articles</button>' +
+              '<button type="button" class="story-library-btn story-edit-btn">Modifier</button>' +
+              '<button type="button" class="story-library-btn story-delete-btn">Supprimer</button>' +
+            '</div>' +
+          '</div>';
+        }).join("");
+      }
+      if (matchedId) {
+        select.value = matchedId;
+      } else {
+        select.value = "";
+      }
+      const searchInput = box.querySelector('.story-search-input');
+      if (searchInput) {
+        searchInput.value = "";
+        if (!searchInput.dataset.bound) {
+          searchInput.addEventListener('input', function() {
+            filterStoryDropdown(box, searchInput.value || '');
+          });
+          searchInput.dataset.bound = 'true';
+        }
+      }
+      filterStoryDropdown(box, '');
+      updateManualStorySelection(box);
+    }
+
+    async function refreshStoryPicker(box) {
+      if (!box) return;
+      agonStoriesCache = null;
+      agonStoryDebatesCache.clear();
+      const select = box.querySelector(".story-manual-select");
+      if (select) select.dataset.loaded = "false";
+      const dropdownList = box.querySelector('.story-dropdown-list');
+      if (dropdownList) dropdownList.innerHTML = '';
+      await populateManualStoryPicker(box);
+    }
+
+    function filterStoryDropdown(box, query) {
+      if (!box) return;
+      const normalizedQuery = String(query || "").trim().toLowerCase();
+      const rows = [...box.querySelectorAll('.story-library-row')];
+      rows.forEach(function(row) {
+        const title = String(row.querySelector('.story-library-select-btn')?.textContent || '').toLowerCase();
+        const shouldShow = !normalizedQuery || title.includes(normalizedQuery);
+        row.classList.toggle('hidden', !shouldShow);
+      });
     }
 
     function updateManualStorySelection(box) {
       if (!box) return;
       const select = box.querySelector(".story-manual-select");
-      const summaryWrap = box.querySelector(".story-manual-summary");
-      const summaryInput = box.querySelector(".story-manual-summary-input");
       const meta = box.querySelector(".story-manual-meta");
-      if (!select || !summaryWrap || !summaryInput || !meta) return;
+      const triggerLabel = box.querySelector(".story-picker-trigger-label");
+      const trigger = box.querySelector(".story-picker-trigger");
+      if (!select || !meta) return;
       const option = select.options[select.selectedIndex];
-      const hasValue = Boolean(select.value);
-      if (!hasValue) {
-        summaryInput.value = "";
+      const value = String(select.value || "").trim();
+      const rows = [...box.querySelectorAll('.story-library-row')];
+      rows.forEach(function(row) {
+        row.classList.toggle('is-selected', String(row.dataset.storyId || '') === value || (!value && String(row.dataset.storyId || '') === ''));
+      });
+      if (!value) {
+        box.dataset.selectedMode = "";
+        box.dataset.currentStoryId = "";
+        box.dataset.currentStoryTitle = "";
+        box.dataset.currentStorySummary = "";
+        box.dataset.previousEpisodeTitle = "";
+        box.dataset.previousEpisodeUrl = "";
         meta.textContent = "";
-        if (!String(box.dataset.currentStoryId || "").trim() && (box.dataset.defaultMode || "") !== "new") {
-          box.dataset.selectedMode = "";
-        }
+        if (triggerLabel) triggerLabel.textContent = "Sans histoire associée";
+        if (trigger) trigger.setAttribute('aria-expanded', 'false');
+        const dropdown = box.querySelector('.story-dropdown');
+        if (dropdown) dropdown.classList.add('hidden');
+        const searchInput = box.querySelector('.story-search-input');
+        if (searchInput) searchInput.value = '';
+        filterStoryDropdown(box, '');
+        syncStoryChoiceUi(box);
+        return;
+      }
+      if (value === "__new__") {
+        box.dataset.selectedMode = "new";
+        box.dataset.currentStoryId = "";
+        box.dataset.currentStoryTitle = "";
+        box.dataset.currentStorySummary = "";
+        box.dataset.previousEpisodeTitle = "";
+        box.dataset.previousEpisodeUrl = "";
+        meta.textContent = "Nouvelle histoire";
+        if (triggerLabel) triggerLabel.textContent = "Créer une nouvelle histoire";
+        if (trigger) trigger.setAttribute('aria-expanded', 'false');
+        const dropdown = box.querySelector('.story-dropdown');
+        if (dropdown) dropdown.classList.add('hidden');
+        const searchInput = box.querySelector('.story-search-input');
+        if (searchInput) searchInput.value = '';
+        filterStoryDropdown(box, '');
         syncStoryChoiceUi(box);
         return;
       }
       box.dataset.selectedMode = "existing";
-      box.dataset.currentStoryId = select.value;
+      box.dataset.currentStoryId = value;
       box.dataset.currentStoryTitle = option?.dataset.title || "";
       box.dataset.currentStorySummary = option?.dataset.summary || "";
       box.dataset.previousEpisodeTitle = option?.dataset.latest || "";
       box.dataset.previousEpisodeUrl = option?.dataset.url || "";
-      const tagTitle = box.querySelector(".story-selected-title");
-      if (tagTitle) tagTitle.textContent = option?.dataset.title || "";
-      const existingSummaryInput = box.querySelector(".story-existing-fields .story-summary-input");
-      if (existingSummaryInput) existingSummaryInput.value = option?.dataset.summary || "";
-      summaryInput.value = option?.dataset.summary || "";
       meta.textContent = option?.dataset.latest ? "Dernier épisode : " + option.dataset.latest : "";
+      if (triggerLabel) triggerLabel.textContent = option?.dataset.title || 'Histoire sans titre';
+      if (trigger) trigger.setAttribute('aria-expanded', 'false');
+      const dropdown = box.querySelector('.story-dropdown');
+      if (dropdown) dropdown.classList.add('hidden');
       syncStoryChoiceUi(box);
+    }
+
+    async function openNewStoryPrompt(box) {
+      if (!box) return;
+      const newStory = decodeStoryData(box.dataset.newStory) || {};
+      const currentTitle = String(newStory.story_title || "").trim();
+      const enteredTitle = window.prompt("Titre de la nouvelle histoire", currentTitle);
+      if (enteredTitle === null) return;
+      const title = String(enteredTitle || "").trim();
+      if (!title) return;
+
+      const response = await fetch("/api/agon-stories", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          story_title: title,
+          story_summary: ""
+        })
+      });
+      const data = await response.json().catch(function() { return { ok: false, error: "Erreur création histoire" }; });
+      if (!response.ok || data.ok === false || !data.story) {
+        throw new Error(data.error || "Erreur création histoire");
+      }
+
+      const createdStory = data.story;
+      newStory.story_title = String(createdStory.story_title || title).trim();
+      box.dataset.newStory = encodeStoryData(newStory);
+      box.dataset.selectedMode = "existing";
+      box.dataset.currentStoryId = String(createdStory.story_id || "").trim();
+      box.dataset.currentStoryTitle = String(createdStory.story_title || title).trim();
+      box.dataset.currentStorySummary = String(createdStory.story_summary || "").trim();
+      box.dataset.previousEpisodeTitle = "";
+      box.dataset.previousEpisodeUrl = "";
+
+      const titleInput = box.querySelector(".story-title-input");
+      if (titleInput) titleInput.value = "";
+
+      await refreshStoryPicker(box);
+      const select = box.querySelector(".story-manual-select");
+      if (select && createdStory.story_id) {
+        select.value = String(createdStory.story_id);
+      }
+      updateManualStorySelection(box);
+    }
+
+    async function editExistingStory(box, storyId) {
+      if (!box || !storyId) return;
+      const stories = await loadAgonStoriesClient();
+      const story = stories.find(function(item) { return String(item.story_id || "") === String(storyId); });
+      if (!story) return;
+      const nextTitle = window.prompt("Modifier le titre de l’histoire", String(story.story_title || "").trim());
+      if (nextTitle === null) return;
+      const title = String(nextTitle || "").trim();
+      if (!title) return;
+      const response = await fetch("/api/agon-stories/" + encodeURIComponent(storyId), {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          story_title: title,
+          story_summary: String(story.story_summary || "")
+        })
+      });
+      const data = await response.json().catch(function() { return { ok: false, error: "Erreur modification histoire" }; });
+      if (!response.ok || data.ok === false) {
+        throw new Error(data.error || "Erreur modification histoire");
+      }
+      await refreshStoryPicker(box);
+      updateManualStorySelection(box);
+    }
+
+    async function deleteExistingStory(box, storyId) {
+      if (!box || !storyId) return;
+      const shouldDelete = window.confirm("Supprimer cette histoire ?");
+      if (!shouldDelete) return;
+      const response = await fetch("/api/agon-stories/" + encodeURIComponent(storyId), {
+        method: "DELETE"
+      });
+      const data = await response.json().catch(function() { return { ok: false, error: "Erreur suppression histoire" }; });
+      if (!response.ok || data.ok === false) {
+        throw new Error(data.error || "Erreur suppression histoire");
+      }
+      if (String(box.dataset.currentStoryId || "") === String(storyId)) {
+        box.dataset.selectedMode = "";
+        box.dataset.currentStoryId = "";
+        box.dataset.currentStoryTitle = "";
+        box.dataset.currentStorySummary = "";
+      }
+      await refreshStoryPicker(box);
+      updateManualStorySelection(box);
+    }
+
+    async function openStoryArticles(box, storyId) {
+      if (!box || !storyId) return;
+      const stories = await loadAgonStoriesClient();
+      const story = stories.find(function(item) { return String(item.story_id || "") === String(storyId); });
+      const storyTitle = String(story?.story_title || "").trim();
+      const debates = await loadStoryDebatesClient(storyId);
+      renderStoryArticlesModal(storyTitle, debates);
     }
 
     function initializeStoryBoxes(root) {
@@ -2525,21 +3273,12 @@ function generateHtml(sessions) {
       if (!box) return;
       const feedback = box.querySelector(".story-save-feedback");
       const selectedMode = box.dataset.selectedMode || "";
-      const existingSummaryInput = box.querySelector(".story-existing-fields .story-summary-input");
       const titleInput = box.querySelector(".story-title-input");
-      const newSummaryInput = box.querySelector(".story-new-fields .story-summary-input");
       const newStory = decodeStoryData(box.dataset.newStory) || {};
 
       if (titleInput && selectedMode === "new") {
         newStory.story_title = titleInput.value.trim();
-      }
-      if (newSummaryInput && selectedMode === "new") {
-        newStory.story_summary = newSummaryInput.value.trim();
         box.dataset.newStory = encodeStoryData(newStory);
-      }
-
-      if (existingSummaryInput && selectedMode === "existing") {
-        box.dataset.currentStorySummary = existingSummaryInput.value.trim();
       }
 
       if (feedback) {
@@ -2581,15 +3320,8 @@ function generateHtml(sessions) {
         selectionMode
       };
 
-      const newSummary = box.querySelector(".story-new-fields .story-summary-input")?.value.trim() || "";
-      const existingSummary = box.querySelector(".story-existing-fields .story-summary-input")?.value.trim() || "";
-
       if (selectionMode === "existing") {
         if (!matchedStoryId) return null;
-        if (!existingSummary) {
-          throw new Error("Renseigne le résumé de l’histoire avant l'envoi.");
-        }
-        payload.storySummary = existingSummary;
         payload.reason = manualSelect && manualSelect.value ? "Histoire choisie manuellement." : reason;
       }
 
@@ -2598,12 +3330,9 @@ function generateHtml(sessions) {
         if (!title) {
           throw new Error("Renseigne le titre de la nouvelle histoire avant l'envoi.");
         }
-        if (!newSummary) {
-          throw new Error("Renseigne le résumé de la nouvelle histoire avant l'envoi.");
-        }
         payload.newStory = {
           story_title: title,
-          story_summary: newSummary,
+          story_summary: "",
           main_actors: Array.isArray(baseNewStory.main_actors) ? baseNewStory.main_actors : [],
           central_tension: baseNewStory.central_tension || "",
           keywords: Array.isArray(baseNewStory.keywords) ? baseNewStory.keywords : [],
@@ -2616,6 +3345,20 @@ function generateHtml(sessions) {
 
     const AI_TITLE_MAX = 100;
     const AI_RESUME_MAX = 1800;
+
+    function renderArticleHtml(articleText) {
+      const parts = String(articleText || "").split(/\n\n/);
+      if (parts.length < 3) {
+        return parts.map(function(p) { return "<p>" + escapeHtmlClient(p.trim()) + "</p>"; }).join("");
+      }
+      const signature = parts[parts.length - 1].trim();
+      const question = parts[parts.length - 2].trim();
+      const bodyParts = parts.slice(0, parts.length - 2);
+      const bodyHtml = bodyParts.map(function(p) { return "<p>" + escapeHtmlClient(p.trim()) + "</p>"; }).join("");
+      return bodyHtml
+        + '<p style="text-align:center;font-style:italic;margin-top:1em;">' + escapeHtmlClient(question) + "</p>"
+        + '<p style="text-align:center;font-weight:600;">' + escapeHtmlClient(signature) + "</p>";
+    }
 
     function buildAiBoxHtml(ai) {
       const score = Number(ai.debateScore) || 0;
@@ -2632,18 +3375,21 @@ function generateHtml(sessions) {
         : "";
 
       return '<div class="ai-box">' +
+        '<input type="hidden" class="full-article-state" value="short">' +
+        '<p class="generated-title-label">Titre généré par IA</p>' +
         '<p class="debate-question" contenteditable="true" spellcheck="false">' + (ai.debateQuestion || "") + "</p>" +
         '<div class="field-counter question-counter">0 / 100</div>' +
-        (ai.resume ? '<p class="resume" contenteditable="true" spellcheck="false">' + ai.resume + "</p>" : "") +
-        (ai.resume ? '<div class="field-counter resume-counter">0 / 1800</div>' : "") +
-        (ai.resume ? '<div class="story-save-actions"><button type="button" class="story-save-btn context-save-btn">Enregistrer les modifications</button><span class="story-save-feedback context-save-feedback hidden">Modifications enregistrées</span></div>' : "") +
+        positionsHtml +
+        '<p class="resume" contenteditable="true" spellcheck="false">' + (ai.resume || "") + "</p>" +
+        '<div class="field-counter resume-counter">0 / 1500</div>' +
+        '<div class="story-save-actions"><button type="button" class="story-save-btn context-save-btn">Enregistrer les modifications</button><span class="story-save-feedback context-save-feedback hidden">Modifications enregistrées</span></div>' +
         buildKeywordsHtml(ai) +
-        buildPreviousEpisodeLinkHtml(ai.storyLink) +
         '<p class="agon-theme"><strong>Thématique Agôn proposée :</strong>' +
           '<select class="agon-select">' + optionsHtml + "</select>" +
         "</p>" +
         buildStoryLinkHtml(ai.storyLink) +
-        positionsHtml +
+        '<button type="button" class="full-article-btn">Générer résumé de l’article</button>' +
+        '<button type="button" class="final-article-btn hidden">Générer article définitif</button>' +
         "</div>";
     }
 
@@ -2668,6 +3414,10 @@ function generateHtml(sessions) {
       }
       if (resumeEl) {
         resumeEl.dataset.savedValue = resumeEl.textContent.trim();
+      }
+      const fullArticleState = subjectEl.querySelector(".full-article-state");
+      if (fullArticleState) {
+        fullArticleState.value = "custom";
       }
       if (feedback) {
         feedback.classList.remove("hidden");
@@ -2709,25 +3459,41 @@ function generateHtml(sessions) {
       updateCounter(subjectEl, ".resume", ".resume-counter", AI_RESUME_MAX);
     }
 
-    function selectPreselectedLinks(contents, debateScore) {
-      if (debateScore < 7) return new Set();
-      const selected = new Set();
-      const youtube = contents.find(function(c) { return c.type === "youtube"; });
-      if (youtube && youtube.link) selected.add(youtube.link);
-      const pressItems = contents.filter(function(c) { return c.type === "article"; });
-      const leftItem = pressItems.find(function(c) { return getOrientationGroupClient(c.orientation) === "left"; });
-      const rightItem = pressItems.find(function(c) { return getOrientationGroupClient(c.orientation) === "right"; });
-      if (leftItem && leftItem.link) selected.add(leftItem.link);
-      if (rightItem && rightItem.link) selected.add(rightItem.link);
-      if (selected.size < 2) {
-        for (let i = 0; i < pressItems.length; i++) {
-          if (pressItems[i].link && !selected.has(pressItems[i].link)) {
-            selected.add(pressItems[i].link);
-            if (selected.size >= (youtube ? 3 : 2)) break;
-          }
+    function getSelectedContents(subjectEl) {
+      return [...subjectEl.querySelectorAll(".content-item[data-link]")]
+        .filter(function(item) {
+          return item.querySelector('input[type="checkbox"]')?.checked ?? true;
+        })
+        .map(function(item) {
+          return {
+            type: item.dataset.type || "article",
+            link: item.dataset.link || "",
+            source: item.querySelector("strong")?.textContent.trim() || "",
+            title: item.querySelector("a")?.textContent.trim() || "",
+            summary: item.dataset.summary || "",
+            date: item.querySelector("small")?.textContent.trim() || ""
+          };
+        })
+        .filter(function(item) { return item.link || item.title; });
+    }
+
+    function ensurePositionsBox(subjectEl, positionA, positionB) {
+      if (!subjectEl) return;
+      let box = subjectEl.querySelector(".positions-box");
+      if (!box) {
+        box = document.createElement("div");
+        box.className = "positions-box";
+        const counter = subjectEl.querySelector(".question-counter");
+        if (counter) {
+          counter.insertAdjacentElement("afterend", box);
+        } else {
+          subjectEl.querySelector(".debate-question")?.insertAdjacentElement("afterend", box);
         }
       }
-      return selected;
+      box.innerHTML =
+        "<p><strong>Positions proposées pour une arène à positions :</strong></p>" +
+        '<p><strong>A —</strong> <span class="editable" contenteditable="true" spellcheck="false">' + escapeHtmlClient(positionA || "") + "</span></p>" +
+        '<p><strong>B —</strong> <span class="editable" contenteditable="true" spellcheck="false">' + escapeHtmlClient(positionB || "") + "</span></p>";
     }
 
     document.addEventListener("click", async (e) => {
@@ -2755,12 +3521,14 @@ function generateHtml(sessions) {
 
         if (!res.ok) throw new Error("Erreur serveur");
         const ai = await res.json();
+        ai.sourceSubject = subjectData.subject || "";
         if (subjectData.arenaMode === "libre") {
           ai.arenaMode = "libre";
           ai.debateQuestion = subjectData.subject || ai.debateQuestion || "";
           ai.positionA = "";
           ai.positionB = "";
         }
+        subjectEl.dataset.subjectPayload = encodeStoryData(subjectData);
 
         if (aiScore) aiScore.outerHTML = buildAiScoreHtml(ai);
         aiBox.outerHTML = buildAiBoxHtml(ai);
@@ -2775,13 +3543,32 @@ function generateHtml(sessions) {
           agonBtn.dataset.theme = ai.agonTheme || "";
         }
 
-        const preselectedLinks = selectPreselectedLinks(subjectData.contents, Number(ai.debateScore) || 0);
+        const preselectedLinks = new Set(
+          Array.isArray(ai.selectedLinks)
+            ? ai.selectedLinks.map(function(link) { return String(link || "").trim(); }).filter(Boolean)
+            : []
+        );
         subjectEl.querySelectorAll(".content-item[data-link]").forEach(function(item) {
           const link = item.dataset.link;
           const checkbox = item.querySelector('input[type="checkbox"]');
           const isSelected = preselectedLinks.has(link);
           if (checkbox) checkbox.checked = isSelected;
           item.classList.toggle("preselected", isSelected);
+        });
+
+        await fetch("/save-update", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            subject: subjectData.subject,
+            debateScore: ai.debateScore,
+            controversyLevel: ai.controversyLevel,
+            leftScore: ai.leftScore,
+            ai: {
+              ...ai,
+              fullArticleState: "short"
+            }
+          })
         });
       } catch (err) {
         btn.disabled = false;
@@ -2790,6 +3577,112 @@ function generateHtml(sessions) {
     });
 
     document.addEventListener("click", async function(e) {
+      const fullArticleBtn = e.target.closest(".full-article-btn");
+      if (fullArticleBtn) {
+        const subjectEl = fullArticleBtn.closest(".subject");
+        const basePayload = decodeStoryData(subjectEl?.dataset.subjectPayload || "") || {};
+        const selectedContents = getSelectedContents(subjectEl);
+        const payload = {
+          subject: basePayload.subject || subjectEl.querySelector("h3")?.textContent.trim() || "",
+          contents: selectedContents
+        };
+
+        fullArticleBtn.disabled = true;
+        fullArticleBtn.textContent = "Résumé en cours…";
+        try {
+          const response = await fetch("/generate-full-article", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+          });
+          const data = await response.json().catch(function() { return { ok: false, error: "Erreur génération résumé" }; });
+          if (!response.ok || data.ok === false) {
+            throw new Error(data.error || "Erreur génération résumé");
+          }
+          const resumeEl = subjectEl.querySelector(".resume");
+          if (resumeEl) {
+            resumeEl.textContent = String(data.article || "").trim();
+            updateAiEditorCounters(subjectEl);
+          }
+          const fullArticleState = subjectEl.querySelector(".full-article-state");
+          if (fullArticleState) {
+            fullArticleState.value = "summary";
+          }
+          subjectEl.querySelector(".final-article-btn")?.classList.remove("hidden");
+          fullArticleBtn.textContent = "✓ Résumé généré";
+        } catch (error) {
+          alert(error.message || "Erreur génération résumé");
+          fullArticleBtn.textContent = "Générer résumé de l’article";
+        } finally {
+          fullArticleBtn.disabled = false;
+        }
+        return;
+      }
+
+      const finalArticleBtn = e.target.closest(".final-article-btn");
+      if (finalArticleBtn) {
+        const subjectEl = finalArticleBtn.closest(".subject");
+        const basePayload = decodeStoryData(subjectEl?.dataset.subjectPayload || "") || {};
+        const resumeEl = subjectEl.querySelector(".resume");
+        const summary = resumeEl?.textContent.trim().slice(0, AI_RESUME_MAX) || "";
+        if (!summary) {
+          alert("Génère d'abord le résumé de l'article.");
+          return;
+        }
+
+        finalArticleBtn.disabled = true;
+        finalArticleBtn.textContent = "Article définitif en cours…";
+        try {
+          const response = await fetch("/generate-final-article", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              subject: basePayload.subject || subjectEl.querySelector("h3")?.textContent.trim() || "",
+              summary
+            })
+          });
+          const data = await response.json().catch(function() { return { ok: false, error: "Erreur génération article définitif" }; });
+          if (!response.ok || data.ok === false) {
+            throw new Error(data.error || "Erreur génération article définitif");
+          }
+
+          if (resumeEl) {
+            resumeEl.innerHTML = renderArticleHtml(String(data.article || "").trim());
+          }
+          const questionEl = subjectEl.querySelector(".debate-question");
+          if (questionEl) {
+            questionEl.textContent = String(data.debateQuestion || "").trim().slice(0, AI_TITLE_MAX);
+          }
+          ensurePositionsBox(subjectEl, data.positionA || "", data.positionB || "");
+          updateAiEditorCounters(subjectEl);
+
+          const agonBtn = subjectEl.querySelector(".agon-btn");
+          const republishBtn = subjectEl.querySelector(".republish-btn");
+          if (agonBtn) {
+            agonBtn.dataset.question = String(data.debateQuestion || "").trim();
+            agonBtn.dataset.positionA = String(data.positionA || "").trim();
+            agonBtn.dataset.positionB = String(data.positionB || "").trim();
+          }
+          if (republishBtn) {
+            republishBtn.dataset.question = String(data.debateQuestion || "").trim();
+            republishBtn.dataset.positionA = String(data.positionA || "").trim();
+            republishBtn.dataset.positionB = String(data.positionB || "").trim();
+          }
+
+          const fullArticleState = subjectEl.querySelector(".full-article-state");
+          if (fullArticleState) {
+            fullArticleState.value = "full";
+          }
+          finalArticleBtn.textContent = "✓ Article définitif généré";
+        } catch (error) {
+          alert(error.message || "Erreur génération article définitif");
+          finalArticleBtn.textContent = "Générer article définitif";
+        } finally {
+          finalArticleBtn.disabled = false;
+        }
+        return;
+      }
+
       const btn = e.target.closest(".save-btn");
       if (!btn) return;
 
@@ -2839,20 +3732,35 @@ function generateHtml(sessions) {
         if (!res.ok) throw new Error("Erreur");
         btn.classList.toggle("saved");
         btn.textContent = btn.classList.contains("saved") ? "★ Enregistré" : "☆ Enregistrer";
+        rehydratePersistentStates();
       } catch (err) {
         console.error("Erreur save :", err);
       }
     });
 
     document.addEventListener("click", async (e) => {
-      const btn = e.target.closest(".agon-btn");
+      const btn = e.target.closest(".agon-btn, .republish-btn");
       if (!btn) return;
+      const isRepublish = btn.classList.contains("republish-btn");
       btn.disabled = true;
-      btn.textContent = "Envoi…";
+      btn.textContent = isRepublish ? "Republication…" : "Envoi…";
       try {
         const subjectEl = btn.closest(".subject");
         const storySelection = collectStorySelection(subjectEl);
         updateAiEditorCounters(subjectEl);
+        const subject = subjectEl.querySelector("h3")?.textContent.trim() || "";
+        const sessionEl = subjectEl.closest(".session");
+        const sessionLabel = sessionEl ? (sessionEl.querySelector(".session-header strong") || {}).textContent?.trim() || "" : "";
+        const fullArticleState = subjectEl.querySelector(".full-article-state");
+        const fullArticleMode = String(fullArticleState?.value || "short").trim();
+        if (fullArticleMode !== "full") {
+          const shouldContinue = window.confirm("Tu n’as pas généré l’article définitif. Tu peux continuer quand même, mais veux-tu vraiment envoyer cette version sur Agôn ?");
+          if (!shouldContinue) {
+            btn.disabled = false;
+            btn.textContent = isRepublish ? "↺ Republier" : "→ Agôn";
+            return;
+          }
+        }
         const question = (subjectEl.querySelector(".debate-question")?.textContent.trim() || btn.dataset.question || "").slice(0, AI_TITLE_MAX);
         const editables = subjectEl.querySelectorAll(".editable");
         const positionA = editables[0]?.textContent.trim() || btn.dataset.positionA;
@@ -2877,14 +3785,25 @@ function generateHtml(sessions) {
         const res = await fetch("/send-to-agon", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ question, positionA, positionB, theme, resume, sources, links, storySelection, keywords })
+          body: JSON.stringify({ subject, sessionLabel, question, positionA, positionB, theme, resume, sources, links, storySelection, keywords })
         });
         if (!res.ok) throw new Error();
-        btn.classList.add("sent");
-        btn.textContent = "✓ Envoyé";
+        const subjectElBtn = btn.closest(".subject");
+        const primaryBtn = subjectElBtn?.querySelector(".agon-btn");
+        const republishBtn = subjectElBtn?.querySelector(".republish-btn");
+        if (primaryBtn) {
+          primaryBtn.classList.add("sent");
+          primaryBtn.textContent = "✓ Envoyé";
+        }
+        if (republishBtn) {
+          republishBtn.classList.remove("hidden");
+          republishBtn.disabled = false;
+          republishBtn.textContent = "↺ Republier";
+        }
+        rehydratePersistentStates();
       } catch (error) {
         btn.disabled = false;
-        btn.textContent = "→ Agôn";
+        btn.textContent = isRepublish ? "↺ Republier" : "→ Agôn";
         if (error && error.message) {
           alert(error.message);
         }
@@ -2910,48 +3829,92 @@ function generateHtml(sessions) {
     });
 
     document.addEventListener("click", function(e) {
+      if (e.target.classList.contains("story-articles-modal") || e.target.closest(".story-articles-close")) {
+        closeStoryArticlesModal();
+        return;
+      }
+      if (!e.target.closest('.story-picker-row')) {
+        document.querySelectorAll('.story-dropdown').forEach(function(dropdown) { dropdown.classList.add('hidden'); });
+        document.querySelectorAll('.story-picker-trigger').forEach(function(trigger) { trigger.setAttribute('aria-expanded', 'false'); });
+      }
       const saveBtn = e.target.closest(".story-save-btn");
       if (saveBtn && !saveBtn.classList.contains("context-save-btn")) {
         saveStoryEdits(saveBtn.closest(".story-link-box"));
         return;
       }
+      const storyTrigger = e.target.closest('.story-picker-trigger');
+      if (storyTrigger) {
+        const row = storyTrigger.closest('.story-picker-row');
+        const dropdown = row?.querySelector('.story-dropdown');
+        if (dropdown) {
+          const nextHidden = !dropdown.classList.contains('hidden');
+          document.querySelectorAll('.story-dropdown').forEach(function(item) { if (item !== dropdown) item.classList.add('hidden'); });
+          document.querySelectorAll('.story-picker-trigger').forEach(function(trigger) { if (trigger !== storyTrigger) trigger.setAttribute('aria-expanded', 'false'); });
+          dropdown.classList.toggle('hidden', nextHidden);
+          storyTrigger.setAttribute('aria-expanded', nextHidden ? 'false' : 'true');
+          const box = storyTrigger.closest('.story-link-box');
+          const searchInput = row?.querySelector('.story-search-input');
+          if (searchInput) {
+            if (nextHidden) {
+              searchInput.value = '';
+              filterStoryDropdown(box, '');
+            } else {
+              searchInput.focus();
+            }
+          }
+        }
+        return;
+      }
+      const createStoryInlineBtn = e.target.closest(".story-create-inline-btn");
+      if (createStoryInlineBtn) {
+        openNewStoryPrompt(createStoryInlineBtn.closest(".story-link-box"));
+        return;
+      }
+      const selectStoryBtn = e.target.closest(".story-library-select-btn");
+      if (selectStoryBtn) {
+        const box = selectStoryBtn.closest(".story-link-box");
+        const row = selectStoryBtn.closest(".story-library-row");
+        const storyId = String(row?.dataset.storyId || "");
+        const select = box?.querySelector(".story-manual-select");
+        if (select) {
+          select.value = storyId;
+          updateManualStorySelection(box);
+        }
+        return;
+      }
+      const viewStoryBtn = e.target.closest(".story-view-btn");
+      if (viewStoryBtn) {
+        const box = viewStoryBtn.closest(".story-link-box");
+        const row = viewStoryBtn.closest(".story-library-row");
+        const storyId = row?.dataset.storyId || "";
+        openStoryArticles(box, storyId).catch(function(error) {
+          alert(error.message || "Erreur chargement articles de l’histoire");
+        });
+        return;
+      }
+      const editStoryBtn = e.target.closest(".story-edit-btn");
+      if (editStoryBtn) {
+        const box = editStoryBtn.closest(".story-link-box");
+        const row = editStoryBtn.closest(".story-library-row");
+        const storyId = row?.dataset.storyId || "";
+        editExistingStory(box, storyId).catch(function(error) {
+          alert(error.message || "Erreur modification histoire");
+        });
+        return;
+      }
+      const deleteStoryBtn = e.target.closest(".story-delete-btn");
+      if (deleteStoryBtn) {
+        const box = deleteStoryBtn.closest(".story-link-box");
+        const row = deleteStoryBtn.closest(".story-library-row");
+        const storyId = row?.dataset.storyId || "";
+        deleteExistingStory(box, storyId).catch(function(error) {
+          alert(error.message || "Erreur suppression histoire");
+        });
+        return;
+      }
       const contextSaveBtn = e.target.closest(".context-save-btn");
       if (contextSaveBtn) {
         saveContextEdits(contextSaveBtn.closest(".subject"));
-        return;
-      }
-      const createStoryBtn = e.target.closest(".story-create-btn");
-      if (createStoryBtn) {
-        const box = createStoryBtn.closest(".story-link-box");
-        if (box) {
-          box.dataset.selectedMode = "new";
-          box.dataset.currentStoryId = "";
-          box.dataset.currentStoryTitle = "";
-          box.dataset.currentStorySummary = "";
-          const select = box.querySelector(".story-manual-select");
-          if (select) select.value = "";
-          syncStoryChoiceUi(box);
-        }
-        return;
-      }
-      const removeStoryBtn = e.target.closest(".story-selected-remove-btn");
-      if (removeStoryBtn) {
-        const box = removeStoryBtn.closest(".story-link-box");
-        if (box) {
-          box.dataset.selectedMode = "";
-          box.dataset.currentStoryId = "";
-          box.dataset.currentStoryTitle = "";
-          box.dataset.currentStorySummary = "";
-          const select = box.querySelector(".story-manual-select");
-          if (select) select.value = "";
-          const summaryWrap = box.querySelector(".story-manual-summary");
-          const summaryInput = box.querySelector(".story-manual-summary-input");
-          const meta = box.querySelector(".story-manual-meta");
-          if (summaryWrap) summaryWrap.classList.add("hidden");
-          if (summaryInput) summaryInput.value = "";
-          if (meta) meta.textContent = "";
-          syncStoryChoiceUi(box);
-        }
         return;
       }
       const removeBtn = e.target.closest(".news-keyword-remove-btn");
@@ -2961,11 +3924,56 @@ function generateHtml(sessions) {
     });
 
     document.addEventListener("keydown", function(e) {
+      if (e.key === "Escape" && document.querySelector(".story-articles-modal:not(.hidden)")) {
+        closeStoryArticlesModal();
+        return;
+      }
       if (!e.target.classList.contains("news-keyword-input")) return;
       if (e.key !== "Enter") return;
       e.preventDefault();
       addKeywordToEditor(e.target.closest(".subject"), e.target.value || "");
     });
+
+    async function rehydratePersistentStates() {
+      try {
+        const [savedRes, sentRes] = await Promise.all([
+          fetch("/api/saved-subjects?t=" + Date.now()),
+          fetch("/api/sent-to-agon-items?t=" + Date.now())
+        ]);
+        const savedData = await savedRes.json().catch(function() { return { ok: false, subjects: [] }; });
+        const sentData = await sentRes.json().catch(function() { return { ok: false, items: [], keys: [] }; });
+
+        const savedSubjects = new Set(Array.isArray(savedData.subjects) ? savedData.subjects.map(function(item) { return String(item || "").trim(); }).filter(Boolean) : []);
+        const sentKeys = new Set(Array.isArray(sentData.keys) ? sentData.keys.map(function(item) { return String(item || "").trim(); }).filter(Boolean) : []);
+
+        document.querySelectorAll('.subject').forEach(function(subjectEl) {
+          const saveBtn = subjectEl.querySelector('.save-btn');
+          const agonBtn = subjectEl.querySelector('.agon-btn');
+          const republishBtn = subjectEl.querySelector('.republish-btn');
+          const subjectTitle = saveBtn?.dataset.subjectTitle || agonBtn?.dataset.subjectTitle || subjectEl.querySelector('h3')?.textContent.trim() || "";
+          const question = agonBtn?.dataset.question || subjectEl.querySelector('.debate-question')?.textContent.trim() || "";
+
+          if (saveBtn) {
+            const isSaved = savedSubjects.has(String(subjectTitle || "").trim());
+            saveBtn.classList.toggle('saved', isSaved);
+            saveBtn.textContent = isSaved ? '★ Enregistré' : '☆ Enregistrer';
+          }
+
+          if (agonBtn) {
+            const isSent = sentKeys.has(String(question || "").trim()) || sentKeys.has(String(subjectTitle || "").trim());
+            agonBtn.classList.toggle('sent', isSent);
+            agonBtn.textContent = isSent ? '✓ Envoyé' : '→ Agôn';
+            if (republishBtn) {
+              republishBtn.classList.toggle('hidden', !isSent);
+            }
+          }
+        });
+
+        sortSubjects();
+      } catch (error) {
+        console.error('Erreur réhydratation états persistants :', error);
+      }
+    }
 
     let currentSort = "score";
 
@@ -3000,6 +4008,8 @@ function generateHtml(sessions) {
         sortSubjects();
       });
     });
+
+    rehydratePersistentStates();
 
     document.querySelectorAll(".session-tab").forEach((button) => {
       button.addEventListener("click", () => {

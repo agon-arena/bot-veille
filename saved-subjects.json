@@ -1,6 +1,851 @@
 [
   {
     "action": "save",
+    "subject": "Un variant hautement mortel, des centaines de cas suspects... Ce que l'on sait de la nouvelle épidémie d'Ebola en République démocratique du Congo",
+    "debateScore": 7,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "Franceinfo, L'Obs",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.nouvelobs.com/monde/20260516.OBS114987/une-17-epidemie-d-ebola-en-rdc-frappee-par-un-variant-hautement-letal-et-sans-vaccin.html",
+        "source": "L'Obs",
+        "title": "Face à une 17ᵉ épidémie d’Ebola en RDC, l’OMS relève son niveau d’alerte à « urgence internationale »",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.franceinfo.fr/culture/musique/patrick-bruel/les-plaintes-contre-patrick-bruel-a-priori-regroupees-au-parquet-de-nanterre-selon-la-procureure-de-la-republique-de-paris_8009789.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "title": "Les plaintes contre Patrick Bruel \"a priori\" regroupées au parquet de Nanterre, selon la procureure de la République de Paris",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.franceinfo.fr/sante/maladie/ebola/un-variant-hautement-mortel-des-centaines-de-cas-suspects-ce-que-l-on-sait-de-la-nouvelle-epidemie-d-ebola-en-republique-democratique-du-congo_8009585.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "title": "Un variant hautement mortel, des centaines de cas suspects... Ce que l'on sait de la nouvelle épidémie d'Ebola en République démocratique du Congo",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.franceinfo.fr/sante/maladie/ebola/risque-d-epidemie-d-ebola-a-mayotte-le-ministere-de-la-sante-assure-etre-en-lien-constant-avec-les-experts-afin-d-evaluer-le-niveau-de-risque_8009741.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "title": "Le ministère de la Santé assure être \"en lien constant avec les experts afin d’évaluer le niveau de risque\" d'importation de l'épidémie d'Ebola à Mayotte",
+        "thumbnail": ""
+      }
+    ],
+    "sessionLabel": "17/05/2026 à 17:09:48",
+    "controversyLevel": "moyen",
+    "leftScore": 6,
+    "ai": {
+      "arenaMode": "positions",
+      "debateScore": 7,
+      "controversyLevel": "moyen",
+      "debateQuestion": "",
+      "resume": "",
+      "keywords": [
+        "Ebola",
+        "République démocratique du Congo",
+        "OMS",
+        "ministère de la Santé",
+        "urgence internationale",
+        "variant hautement mortel",
+        "Mayotte"
+      ],
+      "selectedLinks": [
+        "https://www.nouvelobs.com/monde/20260516.OBS114987/une-17-epidemie-d-ebola-en-rdc-frappee-par-un-variant-hautement-letal-et-sans-vaccin.html",
+        "https://www.franceinfo.fr/culture/musique/patrick-bruel/les-plaintes-contre-patrick-bruel-a-priori-regroupees-au-parquet-de-nanterre-selon-la-procureure-de-la-republique-de-paris_8009789.html#xtor=RSS-3-[lestitres]",
+        "https://www.franceinfo.fr/sante/maladie/ebola/un-variant-hautement-mortel-des-centaines-de-cas-suspects-ce-que-l-on-sait-de-la-nouvelle-epidemie-d-ebola-en-republique-democratique-du-congo_8009585.html#xtor=RSS-3-[lestitres]",
+        "https://www.franceinfo.fr/sante/maladie/ebola/risque-d-epidemie-d-ebola-a-mayotte-le-ministere-de-la-sante-assure-etre-en-lien-constant-avec-les-experts-afin-d-evaluer-le-niveau-de-risque_8009741.html#xtor=RSS-3-[lestitres]"
+      ],
+      "agonTheme": "Santé, corps et bien-être",
+      "positionA": "",
+      "positionB": "",
+      "leftScore": 6,
+      "storyLink": {
+        "story_decision": "existing_story",
+        "matched_story_id": "29-le-systeme-de-sante-fait-face-a-des-tensions-d-acces-aux-soins-de-moyens-et-de-c",
+        "matched_story_title": "Le système de santé fait face à des tensions d’accès aux soins, de moyens et de confiance",
+        "matched_story_summary": "",
+        "previous_episode_id": "",
+        "previous_episode_title": "",
+        "previous_episode_summary": "",
+        "previous_episode_url": "",
+        "confidence": 0.85,
+        "reason": "L'actualité porte sur une épidémie d'Ebola en RDC, un enjeu sanitaire majeur, ce qui correspond bien au thème du système de santé et ses tensions d'accès et moyens.",
+        "criteria": {
+          "main_actors_match": true,
+          "central_tension_match": true,
+          "temporal_continuity": true,
+          "editorial_theme_match": true,
+          "strong_keywords_match": true
+        },
+        "new_story": {
+          "story_title": "",
+          "story_summary": "",
+          "main_actors": [
+            "OMS",
+            "ministère de la Santé",
+            "République démocratique du Congo"
+          ],
+          "central_tension": "Gestion des épidémies et risques sanitaires",
+          "keywords": [
+            "Ebola",
+            "épidémie",
+            "urgence sanitaire"
+          ],
+          "status": "active"
+        }
+      },
+      "sourceSubject": "Un variant hautement mortel, des centaines de cas suspects... Ce que l'on sait de la nouvelle épidémie d'Ebola en République démocratique du Congo",
+      "fullArticleState": "short"
+    }
+  },
+  {
+    "action": "save",
+    "subject": "Négociations entre l’Iran et les Etats-Unis, incendie près d’une centrale aux Emirats, frappes au Liban… L’actu de la guerre au Moyen-Orient ce dimanche 17 mai",
+    "debateScore": 8,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "Libération, Le Figaro, La Croix, BFMTV, RFI, HuffPost France",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.liberation.fr/international/moyen-orient/incendie-pres-dune-centrale-nucleaire-aux-emirats-frappes-israeliennes-au-liban-lactu-de-la-guerre-au-moyen-orient-ce-dimanche-17-mai-20260517_GWE2RZI67BAYRPE7SLZ77YMREQ/",
+        "source": "Libération",
+        "title": "Négociations entre l’Iran et les Etats-Unis, incendie près d’une centrale aux Emirats, frappes au Liban… L’actu de la guerre au Moyen-Orient ce dimanche 17 mai",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.huffingtonpost.fr/politique/article/presidentielle-gabriel-attal-appele-a-se-presenter-par-500-elus-locaux-dans-la-tribune-dimanche_263802.html",
+        "source": "HuffPost France",
+        "title": "Présidentielle : Gabriel Attal appelé à se présenter par 500 élus locaux dans « La Tribune dimanche »",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.bfmtv.com/international/moyen-orient/une-frappe-de-drone-provoque-un-incendie-pres-d-une-centrale-nucleaire-aux-emirats-arabes-unis_AP-202605170245.html",
+        "source": "BFMTV",
+        "title": "Une frappe de drone provoque un incendie près d'une centrale nucléaire aux Émirats arabes unis",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.bfmtv.com/international/moyen-orient/iran/video-guerre-au-moyen-orient-une-frappe-a-proximite-d-une-centrale-nucleaire-aux-emirats_VN-202605170238.html",
+        "source": "BFMTV",
+        "title": "Guerre au Moyen-Orient: une frappe à proximité d'une centrale nucléaire aux Émirats",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.bfmtv.com/international/moyen-orient/iran/video-guerre-au-moyen-orient-les-negociations-dans-l-impasse_VN-202605170229.html",
+        "source": "BFMTV",
+        "title": "Guerre au Moyen-Orient: les négociations \"dans l'impasse\"",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.rfi.fr/fr/moyen-orient/20260517-en-direct-moyen-orient-un-incendie-proche-d-une-centrale-nucl%C3%A9aire-aux-%C3%A9mirats-arabes-unis-apr%C3%A8s-une-frappe-de-drone",
+        "source": "RFI",
+        "title": "[En direct] Moyen-Orient: Un incendie proche d'une centrale nucléaire aux Émirats arabes unis après une frappe de drone",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.bfmtv.com/international/moyen-orient/iran/video-emirats-arabes-unis-une-frappe-de-drone-pres-de-la-centrale-nucleaire-de-barakah-provoque-un-incendie_VN-202605170199.html",
+        "source": "BFMTV",
+        "title": "Émirats arabes unis: une frappe de drone près de la centrale nucléaire de Barakah provoque un incendie",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.la-croix.com/international/en-coree-du-sud-un-objecteur-de-conscience-face-a-l-armee-nulle-part-la-guerre-na-permis-dinstaurer-la-paix-20260517",
+        "source": "La Croix",
+        "title": "En Corée du Sud, un objecteur de conscience face à l’armée : « Nulle part la guerre n’a permis d’instaurer la paix »",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.lefigaro.fr/international/en-direct-apres-l-annonce-d-une-extension-de-45-jours-de-la-treve-avec-israel-le-liban-espere-obtenir-une-paix-durable-20260516",
+        "source": "Le Figaro",
+        "title": "EN DIRECT - Guerre au Moyen-Orient : incendie à Abu Dhabi après une frappe de drone près de la centrale nucléaire de Barakah",
+        "thumbnail": ""
+      }
+    ],
+    "sessionLabel": "17/05/2026 à 17:09:48",
+    "controversyLevel": "fort",
+    "leftScore": 7,
+    "ai": {
+      "arenaMode": "positions",
+      "debateScore": 8,
+      "controversyLevel": "fort",
+      "debateQuestion": "",
+      "resume": "",
+      "keywords": [
+        "Iran",
+        "États-Unis",
+        "Émirats arabes unis",
+        "centrale nucléaire de Barakah",
+        "frappes de drone",
+        "Liban",
+        "négociations diplomatiques",
+        "guerre au Moyen-Orient"
+      ],
+      "selectedLinks": [
+        "https://www.liberation.fr/international/moyen-orient/incendie-pres-dune-centrale-nucleaire-aux-emirats-frappes-israeliennes-au-liban-lactu-de-la-guerre-au-moyen-orient-ce-dimanche-17-mai-20260517_GWE2RZI67BAYRPE7SLZ77YMREQ/",
+        "https://www.huffingtonpost.fr/politique/article/presidentielle-gabriel-attal-appele-a-se-presenter-par-500-elus-locaux-dans-la-tribune-dimanche_263802.html",
+        "https://www.bfmtv.com/international/moyen-orient/une-frappe-de-drone-provoque-un-incendie-pres-d-une-centrale-nucleaire-aux-emirats-arabes-unis_AP-202605170245.html",
+        "https://www.bfmtv.com/international/moyen-orient/iran/video-guerre-au-moyen-orient-une-frappe-a-proximite-d-une-centrale-nucleaire-aux-emirats_VN-202605170238.html",
+        "https://www.bfmtv.com/international/moyen-orient/iran/video-guerre-au-moyen-orient-les-negociations-dans-l-impasse_VN-202605170229.html",
+        "https://www.rfi.fr/fr/moyen-orient/20260517-en-direct-moyen-orient-un-incendie-proche-d-une-centrale-nucl%C3%A9aire-aux-%C3%A9mirats-arabes-unis-apr%C3%A8s-une-frappe-de-drone",
+        "https://www.bfmtv.com/international/moyen-orient/iran/video-emirats-arabes-unis-une-frappe-de-drone-pres-de-la-centrale-nucleaire-de-barakah-provoque-un-incendie_VN-202605170199.html",
+        "https://www.la-croix.com/international/en-coree-du-sud-un-objecteur-de-conscience-face-a-l-armee-nulle-part-la-guerre-na-permis-dinstaurer-la-paix-20260517",
+        "https://www.lefigaro.fr/international/en-direct-apres-l-annonce-d-une-extension-de-45-jours-de-la-treve-avec-israel-le-liban-espere-obtenir-une-paix-durable-20260516"
+      ],
+      "agonTheme": "Politique, économie et relations internationales",
+      "positionA": "",
+      "positionB": "",
+      "leftScore": 7,
+      "storyLink": {
+        "story_decision": "existing_story",
+        "matched_story_id": "01-les-conflits-au-moyen-orient-recomposent-les-equilibres-regionaux",
+        "matched_story_title": "Les conflits au Moyen-Orient recomposent les équilibres régionaux",
+        "matched_story_summary": "",
+        "previous_episode_id": "",
+        "previous_episode_title": "",
+        "previous_episode_summary": "",
+        "previous_episode_url": "",
+        "confidence": 0.9,
+        "reason": "L'actualité porte sur des événements militaires et diplomatiques impliquant l'Iran, les États-Unis, les Émirats, et le Liban, tous situés au Moyen-Orient, ce qui correspond clairement à la recomposition des équilibres régionaux dans cette zone.",
+        "criteria": {
+          "main_actors_match": true,
+          "central_tension_match": true,
+          "temporal_continuity": true,
+          "editorial_theme_match": true,
+          "strong_keywords_match": true
+        },
+        "new_story": {
+          "story_title": "",
+          "story_summary": "",
+          "main_actors": [
+            "negociations",
+            "iran",
+            "etats"
+          ],
+          "central_tension": "Négociations entre l’Iran et les Etats-Unis, incendie près d’une centrale aux Emirats, frappes au Liban… L’actu de la guerre au Moyen-Orien…",
+          "keywords": [
+            "negociations",
+            "iran",
+            "etats",
+            "unis",
+            "incendie",
+            "pres",
+            "centrale",
+            "emirats"
+          ],
+          "status": "active"
+        }
+      },
+      "sourceSubject": "Négociations entre l’Iran et les Etats-Unis, incendie près d’une centrale aux Emirats, frappes au Liban… L’actu de la guerre au Moyen-Orient ce dimanche 17 mai",
+      "fullArticleState": "short"
+    }
+  },
+  {
+    "action": "save",
+    "subject": "Présidentielle 2027 : Yannick Jadot affirme que « tout le monde a abandonné » l’idée d’une primaire à gauche, « chez les écologistes comme au PS »",
+    "debateScore": 7,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "Le Monde, Libération",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.liberation.fr/politique/elections/qui-sont-les-candidats-a-la-primaire-de-gauche-dont-la-tenue-est-compromise-20260517_GV5DXCJCBFBXZDXNKDDHWL4KLA/",
+        "source": "Libération",
+        "title": "Qui sont les candidats à la primaire de gauche, dont la tenue est compromise ?",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.lemonde.fr/politique/article/2026/05/17/presidentielle-2027-yannick-jadot-affirme-que-tout-le-monde-a-abandonne-l-idee-d-une-primaire-a-gauche-chez-les-ecologistes-comme-au-ps_6690227_823448.html",
+        "source": "Le Monde",
+        "title": "Présidentielle 2027 : Yannick Jadot affirme que « tout le monde a abandonné » l’idée d’une primaire à gauche, « chez les écologistes comme au PS »",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.liberation.fr/idees-et-debats/tribunes/lettre-ouverte-au-president-du-senegal-ce-climat-de-haine-et-de-violence-contre-les-homosexuels-est-en-contradiction-avec-le-panafricanisme-de-gauche-20260517_FTMXJBQNSZF75FPIXF2VL36ABI/",
+        "source": "Libération",
+        "title": "Lettre ouverte au président du Sénégal : «Ce climat de haine et de violence contre les homosexuels est en contradiction avec le panafricanisme de gauche»",
+        "thumbnail": ""
+      }
+    ],
+    "sessionLabel": "17/05/2026 à 17:09:48",
+    "controversyLevel": "fort",
+    "leftScore": 8,
+    "ai": {
+      "arenaMode": "positions",
+      "debateScore": 7,
+      "controversyLevel": "fort",
+      "debateQuestion": "",
+      "resume": "",
+      "keywords": [
+        "Yannick Jadot",
+        "primaire à gauche",
+        "écologistes",
+        "Parti Socialiste",
+        "présidentielle 2027",
+        "gauche politique"
+      ],
+      "selectedLinks": [
+        "https://www.liberation.fr/politique/elections/qui-sont-les-candidats-a-la-primaire-de-gauche-dont-la-tenue-est-compromise-20260517_GV5DXCJCBFBXZDXNKDDHWL4KLA/",
+        "https://www.lemonde.fr/politique/article/2026/05/17/presidentielle-2027-yannick-jadot-affirme-que-tout-le-monde-a-abandonne-l-idee-d-une-primaire-a-gauche-chez-les-ecologistes-comme-au-ps_6690227_823448.html",
+        "https://www.liberation.fr/idees-et-debats/tribunes/lettre-ouverte-au-president-du-senegal-ce-climat-de-haine-et-de-violence-contre-les-homosexuels-est-en-contradiction-avec-le-panafricanisme-de-gauche-20260517_FTMXJBQNSZF75FPIXF2VL36ABI/"
+      ],
+      "agonTheme": "Politique, économie et relations internationales",
+      "positionA": "",
+      "positionB": "",
+      "leftScore": 8,
+      "storyLink": {
+        "story_decision": "existing_story",
+        "matched_story_id": "05-la-vie-politique-francaise-traverse-une-periode-d-instabilite-et-de-recompositio",
+        "matched_story_title": "La vie politique française traverse une période d’instabilité et de recomposition",
+        "matched_story_summary": "",
+        "previous_episode_id": "",
+        "previous_episode_title": "",
+        "previous_episode_summary": "",
+        "previous_episode_url": "",
+        "confidence": 0.85,
+        "reason": "L'actualité porte sur la primaire à gauche et les enjeux politiques en France, ce qui correspond précisément à la recomposition et instabilité de la vie politique française.",
+        "criteria": {
+          "main_actors_match": true,
+          "central_tension_match": true,
+          "temporal_continuity": true,
+          "editorial_theme_match": true,
+          "strong_keywords_match": true
+        },
+        "new_story": {
+          "story_title": "",
+          "story_summary": "",
+          "main_actors": [],
+          "central_tension": "Présidentielle 2027 : Yannick Jadot affirme que « tout le monde a abandonné » l’idée d’une primaire à gauche, « chez les écologistes comme…",
+          "keywords": [],
+          "status": "active"
+        }
+      },
+      "sourceSubject": "Présidentielle 2027 : Yannick Jadot affirme que « tout le monde a abandonné » l’idée d’une primaire à gauche, « chez les écologistes comme au PS »",
+      "fullArticleState": "short"
+    }
+  },
+  {
+    "action": "save",
+    "subject": "Les plaintes pour violences sexuelles contre Patrick Bruel \"seront regroupées\" au parquet de Nanterre, annonce la procureure de Paris",
+    "debateScore": 8,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "BFMTV, France 24, 20 Minutes",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.20minutes.fr/justice/4223839-20260517-affaire-patrick-bruel-plaintes-contre-chanteur-regroupees-parquet-nanterre?at_medium=display&at_campaign=149",
+        "source": "20 Minutes",
+        "title": "Affaire Patrick Bruel : Les plaintes contre le chanteur « seront regroupées » au parquet de Nanterre",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.france24.com/fr/france/20260517-affaire-epstein-une-dizaine-de-nouvelles-victimes-se-sont-manifest%C3%A9es-aupr%C3%A8s-du-parquet-de-paris",
+        "source": "France 24",
+        "title": "Affaire Epstein : \"une dizaine\" de nouvelles victimes se sont manifestées auprès du parquet de Paris",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.bfmtv.com/police-justice/les-plaintes-pour-violences-sexuelles-contre-patrick-bruel-seront-regroupees-au-parquet-de-nanterre-annonce-la-procureure-de-paris_AD-202605170200.html",
+        "source": "BFMTV",
+        "title": "Les plaintes pour violences sexuelles contre Patrick Bruel \"seront regroupées\" au parquet de Nanterre, annonce la procureure de Paris",
+        "thumbnail": ""
+      }
+    ],
+    "sessionLabel": "17/05/2026 à 17:09:48",
+    "controversyLevel": "fort",
+    "leftScore": 7,
+    "ai": {
+      "arenaMode": "positions",
+      "debateScore": 8,
+      "controversyLevel": "fort",
+      "debateQuestion": "",
+      "resume": "",
+      "keywords": [
+        "Patrick Bruel",
+        "parquet de Nanterre",
+        "procureure de Paris",
+        "violences sexuelles",
+        "plaintes regroupées",
+        "justice française"
+      ],
+      "selectedLinks": [
+        "https://www.20minutes.fr/justice/4223839-20260517-affaire-patrick-bruel-plaintes-contre-chanteur-regroupees-parquet-nanterre?at_medium=display&at_campaign=149",
+        "https://www.france24.com/fr/france/20260517-affaire-epstein-une-dizaine-de-nouvelles-victimes-se-sont-manifest%C3%A9es-aupr%C3%A8s-du-parquet-de-paris",
+        "https://www.bfmtv.com/police-justice/les-plaintes-pour-violences-sexuelles-contre-patrick-bruel-seront-regroupees-au-parquet-de-nanterre-annonce-la-procureure-de-paris_AD-202605170200.html"
+      ],
+      "agonTheme": "Société, éducation et justice",
+      "positionA": "",
+      "positionB": "",
+      "leftScore": 7,
+      "storyLink": {
+        "story_decision": "existing_story",
+        "matched_story_id": "54-les-grandes-affaires-judiciaires-et-mediatiques-deviennent-des-debats-de-societe",
+        "matched_story_title": "Les grandes affaires judiciaires et médiatiques deviennent des débats de société",
+        "matched_story_summary": "",
+        "previous_episode_id": "",
+        "previous_episode_title": "",
+        "previous_episode_summary": "",
+        "previous_episode_url": "",
+        "confidence": 0.85,
+        "reason": "L'actualité concerne des plaintes pour violences sexuelles regroupées au parquet, ce qui relève clairement d'une grande affaire judiciaire et médiatique.",
+        "criteria": {
+          "main_actors_match": true,
+          "central_tension_match": true,
+          "temporal_continuity": true,
+          "editorial_theme_match": true,
+          "strong_keywords_match": true
+        },
+        "new_story": {
+          "story_title": "",
+          "story_summary": "",
+          "main_actors": [],
+          "central_tension": "Les plaintes pour violences sexuelles contre Patrick Bruel \"seront regroupées\" au parquet de Nanterre, annonce la procureure de Paris",
+          "keywords": [],
+          "status": "active"
+        }
+      },
+      "sourceSubject": "Les plaintes pour violences sexuelles contre Patrick Bruel \"seront regroupées\" au parquet de Nanterre, annonce la procureure de Paris",
+      "fullArticleState": "short"
+    }
+  },
+  {
+    "action": "save",
+    "subject": "Guerre au Moyen-Orient : l'AIEA exprime \"sa profonde préoccupation\" après la frappe près d'une centrale nucléaire aux Emirats arabes unis",
+    "debateScore": 8,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "Franceinfo, L'Humanité, L'Obs",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.humanite.fr/monde/guerre-en-ukraine/guerre-en-ukraine-4-morts-500-drones-abattus-moscou-dit-avoir-subi-une-des-attaques-les-plus-massives-depuis-le-debut-du-conflit",
+        "source": "L'Humanité",
+        "title": "Guerre en Ukraine : 4 morts, 500 drones abattus… Moscou dit avoir subi une des attaques les plus massives depuis le début du conflit",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.nouvelobs.com/monde/20260517.OBS115001/la-russie-attaquee-par-pres-de-600-drones-ukrainiens-en-riposte-a-des-frappes-meurtrieres-sur-kiev.html",
+        "source": "L'Obs",
+        "title": "La Russie attaquée par près de 600 drones ukrainiens, en riposte à des frappes meurtrières sur Kiev",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.franceinfo.fr/monde/europe/manifestations-en-ukraine/guerre-en-ukraine-la-russie-affirme-avoir-abattu-plus-de-500-drones-ukrainiens-dans-la-nuit-de-samedi-a-dimanche_8009489.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "title": "Guerre en Ukraine : la Russie a abattu près de 600 drones ukrainiens dans la nuit de samedi à dimanche, au moins trois morts dans la région de Moscou",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.franceinfo.fr/monde/iran/guerre-entre-les-etats-unis-israel-et-l-iran/direct-guerre-au-moyen-orient-c-etait-le-calme-avant-la-tempete-previent-donald-trump_8009534.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "title": "Guerre au Moyen-Orient : l'AIEA exprime \"sa profonde préoccupation\" après la frappe près d'une centrale nucléaire aux Emirats arabes unis",
+        "thumbnail": ""
+      }
+    ],
+    "sessionLabel": "17/05/2026 à 17:09:48",
+    "controversyLevel": "fort",
+    "leftScore": 7,
+    "ai": {
+      "arenaMode": "positions",
+      "debateScore": 8,
+      "controversyLevel": "fort",
+      "debateQuestion": "",
+      "resume": "",
+      "keywords": [
+        "AIEA",
+        "centrale nucléaire",
+        "Emirats arabes unis",
+        "frappe militaire",
+        "Moyen-Orient",
+        "sécurité nucléaire",
+        "conflit régional"
+      ],
+      "selectedLinks": [
+        "https://www.franceinfo.fr/monde/europe/manifestations-en-ukraine/guerre-en-ukraine-la-russie-affirme-avoir-abattu-plus-de-500-drones-ukrainiens-dans-la-nuit-de-samedi-a-dimanche_8009489.html#xtor=RSS-3-[lestitres]",
+        "https://www.franceinfo.fr/monde/iran/guerre-entre-les-etats-unis-israel-et-l-iran/direct-guerre-au-moyen-orient-c-etait-le-calme-avant-la-tempete-previent-donald-trump_8009534.html#xtor=RSS-3-[lestitres]"
+      ],
+      "agonTheme": "Politique, économie et relations internationales",
+      "positionA": "",
+      "positionB": "",
+      "leftScore": 7,
+      "storyLink": {
+        "story_decision": "existing_story",
+        "matched_story_id": "01-les-conflits-au-moyen-orient-recomposent-les-equilibres-regionaux",
+        "matched_story_title": "Les conflits au Moyen-Orient recomposent les équilibres régionaux",
+        "matched_story_summary": "",
+        "previous_episode_id": "",
+        "previous_episode_title": "",
+        "previous_episode_summary": "",
+        "previous_episode_url": "",
+        "confidence": 0.85,
+        "reason": "L'actualité concerne une frappe militaire près d'une centrale nucléaire aux Emirats arabes unis, un pays du Moyen-Orient, avec une implication de l'AIEA sur la sécurité nucléaire, ce qui correspond clairement aux conflits au Moyen-Orient et leurs impacts régionaux.",
+        "criteria": {
+          "main_actors_match": true,
+          "central_tension_match": true,
+          "temporal_continuity": true,
+          "editorial_theme_match": true,
+          "strong_keywords_match": true
+        },
+        "new_story": {
+          "story_title": "",
+          "story_summary": "",
+          "main_actors": [
+            "guerre",
+            "moyen",
+            "orient"
+          ],
+          "central_tension": "Guerre au Moyen-Orient : l'AIEA exprime \"sa profonde préoccupation\" après la frappe près d'une centrale nucléaire aux Emirats arabes unis",
+          "keywords": [
+            "guerre",
+            "moyen",
+            "orient",
+            "aiea",
+            "exprime",
+            "profonde",
+            "preoccupation",
+            "frappe"
+          ],
+          "status": "active"
+        }
+      },
+      "sourceSubject": "Guerre au Moyen-Orient : l'AIEA exprime \"sa profonde préoccupation\" après la frappe près d'une centrale nucléaire aux Emirats arabes unis",
+      "fullArticleState": "short"
+    }
+  },
+  {
+    "action": "save",
+    "subject": "Alors que Donald Trump affirme que l'économie américaine ne s'est jamais aussi bien portée, son vice-président JD Vance concède pourtant que le niveau d'inflation n'est \"pas génial\" aujourd'hui aux États-Unis",
+    "debateScore": 7,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "BFMTV, Slate France",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.slate.fr/monde/visite-donald-trump-pekin-nouvel-episode-majeur-relations-chine-etats-unis-rencontre-xi-jinping-sommet-histoire-diplomatie-taiwan-guerre-iran",
+        "source": "Slate France",
+        "title": "La visite de Donald Trump à Pékin, nouvel épisode majeur des relations entre la Chine et les États-Unis",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.bfmtv.com/economie/international/alors-que-donald-trump-affirme-que-l-economie-americaine-ne-s-est-jamais-aussi-bien-portee-son-vice-president-jd-vance-concede-pourtant-que-le-niveau-d-inflation-n-est-pas-genial-aujourd-hui-aux-etats-unis_AD-202605140103.html",
+        "source": "BFMTV",
+        "title": "Alors que Donald Trump affirme que l'économie américaine ne s'est jamais aussi bien portée, son vice-président JD Vance concède pourtant que le niveau d'inflation n'est \"pas génial\" aujourd'hui aux États-Unis",
+        "thumbnail": ""
+      }
+    ],
+    "sessionLabel": "14/05/2026 à 09:18:12",
+    "controversyLevel": "fort",
+    "leftScore": 6,
+    "ai": {
+      "arenaMode": "positions",
+      "debateScore": 7,
+      "controversyLevel": "fort",
+      "debateQuestion": "Trump vante l'économie US, Vance admet l'inflation : vérité ou déni politique ?",
+      "resume": "Donald Trump affirme que l'économie américaine est à son meilleur niveau, tandis que son vice-président JD Vance reconnaît que l'inflation reste problématique. Cette divergence met en lumière un débat sur la réalité économique aux États-Unis.\nLes derniers developpements convergent sur la meme ligne de force : La visite de Donald Trump à Pékin, nouvel épisode majeur des relations entre la Chine et les États-Unis. Alors que Donald Trump affirme que l'économie américaine ne s'est jamais aussi bien portée, son vice-président JD Vance concède pourtant que le niveau d'inflation n'est \"pas génial\" aujourd'hui aux États-Unis. Au-dela du fait brut, la sequence se durcit autour de Alors que Donald Trump affirme que l'économie américaine ne s'est jamais aussi bien portée, son vice-président JD Vance…. Politique, économie et relations internationales sert ici de toile de fond immediate a un rapport de force qui se tend.\nDerriere Alors que Donald Trump affirme que l'économie américaine ne s'est jamais aussi bien porté…, un test de credibilite grandeur nature vient de commencer.\nTrump vante l'économie US, Vance admet l'inflation : vérité ou déni politique ?",
+      "keywords": [
+        "Donald Trump",
+        "JD Vance",
+        "inflation",
+        "économie américaine",
+        "États-Unis"
+      ],
+      "selectedLinks": [
+        "https://www.slate.fr/monde/visite-donald-trump-pekin-nouvel-episode-majeur-relations-chine-etats-unis-rencontre-xi-jinping-sommet-histoire-diplomatie-taiwan-guerre-iran",
+        "https://www.bfmtv.com/economie/international/alors-que-donald-trump-affirme-que-l-economie-americaine-ne-s-est-jamais-aussi-bien-portee-son-vice-president-jd-vance-concede-pourtant-que-le-niveau-d-inflation-n-est-pas-genial-aujourd-hui-aux-etats-unis_AD-202605140103.html"
+      ],
+      "agonTheme": "Politique, économie et relations internationales",
+      "positionA": "L'économie américaine est solide et prospère",
+      "positionB": "L'inflation actuelle fragilise l'économie réelle",
+      "leftScore": 6,
+      "storyLink": {
+        "story_decision": "existing_story",
+        "matched_story_id": "04-la-presidence-trump-reconfigure-la-politique-americaine-et-les-relations-interna",
+        "matched_story_title": "La présidence Trump reconfigure la politique américaine et les relations internationales",
+        "matched_story_summary": "",
+        "previous_episode_id": "",
+        "previous_episode_title": "",
+        "previous_episode_summary": "",
+        "previous_episode_url": "",
+        "confidence": 0.78,
+        "reason": "Le sujet recoupe directement le titre d'une histoire existante, plus precise que les autres options.",
+        "criteria": {
+          "main_actors_match": true,
+          "central_tension_match": true,
+          "temporal_continuity": true,
+          "editorial_theme_match": true,
+          "strong_keywords_match": true
+        },
+        "new_story": {
+          "story_title": "",
+          "story_summary": "",
+          "main_actors": [
+            "alors",
+            "donald",
+            "trump"
+          ],
+          "central_tension": "Trump vante l'économie US, Vance admet l'inflation : vérité ou déni politique ?",
+          "keywords": [
+            "alors",
+            "donald",
+            "trump",
+            "affirme",
+            "economie",
+            "americaine",
+            "jamais",
+            "aussi"
+          ],
+          "status": "active"
+        }
+      },
+      "sourceSubject": "Alors que Donald Trump affirme que l'économie américaine ne s'est jamais aussi bien portée, son vice-président JD Vance concède pourtant que le niveau d'inflation n'est \"pas génial\" aujourd'hui aux États-Unis",
+      "fullArticleState": "short"
+    }
+  },
+  {
+    "action": "save",
+    "subject": "Donald Trump promet un \"avenir fabuleux\" aux relations avec la Chine, lors de sa rencontre avec Xi Jinping à Pékin",
+    "debateScore": 7,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "Franceinfo, BFMTV",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.bfmtv.com/international/moyen-orient/iran/direct-guerre-au-moyen-orient-en-chine-donald-trump-veut-faire-pression-sur-xi-jinping-pour-negocier-une-sortie-de-crise-dans-le-golfe_LN-202605140096.html",
+        "source": "BFMTV",
+        "title": "DIRECT. Guerre au Moyen-Orient: en Chine, Donald Trump veut faire pression sur Xi Jinping pour négocier une sortie de crise dans le Golfe",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.franceinfo.fr/monde/usa/presidentielle/donald-trump/donald-trump-promet-un-avenir-fabuleux-aux-relations-avec-la-chine-lors-de-sa-rencontre-avec-xi-jinping-a-pekin_8003399.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "title": "Donald Trump promet un \"avenir fabuleux\" aux relations avec la Chine, lors de sa rencontre avec Xi Jinping à Pékin",
+        "thumbnail": ""
+      }
+    ],
+    "sessionLabel": "14/05/2026 à 08:51:44"
+  },
+  {
+    "action": "save",
+    "subject": "\"Sarkozy a tiré les ficelles et distribué les rôles\" : le parquet général requiert 7 ans de prison contre l'ex-président",
+    "debateScore": 8,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "Marianne, BFMTV",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.bfmtv.com/police-justice/video-proces-libyen-en-appel-jean-yves-le-borgne-avocat-de-eric-woerth-indique-ne-pas-etre-surpris-des-requisitions-contre-nicolas-sarkozy_VN-202605130756.html",
+        "source": "BFMTV",
+        "title": "Procès libyen en appel: Jean-Yves Le Borgne, avocat de Éric Woerth, indique ne pas être \"surpris\" des réquisitions contre Nicolas Sarkozy",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.marianne.net/agora/entretiens-et-debats/mathieu-geagea-je-trouve-bien-triste-que-les-petits-fils-du-general-de-gaulle-envisagent-de-vendre-la-boisserie#utm_source=RSS-MARIANNE&utm_medium=Flux-Rss&utm_campaign=RSS_general",
+        "source": "Marianne",
+        "title": "Mathieu Geagea : \"Je trouve bien triste que les petits-fils du général de Gaulle envisagent de vendre La Boisserie\"",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.marianne.net/societe/police-et-justice/sarkozy-a-tire-les-ficelles-et-distribue-les-roles-le-parquet-general-requiert-7-ans-de-prison-contre-l-ex-president#utm_source=RSS-MARIANNE&utm_medium=Flux-Rss&utm_campaign=RSS_general",
+        "source": "Marianne",
+        "title": "\"Sarkozy a tiré les ficelles et distribué les rôles\" : le parquet général requiert 7 ans de prison contre l'ex-président",
+        "thumbnail": ""
+      }
+    ],
+    "sessionLabel": "13/05/2026 à 20:59:37"
+  },
+  {
+    "action": "save",
+    "subject": "Hantavirus : il n'y a \"probablement eu qu'un seul cas de transmission d'un animal à un humain\" ces dernières semaines, estime l'agence sanitaire de l'Union européenne",
+    "debateScore": 3,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "Franceinfo, HuffPost France",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.huffingtonpost.fr/france/article/doit-on-dire-le-hantavirus-ou-l-hantavirus-on-a-pose-la-question-a-une-specialiste-de-la-langue-francaise_263692.html",
+        "source": "HuffPost France",
+        "title": "Doit-on dire le hantavirus ou l’hantavirus ? On a posé la question à une spécialiste de la langue française",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.franceinfo.fr/faits-divers/hantavirus-declare-a-bord-d-un-navire-de-croisiere/direct-hantavirus-la-situation-est-sous-controle-selon-emmanuel-macron-une-francaise-toujours-hospitalisee-en-reanimation-dans-un-etat-grave_8001107.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "title": "Hantavirus : il n'y a \"probablement eu qu'un seul cas de transmission d'un animal à un humain\" ces dernières semaines, estime l'agence sanitaire de l'Union européenne",
+        "thumbnail": ""
+      }
+    ],
+    "sessionLabel": "13/05/2026 à 20:48:41"
+  },
+  {
+    "action": "save",
+    "subject": "\"Même l’huile est devenue une denrée rare\" : en Iran, l’inflation étrangle des millions d’habitants",
+    "debateScore": 6,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "Marianne, BFMTV",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.bfmtv.com/police-justice/je-suis-restee-sans-mot-sorti-de-prison-le-violeur-de-karine-brunet-jambu-va-s-installer-dans-la-meme-ville-qu-elle_AN-202605130696.html",
+        "source": "BFMTV",
+        "title": "\"Je suis restée sans mot\": sorti de prison, le violeur de Karine Brunet-Jambu va s'installer dans la même ville qu'elle",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.marianne.net/monde/proche-orient/meme-lhuile-est-devenue-une-denree-rare-en-iran-linflation-etrangle-des-millions-dhabitants#utm_source=RSS-MARIANNE&utm_medium=Flux-Rss&utm_campaign=RSS_general",
+        "source": "Marianne",
+        "title": "\"Même l’huile est devenue une denrée rare\" : en Iran, l’inflation étrangle des millions d’habitants",
+        "thumbnail": ""
+      }
+    ],
+    "sessionLabel": "13/05/2026 à 20:48:41"
+  },
+  {
+    "action": "save",
+    "subject": "EN DIRECT - Guerre au Moyen-Orient : le bilan des frappes israéliennes au Liban monte à neuf morts",
+    "debateScore": 8,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "Le Figaro, France 24",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.france24.com/fr/vid%C3%A9o/20260513-liban-des-frappes-isra%C3%A9liennes-font-12-morts-avant-des-pourparlers",
+        "source": "France 24",
+        "title": "Liban : des frappes israéliennes font 12 morts avant des pourparlers",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.lefigaro.fr/international/en-direct-guerre-moyen-orient-iran-israel-etats-unis-liban-benyamin-netanyahou-donald-trump-emirats-arabes-unis-detroit-ormuz-emmanuel-macron-nations-unies-20260513",
+        "source": "Le Figaro",
+        "title": "EN DIRECT - Guerre au Moyen-Orient : le bilan des frappes israéliennes au Liban monte à neuf morts",
+        "thumbnail": ""
+      }
+    ],
+    "sessionLabel": "13/05/2026 à 20:28:44"
+  },
+  {
+    "action": "save",
+    "subject": "Procès libyen en appel : le parquet général réclame 7 ans de prison à l’encontre de Nicolas Sarkozy",
+    "debateScore": 8,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "Libération, L'Humanité, Le Figaro, Brut",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.liberation.fr/societe/police-justice/proces-libyen-en-appel-le-parquet-general-reclame-7-ans-de-prison-a-lencontre-de-nicolas-sarkozy-20260513_HETMYHG4UVCMZAXUOFESO6Q2CA/",
+        "source": "Libération",
+        "title": "Procès libyen en appel : le parquet général réclame 7 ans de prison à l’encontre de Nicolas Sarkozy",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.humanite.fr/politique/claude-gueant/sept-ans-requis-contre-sarkozy-retour-a-la-case-prison",
+        "source": "L'Humanité",
+        "title": "Sept ans requis contre Sarkozy : retour à la case prison ?",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.lefigaro.fr/actualite-france/proces-libyen-l-accusation-requiert-de-nouveau-sept-ans-de-prison-contre-nicolas-sarkozy-20260513",
+        "source": "Le Figaro",
+        "title": "Procès du «financement libyen» : sept ans de prison requis en appel contre Nicolas Sarkozy",
+        "thumbnail": ""
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/shorts/5tKzcTWGDaI",
+        "source": "Brut",
+        "title": "Procès en appel du financement libyen : 7 ans de prison requis contre Nicolas Sarkozy",
+        "thumbnail": ""
+      }
+    ],
+    "sessionLabel": "13/05/2026 à 20:28:44"
+  },
+  {
+    "action": "save",
     "subject": "Guerre au Moyen-Orient : l'Iran écarte tout compromis après le rejet de sa proposition par Donal Trump",
     "debateScore": 8,
     "debateQuestion": "",

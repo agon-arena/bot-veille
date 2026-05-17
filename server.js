@@ -1,7 +1,10 @@
+require("dotenv").config();
+
 const express = require("express");
 const path = require("path");
 const fs = require("fs");
 const OpenAI = require("openai");
+const stringSimilarity = require("string-similarity");
 
 const app = express();
 app.use(express.json());
@@ -9,6 +12,7 @@ app.use(express.json());
 const PORT = process.env.PORT || 3000;
 const MIXTE_PASSWORD = process.env.MIXTE_PASSWORD || "";
 const AGON_URL = (process.env.AGON_URL || "http://localhost:3001").trim();
+const SENT_TO_AGON_FILE = path.join(__dirname, "sent-to-agon.json");
 const openai = process.env.OPENAI_API_KEY
   ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
   : null;
@@ -17,6 +21,65 @@ function buildAgonDebateUrl(debateId) {
   const normalizedId = String(debateId || "").trim();
   if (!normalizedId) return "";
   return `${AGON_URL.replace(/\/$/, "")}/debate?id=${encodeURIComponent(normalizedId)}`;
+}
+
+function loadSentToAgonItems() {
+  if (!fs.existsSync(SENT_TO_AGON_FILE)) return [];
+  try {
+    return JSON.parse(fs.readFileSync(SENT_TO_AGON_FILE, "utf8"));
+  } catch {
+    return [];
+  }
+}
+
+function saveSentToAgonItems(items) {
+  fs.writeFileSync(SENT_TO_AGON_FILE, JSON.stringify(items, null, 2), "utf8");
+}
+
+function safeJsonParse(text) {
+  const raw = String(text || "").trim();
+  if (!raw) throw new Error("Réponse IA vide.");
+
+  try {
+    return JSON.parse(raw);
+  } catch (error) {
+    const fenced = raw.match(/```(?:json)?\s*([\s\S]*?)```/i);
+    const candidate = fenced ? fenced[1] : (raw.match(/\{[\s\S]*\}/)?.[0] || "");
+
+    if (candidate) {
+      return JSON.parse(candidate);
+    }
+
+    throw error;
+  }
+}
+
+function upsertSentToAgonItem(payload) {
+  const subject = String(payload?.subject || "").trim();
+  const question = String(payload?.question || "").trim();
+  if (!subject && !question) {
+    throw new Error("Sujet ou question manquants pour l’historique Agôn.");
+  }
+
+  const items = loadSentToAgonItems();
+  const key = question || subject;
+  const existingIndex = items.findIndex((item) => String(item.question || item.subject || "").trim() === key);
+  const nextItem = {
+    ...(existingIndex !== -1 ? items[existingIndex] : {}),
+    ...payload,
+    subject,
+    question,
+    sentAt: payload?.sentAt || new Date().toISOString()
+  };
+
+  if (existingIndex !== -1) {
+    items[existingIndex] = nextItem;
+  } else {
+    items.unshift(nextItem);
+  }
+
+  saveSentToAgonItems(items);
+  return nextItem;
 }
 
 function normalizeStoryText(value) {
@@ -82,107 +145,121 @@ function buildFallbackStoryTitle(subject, theme) {
   return themeMap[normalizedTheme] || "Actualité en cours";
 }
 
-function buildFallbackStorySummary(subject, resume) {
-  const base = String(resume || "").trim() || String(subject || "").trim();
-  return limitStoryText(base || "Histoire en cours à suivre dans ses développements successifs.", 320);
+function buildSourceFacts(payload, maxItems = 5) {
+  const items = Array.isArray(payload?.contents) ? payload.contents : [];
+  return items
+    .map((item) => {
+      const title = String(item?.title || "").trim();
+      if (!title) return "";
+      const cleanedTitle = title
+        .replace(/^\[\s*direct\s*\]\s*/i, "")
+        .replace(/^direct\s*[-: ]\s*/i, "")
+        .replace(/\s+/g, " ")
+        .trim();
+      if (!cleanedTitle) return "";
+      return /[.!?]$/.test(cleanedTitle) ? cleanedTitle : `${cleanedTitle}.`;
+    })
+    .filter(Boolean)
+    .slice(0, maxItems);
 }
 
-function buildStableStoryLine(payload, storySuggestion) {
-  const storySummary = String(
-    storySuggestion?.matched_story_summary
-      || storySuggestion?.new_story?.story_summary
-      || payload.storySummaryOverride
-      || payload.ai?.resume
-      || ""
-  ).trim();
+function ensureNarrativeLength(text, payload, minLength = 600) {
+  let value = String(text || "").trim();
+  if (!value) return value;
+  if (value.length >= minLength) return value;
 
-  if (storySummary) {
-    return limitStoryText(storySummary, 320);
+  const resume = String(payload?.ai?.resume || "").trim();
+  const subject = String(payload?.subject || "").trim();
+  const theme = String(payload?.ai?.agonTheme || "").trim();
+  const facts = buildSourceFacts(payload, 6);
+  const expansions = [
+    resume && !value.includes(resume) ? resume : "",
+    facts.length ? `Plusieurs developpements convergent deja sur le meme point : ${facts.join(" ")}` : "",
+    subject && !value.includes(subject) ? `Au coeur de cette sequence, ${subject}.` : "",
+    theme ? `Cette actualite s'inscrit dans ${theme.toLowerCase()}, avec des effets qui peuvent vite depasser l'evenement du jour.` : ""
+  ].filter(Boolean);
+
+  for (const extra of expansions) {
+    if (value.length >= minLength) break;
+    if (!extra) continue;
+    value = `${value}
+${limitStoryText(extra, 900)}`.trim();
   }
 
-  return limitStoryText(`Le sujet met aux prises ${payload.sources?.slice(0, 2).join(" et ") || "plusieurs acteurs"} autour d'une tension encore mouvante, dont les épisodes successifs peuvent reconfigurer le rapport de force.`, 320);
+  return value;
 }
 
 function buildFallbackClosingLine(payload, storySuggestion) {
-  const theme = String(payload.ai?.agonTheme || "").trim();
+  const isPositionsArena = String(payload?.ai?.arenaMode || "").trim() === "positions";
+  const subject = String(payload?.subject || "").trim();
+  const theme = String(payload?.ai?.agonTheme || "").trim();
 
-  const candidates = [
-    theme ? `Ce nouvel episode peut-il faire basculer ${theme.toLowerCase()} ?` : "",
-    "Ce nouvel episode peut-il rebattre les cartes dans les prochains jours ?",
-    "Cette sequence peut-elle fragiliser l'un des acteurs centraux ?",
-    "Qui sortira reellement affaibli de cette nouvelle etape ?"
-  ].map((item) => String(item || "").trim()).filter(Boolean);
+  const positionCandidates = [
+    subject ? `La contradiction ouverte autour de ${limitStoryText(subject.replace(/[?!.]+$/g, ""), 90)} ne fait que commencer.` : "",
+    theme ? `${theme} entre dans une phase plus delicate.` : "",
+    "Le point de rupture politique est peut-etre plus proche qu'il n'y parait."
+  ];
 
-  return limitStoryText(candidates[0], 160);
+  const libreCandidates = [
+    subject ? `Jusqu'ou cette secousse autour de ${limitStoryText(subject.replace(/[?!.]+$/g, ""), 90)} peut-elle aller ?` : "",
+    theme ? `Jusqu'ou ${theme.toLowerCase()} peut-il etre bouscule par cette nouvelle sequence ?` : "",
+    "Ce nouvel episode peut-il faire bouger le rapport de force ?"
+  ];
+
+  const candidates = (isPositionsArena ? positionCandidates : libreCandidates)
+    .map((item) => String(item || "").trim())
+    .filter(Boolean);
+
+  return limitStoryText(candidates[0] || "La sequence vient de prendre un tour plus expose.", 160);
 }
 
 function buildFallbackNarrativeContext(payload, storySuggestion) {
-  const previousEpisode = String(storySuggestion?.previous_episode_summary || "").trim();
-  const latestEvent = String(payload.ai?.resume || payload.subject || "").trim();
-  const historyLine = buildStableStoryLine(payload, storySuggestion);
+  const latestEvent = String(payload?.ai?.resume || payload?.subject || "").trim();
+  const subject = String(payload?.subject || "").trim();
   const opening = buildFallbackClosingLine(payload, storySuggestion);
-  const isFirstEpisode = !previousEpisode && String(storySuggestion?.story_decision || "").trim() === "new_story";
-  const normalizedPrevious = previousEpisode
-    ? limitStoryText(previousEpisode, 180).replace(/^Épisode précédent\s*:\s*/i, "")
-    : "";
-  let latestLine = latestEvent
-    ? limitStoryText(latestEvent, 1000)
-    : limitStoryText(String(payload.subject || "").trim(), 1000);
+  const facts = buildSourceFacts(payload, 3);
+  const isPositionsArena = String(payload?.ai?.arenaMode || "").trim() === "positions";
+  const debateQuestion = String(payload?.ai?.debateQuestion || "").trim();
 
-  if (latestLine && historyLine) {
-    const compactLatest = latestLine.toLowerCase();
-    const compactHistory = historyLine.toLowerCase();
-    if (compactLatest === compactHistory || compactLatest.startsWith(compactHistory)) {
-      latestLine = limitStoryText(String(payload.subject || latestEvent || "").trim(), 800);
-    }
-  }
-
-  const parts = [
-    isFirstEpisode ? "" : `L’histoire jusqu’ici : ${historyLine}`,
-    normalizedPrevious,
-    latestLine.replace(/^Nouvel épisode\s*:\s*/i, ""),
-    limitStoryText(opening, 160)
+  const paragraphParts = [
+    latestEvent ? latestEvent.replace(/^Nouvel épisode\s*:\s*/i, "") : "",
+    facts.length ? `Les sources convergent surtout sur ceci : ${facts.join(" ")}` : "",
+    subject && !latestEvent ? `Le coeur du sujet reste ${subject}.` : ""
   ].filter(Boolean);
-  return parts.join("\n");
+
+  const articleBody = limitStoryText(paragraphParts.join(" "), 760);
+  const lines = [articleBody];
+  if (opening) lines.push(limitStoryText(opening, 160));
+  if (isPositionsArena && debateQuestion) lines.push(debateQuestion);
+
+  const base = lines.filter(Boolean).join("\n");
+  return sanitizeNarrativeText(ensureNarrativeLength(base, payload, 600), { payload });
 }
 
 async function generateNarrativeContext(payload, storySuggestion) {
-  const historyLine = buildStableStoryLine(payload, storySuggestion);
-  const isFirstEpisode = !String(storySuggestion?.previous_episode_summary || "").trim()
-    && String(storySuggestion?.story_decision || "").trim() === "new_story";
-  const fallback = buildFallbackNarrativeContext({
-    ...payload,
-    storySummaryOverride: historyLine
-  }, storySuggestion);
+  const fallback = buildFallbackNarrativeContext(payload, storySuggestion);
 
   if (!openai) {
-    return fallback;
+    return ensureNarrativeLength(fallback, payload, 600);
   }
-
-  const previousEpisode = String(storySuggestion?.previous_episode_summary || "").trim();
 
   const prompt = `
 Tu es un redacteur d'actualite narrative.
 
 Ta mission :
-Transformer une actualite en episode court d'une histoire suivie.
+Transformer une actualite en court article de contexte vivant et serieux.
 
 Objectif :
-Rendre l'actualite palpitante mais serieuse. Le lecteur doit avoir l'impression de suivre une serie du reel : une histoire avance, un nouvel episode vient de tomber, et la suite donne envie d'etre suivie.
+Rendre l'actualite palpitante mais serieuse. Le lecteur doit sentir une tension reelle et avoir envie de suivre la suite, sans ton depeche et sans dramatisation artificielle.
 
 Important :
 Que l'arene finale soit une arene libre ou une arene a positions, tu rediges toujours ce contexte sous la meme forme narrative.
-${isFirstEpisode ? "Ici, il s'agit du tout premier episode d'une nouvelle histoire. N'ecris donc pas de rappel du type \"L’histoire jusqu’ici\" et n'invente pas d'episodes anterieurs." : ""}
+Au moment de cette generation, tu ne fais jamais de recapitulatif d'histoire, meme si une histoire associee existe. Tu te concentres uniquement sur l'actualite du jour.
+${String(payload?.ai?.arenaMode || "").trim() === "positions" ? `Comme il s'agit d'une arene a positions, la penultieme ligne doit etre palpitante et tendue, sans point d'interrogation, puis la toute derniere ligne doit etre exactement ce titre, mot pour mot : ${payload.ai?.debateQuestion || ""}` : ""}
 
 Regle absolue :
 Le suspense doit venir uniquement des faits, des tensions reelles, des rapports de force et des incertitudes verifiables.
 Ne jamais inventer, exagerer, dramatiser artificiellement ou faire du putaclic.
-
-L'histoire jusqu'ici (a conserver tel quel, sans le reecrire) :
-${historyLine}
-
-Episode precedent :
-${previousEpisode || "Pas d'episode precedent confirme."}
 
 Nouvel episode :
 ${JSON.stringify({
@@ -200,21 +277,24 @@ ${JSON.stringify({
 }, null, 2)}
 
 Reponds uniquement en texte brut, sans puces, sous cette structure exacte :
-[un premier paragraphe tres court, sans label, qui rappelle discretement ce qui s'etait passe juste avant]
-[un deuxieme paragraphe, sans label, qui raconte ce qui vient de changer maintenant]
-[une derniere phrase seule, sans label, qui sert de chute et donne envie de suivre la suite]
+[un paragraphe principal tres coherent qui compare les sources et resume le sujet]
+[une phrase de bascule courte]
+${String(payload?.ai?.arenaMode || "").trim() === "positions" ? "[puis, sur sa propre ligne, le titre genere par IA exactement, mot pour mot]" : ""}
 
 Consignes de redaction :
-- Ne reecris jamais "L’histoire jusqu’ici". Cette ligne sera injectee telle quelle a partir du resume d'histoire deja valide.
-- Si c'est le tout premier episode d'une nouvelle histoire, ne commence pas par "L’histoire jusqu’ici" : entre directement dans l'actualite.
-- Cette ligne doit etre comprise comme un resume cumule de l'histoire depuis le debut, en 2 ou 3 lignes maximum, construit a partir des episodes precedents deja analyses.
+- N'ecris jamais "L’histoire jusqu’ici", "Épisode précédent", "Nouvel épisode" ni aucune autre etiquette equivalente.
 - N'utilise jamais dans les paragraphes des formulations meta comme "aucune continuite narrative", "aucun episode rattache", "pas d'episode precedent confirme" ou tout autre commentaire de systeme.
-- Ne repete pas le contenu de "L’histoire jusqu’ici" dans les paragraphes suivants : ils doivent apporter du mouvement, pas redire le socle.
-- Premier paragraphe : 2 lignes maximum. Resume tres brievement ce qui s'etait passe juste avant, sans ecrire "Épisode précédent". S'il n'y a pas vraiment d'episode precedent etabli, saute ce paragraphe au lieu de commenter cette absence.
-- Le contexte complet doit faire entre 400 et 1000 caracteres environ.
-- Deuxieme paragraphe : c'est le coeur du texte. Raconte le nouvel article comme la suite logique de l'histoire : contexte immediat, evenement, acteurs, tension, ce qui change, sans ecrire "Nouvel épisode".
-- Termine par une seule phrase courte, sans label visible, qui fait office de cliffhanger factuel.
-- Cette derniere phrase doit idealement prendre la forme d'une question breve et tendue, du type : "Cela va-t-il affaiblir Glucksmann ?", "Qui sort fragilise de cette sequence ?", "Ce nouvel episode peut-il faire basculer le rapport de force ?"
+- N'introduis aucun rappel d'histoire precedente.
+- Tu dois d'abord comparer les sources entre elles, repérer ce qu'elles confirment en commun, puis faire ressortir la contradiction, la nuance ou la tension principale.
+- Tu rediges un vrai article synthetique et coherent, pas une note de veille, pas une fiche de synthese et pas une juxtaposition de titres.
+- N'ecris jamais des phrases comme "BFMTV met en avant...", "Franceinfo rapporte que...", "selon tel media..." ou toute enumeration de sources, sauf si la source elle-meme est indispensable a l'information.
+- Fond les informations convergentes des sources dans une prose continue, naturelle et serree.
+- Ne recopie pas les titres des articles tels quels : transforme-les en recit.
+- Le coeur du texte est un seul paragraphe dense, clair et logique.
+- Le contexte complet doit viser environ 600 caracteres, avec une marge raisonnable autour de cette taille.
+- La phrase de bascule doit rester courte.
+- Si le mode est "arene libre", cette derniere phrase peut prendre la forme d'une question breve et tendue.
+- Si le mode est "arene a positions", la phrase de bascule doit rester sans question, puis la toute derniere ligne doit etre exactement le titre genere par IA, mot pour mot.
 - Interdiction d'utiliser des tournures molles ou mecaniques comme "La suite se jouera maintenant...", "Tout se joue desormais..." ou "Le prochain mouvement dira si..."
 
 Contraintes :
@@ -227,13 +307,264 @@ Contraintes :
 - eviter les formules vagues du type "affaire a suivre" ;
 - utiliser des verbes d'action ;
 - distinguer les faits confirmes des hypotheses ;
-- priorite au nouvel episode : les rappels doivent rester tres courts ;
+- priorite absolue a l'actualite du jour ;
 - si une information manque, rester vague plutot que completer ;
-- le deuxieme paragraphe doit rester le morceau le plus developpe ;
-- vise un texte sensiblement plus developpe qu'avant, avec plus de chair factuelle, tant que tu restes sous 1000 caracteres environ ;
-- la derniere phrase doit etre plus palpitante que descriptive, avec une vraie sensation de bascule imminente, mais toujours fondee sur des faits et sans exageration ;
-- privilegie pour la derniere phrase une formulation interrogative courte, concrete et memorisable ;
-- n'ecris jamais les mots "Ouverture", "Épisode précédent" ou "Nouvel épisode" dans le texte final.
+- fais sentir le sujet et son enjeu, mais sans gonfler artificiellement le ton ;
+- la phrase finale doit etre plus memorisable que generique ;
+- n'ecris jamais les mots "Ouverture", "Épisode précédent", "Nouvel épisode" ou "L’histoire jusqu’ici" dans le texte final.
+- si le mode est "arene a positions", la penultieme ligne ne doit jamais etre une vraie question ;
+- si le mode est "arene a positions", termine toujours par le titre-question, exactement ;
+`;
+
+  try {
+    const response = await openai.responses.create({
+      model: "gpt-4.1-mini",
+      input: prompt,
+      temperature: 0.35,
+      max_output_tokens: 1500
+    });
+    const tail = String(response.output_text || "").trim();
+    if (!tail) return ensureNarrativeLength(fallback, payload, 600);
+    const enrichedTail = ensureNarrativeLength(tail, payload, 600);
+    const polishedTail = await polishNarrativeForm(enrichedTail, payload);
+    const finalTail = ensureNarrativeLength(polishedTail || enrichedTail, payload, 600);
+    return sanitizeNarrativeText(finalTail, { payload });
+  } catch (error) {
+    return ensureNarrativeLength(fallback, payload, 600);
+  }
+}
+
+async function polishNarrativeForm(baseText, payload) {
+  const draft = String(baseText || "").trim();
+  if (!draft) return draft;
+  if (!openai) return draft;
+
+  const isPositionsArena = String(payload?.ai?.arenaMode || "").trim() === "positions";
+  const debateQuestion = String(payload?.ai?.debateQuestion || "").trim();
+
+  const prompt = `
+Tu es un redacteur charge uniquement d'ameliorer la forme d'un article deja ecrit.
+
+Mission :
+- garder strictement le meme fond ;
+- ne rien inventer ;
+- ne rien retirer d'important ;
+- rendre le texte plus fluide, plus naturel, plus vivant et plus elegant ;
+- conserver un article court et coherent ;
+- conserver une longueur finale d'au moins 600 caracteres si le texte de depart les atteint deja.
+
+Interdictions absolues :
+- ne pas ajouter d'information nouvelle ;
+- ne pas transformer le texte en note ou en liste ;
+- ne pas ajouter "selon tel media", "X met en avant", ou toute couture de veille ;
+- ne pas ajouter de recapitulatif d'histoire ;
+- ne pas finir par une question si la phrase de bascule ne doit pas en etre une.
+
+${isPositionsArena ? `Comme il s'agit d'une arene a positions, l'avant-derniere ligne doit rester non interrogative, puis la derniere ligne doit etre exactement : ${debateQuestion}` : ""}
+
+Texte a retravailler :
+${draft}
+
+Reecris uniquement le texte final en texte brut.`;
+
+  try {
+    const response = await openai.responses.create({
+      model: "gpt-4.1-mini",
+      input: prompt,
+      temperature: 0.2,
+      max_output_tokens: 1200
+    });
+    return String(response.output_text || "").trim() || draft;
+  } catch (error) {
+    return draft;
+  }
+}
+
+function buildStoryHistoryLine(story) {
+  const summary = String(story?.story_summary || "").trim();
+  if (summary) return limitStoryText(summary, 320);
+  const latest = String(story?.latest_episode_summary || "").trim();
+  if (latest) return limitStoryText(latest, 220);
+  return "";
+}
+
+function sanitizeNarrativeText(text, options = {}) {
+  const allowHistoryLine = Boolean(options.allowHistoryLine);
+  const injectedHistoryLine = String(options.historyLine || "").trim();
+  const normalizedInjectedHistory = injectedHistoryLine
+    ? `L’histoire jusqu’ici : ${injectedHistoryLine}`
+    : "";
+  const payload = options.payload || null;
+
+  const lines = String(text || "")
+    .split(/\n+/)
+    .map((line) => String(line || "").trim())
+    .filter(Boolean);
+
+  const cleanedLines = [];
+  let historyLineAlreadyKept = false;
+
+  lines.forEach((line) => {
+    const normalized = line.replace(/\s+/g, " ").trim();
+    const lower = normalized.toLowerCase();
+
+    if (
+      lower.startsWith("jusqu'ici, aucun") ||
+      lower.startsWith("jusqu’ici, aucun") ||
+      lower.startsWith("aucune histoire associee") ||
+      lower.startsWith("aucune histoire associée") ||
+      lower.startsWith("aucun article precedent") ||
+      lower.startsWith("aucun article précédent") ||
+      lower.startsWith("pas d'episode precedent") ||
+      lower.startsWith("pas d’épisode précédent")
+    ) {
+      return;
+    }
+
+    if (lower.startsWith("l’histoire jusqu’ici :") || lower.startsWith("l'histoire jusqu'ici :")) {
+      if (!allowHistoryLine || historyLineAlreadyKept) {
+        return;
+      }
+      historyLineAlreadyKept = true;
+      cleanedLines.push(normalizedInjectedHistory || normalized);
+      return;
+    }
+
+    cleanedLines.push(normalized);
+  });
+
+  if (allowHistoryLine && normalizedInjectedHistory) {
+    const existingIndex = cleanedLines.findIndex((line) => {
+      const lower = line.toLowerCase();
+      return lower.startsWith("l’histoire jusqu’ici :") || lower.startsWith("l'histoire jusqu'ici :");
+    });
+    if (existingIndex === -1) {
+      cleanedLines.unshift(normalizedInjectedHistory);
+    } else {
+      cleanedLines[existingIndex] = normalizedInjectedHistory;
+    }
+  }
+
+  const isPositionsArena = String(payload?.ai?.arenaMode || "").trim() === "positions";
+  const debateQuestion = String(payload?.ai?.debateQuestion || "").trim();
+  if (isPositionsArena && debateQuestion) {
+    const normalizedLines = cleanedLines.filter((line) => line !== debateQuestion);
+    const finalCliff = buildFallbackClosingLine(payload, null);
+    const lastLine = normalizedLines[normalizedLines.length - 1] || "";
+
+    if (!normalizedLines.length) {
+      normalizedLines.push(finalCliff);
+    } else if (/[?]$/.test(lastLine)) {
+      normalizedLines[normalizedLines.length - 1] = finalCliff;
+    }
+
+    normalizedLines.push(debateQuestion);
+    return normalizedLines.join("\n").trim();
+  }
+
+  return cleanedLines.join("\n").trim();
+}
+
+function buildFullArticleFallback(payload, story) {
+  const parts = [];
+  const historyLine = buildStoryHistoryLine(story);
+  const previousEpisode = String(story?.latest_episode_summary || "").trim();
+  const latestEvent = String(payload.ai?.resume || payload.subject || "").trim();
+  const opening = buildFallbackClosingLine(payload, story ? { story_decision: "existing_story" } : null);
+
+  if (historyLine) {
+    parts.push(`L’histoire jusqu’ici : ${historyLine}`);
+  }
+  if (previousEpisode) {
+    parts.push(limitStoryText(previousEpisode, 320));
+  }
+  if (latestEvent) {
+    parts.push(limitStoryText(latestEvent, 1600));
+  }
+  if (opening) {
+    parts.push(limitStoryText(opening, 220));
+  }
+  return sanitizeNarrativeText(parts.filter(Boolean).join("\n"), {
+    allowHistoryLine: Boolean(historyLine),
+    historyLine,
+    payload
+  });
+}
+
+async function generateCompleteNarrativeContext(payload, storySelection) {
+  function cleanSummarySourceTitle(title) {
+    return String(title || "")
+      .replace(/\s*[•|-]\s*[A-Z0-9À-Ÿ'’ ]{2,}$/g, "")
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
+  const selectedContents = (Array.isArray(payload?.contents) ? payload.contents : [])
+    .map((item) => ({
+      source: String(item?.source || "").trim(),
+      title: cleanSummarySourceTitle(item?.title || ""),
+      type: String(item?.type || "article").trim(),
+      url: String(item?.link || item?.url || "").trim(),
+      summary: String(item?.summary || "").trim(),
+      date: String(item?.date || "").trim()
+    }))
+    .filter((item) => item.title || item.url);
+
+  if (!selectedContents.length) {
+    throw new Error("Aucune source sélectionnée pour générer le compte rendu.");
+  }
+
+  if (!openai) {
+    throw new Error("OPENAI_API_KEY manquant pour générer le résumé.");
+  }
+
+  const prompt = `
+Tu es un analyste éditorial.
+
+Ta mission :
+Rédiger un compte rendu clair du sujet à partir des sources sélectionnées uniquement.
+
+Objectif :
+Résumer ce qui se passe et montrer ce que les sources confirment ensemble.
+
+Règle de cadrage prioritaire :
+- Tu dois d'abord identifier le sujet principal à partir du champ "Sujet".
+- Le compte rendu doit parler uniquement de ce sujet principal.
+- Les sources sélectionnées peuvent contenir du bruit, des titres voisins ou des informations parallèles sur les mêmes personnes.
+- Ignore entièrement toute information qui ne concerne pas directement le sujet principal, même si elle apparaît dans une source sélectionnée.
+- Ne mentionne pas les éléments ignorés, même pour dire qu'ils sont "sans lien direct", "en parallèle" ou "dans l'agenda" d'un acteur.
+- Si une source contient à la fois une information centrale et une information périphérique, ne conserve que l'information centrale.
+- Ne transforme jamais un sujet secondaire en contexte du résumé.
+
+Sujet :
+${payload.subject || ""}
+
+Sources sélectionnées :
+${JSON.stringify({
+  contents: selectedContents.slice(0, 12).map((item) => ({
+    title: item.title,
+    type: item.type,
+    date: item.date,
+    summary: item.summary || ""
+  }))
+}, null, 2)}
+
+Consignes :
+- Réponds uniquement avec le compte rendu, en texte brut.
+- Longueur obligatoire : entre 800 et 1500 caractères.
+- Ne mets aucun titre.
+- Ne propose aucune position A/B.
+- Ne termine pas par le titre de l'arène.
+- N'ajoute pas de question de débat.
+- Base-toi uniquement sur les sources sélectionnées.
+- Ne cite jamais les noms des médias ou des sources.
+- Ne recopie pas les titres.
+- Ne juxtapose pas les titres les uns après les autres.
+- Transforme les informations en un vrai résumé rédigé, fluide et synthétique.
+- Regroupe les répétitions : si plusieurs sources disent la même chose, écris-le une seule fois.
+- Si les sources contiennent des désaccords, contradictions ou incertitudes réels, fais-les ressortir naturellement ; sinon, ne les mentionne pas et ne les cherche pas.
+- N'invente aucun fait absent des sources.
+- N'écris jamais un paragraphe qui commence par "Par ailleurs", "En parallèle", "Dans le même temps" ou toute formule servant à introduire un sujet secondaire.
 `;
 
   try {
@@ -243,12 +574,89 @@ Contraintes :
       temperature: 0.35,
       max_output_tokens: 900
     });
-    const tail = String(response.output_text || "").trim();
-    if (!tail) return fallback;
-    return [isFirstEpisode ? "" : `L’histoire jusqu’ici : ${historyLine}`, tail].filter(Boolean).join("\n");
+    const text = String(response.output_text || "").trim();
+    if (!text) throw new Error("Réponse vide de l'IA pour le résumé.");
+    return limitStoryText(text, 1500);
   } catch (error) {
-    return fallback;
+    throw new Error(error.message || "Erreur génération résumé");
   }
+}
+
+async function generateFinalArticleFromSummary(payload) {
+  const summary = String(payload?.summary || "").trim();
+  const subject = String(payload?.subject || "").trim();
+
+  if (!summary) {
+    throw new Error("Résumé manquant pour générer l'article définitif.");
+  }
+
+  const fallbackQuestion = limitStoryText(subject || "Ce sujet doit-il ouvrir un débat ?", 100);
+  if (!openai) {
+    return {
+      article: limitStoryText(summary, 1500),
+      debateQuestion: fallbackQuestion,
+      positionA: "Accord",
+      positionB: "Désaccord"
+    };
+  }
+
+  const prompt = `Tu es un rédacteur éditorial.
+
+Sujet : ${subject}
+
+Résumé à retravailler :
+${summary}
+
+Ta mission : réécrire ce résumé en article définitif plus fluide et captivant, sans rien inventer ni ajouter.
+
+Règles pour le champ "article" :
+- entre 800 et 1400 caractères de texte narratif ;
+- texte brut, sans titre, sans liste ;
+- minimum 2 paragraphes séparés par une ligne vide ;
+- faire ressortir les tensions réelles si elles sont dans le résumé, sinon ne pas en chercher ;
+- ne pas conclure artificiellement ;
+- ne pas ajouter de question ni de signature à la fin.
+
+Règles pour "debateQuestion" : une seule question claire et clivante, max 100 caractères.
+Règles pour "positionA" et "positionB" : deux camps opposés, max 60 caractères chacun, pas de "car/parce que/afin de".
+
+Réponds UNIQUEMENT en JSON valide (sans balises markdown) :
+{"article":"...","debateQuestion":"...","positionA":"...","positionB":"..."}`;
+
+  const response = await openai.responses.create({
+    model: "gpt-4.1-mini",
+    input: prompt,
+    temperature: 0.35,
+    max_output_tokens: 1600
+  });
+
+  console.log("[article définitif] output_text brut :", response.output_text?.slice(0, 300));
+
+  let parsed = {};
+  try {
+    parsed = safeJsonParse(response.output_text || "");
+  } catch (error) {
+    const rawText = String(response.output_text || "").trim();
+    parsed = {
+      article: rawText || summary,
+      debateQuestion: fallbackQuestion,
+      positionA: "Accord",
+      positionB: "Désaccord"
+    };
+  }
+
+  const signatures = ["J.L Grasso", "R. Renaudot", "M. Camus"];
+  const signature = signatures[Math.floor(Math.random() * signatures.length)];
+  const articleBody = limitStoryText(parsed.article || summary, 1500);
+  const debateQuestion = limitStoryText(parsed.debateQuestion || fallbackQuestion, 100);
+  const fullArticle = `${articleBody}\n\n${debateQuestion}\n\n${signature}`;
+
+  return {
+    article: fullArticle,
+    debateQuestion,
+    positionA: limitStoryText(parsed.positionA || "Accord", 60),
+    positionB: limitStoryText(parsed.positionB || "Désaccord", 60)
+  };
 }
 
 function buildFallbackStorySuggestion(payload, stories = []) {
@@ -259,11 +667,10 @@ function buildFallbackStorySuggestion(payload, stories = []) {
     ...(payload.sources || []),
     ...((payload.contents || []).map((item) => item.title))
   ].filter(Boolean).join(" ");
-  const keywords = [...new Set(getStoryKeywords(text))].slice(0, 6);
-  const storyTitle = buildFallbackStoryTitle(payload.subject, payload.ai?.agonTheme);
+  const keywords = [...new Set(getStoryKeywords(text))].slice(0, 8);
   const newStory = {
-    story_title: storyTitle,
-    story_summary: buildFallbackStorySummary(payload.subject, payload.ai?.resume),
+    story_title: "",
+    story_summary: "",
     main_actors: keywords.slice(0, 3),
     central_tension: limitStoryText(payload.ai?.debateQuestion || payload.subject || "Tension politique à suivre.", 140),
     keywords,
@@ -288,48 +695,84 @@ function buildFallbackStorySuggestion(payload, stories = []) {
     };
   }
 
+  const referenceText = [payload.subject, payload.ai?.debateQuestion, payload.ai?.resume].filter(Boolean).join(" ");
+  const referenceKeywords = new Set(getStoryKeywords(referenceText));
   let bestStory = null;
   let bestScore = 0;
-  const sourceKeywords = new Set(keywords);
+
   for (const story of stories) {
+    const titleText = String(story.story_title || "").trim();
+    const titleKeywords = new Set(getStoryKeywords(titleText));
     const storyKeywords = new Set(getStoryKeywords([
-      story.story_title,
-      story.story_summary,
-      ...(story.main_actors || []),
-      story.central_tension,
-      ...(story.keywords || [])
+      story.story_title
     ].filter(Boolean).join(" ")));
-    const shared = [...sourceKeywords].filter((word) => storyKeywords.has(word)).length;
-    const score = storyKeywords.size ? shared / Math.max(3, Math.min(storyKeywords.size, sourceKeywords.size || 1)) : 0;
+
+    const sharedTitleKeywords = [...referenceKeywords].filter((word) => titleKeywords.has(word)).length;
+    const sharedStoryKeywords = [...referenceKeywords].filter((word) => storyKeywords.has(word)).length;
+    const titleSimilarity = stringSimilarity.compareTwoStrings(normalizeStoryText(referenceText), normalizeStoryText(titleText));
+
+    const score = (sharedTitleKeywords * 0.28) + (sharedStoryKeywords * 0.12) + (titleSimilarity * 0.9);
+
     if (score > bestScore) {
       bestScore = score;
-      bestStory = story;
+      bestStory = {
+        ...story,
+        _sharedTitleKeywords: sharedTitleKeywords,
+        _sharedStoryKeywords: sharedStoryKeywords,
+        _titleSimilarity: titleSimilarity
+      };
     }
   }
 
-  if (bestStory && bestScore >= 0.55) {
-    return {
-      story_decision: bestScore >= 0.8 ? "existing_story" : "uncertain",
-      matched_story_id: bestStory.story_id,
-      matched_story_title: bestStory.story_title,
-      matched_story_summary: bestStory.story_summary || "",
-      previous_episode_id: bestStory.latest_episode_id || "",
-      previous_episode_title: bestStory.latest_episode_title || "",
-      previous_episode_summary: bestStory.latest_episode_summary || "",
-      previous_episode_url: buildAgonDebateUrl(bestStory.latest_episode_id || ""),
-      confidence: Number(bestScore.toFixed(2)),
-      reason: bestScore >= 0.8
-        ? "Les mots-clés forts et la tension centrale recoupent nettement une histoire active."
-        : "Le sujet semble proche d'une histoire active, mais la continuité narrative reste à confirmer.",
-      criteria: {
-        main_actors_match: bestScore >= 0.55,
-        central_tension_match: bestScore >= 0.55,
-        temporal_continuity: bestScore >= 0.7,
-        editorial_theme_match: true,
-        strong_keywords_match: bestScore >= 0.55
-      },
-      new_story: newStory
-    };
+  if (bestStory) {
+    const strongTitleMatch = bestStory._sharedTitleKeywords >= 2 || bestStory._titleSimilarity >= 0.62;
+    const mediumTitleMatch = bestStory._sharedTitleKeywords >= 1 || bestStory._titleSimilarity >= 0.46;
+
+    if (strongTitleMatch) {
+      return {
+        story_decision: "existing_story",
+        matched_story_id: bestStory.story_id,
+        matched_story_title: bestStory.story_title,
+        matched_story_summary: bestStory.story_summary || "",
+        previous_episode_id: bestStory.latest_episode_id || "",
+        previous_episode_title: bestStory.latest_episode_title || "",
+        previous_episode_summary: bestStory.latest_episode_summary || "",
+        previous_episode_url: buildAgonDebateUrl(bestStory.latest_episode_id || ""),
+        confidence: Number(Math.min(0.96, 0.72 + bestStory._titleSimilarity * 0.2).toFixed(2)),
+        reason: "Le sujet recoupe directement le titre d'une histoire existante, plus precise que les autres options.",
+        criteria: {
+          main_actors_match: bestStory._sharedTitleKeywords >= 1,
+          central_tension_match: true,
+          temporal_continuity: bestStory._sharedStoryKeywords >= 1,
+          editorial_theme_match: true,
+          strong_keywords_match: bestStory._sharedTitleKeywords >= 1
+        },
+        new_story: newStory
+      };
+    }
+
+    if (mediumTitleMatch && bestStory._sharedStoryKeywords >= 1) {
+      return {
+        story_decision: "uncertain",
+        matched_story_id: bestStory.story_id,
+        matched_story_title: bestStory.story_title,
+        matched_story_summary: bestStory.story_summary || "",
+        previous_episode_id: bestStory.latest_episode_id || "",
+        previous_episode_title: bestStory.latest_episode_title || "",
+        previous_episode_summary: bestStory.latest_episode_summary || "",
+        previous_episode_url: buildAgonDebateUrl(bestStory.latest_episode_id || ""),
+        confidence: Number(Math.min(0.79, 0.58 + bestStory._titleSimilarity * 0.18).toFixed(2)),
+        reason: "Le sujet semble correspondre a une histoire existante, mais une verification editoriale reste utile.",
+        criteria: {
+          main_actors_match: bestStory._sharedTitleKeywords >= 1,
+          central_tension_match: true,
+          temporal_continuity: bestStory._sharedStoryKeywords >= 1,
+          editorial_theme_match: true,
+          strong_keywords_match: bestStory._sharedTitleKeywords >= 1
+        },
+        new_story: newStory
+      };
+    }
   }
 
   return {
@@ -337,7 +780,7 @@ function buildFallbackStorySuggestion(payload, stories = []) {
     matched_story_id: null,
     matched_story_title: null,
     confidence: Number(bestScore.toFixed(2)),
-    reason: "Aucune continuité narrative nette n'a été détectée avec les histoires existantes.",
+    reason: "Aucune continuite narrative nette n'a ete detectee avec les histoires existantes.",
     criteria: {
       main_actors_match: false,
       central_tension_match: false,
@@ -362,7 +805,7 @@ async function loadAgonStories() {
 
 async function suggestStoryLink(payload) {
   const stories = await loadAgonStories();
-  const compactStories = stories.slice(0, 80).map((story) => ({
+  const compactStories = stories.slice(0, 200).map((story) => ({
     story_id: story.story_id,
     story_title: story.story_title,
     story_summary: story.story_summary,
@@ -374,8 +817,19 @@ async function suggestStoryLink(payload) {
     latest_episode_summary: story.latest_episode_summary || "",
     updated_at: story.updated_at || ""
   }));
+  const titleOnlyStories = compactStories.map((story) => ({
+    story_id: story.story_id,
+    story_title: story.story_title
+  }));
 
   const fallback = buildFallbackStorySuggestion(payload, compactStories);
+  const storiesHaveSparseMetadata = compactStories.every((story) => {
+    return !String(story.story_summary || "").trim()
+      && !String(story.central_tension || "").trim()
+      && !(Array.isArray(story.main_actors) && story.main_actors.length)
+      && !(Array.isArray(story.keywords) && story.keywords.length)
+      && !String(story.latest_episode_summary || "").trim();
+  });
 
   if (!openai) {
     return fallback;
@@ -387,31 +841,41 @@ async function suggestStoryLink(payload) {
     orientation: item.orientation,
     title: item.title
   }));
+  const analysisKeywords = Array.isArray(payload.ai?.keywords) ? payload.ai.keywords.slice(0, 8) : [];
 
   const prompt = `
 Tu aides a rattacher une actualite a une histoire suivie dans un bot de veille.
 
-Regle absolue :
-- Le meme theme general ne suffit pas.
-- Il faut une vraie continuite narrative : memes forces en presence, meme tension centrale, nouveau developpement.
-- Si tu hesites, reponds "uncertain".
+Role attendu :
+- Les histoires existantes d'Agon sont des arcs editoriaux volontairement larges.
+- Tu dois trouver l'histoire associee la plus pertinente en te basant uniquement sur le titre de l'histoire.
+- Tu ne dois utiliser aucun resume d'histoire, aucun episode precedent, aucun acteur stocke, aucun mot-cle stocke.
+- Le titre de l'histoire est la seule information autorisee cote histoires existantes.
+
+Regles de choix :
+- Choisis une histoire existante des qu'un titre de la liste correspond clairement a l'enjeu dominant de l'actualite.
+- Le sujet, les mots-cles et les sources doivent primer sur le theme general.
+- Ne choisis jamais une histoire trop large si une histoire plus precise existe dans la liste.
+- Si deux histoires conviennent, choisis la plus specifique.
+- "new_story" est reserve aux cas ou aucune histoire existante ne couvre correctement le sujet.
+- "uncertain" est reserve aux cas ou deux histoires sont vraiment concurrentes ou ou le sujet est ambigu.
+- Si l'article concerne une personnalite politique mise en cause judiciairement pour probite, choisis le recit 56 avant le recit 5 ou 54.
+- Si l'article concerne une grande affaire judiciaire non politique, choisis le recit 54.
+- Si l'article concerne une polemique politique sans enjeu judiciaire, choisis le recit 5.
+- Si l'article concerne Trump, sa presidence, les Etats-Unis ou leur politique internationale, choisis le recit 4 sauf si le coeur du sujet est surtout Chine-Etats-Unis, auquel cas choisis le recit 3.
+- Si l'article concerne Israel, Palestine, Gaza, Cisjordanie, Liban, Iran ou tensions regionales au Moyen-Orient, choisis le recit 1 sauf si un autre recit est nettement plus precis.
 
 Actualite a classer :
 ${JSON.stringify({
   subject: payload.subject || "",
-  debate_question: payload.ai?.debateQuestion || "",
-  resume: payload.ai?.resume || "",
+  keywords: analysisKeywords,
   agon_theme: payload.ai?.agonTheme || "",
   sources: payload.sources || [],
-  positions: {
-    positionA: payload.ai?.positionA || "",
-    positionB: payload.ai?.positionB || ""
-  },
   contents: compactContents
 }, null, 2)}
 
 Histoires existantes :
-${JSON.stringify(compactStories, null, 2)}
+${JSON.stringify(titleOnlyStories, null, 2)}
 
 Reponds uniquement en JSON valide sous cette forme :
 {
@@ -429,7 +893,6 @@ Reponds uniquement en JSON valide sous cette forme :
   },
   "new_story": {
     "story_title": "titre très court et général",
-    "story_summary": "resume cumule de l'histoire depuis le debut, en 2 ou 3 lignes",
     "main_actors": ["..."],
     "central_tension": "...",
     "keywords": ["..."],
@@ -438,15 +901,17 @@ Reponds uniquement en JSON valide sous cette forme :
 }
 
 Contraintes :
+- Quand tu choisis une histoire existante, matched_story_id doit etre exactement un story_id fourni dans la liste.
+- Pour une histoire existante, mets confidence entre 0.65 et 0.95 selon la nettete du rattachement.
+- Renseigne criteria.editorial_theme_match a true si le titre de l'histoire couvre bien l'actualite.
+- Renseigne criteria.strong_keywords_match a true si le titre de l'histoire contient ou implique clairement l'acteur, le lieu, le pays, l'institution ou l'enjeu central.
 - story_title doit etre tres court, tres general, et pouvoir accueillir plusieurs episodes.
-- story_summary doit resumer l'histoire depuis le debut, pas seulement l'article du jour.
-- story_summary doit faire 2 ou 3 lignes maximum, etre stable, general, et pouvoir etre repris tel quel au debut des episodes suivants.
 - privilegie une formule nominale simple, de 2 a 5 mots si possible.
 - exemples de bons story_title : "Guerre en Iran", "Fin de vie", "Primaire de la gauche", "Crise au Liban".
 - Si aucune histoire ne correspond clairement, cree une nouvelle histoire.
-- Si confidence >= 0.80 et correspondance nette : existing_story.
-- Si confidence entre 0.60 et 0.79 : uncertain.
-- Si confidence < 0.60 : new_story.
+- Si confidence >= 0.65 et correspondance claire avec un titre existant : existing_story.
+- Si confidence entre 0.50 et 0.64 : uncertain.
+- Si confidence < 0.50 : new_story.
 `;
 
   try {
@@ -458,27 +923,76 @@ Contraintes :
     });
     const parsed = JSON.parse(String(response.output_text || "{}").match(/\{[\s\S]*\}/)?.[0] || "{}");
     const matchedStory = compactStories.find((story) => story.story_id === parsed.matched_story_id) || null;
+    const fallbackMatchedStory = compactStories.find((story) => story.story_id === fallback.matched_story_id) || null;
+    const shouldUseFallbackMatch = (
+      fallback.story_decision === "existing_story"
+      && (!matchedStory || parsed.story_decision === "new_story")
+    );
+    let finalMatchedStory = shouldUseFallbackMatch ? fallbackMatchedStory : matchedStory;
+    let finalDecision = shouldUseFallbackMatch
+      ? fallback.story_decision
+      : (["existing_story", "new_story", "uncertain"].includes(parsed.story_decision) ? parsed.story_decision : fallback.story_decision);
+    let finalConfidence = shouldUseFallbackMatch
+      ? fallback.confidence
+      : (Number.isFinite(Number(parsed.confidence)) ? Math.max(0, Math.min(1, Number(parsed.confidence))) : fallback.confidence);
+    let finalReason = shouldUseFallbackMatch
+      ? String(fallback.reason || "").trim()
+      : String(parsed.reason || fallback.reason || "").trim();
+    const finalCriteria = {
+      main_actors_match: Boolean(parsed.criteria?.main_actors_match),
+      central_tension_match: Boolean(parsed.criteria?.central_tension_match),
+      temporal_continuity: Boolean(parsed.criteria?.temporal_continuity),
+      editorial_theme_match: Boolean(parsed.criteria?.editorial_theme_match),
+      strong_keywords_match: Boolean(parsed.criteria?.strong_keywords_match)
+    };
+    const concreteMatchCount = [
+      finalCriteria.main_actors_match,
+      finalCriteria.central_tension_match,
+      finalCriteria.temporal_continuity,
+      finalCriteria.strong_keywords_match
+    ].filter(Boolean).length;
+
+    if (
+      storiesHaveSparseMetadata
+      && finalMatchedStory
+      && (finalDecision === "uncertain" || finalDecision === "new_story")
+      && finalConfidence >= 0.60
+      && finalCriteria.editorial_theme_match
+    ) {
+      finalDecision = "existing_story";
+      finalConfidence = Math.max(finalConfidence, 0.66);
+      finalReason = finalReason || "Le titre de l'histoire existante couvre clairement l'enjeu dominant de cette actualite.";
+    }
+
+    const hasEnoughSparseMatch = storiesHaveSparseMetadata
+      && finalMatchedStory
+      && finalConfidence >= 0.65
+      && (finalCriteria.editorial_theme_match || concreteMatchCount >= 1);
+
+    if (finalDecision === "existing_story" && (!finalMatchedStory || (finalConfidence < 0.65 && !finalCriteria.editorial_theme_match))) {
+      finalDecision = finalMatchedStory && finalConfidence >= 0.55 ? "uncertain" : "new_story";
+      finalConfidence = Math.min(finalConfidence, finalDecision === "uncertain" ? 0.74 : 0.58);
+      finalReason = finalDecision === "uncertain"
+        ? "Correspondance possible, mais pas assez solide pour rattacher automatiquement cette actualité."
+        : "Aucune histoire existante ne correspond assez précisément au sujet.";
+      if (finalDecision === "new_story") finalMatchedStory = null;
+    }
+
     return {
-      story_decision: ["existing_story", "new_story", "uncertain"].includes(parsed.story_decision) ? parsed.story_decision : fallback.story_decision,
-      matched_story_id: matchedStory ? matchedStory.story_id : null,
-      matched_story_title: matchedStory ? matchedStory.story_title : null,
-      matched_story_summary: matchedStory ? matchedStory.story_summary || "" : "",
-      previous_episode_id: matchedStory ? matchedStory.latest_episode_id || "" : "",
-      previous_episode_title: matchedStory ? matchedStory.latest_episode_title || "" : "",
-      previous_episode_summary: matchedStory ? matchedStory.latest_episode_summary || "" : "",
-      previous_episode_url: matchedStory ? buildAgonDebateUrl(matchedStory.latest_episode_id || "") : "",
-      confidence: Number.isFinite(Number(parsed.confidence)) ? Math.max(0, Math.min(1, Number(parsed.confidence))) : fallback.confidence,
-      reason: String(parsed.reason || fallback.reason || "").trim(),
-      criteria: {
-        main_actors_match: Boolean(parsed.criteria?.main_actors_match),
-        central_tension_match: Boolean(parsed.criteria?.central_tension_match),
-        temporal_continuity: Boolean(parsed.criteria?.temporal_continuity),
-        editorial_theme_match: Boolean(parsed.criteria?.editorial_theme_match),
-        strong_keywords_match: Boolean(parsed.criteria?.strong_keywords_match)
-      },
+      story_decision: finalDecision,
+      matched_story_id: finalMatchedStory ? finalMatchedStory.story_id : null,
+      matched_story_title: finalMatchedStory ? finalMatchedStory.story_title : null,
+      matched_story_summary: finalMatchedStory ? finalMatchedStory.story_summary || "" : "",
+      previous_episode_id: finalMatchedStory ? finalMatchedStory.latest_episode_id || "" : "",
+      previous_episode_title: finalMatchedStory ? finalMatchedStory.latest_episode_title || "" : "",
+      previous_episode_summary: finalMatchedStory ? finalMatchedStory.latest_episode_summary || "" : "",
+      previous_episode_url: finalMatchedStory ? buildAgonDebateUrl(finalMatchedStory.latest_episode_id || "") : "",
+      confidence: finalConfidence,
+      reason: finalReason,
+      criteria: finalCriteria,
       new_story: {
-        story_title: buildFallbackStoryTitle(parsed.new_story?.story_title || payload.subject, payload.ai?.agonTheme),
-        story_summary: buildFallbackStorySummary(payload.subject, parsed.new_story?.story_summary || payload.ai?.resume),
+        story_title: "",
+        story_summary: "",
         main_actors: Array.isArray(parsed.new_story?.main_actors) ? parsed.new_story.main_actors.slice(0, 6) : fallback.new_story.main_actors,
         central_tension: limitStoryText(parsed.new_story?.central_tension || fallback.new_story.central_tension, 180),
         keywords: Array.isArray(parsed.new_story?.keywords) ? parsed.new_story.keywords.slice(0, 8) : fallback.new_story.keywords,
@@ -637,26 +1151,41 @@ app.post("/analyze", requireMixteAuth, async (req, res) => {
     const normalizedData = {
       ...data,
       arenaMode: isLibreMode ? "libre" : "positions",
-      debateQuestion: isLibreMode
-        ? limitStoryText(req.body?.subject || data.debateQuestion || "", 100)
-        : String(data.debateQuestion || "").trim(),
-      positionA: isLibreMode ? "" : String(data.positionA || ""),
-      positionB: isLibreMode ? "" : String(data.positionB || "")
+      debateQuestion: "",
+      resume: "",
+      positionA: "",
+      positionB: ""
     };
     const storySuggestion = await suggestStoryLink({
       ...req.body,
-      ai: normalizedData
+      ai: data
     });
-    normalizedData.resume = await generateNarrativeContext({
-      ...req.body,
-      ai: normalizedData
-    }, storySuggestion);
     res.json({
       ...normalizedData,
       storyLink: storySuggestion
     });
   } catch (err) {
     res.status(500).json({ error: err.message });
+  }
+});
+
+app.post("/generate-full-article", requireMixteAuth, async (req, res) => {
+  try {
+    const payload = req.body || {};
+    const article = await generateCompleteNarrativeContext(payload, payload.storySelection || null);
+    res.json({ ok: true, article });
+  } catch (err) {
+    res.status(500).json({ ok: false, error: err.message || "Erreur génération résumé" });
+  }
+});
+
+app.post("/generate-final-article", requireMixteAuth, async (req, res) => {
+  try {
+    const payload = req.body || {};
+    const result = await generateFinalArticleFromSummary(payload);
+    res.json({ ok: true, ...result });
+  } catch (err) {
+    res.status(500).json({ ok: false, error: err.message || "Erreur génération article définitif" });
   }
 });
 
@@ -668,6 +1197,36 @@ app.get("/sessions-mixte.json", requireMixteAuth, (req, res) => {
   }
 
   res.sendFile(filePath);
+});
+
+app.get("/api/saved-subjects", requireMixteAuth, (req, res) => {
+  try {
+    const filePath = path.join(__dirname, "saved-subjects.json");
+    let items = [];
+    if (fs.existsSync(filePath)) {
+      items = JSON.parse(fs.readFileSync(filePath, "utf8") || "[]");
+    }
+    res.json({
+      ok: true,
+      items: Array.isArray(items) ? items : [],
+      subjects: Array.isArray(items) ? items.map((item) => String(item?.subject || "").trim()).filter(Boolean) : []
+    });
+  } catch (err) {
+    res.status(500).json({ ok: false, items: [], subjects: [], error: err.message || "Erreur chargement sujets enregistrés" });
+  }
+});
+
+app.get("/api/sent-to-agon-items", requireMixteAuth, (req, res) => {
+  try {
+    const items = loadSentToAgonItems();
+    res.json({
+      ok: true,
+      items,
+      keys: items.map((item) => String(item?.question || item?.subject || "").trim()).filter(Boolean)
+    });
+  } catch (err) {
+    res.status(500).json({ ok: false, items: [], keys: [], error: err.message || "Erreur chargement historique Agôn" });
+  }
 });
 
 app.get("/saved", requireMixteAuth, (req, res) => {
@@ -946,14 +1505,97 @@ app.get("/saved", requireMixteAuth, (req, res) => {
 </html>`);
 });
 
-app.post("/save-update", (req, res) => {
+app.get("/sent-to-agon", requireMixteAuth, (req, res) => {
+  const sent = loadSentToAgonItems()
+    .slice()
+    .sort((a, b) => new Date(b.sentAt || 0).getTime() - new Date(a.sentAt || 0).getTime());
+
+  function esc(t) {
+    return String(t || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  }
+
+  const itemsHtml = sent.map((item) => {
+    const links = Array.isArray(item.links) ? item.links.filter((link) => link && link.url) : [];
+    return `
+      <section class="sent-item">
+        <div class="sent-head">
+          <div>
+            <p class="sent-subject">${esc(item.subject || "")}</p>
+            <h3>${esc(item.question || item.subject || "Sans titre")}</h3>
+          </div>
+          <small class="sent-date">Envoyé le ${new Date(item.sentAt).toLocaleString("fr-FR")}</small>
+        </div>
+        ${item.resume ? `<p class="sent-resume">${esc(item.resume)}</p>` : ""}
+        <div class="sent-meta">
+          ${item.theme ? `<span>${esc(item.theme)}</span>` : ""}
+          ${item.sources ? `<span>${esc(item.sources)}</span>` : ""}
+          ${item.sessionLabel ? `<span>${esc(item.sessionLabel)}</span>` : ""}
+        </div>
+        ${Array.isArray(item.keywords) && item.keywords.length ? `<div class="sent-keywords">${item.keywords.map((keyword) => `<span class="chip">${esc(keyword)}</span>`).join("")}</div>` : ""}
+        ${links.length ? `<details class="sent-links"><summary>Sources envoyées (${links.length})</summary><ul>${links.map((link) => `<li><a href="${esc(link.url)}" target="_blank" rel="noopener noreferrer">${esc(link.title || link.url)}</a>${link.source ? ` — ${esc(link.source)}` : ""}</li>`).join("")}</ul></details>` : ""}
+      </section>
+    `;
+  }).join("");
+
+  res.send(`<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Articles envoyés vers Agôn</title>
+  <style>
+    body { font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; max-width: 980px; margin: 40px auto; padding: 0 16px; line-height: 1.5; background: #f7f7f7; color: #111; }
+    h1 { margin-bottom: 4px; }
+    .intro { color: #555; margin-bottom: 24px; }
+    .nav { margin-bottom: 20px; }
+    .nav a { display: inline-block; margin-right: 10px; padding: 8px 12px; background: white; border: 1px solid #ddd; border-radius: 999px; text-decoration: none; color: #111; font-size: 0.9rem; }
+    .nav a:hover { background: #eee; }
+    .sent-item { background: white; border: 1px solid #e5e7eb; border-radius: 16px; padding: 18px 20px; margin-bottom: 18px; }
+    .sent-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; }
+    .sent-subject { margin: 0 0 4px; font-size: 0.8rem; font-weight: 700; color: #6b7280; text-transform: uppercase; letter-spacing: 0.04em; }
+    .sent-head h3 { margin: 0; font-size: 1.02rem; }
+    .sent-date { color: #9ca3af; font-size: 0.8rem; white-space: nowrap; }
+    .sent-resume { color: #374151; white-space: pre-wrap; margin: 12px 0; }
+    .sent-meta { display: flex; flex-wrap: wrap; gap: 8px; color: #6b7280; font-size: 0.84rem; margin-bottom: 10px; }
+    .sent-meta span, .chip { display: inline-flex; align-items: center; background: #f3f4f6; border: 1px solid #e5e7eb; border-radius: 999px; padding: 4px 9px; }
+    .sent-keywords { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+    .sent-links summary { cursor: pointer; font-weight: 700; color: #1f2937; }
+    .sent-links ul { margin: 10px 0 0; padding-left: 18px; }
+    .sent-links li { margin-bottom: 6px; }
+    .empty { color: #888; margin-top: 40px; }
+  </style>
+</head>
+<body>
+  <div class="nav">
+    <a href="/">Presse seule</a>
+    <a href="/youtube">YouTube seul</a>
+    <a href="/mixte">Veille mixte</a>
+    <a href="/saved">Sujets enregistrés</a>
+    <a href="/sent-to-agon">Articles envoyés vers Agôn</a>
+    <a href="/admin">⚙ Admin</a>
+  </div>
+  <h1>Articles envoyés vers Agôn</h1>
+  <p class="intro">${sent.length} article(s) déjà envoyé(s) vers Agôn.</p>
+  ${sent.length ? itemsHtml : '<p class="empty">Aucun article envoyé vers Agôn pour le moment.</p>'}
+</body>
+</html>`);
+});
+
+app.post("/save-update", requireMixteAuth, async (req, res) => {
   const savedFile = path.join(__dirname, "saved-subjects.json");
   try {
+    try {
+      await fetch("http://127.0.0.1:3002/save-update", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(req.body || {})
+      });
+    } catch {}
+
     let saved = [];
     if (fs.existsSync(savedFile)) {
       saved = JSON.parse(fs.readFileSync(savedFile, "utf8"));
     }
-    const { subject, ...updates } = req.body;
+    const { subject, ...updates } = req.body || {};
     const idx = saved.findIndex(s => s.subject === subject);
     if (idx !== -1) {
       saved[idx] = { ...saved[idx], ...updates };
@@ -1447,9 +2089,88 @@ app.get("/api/agon-stories", requireMixteAuth, async (req, res) => {
   }
 });
 
+app.get("/api/agon-stories/:storyId/debates", requireMixteAuth, async (req, res) => {
+  try {
+    const storyId = encodeURIComponent(String(req.params.storyId || "").trim());
+    const r = await fetch(`${AGON_URL}/api/veille/stories/${storyId}/debates`);
+    const data = await r.json().catch(() => ({ ok: false, debates: [], error: "Réponse invalide Agôn" }));
+    if (!r.ok || data.ok === false) {
+      return res.status(r.status || 500).json({
+        ok: false,
+        debates: Array.isArray(data?.debates) ? data.debates : [],
+        error: data.error || "Erreur chargement articles de l’histoire"
+      });
+    }
+    res.json({
+      ok: true,
+      story: data.story || null,
+      debates: Array.isArray(data.debates) ? data.debates : []
+    });
+  } catch (err) {
+    res.status(500).json({ ok: false, debates: [], error: err.message || "Erreur chargement articles de l’histoire" });
+  }
+});
+
+app.post("/api/agon-stories", requireMixteAuth, async (req, res) => {
+  try {
+    const r = await fetch(`${AGON_URL}/api/veille/stories`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        story_title: String(req.body?.story_title || "").trim(),
+        story_summary: String(req.body?.story_summary || "").trim()
+      })
+    });
+    const data = await r.json().catch(() => ({ ok: false, error: "Réponse invalide Agôn" }));
+    if (!r.ok || data.ok === false) {
+      return res.status(r.status || 500).json({ ok: false, error: data.error || "Erreur création histoire" });
+    }
+    res.json(data);
+  } catch (err) {
+    res.status(500).json({ ok: false, error: err.message || "Erreur création histoire" });
+  }
+});
+
+app.put("/api/agon-stories/:storyId", requireMixteAuth, async (req, res) => {
+  try {
+    const storyId = encodeURIComponent(String(req.params.storyId || "").trim());
+    const r = await fetch(`${AGON_URL}/api/veille/stories/${storyId}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        story_title: String(req.body?.story_title || "").trim(),
+        story_summary: String(req.body?.story_summary || "").trim()
+      })
+    });
+    const data = await r.json().catch(() => ({ ok: false, error: "Réponse invalide Agôn" }));
+    if (!r.ok || data.ok === false) {
+      return res.status(r.status || 500).json({ ok: false, error: data.error || "Erreur modification histoire" });
+    }
+    res.json(data);
+  } catch (err) {
+    res.status(500).json({ ok: false, error: err.message || "Erreur modification histoire" });
+  }
+});
+
+app.delete("/api/agon-stories/:storyId", requireMixteAuth, async (req, res) => {
+  try {
+    const storyId = encodeURIComponent(String(req.params.storyId || "").trim());
+    const r = await fetch(`${AGON_URL}/api/veille/stories/${storyId}`, {
+      method: "DELETE"
+    });
+    const data = await r.json().catch(() => ({ ok: false, error: "Réponse invalide Agôn" }));
+    if (!r.ok || data.ok === false) {
+      return res.status(r.status || 500).json({ ok: false, error: data.error || "Erreur suppression histoire" });
+    }
+    res.json(data);
+  } catch (err) {
+    res.status(500).json({ ok: false, error: err.message || "Erreur suppression histoire" });
+  }
+});
+
 app.post("/send-to-agon", requireMixteAuth, async (req, res) => {
   try {
-    const { question, positionA, positionB, theme, resume, sources, links, storySelection, keywords } = req.body;
+    const { subject, sessionLabel, question, positionA, positionB, theme, resume, sources, links, storySelection, keywords } = req.body;
     if (!question) return res.status(400).json({ ok: false, error: "question manquante" });
     console.log(`[send-to-agon] Envoi vers ${AGON_URL}/api/veille/receive`);
     const r = await fetch(`${AGON_URL}/api/veille/receive`, {
@@ -1462,6 +2183,20 @@ app.post("/send-to-agon", requireMixteAuth, async (req, res) => {
       console.error(`[send-to-agon] Erreur ${r.status}: ${body}`);
       throw new Error(`Agôn a répondu ${r.status}: ${body}`);
     }
+    upsertSentToAgonItem({
+      subject,
+      sessionLabel,
+      question,
+      positionA,
+      positionB,
+      theme,
+      resume,
+      sources,
+      links: Array.isArray(links) ? links : [],
+      storySelection: storySelection || null,
+      keywords: Array.isArray(keywords) ? keywords : [],
+      sentAt: new Date().toISOString()
+    });
     console.log("[send-to-agon] Succès");
     res.json({ ok: true });
   } catch (err) {
