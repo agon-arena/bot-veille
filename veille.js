@@ -24,14 +24,37 @@ const MAX_SESSIONS_TO_KEEP = 20;
 const MAX_SUBJECTS_TO_ANALYZE_WITH_AI = 25;
 
 const AGON_THEMES = [
-  "Politique, économie et relations internationales",
-  "Société, éducation et justice",
-  "Sciences, technologies et environnement",
-  "Culture, modes et médias",
-  "Santé, corps et bien-être",
-  "Sport, loisirs et passions",
-  "Vie personnelle et modes de vie"
+  "Politique",
+  "International",
+  "Économie / emploi",
+  "Société / éducation",
+  "Sciences et technologie",
+  "Climat - environnement",
+  "Justice / faits divers",
+  "Culture - tendances",
+  "Médias - divertissements",
+  "Sports - loisirs",
+  "Santé - bien-être",
+  "Vie personnelle et modes de vie",
+  "Espace jeunes"
 ];
+
+const AGON_THEME_ALIASES = {
+  "Politique, économie et relations internationales": "Politique",
+  "Société, éducation et justice": "Société / éducation",
+  "Sciences, technologies et environnement": "Sciences et technologie",
+  "Culture, modes et médias": "Culture - tendances",
+  "Santé, corps et bien-être": "Santé - bien-être",
+  "Sport, loisirs et passions": "Sports - loisirs",
+  "Espace jeunes (collégiens - lycéens)": "Espace jeunes"
+};
+
+function normalizeAgonTheme(theme) {
+  const value = String(theme || "").trim();
+  return AGON_THEMES.includes(value)
+    ? value
+    : (AGON_THEME_ALIASES[value] || AGON_THEMES[0]);
+}
 
 const openai = process.env.OPENAI_API_KEY
   ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
@@ -309,7 +332,7 @@ function fallbackAiAnalysis(subject) {
     controversyLevel: subject.mediaCount >= 4 ? "moyen" : "faible",
     debateQuestion: `Ce sujet mérite-t-il un débat public : ${subject.subject} ?`,
     resume: "",
-    agonTheme: "Politique, économie et relations internationales",
+    agonTheme: AGON_THEMES[0],
     positionA: "",
     positionB: "",
     leftScore: Math.min(10, 3 + leftSourceCount * 2)
@@ -401,9 +424,7 @@ IMPORTANT sur le cadrage politique :
       controversyLevel: parsed.controversyLevel || "faible",
       debateQuestion: limitText(parsed.debateQuestion || `Faut-il débattre de ce sujet : ${subject.subject} ?`, 90),
       resume: parsed.resume || "",
-      agonTheme: AGON_THEMES.includes(parsed.agonTheme)
-        ? parsed.agonTheme
-        : "Politique, économie et relations internationales",
+      agonTheme: normalizeAgonTheme(parsed.agonTheme),
       positionA: parsed.debateScore >= 7 && typeof parsed.positionA === "string"
         ? limitText(parsed.positionA, 90)
         : "",
@@ -559,7 +580,7 @@ function generateHtml(sessions) {
             ${Number(ai.debateScore) >= 7 && ai.resume ? `<p class="resume">${escapeHtml(ai.resume)}</p>` : ""}
             <p class="agon-theme"><strong>Thématique Agôn proposée :</strong>
               <select class="agon-select">
-                ${AGON_THEMES.map(theme => `<option value="${escapeHtml(theme)}"${theme === (ai.agonTheme || AGON_THEMES[0]) ? " selected" : ""}>${escapeHtml(theme)}</option>`).join("")}
+                ${AGON_THEMES.map(theme => `<option value="${escapeHtml(theme)}"${theme === normalizeAgonTheme(ai.agonTheme) ? " selected" : ""}>${escapeHtml(theme)}</option>`).join("")}
               </select>
             </p>
             ${

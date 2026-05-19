@@ -17,6 +17,39 @@ const openai = process.env.OPENAI_API_KEY
   ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
   : null;
 
+const AGON_THEMES = [
+  "Politique",
+  "International",
+  "Économie / emploi",
+  "Société / éducation",
+  "Sciences et technologie",
+  "Climat - environnement",
+  "Justice / faits divers",
+  "Culture - tendances",
+  "Médias - divertissements",
+  "Sports - loisirs",
+  "Santé - bien-être",
+  "Vie personnelle et modes de vie",
+  "Espace jeunes"
+];
+
+const AGON_THEME_ALIASES = {
+  "Politique, économie et relations internationales": "Politique",
+  "Société, éducation et justice": "Société / éducation",
+  "Sciences, technologies et environnement": "Sciences et technologie",
+  "Culture, modes et médias": "Culture - tendances",
+  "Santé, corps et bien-être": "Santé - bien-être",
+  "Sport, loisirs et passions": "Sports - loisirs",
+  "Espace jeunes (collégiens - lycéens)": "Espace jeunes"
+};
+
+function normalizeAgonTheme(theme) {
+  const value = String(theme || "").trim();
+  return AGON_THEMES.includes(value)
+    ? value
+    : (AGON_THEME_ALIASES[value] || AGON_THEMES[0]);
+}
+
 function buildAgonDebateUrl(debateId) {
   const normalizedId = String(debateId || "").trim();
   if (!normalizedId) return "";
@@ -116,15 +149,20 @@ function limitStoryText(text, maxLength) {
 
 function buildFallbackStoryTitle(subject, theme) {
   const rawTopic = String(subject || "").trim();
-  const normalizedTheme = String(theme || "").trim();
+  const normalizedTheme = normalizeAgonTheme(theme);
 
   const themeMap = {
-    "Politique, économie et relations internationales": "Actualité politique",
-    "Société, éducation et justice": "Débat de société",
-    "Sciences, technologies et environnement": "Actualité scientifique",
-    "Culture, modes et médias": "Actualité culturelle",
-    "Santé, corps et bien-être": "Actualité santé",
-    "Sport, loisirs et passions": "Actualité sportive",
+    "Politique": "Actualité politique",
+    "International": "Actualité internationale",
+    "Économie / emploi": "Actualité économique",
+    "Société / éducation": "Débat de société",
+    "Sciences et technologie": "Actualité scientifique",
+    "Climat - environnement": "Actualité environnementale",
+    "Justice / faits divers": "Justice et faits divers",
+    "Culture - tendances": "Actualité culturelle",
+    "Médias - divertissements": "Médias et divertissements",
+    "Sports - loisirs": "Actualité sportive",
+    "Santé - bien-être": "Actualité santé",
     "Vie personnelle et modes de vie": "Modes de vie"
   };
 
@@ -266,7 +304,7 @@ ${JSON.stringify({
   subject: payload.subject || "",
   currentArenaTitle: payload.ai?.debateQuestion || "",
   rawResume: payload.ai?.resume || "",
-  theme: payload.ai?.agonTheme || "",
+  theme: normalizeAgonTheme(payload.ai?.agonTheme),
   sources: payload.sources || [],
   contents: (payload.contents || []).slice(0, 8).map((item) => ({
     source: item.source,
@@ -869,7 +907,7 @@ Actualite a classer :
 ${JSON.stringify({
   subject: payload.subject || "",
   keywords: analysisKeywords,
-  agon_theme: payload.ai?.agonTheme || "",
+  agon_theme: normalizeAgonTheme(payload.ai?.agonTheme),
   sources: payload.sources || [],
   contents: compactContents
 }, null, 2)}
@@ -1236,16 +1274,6 @@ app.get("/saved", requireMixteAuth, (req, res) => {
     try { saved = JSON.parse(fs.readFileSync(savedFile, "utf8")); } catch {}
   }
 
-  const AGON_THEMES = [
-    "Politique, économie et relations internationales",
-    "Société, éducation et justice",
-    "Sciences, technologies et environnement",
-    "Culture, modes et médias",
-    "Santé, corps et bien-être",
-    "Sport, loisirs et passions",
-    "Vie personnelle et modes de vie"
-  ];
-
   function esc(t) {
     return String(t || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
   }
@@ -1271,7 +1299,7 @@ app.get("/saved", requireMixteAuth, (req, res) => {
       </div>`;
     }
     const optionsHtml = AGON_THEMES.map(theme =>
-      `<option value="${esc(theme)}"${theme === (s.agonTheme || AGON_THEMES[0]) ? " selected" : ""}>${esc(theme)}</option>`
+      `<option value="${esc(theme)}"${theme === normalizeAgonTheme(s.agonTheme) ? " selected" : ""}>${esc(theme)}</option>`
     ).join("");
     const positionsHtml = score >= 7 && (s.positionA || s.positionB)
       ? `<div class="positions-box"><p><strong>Positions proposées pour une arène à positions :</strong></p>${s.positionA ? `<p><strong>A —</strong> <span class="editable" contenteditable="true" spellcheck="false">${esc(s.positionA)}</span></p>` : ""}${s.positionB ? `<p><strong>B —</strong> <span class="editable" contenteditable="true" spellcheck="false">${esc(s.positionB)}</span></p>` : ""}</div>`
@@ -1426,7 +1454,7 @@ app.get("/saved", requireMixteAuth, (req, res) => {
   function buildAiBoxHtml(ai) {
     const score = Number(ai.debateScore) || 0;
     const optionsHtml = AGON_THEMES.map(theme =>
-      '<option value="' + theme + '"' + (theme === (ai.agonTheme || AGON_THEMES[0]) ? ' selected' : '') + '>' + theme + '</option>'
+      '<option value="' + theme + '"' + (theme === normalizeAgonTheme(ai.agonTheme) ? ' selected' : '') + '>' + theme + '</option>'
     ).join('');
     const positionsHtml = score >= 7 && (ai.positionA || ai.positionB)
       ? '<div class="positions-box"><p><strong>Positions proposées pour une arène à positions :</strong></p>' +
@@ -1472,7 +1500,7 @@ app.get("/saved", requireMixteAuth, (req, res) => {
           controversyLevel: ai.controversyLevel,
           debateQuestion: ai.debateQuestion,
           resume: ai.resume,
-          agonTheme: ai.agonTheme,
+          agonTheme: normalizeAgonTheme(ai.agonTheme),
           positionA: ai.positionA,
           positionB: ai.positionB
         })
@@ -1527,7 +1555,7 @@ app.get("/sent-to-agon", requireMixteAuth, (req, res) => {
         </div>
         ${item.resume ? `<p class="sent-resume">${esc(item.resume)}</p>` : ""}
         <div class="sent-meta">
-          ${item.theme ? `<span>${esc(item.theme)}</span>` : ""}
+          ${item.theme ? `<span>${esc(normalizeAgonTheme(item.theme))}</span>` : ""}
           ${item.sources ? `<span>${esc(item.sources)}</span>` : ""}
           ${item.sessionLabel ? `<span>${esc(item.sessionLabel)}</span>` : ""}
         </div>

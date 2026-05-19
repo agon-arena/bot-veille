@@ -42,14 +42,37 @@ const DEFAULT_FETCH_HEADERS = {
 };
 
 const AGON_THEMES = [
-  "Politique, économie et relations internationales",
-  "Société, éducation et justice",
-  "Sciences, technologies et environnement",
-  "Culture, modes et médias",
-  "Santé, corps et bien-être",
-  "Sport, loisirs et passions",
-  "Vie personnelle et modes de vie"
+  "Politique",
+  "International",
+  "Économie / emploi",
+  "Société / éducation",
+  "Sciences et technologie",
+  "Climat - environnement",
+  "Justice / faits divers",
+  "Culture - tendances",
+  "Médias - divertissements",
+  "Sports - loisirs",
+  "Santé - bien-être",
+  "Vie personnelle et modes de vie",
+  "Espace jeunes"
 ];
+
+const AGON_THEME_ALIASES = {
+  "Politique, économie et relations internationales": "Politique",
+  "Société, éducation et justice": "Société / éducation",
+  "Sciences, technologies et environnement": "Sciences et technologie",
+  "Culture, modes et médias": "Culture - tendances",
+  "Santé, corps et bien-être": "Santé - bien-être",
+  "Sport, loisirs et passions": "Sports - loisirs",
+  "Espace jeunes (collégiens - lycéens)": "Espace jeunes"
+};
+
+function normalizeAgonTheme(theme) {
+  const value = String(theme || "").trim();
+  return AGON_THEMES.includes(value)
+    ? value
+    : (AGON_THEME_ALIASES[value] || AGON_THEMES[0]);
+}
 
 const openai = process.env.OPENAI_API_KEY
   ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
@@ -570,7 +593,7 @@ function fallbackAiAnalysis(subject, arenaMode = "positions") {
     controversyLevel: hasBoth ? "moyen" : "faible",
     debateQuestion: fallbackText,
     resume: "",
-    agonTheme: "Politique, économie et relations internationales",
+    agonTheme: AGON_THEMES[0],
     positionA: "",
     positionB: "",
     leftScore: Math.min(10, 3 + leftSourceCount * 2),
@@ -849,9 +872,7 @@ Ne génère pas de question de débat, pas de positions A/B et pas de résumé n
         ? filterKeywordNoise(subject, parsed.keywords, 8)
         : extractNewsKeywords(subject),
       selectedLinks,
-      agonTheme: AGON_THEMES.includes(parsed.agonTheme)
-        ? parsed.agonTheme
-        : "Politique, économie et relations internationales",
+      agonTheme: normalizeAgonTheme(parsed.agonTheme),
       positionA: "",
       positionB: "",
       leftScore: Number.isInteger(parsed.leftScore) ? parsed.leftScore : 5
@@ -1339,7 +1360,7 @@ function generateHtml(sessions) {
             ${buildKeywordsStaticHtml(ai)}
             <p class="agon-theme"><strong>Thématique Agôn proposée :</strong>
               <select class="agon-select">
-                ${AGON_THEMES.map(theme => `<option value="${escapeHtml(theme)}"${theme === (ai.agonTheme || AGON_THEMES[0]) ? " selected" : ""}>${escapeHtml(theme)}</option>`).join("")}
+                ${AGON_THEMES.map(theme => `<option value="${escapeHtml(theme)}"${theme === normalizeAgonTheme(ai.agonTheme) ? " selected" : ""}>${escapeHtml(theme)}</option>`).join("")}
               </select>
             </p>
             ${buildStoryLinkStaticHtml(ai.storyLink || null)}
@@ -1373,8 +1394,8 @@ function generateHtml(sessions) {
           <p class="sources">${escapeHtml(subject.sources.join(", "))}</p>
 
           <button class="save-btn${isSaved ? " saved" : ""}" type="button" data-subject-title="${escapeHtml(subject.subject)}">${isSaved ? "★ Enregistré" : "☆ Enregistrer"}</button>
-          <button class="agon-btn${isSent ? " sent" : ""}" type="button" data-subject-title="${escapeHtml(subject.subject)}" data-question="${escapeHtml(ai ? (ai.debateQuestion || subject.subject) : subject.subject)}" data-position-a="${escapeHtml(ai ? (ai.positionA || "") : "")}" data-position-b="${escapeHtml(ai ? (ai.positionB || "") : "")}" data-theme="${escapeHtml(ai ? (ai.agonTheme || "") : "")}" data-sources="${escapeHtml(subject.sources.join(", "))}">${isSent ? "✓ Envoyé" : "→ Agôn"}</button>
-          <button class="republish-btn${isSent ? "" : " hidden"}" type="button" data-subject-title="${escapeHtml(subject.subject)}" data-question="${escapeHtml(ai ? (ai.debateQuestion || subject.subject) : subject.subject)}" data-position-a="${escapeHtml(ai ? (ai.positionA || "") : "")}" data-position-b="${escapeHtml(ai ? (ai.positionB || "") : "")}" data-theme="${escapeHtml(ai ? (ai.agonTheme || "") : "")}" data-sources="${escapeHtml(subject.sources.join(", "))}">↺ Republier</button>
+          <button class="agon-btn${isSent ? " sent" : ""}" type="button" data-subject-title="${escapeHtml(subject.subject)}" data-question="${escapeHtml(ai ? (ai.debateQuestion || subject.subject) : subject.subject)}" data-position-a="${escapeHtml(ai ? (ai.positionA || "") : "")}" data-position-b="${escapeHtml(ai ? (ai.positionB || "") : "")}" data-theme="${escapeHtml(ai ? normalizeAgonTheme(ai.agonTheme) : "")}" data-sources="${escapeHtml(subject.sources.join(", "))}">${isSent ? "✓ Envoyé" : "→ Agôn"}</button>
+          <button class="republish-btn${isSent ? "" : " hidden"}" type="button" data-subject-title="${escapeHtml(subject.subject)}" data-question="${escapeHtml(ai ? (ai.debateQuestion || subject.subject) : subject.subject)}" data-position-a="${escapeHtml(ai ? (ai.positionA || "") : "")}" data-position-b="${escapeHtml(ai ? (ai.positionB || "") : "")}" data-theme="${escapeHtml(ai ? normalizeAgonTheme(ai.agonTheme) : "")}" data-sources="${escapeHtml(subject.sources.join(", "))}">↺ Republier</button>
 
           ${
             articles.length
@@ -3363,7 +3384,7 @@ function generateHtml(sessions) {
     function buildAiBoxHtml(ai) {
       const score = Number(ai.debateScore) || 0;
       const optionsHtml = AGON_THEMES.map(theme =>
-        '<option value="' + theme + '"' + (theme === (ai.agonTheme || AGON_THEMES[0]) ? " selected" : "") + ">" + theme + "</option>"
+        '<option value="' + theme + '"' + (theme === normalizeAgonTheme(ai.agonTheme) ? " selected" : "") + ">" + theme + "</option>"
       ).join("");
 
       const positionsHtml = score >= 7 && (ai.positionA || ai.positionB) && ai.arenaMode !== "libre"
@@ -3540,7 +3561,7 @@ function generateHtml(sessions) {
           agonBtn.dataset.question = ai.debateQuestion || subjectData.subject || "";
           agonBtn.dataset.positionA = ai.positionA || "";
           agonBtn.dataset.positionB = ai.positionB || "";
-          agonBtn.dataset.theme = ai.agonTheme || "";
+          agonBtn.dataset.theme = normalizeAgonTheme(ai.agonTheme);
         }
 
         const preselectedLinks = new Set(
