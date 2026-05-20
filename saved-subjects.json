@@ -1,6 +1,1965 @@
 [
   {
     "action": "save",
+    "subject": "L’avocate Youssra Marzouq, interviewée voilée au JT, porte plainte après avoir été accusée «d’islamiser la France»",
+    "debateScore": 8,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "Libération, HuffPost France",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.huffingtonpost.fr/france/article/accusee-d-islamiser-la-france-apres-un-passage-au-jt-de-tf1-une-avocate-porte-plainte_263927.html",
+        "source": "HuffPost France",
+        "title": "Accusée « d’islamiser la France » après un passage au JT de TF1, une avocate porte plainte",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.liberation.fr/societe/police-justice/lavocate-youssra-marzouq-interviewee-voilee-au-jt-porte-plainte-apres-avoir-ete-accusee-dislamiser-la-france-20260520_WIMOP7ZQUZCY3PHPU36YEAPGG4/",
+        "source": "Libération",
+        "title": "L’avocate Youssra Marzouq, interviewée voilée au JT, porte plainte après avoir été accusée «d’islamiser la France»",
+        "thumbnail": ""
+      }
+    ],
+    "sessionLabel": "20/05/2026 à 20:13:57",
+    "controversyLevel": "fort",
+    "leftScore": 9,
+    "ai": {
+      "arenaMode": "positions",
+      "debateScore": 8,
+      "controversyLevel": "fort",
+      "debateQuestion": "",
+      "resume": "",
+      "keywords": [
+        "Youssra Marzouq",
+        "voile islamique",
+        "TF1 JT",
+        "plainte judiciaire",
+        "accusation islamisation"
+      ],
+      "selectedLinks": [
+        "https://www.huffingtonpost.fr/france/article/accusee-d-islamiser-la-france-apres-un-passage-au-jt-de-tf1-une-avocate-porte-plainte_263927.html",
+        "https://www.liberation.fr/societe/police-justice/lavocate-youssra-marzouq-interviewee-voilee-au-jt-porte-plainte-apres-avoir-ete-accusee-dislamiser-la-france-20260520_WIMOP7ZQUZCY3PHPU36YEAPGG4/"
+      ],
+      "agonTheme": "Société / éducation",
+      "positionA": "",
+      "positionB": "",
+      "leftScore": 9,
+      "storyLink": {
+        "story_decision": "existing_story",
+        "matched_story_id": "37-la-religion-la-laicite-et-les-signes-d-appartenance-suscitent-des-tensions-dans-",
+        "matched_story_title": "La religion, la laïcité et les signes d’appartenance suscitent des tensions dans l’espace public",
+        "matched_story_summary": "",
+        "previous_episode_id": "",
+        "previous_episode_title": "",
+        "previous_episode_summary": "",
+        "previous_episode_url": "",
+        "confidence": 0.85,
+        "reason": "L'actualité porte sur une plainte liée à une accusation d'islamisation suite à un port du voile, ce qui correspond clairement aux tensions autour de la religion, la laïcité et les signes d'appartenance dans l'espace public.",
+        "criteria": {
+          "main_actors_match": true,
+          "central_tension_match": true,
+          "temporal_continuity": true,
+          "editorial_theme_match": true,
+          "strong_keywords_match": true
+        },
+        "new_story": {
+          "story_title": "",
+          "story_summary": "",
+          "main_actors": [
+            "avocate",
+            "youssra",
+            "marzouq"
+          ],
+          "central_tension": "L’avocate Youssra Marzouq, interviewée voilée au JT, porte plainte après avoir été accusée «d’islamiser la France»",
+          "keywords": [
+            "avocate",
+            "youssra",
+            "marzouq",
+            "interviewee",
+            "voilee",
+            "porte",
+            "plainte",
+            "accusee"
+          ],
+          "status": "active"
+        }
+      },
+      "sourceSubject": "L’avocate Youssra Marzouq, interviewée voilée au JT, porte plainte après avoir été accusée «d’islamiser la France»",
+      "fullArticleState": "short"
+    }
+  },
+  {
+    "action": "save",
+    "subject": "Immigration : un « grand brassage » mais des inégalités persistantes",
+    "debateScore": 8,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "Le Monde, L'Obs, Sud Radio",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.nouvelobs.com/societe/20260520.OBS115103/immigration-de-travail-une-absurdite-francaise.html",
+        "source": "L'Obs",
+        "title": "Immigration de travail : une absurdité française",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.lemonde.fr/societe/article/2026/05/20/immigration-un-grand-brassage-mais-des-inegalites-persistantes_6691739_3224.html",
+        "source": "Le Monde",
+        "title": "Immigration : un « grand brassage » mais des inégalités persistantes",
+        "thumbnail": ""
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/shorts/9aLPweJ_0UQ",
+        "source": "Sud Radio",
+        "title": "🗣️ Périco Légasse :\"L’immigration doit être choisie et acceptée\"",
+        "thumbnail": ""
+      }
+    ],
+    "sessionLabel": "20/05/2026 à 20:13:57",
+    "controversyLevel": "fort",
+    "leftScore": 7,
+    "ai": {
+      "arenaMode": "positions",
+      "debateScore": 8,
+      "controversyLevel": "fort",
+      "debateQuestion": "",
+      "resume": "",
+      "keywords": [
+        "immigration de travail",
+        "inégalités sociales",
+        "Périco Légasse",
+        "grand brassage"
+      ],
+      "selectedLinks": [
+        "https://www.nouvelobs.com/societe/20260520.OBS115103/immigration-de-travail-une-absurdite-francaise.html",
+        "https://www.lemonde.fr/societe/article/2026/05/20/immigration-un-grand-brassage-mais-des-inegalites-persistantes_6691739_3224.html",
+        "https://www.youtube.com/shorts/9aLPweJ_0UQ"
+      ],
+      "agonTheme": "Société / éducation",
+      "positionA": "",
+      "positionB": "",
+      "leftScore": 7,
+      "storyLink": {
+        "story_decision": "existing_story",
+        "matched_story_id": "18-les-inegalites-sociales-continuent-de-structurer-les-tensions-economiques-et-pol",
+        "matched_story_title": "Les inégalités sociales continuent de structurer les tensions économiques et politiques",
+        "matched_story_summary": "",
+        "previous_episode_id": "",
+        "previous_episode_title": "",
+        "previous_episode_summary": "",
+        "previous_episode_url": "",
+        "confidence": 0.85,
+        "reason": "L'actualité porte sur l'immigration de travail et les inégalités sociales persistantes, ce qui correspond précisément à une histoire sur les inégalités sociales structurant les tensions économiques et politiques.",
+        "criteria": {
+          "main_actors_match": false,
+          "central_tension_match": true,
+          "temporal_continuity": true,
+          "editorial_theme_match": true,
+          "strong_keywords_match": true
+        },
+        "new_story": {
+          "story_title": "",
+          "story_summary": "",
+          "main_actors": [
+            "immigration",
+            "grand",
+            "brassage"
+          ],
+          "central_tension": "Immigration : un « grand brassage » mais des inégalités persistantes",
+          "keywords": [
+            "immigration",
+            "grand",
+            "brassage",
+            "inegalites",
+            "persistantes",
+            "monde",
+            "radio",
+            "travail"
+          ],
+          "status": "active"
+        }
+      },
+      "sourceSubject": "Immigration : un « grand brassage » mais des inégalités persistantes",
+      "fullArticleState": "short"
+    }
+  },
+  {
+    "action": "save",
+    "subject": "« L’Europe est visée de manière prépondérante » : comment les Etats-Unis et la Russie fabriquent de la désinformation climatique",
+    "debateScore": 8,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "L'Obs, La Croix, BFMTV, CNews, RFI, Euronews FR, Euronews France",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.nouvelobs.com/ecologie/20260520.OBS115105/l-europe-est-visee-de-maniere-preponderante-comment-les-etats-unis-et-la-russie-fabriquent-de-la-desinformation-climatique.html",
+        "source": "L'Obs",
+        "title": "« L’Europe est visée de manière prépondérante » : comment les Etats-Unis et la Russie fabriquent de la désinformation climatique",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.bfmtv.com/culture/musique/eurovision-2026-comment-l-italie-5e-du-classement-a-conquis-les-plateformes-avec-per-sempre-si-de-sal-da-vinci_AN-202605200658.html",
+        "source": "BFMTV",
+        "title": "Eurovision 2026: comment l'Italie, 5e du classement, a conquis les plateformes avec \"Per sempre sì\" de Sal Da Vinci",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.rfi.fr/fr/am%C3%A9riques/20260520-%C3%A9tats-unis-iran-s%C3%A9nat-tente-faire-passer-un-texte-pour-mettre-fin-%C3%A0-la-guerre",
+        "source": "RFI",
+        "title": "États-Unis: le Sénat tente de faire passer un texte pour mettre fin à la guerre en Iran",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "http://fr.euronews.com/my-europe/2026/05/20/lue-approuve-laccord-commercial-avec-les-etats-unis-malgre-les-tensions-transatlantiques",
+        "source": "Euronews FR",
+        "title": "L’UE approuve l’accord commercial avec les États-Unis malgré les tensions transatlantiques",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.la-croix.com/trump-vs-massie-le-kentucky-vote-pour-des-primaires-tres-suivies-20260519",
+        "source": "La Croix",
+        "title": "États-Unis : avec la défaite du député Massie, Trump confirme sa mainmise sur le Parti républicain",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.cnews.fr/monde/2026-05-20/une-cooperation-toujours-plus-etroite-comment-la-chine-forme-en-secret-des-soldats",
+        "source": "CNews",
+        "title": "«Une coopération toujours plus étroite» : comment la Chine forme en secret des soldats russes",
+        "thumbnail": ""
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/watch?v=FRQN32FUiAQ",
+        "source": "Euronews France",
+        "title": "",
+        "thumbnail": "https://i.ytimg.com/vi/FRQN32FUiAQ/hqdefault.jpg"
+      }
+    ],
+    "sessionLabel": "20/05/2026 à 20:13:57",
+    "controversyLevel": "fort",
+    "leftScore": 7,
+    "ai": {
+      "arenaMode": "positions",
+      "debateScore": 8,
+      "controversyLevel": "fort",
+      "debateQuestion": "",
+      "resume": "",
+      "keywords": [
+        "Europe",
+        "désinformation climatique",
+        "États-Unis",
+        "Russie",
+        "propagande",
+        "guerre de l'information",
+        "climat",
+        "influence géopolitique"
+      ],
+      "selectedLinks": [
+        "https://www.nouvelobs.com/ecologie/20260520.OBS115105/l-europe-est-visee-de-maniere-preponderante-comment-les-etats-unis-et-la-russie-fabriquent-de-la-desinformation-climatique.html"
+      ],
+      "agonTheme": "Climat - environnement",
+      "positionA": "",
+      "positionB": "",
+      "leftScore": 7,
+      "storyLink": {
+        "story_decision": "existing_story",
+        "matched_story_id": "26-la-circulation-de-l-information-se-transforme-entre-medias-plateformes-et-desinf",
+        "matched_story_title": "La circulation de l’information se transforme entre médias, plateformes et désinformation",
+        "matched_story_summary": "",
+        "previous_episode_id": "",
+        "previous_episode_title": "",
+        "previous_episode_summary": "",
+        "previous_episode_url": "",
+        "confidence": 0.85,
+        "reason": "L'actualité porte sur la désinformation climatique orchestrée par des États (États-Unis, Russie) ciblant l'Europe, ce qui correspond précisément à la thématique de la circulation de l'information et de la désinformation.",
+        "criteria": {
+          "main_actors_match": true,
+          "central_tension_match": true,
+          "temporal_continuity": true,
+          "editorial_theme_match": true,
+          "strong_keywords_match": true
+        },
+        "new_story": {
+          "story_title": "",
+          "story_summary": "",
+          "main_actors": [
+            "europe",
+            "visee",
+            "maniere"
+          ],
+          "central_tension": "« L’Europe est visée de manière prépondérante » : comment les Etats-Unis et la Russie fabriquent de la désinformation climatique",
+          "keywords": [
+            "europe",
+            "visee",
+            "maniere",
+            "preponderante",
+            "comment",
+            "etats",
+            "unis",
+            "russie"
+          ],
+          "status": "active"
+        }
+      },
+      "sourceSubject": "« L’Europe est visée de manière prépondérante » : comment les Etats-Unis et la Russie fabriquent de la désinformation climatique",
+      "fullArticleState": "short"
+    }
+  },
+  {
+    "action": "save",
+    "subject": "A Toulon, une mère meurt avec ses trois enfants en se jetant du 13ᵉ étage d’un immeuble",
+    "debateScore": 5,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "L'Obs, Le Figaro, La Croix, BFMTV, CNews, 20 Minutes, Franceinfo, Le Parisien",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.nouvelobs.com/faits-divers/20260520.OBS115095/a-toulon-une-mere-meurt-avec-ses-trois-enfants-en-se-jetant-du-13e-etage-d-un-immeuble.html",
+        "source": "L'Obs",
+        "title": "A Toulon, une mère meurt avec ses trois enfants en se jetant du 13ᵉ étage d’un immeuble",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.20minutes.fr/faits_divers/4224502-20260520-portugal-deux-enfants-francais-ages-3-5-ans-retrouves-seuls-bord-route?at_medium=display&at_campaign=149",
+        "source": "20 Minutes",
+        "title": "Portugal : Deux enfants français, âgés de 3 et 5 ans, retrouvés seuls au bord d’une route",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.la-croix.com/societe/toulon-une-mere-decede-avec-ses-trois-enfants-en-se-jetant-du-13e-etage-d-un-immeuble-20260520",
+        "source": "La Croix",
+        "title": "Toulon : une mère décède avec ses trois enfants en se jetant du 13e étage d’un immeuble",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.20minutes.fr/faits_divers/4224407-20260520-toulon-mere-trois-enfants-meurent-apres-defenestration-depuis-13e-etage?at_medium=display&at_campaign=149",
+        "source": "20 Minutes",
+        "title": "Toulon : Une mère et trois de ses enfants meurent après une défenestration depuis le 13e étage",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.bfmtv.com/var/info-bfm-toulon-var-une-femme-et-ses-trois-enfants-retrouves-morts-apres-une-chute-du-13e-etage-d-un-immeuble_AN-202605200267.html",
+        "source": "BFMTV",
+        "title": "INFO BFM TOULON VAR. Une femme et trois de ses enfants retrouvés morts après une chute du 13e étage d'un immeuble à Toulon",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.lefigaro.fr/marseille/toulon-une-mere-de-famille-se-suicide-du-13e-etage-avec-ses-enfants-20260520",
+        "source": "Le Figaro",
+        "title": "Toulon : une mère de famille se suicide en se jetant du 13e étage avec ses enfants",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.cnews.fr/faits-divers/2026-05-20/toulon-une-mere-et-trois-de-ses-enfants-retrouves-morts-au-pied-dun",
+        "source": "CNews",
+        "title": "Toulon : une mère et trois de ses enfants retrouvés morts au pied d’un immeuble",
+        "thumbnail": ""
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/shorts/zgWtFfnFeQw",
+        "source": "Franceinfo",
+        "title": "Une femme et ses trois enfants meurent après une chute du 13e étage à Toulon",
+        "thumbnail": ""
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/shorts/jdEcM6JrFtA",
+        "source": "Le Parisien",
+        "title": "Toulon : une mère se jette du 13e étage avec ses trois enfants",
+        "thumbnail": ""
+      }
+    ],
+    "sessionLabel": "20/05/2026 à 20:13:57",
+    "controversyLevel": "moyen",
+    "leftScore": 6,
+    "ai": {
+      "arenaMode": "positions",
+      "debateScore": 5,
+      "controversyLevel": "moyen",
+      "debateQuestion": "",
+      "resume": "",
+      "keywords": [
+        "Toulon",
+        "mère",
+        "trois enfants",
+        "13e étage",
+        "suicide familial",
+        "défenestration",
+        "faits divers"
+      ],
+      "selectedLinks": [
+        "https://www.nouvelobs.com/faits-divers/20260520.OBS115095/a-toulon-une-mere-meurt-avec-ses-trois-enfants-en-se-jetant-du-13e-etage-d-un-immeuble.html",
+        "https://www.youtube.com/shorts/zgWtFfnFeQw",
+        "https://www.youtube.com/shorts/jdEcM6JrFtA",
+        "https://www.la-croix.com/societe/toulon-une-mere-decede-avec-ses-trois-enfants-en-se-jetant-du-13e-etage-d-un-immeuble-20260520",
+        "https://www.20minutes.fr/faits_divers/4224407-20260520-toulon-mere-trois-enfants-meurent-apres-defenestration-depuis-13e-etage?at_medium=display&at_campaign=149",
+        "https://www.bfmtv.com/var/info-bfm-toulon-var-une-femme-et-ses-trois-enfants-retrouves-morts-apres-une-chute-du-13e-etage-d-un-immeuble_AN-202605200267.html",
+        "https://www.lefigaro.fr/marseille/toulon-une-mere-de-famille-se-suicide-du-13e-etage-avec-ses-enfants-20260520",
+        "https://www.cnews.fr/faits-divers/2026-05-20/toulon-une-mere-et-trois-de-ses-enfants-retrouves-morts-au-pied-dun"
+      ],
+      "agonTheme": "Justice / faits divers",
+      "positionA": "",
+      "positionB": "",
+      "leftScore": 6,
+      "storyLink": {
+        "story_decision": "existing_story",
+        "matched_story_id": "51-les-faits-divers-et-les-alertes-locales-revelent-des-enjeux-de-risque-et-de-gest",
+        "matched_story_title": "Les faits divers et les alertes locales révèlent des enjeux de risque et de gestion publique",
+        "matched_story_summary": "",
+        "previous_episode_id": "",
+        "previous_episode_title": "",
+        "previous_episode_summary": "",
+        "previous_episode_url": "",
+        "confidence": 0.85,
+        "reason": "L'actualité concerne un fait divers dramatique local avec enjeux de risque et gestion, ce qui correspond précisément au titre de l'histoire 51.",
+        "criteria": {
+          "main_actors_match": true,
+          "central_tension_match": true,
+          "temporal_continuity": true,
+          "editorial_theme_match": true,
+          "strong_keywords_match": true
+        },
+        "new_story": {
+          "story_title": "",
+          "story_summary": "",
+          "main_actors": [
+            "toulon",
+            "mere",
+            "meurt"
+          ],
+          "central_tension": "A Toulon, une mère meurt avec ses trois enfants en se jetant du 13ᵉ étage d’un immeuble",
+          "keywords": [
+            "toulon",
+            "mere",
+            "meurt",
+            "trois",
+            "enfants",
+            "jetant",
+            "etage",
+            "immeuble"
+          ],
+          "status": "active"
+        }
+      },
+      "sourceSubject": "A Toulon, une mère meurt avec ses trois enfants en se jetant du 13ᵉ étage d’un immeuble",
+      "fullArticleState": "short"
+    }
+  },
+  {
+    "action": "save",
+    "subject": "Moins de migration, plus de rapatriements : l'UE durcit-elle le contrôle des frontières ?",
+    "debateScore": 8,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "Euronews FR, Euronews France",
+    "contents": [
+      {
+        "type": "article",
+        "link": "http://fr.euronews.com/my-europe/2026/05/20/moins-de-migration-plus-de-rapatriements-lue-durcit-elle-le-controle-des-frontieres",
+        "source": "Euronews FR",
+        "title": "Moins de migration, plus de rapatriements : l'UE durcit-elle le contrôle des frontières ?",
+        "thumbnail": ""
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/watch?v=dqQiF3dZTbo",
+        "source": "Euronews France",
+        "title": "",
+        "thumbnail": "https://i.ytimg.com/vi/dqQiF3dZTbo/hqdefault.jpg"
+      }
+    ],
+    "sessionLabel": "20/05/2026 à 20:13:57",
+    "controversyLevel": "fort",
+    "leftScore": 7,
+    "ai": {
+      "arenaMode": "positions",
+      "debateScore": 8,
+      "controversyLevel": "fort",
+      "debateQuestion": "",
+      "resume": "",
+      "keywords": [
+        "Union européenne",
+        "migration",
+        "rapatriements",
+        "contrôle des frontières",
+        "Euronews",
+        "politique migratoire",
+        "Europe"
+      ],
+      "selectedLinks": [
+        "https://www.youtube.com/watch?v=dqQiF3dZTbo",
+        "http://fr.euronews.com/my-europe/2026/05/20/moins-de-migration-plus-de-rapatriements-lue-durcit-elle-le-controle-des-frontieres"
+      ],
+      "agonTheme": "International",
+      "positionA": "",
+      "positionB": "",
+      "leftScore": 7,
+      "storyLink": {
+        "story_decision": "existing_story",
+        "matched_story_id": "08-les-politiques-migratoires-evoluent-face-aux-tensions-aux-frontieres-et-aux-deba",
+        "matched_story_title": "Les politiques migratoires évoluent face aux tensions aux frontières et aux débats publics",
+        "matched_story_summary": "",
+        "previous_episode_id": "",
+        "previous_episode_title": "",
+        "previous_episode_summary": "",
+        "previous_episode_url": "",
+        "confidence": 0.9,
+        "reason": "L'actualité porte sur la politique migratoire de l'UE et le contrôle des frontières, ce qui correspond précisément au titre de l'histoire 08 qui traite des politiques migratoires et des tensions aux frontières.",
+        "criteria": {
+          "main_actors_match": true,
+          "central_tension_match": true,
+          "temporal_continuity": true,
+          "editorial_theme_match": true,
+          "strong_keywords_match": true
+        },
+        "new_story": {
+          "story_title": "",
+          "story_summary": "",
+          "main_actors": [],
+          "central_tension": "Moins de migration, plus de rapatriements : l'UE durcit-elle le contrôle des frontières ?",
+          "keywords": [],
+          "status": "active"
+        }
+      },
+      "sourceSubject": "Moins de migration, plus de rapatriements : l'UE durcit-elle le contrôle des frontières ?",
+      "fullArticleState": "short"
+    }
+  },
+  {
+    "action": "save",
+    "subject": "Taxer les riches pour gagner 20 milliards, à quoi bon ?",
+    "debateScore": 8,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "L'Humanité, Blast",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.humanite.fr/politique/le-billet-de-maurice-ulrich/taxer-les-riches-pour-gagner-20-milliards-a-quoi-bon",
+        "source": "L'Humanité",
+        "title": "Taxer les riches pour gagner 20 milliards, à quoi bon ?",
+        "thumbnail": ""
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/watch?v=RAcv8IBAaj0",
+        "source": "Blast",
+        "title": "",
+        "thumbnail": "https://i.ytimg.com/vi/RAcv8IBAaj0/hqdefault.jpg"
+      }
+    ],
+    "sessionLabel": "20/05/2026 à 20:13:57",
+    "controversyLevel": "fort",
+    "leftScore": 9,
+    "ai": {
+      "arenaMode": "positions",
+      "debateScore": 8,
+      "controversyLevel": "fort",
+      "debateQuestion": "",
+      "resume": "",
+      "keywords": [
+        "taxation des riches",
+        "20 milliards d'euros",
+        "inégalités économiques",
+        "Maurice Ulrich",
+        "Gary Stevenson",
+        "justice fiscale"
+      ],
+      "selectedLinks": [
+        "https://www.humanite.fr/politique/le-billet-de-maurice-ulrich/taxer-les-riches-pour-gagner-20-milliards-a-quoi-bon",
+        "https://www.youtube.com/watch?v=RAcv8IBAaj0"
+      ],
+      "agonTheme": "Économie / emploi",
+      "positionA": "",
+      "positionB": "",
+      "leftScore": 9,
+      "storyLink": {
+        "story_decision": "existing_story",
+        "matched_story_id": "57-les-debats-sur-l-impot-les-aides-publiques-et-la-redistribution-structurent-les-",
+        "matched_story_title": "Les débats sur l’impôt, les aides publiques et la redistribution structurent les choix économiques",
+        "matched_story_summary": "",
+        "previous_episode_id": "",
+        "previous_episode_title": "",
+        "previous_episode_summary": "",
+        "previous_episode_url": "",
+        "confidence": 0.85,
+        "reason": "L'actualité porte sur la taxation des riches et la justice fiscale, ce qui correspond précisément aux débats sur l'impôt, les aides publiques et la redistribution.",
+        "criteria": {
+          "main_actors_match": false,
+          "central_tension_match": true,
+          "temporal_continuity": true,
+          "editorial_theme_match": true,
+          "strong_keywords_match": true
+        },
+        "new_story": {
+          "story_title": "",
+          "story_summary": "",
+          "main_actors": [],
+          "central_tension": "Taxer les riches pour gagner 20 milliards, à quoi bon ?",
+          "keywords": [],
+          "status": "active"
+        }
+      },
+      "sourceSubject": "Taxer les riches pour gagner 20 milliards, à quoi bon ?",
+      "fullArticleState": "short"
+    }
+  },
+  {
+    "action": "save",
+    "subject": "Bolloré, Niel, Arnault… S’il devient président, Jean-Luc Mélenchon démantèlera les «empires médiatiques» dès les premières semaines de son mandat",
+    "debateScore": 8,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "Libération, LCP - Assemblée nationale",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.liberation.fr/politique/bollore-niel-arnault-sil-devient-president-jean-luc-melenchon-demantelera-les-empires-mediatiques-des-les-premieres-semaines-de-son-mandat-20260520_62FSZPURVNAFXJUYVGLGSUYSIE/",
+        "source": "Libération",
+        "title": "Bolloré, Niel, Arnault… S’il devient président, Jean-Luc Mélenchon démantèlera les «empires médiatiques» dès les premières semaines de son mandat",
+        "thumbnail": ""
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/watch?v=Swilgm7Y4lo",
+        "source": "LCP - Assemblée nationale",
+        "title": "",
+        "thumbnail": "https://i.ytimg.com/vi/Swilgm7Y4lo/hqdefault.jpg"
+      }
+    ],
+    "sessionLabel": "20/05/2026 à 20:13:57",
+    "controversyLevel": "très fort",
+    "leftScore": 9,
+    "ai": {
+      "arenaMode": "positions",
+      "debateScore": 8,
+      "controversyLevel": "très fort",
+      "debateQuestion": "",
+      "resume": "",
+      "keywords": [
+        "Jean-Luc Mélenchon",
+        "Bolloré",
+        "Niel",
+        "Arnault",
+        "empire médiatique",
+        "démantèlement",
+        "Sarah Legrain"
+      ],
+      "selectedLinks": [
+        "https://www.liberation.fr/politique/bollore-niel-arnault-sil-devient-president-jean-luc-melenchon-demantelera-les-empires-mediatiques-des-les-premieres-semaines-de-son-mandat-20260520_62FSZPURVNAFXJUYVGLGSUYSIE/",
+        "https://www.youtube.com/watch?v=Swilgm7Y4lo"
+      ],
+      "agonTheme": "Médias - divertissements",
+      "positionA": "",
+      "positionB": "",
+      "leftScore": 9,
+      "storyLink": {
+        "story_decision": "existing_story",
+        "matched_story_id": "05-la-vie-politique-francaise-traverse-une-periode-d-instabilite-et-de-recompositio",
+        "matched_story_title": "La vie politique française traverse une période d’instabilité et de recomposition",
+        "matched_story_summary": "",
+        "previous_episode_id": "446",
+        "previous_episode_title": "La France peut-elle être gouvernée efficacement sous un régime communiste ?",
+        "previous_episode_summary": "Franz-Olivier Giesbert anticipe un bouleversement politique majeur en France d’ici 2027, marqué par l’arrivée au pouvoir d’un régime communiste. Il s’interroge sur la capacité à gouverner un pays sous cette idéologie, évoquant une situation profondément instable où la révolution bouleverserait les fondements mêmes de la société. Cette transformation radicale ne serait pas seulement politique, mais aussi sociale, plongeant la France dans une période de tensions extrêmes.\n\nPour Giesbert, cette nouvelle ère pourrait s’accompagner d’une radicalisation inquiétante, symbolisée par le retour de la guillotine, image forte d’un climat de violence et de répression. Ce pronostic traduit une vision sombre des conséquences d’un tel changement, où le pouvoir communiste ne se limiterait pas à une simple alternance politique, mais deviendrait un facteur de rupture intense, générant conflits internes et risques majeurs pour la stabilité du pays.\n\nLa France peut-elle être gouvernée efficacement sous un régime communiste ?\n\nM. Camus",
+        "previous_episode_url": "http://localhost:3001/debate?id=446",
+        "confidence": 0.85,
+        "reason": "L'actualité porte sur une proposition politique majeure de Jean-Luc Mélenchon concernant le démantèlement des empires médiatiques, un enjeu politique français précis, sans dimension judiciaire ou internationale majeure. Le titre de l'histoire correspond bien au contexte politique français en recomposition.",
+        "criteria": {
+          "main_actors_match": true,
+          "central_tension_match": true,
+          "temporal_continuity": true,
+          "editorial_theme_match": true,
+          "strong_keywords_match": true
+        },
+        "new_story": {
+          "story_title": "",
+          "story_summary": "",
+          "main_actors": [],
+          "central_tension": "Bolloré, Niel, Arnault… S’il devient président, Jean-Luc Mélenchon démantèlera les «empires médiatiques» dès les premières semaines de son…",
+          "keywords": [],
+          "status": "active"
+        }
+      },
+      "sourceSubject": "Bolloré, Niel, Arnault… S’il devient président, Jean-Luc Mélenchon démantèlera les «empires médiatiques» dès les premières semaines de son mandat",
+      "fullArticleState": "short"
+    }
+  },
+  {
+    "action": "save",
+    "subject": "\"Une action judiciaire\" engagée sur les soupçons d'ingérence numérique étrangère visant des candidats LFI aux municipales, annonce le ministre de l'Intérieur",
+    "debateScore": 8,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "Franceinfo, Le Monde",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.lemonde.fr/politique/article/2026/05/20/ingerence-numerique-etrangere-une-action-judiciaire-est-engagee-apres-des-soupcons-visant-des-candidats-lfi-annonce-laurent-nunez_6691738_823448.html",
+        "source": "Le Monde",
+        "title": "Ingérence numérique étrangère : une « action judiciaire est engagée » après des soupçons visant des candidats LFI, annonce Laurent Nuñez",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.franceinfo.fr/politique/la-france-insoumise/une-action-judiciaire-engagee-sur-les-ingerences-numeriques-etrangeres-visant-des-candidats-lfi-aux-municipales-annonce-le-ministre-de-l-interieur_8016452.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "title": "\"Une action judiciaire\" engagée sur les soupçons d'ingérence numérique étrangère visant des candidats LFI aux municipales, annonce le ministre de l'Intérieur",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://france3-regions.franceinfo.fr/occitanie/haute-garonne/toulouse/ingerences-israeliennes-contre-lfi-piquemal-denonce-un-parfum-de-scandale-d-etat-au-sujet-de-l-enquete-sur-les-municipales-2026-3353836.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "title": "Soupçons d'ingérence israélienne contre LFI : François Piquemal, battu aux municipales à Toulouse, dénonce \"un parfum de scandale d'Etat\" après un article du \"Canard enchaîné\"",
+        "thumbnail": ""
+      }
+    ],
+    "sessionLabel": "20/05/2026 à 20:13:57",
+    "controversyLevel": "fort",
+    "leftScore": 7,
+    "ai": {
+      "arenaMode": "positions",
+      "debateScore": 8,
+      "controversyLevel": "fort",
+      "debateQuestion": "",
+      "resume": "",
+      "keywords": [
+        "Laurent Nuñez",
+        "ingérence numérique étrangère",
+        "candidats LFI",
+        "municipales 2026",
+        "action judiciaire",
+        "François Piquemal",
+        "Toulouse",
+        "Israël"
+      ],
+      "selectedLinks": [
+        "https://www.lemonde.fr/politique/article/2026/05/20/ingerence-numerique-etrangere-une-action-judiciaire-est-engagee-apres-des-soupcons-visant-des-candidats-lfi-annonce-laurent-nunez_6691738_823448.html",
+        "https://www.franceinfo.fr/politique/la-france-insoumise/une-action-judiciaire-engagee-sur-les-ingerences-numeriques-etrangeres-visant-des-candidats-lfi-aux-municipales-annonce-le-ministre-de-l-interieur_8016452.html#xtor=RSS-3-[lestitres]",
+        "https://france3-regions.franceinfo.fr/occitanie/haute-garonne/toulouse/ingerences-israeliennes-contre-lfi-piquemal-denonce-un-parfum-de-scandale-d-etat-au-sujet-de-l-enquete-sur-les-municipales-2026-3353836.html#xtor=RSS-3-[lestitres]"
+      ],
+      "agonTheme": "Politique",
+      "positionA": "",
+      "positionB": "",
+      "leftScore": 7,
+      "storyLink": {
+        "story_decision": "existing_story",
+        "matched_story_id": "05-la-vie-politique-francaise-traverse-une-periode-d-instabilite-et-de-recompositio",
+        "matched_story_title": "La vie politique française traverse une période d’instabilité et de recomposition",
+        "matched_story_summary": "",
+        "previous_episode_id": "446",
+        "previous_episode_title": "La France peut-elle être gouvernée efficacement sous un régime communiste ?",
+        "previous_episode_summary": "Franz-Olivier Giesbert anticipe un bouleversement politique majeur en France d’ici 2027, marqué par l’arrivée au pouvoir d’un régime communiste. Il s’interroge sur la capacité à gouverner un pays sous cette idéologie, évoquant une situation profondément instable où la révolution bouleverserait les fondements mêmes de la société. Cette transformation radicale ne serait pas seulement politique, mais aussi sociale, plongeant la France dans une période de tensions extrêmes.\n\nPour Giesbert, cette nouvelle ère pourrait s’accompagner d’une radicalisation inquiétante, symbolisée par le retour de la guillotine, image forte d’un climat de violence et de répression. Ce pronostic traduit une vision sombre des conséquences d’un tel changement, où le pouvoir communiste ne se limiterait pas à une simple alternance politique, mais deviendrait un facteur de rupture intense, générant conflits internes et risques majeurs pour la stabilité du pays.\n\nLa France peut-elle être gouvernée efficacement sous un régime communiste ?\n\nM. Camus",
+        "previous_episode_url": "http://localhost:3001/debate?id=446",
+        "confidence": 0.85,
+        "reason": "L'actualité porte sur une action judiciaire liée à une ingérence étrangère dans la vie politique française (candidats LFI aux municipales), ce qui relève d'une instabilité et recomposition politique avec un enjeu judiciaire, sans être une grande affaire judiciaire classique ni une affaire de probité politique. Le titre couvre bien le thème politique français et les tensions internes.",
+        "criteria": {
+          "main_actors_match": true,
+          "central_tension_match": true,
+          "temporal_continuity": true,
+          "editorial_theme_match": true,
+          "strong_keywords_match": true
+        },
+        "new_story": {
+          "story_title": "",
+          "story_summary": "",
+          "main_actors": [],
+          "central_tension": "\"Une action judiciaire\" engagée sur les soupçons d'ingérence numérique étrangère visant des candidats LFI aux municipales, annonce le minis…",
+          "keywords": [],
+          "status": "active"
+        }
+      },
+      "sourceSubject": "\"Une action judiciaire\" engagée sur les soupçons d'ingérence numérique étrangère visant des candidats LFI aux municipales, annonce le ministre de l'Intérieur",
+      "fullArticleState": "short"
+    }
+  },
+  {
+    "action": "save",
+    "subject": "Film «L’Abandon» : pourquoi Samuel Paty est-il mort ?",
+    "debateScore": 8,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "Valeurs actuelles, Le Point",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.valeursactuelles.com/clubvaleurs/lincorrect/film-labandon-pourquoi-samuel-paty-est-il-mort",
+        "source": "Valeurs actuelles",
+        "title": "Film «L’Abandon» : pourquoi Samuel Paty est-il mort ?",
+        "thumbnail": ""
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/watch?v=Ffnlh8qWdhQ",
+        "source": "Le Point",
+        "title": "",
+        "thumbnail": "https://i.ytimg.com/vi/Ffnlh8qWdhQ/hqdefault.jpg"
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/watch?v=pyeNPXExXBY",
+        "source": "Le Point",
+        "title": "",
+        "thumbnail": "https://i.ytimg.com/vi/pyeNPXExXBY/hqdefault.jpg"
+      }
+    ],
+    "sessionLabel": "20/05/2026 à 20:13:57",
+    "controversyLevel": "fort",
+    "leftScore": 6,
+    "ai": {
+      "arenaMode": "positions",
+      "debateScore": 8,
+      "controversyLevel": "fort",
+      "debateQuestion": "",
+      "resume": "",
+      "keywords": [
+        "Samuel Paty",
+        "film L’Abandon",
+        "Antoine Reinartz",
+        "attentat 2020",
+        "liberté d’expression",
+        "enseignement"
+      ],
+      "selectedLinks": [
+        "https://www.youtube.com/watch?v=Ffnlh8qWdhQ",
+        "https://www.youtube.com/watch?v=pyeNPXExXBY",
+        "https://www.valeursactuelles.com/clubvaleurs/lincorrect/film-labandon-pourquoi-samuel-paty-est-il-mort"
+      ],
+      "agonTheme": "Société / éducation",
+      "positionA": "",
+      "positionB": "",
+      "leftScore": 6,
+      "storyLink": {
+        "story_decision": "existing_story",
+        "matched_story_id": "60-les-enjeux-de-liberte-d-expression-de-censure-et-de-responsabilite-publique-se-m",
+        "matched_story_title": "Les enjeux de liberté d’expression, de censure et de responsabilité publique se multiplient",
+        "matched_story_summary": "",
+        "previous_episode_id": "",
+        "previous_episode_title": "",
+        "previous_episode_summary": "",
+        "previous_episode_url": "",
+        "confidence": 0.85,
+        "reason": "L'actualité porte sur un film traitant de la mort de Samuel Paty liée à la liberté d’expression et à l’enseignement, ce qui correspond précisément aux enjeux de liberté d’expression et responsabilité publique évoqués dans le titre de l'histoire.",
+        "criteria": {
+          "main_actors_match": false,
+          "central_tension_match": true,
+          "temporal_continuity": true,
+          "editorial_theme_match": true,
+          "strong_keywords_match": true
+        },
+        "new_story": {
+          "story_title": "",
+          "story_summary": "",
+          "main_actors": [
+            "Samuel Paty",
+            "Antoine Reinartz"
+          ],
+          "central_tension": "Liberté d’expression et enseignement",
+          "keywords": [
+            "Samuel Paty",
+            "liberté d’expression",
+            "enseignement",
+            "film"
+          ],
+          "status": "active"
+        }
+      },
+      "sourceSubject": "Film «L’Abandon» : pourquoi Samuel Paty est-il mort ?",
+      "fullArticleState": "short"
+    }
+  },
+  {
+    "action": "save",
+    "subject": "Tribune anti-Bolloré : « La réponse du PDG de Canal+ pourrait bien être le signe que les pratiques changent »",
+    "debateScore": 8,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "Le Monde, L'Obs, Public Sénat",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.lemonde.fr/idees/article/2026/05/20/tribune-anti-bollore-la-reponse-du-pdg-de-canal-pourrait-bien-etre-le-signe-que-les-pratiques-changent_6691691_3232.html",
+        "source": "Le Monde",
+        "title": "Tribune anti-Bolloré : « La réponse du PDG de Canal+ pourrait bien être le signe que les pratiques changent »",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.nouvelobs.com/cinema/20260520.OBS115084/pendant-ce-temps-a-cannes-arthur-harari-et-la-tribune-anti-bollore-la-grace-d-adele-exarchopoulos-et-l-entree-en-scene-d-almodovar.html",
+        "source": "L'Obs",
+        "title": "Pendant ce temps, à Cannes… Arthur Harari et la tribune anti-Bolloré, la grâce d’Adèle Exarchopoulos et l’entrée en scène d’Almodóvar",
+        "thumbnail": ""
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/watch?v=RiUW-rxH_6E",
+        "source": "Public Sénat",
+        "title": "",
+        "thumbnail": "https://i.ytimg.com/vi/RiUW-rxH_6E/hqdefault.jpg"
+      }
+    ],
+    "sessionLabel": "20/05/2026 à 20:13:57",
+    "controversyLevel": "fort",
+    "leftScore": 7,
+    "ai": {
+      "arenaMode": "positions",
+      "debateScore": 8,
+      "controversyLevel": "fort",
+      "debateQuestion": "",
+      "resume": "",
+      "keywords": [
+        "Vincent Bolloré",
+        "Canal+",
+        "Maxime Saada",
+        "Tribune anti-Bolloré",
+        "Cannes",
+        "maccarthysme",
+        "industrie audiovisuelle"
+      ],
+      "selectedLinks": [
+        "https://www.lemonde.fr/idees/article/2026/05/20/tribune-anti-bollore-la-reponse-du-pdg-de-canal-pourrait-bien-etre-le-signe-que-les-pratiques-changent_6691691_3232.html",
+        "https://www.nouvelobs.com/cinema/20260520.OBS115084/pendant-ce-temps-a-cannes-arthur-harari-et-la-tribune-anti-bollore-la-grace-d-adele-exarchopoulos-et-l-entree-en-scene-d-almodovar.html",
+        "https://www.youtube.com/watch?v=RiUW-rxH_6E"
+      ],
+      "agonTheme": "Médias - divertissements",
+      "positionA": "",
+      "positionB": "",
+      "leftScore": 7,
+      "storyLink": {
+        "story_decision": "existing_story",
+        "matched_story_id": "27-les-medias-traditionnels-s-adaptent-a-la-concurrence-des-plateformes-des-influen",
+        "matched_story_title": "Les médias traditionnels s’adaptent à la concurrence des plateformes, des influenceurs et des nouveaux formats",
+        "matched_story_summary": "",
+        "previous_episode_id": "",
+        "previous_episode_title": "",
+        "previous_episode_summary": "",
+        "previous_episode_url": "",
+        "confidence": 0.85,
+        "reason": "L'actualité porte sur une tribune anti-Bolloré dans le secteur audiovisuel et la réponse du PDG de Canal+, ce qui correspond précisément à des enjeux dans les médias traditionnels et leurs transformations.",
+        "criteria": {
+          "main_actors_match": true,
+          "central_tension_match": true,
+          "temporal_continuity": true,
+          "editorial_theme_match": true,
+          "strong_keywords_match": true
+        },
+        "new_story": {
+          "story_title": "",
+          "story_summary": "",
+          "main_actors": [
+            "tribune",
+            "anti",
+            "bollore"
+          ],
+          "central_tension": "Tribune anti-Bolloré : « La réponse du PDG de Canal+ pourrait bien être le signe que les pratiques changent »",
+          "keywords": [
+            "tribune",
+            "anti",
+            "bollore",
+            "reponse",
+            "canal",
+            "pourrait",
+            "bien",
+            "signe"
+          ],
+          "status": "active"
+        }
+      },
+      "sourceSubject": "Tribune anti-Bolloré : « La réponse du PDG de Canal+ pourrait bien être le signe que les pratiques changent »",
+      "fullArticleState": "short"
+    }
+  },
+  {
+    "action": "save",
+    "subject": "Messe en hommage à Pétain à Verdun : l'organisateur condamné pour contestation de crime contre l'humanité",
+    "debateScore": 8,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "Franceinfo, La Croix, BFMTV, CNews",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.bfmtv.com/police-justice/messe-en-hommage-au-marechal-petain-a-verdun-l-organisateur-ecope-de-5-000-euros-d-amende-pour-contestation-publique-de-crime-contre-l-humanite_AD-202605200716.html",
+        "source": "BFMTV",
+        "title": "Messe \"en hommage au maréchal Pétain\" à Verdun: l'organisateur écope de 5.000 euros d'amende pour \"contestation publique de crime contre l'humanité\"",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://france3-regions.franceinfo.fr/grand-est/meuse/verdun/messe-en-hommage-a-petain-a-verdun-l-organisateur-condamne-pour-contestation-de-crime-contre-l-humanite-3354163.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "title": "Messe en hommage à Pétain à Verdun : l'organisateur condamné pour contestation de crime contre l'humanité",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.la-croix.com/societe/verdun-5-000-d-amende-pour-lorganisateur-dune-messe-pour-petain-20260520",
+        "source": "La Croix",
+        "title": "Verdun : 5 000 € d’amende pour l’organisateur d’une messe pour Pétain",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.cnews.fr/faits-divers/2026-05-20/messe-en-hommage-au-marechal-petain-lorganisateur-condamne-payer-5000-euros",
+        "source": "CNews",
+        "title": "Messe en hommage au maréchal Pétain : l'organisateur condamné à payer 5.000 euros d'amende",
+        "thumbnail": ""
+      }
+    ],
+    "sessionLabel": "20/05/2026 à 20:13:57",
+    "controversyLevel": "fort",
+    "leftScore": 7,
+    "ai": {
+      "arenaMode": "positions",
+      "debateScore": 8,
+      "controversyLevel": "fort",
+      "debateQuestion": "",
+      "resume": "",
+      "keywords": [
+        "Maréchal Pétain",
+        "Verdun",
+        "contestation crime contre l'humanité",
+        "organisateur messe",
+        "amende 5 000 euros",
+        "justice française"
+      ],
+      "selectedLinks": [
+        "https://www.bfmtv.com/police-justice/messe-en-hommage-au-marechal-petain-a-verdun-l-organisateur-ecope-de-5-000-euros-d-amende-pour-contestation-publique-de-crime-contre-l-humanite_AD-202605200716.html",
+        "https://france3-regions.franceinfo.fr/grand-est/meuse/verdun/messe-en-hommage-a-petain-a-verdun-l-organisateur-condamne-pour-contestation-de-crime-contre-l-humanite-3354163.html#xtor=RSS-3-[lestitres]",
+        "https://www.la-croix.com/societe/verdun-5-000-d-amende-pour-lorganisateur-dune-messe-pour-petain-20260520",
+        "https://www.cnews.fr/faits-divers/2026-05-20/messe-en-hommage-au-marechal-petain-lorganisateur-condamne-payer-5000-euros"
+      ],
+      "agonTheme": "Justice / faits divers",
+      "positionA": "",
+      "positionB": "",
+      "leftScore": 7,
+      "storyLink": {
+        "story_decision": "existing_story",
+        "matched_story_id": "54-les-grandes-affaires-judiciaires-et-mediatiques-deviennent-des-debats-de-societe",
+        "matched_story_title": "Les grandes affaires judiciaires et médiatiques deviennent des débats de société",
+        "matched_story_summary": "",
+        "previous_episode_id": "439",
+        "previous_episode_title": "La centralisation des plaintes facilite-t-elle ou complique-t-elle la justice ?",
+        "previous_episode_summary": "Les plaintes pour violences sexuelles visant Patrick Bruel ont été centralisées au parquet de Nanterre, a annoncé la procureure de Paris. Cette décision, qui consiste à regrouper l’ensemble des dossiers, vise à garantir une gestion cohérente et coordonnée de l’enquête. Le choix du parquet de Nanterre, compétent pour ce type d’affaires, traduit une volonté institutionnelle d’organiser le traitement judiciaire de ces accusations de manière structurée. Toutefois, aucun détail n’a été communiqué sur le nombre exact de plaintes déposées ni sur l’état d’avancement des investigations. Cette centralisation intervient dans un contexte où les procédures liées aux violences sexuelles font l’objet d’une attention soutenue, soulignant la complexité et la délicatesse du traitement judiciaire. Si aucune divergence n’a été signalée concernant la décision de regrouper les plaintes, cette concentration des dossiers pourrait néanmoins poser des difficultés en termes de ressources et de gestion, en raison de la médiatisation et de la pression sociale qui entourent cette affaire. L’évolution de cette procédure reste à suivre avec attention.",
+        "previous_episode_url": "http://localhost:3001/debate?id=439",
+        "confidence": 0.85,
+        "reason": "L'actualité porte sur une condamnation judiciaire liée à une contestation de crime contre l'humanité, ce qui correspond à une grande affaire judiciaire avec un enjeu sociétal.",
+        "criteria": {
+          "main_actors_match": true,
+          "central_tension_match": true,
+          "temporal_continuity": true,
+          "editorial_theme_match": true,
+          "strong_keywords_match": true
+        },
+        "new_story": {
+          "story_title": "",
+          "story_summary": "",
+          "main_actors": [
+            "messe",
+            "hommage",
+            "petain"
+          ],
+          "central_tension": "Messe en hommage à Pétain à Verdun : l'organisateur condamné pour contestation de crime contre l'humanité",
+          "keywords": [
+            "messe",
+            "hommage",
+            "petain",
+            "verdun",
+            "organisateur",
+            "condamne",
+            "contestation",
+            "crime"
+          ],
+          "status": "active"
+        }
+      },
+      "sourceSubject": "Messe en hommage à Pétain à Verdun : l'organisateur condamné pour contestation de crime contre l'humanité",
+      "fullArticleState": "short"
+    }
+  },
+  {
+    "action": "save",
+    "subject": "Radicalisés en ligne, fans d’Hitler, incels… Ce que l’on sait des auteurs présumés de l’attaque contre une mosquée à San Diego",
+    "debateScore": 8,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "Libération, L'Obs, La Croix, RFI",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.liberation.fr/international/amerique/mineur-en-fugue-suicidaire-propos-sur-la-fierte-raciale-ce-que-lon-sait-des-auteurs-presumes-de-lattaque-contre-une-mosquee-a-san-diego-20260519_672FCJFYK5BXDNFDNGV27HNRPM/",
+        "source": "Libération",
+        "title": "Radicalisés en ligne, fans d’Hitler, incels… Ce que l’on sait des auteurs présumés de l’attaque contre une mosquée à San Diego",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.nouvelobs.com/societe/20260519.OBS115081/affaire-patrick-bruel-de-nouvelles-plaintes-annoncees-des-concerts-annules-au-quebec-ce-que-l-on-sait.html",
+        "source": "L'Obs",
+        "title": "Affaire Patrick Bruel : de nouvelles plaintes annoncées, des concerts annulés au Québec… Ce que l’on sait",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.nouvelobs.com/cinema/20260519.OBS115072/les-gouteuses-d-hitler-un-huis-clos-trop-plat-au-plus-pres-de-la-paranoia-aigue-du-fuhrer.html",
+        "source": "L'Obs",
+        "title": "« Les Goûteuses d’Hitler » : un huis clos trop plat au plus près de la paranoïa aiguë du Führer",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.rfi.fr/fr/afrique/20260520-sierra-leone-accord-sur-les-migrants-expuls%C3%A9s-par-les-%C3%A9tats-unis",
+        "source": "RFI",
+        "title": "Sierra Leone: ce que l’on sait de l’accord sur les migrants expulsés par les États-Unis",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.la-croix.com/religion/etats-unis-l-attaque-dune-mosquee-de-san-diego-une-tragedie-revelatrice-de-la-hausse-des-actes-antimusulmans-20260520",
+        "source": "La Croix",
+        "title": "États-Unis : l’attaque d’une mosquée de San Diego, une tragédie révélatrice de la hausse des actes antimusulmans",
+        "thumbnail": ""
+      }
+    ],
+    "sessionLabel": "20/05/2026 à 20:13:57",
+    "controversyLevel": "fort",
+    "leftScore": 7,
+    "ai": {
+      "arenaMode": "positions",
+      "debateScore": 8,
+      "controversyLevel": "fort",
+      "debateQuestion": "",
+      "resume": "",
+      "keywords": [
+        "San Diego",
+        "attaque mosquée",
+        "radicalisation en ligne",
+        "incels",
+        "fans d’Hitler",
+        "actes antimusulmans",
+        "États-Unis"
+      ],
+      "selectedLinks": [
+        "https://www.liberation.fr/international/amerique/mineur-en-fugue-suicidaire-propos-sur-la-fierte-raciale-ce-que-lon-sait-des-auteurs-presumes-de-lattaque-contre-une-mosquee-a-san-diego-20260519_672FCJFYK5BXDNFDNGV27HNRPM/",
+        "https://www.la-croix.com/religion/etats-unis-l-attaque-dune-mosquee-de-san-diego-une-tragedie-revelatrice-de-la-hausse-des-actes-antimusulmans-20260520"
+      ],
+      "agonTheme": "Justice / faits divers",
+      "positionA": "",
+      "positionB": "",
+      "leftScore": 7,
+      "storyLink": {
+        "story_decision": "existing_story",
+        "matched_story_id": "52-la-securite-du-quotidien-devient-un-enjeu-central-entre-incivilites-violences-et",
+        "matched_story_title": "La sécurité du quotidien devient un enjeu central entre incivilités, violences et attentes de protection",
+        "matched_story_summary": "",
+        "previous_episode_id": "",
+        "previous_episode_title": "",
+        "previous_episode_summary": "",
+        "previous_episode_url": "",
+        "confidence": 0.85,
+        "reason": "L'actualité porte sur une attaque violente à San Diego motivée par une radicalisation extrême, ce qui correspond bien à la thématique de la sécurité du quotidien face aux violences et incivilités.",
+        "criteria": {
+          "main_actors_match": true,
+          "central_tension_match": true,
+          "temporal_continuity": true,
+          "editorial_theme_match": true,
+          "strong_keywords_match": true
+        },
+        "new_story": {
+          "story_title": "",
+          "story_summary": "",
+          "main_actors": [],
+          "central_tension": "Radicalisés en ligne, fans d’Hitler, incels… Ce que l’on sait des auteurs présumés de l’attaque contre une mosquée à San Diego",
+          "keywords": [],
+          "status": "active"
+        }
+      },
+      "sourceSubject": "Radicalisés en ligne, fans d’Hitler, incels… Ce que l’on sait des auteurs présumés de l’attaque contre une mosquée à San Diego",
+      "fullArticleState": "short"
+    }
+  },
+  {
+    "action": "save",
+    "subject": "États-Unis : les émeutiers responsables de l’assaut du Capitole pourraient être indemnisés, annonce JD Vance",
+    "debateScore": 8,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "Valeurs actuelles, La Croix, CNews, LCI",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.la-croix.com/international/migrants-expulses-des-etats-unis-avec-la-sierra-leone-washington-continue-les-refoulements-par-ricochet-20260520",
+        "source": "La Croix",
+        "title": "Migrants expulsés des États-Unis : avec la Sierra Leone, Washington continue les refoulements « par ricochet »",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.valeursactuelles.com/monde/etats-unis-les-emeutiers-responsables-de-lassaut-du-capitole-pourraient-etre-indemnises-annonce-jd-vance",
+        "source": "Valeurs actuelles",
+        "title": "États-Unis : les émeutiers responsables de l’assaut du Capitole pourraient être indemnisés, annonce JD Vance",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.cnews.fr/people/2026-05-20/laurie-cholewa-annonce-avoir-subi-une-double-mastectomie-en-raison-dun-cancer-du",
+        "source": "CNews",
+        "title": "Laurie Cholewa annonce avoir subi une double mastectomie en raison d’un cancer du sein",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.cnews.fr/monde/2026-05-19/incendie-de-la-tour-grenfell-londres-en-2017-une-soixantaine-de-personnes",
+        "source": "CNews",
+        "title": "Incendie de la tour Grenfell à Londres en 2017 : une soixantaine de personnes pourraient être inculpées",
+        "thumbnail": ""
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/watch?v=zhk9ppDEbxE",
+        "source": "LCI",
+        "title": "",
+        "thumbnail": "https://i.ytimg.com/vi/zhk9ppDEbxE/hqdefault.jpg"
+      }
+    ],
+    "sessionLabel": "20/05/2026 à 20:13:57",
+    "controversyLevel": "fort",
+    "leftScore": 7,
+    "ai": {
+      "arenaMode": "positions",
+      "debateScore": 8,
+      "controversyLevel": "fort",
+      "debateQuestion": "",
+      "resume": "",
+      "keywords": [
+        "JD Vance",
+        "assaut du Capitole",
+        "émeutiers",
+        "indemnisation",
+        "États-Unis",
+        "Capitole",
+        "politique américaine"
+      ],
+      "selectedLinks": [
+        "https://www.valeursactuelles.com/monde/etats-unis-les-emeutiers-responsables-de-lassaut-du-capitole-pourraient-etre-indemnises-annonce-jd-vance"
+      ],
+      "agonTheme": "Politique",
+      "positionA": "",
+      "positionB": "",
+      "leftScore": 7,
+      "storyLink": {
+        "story_decision": "existing_story",
+        "matched_story_id": "04-la-presidence-trump-reconfigure-la-politique-americaine-et-les-relations-interna",
+        "matched_story_title": "La présidence Trump reconfigure la politique américaine et les relations internationales",
+        "matched_story_summary": "",
+        "previous_episode_id": "",
+        "previous_episode_title": "",
+        "previous_episode_summary": "",
+        "previous_episode_url": "",
+        "confidence": 0.85,
+        "reason": "L'actualité concerne une question politique américaine majeure liée à l'assaut du Capitole, un événement central dans la période post-présidence Trump, impliquant la politique américaine et ses tensions internes.",
+        "criteria": {
+          "main_actors_match": true,
+          "central_tension_match": true,
+          "temporal_continuity": true,
+          "editorial_theme_match": true,
+          "strong_keywords_match": true
+        },
+        "new_story": {
+          "story_title": "",
+          "story_summary": "",
+          "main_actors": [],
+          "central_tension": "États-Unis : les émeutiers responsables de l’assaut du Capitole pourraient être indemnisés, annonce JD Vance",
+          "keywords": [],
+          "status": "active"
+        }
+      },
+      "sourceSubject": "États-Unis : les émeutiers responsables de l’assaut du Capitole pourraient être indemnisés, annonce JD Vance",
+      "fullArticleState": "short"
+    }
+  },
+  {
+    "action": "save",
+    "subject": "Canal+ : l’emprise de Bolloré sur le cinéma français en chiffres",
+    "debateScore": 8,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "L'Obs, France 24, 20 Minutes, Public Sénat, France Culture, Frontières",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.nouvelobs.com/economie/20260519.OBS115080/canal-l-emprise-de-bollore-sur-le-cinema-francais-en-chiffres.html",
+        "source": "L'Obs",
+        "title": "Canal+ : l’emprise de Bolloré sur le cinéma français en chiffres",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.france24.com/fr/%C3%A9missions/face-%C3%A0-face/20260520-tribune-anti-bollor%C3%A9-canal-menace-de-boycotter-les-signataires",
+        "source": "France 24",
+        "title": "Tribune anti-Bolloré : Canal+ menace de boycotter les signataires",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.20minutes.fr/arts-stars/medias/4224078-20260520-canal-ugc-relay-comment-passer-semaine-culturelle-bollore?at_medium=display&at_campaign=149",
+        "source": "20 Minutes",
+        "title": "Canal+, UGC, Relay… Comment passer une semaine culturelle sans Bolloré ?",
+        "thumbnail": ""
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/watch?v=raA5PRKwzMM",
+        "source": "Public Sénat",
+        "title": "",
+        "thumbnail": "https://i.ytimg.com/vi/raA5PRKwzMM/hqdefault.jpg"
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/watch?v=WHEGjCXsEes",
+        "source": "France 24",
+        "title": "",
+        "thumbnail": "https://i.ytimg.com/vi/WHEGjCXsEes/hqdefault.jpg"
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/shorts/ejnhnMEcYe8",
+        "source": "France Culture",
+        "title": "Bolloré et Canal+ : une menace pour le cinéma ?",
+        "thumbnail": ""
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/watch?v=lbrl5pDD-h0",
+        "source": "France Culture",
+        "title": "",
+        "thumbnail": "https://i.ytimg.com/vi/lbrl5pDD-h0/hqdefault.jpg"
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/shorts/XTUcmY8iXlw",
+        "source": "Frontières",
+        "title": "TRIBUNE ANTI-BOLLORÉ AVANT CANNES : ÉNORME FLOP POUR LIBÉRATION",
+        "thumbnail": ""
+      }
+    ],
+    "sessionLabel": "20/05/2026 à 20:13:57",
+    "controversyLevel": "fort",
+    "leftScore": 7,
+    "ai": {
+      "arenaMode": "positions",
+      "debateScore": 8,
+      "controversyLevel": "fort",
+      "debateQuestion": "",
+      "resume": "",
+      "keywords": [
+        "Canal+",
+        "Vincent Bolloré",
+        "cinéma français",
+        "boycott",
+        "Maxime Saada",
+        "tribune anti-Bolloré",
+        "UGC",
+        "Libération"
+      ],
+      "selectedLinks": [
+        "https://www.nouvelobs.com/economie/20260519.OBS115080/canal-l-emprise-de-bollore-sur-le-cinema-francais-en-chiffres.html",
+        "https://www.youtube.com/watch?v=raA5PRKwzMM",
+        "https://www.youtube.com/watch?v=WHEGjCXsEes",
+        "https://www.france24.com/fr/%C3%A9missions/face-%C3%A0-face/20260520-tribune-anti-bollor%C3%A9-canal-menace-de-boycotter-les-signataires",
+        "https://www.20minutes.fr/arts-stars/medias/4224078-20260520-canal-ugc-relay-comment-passer-semaine-culturelle-bollore?at_medium=display&at_campaign=149",
+        "https://www.youtube.com/shorts/ejnhnMEcYe8",
+        "https://www.youtube.com/watch?v=lbrl5pDD-h0",
+        "https://www.youtube.com/shorts/XTUcmY8iXlw"
+      ],
+      "agonTheme": "Médias - divertissements",
+      "positionA": "",
+      "positionB": "",
+      "leftScore": 7,
+      "storyLink": {
+        "story_decision": "new_story",
+        "matched_story_id": null,
+        "matched_story_title": null,
+        "matched_story_summary": "",
+        "previous_episode_id": "",
+        "previous_episode_title": "",
+        "previous_episode_summary": "",
+        "previous_episode_url": "",
+        "confidence": 0.58,
+        "reason": "Aucune histoire existante ne correspond assez précisément au sujet.",
+        "criteria": {
+          "main_actors_match": true,
+          "central_tension_match": true,
+          "temporal_continuity": true,
+          "editorial_theme_match": true,
+          "strong_keywords_match": true
+        },
+        "new_story": {
+          "story_title": "",
+          "story_summary": "",
+          "main_actors": [],
+          "central_tension": "Canal+ : l’emprise de Bolloré sur le cinéma français en chiffres",
+          "keywords": [],
+          "status": "active"
+        }
+      },
+      "sourceSubject": "Canal+ : l’emprise de Bolloré sur le cinéma français en chiffres",
+      "fullArticleState": "short"
+    }
+  },
+  {
+    "action": "save",
+    "subject": "EN DIRECT, guerre au Moyen-Orient : Donald Trump dit ne pas être « pressé » de trouver un accord avec l’Iran ; Téhéran accuse les Etats-Unis de « chercher à déclencher une nouvelle guerre »",
+    "debateScore": 9,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "Le Monde, Libération, Le Figaro, La Croix, BFMTV, CNews, 20 Minutes",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.liberation.fr/international/moyen-orient/en-direct-guerre-au-moyen-orient-les-etats-unis-ont-le-doigt-sur-la-gachette-previent-jd-vance-20260520_YAHGKILZGVDO5AWMEA47MRHI5Y/",
+        "source": "Libération",
+        "title": "EN DIRECT - Guerre au Moyen-Orient : l’Iran prépare une «réponse musclée» à toute attaque, prévient Téhéran",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.lemonde.fr/international/live/2026/05/20/en-direct-guerre-au-moyen-orient-la-paralysie-du-detroit-d-ormuz-risque-de-provoquer-un-choc-agroalimentaire-alerte-l-agence-de-l-onu-pour-l-alimentation-et-l-agriculture_6688992_3210.html",
+        "source": "Le Monde",
+        "title": "EN DIRECT, guerre au Moyen-Orient : Donald Trump dit ne pas être « pressé » de trouver un accord avec l’Iran ; Téhéran accuse les Etats-Unis de « chercher à déclencher une nouvelle guerre »",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.la-croix.com/international/direct-guerre-iran-israel-usa-jour-82-moyen-orient-bilan-resume-aujourdhui-20260520",
+        "source": "La Croix",
+        "title": "DIRECT. Guerre au Moyen-Orient : Israël en « alerte maximale » ; menaces entre Iran et États-Unis",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.20minutes.fr/monde/etats-unis/4224386-20260520-direct-guerre-moyen-orient-xi-martele-reprise-hostilites-inopportune?at_medium=display&at_campaign=149",
+        "source": "20 Minutes",
+        "title": "EN DIRECT Guerre au Moyen-Orient : L’Iran affirme que les Etats-Unis « cherchent à déclencher une nouvelle guerre », Tsahal en alerte maximale...",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.bfmtv.com/international/moyen-orient/iran/direct-guerre-au-moyen-orient-l-iran-promet-d-ouvrir-de-nouveaux-fronts-si-les-etats-unis-reprennent-leurs-attaques_LN-202605200113.html",
+        "source": "BFMTV",
+        "title": "DIRECT. Guerre au Moyen-Orient: l'armée israélienne en \"alerte maximale\" après de nouvelles menaces entre l'Iran et les États-Unis",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.lefigaro.fr/international/en-direct-guerre-au-moyen-orient-trump-menace-de-frapper-l-iran-si-un-accord-n-est-pas-trouve-teheran-met-en-garde-contre-l-ouverture-de-nouveaux-fronts-20260520",
+        "source": "Le Figaro",
+        "title": "EN DIRECT - Guerre au Moyen-Orient : 26 bateaux auraient traversé le détroit d’Ormuz ces dernières 24 heures, selon des médias d’État iraniens",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.cnews.fr/monde/2026-05-20/guerre-au-moyen-orient-nouveaux-echanges-de-menaces-entre-les-etats-unis-et-liran",
+        "source": "CNews",
+        "title": "Guerre au Moyen-Orient : nouveaux échanges de menaces entre les Etats-Unis et l'Iran",
+        "thumbnail": ""
+      }
+    ],
+    "sessionLabel": "20/05/2026 à 20:13:57",
+    "controversyLevel": "très fort",
+    "leftScore": 7,
+    "ai": {
+      "arenaMode": "positions",
+      "debateScore": 9,
+      "controversyLevel": "très fort",
+      "debateQuestion": "",
+      "resume": "",
+      "keywords": [
+        "Donald Trump",
+        "Iran",
+        "États-Unis",
+        "guerre au Moyen-Orient",
+        "détroit d’Ormuz",
+        "Israël",
+        "Tsahal",
+        "Téhéran"
+      ],
+      "selectedLinks": [
+        "https://www.liberation.fr/international/moyen-orient/en-direct-guerre-au-moyen-orient-les-etats-unis-ont-le-doigt-sur-la-gachette-previent-jd-vance-20260520_YAHGKILZGVDO5AWMEA47MRHI5Y/",
+        "https://www.lemonde.fr/international/live/2026/05/20/en-direct-guerre-au-moyen-orient-la-paralysie-du-detroit-d-ormuz-risque-de-provoquer-un-choc-agroalimentaire-alerte-l-agence-de-l-onu-pour-l-alimentation-et-l-agriculture_6688992_3210.html",
+        "https://www.la-croix.com/international/direct-guerre-iran-israel-usa-jour-82-moyen-orient-bilan-resume-aujourdhui-20260520",
+        "https://www.20minutes.fr/monde/etats-unis/4224386-20260520-direct-guerre-moyen-orient-xi-martele-reprise-hostilites-inopportune?at_medium=display&at_campaign=149",
+        "https://www.bfmtv.com/international/moyen-orient/iran/direct-guerre-au-moyen-orient-l-iran-promet-d-ouvrir-de-nouveaux-fronts-si-les-etats-unis-reprennent-leurs-attaques_LN-202605200113.html",
+        "https://www.lefigaro.fr/international/en-direct-guerre-au-moyen-orient-trump-menace-de-frapper-l-iran-si-un-accord-n-est-pas-trouve-teheran-met-en-garde-contre-l-ouverture-de-nouveaux-fronts-20260520",
+        "https://www.cnews.fr/monde/2026-05-20/guerre-au-moyen-orient-nouveaux-echanges-de-menaces-entre-les-etats-unis-et-liran"
+      ],
+      "agonTheme": "International",
+      "positionA": "",
+      "positionB": "",
+      "leftScore": 7,
+      "storyLink": {
+        "story_decision": "existing_story",
+        "matched_story_id": "01-les-conflits-au-moyen-orient-recomposent-les-equilibres-regionaux",
+        "matched_story_title": "Les conflits au Moyen-Orient recomposent les équilibres régionaux",
+        "matched_story_summary": "",
+        "previous_episode_id": "444",
+        "previous_episode_title": "Israël est-il proche de son objectif de tuer tous les responsables du 7-Octobre ?",
+        "previous_episode_summary": "Le Premier ministre israélien Benyamin Nétanyahou affirme que son pays se rapproche de son objectif majeur dans le conflit au Moyen-Orient : éliminer tous les responsables des attaques du 7 octobre. Cette déclaration témoigne d'une volonté ferme de cibler précisément les dirigeants impliqués dans cette offensive, marquant une étape importante dans la dynamique actuelle du conflit.\n\nDans le même temps, les opérations militaires israéliennes se poursuivent avec une intensité accrue, notamment par des bombardements renforcés dans le sud du Liban, signe d'une stratégie visant à étendre la pression sur les groupes armés liés à l'attaque. Par ailleurs, une explosion mystérieuse sur le sol israélien a provoqué une certaine panique, avant d'être attribuée à une expérience menée par une entreprise locale. Ce dernier incident ajoute une couche d'incertitude à un contexte déjà tendu, où la nature exacte des événements reste difficile à interpréter.\n\nLa guerre au Moyen-Orient : Israël est-il proche de son objectif de tuer tous les responsables du 7-Octobre ?",
+        "previous_episode_url": "http://localhost:3001/debate?id=444",
+        "confidence": 0.9,
+        "reason": "L'actualité porte sur la guerre au Moyen-Orient impliquant Iran, Israël, États-Unis et Donald Trump, ce qui correspond précisément aux conflits au Moyen-Orient et leurs impacts régionaux.",
+        "criteria": {
+          "main_actors_match": true,
+          "central_tension_match": true,
+          "temporal_continuity": true,
+          "editorial_theme_match": true,
+          "strong_keywords_match": true
+        },
+        "new_story": {
+          "story_title": "",
+          "story_summary": "",
+          "main_actors": [
+            "direct",
+            "guerre",
+            "moyen"
+          ],
+          "central_tension": "EN DIRECT, guerre au Moyen-Orient : Donald Trump dit ne pas être « pressé » de trouver un accord avec l’Iran ; Téhéran accuse les Etats-Uni…",
+          "keywords": [
+            "direct",
+            "guerre",
+            "moyen",
+            "orient",
+            "donald",
+            "trump",
+            "presse",
+            "trouver"
+          ],
+          "status": "active"
+        }
+      },
+      "sourceSubject": "EN DIRECT, guerre au Moyen-Orient : Donald Trump dit ne pas être « pressé » de trouver un accord avec l’Iran ; Téhéran accuse les Etats-Unis de « chercher à déclencher une nouvelle guerre »",
+      "fullArticleState": "short"
+    }
+  },
+  {
+    "action": "save",
+    "subject": "Militants de la «Flottille pour Gaza» agenouillés en détention : Paris condamne des agissements «inadmissibles»",
+    "debateScore": 8,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "Le Figaro, France 24, RFI, 20 Minutes, HuffPost France, Franceinfo, Brut",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.huffingtonpost.fr/international/video/en-israel-tolle-apres-la-publication-d-images-de-militants-de-la-flottille-pour-gaza-agenouilles_263934.html",
+        "source": "HuffPost France",
+        "title": "Ce ministre israélien publie des images de militants de la flottille pour Gaza arrêtés et provoque un tollé",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.france24.com/fr/moyen-orient/20260520-militants-flottille-pour-gaza-film%C3%A9s-genoux-agissements-inadmissibles-paris-netanyahu-ben-gvir",
+        "source": "France 24",
+        "title": "Les militants de la \"flottille pour Gaza\" filmés à genoux, des agissements \"inadmissibles\" pour Paris",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.20minutes.fr/monde/4224477-20260520-flottille-gaza-inadmissible-images-militants-agenouilles-mains-liees-scandalisent-italie?at_medium=display&at_campaign=149",
+        "source": "20 Minutes",
+        "title": "Flottille pour Gaza : Des militants filmés entravés et à genoux, Paris convoque l’ambassadeur d’Israël",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.rfi.fr/fr/moyen-orient/20260520-flottille-pour-gaza-une-vid%C3%A9o-de-militants-agenouill%C3%A9s-les-mains-li%C3%A9es-publi%C3%A9e-par-itamar-ben-gvir",
+        "source": "RFI",
+        "title": "Flottille pour Gaza: une vidéo de militants agenouillés, les mains liées, publiée par Itamar Ben Gvir",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.lefigaro.fr/international/militants-de-la-flottille-pour-gaza-agenouilles-en-detention-paris-condamne-des-agissements-inadmissibles-20260520",
+        "source": "Le Figaro",
+        "title": "Militants de la «Flottille pour Gaza» agenouillés en détention : Paris condamne des agissements «inadmissibles»",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.lefigaro.fr/international/militants-de-la-flottille-pour-gaza-agenouilles-en-detention-le-ministre-des-affaires-etrangeres-israelien-denonce-un-spectacle-honteux-20260520",
+        "source": "Le Figaro",
+        "title": "Militants de la «Flottille pour Gaza» agenouillés en détention : le ministre des Affaires étrangères israélien dénonce un «spectacle honteux»",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.lefigaro.fr/international/flottille-pour-gaza-la-video-polemique-du-ministre-israelien-de-la-securite-nationale-se-filmant-aux-cotes-des-militants-agenouilles-20260520",
+        "source": "Le Figaro",
+        "title": "Flottille pour Gaza : la vidéo polémique du ministre israélien de la Sécurité nationale se filmant aux côtés des militants agenouillés",
+        "thumbnail": ""
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/shorts/fD16O_o7jj8",
+        "source": "Franceinfo",
+        "title": "Des militants de la \"flottille pour Gaza\" filmés agenouillés",
+        "thumbnail": ""
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/shorts/aBEwAP-Bcr0",
+        "source": "Brut",
+        "title": "Un ministre israélien se met en scène devant les militants agenouillés d’une \"flottille pour Gaza\".",
+        "thumbnail": ""
+      }
+    ],
+    "sessionLabel": "20/05/2026 à 20:13:57",
+    "controversyLevel": "très fort",
+    "leftScore": 8,
+    "ai": {
+      "arenaMode": "positions",
+      "debateScore": 8,
+      "controversyLevel": "très fort",
+      "debateQuestion": "",
+      "resume": "",
+      "keywords": [
+        "Flottille pour Gaza",
+        "militants agenouillés",
+        "Itamar Ben Gvir",
+        "Israël",
+        "Paris",
+        "détention",
+        "droits humains",
+        "relations diplomatiques"
+      ],
+      "selectedLinks": [
+        "https://www.huffingtonpost.fr/international/video/en-israel-tolle-apres-la-publication-d-images-de-militants-de-la-flottille-pour-gaza-agenouilles_263934.html",
+        "https://www.youtube.com/shorts/fD16O_o7jj8",
+        "https://www.france24.com/fr/moyen-orient/20260520-militants-flottille-pour-gaza-film%C3%A9s-genoux-agissements-inadmissibles-paris-netanyahu-ben-gvir",
+        "https://www.youtube.com/shorts/aBEwAP-Bcr0",
+        "https://www.20minutes.fr/monde/4224477-20260520-flottille-gaza-inadmissible-images-militants-agenouilles-mains-liees-scandalisent-italie?at_medium=display&at_campaign=149",
+        "https://www.rfi.fr/fr/moyen-orient/20260520-flottille-pour-gaza-une-vid%C3%A9o-de-militants-agenouill%C3%A9s-les-mains-li%C3%A9es-publi%C3%A9e-par-itamar-ben-gvir",
+        "https://www.lefigaro.fr/international/militants-de-la-flottille-pour-gaza-agenouilles-en-detention-paris-condamne-des-agissements-inadmissibles-20260520",
+        "https://www.lefigaro.fr/international/militants-de-la-flottille-pour-gaza-agenouilles-en-detention-le-ministre-des-affaires-etrangeres-israelien-denonce-un-spectacle-honteux-20260520",
+        "https://www.lefigaro.fr/international/flottille-pour-gaza-la-video-polemique-du-ministre-israelien-de-la-securite-nationale-se-filmant-aux-cotes-des-militants-agenouilles-20260520"
+      ],
+      "agonTheme": "International",
+      "positionA": "",
+      "positionB": "",
+      "leftScore": 8,
+      "storyLink": {
+        "story_decision": "existing_story",
+        "matched_story_id": "01-les-conflits-au-moyen-orient-recomposent-les-equilibres-regionaux",
+        "matched_story_title": "Les conflits au Moyen-Orient recomposent les équilibres régionaux",
+        "matched_story_summary": "",
+        "previous_episode_id": "444",
+        "previous_episode_title": "Israël est-il proche de son objectif de tuer tous les responsables du 7-Octobre ?",
+        "previous_episode_summary": "Le Premier ministre israélien Benyamin Nétanyahou affirme que son pays se rapproche de son objectif majeur dans le conflit au Moyen-Orient : éliminer tous les responsables des attaques du 7 octobre. Cette déclaration témoigne d'une volonté ferme de cibler précisément les dirigeants impliqués dans cette offensive, marquant une étape importante dans la dynamique actuelle du conflit.\n\nDans le même temps, les opérations militaires israéliennes se poursuivent avec une intensité accrue, notamment par des bombardements renforcés dans le sud du Liban, signe d'une stratégie visant à étendre la pression sur les groupes armés liés à l'attaque. Par ailleurs, une explosion mystérieuse sur le sol israélien a provoqué une certaine panique, avant d'être attribuée à une expérience menée par une entreprise locale. Ce dernier incident ajoute une couche d'incertitude à un contexte déjà tendu, où la nature exacte des événements reste difficile à interpréter.\n\nLa guerre au Moyen-Orient : Israël est-il proche de son objectif de tuer tous les responsables du 7-Octobre ?",
+        "previous_episode_url": "http://localhost:3001/debate?id=444",
+        "confidence": 0.85,
+        "reason": "L'actualité concerne des militants liés à Gaza et Israël, avec des tensions diplomatiques et des enjeux de droits humains dans la région du Moyen-Orient, ce qui correspond clairement au titre de l'histoire sur les conflits au Moyen-Orient.",
+        "criteria": {
+          "main_actors_match": true,
+          "central_tension_match": true,
+          "temporal_continuity": true,
+          "editorial_theme_match": true,
+          "strong_keywords_match": true
+        },
+        "new_story": {
+          "story_title": "",
+          "story_summary": "",
+          "main_actors": [],
+          "central_tension": "Militants de la «Flottille pour Gaza» agenouillés en détention : Paris condamne des agissements «inadmissibles»",
+          "keywords": [],
+          "status": "active"
+        }
+      },
+      "sourceSubject": "Militants de la «Flottille pour Gaza» agenouillés en détention : Paris condamne des agissements «inadmissibles»",
+      "fullArticleState": "short"
+    }
+  },
+  {
+    "action": "save",
+    "subject": "Violences dans le périscolaire à Paris : 16 personnes placées en garde à vue dans le cadre de plusieurs enquêtes sur l'école maternelle Saint-Dominique",
+    "debateScore": 8,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "Franceinfo, Libération, L'Humanité, L'Obs, Le Figaro, Marianne, BFMTV, CNews, 20 Minutes, HuffPost France",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.nouvelobs.com/societe/20260520.OBS115101/violences-dans-le-periscolaire-a-paris-coup-de-filet-dans-une-ecole-16-gardes-a-vue.html",
+        "source": "L'Obs",
+        "title": "Violences dans le périscolaire à Paris : coup de filet dans une école, 16 gardes à vue",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.liberation.fr/societe/police-justice/aller-sur-une-matinale-pour-une-interview-en-face-a-face-pourquoi-pas-la-cour-dappel-de-paris-annonce-se-doter-dune-porte-parole-20260520_ZIUK3OOPOZD3RL2M32T2HLAR7I/",
+        "source": "Libération",
+        "title": "«Aller sur une matinale pour une interview en face-à-face ? Pourquoi pas» : la cour d’appel de Paris annonce se doter d’une porte-parole",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.liberation.fr/culture/musique/emmanuel-gregoire-demande-a-patrick-bruel-dannuler-son-concert-au-zenith-20260520_FQKDJERALZGP3PRQOTOFCHG5ZI/",
+        "source": "Libération",
+        "title": "Patrick Bruel : les maires de Paris, Marseille et Nancy demandent au chanteur d’annuler lui-même ses concerts",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.huffingtonpost.fr/france/article/violences-dans-le-periscolaire-a-paris-un-vaste-coup-de-filet-dans-le-cadre-des-enquetes_263929.html",
+        "source": "HuffPost France",
+        "title": "Violences dans le périscolaire à Paris : un vaste coup de filet dans le cadre des enquêtes",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.humanite.fr/societe/paris/violences-sexuelles-dans-le-periscolaire-16-personnes-de-lecole-saint-dominique-a-paris-en-garde-a-vue",
+        "source": "L'Humanité",
+        "title": "Violences sexuelles dans le périscolaire : 16 personnes de l’école Saint-Dominique à Paris en garde à vue",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.liberation.fr/societe/police-justice/violences-sexuelles-dans-le-periscolaire-a-paris-16-personnes-de-lecole-saint-dominique-en-garde-a-vue-20260520_DC2CIARCHNDX7BNQJS5ZIYKJWU/",
+        "source": "Libération",
+        "title": "Violences sexuelles dans le périscolaire à Paris : 16 personnes de l’école Saint-Dominique en garde à vue",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.bfmtv.com/police-justice/video-violences-sexuelles-dans-le-periscolaire-16-personnes-placees-en-garde-a-vue-a-paris_VN-202605200686.html",
+        "source": "BFMTV",
+        "title": "Violences sexuelles dans le périscolaire : 16 personnes placées en garde à vue à Paris",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.bfmtv.com/police-justice/video-dominique-de-villepin-vise-par-une-enquete-du-parquet-financier-concernant-deux-statuettes-recues-en-cadeau_VN-202605200661.html",
+        "source": "BFMTV",
+        "title": "Dominique de Villepin visé par une enquête du parquet financier concernant deux statuettes reçues en cadeau",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.franceinfo.fr/culture/musique/patrick-bruel/affaire-de-violences-sexuelles/affaire-patrick-bruel-plusieurs-maires-demandent-au-chanteur-vise-par-des-plaintes-pour-viols-et-agressions-sexuelles-d-annuler-ses-concerts-prevus-dans-leurs-villes_8016611.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "title": "Accusations contre Patrick Bruel : de Marseille à Brest, plusieurs maires demandent au chanteur d'annuler ses concerts prévus dans leurs villes",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.20minutes.fr/justice/4224464-20260520-dominique-villepin-vise-enquete-parquet-financier-affaire-statuettes?at_medium=display&at_campaign=149",
+        "source": "20 Minutes",
+        "title": "Dominique de Villepin visé par une enquête du parquet financier dans l’affaire des statuettes",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.franceinfo.fr/societe/education/violences-dans-le-periscolaire/violences-dans-le-periscolaire-a-paris-16-personnes-placees-en-garde-a-vue-dans-le-cadre-de-plusieurs-enquetes-sur-l-ecole-maternelle-saint-dominique_8016371.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "title": "Violences dans le périscolaire à Paris : 16 personnes placées en garde à vue dans le cadre de plusieurs enquêtes sur l'école maternelle Saint-Dominique",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.20minutes.fr/paris/4224451-20260520-violences-periscolaire-16-personnes-ecole-saint-dominique-interpellees-placees-garde?at_medium=display&at_campaign=149",
+        "source": "20 Minutes",
+        "title": "Violences dans le périscolaire : 16 personnes de l’école Saint-Dominique interpellées et placées en garde",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.marianne.net/societe/police-et-justice/psychose-a-paris-le-pedophile-a-la-camionnette-blanche-etait-un-gentil-distributeur-de-friandises-invendues#utm_source=RSS-MARIANNE&utm_medium=Flux-Rss&utm_campaign=RSS_general",
+        "source": "Marianne",
+        "title": "Psychose à Paris : le \"pédophile\" à la camionnette blanche était un gentil distributeur de friandises invendues",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.lefigaro.fr/faits-divers/violences-physiques-et-sexuelles-dans-le-periscolaire-a-paris-16-interpellations-a-l-ecole-saint-dominique-20260520",
+        "source": "Le Figaro",
+        "title": "Violences physiques et sexuelles dans le périscolaire à l’école Saint-Dominique : 16 personnes interpellées",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.cnews.fr/france/2026-05-20/violences-dans-le-periscolaire-16-personnes-de-lecole-saint-dominique-paris",
+        "source": "CNews",
+        "title": "Violences dans le périscolaire: 16 personnes de l'école Saint-Dominique à Paris placées en garde à vue",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.cnews.fr/france/2026-05-19/la-plus-belle-avenue-du-monde-nest-pas-une-piste-de-course-la-maire-du-8e",
+        "source": "CNews",
+        "title": "«La plus belle avenue du monde n’est pas une piste de course» : la maire du 8e arrondissement de Paris dénonce les incivilités sur les Champs-Élysées",
+        "thumbnail": ""
+      }
+    ],
+    "sessionLabel": "20/05/2026 à 20:13:57",
+    "controversyLevel": "fort",
+    "leftScore": 7,
+    "ai": {
+      "arenaMode": "positions",
+      "debateScore": 8,
+      "controversyLevel": "fort",
+      "debateQuestion": "",
+      "resume": "",
+      "keywords": [
+        "école maternelle Saint-Dominique",
+        "violences sexuelles",
+        "périscolaire Paris",
+        "16 gardes à vue",
+        "enquêtes judiciaires",
+        "justice française"
+      ],
+      "selectedLinks": [
+        "https://www.nouvelobs.com/societe/20260520.OBS115101/violences-dans-le-periscolaire-a-paris-coup-de-filet-dans-une-ecole-16-gardes-a-vue.html",
+        "https://www.huffingtonpost.fr/france/article/violences-dans-le-periscolaire-a-paris-un-vaste-coup-de-filet-dans-le-cadre-des-enquetes_263929.html",
+        "https://www.humanite.fr/societe/paris/violences-sexuelles-dans-le-periscolaire-16-personnes-de-lecole-saint-dominique-a-paris-en-garde-a-vue",
+        "https://www.liberation.fr/societe/police-justice/violences-sexuelles-dans-le-periscolaire-a-paris-16-personnes-de-lecole-saint-dominique-en-garde-a-vue-20260520_DC2CIARCHNDX7BNQJS5ZIYKJWU/",
+        "https://www.bfmtv.com/police-justice/video-violences-sexuelles-dans-le-periscolaire-16-personnes-placees-en-garde-a-vue-a-paris_VN-202605200686.html"
+      ],
+      "agonTheme": "Justice / faits divers",
+      "positionA": "",
+      "positionB": "",
+      "leftScore": 7,
+      "storyLink": {
+        "story_decision": "existing_story",
+        "matched_story_id": "54-les-grandes-affaires-judiciaires-et-mediatiques-deviennent-des-debats-de-societe",
+        "matched_story_title": "Les grandes affaires judiciaires et médiatiques deviennent des débats de société",
+        "matched_story_summary": "",
+        "previous_episode_id": "439",
+        "previous_episode_title": "La centralisation des plaintes facilite-t-elle ou complique-t-elle la justice ?",
+        "previous_episode_summary": "Les plaintes pour violences sexuelles visant Patrick Bruel ont été centralisées au parquet de Nanterre, a annoncé la procureure de Paris. Cette décision, qui consiste à regrouper l’ensemble des dossiers, vise à garantir une gestion cohérente et coordonnée de l’enquête. Le choix du parquet de Nanterre, compétent pour ce type d’affaires, traduit une volonté institutionnelle d’organiser le traitement judiciaire de ces accusations de manière structurée. Toutefois, aucun détail n’a été communiqué sur le nombre exact de plaintes déposées ni sur l’état d’avancement des investigations. Cette centralisation intervient dans un contexte où les procédures liées aux violences sexuelles font l’objet d’une attention soutenue, soulignant la complexité et la délicatesse du traitement judiciaire. Si aucune divergence n’a été signalée concernant la décision de regrouper les plaintes, cette concentration des dossiers pourrait néanmoins poser des difficultés en termes de ressources et de gestion, en raison de la médiatisation et de la pression sociale qui entourent cette affaire. L’évolution de cette procédure reste à suivre avec attention.",
+        "previous_episode_url": "http://localhost:3001/debate?id=439",
+        "confidence": 0.85,
+        "reason": "L'actualité porte sur une enquête judiciaire importante avec plusieurs gardes à vue dans un cadre d'affaires judiciaires, ce qui correspond bien au titre sur les grandes affaires judiciaires et médiatiques.",
+        "criteria": {
+          "main_actors_match": true,
+          "central_tension_match": true,
+          "temporal_continuity": true,
+          "editorial_theme_match": true,
+          "strong_keywords_match": true
+        },
+        "new_story": {
+          "story_title": "",
+          "story_summary": "",
+          "main_actors": [
+            "violences",
+            "periscolaire",
+            "paris"
+          ],
+          "central_tension": "Violences dans le périscolaire à Paris : 16 personnes placées en garde à vue dans le cadre de plusieurs enquêtes sur l'école maternelle Sai…",
+          "keywords": [
+            "violences",
+            "periscolaire",
+            "paris",
+            "personnes",
+            "placees",
+            "garde",
+            "cadre",
+            "plusieurs"
+          ],
+          "status": "active"
+        }
+      },
+      "sourceSubject": "Violences dans le périscolaire à Paris : 16 personnes placées en garde à vue dans le cadre de plusieurs enquêtes sur l'école maternelle Saint-Dominique",
+      "fullArticleState": "short"
+    }
+  },
+  {
+    "action": "save",
     "subject": "Un variant hautement mortel, des centaines de cas suspects... Ce que l'on sait de la nouvelle épidémie d'Ebola en République démocratique du Congo",
     "debateScore": 7,
     "debateQuestion": "",

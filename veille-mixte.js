@@ -2798,6 +2798,11 @@ function generateHtml(sessions) {
 
   <script>
     const AGON_THEMES = ${JSON.stringify(AGON_THEMES)};
+    const AGON_THEME_ALIASES = ${JSON.stringify(AGON_THEME_ALIASES)};
+    function normalizeAgonTheme(theme) {
+      const value = String(theme || "").trim();
+      return AGON_THEMES.includes(value) ? value : (AGON_THEME_ALIASES[value] || AGON_THEMES[0]);
+    }
 
     function escapeHtmlClient(value) {
       return String(value || "")
@@ -2939,8 +2944,8 @@ function generateHtml(sessions) {
       const list = [];
       (Array.isArray(values) ? values : []).forEach(function(value) {
         const keyword = String(value || "")
-          .replace(/^[-–—•\s]+/, "")
-          .replace(/[?!.;,:\s]+$/g, "")
+          .replace(/^[-–—•\\s]+/, "")
+          .replace(/[?!.;,:\\s]+$/g, "")
           .trim();
         if (!keyword || keyword.length < 2 || keyword.length > 40) return;
         const lower = keyword.toLowerCase();
@@ -3368,7 +3373,7 @@ function generateHtml(sessions) {
     const AI_RESUME_MAX = 1800;
 
     function renderArticleHtml(articleText) {
-      const parts = String(articleText || "").split(/\n\n/);
+      const parts = String(articleText || "").split(/\\n\\n/);
       if (parts.length < 3) {
         return parts.map(function(p) { return "<p>" + escapeHtmlClient(p.trim()) + "</p>"; }).join("");
       }
@@ -3668,7 +3673,9 @@ function generateHtml(sessions) {
           }
 
           if (resumeEl) {
-            resumeEl.innerHTML = renderArticleHtml(String(data.article || "").trim());
+            const rawArticle = String(data.article || "").trim();
+            resumeEl.dataset.rawText = rawArticle;
+            resumeEl.innerHTML = renderArticleHtml(rawArticle);
           }
           const questionEl = subjectEl.querySelector(".debate-question");
           if (questionEl) {
@@ -3734,7 +3741,7 @@ function generateHtml(sessions) {
         subject: title,
         debateScore: score,
         debateQuestion: questionEl ? questionEl.textContent.trim().slice(0, AI_TITLE_MAX) : "",
-        resume: resumeEl ? resumeEl.textContent.trim().slice(0, AI_RESUME_MAX) : "",
+        resume: resumeEl ? (resumeEl.dataset.rawText || resumeEl.textContent.trim()).slice(0, AI_RESUME_MAX) : "",
         keywords,
         agonTheme: agonEl ? agonEl.value : "",
         positionA: editables[0] ? editables[0].textContent.trim() : "",
@@ -3787,7 +3794,8 @@ function generateHtml(sessions) {
         const positionA = editables[0]?.textContent.trim() || btn.dataset.positionA;
         const positionB = editables[1]?.textContent.trim() || btn.dataset.positionB;
         const theme = subjectEl.querySelector(".agon-select")?.value || btn.dataset.theme;
-        const resume = (subjectEl.querySelector(".resume")?.textContent.trim() || "").slice(0, AI_RESUME_MAX);
+        const resumeEl3 = subjectEl.querySelector(".resume");
+        const resume = (resumeEl3?.dataset.rawText || resumeEl3?.textContent.trim() || "").slice(0, AI_RESUME_MAX);
         const keywords = getKeywordsFromEditor(subjectEl);
         const sources = btn.dataset.sources;
         const links = [...subjectEl.querySelectorAll(".content-item[data-link]")].map(item => {
