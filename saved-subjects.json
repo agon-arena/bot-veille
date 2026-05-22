@@ -1,6 +1,1268 @@
 [
   {
     "action": "save",
+    "subject": "Tulsi Gabbard, directrice du renseignement national, annonce sa démission de l’administration Trump",
+    "debateScore": 5,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "Libération, Le Figaro",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.liberation.fr/international/amerique/tulsi-gabbard-directrice-du-renseignement-national-annonce-sa-demission-de-ladministration-trump-20260522_N55WGVRKCFB5NDCGH5LZA46GHY/",
+        "source": "Libération",
+        "title": "Tulsi Gabbard, directrice du renseignement national, annonce sa démission de l’administration Trump",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.lefigaro.fr/international/la-directrice-du-renseignement-americain-tulsi-gabbard-demissionne-20260522",
+        "source": "Le Figaro",
+        "title": "La directrice du renseignement américain, Tulsi Gabbard, démissionne",
+        "thumbnail": ""
+      }
+    ],
+    "sessionLabel": "22/05/2026 à 21:53:07"
+  },
+  {
+    "action": "save",
+    "subject": "EN DIRECT - Guerre au Moyen-Orient : Rome, Paris, Berlin et Londres exhortent Israël à stopper l’extension des colonies en Cisjordanie",
+    "debateScore": 8,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "Libération, Marianne",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.liberation.fr/international/moyen-orient/en-direct-guerre-au-moyen-orient-la-consommation-de-carburants-en-france-a-diminue-de-14-depuis-debut-mai-20260522_UEKR7KKXPBEVXLBZBVDURCP7HU/",
+        "source": "Libération",
+        "title": "EN DIRECT - Guerre au Moyen-Orient : Rome, Paris, Berlin et Londres exhortent Israël à stopper l’extension des colonies en Cisjordanie",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.marianne.net/monde/europe/il-nest-pas-trop-tard-pour-chasser-lislam-a-londres-lextreme-droite-britannique-bombe-le-torse#utm_source=RSS-MARIANNE&utm_medium=Flux-Rss&utm_campaign=RSS_general",
+        "source": "Marianne",
+        "title": "\"Il n’est pas trop tard pour chasser l’Islam\" : à Londres, l’extrême droite britannique bombe le torse",
+        "thumbnail": ""
+      }
+    ],
+    "sessionLabel": "22/05/2026 à 21:35:47",
+    "controversyLevel": "fort",
+    "leftScore": 7,
+    "ai": {
+      "arenaMode": "positions",
+      "debateScore": 8,
+      "controversyLevel": "fort",
+      "debateQuestion": "",
+      "resume": "",
+      "keywords": [
+        "Israël",
+        "colonies en Cisjordanie",
+        "Rome",
+        "Paris",
+        "Berlin",
+        "Londres",
+        "extension des colonies",
+        "guerre au Moyen Orient"
+      ],
+      "selectedLinks": [
+        "https://www.liberation.fr/international/moyen-orient/en-direct-guerre-au-moyen-orient-la-consommation-de-carburants-en-france-a-diminue-de-14-depuis-debut-mai-20260522_UEKR7KKXPBEVXLBZBVDURCP7HU/"
+      ],
+      "agonTheme": "International",
+      "positionA": "",
+      "positionB": "",
+      "leftScore": 7,
+      "sourceSubject": "EN DIRECT - Guerre au Moyen-Orient : Rome, Paris, Berlin et Londres exhortent Israël à stopper l’extension des colonies en Cisjordanie",
+      "fullArticleState": "short"
+    }
+  },
+  {
+    "action": "save",
+    "subject": "« Tu peux retirer ta cagoule, je sais qui tu es » : une fillette de 11 ans fait fuir un braqueur cagoulé",
+    "debateScore": 5,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "Valeurs actuelles, CNews",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.valeursactuelles.com/faits-divers/tu-peux-retirer-ta-cagoule-je-sais-qui-tu-es-une-fillette-de-11-ans-fait-fuir-un-braqueur-cagoule",
+        "source": "Valeurs actuelles",
+        "title": "« Tu peux retirer ta cagoule, je sais qui tu es » : une fillette de 11 ans fait fuir un braqueur cagoulé",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.cnews.fr/faits-divers/2026-05-22/je-sais-qui-tu-es-une-fillette-de-11-ans-dejoue-le-braquage-dune-superette",
+        "source": "CNews",
+        "title": "«Je sais qui tu es» : une fillette de 11 ans déjoue le braquage d’une supérette en reconnaissant la voix du malfaiteur cagoulé",
+        "thumbnail": ""
+      }
+    ],
+    "sessionLabel": "22/05/2026 à 20:02:20",
+    "controversyLevel": "moyen",
+    "leftScore": 3,
+    "ai": {
+      "arenaMode": "positions",
+      "debateScore": 5,
+      "controversyLevel": "moyen",
+      "debateQuestion": "",
+      "resume": "",
+      "keywords": [
+        "fillette de 11 ans",
+        "braquage",
+        "supérette",
+        "cagoule"
+      ],
+      "selectedLinks": [
+        "https://www.valeursactuelles.com/faits-divers/tu-peux-retirer-ta-cagoule-je-sais-qui-tu-es-une-fillette-de-11-ans-fait-fuir-un-braqueur-cagoule",
+        "https://www.cnews.fr/faits-divers/2026-05-22/je-sais-qui-tu-es-une-fillette-de-11-ans-dejoue-le-braquage-dune-superette"
+      ],
+      "agonTheme": "Justice / faits divers",
+      "positionA": "",
+      "positionB": "",
+      "leftScore": 3,
+      "sourceSubject": "« Tu peux retirer ta cagoule, je sais qui tu es » : une fillette de 11 ans fait fuir un braqueur cagoulé",
+      "fullArticleState": "short"
+    }
+  },
+  {
+    "action": "save",
+    "subject": "«Aucun impact sur l’environnement» : Donald Trump allège la réglementation sur des gaz à effet de serre controversés",
+    "debateScore": 8,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "CNews, France 24",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.france24.com/fr/%C3%A9missions/les-observateurs/20260522-norv%C3%A8ge-images-satellites-mesurer-impacts-tourisme-environnement",
+        "source": "France 24",
+        "title": "En Norvège, des images satellites pour mesurer l'impact du tourisme sur l’environnement",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.cnews.fr/monde/2026-05-22/aucun-impact-sur-lenvironnement-donald-trump-allege-la-reglementation-sur-des-gaz",
+        "source": "CNews",
+        "title": "«Aucun impact sur l’environnement» : Donald Trump allège la réglementation sur des gaz à effet de serre controversés",
+        "thumbnail": ""
+      }
+    ],
+    "sessionLabel": "22/05/2026 à 20:02:20"
+  },
+  {
+    "action": "save",
+    "subject": "Affaire Patrick Bruel : ce que l’on sait des accusations contre le chanteur",
+    "debateScore": 7,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "Le Monde, L'Obs, 20 Minutes",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.lemonde.fr/les-decodeurs/article/2026/05/22/affaire-patrick-bruel-le-point-sur-les-accusations-contre-le-chanteur_6692301_4355770.html",
+        "source": "Le Monde",
+        "title": "Affaire Patrick Bruel : ce que l’on sait des accusations contre le chanteur",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.nouvelobs.com/societe/20260522.OBS115147/affaire-patrick-bruel-pourquoi-les-maires-ne-peuvent-ils-pas-annuler-les-concerts-du-chanteur.html",
+        "source": "L'Obs",
+        "title": "Affaire Patrick Bruel : pourquoi les maires ne peuvent-ils pas annuler les concerts du chanteur ?",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.20minutes.fr/societe/4224804-20260522-patrick-bruel-regles-annuler-tournee?at_medium=display&at_campaign=149",
+        "source": "20 Minutes",
+        "title": "Patrick Bruel : Quelles sont les règles pour annuler une tournée ?",
+        "thumbnail": ""
+      }
+    ],
+    "sessionLabel": "22/05/2026 à 20:02:20",
+    "controversyLevel": "fort",
+    "leftScore": 6,
+    "ai": {
+      "arenaMode": "positions",
+      "debateScore": 7,
+      "controversyLevel": "fort",
+      "debateQuestion": "",
+      "resume": "",
+      "keywords": [
+        "Patrick Bruel",
+        "accusations",
+        "concerts annulés",
+        "maires",
+        "règles annulation tournée",
+        "justice française"
+      ],
+      "selectedLinks": [
+        "https://www.lemonde.fr/les-decodeurs/article/2026/05/22/affaire-patrick-bruel-le-point-sur-les-accusations-contre-le-chanteur_6692301_4355770.html",
+        "https://www.nouvelobs.com/societe/20260522.OBS115147/affaire-patrick-bruel-pourquoi-les-maires-ne-peuvent-ils-pas-annuler-les-concerts-du-chanteur.html",
+        "https://www.20minutes.fr/societe/4224804-20260522-patrick-bruel-regles-annuler-tournee?at_medium=display&at_campaign=149"
+      ],
+      "agonTheme": "Justice / faits divers",
+      "positionA": "",
+      "positionB": "",
+      "leftScore": 6,
+      "storyLink": {
+        "story_decision": "new_story",
+        "matched_story_id": null,
+        "matched_story_title": null,
+        "matched_story_summary": "",
+        "previous_episode_id": "",
+        "previous_episode_title": "",
+        "previous_episode_summary": "",
+        "previous_episode_url": "",
+        "confidence": 0.45,
+        "reason": "Aucune histoire existante ne couvre spécifiquement les accusations judiciaires contre une personnalité du monde du spectacle comme Patrick Bruel.",
+        "criteria": {
+          "main_actors_match": true,
+          "central_tension_match": true,
+          "temporal_continuity": true,
+          "editorial_theme_match": true,
+          "strong_keywords_match": true
+        },
+        "new_story": {
+          "story_title": "",
+          "story_summary": "",
+          "main_actors": [
+            "Patrick Bruel"
+          ],
+          "central_tension": "Accusations et procédures judiciaires impliquant des personnalités publiques",
+          "keywords": [
+            "accusations",
+            "justice",
+            "célébrités",
+            "procédures judiciaires"
+          ],
+          "status": "active"
+        }
+      },
+      "sourceSubject": "Affaire Patrick Bruel : ce que l’on sait des accusations contre le chanteur",
+      "fullArticleState": "short"
+    }
+  },
+  {
+    "action": "save",
+    "subject": "Timothée Parrique, l’éclaireur de la « post-croissance » : comment vivre bien en abandonnant la fuite en avant",
+    "debateScore": 7,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "L'Obs, Brut",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.nouvelobs.com/economie/20260521.OBS115129/timothee-parrique-l-eclaireur-de-la-post-croissance-comment-vivre-bien-en-abandonnant-la-fuite-en-avant.html",
+        "source": "L'Obs",
+        "title": "Timothée Parrique, l’éclaireur de la « post-croissance » : comment vivre bien en abandonnant la fuite en avant",
+        "thumbnail": ""
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/shorts/bACIOD7Q5SI",
+        "source": "Brut",
+        "title": "Anaïs Demoustier, Alain Chabat, Jonathan Cohen… Comment Quentin Dupieux a travaillé avec eux ?",
+        "thumbnail": ""
+      }
+    ],
+    "sessionLabel": "22/05/2026 à 20:02:20",
+    "controversyLevel": "moyen",
+    "leftScore": 8,
+    "ai": {
+      "arenaMode": "positions",
+      "debateScore": 7,
+      "controversyLevel": "moyen",
+      "debateQuestion": "",
+      "resume": "",
+      "keywords": [
+        "Timothée Parrique",
+        "post",
+        "croissance",
+        "économie durable",
+        "transition écologique"
+      ],
+      "selectedLinks": [
+        "https://www.nouvelobs.com/economie/20260521.OBS115129/timothee-parrique-l-eclaireur-de-la-post-croissance-comment-vivre-bien-en-abandonnant-la-fuite-en-avant.html"
+      ],
+      "agonTheme": "Économie / emploi",
+      "positionA": "",
+      "positionB": "",
+      "leftScore": 8,
+      "storyLink": {
+        "story_decision": "existing_story",
+        "matched_story_id": "50-les-modes-de-vie-evoluent-avec-le-numerique-l-ecologie-la-solitude-et-les-nouvel",
+        "matched_story_title": "Les modes de vie évoluent avec le numérique, l’écologie, la solitude et les nouvelles aspirations personnelles",
+        "matched_story_summary": "",
+        "previous_episode_id": "493",
+        "previous_episode_title": "L'Occident impose-t-il une tyrannie sur les valeurs sénégalaises ?",
+        "previous_episode_summary": "Au Sénégal, le débat sur l'homosexualité s'enflamme, porté par la voix puissante d'Ousmane Sonko, une figure qui ne cesse de monter sur la scène politique nationale. Il dénonce avec véhémence ce qu'il qualifie de « tyrannie de l’Occident », une pression étrangère qu'il perçoit comme une tentative d’imposer des valeurs étrangères, incompatibles avec l’âme même de la culture sénégalaise.\n\nSonko alerte sur une ingérence qui ne se cache plus, visant à normaliser l’homosexualité dans un pays où les traditions et les normes sociales restent solidement ancrées dans un conservatisme profond. Pour lui, cette imposition idéologique menace directement l’identité et la souveraineté culturelle du Sénégal. Dans un contexte où le pays refuse de plier face aux influences extérieures, il incarne une résistance farouche, cristallisant une opposition frontale à tout changement perçu comme dicté d’ailleurs. Le bras de fer est lancé, et la bataille pour les valeurs sénégalaises s’annonce intense et prolongée.\n\nL'Occident impose-t-il une tyrannie sur les valeurs sénégalaises ?\n\nR. Renaudot",
+        "previous_episode_url": "http://localhost:3001/debate?id=493",
+        "confidence": 0.85,
+        "reason": "Le sujet de la post-croissance et de la transition écologique correspond bien aux évolutions des modes de vie et aux nouvelles aspirations, avec un focus sur l'économie durable et la décroissance.",
+        "criteria": {
+          "main_actors_match": true,
+          "central_tension_match": true,
+          "temporal_continuity": true,
+          "editorial_theme_match": true,
+          "strong_keywords_match": true
+        },
+        "new_story": {
+          "story_title": "",
+          "story_summary": "",
+          "main_actors": [
+            "Timothée Parrique"
+          ],
+          "central_tension": "Transition vers une économie post-croissance",
+          "keywords": [
+            "post-croissance",
+            "économie durable",
+            "transition écologique"
+          ],
+          "status": "active"
+        }
+      },
+      "sourceSubject": "Timothée Parrique, l’éclaireur de la « post-croissance » : comment vivre bien en abandonnant la fuite en avant",
+      "fullArticleState": "short"
+    }
+  },
+  {
+    "action": "save",
+    "subject": "Présidentielle 2027 : Gabriel Attal se déclare candidat à grand renfort de com’",
+    "debateScore": 7,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "L'Humanité, L'Obs, Le Figaro, La Croix, 20 Minutes, HuffPost France, Franceinfo, Europe 1, Brut",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.huffingtonpost.fr/politique/video/presidentielle-2027-gabriel-attal-est-officiellement-candidat-sur-un-chemin-seme-d-obstacles_263965.html",
+        "source": "HuffPost France",
+        "title": "Présidentielle 2027 : Gabriel Attal est officiellement candidat, sur un chemin semé d’obstacles",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.humanite.fr/politique/edouard-philippe/presidentielle-2027-gabriel-attal-se-declare-candidat-a-grand-renfort-de-com",
+        "source": "L'Humanité",
+        "title": "Présidentielle 2027 : Gabriel Attal se déclare candidat à grand renfort de com’",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.nouvelobs.com/politique/20260522.OBS115145/gabriel-attal-les-failles-d-une-ambition-presidentielle.html",
+        "source": "L'Obs",
+        "title": "Gabriel Attal candidat à l’Elysée : les failles d’une ambition présidentielle",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.la-croix.com/politique/presidentielle-2027-gabriel-attal-officiellement-candidat-renaissance-en-ordre-de-bataille-20260522",
+        "source": "La Croix",
+        "title": "Présidentielle 2027 : Gabriel Attal officiellement candidat, Renaissance se met en ordre de bataille",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.20minutes.fr/politique/4224924-20260522-presidentielle-2027-gabriel-attal-officialise-candidature?at_medium=display&at_campaign=149",
+        "source": "20 Minutes",
+        "title": "Présidentielle 2027 : Gabriel Attal officialise sa candidature",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.lefigaro.fr/politique/presidentielle-2027-j-ai-decide-d-etre-candidat-annonce-gabriel-attal-20260522",
+        "source": "Le Figaro",
+        "title": "Présidentielle 2027 : «J’ai décidé d’être candidat», annonce Gabriel Attal",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.lefigaro.fr/politique/presidentielle-2027-que-disent-les-derniers-sondages-20260505",
+        "source": "Le Figaro",
+        "title": "Présidentielle 2027 : que disent les derniers sondages ?",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.lefigaro.fr/politique/pensez-vous-que-gabriel-attal-peut-remporter-l-election-presidentielle-en-2027-20260522",
+        "source": "Le Figaro",
+        "title": "Pensez-vous que Gabriel Attal peut remporter l'élection présidentielle en 2027 ?",
+        "thumbnail": ""
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/shorts/At8NQ29B4Og",
+        "source": "20 Minutes",
+        "title": "Gabriel Attal officialise sa candidature à l'élection présidentielle de 2027",
+        "thumbnail": ""
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/shorts/_iKfpxBRBIY",
+        "source": "Brut",
+        "title": "Gabriel Attal annonce sa candidature à l’élection présidentielle.",
+        "thumbnail": ""
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/shorts/V-ALIPRzOCs",
+        "source": "Franceinfo",
+        "title": "G.Attal \"J'ai décidé d'être candidat à la présidence de la République\"",
+        "thumbnail": ""
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/watch?v=B2zWUzBlXE0",
+        "source": "Europe 1",
+        "title": "",
+        "thumbnail": "https://i.ytimg.com/vi/B2zWUzBlXE0/hqdefault.jpg"
+      }
+    ],
+    "sessionLabel": "22/05/2026 à 20:02:20",
+    "controversyLevel": "moyen",
+    "leftScore": 6,
+    "ai": {
+      "arenaMode": "positions",
+      "debateScore": 7,
+      "controversyLevel": "moyen",
+      "debateQuestion": "",
+      "resume": "",
+      "keywords": [
+        "Gabriel Attal",
+        "Présidentielle 2027",
+        "Renaissance",
+        "campagne électorale",
+        "communication politique",
+        "sondages présidentiels",
+        "parti politique"
+      ],
+      "selectedLinks": [
+        "https://www.huffingtonpost.fr/politique/video/presidentielle-2027-gabriel-attal-est-officiellement-candidat-sur-un-chemin-seme-d-obstacles_263965.html",
+        "https://www.humanite.fr/politique/edouard-philippe/presidentielle-2027-gabriel-attal-se-declare-candidat-a-grand-renfort-de-com",
+        "https://www.nouvelobs.com/politique/20260522.OBS115145/gabriel-attal-les-failles-d-une-ambition-presidentielle.html",
+        "https://www.youtube.com/shorts/At8NQ29B4Og",
+        "https://www.youtube.com/shorts/_iKfpxBRBIY",
+        "https://www.youtube.com/shorts/V-ALIPRzOCs",
+        "https://www.la-croix.com/politique/presidentielle-2027-gabriel-attal-officiellement-candidat-renaissance-en-ordre-de-bataille-20260522",
+        "https://www.20minutes.fr/politique/4224924-20260522-presidentielle-2027-gabriel-attal-officialise-candidature?at_medium=display&at_campaign=149",
+        "https://www.lefigaro.fr/politique/presidentielle-2027-j-ai-decide-d-etre-candidat-annonce-gabriel-attal-20260522"
+      ],
+      "agonTheme": "Politique",
+      "positionA": "",
+      "positionB": "",
+      "leftScore": 6,
+      "storyLink": {
+        "story_decision": "existing_story",
+        "matched_story_id": "05-la-vie-politique-francaise-traverse-une-periode-d-instabilite-et-de-recompositio",
+        "matched_story_title": "La vie politique française traverse une période d’instabilité et de recomposition",
+        "matched_story_summary": "",
+        "previous_episode_id": "446",
+        "previous_episode_title": "La France peut-elle être gouvernée efficacement sous un régime communiste ?",
+        "previous_episode_summary": "Franz-Olivier Giesbert anticipe un bouleversement politique majeur en France d’ici 2027, marqué par l’arrivée au pouvoir d’un régime communiste. Il s’interroge sur la capacité à gouverner un pays sous cette idéologie, évoquant une situation profondément instable où la révolution bouleverserait les fondements mêmes de la société. Cette transformation radicale ne serait pas seulement politique, mais aussi sociale, plongeant la France dans une période de tensions extrêmes.\n\nPour Giesbert, cette nouvelle ère pourrait s’accompagner d’une radicalisation inquiétante, symbolisée par le retour de la guillotine, image forte d’un climat de violence et de répression. Ce pronostic traduit une vision sombre des conséquences d’un tel changement, où le pouvoir communiste ne se limiterait pas à une simple alternance politique, mais deviendrait un facteur de rupture intense, générant conflits internes et risques majeurs pour la stabilité du pays.\n\nLa France peut-elle être gouvernée efficacement sous un régime communiste ?\n\nM. Camus",
+        "previous_episode_url": "http://localhost:3001/debate?id=446",
+        "confidence": 0.85,
+        "reason": "L'actualité porte sur la candidature présidentielle en France, un enjeu central de la vie politique française, avec des mots-clés et acteurs clairement liés à ce contexte.",
+        "criteria": {
+          "main_actors_match": true,
+          "central_tension_match": true,
+          "temporal_continuity": true,
+          "editorial_theme_match": true,
+          "strong_keywords_match": true
+        },
+        "new_story": {
+          "story_title": "",
+          "story_summary": "",
+          "main_actors": [],
+          "central_tension": "Présidentielle 2027 : Gabriel Attal se déclare candidat à grand renfort de com’",
+          "keywords": [],
+          "status": "active"
+        }
+      },
+      "sourceSubject": "Présidentielle 2027 : Gabriel Attal se déclare candidat à grand renfort de com’",
+      "fullArticleState": "short"
+    }
+  },
+  {
+    "action": "save",
+    "subject": "Sénégal: Ousmane Sonko dénonce «une tyrannie de l'Occident» à propos de l'homosexualité",
+    "debateScore": 8,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "RFI, 20 Minutes",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.rfi.fr/fr/afrique/20260522-s%C3%A9n%C3%A9gal-ousmane-sonko-d%C3%A9nonce-une-tyrannie-de-l-occident-%C3%A0-propos-de-l-homosexualit%C3%A9",
+        "source": "RFI",
+        "title": "Sénégal: Ousmane Sonko dénonce «une tyrannie de l'Occident» à propos de l'homosexualité",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.20minutes.fr/societe/4224928-20260522-senegal-denonce-tyrannie-occident-veut-imposer-homosexualite-reste-monde?at_medium=display&at_campaign=149",
+        "source": "20 Minutes",
+        "title": "Le Sénégal dénonce la « tyrannie de l’Occident » qui veut « imposer l’homosexualité au reste du monde »",
+        "thumbnail": ""
+      }
+    ],
+    "sessionLabel": "22/05/2026 à 20:02:20",
+    "controversyLevel": "fort",
+    "leftScore": 6,
+    "ai": {
+      "arenaMode": "positions",
+      "debateScore": 8,
+      "controversyLevel": "fort",
+      "debateQuestion": "",
+      "resume": "",
+      "keywords": [
+        "Ousmane Sonko",
+        "Sénégal",
+        "homosexualité",
+        "tyrannie de l'Occident",
+        "droits LGBT",
+        "Afrique",
+        "relations internationales"
+      ],
+      "selectedLinks": [
+        "https://www.rfi.fr/fr/afrique/20260522-s%C3%A9n%C3%A9gal-ousmane-sonko-d%C3%A9nonce-une-tyrannie-de-l-occident-%C3%A0-propos-de-l-homosexualit%C3%A9",
+        "https://www.20minutes.fr/societe/4224928-20260522-senegal-denonce-tyrannie-occident-veut-imposer-homosexualite-reste-monde?at_medium=display&at_campaign=149"
+      ],
+      "agonTheme": "International",
+      "positionA": "",
+      "positionB": "",
+      "leftScore": 6,
+      "storyLink": {
+        "story_decision": "existing_story",
+        "matched_story_id": "11-les-crises-politiques-militaires-et-sociales-recomposent-plusieurs-regions-d-afr",
+        "matched_story_title": "Les crises politiques, militaires et sociales recomposent plusieurs régions d’Afrique",
+        "matched_story_summary": "",
+        "previous_episode_id": "",
+        "previous_episode_title": "",
+        "previous_episode_summary": "",
+        "previous_episode_url": "",
+        "confidence": 0.85,
+        "reason": "L'actualité porte sur une tension politique et sociale majeure au Sénégal, pays africain, avec un enjeu international lié aux droits LGBT et à la critique de l'influence occidentale, ce qui correspond bien à une crise politique et sociale en Afrique.",
+        "criteria": {
+          "main_actors_match": true,
+          "central_tension_match": true,
+          "temporal_continuity": true,
+          "editorial_theme_match": true,
+          "strong_keywords_match": true
+        },
+        "new_story": {
+          "story_title": "",
+          "story_summary": "",
+          "main_actors": [
+            "senegal",
+            "ousmane",
+            "sonko"
+          ],
+          "central_tension": "Sénégal: Ousmane Sonko dénonce «une tyrannie de l'Occident» à propos de l'homosexualité",
+          "keywords": [
+            "senegal",
+            "ousmane",
+            "sonko",
+            "denonce",
+            "tyrannie",
+            "occident",
+            "propos",
+            "homosexualite"
+          ],
+          "status": "active"
+        }
+      },
+      "sourceSubject": "Sénégal: Ousmane Sonko dénonce «une tyrannie de l'Occident» à propos de l'homosexualité",
+      "fullArticleState": "short"
+    }
+  },
+  {
+    "action": "save",
+    "subject": "Encadrement des loyers : non, on ne peut pas se contenter de laisser faire le marché !",
+    "debateScore": 8,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "Libération, Le Figaro",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.liberation.fr/politique/encadrement-des-loyers-non-on-ne-peut-pas-se-contenter-de-laisser-faire-le-marche-20260522_4P3FOEYBCNHU3FHEQX6IRYIVFE/",
+        "source": "Libération",
+        "title": "Encadrement des loyers : non, on ne peut pas se contenter de laisser faire le marché !",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://immobilier.lefigaro.fr/article/tout-comprendre-a-l-encadrement-des-loyers-dont-l-experimentation-prend-bientot-fin-20260522",
+        "source": "Le Figaro",
+        "title": "Tout comprendre à l’encadrement des loyers dont l’expérimentation prend bientôt fin",
+        "thumbnail": ""
+      }
+    ],
+    "sessionLabel": "22/05/2026 à 20:02:20",
+    "controversyLevel": "fort",
+    "leftScore": 9,
+    "ai": {
+      "arenaMode": "positions",
+      "debateScore": 8,
+      "controversyLevel": "fort",
+      "debateQuestion": "",
+      "resume": "",
+      "keywords": [
+        "encadrement des loyers",
+        "marché immobilier",
+        "expérimentation",
+        "logement",
+        "politique du logement"
+      ],
+      "selectedLinks": [
+        "https://www.liberation.fr/politique/encadrement-des-loyers-non-on-ne-peut-pas-se-contenter-de-laisser-faire-le-marche-20260522_4P3FOEYBCNHU3FHEQX6IRYIVFE/",
+        "https://immobilier.lefigaro.fr/article/tout-comprendre-a-l-encadrement-des-loyers-dont-l-experimentation-prend-bientot-fin-20260522"
+      ],
+      "agonTheme": "Économie / emploi",
+      "positionA": "",
+      "positionB": "",
+      "leftScore": 9,
+      "storyLink": {
+        "story_decision": "new_story",
+        "matched_story_id": null,
+        "matched_story_title": null,
+        "matched_story_summary": "",
+        "previous_episode_id": "",
+        "previous_episode_title": "",
+        "previous_episode_summary": "",
+        "previous_episode_url": "",
+        "confidence": 0.45,
+        "reason": "Aucune histoire existante ne couvre spécifiquement l'encadrement des loyers ou la politique du logement.",
+        "criteria": {
+          "main_actors_match": false,
+          "central_tension_match": false,
+          "temporal_continuity": true,
+          "editorial_theme_match": true,
+          "strong_keywords_match": false
+        },
+        "new_story": {
+          "story_title": "",
+          "story_summary": "",
+          "main_actors": [
+            "marché immobilier",
+            "pouvoirs publics",
+            "locataires",
+            "propriétaires"
+          ],
+          "central_tension": "Encadrement des loyers et régulation du marché immobilier",
+          "keywords": [
+            "encadrement des loyers",
+            "logement",
+            "politique du logement",
+            "marché immobilier"
+          ],
+          "status": "active"
+        }
+      },
+      "sourceSubject": "Encadrement des loyers : non, on ne peut pas se contenter de laisser faire le marché !",
+      "fullArticleState": "short"
+    }
+  },
+  {
+    "action": "save",
+    "subject": "Le premier vice-président RN de Grand Besançon Métropole, qui tenait un compte homophobe, raciste et sexiste sur les réseaux sociaux, démissionne",
+    "debateScore": 8,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "Franceinfo, Libération",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.liberation.fr/politique/racisme-sexisme-homophobie-un-maire-rn-a-la-tete-dun-sulfureux-compte-facebook-anonyme-20260522_YAIZ5IPFYZD7DDXZYMGUTJGV2E/",
+        "source": "Libération",
+        "title": "Racisme, sexisme, homophobie : un maire RN à la tête d’un sulfureux compte Facebook anonyme",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.franceinfo.fr/france/bourgogne-franche-comte/doubs/le-premier-vice-president-rn-de-grand-besancon-metropole-auteur-d-un-compte-homophobe-raciste-et-sexiste-sur-les-reseaux-sociaux-demissionne_8021153.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "title": "Le premier vice-président RN de Grand Besançon Métropole, qui tenait un compte homophobe, raciste et sexiste sur les réseaux sociaux, démissionne",
+        "thumbnail": ""
+      }
+    ],
+    "sessionLabel": "22/05/2026 à 20:02:20",
+    "controversyLevel": "fort",
+    "leftScore": 9,
+    "ai": {
+      "arenaMode": "positions",
+      "debateScore": 8,
+      "controversyLevel": "fort",
+      "debateQuestion": "",
+      "resume": "",
+      "keywords": [
+        "Rassemblement National",
+        "Grand Besançon Métropole",
+        "compte Facebook anonyme",
+        "homophobie",
+        "racisme",
+        "sexisme",
+        "démission"
+      ],
+      "selectedLinks": [
+        "https://www.liberation.fr/politique/racisme-sexisme-homophobie-un-maire-rn-a-la-tete-dun-sulfureux-compte-facebook-anonyme-20260522_YAIZ5IPFYZD7DDXZYMGUTJGV2E/",
+        "https://www.franceinfo.fr/france/bourgogne-franche-comte/doubs/le-premier-vice-president-rn-de-grand-besancon-metropole-auteur-d-un-compte-homophobe-raciste-et-sexiste-sur-les-reseaux-sociaux-demissionne_8021153.html#xtor=RSS-3-[lestitres]"
+      ],
+      "agonTheme": "Politique",
+      "positionA": "",
+      "positionB": "",
+      "leftScore": 9,
+      "storyLink": {
+        "story_decision": "new_story",
+        "matched_story_id": null,
+        "matched_story_title": null,
+        "matched_story_summary": "",
+        "previous_episode_id": "",
+        "previous_episode_title": "",
+        "previous_episode_summary": "",
+        "previous_episode_url": "",
+        "confidence": 0.45,
+        "reason": "Aucune histoire existante ne couvre spécifiquement la démission d'un élu RN pour des propos homophobes, racistes et sexistes sur les réseaux sociaux.",
+        "criteria": {
+          "main_actors_match": false,
+          "central_tension_match": false,
+          "temporal_continuity": true,
+          "editorial_theme_match": true,
+          "strong_keywords_match": false
+        },
+        "new_story": {
+          "story_title": "",
+          "story_summary": "",
+          "main_actors": [
+            "Rassemblement National",
+            "élus locaux"
+          ],
+          "central_tension": "Comportements et discours controversés d'élus sur les réseaux sociaux",
+          "keywords": [
+            "Rassemblement National",
+            "homophobie",
+            "racisme",
+            "sexisme",
+            "démission",
+            "réseaux sociaux"
+          ],
+          "status": "active"
+        }
+      },
+      "sourceSubject": "Le premier vice-président RN de Grand Besançon Métropole, qui tenait un compte homophobe, raciste et sexiste sur les réseaux sociaux, démissionne",
+      "fullArticleState": "short"
+    }
+  },
+  {
+    "action": "save",
+    "subject": "Violences sexistes et sexuelles : des «personnes de confiance» pour veiller sur les soirées étudiantes",
+    "debateScore": 8,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "Libération, Marianne, La Croix",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.liberation.fr/societe/violences-sexistes-et-sexuelles-des-personnes-de-confiance-pour-veiller-sur-les-soirees-etudiantes-20260522_NKITC7AW3FAX7OSCLOKHPZANIA/",
+        "source": "Libération",
+        "title": "Violences sexistes et sexuelles : des «personnes de confiance» pour veiller sur les soirées étudiantes",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.la-croix.com/sans-rubrique/violences-periscolaires-a-paris-retour-en-5-questions-sur-le-scandale-20260521",
+        "source": "La Croix",
+        "title": "Violences périscolaires à Paris : retour en 5 questions sur le scandale",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.marianne.net/societe/police-et-justice/periscolaire-les-rois-du-silence-lenquete-choc-sur-les-violences-et-abus-qui-frappent-les-ecoles-francaises#utm_source=RSS-MARIANNE&utm_medium=Flux-Rss&utm_campaign=RSS_general",
+        "source": "Marianne",
+        "title": "Périscolaire : \"Les rois du silence\", l’enquête choc sur les violences et abus qui frappent les écoles françaises",
+        "thumbnail": ""
+      }
+    ],
+    "sessionLabel": "22/05/2026 à 20:02:20",
+    "controversyLevel": "fort",
+    "leftScore": 9,
+    "ai": {
+      "arenaMode": "positions",
+      "debateScore": 8,
+      "controversyLevel": "fort",
+      "debateQuestion": "",
+      "resume": "",
+      "keywords": [
+        "violences sexistes",
+        "personnes de confiance",
+        "soirées étudiantes",
+        "universités",
+        "prévention",
+        "harcèlement sexuel"
+      ],
+      "selectedLinks": [
+        "https://www.liberation.fr/societe/violences-sexistes-et-sexuelles-des-personnes-de-confiance-pour-veiller-sur-les-soirees-etudiantes-20260522_NKITC7AW3FAX7OSCLOKHPZANIA/"
+      ],
+      "agonTheme": "Société / éducation",
+      "positionA": "",
+      "positionB": "",
+      "leftScore": 9,
+      "storyLink": {
+        "story_decision": "new_story",
+        "matched_story_id": null,
+        "matched_story_title": null,
+        "matched_story_summary": "",
+        "previous_episode_id": "",
+        "previous_episode_title": "",
+        "previous_episode_summary": "",
+        "previous_episode_url": "",
+        "confidence": 0,
+        "reason": "Aucune histoire existante ne couvre spécifiquement les violences sexistes et sexuelles dans les soirées étudiantes ou la prévention en milieu universitaire.",
+        "criteria": {
+          "main_actors_match": false,
+          "central_tension_match": false,
+          "temporal_continuity": false,
+          "editorial_theme_match": false,
+          "strong_keywords_match": false
+        },
+        "new_story": {
+          "story_title": "",
+          "story_summary": "",
+          "main_actors": [
+            "étudiants",
+            "universités",
+            "personnes de confiance"
+          ],
+          "central_tension": "Prévention et gestion des violences sexistes et sexuelles dans les contextes universitaires",
+          "keywords": [
+            "violences sexistes",
+            "harcèlement sexuel",
+            "universités",
+            "prévention",
+            "soirées étudiantes"
+          ],
+          "status": "active"
+        }
+      },
+      "sourceSubject": "Violences sexistes et sexuelles : des «personnes de confiance» pour veiller sur les soirées étudiantes",
+      "fullArticleState": "short"
+    }
+  },
+  {
+    "action": "save",
+    "subject": "\"On a été torturés pendant trois jours\" : des militants de la \"flottille pour Gaza\" dénoncent des violences après leur arrestation et leur expulsion par Israël",
+    "debateScore": 8,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "Franceinfo, L'Humanité, Le Figaro, La Croix, CNews, France 24, Euronews FR",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.humanite.fr/monde/armee-israelienne/tortures-humilies-affames-apres-leur-expulsion-disrael-les-membres-de-la-flottille-global-sumud-arrivent-enfin-a-paris",
+        "source": "L'Humanité",
+        "title": "Violés, torturés, humiliés, affamés… Après leur expulsion d’Israël, les membres de la flottille Global Sumud racontent leur calvaire",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.franceinfo.fr/monde/israel/on-a-ete-tortures-pendant-3-jours-les-militants-de-la-flottille-pour-gaza-temoignent-apres-leur-arrestation-par-les-autorites-israeliennes_8021162.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "title": "\"On a été torturés pendant trois jours\" : des militants de la \"flottille pour Gaza\" dénoncent des violences après leur arrestation et leur expulsion par Israël",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.france24.com/fr/vid%C3%A9o/20260522-flottille-pour-gaza-les-activistes-d%C3%A9noncent-des-violences-subis-en-d%C3%A9tention",
+        "source": "France 24",
+        "title": "Flottille pour Gaza: les activistes dénoncent des violences subis en détention",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.france24.com/fr/vid%C3%A9o/20260522-flottille-pour-gaza-expuls%C3%A9s-par-isra%C3%ABl-les-militants-%C3%A9trangers-sont-arriv%C3%A9s-en-turquie",
+        "source": "France 24",
+        "title": "\"Flottille pour Gaza\" : expulsés par Israël, les militants étrangers sont arrivés en Turquie",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "http://fr.euronews.com/video/2026/05/22/la-turquie-accueille-422-militants-de-la-flottille-pour-gaza-apres-detention-en-israel",
+        "source": "Euronews FR",
+        "title": "La Turquie accueille les 422 militants de la flottille pour Gaza après expulsion d’Israël",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.la-croix.com/international/flottille-de-gaza-israel-presse-de-tourner-la-page-apres-le-tolle-international-20260521",
+        "source": "La Croix",
+        "title": "Flottille de Gaza : Israël pressé de tourner la page après le tollé international",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.lefigaro.fr/societes/trois-repreneurs-designes-pour-poursuivre-les-activites-de-l-entreprise-de-livraison-relais-colis-20260522",
+        "source": "Le Figaro",
+        "title": "Trois repreneurs désignés pour poursuivre les activités de l’entreprise de livraison Relais Colis",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.cnews.fr/people/2026-05-22/britney-spears-le-rapport-de-police-et-une-video-revelent-de-nouveaux-details",
+        "source": "CNews",
+        "title": "Britney Spears : le rapport de police et une vidéo révèlent de nouveaux détails concernant l'arrestation de la chanteuse en mars",
+        "thumbnail": ""
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/shorts/ZRARDGy_HgI",
+        "source": "France 24",
+        "title": "Flottille pour Gaza: les activistes dénoncent des violences subis en détention • FRANCE 24",
+        "thumbnail": ""
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/watch?v=4N3nNGXoyG8",
+        "source": "France 24",
+        "title": "",
+        "thumbnail": "https://i.ytimg.com/vi/4N3nNGXoyG8/hqdefault.jpg"
+      }
+    ],
+    "sessionLabel": "22/05/2026 à 20:02:20",
+    "controversyLevel": "très fort",
+    "leftScore": 9,
+    "ai": {
+      "arenaMode": "positions",
+      "debateScore": 8,
+      "controversyLevel": "très fort",
+      "debateQuestion": "",
+      "resume": "",
+      "keywords": [
+        "flottille pour Gaza",
+        "Israël",
+        "violences en détention",
+        "militants étrangers",
+        "Turquie",
+        "Global Sumud",
+        "expulsion",
+        "droits humains"
+      ],
+      "selectedLinks": [
+        "https://www.humanite.fr/monde/armee-israelienne/tortures-humilies-affames-apres-leur-expulsion-disrael-les-membres-de-la-flottille-global-sumud-arrivent-enfin-a-paris",
+        "https://www.youtube.com/shorts/ZRARDGy_HgI",
+        "https://www.franceinfo.fr/monde/israel/on-a-ete-tortures-pendant-3-jours-les-militants-de-la-flottille-pour-gaza-temoignent-apres-leur-arrestation-par-les-autorites-israeliennes_8021162.html#xtor=RSS-3-[lestitres]",
+        "https://www.france24.com/fr/vid%C3%A9o/20260522-flottille-pour-gaza-les-activistes-d%C3%A9noncent-des-violences-subis-en-d%C3%A9tention",
+        "https://www.france24.com/fr/vid%C3%A9o/20260522-flottille-pour-gaza-expuls%C3%A9s-par-isra%C3%ABl-les-militants-%C3%A9trangers-sont-arriv%C3%A9s-en-turquie",
+        "https://www.youtube.com/watch?v=4N3nNGXoyG8",
+        "http://fr.euronews.com/video/2026/05/22/la-turquie-accueille-422-militants-de-la-flottille-pour-gaza-apres-detention-en-israel",
+        "https://www.la-croix.com/international/flottille-de-gaza-israel-presse-de-tourner-la-page-apres-le-tolle-international-20260521"
+      ],
+      "agonTheme": "International",
+      "positionA": "",
+      "positionB": "",
+      "leftScore": 9,
+      "storyLink": {
+        "story_decision": "new_story",
+        "matched_story_id": null,
+        "matched_story_title": null,
+        "matched_story_summary": "",
+        "previous_episode_id": "",
+        "previous_episode_title": "",
+        "previous_episode_summary": "",
+        "previous_episode_url": "",
+        "confidence": 0.45,
+        "reason": "Aucune histoire existante ne couvre spécifiquement les violences subies par des militants de la flottille pour Gaza et leur expulsion par Israël.",
+        "criteria": {
+          "main_actors_match": true,
+          "central_tension_match": true,
+          "temporal_continuity": true,
+          "editorial_theme_match": true,
+          "strong_keywords_match": true
+        },
+        "new_story": {
+          "story_title": "",
+          "story_summary": "",
+          "main_actors": [
+            "militants",
+            "Israël",
+            "Turquie"
+          ],
+          "central_tension": "violences et expulsions liées à la flottille pour Gaza",
+          "keywords": [
+            "flottille",
+            "Gaza",
+            "Israël",
+            "violences",
+            "expulsion",
+            "droits humains"
+          ],
+          "status": "active"
+        }
+      },
+      "sourceSubject": "\"On a été torturés pendant trois jours\" : des militants de la \"flottille pour Gaza\" dénoncent des violences après leur arrestation et leur expulsion par Israël",
+      "fullArticleState": "short"
+    }
+  },
+  {
+    "action": "save",
+    "subject": "DIRECT. Guerre au Moyen-Orient : frappes au Liban ; situation « catastrophique » à Gaza",
+    "debateScore": 9,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "La Croix, RMC",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.la-croix.com/international/direct-guerre-iran-israel-usa-jour-84-moyen-orient-bilan-resume-aujourdhui-20260522",
+        "source": "La Croix",
+        "title": "DIRECT. Guerre au Moyen-Orient : frappes au Liban ; situation « catastrophique » à Gaza",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.la-croix.com/international/direct-guerre-iran-israel-usa-jour-83-moyen-orient-bilan-resume-aujourdhui-20260521",
+        "source": "La Croix",
+        "title": "Guerre au Moyen-Orient, jour 83 : exécutions en Iran… Le bilan du jeudi 21 mai",
+        "thumbnail": ""
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/watch?v=5R9J1nmNpYk",
+        "source": "RMC",
+        "title": "",
+        "thumbnail": "https://i.ytimg.com/vi/5R9J1nmNpYk/hqdefault.jpg"
+      }
+    ],
+    "sessionLabel": "22/05/2026 à 20:02:20",
+    "controversyLevel": "très fort",
+    "leftScore": 8,
+    "ai": {
+      "arenaMode": "positions",
+      "debateScore": 9,
+      "controversyLevel": "très fort",
+      "debateQuestion": "",
+      "resume": "",
+      "keywords": [
+        "Gaza",
+        "Liban",
+        "Israël",
+        "Iran",
+        "Jean Yves Le Drian",
+        "frappes aériennes",
+        "situation humanitaire",
+        "Moyen Orient"
+      ],
+      "selectedLinks": [
+        "https://www.la-croix.com/international/direct-guerre-iran-israel-usa-jour-84-moyen-orient-bilan-resume-aujourdhui-20260522",
+        "https://www.youtube.com/watch?v=5R9J1nmNpYk"
+      ],
+      "agonTheme": "International",
+      "positionA": "",
+      "positionB": "",
+      "leftScore": 8,
+      "storyLink": {
+        "story_decision": "new_story",
+        "matched_story_id": null,
+        "matched_story_title": null,
+        "matched_story_summary": "",
+        "previous_episode_id": "",
+        "previous_episode_title": "",
+        "previous_episode_summary": "",
+        "previous_episode_url": "",
+        "confidence": 0,
+        "reason": "Aucune histoire existante disponible pour rattacher la guerre au Moyen-Orient incluant Gaza, Liban, Israël et Iran.",
+        "criteria": {
+          "main_actors_match": false,
+          "central_tension_match": false,
+          "temporal_continuity": false,
+          "editorial_theme_match": true,
+          "strong_keywords_match": false
+        },
+        "new_story": {
+          "story_title": "",
+          "story_summary": "",
+          "main_actors": [
+            "Israël",
+            "Gaza",
+            "Liban",
+            "Iran"
+          ],
+          "central_tension": "Conflits armés et tensions régionales au Moyen-Orient",
+          "keywords": [
+            "Gaza",
+            "Liban",
+            "Israël",
+            "Iran",
+            "frappes aériennes",
+            "situation humanitaire"
+          ],
+          "status": "active"
+        }
+      },
+      "sourceSubject": "DIRECT. Guerre au Moyen-Orient : frappes au Liban ; situation « catastrophique » à Gaza",
+      "fullArticleState": "short"
+    }
+  },
+  {
+    "action": "save",
+    "subject": "Elections en Nouvelle-Calédonie : le Parlement entérine une ouverture du corps électoral pour les \"natifs\", à quelques semaines d'un scrutin crucial",
+    "debateScore": 8,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [
+      "Nouvelle-Calédonie",
+      "Parlement français",
+      "corps électoral",
+      "natifs",
+      "scrutin crucial",
+      "indépendantisme",
+      "statut politique"
+    ],
+    "agonTheme": "Politique",
+    "positionA": "",
+    "positionB": "",
+    "sources": "Franceinfo, Libération",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.liberation.fr/politique/nouvelle-caledonie-le-parlement-enterine-une-ouverture-du-corps-electoral-20260520_P633SQRQ7FFHFLD6HNSSPELB7I/",
+        "source": "Libération",
+        "title": "Nouvelle-Calédonie : le Parlement entérine une ouverture du corps électoral",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.franceinfo.fr/france/nouvelle-caledonie/statut-de-la-nouvelle-caledonie-le-parlement-enterine-une-ouverture-du-corps-electoral-pour-les-natifs-a-quelques-semaines-d-elections-cruciales_8017031.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "title": "Elections en Nouvelle-Calédonie : le Parlement entérine une ouverture du corps électoral pour les \"natifs\", à quelques semaines d'un scrutin crucial",
+        "thumbnail": ""
+      }
+    ],
+    "sessionLabel": "20/05/2026 à 22:08:30"
+  },
+  {
+    "action": "save",
+    "subject": "Une vidéo de militants de la « flottille pour Gaza » agenouillés et les mains liées, diffusée par le ministre israélien Ben Gvir, suscite un tollé",
+    "debateScore": 8,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [
+      "flottille pour Gaza",
+      "Ben Gvir",
+      "Israël",
+      "militants arrêtés",
+      "vidéo polémique",
+      "Tel Aviv",
+      "détention",
+      "droits humains"
+    ],
+    "agonTheme": "International",
+    "positionA": "",
+    "positionB": "",
+    "sources": "Le Monde, Libération, La Croix, BFMTV, HuffPost France, 20 Minutes",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.liberation.fr/international/moyen-orient/ils-sont-ou-les-heros-le-ministre-israelien-ben-gvir-humilie-des-detenus-de-la-flottille-pour-gaza-filmes-a-genoux-et-les-mains-liees-20260520_RV6MNUMSKNAMVHG25SZXF3YDC4/",
+        "source": "Libération",
+        "title": "L’humiliation de détenus de la «Flottille pour Gaza» en Israël provoque une crise politique à Tel Aviv et l’indignation générale",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.lemonde.fr/international/article/2026/05/20/une-video-de-militants-de-la-flottille-pour-gaza-agenouilles-et-les-mains-liees-diffusee-par-le-ministre-israelien-ben-gvir-suscite-un-tolle_6691735_3211.html",
+        "source": "Le Monde",
+        "title": "Une vidéo de militants de la « flottille pour Gaza » agenouillés et les mains liées, diffusée par le ministre israélien Ben Gvir, suscite un tollé",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.huffingtonpost.fr/international/video/en-israel-tolle-apres-la-publication-d-images-de-militants-de-la-flottille-pour-gaza-agenouilles_263934.html",
+        "source": "HuffPost France",
+        "title": "Ce ministre israélien publie des images de militants de la flottille pour Gaza arrêtés et provoque un tollé",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.bfmtv.com/international/moyen-orient/israel/video-israel-les-images-de-militants-d-une-flottille-pour-gaza-agenouilles-et-les-mains-liees-provoquent-un-tolle_VN-202605200839.html",
+        "source": "BFMTV",
+        "title": "Israël: les images de militants d'une flottille pour Gaza agenouillés et les mains liées provoquent un tollé",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.la-croix.com/international/flottille-gaza-ce-que-l-on-sait-de-la-video-des-militants-arretes-qui-suscite-la-polemique-20260520",
+        "source": "La Croix",
+        "title": "Flottille Gaza : ce que l’on sait de la vidéo des militants arrêtés qui suscite la polémique",
+        "thumbnail": ""
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/shorts/n2iFDePxY3Q",
+        "source": "20 Minutes",
+        "title": "Flottille pour Gaza : Des militants filmés entravés et à genoux",
+        "thumbnail": ""
+      }
+    ],
+    "sessionLabel": "20/05/2026 à 21:50:45"
+  },
+  {
+    "action": "save",
     "subject": "L’avocate Youssra Marzouq, interviewée voilée au JT, porte plainte après avoir été accusée «d’islamiser la France»",
     "debateScore": 8,
     "debateQuestion": "",

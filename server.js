@@ -147,6 +147,16 @@ function limitStoryText(text, maxLength) {
   return value.slice(0, maxLength - 1).trimEnd() + "…";
 }
 
+function decodeLooseJsonString(value) {
+  return String(value || "")
+    .replace(/\\"/g, "\"")
+    .replace(/\\n/g, "\n")
+    .replace(/\\r/g, "\r")
+    .replace(/\\t/g, "\t")
+    .replace(/\\\\/g, "\\")
+    .trim();
+}
+
 function buildFallbackStoryTitle(subject, theme) {
   const rawTopic = String(subject || "").trim();
   const normalizedTheme = normalizeAgonTheme(theme);
@@ -590,6 +600,8 @@ ${JSON.stringify({
 Consignes :
 - Réponds uniquement avec le compte rendu, en texte brut.
 - Longueur obligatoire : entre 800 et 1500 caractères.
+- Commence OBLIGATOIREMENT par un chapô : un paragraphe d'introduction COURT (2 phrases maximum), qui résume l'essentiel et donne envie de lire, séparé du reste par une ligne vide.
+- L'article doit comporter le chapô suivi d'au moins 2 paragraphes séparés par une ligne vide.
 - Ne mets aucun titre.
 - Ne propose aucune position A/B.
 - Ne termine pas par le titre de l'arène.
@@ -638,27 +650,40 @@ async function generateFinalArticleFromSummary(payload) {
     };
   }
 
-  const prompt = `Tu es un rédacteur éditorial.
+  const prompt = `Tu es un rédacteur éditorial pour une plateforme d’actualité et de débat.
 
 Sujet : ${subject}
 
 Résumé à retravailler :
 ${summary}
 
-Ta mission : réécrire ce résumé en article définitif plus fluide et captivant, sans rien inventer ni ajouter.
+Ta mission : transformer ce résumé en article définitif plus fluide, plus captivant et plus narratif, sans rien inventer ni ajouter.
 
 Règles pour le champ "article" :
 - entre 800 et 1400 caractères de texte narratif ;
 - texte brut, sans titre, sans liste ;
 - minimum 2 paragraphes séparés par une ligne vide ;
-- faire ressortir les tensions réelles si elles sont dans le résumé, sinon ne pas en chercher ;
+- commencer OBLIGATOIREMENT par un chapô : un paragraphe d'introduction COURT (2 phrases maximum, jamais plus), qui résume l'essentiel en une ou deux phrases percutantes et donne envie de lire, séparé du reste par une ligne vide ;
+- après le chapô, commencer par une accroche forte ;
+- installer progressivement la tension si elle existe dans le résumé ;
+- expliquer clairement les faits, les acteurs et les enjeux ;
+- ne jamais inventer de fait, chiffre, citation, nom ou contexte absent du résumé ;
 - ne pas conclure artificiellement ;
-- ne pas ajouter de question ni de signature à la fin.
+- ne pas ajouter de question ni de signature à la fin ;
+- finir par une phrase affirmative, tendue et ouverte, qui laisse une impression de suite possible sans poser de question.
 
-Règles pour "debateQuestion" : une seule question claire et clivante, max 100 caractères.
-Règles pour "positionA" et "positionB" : deux camps opposés, max 60 caractères chacun, pas de "car/parce que/afin de".
+Règles pour "debateQuestion" :
+- une seule question claire et clivante ;
+- maximum 100 caractères ;
+- pas de formulation molle ou neutre.
 
-Réponds UNIQUEMENT en JSON valide (sans balises markdown) :
+Règles pour "positionA" et "positionB" :
+- deux camps opposés ;
+- maximum 60 caractères chacun ;
+- pas de "car", "parce que", "afin de" ;
+- formulations courtes, lisibles et opposées.
+
+Réponds UNIQUEMENT en JSON valide, sans balises markdown :
 {"article":"...","debateQuestion":"...","positionA":"...","positionB":"..."}`;
 
   const response = await openai.responses.create({
@@ -694,6 +719,126 @@ Réponds UNIQUEMENT en JSON valide (sans balises markdown) :
     debateQuestion,
     positionA: limitStoryText(parsed.positionA || "Accord", 60),
     positionB: limitStoryText(parsed.positionB || "Désaccord", 60)
+  };
+}
+
+async function generateStyledArticle(payload) {
+  const article = String(payload?.article || "").trim();
+  const debateQuestion = String(payload?.debateQuestion || "").trim();
+  const positionA = String(payload?.positionA || "").trim();
+  const positionB = String(payload?.positionB || "").trim();
+  const signatures = ["J.L Grasso", "R. Renaudot", "M. Camus"];
+  const articleParts = article.split(/\n\n+/).map((part) => part.trim()).filter(Boolean);
+  const existingSignature = articleParts.length >= 3 ? articleParts[articleParts.length - 1] : "";
+  const signature = signatures.includes(existingSignature)
+    ? existingSignature
+    : signatures[Math.floor(Math.random() * signatures.length)];
+  const articleBody = articleParts.length >= 3
+    ? articleParts.slice(0, -2).join("\n\n")
+    : article;
+
+  if (!article) {
+    throw new Error("Article manquant pour la réécriture.");
+  }
+
+  const previousJson = JSON.stringify({
+    article: articleBody,
+    debateQuestion,
+    positionA,
+    positionB
+  }, null, 2);
+
+  if (!openai) {
+    return {
+      article: `${limitStoryText(articleBody, 1500)}\n\n${debateQuestion}\n\n${signature}`,
+      debateQuestion,
+      positionA,
+      positionB
+    };
+  }
+
+  const prompt = `Tu es un éditeur stylistique.
+
+Tu vas recevoir un JSON déjà généré contenant exactement ces champs :
+- article
+- debateQuestion
+- positionA
+- positionB
+
+Ta mission : améliorer uniquement le style du champ "article".
+
+RÈGLE ABSOLUE
+Tu ne dois modifier aucune information factuelle.
+Tu ne dois rien ajouter.
+Tu ne dois rien supprimer d’important.
+Tu ne dois pas modifier le sens.
+Tu ne dois pas modifier "debateQuestion", "positionA" ni "positionB".
+Tu dois recopier "debateQuestion", "positionA" et "positionB" strictement à l’identique, caractère par caractère.
+
+OBJECTIF POUR "article"
+Réécrire uniquement le champ "article" pour le rendre plus palpitant, plus fluide, plus vivant et plus narratif, sans changer le fond.
+
+STYLE ATTENDU
+- texte plus rythmé ;
+- accroche plus forte dès la première phrase ;
+- montée progressive de la tension ;
+- style journalistique vivant, mais crédible ;
+- phrases variées, parfois courtes ;
+- éviter le ton scolaire ;
+- éviter le résumé plat ;
+- faire ressortir uniquement les tensions déjà présentes ;
+- créer une fin ouverte tendue, avec une impression de suite possible.
+
+FIN DE L’ARTICLE
+- ne termine jamais par une question ;
+- ne termine pas par une formule artificielle ;
+- ne termine pas par une signature ;
+- termine par une phrase affirmative, courte ou tendue, qui donne envie de lire la suite.
+
+CONTRAINTES
+- entre 800 et 1400 caractères pour "article" ;
+- commencer OBLIGATOIREMENT par un chapô : un paragraphe d'introduction COURT (2 phrases maximum), qui résume l'essentiel et donne envie de lire, séparé du reste par une ligne vide ;
+- l'article doit comporter le chapô suivi d'au moins 2 paragraphes séparés par une ligne vide ;
+- texte brut dans le champ "article" ;
+- JSON valide uniquement ;
+- aucune clé supplémentaire ;
+- aucun commentaire hors JSON ;
+- aucune balise markdown.
+
+JSON À RETRAVAILLER :
+${previousJson}
+
+Réponds UNIQUEMENT en JSON valide, avec exactement cette structure :
+{"article":"...","debateQuestion":"...","positionA":"...","positionB":"..."}`;
+
+  const response = await openai.responses.create({
+    model: "gpt-4.1-mini",
+    input: prompt,
+    temperature: 0.45,
+    max_output_tokens: 1200
+  });
+
+  const rawText = String(response.output_text || "").trim();
+  if (!rawText) throw new Error("Réponse vide de l'IA pour l'article définitif.");
+
+  let parsed = {};
+  try {
+    parsed = safeJsonParse(rawText);
+  } catch (error) {
+    const looseArticle = rawText.match(/"article"\s*:\s*"([\s\S]*?)"\s*,\s*"debateQuestion"\s*:/)?.[1];
+    parsed = {
+      article: looseArticle ? decodeLooseJsonString(looseArticle) : rawText,
+      debateQuestion,
+      positionA,
+      positionB
+    };
+  }
+
+  return {
+    article: `${limitStoryText(parsed.article || articleBody, 1500)}\n\n${debateQuestion}\n\n${signature}`,
+    debateQuestion,
+    positionA,
+    positionB
   };
 }
 
@@ -1194,16 +1339,18 @@ app.post("/analyze", requireMixteAuth, async (req, res) => {
       positionA: "",
       positionB: ""
     };
-    const storySuggestion = await suggestStoryLink({
-      ...req.body,
-      ai: data
-    });
-    res.json({
-      ...normalizedData,
-      storyLink: storySuggestion
-    });
+    res.json(normalizedData);
   } catch (err) {
     res.status(500).json({ error: err.message });
+  }
+});
+
+app.post("/suggest-story", requireMixteAuth, async (req, res) => {
+  try {
+    const suggestion = await suggestStoryLink(req.body || {});
+    res.json({ ok: true, suggestion });
+  } catch (err) {
+    res.status(500).json({ ok: false, error: err.message || "Erreur suggestion histoire" });
   }
 });
 
@@ -1221,6 +1368,16 @@ app.post("/generate-final-article", requireMixteAuth, async (req, res) => {
   try {
     const payload = req.body || {};
     const result = await generateFinalArticleFromSummary(payload);
+    res.json({ ok: true, ...result });
+  } catch (err) {
+    res.status(500).json({ ok: false, error: err.message || "Erreur génération article définitif" });
+  }
+});
+
+app.post("/generate-styled-article", requireMixteAuth, async (req, res) => {
+  try {
+    const payload = req.body || {};
+    const result = await generateStyledArticle(payload);
     res.json({ ok: true, ...result });
   } catch (err) {
     res.status(500).json({ ok: false, error: err.message || "Erreur génération article définitif" });
@@ -1329,6 +1486,7 @@ app.get("/saved", requireMixteAuth, (req, res) => {
     }
     return `
     <section class="subject" data-index="${i}" data-subject-title="${esc(s.subject)}" data-score="${s.debateScore || 0}">
+      <button class="arena-select-btn" type="button" aria-pressed="false">Sélectionner</button>
       ${buildAiScoreHtml(s)}
       <h3>${esc(s.subject)}</h3>
       ${buildAiBoxHtml(s)}
@@ -1378,6 +1536,7 @@ app.get("/saved", requireMixteAuth, (req, res) => {
     .nav a { display: inline-block; margin-right: 10px; padding: 8px 12px; background: white; border: 1px solid #ddd; border-radius: 999px; text-decoration: none; color: #111; font-size: 0.9rem; }
     .nav a:hover { background: #eee; }
     .subject { background: white; border: 1px solid #e0e0e0; border-radius: 16px; padding: 20px 24px; margin-bottom: 20px; position: relative; }
+    .subject.selected { border-color: #111; box-shadow: 0 0 0 2px rgba(17,17,17,0.08); }
     h3 { margin: 8px 0 12px; font-size: 1.05rem; }
     .ai-score { display: flex; justify-content: space-between; align-items: center; background: #f5f5f5; border-radius: 10px; padding: 10px 14px; margin-bottom: 12px; }
     .ai-score.pending { opacity: 0.5; }
@@ -1409,6 +1568,15 @@ app.get("/saved", requireMixteAuth, (req, res) => {
     .date { font-size: 0.78rem; color: #bbb; }
     .unsave-btn { margin-top: 12px; background: none; border: 1px solid #ddd; border-radius: 999px; padding: 6px 14px; font: inherit; font-size: 0.85rem; cursor: pointer; color: #c0392b; }
     .unsave-btn:hover { background: #fdf0ee; border-color: #c0392b; }
+    .saved-selection-bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; background: #fff; border: 1px solid #ddd; border-radius: 14px; padding: 12px 14px; margin: 0 0 18px; position: sticky; top: 10px; z-index: 5; }
+    .saved-selection-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .select-all-arenas-btn, .clear-selection-btn, .arena-select-btn { border: 1px solid #ddd; background: #fff; border-radius: 999px; padding: 8px 14px; font: inherit; font-size: 0.86rem; font-weight: 700; cursor: pointer; color: #111; }
+    .select-all-arenas-btn:hover, .clear-selection-btn:hover { opacity: 0.85; }
+    .arena-select-btn:hover { background: #f0f0f0; }
+    .arena-select-btn { position: absolute; top: 16px; left: 18px; }
+    .subject { padding-top: 62px; }
+    .subject.selected .arena-select-btn { background: #111; border-color: #111; color: #fff; }
+    .selection-count { color: #555; font-size: 0.9rem; font-weight: 700; }
     .empty { color: #888; margin-top: 40px; }
     .session-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px; }
     .session-tab { border: 1px solid #ddd; background: white; border-radius: 999px; padding: 8px 16px; font: inherit; font-size: 0.88rem; cursor: pointer; color: #555; }
@@ -1430,6 +1598,13 @@ app.get("/saved", requireMixteAuth, (req, res) => {
   <h1>Sujets enregistrés</h1>
   <p class="intro">${saved.length} sujet(s) enregistré(s) sur ${sessions.length} mise(s) à jour.</p>
   ${saved.length === 0 ? '<p class="empty">Aucun sujet enregistré pour le moment.</p>' : `
+  <div class="saved-selection-bar">
+    <div class="selection-count"><span id="selected-count">0</span> arène(s) sélectionnée(s)</div>
+    <div class="saved-selection-actions">
+      <button class="select-all-arenas-btn" type="button">Tout sélectionner</button>
+      <button class="clear-selection-btn" type="button">Annuler la sélection</button>
+    </div>
+  </div>
   <div class="session-tabs">${sessionTabs}</div>
   <div id="subjects-list">${sessionBlocks}</div>
   `}
@@ -1441,7 +1616,71 @@ app.get("/saved", requireMixteAuth, (req, res) => {
       const idx = tab.dataset.idx;
       document.querySelectorAll('.session-tab').forEach(t => t.classList.toggle('active', t.dataset.idx === idx));
       document.querySelectorAll('.session-block').forEach(b => b.classList.toggle('hidden', b.dataset.idx !== idx));
+      updateSelectionCount();
     });
+  });
+
+  function getActiveSessionBlock() {
+    return document.querySelector('.session-block:not(.hidden)');
+  }
+
+  function updateArenaSelectionButton(subject) {
+    const btn = subject.querySelector('.arena-select-btn');
+    const selected = subject.classList.contains('selected');
+    if (!btn) return;
+    btn.textContent = selected ? 'Sélectionné' : 'Sélectionner';
+    btn.setAttribute('aria-pressed', selected ? 'true' : 'false');
+  }
+
+  function updateSelectionCount() {
+    const activeBlock = getActiveSessionBlock();
+    const count = activeBlock ? activeBlock.querySelectorAll('.subject.selected').length : 0;
+    const countEl = document.getElementById('selected-count');
+    if (countEl) countEl.textContent = String(count);
+  }
+
+  document.addEventListener('click', (e) => {
+    const selectBtn = e.target.closest('.arena-select-btn');
+    if (selectBtn) {
+      const subject = selectBtn.closest('.subject');
+      if (subject) {
+        subject.classList.toggle('selected');
+        updateArenaSelectionButton(subject);
+        updateSelectionCount();
+      }
+      return;
+    }
+
+    if (e.target.closest('.select-all-arenas-btn')) {
+      const activeBlock = getActiveSessionBlock();
+      if (activeBlock) {
+        activeBlock.querySelectorAll('.subject').forEach(subject => {
+          subject.classList.add('selected');
+          updateArenaSelectionButton(subject);
+        });
+        updateSelectionCount();
+      }
+      const selectAllBtn = document.querySelector('.select-all-arenas-btn');
+      const clearBtn = document.querySelector('.clear-selection-btn');
+      if (selectAllBtn) { selectAllBtn.style.background = '#111'; selectAllBtn.style.borderColor = '#111'; selectAllBtn.style.color = '#fff'; }
+      if (clearBtn) { clearBtn.style.background = ''; clearBtn.style.borderColor = ''; clearBtn.style.color = ''; }
+      return;
+    }
+
+    if (e.target.closest('.clear-selection-btn')) {
+      const activeBlock = getActiveSessionBlock();
+      if (activeBlock) {
+        activeBlock.querySelectorAll('.subject.selected').forEach(subject => {
+          subject.classList.remove('selected');
+          updateArenaSelectionButton(subject);
+        });
+        updateSelectionCount();
+      }
+      const selectAllBtn = document.querySelector('.select-all-arenas-btn');
+      const clearBtn = document.querySelector('.clear-selection-btn');
+      if (clearBtn) { clearBtn.style.background = '#111'; clearBtn.style.borderColor = '#111'; clearBtn.style.color = '#fff'; }
+      if (selectAllBtn) { selectAllBtn.style.background = ''; selectAllBtn.style.borderColor = ''; selectAllBtn.style.color = ''; }
+    }
   });
 
   function buildAiScoreHtml(ai) {
@@ -2201,11 +2440,19 @@ app.post("/send-to-agon", requireMixteAuth, async (req, res) => {
     const { subject, sessionLabel, question, positionA, positionB, theme, resume, sources, links, storySelection, keywords } = req.body;
     if (!question) return res.status(400).json({ ok: false, error: "question manquante" });
     console.log(`[send-to-agon] Envoi vers ${AGON_URL}/api/veille/receive`);
-    const r = await fetch(`${AGON_URL}/api/veille/receive`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ question, positionA, positionB, theme, resume, sources, links: links || [], storySelection: storySelection || null, keywords: Array.isArray(keywords) ? keywords : [] })
-    });
+    const agonController = new AbortController();
+    const agonTimeout = setTimeout(() => agonController.abort(), 15000);
+    let r;
+    try {
+      r = await fetch(`${AGON_URL}/api/veille/receive`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ question, positionA, positionB, theme, resume, sources, links: links || [], storySelection: storySelection || null, keywords: Array.isArray(keywords) ? keywords : [] }),
+        signal: agonController.signal
+      });
+    } finally {
+      clearTimeout(agonTimeout);
+    }
     if (!r.ok) {
       const body = await r.text().catch(() => "");
       console.error(`[send-to-agon] Erreur ${r.status}: ${body}`);

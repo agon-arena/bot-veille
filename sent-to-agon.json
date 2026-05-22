@@ -1,5 +1,1050 @@
 [
   {
+    "subject": "Tulsi Gabbard, directrice du renseignement national, annonce sa démission de l’administration Trump",
+    "sessionLabel": "22/05/2026 à 21:53:07",
+    "question": "La démission de Tulsi Gabbard affaiblit-elle la sécurité nationale américaine ?",
+    "positionA": "Oui, elle crée un vide stratégique",
+    "positionB": "Non, le renseignement reste efficace sans elle",
+    "theme": "International",
+    "resume": "Tulsi Gabbard vient de frapper un grand coup en annonçant sa démission du poste de directrice du renseignement national, un rôle clé sous l'administration Trump. Cette décision inattendue secoue les fondations mêmes des services de renseignement américains.\n\nLe mystère entoure encore les raisons précises de ce départ soudain. Pourtant, son rôle stratégique dans la coordination et la supervision des opérations de renseignement était vital pour la sécurité nationale. Son absence risque de créer un vide au moment où la stabilité et la rapidité de réaction sont plus que jamais indispensables.\n\nCe départ ouvre une ère d’incertitudes pour la gestion du renseignement. Les équipes dirigeantes doivent désormais composer avec cette perte majeure, tandis que le pays s’interroge sur les conséquences à venir. L’avenir du renseignement américain se joue désormais dans cette nouvelle configuration.\n\nLa démission de Tulsi Gabbard affaiblit-elle la sécurité nationale américaine ?\n\nJ.L Grasso",
+    "sources": "Libération, Le Figaro",
+    "links": [
+      {
+        "title": "Tulsi Gabbard, directrice du renseignement national, annonce sa démission de l’administration Trump",
+        "url": "https://www.liberation.fr/international/amerique/tulsi-gabbard-directrice-du-renseignement-national-annonce-sa-demission-de-ladministration-trump-20260522_N55WGVRKCFB5NDCGH5LZA46GHY/",
+        "source": "Libération",
+        "type": "article",
+        "date": "22/05/2026",
+        "checked": true
+      },
+      {
+        "title": "La directrice du renseignement américain, Tulsi Gabbard, démissionne",
+        "url": "https://www.lefigaro.fr/international/la-directrice-du-renseignement-americain-tulsi-gabbard-demissionne-20260522",
+        "source": "Le Figaro",
+        "type": "article",
+        "date": "22/05/2026",
+        "checked": true
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "04-la-presidence-trump-reconfigure-la-politique-americaine-et-les-relations-interna",
+      "matchedStoryTitle": "La présidence Trump reconfigure la politique américaine et les relations internationales",
+      "previousEpisodeTitle": "Faut-il indemniser les émeutiers du Capitole aux États-Unis ?",
+      "previousEpisodeUrl": "http://localhost:3001/debate?id=450",
+      "confidence": 0.85,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {},
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "Tulsi Gabbard",
+      "directrice du renseignement national",
+      "administration Trump",
+      "démission",
+      "Etats Unis",
+      "renseignement américain"
+    ],
+    "sentAt": "2026-05-22T17:59:16.889Z"
+  },
+  {
+    "subject": "« Tu peux retirer ta cagoule, je sais qui tu es » : une fillette de 11 ans fait fuir un braqueur cagoulé",
+    "sessionLabel": "22/05/2026 à 20:02:20",
+    "question": "Faut-il encourager les enfants à intervenir face aux délinquants ?",
+    "positionA": "Les enfants doivent apprendre à se défendre",
+    "positionB": "Les enfants ne doivent pas s'exposer au danger",
+    "theme": "Justice / faits divers",
+    "resume": "Un braquage avorté grâce à l’audace d’une fillette de 11 ans. Dans une supérette, face à un malfaiteur cagoulé, son sang-froid a fait toute la différence.\n\nLe visage masqué, le braqueur croyait agir dans l’ombre, invincible. Mais une voix familière a percé le silence : celle de la jeune fille, qui l’a reconnu malgré la cagoule. Sans trembler, elle lui a lancé : « Tu peux retirer ta cagoule, je sais qui tu es. » Ce simple défi a suffi à déstabiliser l’homme, qui a pris la fuite, abandonnant son projet et le magasin sous le choc.\n\nCe geste courageux a stoppé net une situation explosive, évitant un drame. Pourtant, cette victoire fragile laisse planer une tension sourde, comme si le bras de fer ne faisait que commencer. Le courage des plus jeunes vient de frapper fort, mais à quel prix ?\n\nFaut-il encourager les enfants à intervenir face aux délinquants ?\n\nJ.L Grasso",
+    "sources": "Valeurs actuelles, CNews",
+    "links": [
+      {
+        "title": "« Tu peux retirer ta cagoule, je sais qui tu es » : une fillette de 11 ans fait fuir un braqueur cagoulé",
+        "url": "https://www.valeursactuelles.com/faits-divers/tu-peux-retirer-ta-cagoule-je-sais-qui-tu-es-une-fillette-de-11-ans-fait-fuir-un-braqueur-cagoule",
+        "source": "Valeurs actuelles",
+        "type": "article",
+        "date": "22/05/2026",
+        "checked": true
+      },
+      {
+        "title": "«Je sais qui tu es» : une fillette de 11 ans déjoue le braquage d’une supérette en reconnaissant la voix du malfaiteur cagoulé",
+        "url": "https://www.cnews.fr/faits-divers/2026-05-22/je-sais-qui-tu-es-une-fillette-de-11-ans-dejoue-le-braquage-dune-superette",
+        "source": "CNews",
+        "type": "article",
+        "date": "22/05/2026",
+        "checked": true
+      }
+    ],
+    "storySelection": null,
+    "keywords": [
+      "fillette de 11 ans",
+      "braquage",
+      "supérette",
+      "cagoule"
+    ],
+    "sentAt": "2026-05-22T17:26:43.150Z"
+  },
+  {
+    "subject": "Timothée Parrique, l’éclaireur de la « post-croissance » : comment vivre bien en abandonnant la fuite en avant",
+    "sessionLabel": "22/05/2026 à 20:02:20",
+    "question": "La post-croissance peut-elle remplacer la croissance économique ?",
+    "positionA": "Oui, la post-croissance assure un bien-être durable",
+    "positionB": "Non, la croissance reste indispensable au progrès",
+    "theme": "Économie / emploi",
+    "resume": "La croissance économique, souvent tenue pour la clé du progrès, est aujourd’hui remise en question avec force par Timothée Parrique. Il pousse à rompre avec cette course folle qui épuise la planète et creuse les inégalités, pour embrasser une idée audacieuse : la « post-croissance ». Un concept qui bouscule nos certitudes et invite à repenser notre avenir.\n\nParrique se fait le guide d’un chemin inédit, où le bien-être ne se mesure plus à l’aune de la consommation effrénée. Il appelle à redéfinir nos modes de vie et nos économies, en plaçant l’humain et la durabilité au cœur des priorités. Réduire la production et la consommation sans sacrifier la qualité de vie, voilà le défi. Pour lui, bâtir une société capable de fonctionner sans croissance traditionnelle, en valorisant sobriété et coopération, est possible — à condition de transformer en profondeur nos mentalités et nos politiques. Le paradigme dominant vacille, et la planète impose ses limites. L’heure d’un changement radical a sonné.\n\nLa post-croissance peut-elle remplacer la croissance économique ?\n\nR. Renaudot",
+    "sources": "L'Obs, Brut",
+    "links": [
+      {
+        "title": "Timothée Parrique, l’éclaireur de la « post-croissance » : comment vivre bien en abandonnant la fuite en avant",
+        "url": "https://www.nouvelobs.com/economie/20260521.OBS115129/timothee-parrique-l-eclaireur-de-la-post-croissance-comment-vivre-bien-en-abandonnant-la-fuite-en-avant.html",
+        "source": "L'Obs",
+        "type": "article",
+        "date": "21/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Anaïs Demoustier, Alain Chabat, Jonathan Cohen… Comment Quentin Dupieux a travaillé avec eux ?",
+        "url": "https://www.youtube.com/shorts/bACIOD7Q5SI",
+        "source": "Brut",
+        "type": "youtube",
+        "date": "22/05/2026",
+        "checked": false
+      }
+    ],
+    "storySelection": null,
+    "keywords": [
+      "Timothée Parrique",
+      "post",
+      "croissance",
+      "économie durable",
+      "transition écologique"
+    ],
+    "sentAt": "2026-05-22T16:41:41.017Z"
+  },
+  {
+    "subject": "\"On a été torturés pendant trois jours\" : des militants de la \"flottille pour Gaza\" dénoncent des violences après leur arrestation et leur expulsion par Israël",
+    "sessionLabel": "22/05/2026 à 20:02:20",
+    "question": "Les violences israéliennes contre la flottille sont-elles justifiables ?",
+    "positionA": "La sécurité prime sur les droits des militants",
+    "positionB": "Les violences sont des violations inacceptables",
+    "theme": "International",
+    "resume": "Une ombre pesante s’est abattue sur la flottille pour Gaza : 422 militants arrêtés par les forces israéliennes racontent un enfer de violences extrêmes. Pendant trois jours, ces activistes ont subi humiliations, sévices physiques, privations alimentaires et conditions de détention inhumaines. Leur calvaire, loin d’être un simple incident, révèle une brutalité délibérée, orchestrée dès leur capture.\n\nCes témoignages bouleversants ont déclenché une vague d’indignation à travers le monde, mettant Israël sous une pression internationale sans précédent. La gravité des traitements infligés ravive une controverse brûlante sur la façon dont les tentatives d’acheminement d’aide humanitaire vers Gaza sont réprimées. Le dossier est loin d’être clos, et le bras de fer ne fait que commencer.\n\nLes violences israéliennes contre la flottille sont-elles justifiables ?\n\nM. Camus",
+    "sources": "Franceinfo, L'Humanité, Le Figaro, La Croix, CNews, France 24, Euronews FR",
+    "links": [
+      {
+        "title": "Violés, torturés, humiliés, affamés… Après leur expulsion d’Israël, les membres de la flottille Global Sumud racontent leur calvaire",
+        "url": "https://www.humanite.fr/monde/armee-israelienne/tortures-humilies-affames-apres-leur-expulsion-disrael-les-membres-de-la-flottille-global-sumud-arrivent-enfin-a-paris",
+        "source": "L'Humanité",
+        "type": "article",
+        "date": "22/05/2026",
+        "checked": true
+      },
+      {
+        "title": "\"On a été torturés pendant trois jours\" : des militants de la \"flottille pour Gaza\" dénoncent des violences après leur arrestation et leur expulsion par Israël",
+        "url": "https://www.franceinfo.fr/monde/israel/on-a-ete-tortures-pendant-3-jours-les-militants-de-la-flottille-pour-gaza-temoignent-apres-leur-arrestation-par-les-autorites-israeliennes_8021162.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "type": "article",
+        "date": "22/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Flottille pour Gaza: les activistes dénoncent des violences subis en détention",
+        "url": "https://www.france24.com/fr/vid%C3%A9o/20260522-flottille-pour-gaza-les-activistes-d%C3%A9noncent-des-violences-subis-en-d%C3%A9tention",
+        "source": "France 24",
+        "type": "article",
+        "date": "22/05/2026",
+        "checked": true
+      },
+      {
+        "title": "\"Flottille pour Gaza\" : expulsés par Israël, les militants étrangers sont arrivés en Turquie",
+        "url": "https://www.france24.com/fr/vid%C3%A9o/20260522-flottille-pour-gaza-expuls%C3%A9s-par-isra%C3%ABl-les-militants-%C3%A9trangers-sont-arriv%C3%A9s-en-turquie",
+        "source": "France 24",
+        "type": "article",
+        "date": "22/05/2026",
+        "checked": true
+      },
+      {
+        "title": "La Turquie accueille les 422 militants de la flottille pour Gaza après expulsion d’Israël",
+        "url": "http://fr.euronews.com/video/2026/05/22/la-turquie-accueille-422-militants-de-la-flottille-pour-gaza-apres-detention-en-israel",
+        "source": "Euronews FR",
+        "type": "article",
+        "date": "22/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Flottille de Gaza : Israël pressé de tourner la page après le tollé international",
+        "url": "https://www.la-croix.com/international/flottille-de-gaza-israel-presse-de-tourner-la-page-apres-le-tolle-international-20260521",
+        "source": "La Croix",
+        "type": "article",
+        "date": "21/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Trois repreneurs désignés pour poursuivre les activités de l’entreprise de livraison Relais Colis",
+        "url": "https://www.lefigaro.fr/societes/trois-repreneurs-designes-pour-poursuivre-les-activites-de-l-entreprise-de-livraison-relais-colis-20260522",
+        "source": "Le Figaro",
+        "type": "article",
+        "date": "22/05/2026",
+        "checked": false
+      },
+      {
+        "title": "Britney Spears : le rapport de police et une vidéo révèlent de nouveaux détails concernant l'arrestation de la chanteuse en mars",
+        "url": "https://www.cnews.fr/people/2026-05-22/britney-spears-le-rapport-de-police-et-une-video-revelent-de-nouveaux-details",
+        "source": "CNews",
+        "type": "article",
+        "date": "22/05/2026",
+        "checked": false
+      },
+      {
+        "title": "Flottille pour Gaza: les activistes dénoncent des violences subis en détention • FRANCE 24",
+        "url": "https://www.youtube.com/shorts/ZRARDGy_HgI",
+        "source": "France 24",
+        "type": "youtube",
+        "date": "22/05/2026",
+        "checked": true
+      },
+      {
+        "title": "",
+        "url": "https://www.youtube.com/watch?v=4N3nNGXoyG8",
+        "source": "France 24",
+        "type": "youtube",
+        "date": "22/05/2026",
+        "checked": true
+      }
+    ],
+    "storySelection": null,
+    "keywords": [
+      "flottille pour Gaza",
+      "Israël",
+      "violences en détention",
+      "militants étrangers",
+      "Turquie",
+      "Global Sumud",
+      "expulsion",
+      "droits humains"
+    ],
+    "sentAt": "2026-05-22T16:30:46.932Z"
+  },
+  {
+    "subject": "Violences sexistes et sexuelles : des «personnes de confiance» pour veiller sur les soirées étudiantes",
+    "sessionLabel": "22/05/2026 à 20:02:20",
+    "question": "Les « personnes de confiance » sont-elles efficaces contre les violences étudiantes ?",
+    "positionA": "Oui, elles protègent et soutiennent efficacement",
+    "positionB": "Non, elles ne suffisent pas à changer la culture",
+    "theme": "Société / éducation",
+    "resume": "Les violences sexistes et sexuelles continuent de ternir les soirées étudiantes, un fléau tenace qui refuse de disparaître. Pour y faire face, un nouveau dispositif a été déployé : les « personnes de confiance ». Ces acteurs, formés avec soin et désignés au cœur des événements, ne se contentent plus d’observer. Leur présence est désormais un rempart, une vigilance active qui s’exerce dès les premiers signes de comportements déplacés.\n\nMais leur mission va bien au-delà de la simple surveillance. Ces « personnes de confiance » deviennent des repères, des soutiens immédiats pour les victimes et témoins, offrant une oreille attentive et une épaule solide. Ce dispositif s’inscrit dans une dynamique plus large, celle d’une communauté étudiante qui se mobilise et se responsabilise. En insufflant une culture du respect et en renforçant la vigilance collective, ils espèrent transformer les fêtes universitaires en espaces où la sécurité n’est plus un vain mot. Pourtant, la route reste longue et les défis, nombreux.\n\nLes « personnes de confiance » sont-elles efficaces contre les violences étudiantes ?\n\nJ.L Grasso",
+    "sources": "Libération, Marianne, La Croix",
+    "links": [
+      {
+        "title": "Violences sexistes et sexuelles : des «personnes de confiance» pour veiller sur les soirées étudiantes",
+        "url": "https://www.liberation.fr/societe/violences-sexistes-et-sexuelles-des-personnes-de-confiance-pour-veiller-sur-les-soirees-etudiantes-20260522_NKITC7AW3FAX7OSCLOKHPZANIA/",
+        "source": "Libération",
+        "type": "article",
+        "date": "22/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Violences périscolaires à Paris : retour en 5 questions sur le scandale",
+        "url": "https://www.la-croix.com/sans-rubrique/violences-periscolaires-a-paris-retour-en-5-questions-sur-le-scandale-20260521",
+        "source": "La Croix",
+        "type": "article",
+        "date": "22/05/2026",
+        "checked": false
+      },
+      {
+        "title": "Périscolaire : \"Les rois du silence\", l’enquête choc sur les violences et abus qui frappent les écoles françaises",
+        "url": "https://www.marianne.net/societe/police-et-justice/periscolaire-les-rois-du-silence-lenquete-choc-sur-les-violences-et-abus-qui-frappent-les-ecoles-francaises#utm_source=RSS-MARIANNE&utm_medium=Flux-Rss&utm_campaign=RSS_general",
+        "source": "Marianne",
+        "type": "article",
+        "date": "22/05/2026",
+        "checked": false
+      }
+    ],
+    "storySelection": null,
+    "keywords": [
+      "violences sexistes",
+      "personnes de confiance",
+      "soirées étudiantes",
+      "universités",
+      "prévention",
+      "harcèlement sexuel"
+    ],
+    "sentAt": "2026-05-22T16:30:29.054Z"
+  },
+  {
+    "subject": "Le premier vice-président RN de Grand Besançon Métropole, qui tenait un compte homophobe, raciste et sexiste sur les réseaux sociaux, démissionne",
+    "sessionLabel": "22/05/2026 à 20:02:20",
+    "question": "Les élus doivent-ils être sanctionnés pour leurs propos privés en ligne ?",
+    "positionA": "Oui, ils doivent être responsables de tout ce qu’ils publie…",
+    "positionB": "Non, leur vie privée doit rester protégée",
+    "theme": "Politique",
+    "resume": "Un vent de tempête souffle sur Grand Besançon Métropole. Le premier vice-président du Rassemblement National (RN) a brutalement jeté l’éponge, emporté par la révélation explosive d’un compte anonyme qu’il gérait sur les réseaux sociaux. Derrière ce pseudonyme, des propos homophobes, racistes et sexistes ont émergé, déclenchant un véritable séisme dans l’arène politique locale.\n\nL’affaire n’a pas tardé à faire vibrer l’exécutif métropolitain, provoquant une onde de choc difficile à contenir. Sous la pression grandissante, l’élu a choisi la démission, un geste lourd de sens qui illustre la montée des exigences envers les responsables politiques et leur comportement numérique. Ce scandale met en lumière la fragilité des frontières entre vie privée et engagement public, dans un contexte où la société réclame une exemplarité absolue. Les tensions ne sont pas prêtes de retomber, et le débat sur la responsabilité des élus face à leurs paroles en ligne s’annonce plus brûlant que jamais.\n\nLes élus doivent-ils être sanctionnés pour leurs propos privés en ligne ?\n\nR. Renaudot",
+    "sources": "Franceinfo, Libération",
+    "links": [
+      {
+        "title": "Racisme, sexisme, homophobie : un maire RN à la tête d’un sulfureux compte Facebook anonyme",
+        "url": "https://www.liberation.fr/politique/racisme-sexisme-homophobie-un-maire-rn-a-la-tete-dun-sulfureux-compte-facebook-anonyme-20260522_YAIZ5IPFYZD7DDXZYMGUTJGV2E/",
+        "source": "Libération",
+        "type": "article",
+        "date": "22/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Le premier vice-président RN de Grand Besançon Métropole, qui tenait un compte homophobe, raciste et sexiste sur les réseaux sociaux, démissionne",
+        "url": "https://www.franceinfo.fr/france/bourgogne-franche-comte/doubs/le-premier-vice-president-rn-de-grand-besancon-metropole-auteur-d-un-compte-homophobe-raciste-et-sexiste-sur-les-reseaux-sociaux-demissionne_8021153.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "type": "article",
+        "date": "22/05/2026",
+        "checked": true
+      }
+    ],
+    "storySelection": null,
+    "keywords": [
+      "Rassemblement National",
+      "Grand Besançon Métropole",
+      "compte Facebook anonyme",
+      "homophobie",
+      "racisme",
+      "sexisme",
+      "démission"
+    ],
+    "sentAt": "2026-05-22T16:30:18.947Z"
+  },
+  {
+    "subject": "Sénégal: Ousmane Sonko dénonce «une tyrannie de l'Occident» à propos de l'homosexualité",
+    "sessionLabel": "22/05/2026 à 20:02:20",
+    "question": "L'Occident impose-t-il une tyrannie sur les valeurs sénégalaises ?",
+    "positionA": "L'Occident impose ses valeurs sans respect culturel",
+    "positionB": "Chaque pays doit évoluer selon ses propres choix",
+    "theme": "International",
+    "resume": "Au Sénégal, le débat sur l'homosexualité s'enflamme, porté par la voix puissante d'Ousmane Sonko, une figure qui ne cesse de monter sur la scène politique nationale. Il dénonce avec véhémence ce qu'il qualifie de « tyrannie de l’Occident », une pression étrangère qu'il perçoit comme une tentative d’imposer des valeurs étrangères, incompatibles avec l’âme même de la culture sénégalaise.\n\nSonko alerte sur une ingérence qui ne se cache plus, visant à normaliser l’homosexualité dans un pays où les traditions et les normes sociales restent solidement ancrées dans un conservatisme profond. Pour lui, cette imposition idéologique menace directement l’identité et la souveraineté culturelle du Sénégal. Dans un contexte où le pays refuse de plier face aux influences extérieures, il incarne une résistance farouche, cristallisant une opposition frontale à tout changement perçu comme dicté d’ailleurs. Le bras de fer est lancé, et la bataille pour les valeurs sénégalaises s’annonce intense et prolongée.\n\nL'Occident impose-t-il une tyrannie sur les valeurs sénégalaises ?\n\nR. Renaudot",
+    "sources": "RFI, 20 Minutes",
+    "links": [
+      {
+        "title": "Sénégal: Ousmane Sonko dénonce «une tyrannie de l'Occident» à propos de l'homosexualité",
+        "url": "https://www.rfi.fr/fr/afrique/20260522-s%C3%A9n%C3%A9gal-ousmane-sonko-d%C3%A9nonce-une-tyrannie-de-l-occident-%C3%A0-propos-de-l-homosexualit%C3%A9",
+        "source": "RFI",
+        "type": "article",
+        "date": "22/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Le Sénégal dénonce la « tyrannie de l’Occident » qui veut « imposer l’homosexualité au reste du monde »",
+        "url": "https://www.20minutes.fr/societe/4224928-20260522-senegal-denonce-tyrannie-occident-veut-imposer-homosexualite-reste-monde?at_medium=display&at_campaign=149",
+        "source": "20 Minutes",
+        "type": "article",
+        "date": "22/05/2026",
+        "checked": true
+      }
+    ],
+    "storySelection": null,
+    "keywords": [
+      "Ousmane Sonko",
+      "Sénégal",
+      "homosexualité",
+      "tyrannie de l'Occident",
+      "droits LGBT",
+      "Afrique",
+      "relations internationales"
+    ],
+    "sentAt": "2026-05-22T16:30:07.610Z"
+  },
+  {
+    "subject": "Présidentielle 2027 : Gabriel Attal se déclare candidat à grand renfort de com’",
+    "sessionLabel": "22/05/2026 à 20:02:20",
+    "question": "Gabriel Attal est-il le candidat idéal pour 2027 ?",
+    "positionA": "Oui, il incarne le renouveau politique",
+    "positionB": "Non, il manque d’expérience et de légitimité",
+    "theme": "Politique",
+    "resume": "Gabriel Attal a frappé fort en lançant officiellement sa campagne pour la présidentielle de 2027. Cette étape cruciale, minutieusement préparée, marque une nouvelle ère dans son parcours politique. Derrière cette annonce se cache une opération de communication massive, destinée à accroître sa visibilité et à rallier un électorat encore hésitant.\n\nDès les premiers mots, Attal affiche une ambition sans détour, prêt à s’imposer sur la scène nationale. Pourtant, son ascension vers l’Élysée s’annonce semée d’embûches, entre rivalités politiques et stratégies à peaufiner. Renaissance, le mouvement dont il est le porte-voix, se mobilise intensément pour structurer sa campagne. Cette officialisation survient à un moment où Attal doit à la fois renforcer son image et faire face aux critiques qui pèsent sur son projet, dans un paysage politique déjà saturé de prétendants. La bataille ne fait que commencer.\n\nGabriel Attal est-il le candidat idéal pour 2027 ?\n\nJ.L Grasso",
+    "sources": "L'Humanité, L'Obs, Le Figaro, La Croix, 20 Minutes, HuffPost France, Franceinfo, Europe 1, Brut",
+    "links": [
+      {
+        "title": "Présidentielle 2027 : Gabriel Attal est officiellement candidat, sur un chemin semé d’obstacles",
+        "url": "https://www.huffingtonpost.fr/politique/video/presidentielle-2027-gabriel-attal-est-officiellement-candidat-sur-un-chemin-seme-d-obstacles_263965.html",
+        "source": "HuffPost France",
+        "type": "article",
+        "date": "22/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Présidentielle 2027 : Gabriel Attal se déclare candidat à grand renfort de com’",
+        "url": "https://www.humanite.fr/politique/edouard-philippe/presidentielle-2027-gabriel-attal-se-declare-candidat-a-grand-renfort-de-com",
+        "source": "L'Humanité",
+        "type": "article",
+        "date": "22/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Gabriel Attal candidat à l’Elysée : les failles d’une ambition présidentielle",
+        "url": "https://www.nouvelobs.com/politique/20260522.OBS115145/gabriel-attal-les-failles-d-une-ambition-presidentielle.html",
+        "source": "L'Obs",
+        "type": "article",
+        "date": "22/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Présidentielle 2027 : Gabriel Attal officiellement candidat, Renaissance se met en ordre de bataille",
+        "url": "https://www.la-croix.com/politique/presidentielle-2027-gabriel-attal-officiellement-candidat-renaissance-en-ordre-de-bataille-20260522",
+        "source": "La Croix",
+        "type": "article",
+        "date": "22/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Présidentielle 2027 : Gabriel Attal officialise sa candidature",
+        "url": "https://www.20minutes.fr/politique/4224924-20260522-presidentielle-2027-gabriel-attal-officialise-candidature?at_medium=display&at_campaign=149",
+        "source": "20 Minutes",
+        "type": "article",
+        "date": "22/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Présidentielle 2027 : «J’ai décidé d’être candidat», annonce Gabriel Attal",
+        "url": "https://www.lefigaro.fr/politique/presidentielle-2027-j-ai-decide-d-etre-candidat-annonce-gabriel-attal-20260522",
+        "source": "Le Figaro",
+        "type": "article",
+        "date": "22/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Présidentielle 2027 : que disent les derniers sondages ?",
+        "url": "https://www.lefigaro.fr/politique/presidentielle-2027-que-disent-les-derniers-sondages-20260505",
+        "source": "Le Figaro",
+        "type": "article",
+        "date": "22/05/2026",
+        "checked": false
+      },
+      {
+        "title": "Pensez-vous que Gabriel Attal peut remporter l'élection présidentielle en 2027 ?",
+        "url": "https://www.lefigaro.fr/politique/pensez-vous-que-gabriel-attal-peut-remporter-l-election-presidentielle-en-2027-20260522",
+        "source": "Le Figaro",
+        "type": "article",
+        "date": "22/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Gabriel Attal officialise sa candidature à l'élection présidentielle de 2027",
+        "url": "https://www.youtube.com/shorts/At8NQ29B4Og",
+        "source": "20 Minutes",
+        "type": "youtube",
+        "date": "22/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Gabriel Attal annonce sa candidature à l’élection présidentielle.",
+        "url": "https://www.youtube.com/shorts/_iKfpxBRBIY",
+        "source": "Brut",
+        "type": "youtube",
+        "date": "22/05/2026",
+        "checked": true
+      },
+      {
+        "title": "G.Attal \"J'ai décidé d'être candidat à la présidence de la République\"",
+        "url": "https://www.youtube.com/shorts/V-ALIPRzOCs",
+        "source": "Franceinfo",
+        "type": "youtube",
+        "date": "22/05/2026",
+        "checked": true
+      },
+      {
+        "title": "",
+        "url": "https://www.youtube.com/watch?v=B2zWUzBlXE0",
+        "source": "Europe 1",
+        "type": "youtube",
+        "date": "22/05/2026",
+        "checked": true
+      }
+    ],
+    "storySelection": null,
+    "keywords": [
+      "Gabriel Attal",
+      "Présidentielle 2027",
+      "Renaissance",
+      "campagne électorale",
+      "communication politique",
+      "sondages présidentiels",
+      "parti politique"
+    ],
+    "sentAt": "2026-05-22T16:30:00.647Z"
+  },
+  {
+    "subject": "Encadrement des loyers : non, on ne peut pas se contenter de laisser faire le marché !",
+    "sessionLabel": "22/05/2026 à 20:02:20",
+    "question": "Faut-il maintenir l’encadrement des loyers pour protéger les locataires ?",
+    "positionA": "Oui, l’encadrement protège les locataires",
+    "positionB": "Non, le marché doit rester libre",
+    "theme": "Économie / emploi",
+    "resume": "L’encadrement des loyers s’impose aujourd’hui comme le champ de bataille d’un débat brûlant, alors que l’expérimentation en cours arrive à son terme. Face à une envolée des prix qui étrangle le pouvoir d’achat des locataires, la tension monte : peut-on vraiment laisser le marché immobilier évoluer sans aucune barrière ?\n\nLaisser le marché libre, c’est accepter que les loyers s’envolent, surtout là où la demande écrase l’offre. L’encadrement, en posant des plafonds, cherche à contenir ces hausses démesurées, offrant une bouffée d’air à ceux qui peinent à se loger. Le bilan de cette expérimentation est sans appel : elle a ralenti la spirale des loyers dans les zones concernées, évitant une exclusion sociale grandissante. Plus qu’une simple mesure économique, l’encadrement se révèle un outil vital pour protéger les locataires et stabiliser un marché qui, laissé à lui-même, nourrit la spéculation et creuse les fractures sociales. Le combat ne fait que commencer.\n\nFaut-il maintenir l’encadrement des loyers pour protéger les locataires ?\n\nR. Renaudot",
+    "sources": "Libération, Le Figaro",
+    "links": [
+      {
+        "title": "Encadrement des loyers : non, on ne peut pas se contenter de laisser faire le marché !",
+        "url": "https://www.liberation.fr/politique/encadrement-des-loyers-non-on-ne-peut-pas-se-contenter-de-laisser-faire-le-marche-20260522_4P3FOEYBCNHU3FHEQX6IRYIVFE/",
+        "source": "Libération",
+        "type": "article",
+        "date": "22/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Tout comprendre à l’encadrement des loyers dont l’expérimentation prend bientôt fin",
+        "url": "https://immobilier.lefigaro.fr/article/tout-comprendre-a-l-encadrement-des-loyers-dont-l-experimentation-prend-bientot-fin-20260522",
+        "source": "Le Figaro",
+        "type": "article",
+        "date": "22/05/2026",
+        "checked": true
+      }
+    ],
+    "storySelection": null,
+    "keywords": [
+      "encadrement des loyers",
+      "marché immobilier",
+      "expérimentation",
+      "logement",
+      "politique du logement"
+    ],
+    "sentAt": "2026-05-22T16:30:12.628Z"
+  },
+  {
+    "subject": "Présidentielle 2027 : Gabriel Attal se déclare candidat à grand renfort de com’",
+    "sessionLabel": "22/05/2026 à 20:02:20",
+    "question": "Présidentielle 2027 : Gabriel Attal se déclare candidat à grand renfort de com’",
+    "positionA": "",
+    "positionB": "",
+    "theme": "Politique",
+    "resume": "",
+    "sources": "L'Humanité, L'Obs, Le Figaro, La Croix, 20 Minutes, HuffPost France, Franceinfo, Europe 1, Brut",
+    "links": [
+      {
+        "title": "Présidentielle 2027 : Gabriel Attal est officiellement candidat, sur un chemin semé d’obstacles",
+        "url": "https://www.huffingtonpost.fr/politique/video/presidentielle-2027-gabriel-attal-est-officiellement-candidat-sur-un-chemin-seme-d-obstacles_263965.html",
+        "source": "HuffPost France",
+        "type": "article",
+        "date": "22/05/2026",
+        "checked": false
+      },
+      {
+        "title": "Présidentielle 2027 : Gabriel Attal se déclare candidat à grand renfort de com’",
+        "url": "https://www.humanite.fr/politique/edouard-philippe/presidentielle-2027-gabriel-attal-se-declare-candidat-a-grand-renfort-de-com",
+        "source": "L'Humanité",
+        "type": "article",
+        "date": "22/05/2026",
+        "checked": false
+      },
+      {
+        "title": "Gabriel Attal candidat à l’Elysée : les failles d’une ambition présidentielle",
+        "url": "https://www.nouvelobs.com/politique/20260522.OBS115145/gabriel-attal-les-failles-d-une-ambition-presidentielle.html",
+        "source": "L'Obs",
+        "type": "article",
+        "date": "22/05/2026",
+        "checked": false
+      },
+      {
+        "title": "Présidentielle 2027 : Gabriel Attal officiellement candidat, Renaissance se met en ordre de bataille",
+        "url": "https://www.la-croix.com/politique/presidentielle-2027-gabriel-attal-officiellement-candidat-renaissance-en-ordre-de-bataille-20260522",
+        "source": "La Croix",
+        "type": "article",
+        "date": "22/05/2026",
+        "checked": false
+      },
+      {
+        "title": "Présidentielle 2027 : Gabriel Attal officialise sa candidature",
+        "url": "https://www.20minutes.fr/politique/4224924-20260522-presidentielle-2027-gabriel-attal-officialise-candidature?at_medium=display&at_campaign=149",
+        "source": "20 Minutes",
+        "type": "article",
+        "date": "22/05/2026",
+        "checked": false
+      },
+      {
+        "title": "Présidentielle 2027 : «J’ai décidé d’être candidat», annonce Gabriel Attal",
+        "url": "https://www.lefigaro.fr/politique/presidentielle-2027-j-ai-decide-d-etre-candidat-annonce-gabriel-attal-20260522",
+        "source": "Le Figaro",
+        "type": "article",
+        "date": "22/05/2026",
+        "checked": false
+      },
+      {
+        "title": "Présidentielle 2027 : que disent les derniers sondages ?",
+        "url": "https://www.lefigaro.fr/politique/presidentielle-2027-que-disent-les-derniers-sondages-20260505",
+        "source": "Le Figaro",
+        "type": "article",
+        "date": "22/05/2026",
+        "checked": false
+      },
+      {
+        "title": "Pensez-vous que Gabriel Attal peut remporter l'élection présidentielle en 2027 ?",
+        "url": "https://www.lefigaro.fr/politique/pensez-vous-que-gabriel-attal-peut-remporter-l-election-presidentielle-en-2027-20260522",
+        "source": "Le Figaro",
+        "type": "article",
+        "date": "22/05/2026",
+        "checked": false
+      },
+      {
+        "title": "Gabriel Attal officialise sa candidature à l'élection présidentielle de 2027",
+        "url": "https://www.youtube.com/shorts/At8NQ29B4Og",
+        "source": "20 Minutes",
+        "type": "youtube",
+        "date": "22/05/2026",
+        "checked": false
+      },
+      {
+        "title": "Gabriel Attal annonce sa candidature à l’élection présidentielle.",
+        "url": "https://www.youtube.com/shorts/_iKfpxBRBIY",
+        "source": "Brut",
+        "type": "youtube",
+        "date": "22/05/2026",
+        "checked": false
+      },
+      {
+        "title": "G.Attal \"J'ai décidé d'être candidat à la présidence de la République\"",
+        "url": "https://www.youtube.com/shorts/V-ALIPRzOCs",
+        "source": "Franceinfo",
+        "type": "youtube",
+        "date": "22/05/2026",
+        "checked": false
+      },
+      {
+        "title": "",
+        "url": "https://www.youtube.com/watch?v=B2zWUzBlXE0",
+        "source": "Europe 1",
+        "type": "youtube",
+        "date": "22/05/2026",
+        "checked": false
+      }
+    ],
+    "storySelection": null,
+    "keywords": [],
+    "sentAt": "2026-05-22T16:10:56.221Z"
+  },
+  {
+    "subject": "Le premier vice-président RN de Grand Besançon Métropole, qui tenait un compte homophobe, raciste et sexiste sur les réseaux sociaux, démissionne",
+    "sessionLabel": "22/05/2026 à 20:02:20",
+    "question": "Le premier vice-président RN de Grand Besançon Métropole, qui tenait un compte homophobe, raciste et",
+    "positionA": "",
+    "positionB": "",
+    "theme": "Politique",
+    "resume": "",
+    "sources": "Franceinfo, Libération",
+    "links": [
+      {
+        "title": "Racisme, sexisme, homophobie : un maire RN à la tête d’un sulfureux compte Facebook anonyme",
+        "url": "https://www.liberation.fr/politique/racisme-sexisme-homophobie-un-maire-rn-a-la-tete-dun-sulfureux-compte-facebook-anonyme-20260522_YAIZ5IPFYZD7DDXZYMGUTJGV2E/",
+        "source": "Libération",
+        "type": "article",
+        "date": "22/05/2026",
+        "checked": false
+      },
+      {
+        "title": "Le premier vice-président RN de Grand Besançon Métropole, qui tenait un compte homophobe, raciste et sexiste sur les réseaux sociaux, démissionne",
+        "url": "https://www.franceinfo.fr/france/bourgogne-franche-comte/doubs/le-premier-vice-president-rn-de-grand-besancon-metropole-auteur-d-un-compte-homophobe-raciste-et-sexiste-sur-les-reseaux-sociaux-demissionne_8021153.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "type": "article",
+        "date": "22/05/2026",
+        "checked": false
+      }
+    ],
+    "storySelection": null,
+    "keywords": [],
+    "sentAt": "2026-05-22T16:14:43.654Z"
+  },
+  {
+    "subject": "DIRECT. Guerre au Moyen-Orient : frappes au Liban ; situation « catastrophique » à Gaza",
+    "sessionLabel": "22/05/2026 à 20:02:20",
+    "question": "DIRECT. Guerre au Moyen-Orient : frappes au Liban ; situation « catastrophique » à Gaza",
+    "positionA": "",
+    "positionB": "",
+    "theme": "Politique",
+    "resume": "",
+    "sources": "La Croix, RMC",
+    "links": [
+      {
+        "title": "DIRECT. Guerre au Moyen-Orient : frappes au Liban ; situation « catastrophique » à Gaza",
+        "url": "https://www.la-croix.com/international/direct-guerre-iran-israel-usa-jour-84-moyen-orient-bilan-resume-aujourdhui-20260522",
+        "source": "La Croix",
+        "type": "article",
+        "date": "22/05/2026",
+        "checked": false
+      },
+      {
+        "title": "Guerre au Moyen-Orient, jour 83 : exécutions en Iran… Le bilan du jeudi 21 mai",
+        "url": "https://www.la-croix.com/international/direct-guerre-iran-israel-usa-jour-83-moyen-orient-bilan-resume-aujourdhui-20260521",
+        "source": "La Croix",
+        "type": "article",
+        "date": "21/05/2026",
+        "checked": false
+      },
+      {
+        "title": "",
+        "url": "https://www.youtube.com/watch?v=5R9J1nmNpYk",
+        "source": "RMC",
+        "type": "youtube",
+        "date": "21/05/2026",
+        "checked": false
+      }
+    ],
+    "storySelection": null,
+    "keywords": [],
+    "sentAt": "2026-05-22T16:10:55.850Z"
+  },
+  {
+    "subject": "Sénégal: Ousmane Sonko dénonce «une tyrannie de l'Occident» à propos de l'homosexualité",
+    "sessionLabel": "22/05/2026 à 20:02:20",
+    "question": "Sénégal: Ousmane Sonko dénonce «une tyrannie de l'Occident» à propos de l'homosexualité",
+    "positionA": "",
+    "positionB": "",
+    "theme": "Politique",
+    "resume": "",
+    "sources": "RFI, 20 Minutes",
+    "links": [
+      {
+        "title": "Sénégal: Ousmane Sonko dénonce «une tyrannie de l'Occident» à propos de l'homosexualité",
+        "url": "https://www.rfi.fr/fr/afrique/20260522-s%C3%A9n%C3%A9gal-ousmane-sonko-d%C3%A9nonce-une-tyrannie-de-l-occident-%C3%A0-propos-de-l-homosexualit%C3%A9",
+        "source": "RFI",
+        "type": "article",
+        "date": "22/05/2026",
+        "checked": false
+      },
+      {
+        "title": "Le Sénégal dénonce la « tyrannie de l’Occident » qui veut « imposer l’homosexualité au reste du monde »",
+        "url": "https://www.20minutes.fr/societe/4224928-20260522-senegal-denonce-tyrannie-occident-veut-imposer-homosexualite-reste-monde?at_medium=display&at_campaign=149",
+        "source": "20 Minutes",
+        "type": "article",
+        "date": "22/05/2026",
+        "checked": false
+      }
+    ],
+    "storySelection": null,
+    "keywords": [],
+    "sentAt": "2026-05-22T16:10:55.843Z"
+  },
+  {
+    "subject": "\"On a été torturés pendant trois jours\" : des militants de la \"flottille pour Gaza\" dénoncent des violences après leur arrestation et leur expulsion par Israël",
+    "sessionLabel": "22/05/2026 à 20:02:20",
+    "question": "\"On a été torturés pendant trois jours\" : des militants de la \"flottille pour Gaza\" dénoncent des vi",
+    "positionA": "",
+    "positionB": "",
+    "theme": "Politique",
+    "resume": "",
+    "sources": "Franceinfo, L'Humanité, Le Figaro, La Croix, CNews, France 24, Euronews FR",
+    "links": [
+      {
+        "title": "Violés, torturés, humiliés, affamés… Après leur expulsion d’Israël, les membres de la flottille Global Sumud racontent leur calvaire",
+        "url": "https://www.humanite.fr/monde/armee-israelienne/tortures-humilies-affames-apres-leur-expulsion-disrael-les-membres-de-la-flottille-global-sumud-arrivent-enfin-a-paris",
+        "source": "L'Humanité",
+        "type": "article",
+        "date": "22/05/2026",
+        "checked": false
+      },
+      {
+        "title": "\"On a été torturés pendant trois jours\" : des militants de la \"flottille pour Gaza\" dénoncent des violences après leur arrestation et leur expulsion par Israël",
+        "url": "https://www.franceinfo.fr/monde/israel/on-a-ete-tortures-pendant-3-jours-les-militants-de-la-flottille-pour-gaza-temoignent-apres-leur-arrestation-par-les-autorites-israeliennes_8021162.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "type": "article",
+        "date": "22/05/2026",
+        "checked": false
+      },
+      {
+        "title": "Flottille pour Gaza: les activistes dénoncent des violences subis en détention",
+        "url": "https://www.france24.com/fr/vid%C3%A9o/20260522-flottille-pour-gaza-les-activistes-d%C3%A9noncent-des-violences-subis-en-d%C3%A9tention",
+        "source": "France 24",
+        "type": "article",
+        "date": "22/05/2026",
+        "checked": false
+      },
+      {
+        "title": "\"Flottille pour Gaza\" : expulsés par Israël, les militants étrangers sont arrivés en Turquie",
+        "url": "https://www.france24.com/fr/vid%C3%A9o/20260522-flottille-pour-gaza-expuls%C3%A9s-par-isra%C3%ABl-les-militants-%C3%A9trangers-sont-arriv%C3%A9s-en-turquie",
+        "source": "France 24",
+        "type": "article",
+        "date": "22/05/2026",
+        "checked": false
+      },
+      {
+        "title": "La Turquie accueille les 422 militants de la flottille pour Gaza après expulsion d’Israël",
+        "url": "http://fr.euronews.com/video/2026/05/22/la-turquie-accueille-422-militants-de-la-flottille-pour-gaza-apres-detention-en-israel",
+        "source": "Euronews FR",
+        "type": "article",
+        "date": "22/05/2026",
+        "checked": false
+      },
+      {
+        "title": "Flottille de Gaza : Israël pressé de tourner la page après le tollé international",
+        "url": "https://www.la-croix.com/international/flottille-de-gaza-israel-presse-de-tourner-la-page-apres-le-tolle-international-20260521",
+        "source": "La Croix",
+        "type": "article",
+        "date": "21/05/2026",
+        "checked": false
+      },
+      {
+        "title": "Trois repreneurs désignés pour poursuivre les activités de l’entreprise de livraison Relais Colis",
+        "url": "https://www.lefigaro.fr/societes/trois-repreneurs-designes-pour-poursuivre-les-activites-de-l-entreprise-de-livraison-relais-colis-20260522",
+        "source": "Le Figaro",
+        "type": "article",
+        "date": "22/05/2026",
+        "checked": false
+      },
+      {
+        "title": "Britney Spears : le rapport de police et une vidéo révèlent de nouveaux détails concernant l'arrestation de la chanteuse en mars",
+        "url": "https://www.cnews.fr/people/2026-05-22/britney-spears-le-rapport-de-police-et-une-video-revelent-de-nouveaux-details",
+        "source": "CNews",
+        "type": "article",
+        "date": "22/05/2026",
+        "checked": false
+      },
+      {
+        "title": "Flottille pour Gaza: les activistes dénoncent des violences subis en détention • FRANCE 24",
+        "url": "https://www.youtube.com/shorts/ZRARDGy_HgI",
+        "source": "France 24",
+        "type": "youtube",
+        "date": "22/05/2026",
+        "checked": false
+      },
+      {
+        "title": "",
+        "url": "https://www.youtube.com/watch?v=4N3nNGXoyG8",
+        "source": "France 24",
+        "type": "youtube",
+        "date": "22/05/2026",
+        "checked": false
+      }
+    ],
+    "storySelection": null,
+    "keywords": [],
+    "sentAt": "2026-05-22T16:14:43.315Z"
+  },
+  {
+    "subject": "Encadrement des loyers : non, on ne peut pas se contenter de laisser faire le marché !",
+    "sessionLabel": "22/05/2026 à 20:02:20",
+    "question": "Encadrement des loyers : non, on ne peut pas se contenter de laisser faire le marché !",
+    "positionA": "",
+    "positionB": "",
+    "theme": "Politique",
+    "resume": "",
+    "sources": "Libération, Le Figaro",
+    "links": [
+      {
+        "title": "Encadrement des loyers : non, on ne peut pas se contenter de laisser faire le marché !",
+        "url": "https://www.liberation.fr/politique/encadrement-des-loyers-non-on-ne-peut-pas-se-contenter-de-laisser-faire-le-marche-20260522_4P3FOEYBCNHU3FHEQX6IRYIVFE/",
+        "source": "Libération",
+        "type": "article",
+        "date": "22/05/2026",
+        "checked": false
+      },
+      {
+        "title": "Tout comprendre à l’encadrement des loyers dont l’expérimentation prend bientôt fin",
+        "url": "https://immobilier.lefigaro.fr/article/tout-comprendre-a-l-encadrement-des-loyers-dont-l-experimentation-prend-bientot-fin-20260522",
+        "source": "Le Figaro",
+        "type": "article",
+        "date": "22/05/2026",
+        "checked": false
+      }
+    ],
+    "storySelection": null,
+    "keywords": [],
+    "sentAt": "2026-05-22T16:10:55.824Z"
+  },
+  {
+    "subject": "Violences sexistes et sexuelles : des «personnes de confiance» pour veiller sur les soirées étudiantes",
+    "sessionLabel": "22/05/2026 à 20:02:20",
+    "question": "Violences sexistes et sexuelles : des «personnes de confiance» pour veiller sur les soirées étudiant",
+    "positionA": "",
+    "positionB": "",
+    "theme": "Politique",
+    "resume": "",
+    "sources": "Libération, Marianne, La Croix",
+    "links": [
+      {
+        "title": "Violences sexistes et sexuelles : des «personnes de confiance» pour veiller sur les soirées étudiantes",
+        "url": "https://www.liberation.fr/societe/violences-sexistes-et-sexuelles-des-personnes-de-confiance-pour-veiller-sur-les-soirees-etudiantes-20260522_NKITC7AW3FAX7OSCLOKHPZANIA/",
+        "source": "Libération",
+        "type": "article",
+        "date": "22/05/2026",
+        "checked": false
+      },
+      {
+        "title": "Violences périscolaires à Paris : retour en 5 questions sur le scandale",
+        "url": "https://www.la-croix.com/sans-rubrique/violences-periscolaires-a-paris-retour-en-5-questions-sur-le-scandale-20260521",
+        "source": "La Croix",
+        "type": "article",
+        "date": "22/05/2026",
+        "checked": false
+      },
+      {
+        "title": "Périscolaire : \"Les rois du silence\", l’enquête choc sur les violences et abus qui frappent les écoles françaises",
+        "url": "https://www.marianne.net/societe/police-et-justice/periscolaire-les-rois-du-silence-lenquete-choc-sur-les-violences-et-abus-qui-frappent-les-ecoles-francaises#utm_source=RSS-MARIANNE&utm_medium=Flux-Rss&utm_campaign=RSS_general",
+        "source": "Marianne",
+        "type": "article",
+        "date": "22/05/2026",
+        "checked": false
+      }
+    ],
+    "storySelection": null,
+    "keywords": [],
+    "sentAt": "2026-05-22T16:14:43.321Z"
+  },
+  {
+    "subject": "Elections en Nouvelle-Calédonie : le Parlement entérine une ouverture du corps électoral pour les \"natifs\", à quelques semaines d'un scrutin crucial",
+    "sessionLabel": "20/05/2026 à 22:08:30",
+    "question": "Elections en Nouvelle-Calédonie : le Parlement entérine une ouverture du corps électoral pour les \"n",
+    "positionA": "",
+    "positionB": "",
+    "theme": "Politique",
+    "resume": "",
+    "sources": "Franceinfo, Libération",
+    "links": [
+      {
+        "title": "Nouvelle-Calédonie : le Parlement entérine une ouverture du corps électoral",
+        "url": "https://www.liberation.fr/politique/nouvelle-caledonie-le-parlement-enterine-une-ouverture-du-corps-electoral-20260520_P633SQRQ7FFHFLD6HNSSPELB7I/",
+        "source": "Libération",
+        "type": "article",
+        "date": "20/05/2026",
+        "checked": false
+      },
+      {
+        "title": "Elections en Nouvelle-Calédonie : le Parlement entérine une ouverture du corps électoral pour les \"natifs\", à quelques semaines d'un scrutin crucial",
+        "url": "https://www.franceinfo.fr/france/nouvelle-caledonie/statut-de-la-nouvelle-caledonie-le-parlement-enterine-une-ouverture-du-corps-electoral-pour-les-natifs-a-quelques-semaines-d-elections-cruciales_8017031.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "type": "article",
+        "date": "20/05/2026",
+        "checked": false
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "05-la-vie-politique-francaise-traverse-une-periode-d-instabilite-et-de-recompositio",
+      "matchedStoryTitle": "La vie politique française traverse une période d’instabilité et de recomposition",
+      "previousEpisodeTitle": "La France peut-elle être gouvernée efficacement sous un régime communiste ?",
+      "previousEpisodeUrl": "http://localhost:3001/debate?id=446",
+      "confidence": 0.85,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {
+        "main_actors_match": true,
+        "central_tension_match": true,
+        "temporal_continuity": true,
+        "editorial_theme_match": true,
+        "strong_keywords_match": true
+      },
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "Nouvelle-Calédonie",
+      "Parlement français",
+      "corps électoral",
+      "natifs",
+      "scrutin crucial",
+      "indépendantisme",
+      "statut politique"
+    ],
+    "sentAt": "2026-05-22T16:01:57.886Z"
+  },
+  {
+    "subject": "Méga-bassines, élevage industriel, mesures insuffisantes sur le revenu : les vraies urgences des agriculteurs devront attendre",
+    "sessionLabel": "20/05/2026 à 21:50:45",
+    "question": "Les méga-bassines sont-elles une solution durable pour l’agriculture ?",
+    "positionA": "Oui, elles garantissent l’irrigation nécessaire",
+    "positionB": "Non, elles aggravent la crise écologique",
+    "theme": "Climat - environnement",
+    "resume": "Au cœur des campagnes françaises, une tempête gronde. Les agriculteurs, confrontés à des urgences brûlantes, voient leurs attentes balayées par des réponses insuffisantes. La contestation des méga-bassines, ces immenses réservoirs d’eau destinés à irriguer à grande échelle, cristallise les tensions. Loin de rassembler, ces infrastructures attisent les inquiétudes : la gestion de l’eau est remise en question, tout comme l’impact environnemental d’une agriculture toujours plus intensive. Parallèlement, l’élevage industriel, accusé de dégrader sols, biodiversité et bien-être animal, divise profondément le secteur, creusant un fossé difficile à combler. \n\nDans ce climat déjà explosif, les mesures économiques censées soutenir les revenus agricoles peinent à masquer la précarité qui gagne les exploitants. Sans filet de sécurité adapté, beaucoup restent suspendus à un avenir incertain. Ce décalage criant entre besoins réels et solutions politiques souligne une fracture béante. Les urgences, qu’elles soient environnementales ou sociales, s’effacent dans l’attente de réponses à la hauteur des défis. Le secteur agricole est à la croisée des chemins, et la suite s’annonce décisive.\n\nLes méga-bassines sont-elles une solution durable pour l’agriculture ?\n\nM. Camus",
+    "sources": "L'Humanité, Le Figaro",
+    "links": [
+      {
+        "title": "Méga-bassines, élevage industriel, mesures insuffisantes sur le revenu : les vraies urgences des agriculteurs devront attendre",
+        "url": "https://www.humanite.fr/environnement/agriculture/mega-bassines-elevage-industriel-mesures-insuffisantes-sur-le-revenu-les-vraies-urgences-des-agriculteurs-devront-attendre",
+        "source": "L'Humanité",
+        "type": "article",
+        "date": "20/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Crise des engrais : «Les agriculteurs ne veulent pas - comme pour le gazole - avoir seulement des",
+        "url": "https://www.youtube.com/shorts/K9yPt6QiDuU",
+        "source": "Le Figaro",
+        "type": "youtube",
+        "date": "20/05/2026",
+        "checked": false
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "21-le-monde-agricole-fait-face-a-des-tensions-economiques-environnementales-et-comm",
+      "matchedStoryTitle": "Le monde agricole fait face à des tensions économiques, environnementales et commerciales",
+      "previousEpisodeTitle": "",
+      "previousEpisodeUrl": "",
+      "confidence": 0.85,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {
+        "main_actors_match": true,
+        "central_tension_match": true,
+        "temporal_continuity": true,
+        "editorial_theme_match": true,
+        "strong_keywords_match": true
+      },
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "élevage industriel",
+      "crise des engrais",
+      "revenu des agriculteurs",
+      "agriculture française"
+    ],
+    "sentAt": "2026-05-22T15:08:05.071Z"
+  },
+  {
+    "subject": "\"On doit tous aller à l'armée\" : le projet de loi d'exemption des ultraorthodoxes divise les Israéliens et menace Benyamin Nétanyahou",
+    "sessionLabel": "20/05/2026 à 21:50:45",
+    "question": "Faut-il supprimer l’exemption militaire des ultraorthodoxes en Israël ?",
+    "positionA": "Pour une égalité stricte devant le service militaire",
+    "positionB": "Pour maintenir les exemptions religieuses",
+    "theme": "Politique",
+    "resume": "En Israël, un projet de loi bouleverse un équilibre fragile établi depuis des décennies : la fin de l’exemption militaire accordée aux ultraorthodoxes. Jusqu’ici, une large partie de cette communauté était dispensée du service militaire pour se consacrer exclusivement à l’étude religieuse, un arrangement qui a longtemps cristallisé les tensions sociales. Cette réforme radicale impose désormais à tous les citoyens israéliens, sans exception, de servir dans l’armée, déclenchant une onde de choc au sein de la société et ravivant des divisions profondes.\n\nCe changement brutal divise le pays entre ceux qui réclament une égalité stricte devant l’obligation militaire et ceux qui souhaitent préserver les particularismes religieux en maintenant les exemptions. Sur le plan politique, cette controverse fragilise la coalition de Benyamin Nétanyahou, qui doit jongler avec les exigences de ses alliés religieux et les attentes d’une opinion publique de plus en plus exigeante. Le projet de loi cristallise ainsi un enjeu majeur pour la cohésion nationale et la stabilité du gouvernement, annonçant une période de turbulences à venir.\n\nFaut-il supprimer l’exemption militaire des ultraorthodoxes en Israël ?\n\nJ.L Grasso",
+    "sources": "Franceinfo, Libération",
+    "links": [
+      {
+        "title": "EN DIRECT - Festival de Cannes, jour 9 : Poutine, Trump et Nétanyahou sont des «monstres», affirme Pedro Almodóvar à Cannes",
+        "url": "https://www.liberation.fr/culture/cinema/en-direct-festival-de-cannes-jour-9-aujourdhui-claude-chabrol-delocalise-en-russie-et-swann-arlaud-en-collabo-20260520_5WYYEAUKDFFPHA7HAIVRQ4AGZM/",
+        "source": "Libération",
+        "type": "article",
+        "date": "20/05/2026",
+        "checked": false
+      },
+      {
+        "title": "\"On doit tous aller à l'armée\" : le projet de loi d'exemption des ultraorthodoxes divise les Israéliens et menace Benyamin Nétanyahou",
+        "url": "https://www.franceinfo.fr/monde/israel/on-doit-tous-aller-a-l-armee-le-projet-de-loi-d-exemption-des-ultraorthodoxes-divise-les-israeliens-et-menace-benyamin-netanyahou_8016143.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "type": "article",
+        "date": "20/05/2026",
+        "checked": true
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "israel-mph1fbfh",
+      "matchedStoryTitle": "Israël",
+      "previousEpisodeTitle": "",
+      "previousEpisodeUrl": "",
+      "confidence": 0.85,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {
+        "main_actors_match": true,
+        "central_tension_match": true,
+        "temporal_continuity": true,
+        "editorial_theme_match": true,
+        "strong_keywords_match": true
+      },
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "Benyamin Nétanyahou",
+      "armée israélienne",
+      "ultraorthodoxes",
+      "projet de loi",
+      "Israël",
+      "service militaire obligatoire",
+      "divisions sociales",
+      "exemption militaire"
+    ],
+    "sentAt": "2026-05-22T14:51:36.309Z"
+  },
+  {
     "subject": "Une vidéo de militants de la « flottille pour Gaza » agenouillés et les mains liées, diffusée par le ministre israélien Ben Gvir, suscite un tollé",
     "sessionLabel": "20/05/2026 à 21:50:45",
     "question": "La diffusion d’images humiliantes des détenus est-elle justifiable ?",

@@ -611,11 +611,26 @@ function limitText(text, maxLength) {
 function normalizeKeywordList(values, max = 8) {
   const seen = new Set();
   const results = [];
+  const tokens = [];
+
   (Array.isArray(values) ? values : []).forEach((value) => {
     const keyword = String(value || "")
       .replace(/^[-–—•\s]+/, "")
       .replace(/[?!.;,:\s]+$/g, "")
       .trim();
+    if (!keyword) return;
+
+    if (keyword.includes("-")) {
+      const parts = keyword.split("-").map((p) => p.trim()).filter((p) => p.length >= 2);
+      if (parts.length >= 2) {
+        parts.forEach((p) => tokens.push(p));
+        return;
+      }
+    }
+    tokens.push(keyword);
+  });
+
+  tokens.forEach((keyword) => {
     if (!keyword) return;
     if (keyword.length < 2 || keyword.length > 40) return;
     const lower = keyword.toLowerCase();
@@ -623,6 +638,7 @@ function normalizeKeywordList(values, max = 8) {
     seen.add(lower);
     results.push(keyword);
   });
+
   return results.slice(0, max);
 }
 
@@ -831,7 +847,8 @@ Pour "keywords" :
 - relève surtout les acteurs, lieux, institutions, pays, organisations ou objets de crise ;
 - évite les mots trop génériques comme "politique", "débat", "actualité", "France" seuls s'ils n'apportent rien ;
 - n'écris ni phrase complète, ni explication ;
-- chaque mot-clé doit tenir sur quelques mots au maximum.
+- chaque mot-clé doit tenir sur quelques mots au maximum ;
+- n'utilise jamais de trait d'union dans les mots-clés : écris "Etats Unis" et non "Etats-Unis", "Moyen Orient" et non "Moyen-Orient".
 
 Pour "selectedLinks" :
 - renvoie les URLs exactes des contenus qui parlent bien du sujet principal ;
@@ -1214,7 +1231,8 @@ function generateHtml(sessions) {
   }
 
   function buildStoryLinkStaticHtml(storyLink) {
-    if (!storyLink) return "";
+    if (storyLink === undefined) storyLink = null;
+    storyLink = storyLink || {};
     const storyDecision = storyLink.story_decision || "new_story";
     const confidence = Number(storyLink.confidence || 0);
     const matchedTitle = escapeHtml(storyLink.matched_story_title || "");
@@ -1231,9 +1249,9 @@ function generateHtml(sessions) {
     const statusReason = reason ? '<div class="story-link-header">' + reason + '</div>' : '';
     return '<div class="story-link-box" data-story-decision="' + escapeHtml(storyDecision) + '" data-selected-mode="' + selectedMode + '" data-default-mode="' + selectedMode + '" data-matched-story-id="' + currentStoryId + '" data-matched-story-title="' + matchedTitle + '" data-current-story-id="' + currentStoryId + '" data-current-story-title="' + currentStoryTitle + '" data-current-story-summary="" data-previous-episode-title="' + previousEpisodeTitle + '" data-previous-episode-url="' + previousEpisodeUrl + '" data-confidence="' + confidence + '" data-reason="' + reason + '" data-criteria="' + encodedCriteria + '" data-new-story="' + encodedNewStory + '">' +
       statusReason +
-      '<div class="story-manual-picker"><label>Histoire associée</label><div class="story-picker-row"><select class="story-manual-select" hidden><option value="">Sans histoire associée</option><option value="__new__">Créer une nouvelle histoire</option></select><button type="button" class="story-picker-trigger" aria-expanded="false"><span class="story-picker-trigger-label">Sans histoire associée</span><span class="story-picker-trigger-caret">▾</span></button><div class="story-dropdown hidden"><div class="story-dropdown-create-row"><button type="button" class="story-create-inline-btn">+ Créer une nouvelle histoire</button></div><div class="story-dropdown-search-row"><input type="text" class="story-search-input" placeholder="Rechercher une histoire"></div><div class="story-dropdown-list"></div></div></div><small class="story-manual-meta"></small></div>' +
-      '<div class="story-existing-fields"><div class="story-draft-fields story-existing-fields-empty"><p class="story-existing-note">Cette histoire sera seulement associée à l’actualité. Aucun résumé d’histoire n’est généré à cette étape.</p></div></div>' +
-      '<div class="story-draft-fields story-new-fields hidden"><label>Titre de la nouvelle histoire</label><input type="text" class="story-title-input" value="" placeholder="Titre court et général de l’histoire"><div class="story-save-actions"><button type="button" class="story-save-btn">Enregistrer les modifications</button><span class="story-save-feedback hidden">Modifications enregistrées</span></div></div>' +
+      '<div class="story-manual-picker"><label>Histoire associée</label><div class="story-picker-row"><select class="story-manual-select" hidden><option value="">Sans histoire associée</option><option value="__new__">Créer une nouvelle histoire</option></select><button type="button" class="story-picker-trigger" aria-expanded="false"><span class="story-picker-trigger-label">' + (hasMatchedStory ? matchedTitle : 'Sans histoire associée') + '</span><span class="story-picker-trigger-caret">▾</span></button><div class="story-dropdown hidden"><div class="story-dropdown-create-row"><button type="button" class="story-create-inline-btn">+ Créer une nouvelle histoire</button></div><div class="story-dropdown-search-row"><input type="text" class="story-search-input" placeholder="Rechercher une histoire"></div><div class="story-dropdown-list"></div></div></div><small class="story-manual-meta">' + (hasMatchedStory && previousEpisodeTitle ? 'Dernier épisode : ' + previousEpisodeTitle : '') + '</small></div>' +
+      '<div class="story-existing-fields"><div class="story-draft-fields story-existing-fields-empty"><p class="story-existing-note">Cette histoire sera seulement associée à l\'actualité. Aucun résumé d\'histoire n\'est généré à cette étape.</p></div></div>' +
+      '<div class="story-draft-fields story-new-fields hidden"><label>Titre de la nouvelle histoire</label><input type="text" class="story-title-input" value="" placeholder="Titre court et général de l\'histoire"><div class="story-save-actions"><button type="button" class="story-save-btn">Enregistrer les modifications</button><span class="story-save-feedback hidden">Modifications enregistrées</span></div></div>' +
     '</div>';
   }
 
@@ -1365,7 +1383,8 @@ function generateHtml(sessions) {
             </p>
             ${buildStoryLinkStaticHtml(ai.storyLink || null)}
             <button type="button" class="full-article-btn">${["summary", "full"].includes(String(ai.fullArticleState || "")) ? "✓ Résumé généré" : "Générer résumé de l’article"}</button>
-            <button type="button" class="final-article-btn${["summary", "full"].includes(String(ai.fullArticleState || "")) ? "" : " hidden"}">${String(ai.fullArticleState || "") === "full" ? "✓ Article définitif généré" : "Générer article définitif"}</button>
+            <button type="button" class="final-article-btn${["summary", "full"].includes(String(ai.fullArticleState || "")) ? "" : " hidden"}">${String(ai.fullArticleState || "") === "full" ? "✓ Article généré" : "Générer article"}</button>
+            <button type="button" class="definitive-article-btn${["summary", "full"].includes(String(ai.fullArticleState || "")) ? "" : " hidden"}"${String(ai.fullArticleState || "") === "full" ? "" : " disabled"}>Article définitif</button>
           </div>`
         : `<div class="ai-box pending-analysis">
             <button class="analyze-btn" type="button" data-mode="positions" data-subject="${subjectDataForBtn}">
@@ -1393,6 +1412,7 @@ function generateHtml(sessions) {
 
           <p class="sources">${escapeHtml(subject.sources.join(", "))}</p>
 
+          <button class="arena-select-btn" type="button" aria-pressed="false">Sélectionner</button>
           <button class="save-btn${isSaved ? " saved" : ""}" type="button" data-subject-title="${escapeHtml(subject.subject)}">${isSaved ? "★ Enregistré" : "☆ Enregistrer"}</button>
           <button class="agon-btn${isSent ? " sent" : ""}" type="button" data-subject-title="${escapeHtml(subject.subject)}" data-question="${escapeHtml(ai ? (ai.debateQuestion || subject.subject) : subject.subject)}" data-position-a="${escapeHtml(ai ? (ai.positionA || "") : "")}" data-position-b="${escapeHtml(ai ? (ai.positionB || "") : "")}" data-theme="${escapeHtml(ai ? normalizeAgonTheme(ai.agonTheme) : "")}" data-sources="${escapeHtml(subject.sources.join(", "))}">${isSent ? "✓ Envoyé" : "→ Agôn"}</button>
           <button class="republish-btn${isSent ? "" : " hidden"}" type="button" data-subject-title="${escapeHtml(subject.subject)}" data-question="${escapeHtml(ai ? (ai.debateQuestion || subject.subject) : subject.subject)}" data-position-a="${escapeHtml(ai ? (ai.positionA || "") : "")}" data-position-b="${escapeHtml(ai ? (ai.positionB || "") : "")}" data-theme="${escapeHtml(ai ? normalizeAgonTheme(ai.agonTheme) : "")}" data-sources="${escapeHtml(subject.sources.join(", "))}">↺ Republier</button>
@@ -1734,6 +1754,12 @@ function generateHtml(sessions) {
       padding: 20px;
       margin-bottom: 16px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      position: relative;
+    }
+
+    .subject.selected {
+      border-color: #111;
+      box-shadow: 0 0 0 2px rgba(17,17,17,0.08), 0 2px 8px rgba(0,0,0,0.04);
     }
 
     .subject h3 {
@@ -2097,6 +2123,111 @@ function generateHtml(sessions) {
       background: #111;
       color: white;
       border-color: #111;
+    }
+
+    .saved-selection-bar {
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 14px;
+      padding: 12px 14px;
+      margin: 0 0 18px;
+      position: sticky;
+      top: 10px;
+      z-index: 5;
+    }
+
+    .saved-selection-bar.visible {
+      display: flex;
+    }
+
+    .saved-selection-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .generate-all-btn {
+      width: 100%;
+      padding: 13px 20px;
+      background: #111;
+      color: white;
+      border: none;
+      border-radius: 999px;
+      font: inherit;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      letter-spacing: 0.02em;
+    }
+
+    .generate-all-btn:hover:not(:disabled) {
+      background: #333;
+    }
+
+    .generate-all-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .saved-selection-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .select-all-arenas-btn,
+    .clear-selection-btn,
+    .arena-select-btn {
+      border: 1px solid #ddd;
+      background: white;
+      border-radius: 999px;
+      padding: 8px 14px;
+      font: inherit;
+      font-size: 0.86rem;
+      font-weight: 700;
+      cursor: pointer;
+      color: #111;
+    }
+
+    .select-all-arenas-btn:hover,
+    .clear-selection-btn:hover {
+      opacity: 0.85;
+    }
+
+    .arena-select-btn:hover {
+      background: #f0f0f0;
+    }
+
+    .arena-select-btn {
+      display: none;
+      position: absolute;
+      top: 16px;
+      left: 18px;
+    }
+
+    body.saved-selection-mode .subject .arena-select-btn {
+      display: inline-flex;
+    }
+
+    body.saved-selection-mode .subject {
+      padding-top: 62px;
+    }
+
+    .subject.selected .arena-select-btn {
+      background: #111;
+      border-color: #111;
+      color: white;
+    }
+
+    .selection-count {
+      color: #555;
+      font-size: 0.9rem;
+      font-weight: 700;
     }
 
     .agon-btn {
@@ -2526,6 +2657,20 @@ function generateHtml(sessions) {
       cursor: pointer;
     }
 
+    .definitive-article-btn {
+      margin-top: 10px;
+      margin-left: 8px;
+      border: 1px solid rgba(17, 24, 39, 0.16);
+      background: #ffffff;
+      color: #111827;
+      border-radius: 999px;
+      padding: 8px 14px;
+      font: inherit;
+      font-size: 0.84rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
     .resume[contenteditable="true"] {
       border-radius: 8px;
       padding: 8px 10px;
@@ -2779,6 +2924,17 @@ function generateHtml(sessions) {
     <a class="filter-link" href="/sent-to-agon">Articles envoyés vers Agôn</a>
   </div>
 
+  <div class="saved-selection-bar" id="saved-selection-bar">
+    <div class="saved-selection-top">
+      <div class="selection-count"><span id="selected-count">0</span> arène(s) sélectionnée(s)</div>
+      <div class="saved-selection-actions">
+        <button class="select-all-arenas-btn" type="button">Tout sélectionner</button>
+        <button class="clear-selection-btn" type="button">Annuler la sélection</button>
+      </div>
+    </div>
+    <button class="generate-all-btn" type="button">Tout générer</button>
+  </div>
+
   ${
     sessions.length
       ? `
@@ -2854,7 +3010,9 @@ function generateHtml(sessions) {
       return debates;
     }
 
-    function buildStoryPickerHtml() {
+    function buildStoryPickerHtml(initialLabel, initialMeta) {
+      const label = initialLabel || 'Sans histoire associée';
+      const meta = initialMeta || '';
       return '<div class="story-manual-picker">' +
         '<label>Histoire associée</label>' +
         '<div class="story-picker-row">' +
@@ -2863,7 +3021,7 @@ function generateHtml(sessions) {
             '<option value="__new__">Créer une nouvelle histoire</option>' +
           '</select>' +
           '<button type="button" class="story-picker-trigger" aria-expanded="false">' +
-            '<span class="story-picker-trigger-label">Sans histoire associée</span>' +
+            '<span class="story-picker-trigger-label">' + label + '</span>' +
             '<span class="story-picker-trigger-caret">▾</span>' +
           '</button>' +
           '<div class="story-dropdown hidden">' +
@@ -2874,7 +3032,7 @@ function generateHtml(sessions) {
             '<div class="story-dropdown-list"></div>' +
           '</div>' +
         '</div>' +
-        '<small class="story-manual-meta"></small>' +
+        '<small class="story-manual-meta">' + meta + '</small>' +
       '</div>';
     }
 
@@ -2999,7 +3157,7 @@ function generateHtml(sessions) {
     }
 
     function buildStoryLinkHtml(storyLink) {
-      if (!storyLink) return "";
+      storyLink = storyLink || {};
 
       const storyDecision = storyLink.story_decision || "new_story";
       const confidence = Number(storyLink.confidence || 0);
@@ -3011,7 +3169,9 @@ function generateHtml(sessions) {
       const encodedCriteria = escapeHtmlClient(encodeStoryData(storyLink.criteria || {}));
       const encodedNewStory = escapeHtmlClient(encodeStoryData(newStory));
       const hasMatchedStory = Boolean(storyLink.matched_story_id && matchedTitle);
-      const manualPickerHtml = buildStoryPickerHtml();
+      const pickerLabel = hasMatchedStory ? matchedTitle : 'Sans histoire associée';
+      const pickerMeta = hasMatchedStory && previousEpisodeTitle ? 'Dernier épisode : ' + previousEpisodeTitle : '';
+      const manualPickerHtml = buildStoryPickerHtml(pickerLabel, pickerMeta);
 
       const existingStoryFields = '<div class="story-draft-fields story-existing-fields-empty">' +
         '<p class="story-existing-note">Cette histoire sera seulement associée à l’actualité. Aucun résumé d’histoire n’est généré à cette étape.</p>' +
@@ -3086,6 +3246,19 @@ function generateHtml(sessions) {
       }
       if (matchedId) {
         select.value = matchedId;
+        if (String(select.value || "") !== matchedId) {
+          const triggerLabel = box.querySelector(".story-picker-trigger-label");
+          const storedTitle = String(box.dataset.currentStoryTitle || box.dataset.matchedStoryTitle || "").trim();
+          if (triggerLabel) triggerLabel.textContent = storedTitle || "Histoire associée";
+          syncStoryChoiceUi(box);
+          filterStoryDropdown(box, "");
+          const searchInput = box.querySelector(".story-search-input");
+          if (searchInput && !searchInput.dataset.bound) {
+            searchInput.addEventListener("input", function() { filterStoryDropdown(box, searchInput.value || ""); });
+            searchInput.dataset.bound = "true";
+          }
+          return;
+        }
       } else {
         select.value = "";
       }
@@ -3331,7 +3504,14 @@ function generateHtml(sessions) {
       const baseNewStory = decodeStoryData(box.dataset.newStory) || {};
       const manualSelect = box.querySelector(".story-manual-select");
       const manualOption = manualSelect?.options[manualSelect.selectedIndex] || null;
-      const selectionMode = box.dataset.selectedMode || "";
+      let selectionMode = box.dataset.selectedMode || "";
+      if (!selectionMode) {
+        const decision = box.dataset.storyDecision || "";
+        const fallbackId = box.dataset.matchedStoryId || box.dataset.currentStoryId || "";
+        if ((decision === "existing_story" || decision === "uncertain") && fallbackId) {
+          selectionMode = "existing";
+        }
+      }
       if (!selectionMode) return null;
 
       const payload = {
@@ -3367,6 +3547,75 @@ function generateHtml(sessions) {
       }
 
       return payload;
+    }
+
+    async function applyStorySuggestion(box, suggestion) {
+      if (!box || !suggestion) return;
+      const matchedId = String(suggestion.matched_story_id || "").trim();
+      box.dataset.storyDecision = suggestion.story_decision || "new_story";
+      box.dataset.confidence = String(suggestion.confidence || 0);
+      box.dataset.reason = suggestion.reason || "";
+      box.dataset.matchedStoryId = matchedId;
+      box.dataset.currentStoryId = matchedId;
+      box.dataset.matchedStoryTitle = suggestion.matched_story_title || "";
+      box.dataset.currentStoryTitle = suggestion.matched_story_title || "";
+      box.dataset.previousEpisodeTitle = suggestion.previous_episode_title || "";
+      box.dataset.previousEpisodeUrl = suggestion.previous_episode_url || "";
+      const header = box.querySelector(".story-link-header");
+      if (header) header.textContent = suggestion.reason || "";
+      const select = box.querySelector(".story-manual-select");
+      const isLoaded = select && select.dataset.loaded === "true";
+      if (!isLoaded) {
+        await populateManualStoryPicker(box);
+      } else {
+        if (select && matchedId) {
+          select.value = matchedId;
+          if (String(select.value || "") !== matchedId) {
+            const triggerLabel = box.querySelector(".story-picker-trigger-label");
+            if (triggerLabel) triggerLabel.textContent = suggestion.matched_story_title || "Histoire associée";
+            syncStoryChoiceUi(box);
+            return;
+          }
+        } else if (select) {
+          select.value = "";
+        }
+        updateManualStorySelection(box);
+      }
+    }
+
+    async function suggestStoryForSubject(subjectEl, setStatus) {
+      const box = subjectEl.querySelector(".story-link-box");
+      if (!box) return;
+      if (box.dataset.storySuggested === "true") return;
+      if (setStatus) setStatus("Histoire associée…");
+      const subjectTitle = subjectEl.querySelector("h3")?.textContent.trim() || "";
+      const agonTheme = subjectEl.querySelector(".agon-select")?.value || "";
+      const debateQuestion = subjectEl.querySelector(".debate-question")?.textContent.trim() || "";
+      const keywords = getKeywordsFromEditor(subjectEl);
+      const contents = [...subjectEl.querySelectorAll(".content-item[data-link]")].map(function(item) {
+        return {
+          type: item.dataset.type || "article",
+          source: item.querySelector("strong")?.textContent.trim() || "",
+          orientation: item.dataset.orientation || "",
+          title: item.querySelector("a")?.textContent.trim() || "",
+          link: item.dataset.link || ""
+        };
+      }).filter(function(c) { return c.link || c.title; });
+      const sources = [...new Set(contents.map(function(c) { return c.source; }).filter(Boolean))];
+      try {
+        const response = await fetch("/suggest-story", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ subject: subjectTitle, sources, contents, ai: { agonTheme, debateQuestion, keywords } })
+        });
+        if (!response.ok) return;
+        const data = await response.json().catch(function() { return null; });
+        if (!data || !data.ok || !data.suggestion) return;
+        box.dataset.storySuggested = "true";
+        await applyStorySuggestion(box, data.suggestion);
+      } catch (error) {
+        console.error("Erreur suggestion histoire :", error.message);
+      }
     }
 
     const AI_TITLE_MAX = 100;
@@ -3413,9 +3662,10 @@ function generateHtml(sessions) {
         '<p class="agon-theme"><strong>Thématique Agôn proposée :</strong>' +
           '<select class="agon-select">' + optionsHtml + "</select>" +
         "</p>" +
-        buildStoryLinkHtml(ai.storyLink) +
+        buildStoryLinkHtml(ai.storyLink || {}) +
         '<button type="button" class="full-article-btn">Générer résumé de l’article</button>' +
-        '<button type="button" class="final-article-btn hidden">Générer article définitif</button>' +
+        '<button type="button" class="final-article-btn hidden">Générer article</button>' +
+        '<button type="button" class="definitive-article-btn hidden" disabled>Article définitif</button>' +
         "</div>";
     }
 
@@ -3635,6 +3885,11 @@ function generateHtml(sessions) {
             fullArticleState.value = "summary";
           }
           subjectEl.querySelector(".final-article-btn")?.classList.remove("hidden");
+          const definitiveArticleBtn = subjectEl.querySelector(".definitive-article-btn");
+          if (definitiveArticleBtn) {
+            definitiveArticleBtn.classList.remove("hidden");
+            definitiveArticleBtn.disabled = true;
+          }
           fullArticleBtn.textContent = "✓ Résumé généré";
         } catch (error) {
           alert(error.message || "Erreur génération résumé");
@@ -3657,7 +3912,7 @@ function generateHtml(sessions) {
         }
 
         finalArticleBtn.disabled = true;
-        finalArticleBtn.textContent = "Article définitif en cours…";
+        finalArticleBtn.textContent = "Article en cours…";
         try {
           const response = await fetch("/generate-final-article", {
             method: "POST",
@@ -3701,12 +3956,74 @@ function generateHtml(sessions) {
           if (fullArticleState) {
             fullArticleState.value = "full";
           }
-          finalArticleBtn.textContent = "✓ Article définitif généré";
+          finalArticleBtn.textContent = "✓ Article généré";
+          const definitiveArticleBtn = subjectEl.querySelector(".definitive-article-btn");
+          if (definitiveArticleBtn) {
+            definitiveArticleBtn.classList.remove("hidden");
+            definitiveArticleBtn.disabled = false;
+          }
         } catch (error) {
           alert(error.message || "Erreur génération article définitif");
-          finalArticleBtn.textContent = "Générer article définitif";
+          finalArticleBtn.textContent = "Générer article";
         } finally {
           finalArticleBtn.disabled = false;
+        }
+        return;
+      }
+
+      const definitiveArticleBtn = e.target.closest(".definitive-article-btn");
+      if (definitiveArticleBtn) {
+        const subjectEl = definitiveArticleBtn.closest(".subject");
+        const resumeEl = subjectEl.querySelector(".resume");
+        const article = (resumeEl?.dataset.rawText || resumeEl?.textContent || "").trim().slice(0, AI_RESUME_MAX);
+        if (!article) {
+          alert("Génère d'abord l'article.");
+          return;
+        }
+
+        definitiveArticleBtn.disabled = true;
+        definitiveArticleBtn.textContent = "Histoire associée…";
+        try {
+          await suggestStoryForSubject(subjectEl);
+          definitiveArticleBtn.textContent = "Article définitif en cours…";
+          const questionEl = subjectEl.querySelector(".debate-question");
+          const editables = subjectEl.querySelectorAll(".positions-box .editable");
+          const debateQuestion = questionEl?.textContent.trim() || "";
+          const positionA = editables[0]?.textContent.trim() || "";
+          const positionB = editables[1]?.textContent.trim() || "";
+          const response = await fetch("/generate-styled-article", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              article,
+              debateQuestion,
+              positionA,
+              positionB
+            })
+          });
+          const data = await response.json().catch(function() { return { ok: false, error: "Erreur génération article définitif" }; });
+          if (!response.ok || data.ok === false) {
+            throw new Error(data.error || "Erreur génération article définitif");
+          }
+
+          const styledArticle = String(data.article || "").trim();
+          if (resumeEl && styledArticle) {
+            resumeEl.dataset.rawText = styledArticle;
+            resumeEl.innerHTML = renderArticleHtml(styledArticle);
+          }
+          if (questionEl && data.debateQuestion) {
+            questionEl.textContent = String(data.debateQuestion);
+          }
+          if (data.positionA || data.positionB) {
+            ensurePositionsBox(subjectEl, data.positionA || positionA, data.positionB || positionB);
+          }
+          updateAiEditorCounters(subjectEl);
+          definitiveArticleBtn.textContent = "✓ Article définitif";
+        } catch (error) {
+          alert(error.message || "Erreur génération article définitif");
+          definitiveArticleBtn.textContent = "Article définitif";
+        } finally {
+          definitiveArticleBtn.disabled = false;
         }
         return;
       }
@@ -3774,7 +4091,8 @@ function generateHtml(sessions) {
       btn.textContent = isRepublish ? "Republication…" : "Envoi…";
       try {
         const subjectEl = btn.closest(".subject");
-        const storySelection = collectStorySelection(subjectEl);
+        let storySelection = null;
+        try { storySelection = collectStorySelection(subjectEl); } catch (storyErr) { console.warn("Story selection ignorée :", storyErr.message); }
         updateAiEditorCounters(subjectEl);
         const subject = subjectEl.querySelector("h3")?.textContent.trim() || "";
         const sessionEl = subjectEl.closest(".session");
@@ -4006,8 +4324,32 @@ function generateHtml(sessions) {
 
     let currentSort = "score";
 
+    function getActiveSession() {
+      return document.querySelector(".session.active-session");
+    }
+
+    function updateArenaSelectionButton(subject) {
+      const btn = subject.querySelector(".arena-select-btn");
+      const selected = subject.classList.contains("selected");
+      if (!btn) return;
+      btn.textContent = selected ? "Sélectionné" : "Sélectionner";
+      btn.setAttribute("aria-pressed", selected ? "true" : "false");
+    }
+
+    function updateSavedSelectionUi() {
+      const isSavedMode = currentSort === "saved";
+      const bar = document.getElementById("saved-selection-bar");
+      document.body.classList.toggle("saved-selection-mode", isSavedMode);
+      if (bar) bar.classList.toggle("visible", isSavedMode);
+
+      const activeSession = getActiveSession();
+      const count = isSavedMode && activeSession ? activeSession.querySelectorAll(".subject.selected").length : 0;
+      const countEl = document.getElementById("selected-count");
+      if (countEl) countEl.textContent = String(count);
+    }
+
     function sortSubjects() {
-      const activeSession = document.querySelector(".session.active-session");
+      const activeSession = getActiveSession();
       if (!activeSession) return;
       const subjects = [...activeSession.querySelectorAll(":scope > .subject")];
       if (currentSort !== "saved") {
@@ -4027,7 +4369,213 @@ function generateHtml(sessions) {
         const badge = s.querySelector(".subject-number");
         if (badge) badge.textContent = (i + 1) + " / " + visible.length;
       });
+      updateSavedSelectionUi();
     }
+
+    document.addEventListener("click", (e) => {
+      const selectBtn = e.target.closest(".arena-select-btn");
+      if (selectBtn) {
+        const subject = selectBtn.closest(".subject");
+        if (subject) {
+          subject.classList.toggle("selected");
+          updateArenaSelectionButton(subject);
+          updateSavedSelectionUi();
+        }
+        return;
+      }
+
+      if (e.target.closest(".select-all-arenas-btn")) {
+        const activeSession = getActiveSession();
+        if (activeSession) {
+          activeSession.querySelectorAll(".subject").forEach(subject => {
+            const isVisible = subject.style.display !== "none";
+            subject.classList.toggle("selected", isVisible);
+            updateArenaSelectionButton(subject);
+          });
+          updateSavedSelectionUi();
+        }
+        const selectAllBtn = document.querySelector(".select-all-arenas-btn");
+        const clearBtn = document.querySelector(".clear-selection-btn");
+        if (selectAllBtn) { selectAllBtn.style.background = "#111"; selectAllBtn.style.borderColor = "#111"; selectAllBtn.style.color = "#fff"; }
+        if (clearBtn) { clearBtn.style.background = ""; clearBtn.style.borderColor = ""; clearBtn.style.color = ""; }
+        return;
+      }
+
+      if (e.target.closest(".clear-selection-btn")) {
+        const activeSession = getActiveSession();
+        if (activeSession) {
+          activeSession.querySelectorAll(".subject.selected").forEach(subject => {
+            subject.classList.remove("selected");
+            updateArenaSelectionButton(subject);
+          });
+          updateSavedSelectionUi();
+        }
+        const selectAllBtn = document.querySelector(".select-all-arenas-btn");
+        const clearBtn = document.querySelector(".clear-selection-btn");
+        if (clearBtn) { clearBtn.style.background = "#111"; clearBtn.style.borderColor = "#111"; clearBtn.style.color = "#fff"; }
+        if (selectAllBtn) { selectAllBtn.style.background = ""; selectAllBtn.style.borderColor = ""; selectAllBtn.style.color = ""; }
+      }
+
+    });
+
+    async function generateSubjectPipeline(subjectEl, setStatus) {
+      // Étape 1 : Analyse positions IA (si pas encore fait)
+      const analyzeBtn = subjectEl.querySelector(".analyze-btn[data-mode='positions']");
+      if (analyzeBtn) {
+        setStatus("Analyse IA…");
+        const subjectData = JSON.parse(analyzeBtn.dataset.subject);
+        subjectData.arenaMode = "positions";
+        const aiBox = analyzeBtn.closest(".ai-box");
+        const aiScore = subjectEl.querySelector(".ai-score.pending");
+        const res = await fetch("/analyze", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(subjectData) });
+        if (!res.ok) throw new Error("Erreur analyse");
+        const ai = await res.json();
+        ai.sourceSubject = subjectData.subject || "";
+        subjectEl.dataset.subjectPayload = encodeStoryData(subjectData);
+        if (aiScore) aiScore.outerHTML = buildAiScoreHtml(ai);
+        if (aiBox) aiBox.outerHTML = buildAiBoxHtml(ai);
+        updateAiEditorCounters(subjectEl);
+        initializeStoryBoxes(subjectEl);
+        const agonBtnStep1 = subjectEl.querySelector(".agon-btn");
+        if (agonBtnStep1) { agonBtnStep1.dataset.question = ai.debateQuestion || subjectData.subject || ""; agonBtnStep1.dataset.positionA = ai.positionA || ""; agonBtnStep1.dataset.positionB = ai.positionB || ""; agonBtnStep1.dataset.theme = normalizeAgonTheme(ai.agonTheme); }
+        const preselectedLinks = new Set(Array.isArray(ai.selectedLinks) ? ai.selectedLinks.map(l => String(l || "").trim()).filter(Boolean) : []);
+        subjectEl.querySelectorAll(".content-item[data-link]").forEach(item => { const cb = item.querySelector('input[type="checkbox"]'); const sel = preselectedLinks.has(item.dataset.link); if (cb) cb.checked = sel; item.classList.toggle("preselected", sel); });
+        await fetch("/save-update", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ subject: subjectData.subject, debateScore: ai.debateScore, controversyLevel: ai.controversyLevel, leftScore: ai.leftScore, ai: { ...ai, fullArticleState: "short" } }) });
+      }
+
+      const basePayload = decodeStoryData(subjectEl.dataset.subjectPayload || "") || {};
+      const subjectTitle = basePayload.subject || subjectEl.querySelector("h3")?.textContent.trim() || "";
+      const fullArticleState = subjectEl.querySelector(".full-article-state");
+      const alreadyFull = String(fullArticleState?.value || "short").trim() === "full";
+      let resumeEl = subjectEl.querySelector(".resume");
+      let questionEl = subjectEl.querySelector(".debate-question");
+
+      if (!alreadyFull) {
+        // Étape 2 : Résumé
+        try {
+          setStatus("Résumé…");
+          const allContentItems = [...subjectEl.querySelectorAll(".content-item[data-link]")];
+          const anyChecked = allContentItems.some(item => item.querySelector('input[type="checkbox"]')?.checked);
+          if (!anyChecked && allContentItems.length > 0) {
+            allContentItems.forEach(item => { const cb = item.querySelector('input[type="checkbox"]'); if (cb) cb.checked = true; });
+          }
+          const fullRes = await fetch("/generate-full-article", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ subject: subjectTitle, contents: getSelectedContents(subjectEl) }) });
+          const fullData = await fullRes.json().catch(() => ({}));
+          if (!fullRes.ok || fullData.ok === false) throw new Error(fullData.error || "Erreur résumé");
+          resumeEl = subjectEl.querySelector(".resume");
+          if (resumeEl) { resumeEl.textContent = String(fullData.article || "").trim(); updateAiEditorCounters(subjectEl); }
+          if (fullArticleState) fullArticleState.value = "summary";
+          subjectEl.querySelector(".final-article-btn")?.classList.remove("hidden");
+          const defBtnA = subjectEl.querySelector(".definitive-article-btn");
+          if (defBtnA) { defBtnA.classList.remove("hidden"); defBtnA.disabled = true; }
+          const fullBtn = subjectEl.querySelector(".full-article-btn");
+          if (fullBtn) fullBtn.textContent = "✓ Résumé généré";
+
+          // Étape 3 : Article
+          setStatus("Article…");
+          const summary = resumeEl?.textContent.trim().slice(0, AI_RESUME_MAX) || "";
+          const finalRes = await fetch("/generate-final-article", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ subject: subjectTitle, summary }) });
+          const finalData = await finalRes.json().catch(() => ({}));
+          if (!finalRes.ok || finalData.ok === false) throw new Error(finalData.error || "Erreur article");
+          resumeEl = subjectEl.querySelector(".resume");
+          if (resumeEl) { const raw = String(finalData.article || "").trim(); resumeEl.dataset.rawText = raw; resumeEl.innerHTML = renderArticleHtml(raw); }
+          questionEl = subjectEl.querySelector(".debate-question");
+          if (questionEl) questionEl.textContent = String(finalData.debateQuestion || "").trim().slice(0, AI_TITLE_MAX);
+          ensurePositionsBox(subjectEl, finalData.positionA || "", finalData.positionB || "");
+          updateAiEditorCounters(subjectEl);
+          const agonBtnStep3 = subjectEl.querySelector(".agon-btn");
+          if (agonBtnStep3) { agonBtnStep3.dataset.question = String(finalData.debateQuestion || "").trim(); agonBtnStep3.dataset.positionA = String(finalData.positionA || "").trim(); agonBtnStep3.dataset.positionB = String(finalData.positionB || "").trim(); }
+          if (fullArticleState) fullArticleState.value = "full";
+          const finalBtn = subjectEl.querySelector(".final-article-btn");
+          if (finalBtn) finalBtn.textContent = "✓ Article généré";
+          const defBtnB = subjectEl.querySelector(".definitive-article-btn");
+          if (defBtnB) { defBtnB.classList.remove("hidden"); defBtnB.disabled = false; }
+
+          // Suggestion d'histoire (une seule fois)
+          await suggestStoryForSubject(subjectEl, setStatus);
+
+          // Étape 4 : Article définitif
+          setStatus("Article définitif…");
+          const article = (resumeEl?.dataset.rawText || resumeEl?.textContent || "").trim().slice(0, AI_RESUME_MAX);
+          const debateQuestion = questionEl?.textContent.trim() || "";
+          const editables = subjectEl.querySelectorAll(".positions-box .editable");
+          const posA = editables[0]?.textContent.trim() || "";
+          const posB = editables[1]?.textContent.trim() || "";
+          const styledRes = await fetch("/generate-styled-article", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ article, debateQuestion, positionA: posA, positionB: posB }) });
+          const styledData = await styledRes.json().catch(() => ({}));
+          if (!styledRes.ok || styledData.ok === false) throw new Error(styledData.error || "Erreur article définitif");
+          const styledArticle = String(styledData.article || "").trim();
+          resumeEl = subjectEl.querySelector(".resume");
+          if (resumeEl && styledArticle) { resumeEl.dataset.rawText = styledArticle; resumeEl.innerHTML = renderArticleHtml(styledArticle); }
+          questionEl = subjectEl.querySelector(".debate-question");
+          if (questionEl && styledData.debateQuestion) questionEl.textContent = String(styledData.debateQuestion);
+          if (styledData.positionA || styledData.positionB) ensurePositionsBox(subjectEl, styledData.positionA || posA, styledData.positionB || posB);
+          updateAiEditorCounters(subjectEl);
+          const defBtnC = subjectEl.querySelector(".definitive-article-btn");
+          if (defBtnC) defBtnC.textContent = "✓ Article définitif";
+        } catch (genErr) {
+          console.error("Erreur génération :", genErr.message);
+        }
+      } else {
+        // Article déjà complet — suggestion histoire seulement
+        await suggestStoryForSubject(subjectEl, setStatus);
+      }
+
+      // Étape 5 : Envoi vers Agôn (toujours tenté)
+      setStatus("Envoi vers Agôn…");
+      const agonBtnFinal = subjectEl.querySelector(".agon-btn:not(.sent)");
+      if (!agonBtnFinal) return;
+      resumeEl = subjectEl.querySelector(".resume");
+      questionEl = subjectEl.querySelector(".debate-question");
+      const resumeText = (resumeEl?.dataset.rawText || resumeEl?.textContent.trim() || "").trim();
+      if (!resumeText) return;
+      let storySelection = null;
+      try { storySelection = collectStorySelection(subjectEl); } catch (e) { console.warn("Story selection ignorée :", e.message); }
+      updateAiEditorCounters(subjectEl);
+      const sessionEl = subjectEl.closest(".session");
+      const sessionLabel = sessionEl ? (sessionEl.querySelector(".session-header strong") || {}).textContent?.trim() || "" : "";
+      const finalQuestion = (subjectEl.querySelector(".debate-question")?.textContent.trim() || agonBtnFinal.dataset.question || "").slice(0, AI_TITLE_MAX);
+      const finalEditables = subjectEl.querySelectorAll(".editable");
+      const finalPosA = finalEditables[0]?.textContent.trim() || agonBtnFinal.dataset.positionA;
+      const finalPosB = finalEditables[1]?.textContent.trim() || agonBtnFinal.dataset.positionB;
+      const theme = subjectEl.querySelector(".agon-select")?.value || agonBtnFinal.dataset.theme;
+      const resumeForSend = resumeText.slice(0, AI_RESUME_MAX);
+      const keywords = getKeywordsFromEditor(subjectEl);
+      const links = [...subjectEl.querySelectorAll(".content-item[data-link]")].map(item => {
+        const dateMatch = (item.querySelector("small")?.textContent || "").match(/(\\d{2}\\/\\d{2}\\/\\d{4})/);
+        return { title: item.querySelector("a")?.textContent.trim() || "", url: item.dataset.link || "", source: item.querySelector("strong")?.textContent.trim() || "", type: item.dataset.type || "article", date: dateMatch ? dateMatch[1] : "", checked: item.querySelector('input[type="checkbox"]')?.checked ?? true };
+      }).filter(l => l.url);
+      const sendRes = await fetch("/send-to-agon", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ subject: subjectTitle, sessionLabel, question: finalQuestion, positionA: finalPosA, positionB: finalPosB, theme, resume: resumeForSend, sources: agonBtnFinal.dataset.sources, links, storySelection, keywords }) });
+      if (!sendRes.ok) throw new Error("Erreur envoi Agôn");
+      agonBtnFinal.classList.add("sent");
+      agonBtnFinal.textContent = "✓ Envoyé";
+      const republishBtn = subjectEl.querySelector(".republish-btn");
+      if (republishBtn) { republishBtn.classList.remove("hidden"); republishBtn.disabled = false; republishBtn.textContent = "↺ Republier"; }
+      rehydratePersistentStates();
+    }
+
+    document.addEventListener("click", async (e) => {
+      if (!e.target.closest(".generate-all-btn")) return;
+      const generateBtn = e.target.closest(".generate-all-btn");
+      let subjects = [...document.querySelectorAll(".subject.selected")];
+      if (subjects.length === 0) {
+        const activeSession = getActiveSession();
+        if (activeSession) subjects = [...activeSession.querySelectorAll(".subject")].filter(s => s.style.display !== "none");
+      }
+      if (subjects.length === 0) return;
+      generateBtn.disabled = true;
+      for (let i = 0; i < subjects.length; i++) {
+        try {
+          await generateSubjectPipeline(subjects[i], status => {
+            generateBtn.textContent = \`\${i + 1} / \${subjects.length} — \${status}\`;
+          });
+        } catch (err) {
+          console.error("Erreur pipeline sujet " + (i + 1) + " :", err.message);
+        }
+      }
+      generateBtn.disabled = false;
+      generateBtn.textContent = "Tout générer";
+    });
 
     document.querySelectorAll(".filter-btn").forEach(btn => {
       btn.addEventListener("click", () => {
@@ -4270,4 +4818,8 @@ localApiServer.on("error", (error) => {
   console.error("Erreur API mixte locale :", error.message);
 });
 
-main();
+if (process.env.BOT_VEILLE_API_ONLY === "1") {
+  console.log("Mode API seule : collecte des sources non lancée.");
+} else {
+  main();
+}
