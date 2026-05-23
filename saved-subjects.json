@@ -1,6 +1,627 @@
 [
   {
     "action": "save",
+    "subject": "\"Ce sera un vrai test\" : comment Gabriel Attal prépare son entrée dans la course à l’Élysée",
+    "debateScore": 7,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "Marianne, C dans l'air",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.marianne.net/politique/lrem/ce-sera-un-vrai-test-comment-gabriel-attal-prepare-son-entree-dans-la-course-a-lelysee#utm_source=RSS-MARIANNE&utm_medium=Flux-Rss&utm_campaign=RSS_general",
+        "source": "Marianne",
+        "title": "\"Ce sera un vrai test\" : comment Gabriel Attal prépare son entrée dans la course à l’Élysée",
+        "thumbnail": ""
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/watch?v=PKqK8uC_Xa8",
+        "source": "C dans l'air",
+        "title": "",
+        "thumbnail": "https://i.ytimg.com/vi/PKqK8uC_Xa8/hqdefault.jpg"
+      }
+    ],
+    "sessionLabel": "23/05/2026 à 09:51:48",
+    "controversyLevel": "moyen",
+    "leftScore": 6,
+    "ai": {
+      "keywords": [
+        "course a l Elysée",
+        "La République En Marche",
+        "C dans l air",
+        "election presidentielle 2027"
+      ]
+    }
+  },
+  {
+    "action": "save",
+    "subject": "Présidentielle 2027: comment expliquer l'embouteillage des candidatures à un an du scrutin?",
+    "debateScore": 7,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "BFMTV, C dans l'air",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.bfmtv.com/politique/elections/presidentielle/presidentielle-2027-comment-expliquer-l-embouteillage-des-candidatures-a-un-an-du-scrutin_AV-202605240022.html",
+        "source": "BFMTV",
+        "title": "Présidentielle 2027: comment expliquer l'embouteillage des candidatures à un an du scrutin?",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.bfmtv.com/politique/elections/presidentielle/video-presidentielle-2027-comment-le-candidat-gabriel-attal-veut-casser-son-image-de-jeune-premier_VN-202605230077.html",
+        "source": "BFMTV",
+        "title": "Présidentielle 2027: comment le candidat Gabriel Attal veut casser son image de jeune premier",
+        "thumbnail": ""
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/shorts/rel_DdlP1Wo",
+        "source": "C dans l'air",
+        "title": "Présidentielle 2027 : E. Philippe réagit à la candidature de G. Attal",
+        "thumbnail": ""
+      }
+    ],
+    "sessionLabel": "23/05/2026 à 09:51:48"
+  },
+  {
+    "action": "save",
+    "subject": "A Cannes, les voix iraniennes au centre de la tension",
+    "debateScore": 7,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "Libération, France 24",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.liberation.fr/culture/cinema/a-cannes-les-voix-iraniennes-au-centre-de-la-tension-20260523_FO32X6AA25HFFDTLLL3P5MWLGQ/",
+        "source": "Libération",
+        "title": "A Cannes, les voix iraniennes au centre de la tension",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.france24.com/fr/%C3%A9missions/%C3%A0-l-affiche/20260522-pen%C3%A9lope-cruz-%C3%A0-cannes-les-films-aident-%C3%A0-relancer-des-d%C3%A9bats-importants",
+        "source": "France 24",
+        "title": "Penélope Cruz à Cannes : \"les films aident à relancer des débats importants\"",
+        "thumbnail": ""
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/watch?v=0LIhoyBYO8s",
+        "source": "France 24",
+        "title": "",
+        "thumbnail": "https://i.ytimg.com/vi/0LIhoyBYO8s/hqdefault.jpg"
+      }
+    ],
+    "sessionLabel": "23/05/2026 à 09:51:48"
+  },
+  {
+    "action": "save",
+    "subject": "Sénégal : le Premier ministre Ousmane Sonko remercié par le président",
+    "debateScore": 7,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "France 24, RFI",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.rfi.fr/fr/afrique/20260523-s%C3%A9n%C3%A9gal-entre-bassirou-diomaye-faye-et-ousmane-sonko-r%C3%A9cit-d-une-rupture-annonc%C3%A9e",
+        "source": "RFI",
+        "title": "Sénégal: entre Bassirou Diomaye Faye et Ousmane Sonko, récit d'une rupture annoncée",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.france24.com/fr/vid%C3%A9o/20260523-s%C3%A9n%C3%A9gal-le-premier-ministre-ousmane-sonko-remerci%C3%A9-par-le-pr%C3%A9sident",
+        "source": "France 24",
+        "title": "Sénégal : le Premier ministre Ousmane Sonko remercié par le président",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.france24.com/fr/vid%C3%A9o/20260523-s%C3%A9n%C3%A9gal-le-pr%C3%A9sident-faye-limoge-le-premier-ministre-ousmane-sonko",
+        "source": "France 24",
+        "title": "Sénégal: le président Diomaye Faye limoge le Premier ministre Ousmane Sonko",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.france24.com/fr/vid%C3%A9o/20260522-s%C3%A9n%C3%A9gal-le-pr%C3%A9sident-bassirou-diomaye-faye-limoge-le-premier-ministre-ousmane-sonko",
+        "source": "France 24",
+        "title": "Sénégal : le président Bassirou Diomaye Faye limoge le Premier ministre Ousmane Sonko",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.rfi.fr/fr/afrique/20260522-s%C3%A9n%C3%A9gal-le-pr%C3%A9sident-bassirou-diomaye-faye-met-fin-aux-fonctions-du-premier-ministre-ousmane-sonko",
+        "source": "RFI",
+        "title": "Sénégal: le président Bassirou Diomaye Faye met fin aux fonctions du Premier ministre Ousmane Sonko",
+        "thumbnail": ""
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/watch?v=wuNgaNKhFxk",
+        "source": "France 24",
+        "title": "",
+        "thumbnail": "https://i.ytimg.com/vi/wuNgaNKhFxk/hqdefault.jpg"
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/shorts/7sDJWFvWF6Q",
+        "source": "France 24",
+        "title": "Sénégal: le président Diomaye Faye limoge le Premier ministre Ousmane Sonko • FRANCE 24",
+        "thumbnail": ""
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/watch?v=VQLUxHtw5Ao",
+        "source": "France 24",
+        "title": "",
+        "thumbnail": "https://i.ytimg.com/vi/VQLUxHtw5Ao/hqdefault.jpg"
+      }
+    ],
+    "sessionLabel": "23/05/2026 à 09:51:48",
+    "controversyLevel": "fort",
+    "leftScore": 6,
+    "ai": {
+      "keywords": [
+        "Sénégal",
+        "Bassirou Diomaye Faye",
+        "Premier ministre",
+        "limogeage",
+        "président Sénégal"
+      ]
+    }
+  },
+  {
+    "action": "save",
+    "subject": "Affaire des implants vaginaux : 71 femmes «mutilées» saisissent la justice pour rouvrir une enquête",
+    "debateScore": 8,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "Libération, La Croix, 20 Minutes",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.liberation.fr/societe/sante/affaire-des-implants-vaginaux-71-femmes-mutilees-saisissent-la-justice-pour-rouvrir-une-enquete-20260522_MNKHPRALFBDPVAMADW7ILYQF4A/",
+        "source": "Libération",
+        "title": "Affaire des implants vaginaux : 71 femmes «mutilées» saisissent la justice pour rouvrir une enquête",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.20minutes.fr/justice/4225024-20260522-implants-vaginaux-71-femmes-souffrant-complications-portent-plainte-rouvrir-dossier?at_medium=display&at_campaign=149",
+        "source": "20 Minutes",
+        "title": "Implants vaginaux : 71 femmes souffrant de complications portent plainte pour rouvrir le dossier",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.la-croix.com/societe/implants-vaginaux-71-femmes-saisissent-la-justice-pour-qu-elle-enquete-de-nouveau-20260522",
+        "source": "La Croix",
+        "title": "Implants vaginaux : 71 femmes saisissent la justice pour qu’elle enquête de nouveau",
+        "thumbnail": ""
+      }
+    ],
+    "sessionLabel": "23/05/2026 à 09:51:48",
+    "controversyLevel": "fort",
+    "leftScore": 7,
+    "ai": {
+      "keywords": [
+        "71 femmes mutilées",
+        "justice",
+        "réouverture enquête",
+        "complications médicales"
+      ]
+    }
+  },
+  {
+    "action": "save",
+    "subject": "L'Union européenne et le Mexique signent un accord commercial réduisant leurs droits de douane réciproques",
+    "debateScore": 7,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "Franceinfo, Le Monde, Euronews FR, 20 Minutes",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.lemonde.fr/economie/article/2026/05/22/droits-de-douane-l-union-europeenne-et-le-mexique-signent-un-accord-commercial-reduisant-leurs-taxes-reciproques_6692351_3234.html",
+        "source": "Le Monde",
+        "title": "Droits de douane : l’Union européenne et le Mexique signent un accord commercial réduisant leurs taxes réciproques",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.franceinfo.fr/monde/europe/union-europeenne/l-union-europeenne-et-le-mexique-signent-un-accord-commercial-reduisant-leurs-droits-de-douane-reciproques_8022902.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "title": "L'Union européenne et le Mexique signent un accord commercial réduisant leurs droits de douane réciproques",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.franceinfo.fr/sports/rugby/champions-cup/champions-cup-comment-l-union-bordeaux-begles-est-passee-d-eternel-deuxieme-a-cador-europeen_8019029.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "title": "Champions Cup : comment l’Union Bordeaux-Bègles est passée d’éternel deuxième à cador européen ?",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.20minutes.fr/monde/4225025-20260522-sirop-agave-terres-rares-contient-accord-commercial-signe-entre-ue-mexique?at_medium=display&at_campaign=149",
+        "source": "20 Minutes",
+        "title": "Sirop d’agave, terres rares… Que contient l’accord commercial signé entre l’UE et le Mexique ?",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "http://fr.euronews.com/my-europe/2026/05/22/lue-conclut-un-accord-commercial-avec-le-mexique-pour-renforcer-sa-presence-en-amerique-la",
+        "source": "Euronews FR",
+        "title": "L’UE conclut un accord commercial avec le Mexique pour renforcer sa présence en Amérique latine",
+        "thumbnail": ""
+      }
+    ],
+    "sessionLabel": "23/05/2026 à 09:51:48",
+    "controversyLevel": "moyen",
+    "leftScore": 6,
+    "ai": {
+      "keywords": [
+        "droits de douane",
+        "sirop d agave",
+        "terres rares",
+        "Amérique latine",
+        "Union européenne",
+        "Mexique"
+      ]
+    }
+  },
+  {
+    "action": "save",
+    "subject": "Guerre au Moyen-Orient, jour 84 : 10 morts au Liban… Le bilan du vendredi 22 mai",
+    "debateScore": 8,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "La Croix, BFMTV",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.bfmtv.com/international/moyen-orient/iran/video-guerre-au-moyen-orient-de-quel-arsenal-militaire-l-iran-dispose-t-il-encore_VN-202605230080.html",
+        "source": "BFMTV",
+        "title": "Guerre au Moyen-Orient: de quel arsenal militaire l'Iran dispose-t-il encore?",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.bfmtv.com/international/moyen-orient/iran/video-guerre-au-moyen-orient-deux-batiments-frappes-par-israel-ce-vendredi-dans-le-sud-liban_VN-202605230065.html",
+        "source": "BFMTV",
+        "title": "Guerre au Moyen-Orient: deux bâtiments frappés par Israël ce vendredi dans le sud-Liban",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.bfmtv.com/international/moyen-orient/iran/video-guerre-au-moyen-orient-donald-trump-envisage-serieusement-de-reprendre-les-frappes-en-iran_VN-202605230054.html",
+        "source": "BFMTV",
+        "title": "Guerre au Moyen-Orient: Donald Trump envisage \"sérieusement\" de reprendre les frappes en Iran",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.la-croix.com/international/direct-guerre-iran-israel-usa-jour-84-moyen-orient-bilan-resume-aujourdhui-20260522",
+        "source": "La Croix",
+        "title": "Guerre au Moyen-Orient, jour 84 : 10 morts au Liban… Le bilan du vendredi 22 mai",
+        "thumbnail": ""
+      }
+    ],
+    "sessionLabel": "23/05/2026 à 09:51:48",
+    "controversyLevel": "très fort",
+    "leftScore": 7,
+    "ai": {
+      "arenaMode": "positions",
+      "debateScore": 8,
+      "controversyLevel": "très fort",
+      "debateQuestion": "",
+      "resume": "",
+      "keywords": [
+        "Liban",
+        "Israël",
+        "Iran",
+        "Moyen Orient",
+        "Hezbollah",
+        "Donald Trump",
+        "frappes militaires",
+        "10 morts"
+      ],
+      "selectedLinks": [
+        "https://www.bfmtv.com/international/moyen-orient/iran/video-guerre-au-moyen-orient-deux-batiments-frappes-par-israel-ce-vendredi-dans-le-sud-liban_VN-202605230065.html",
+        "https://www.la-croix.com/international/direct-guerre-iran-israel-usa-jour-84-moyen-orient-bilan-resume-aujourdhui-20260522"
+      ],
+      "agonTheme": "International",
+      "positionA": "",
+      "positionB": "",
+      "leftScore": 7,
+      "sourceSubject": "Guerre au Moyen-Orient, jour 84 : 10 morts au Liban… Le bilan du vendredi 22 mai",
+      "fullArticleState": "short"
+    }
+  },
+  {
+    "action": "save",
+    "subject": "EN DIRECT, guerre en Ukraine : un dépôt pétrolier russe en feu après une attaque de drones ukrainienne",
+    "debateScore": 8,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "Le Monde, Libération, Le Figaro",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.lemonde.fr/international/live/2026/05/23/en-direct-guerre-en-ukraine-un-depot-petrolier-russe-en-feu-apres-une-attaque-de-drones-ukrainienne_6690053_3210.html",
+        "source": "Le Monde",
+        "title": "EN DIRECT, guerre en Ukraine : un dépôt pétrolier russe en feu après une attaque de drones ukrainienne",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.liberation.fr/international/europe/lukraine-dement-avoir-vise-des-civils-apres-une-frappe-sur-un-lycee-en-zone-occupee-par-les-russes-20260522_HMDJZ56IZNFDXNCBFQGFKXVNJA/",
+        "source": "Libération",
+        "title": "L’Ukraine dément avoir visé des civils après une frappe sur un lycée en zone occupée par les Russes",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.lefigaro.fr/international/robert-magyar-brovdi-commandant-de-la-guerre-des-drones-en-ukraine-l-homme-a-abattre-pour-les-russes-20260522",
+        "source": "Le Figaro",
+        "title": "Robert « Magyar » Brovdi, commandant de la guerre des drones en Ukraine, l’homme à abattre pour les Russes",
+        "thumbnail": ""
+      }
+    ],
+    "sessionLabel": "23/05/2026 à 09:51:48",
+    "controversyLevel": "fort",
+    "leftScore": 7,
+    "ai": {
+      "arenaMode": "positions",
+      "debateScore": 8,
+      "controversyLevel": "fort",
+      "debateQuestion": "",
+      "resume": "",
+      "keywords": [
+        "Ukraine",
+        "Russie",
+        "dépôt pétrolier",
+        "attaque de drones",
+        "Robert Magyar Brovdi",
+        "guerre en Ukraine",
+        "zone occupée",
+        "civils"
+      ],
+      "selectedLinks": [
+        "https://www.lemonde.fr/international/live/2026/05/23/en-direct-guerre-en-ukraine-un-depot-petrolier-russe-en-feu-apres-une-attaque-de-drones-ukrainienne_6690053_3210.html",
+        "https://www.lefigaro.fr/international/robert-magyar-brovdi-commandant-de-la-guerre-des-drones-en-ukraine-l-homme-a-abattre-pour-les-russes-20260522"
+      ],
+      "agonTheme": "International",
+      "positionA": "",
+      "positionB": "",
+      "leftScore": 7,
+      "sourceSubject": "EN DIRECT, guerre en Ukraine : un dépôt pétrolier russe en feu après une attaque de drones ukrainienne",
+      "fullArticleState": "short"
+    }
+  },
+  {
+    "action": "save",
+    "subject": "EN DIRECT, guerre au Moyen-Orient : Téhéran estime que Washington sabote les négociations ; Donald Trump bouleverse son agenda et alimente les spéculations",
+    "debateScore": 8,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "Le Monde, Libération, Le Figaro, BFMTV, France 24, RFI",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.lemonde.fr/international/live/2026/05/23/en-direct-guerre-au-moyen-orient-teheran-estime-que-washington-sabote-les-negociations-donald-trump-bouleverse-son-agenda-et-alimente-les-speculations_6691823_3210.html",
+        "source": "Le Monde",
+        "title": "EN DIRECT, guerre au Moyen-Orient : Téhéran estime que Washington sabote les négociations ; Donald Trump bouleverse son agenda et alimente les spéculations",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.liberation.fr/international/moyen-orient/en-direct-guerre-au-moyen-orient-la-consommation-de-carburants-en-france-a-diminue-de-14-depuis-debut-mai-20260522_UEKR7KKXPBEVXLBZBVDURCP7HU/",
+        "source": "Libération",
+        "title": "Guerre au Moyen-Orient : un accord entre Téhéran et Washington n’est pas «imminent», selon la diplomatie iranienne",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.rfi.fr/fr/moyen-orient/20260523-en-direct-moyen-orient-l-iran-accuse-les-%C3%A9tats-unis-de-positions-contradictoires-qui-perturbent-les-n%C3%A9gociations",
+        "source": "RFI",
+        "title": "EN DIRECT - Moyen-Orient: l'Iran accuse les États-Unis de «positions contradictoires» qui perturbent les négociations",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.bfmtv.com/international/moyen-orient/iran/video-avoirs-geles-nucleaire-iranien-les-points-de-la-discorde-entre-washington-et-teheran_VN-202605230073.html",
+        "source": "BFMTV",
+        "title": "Avoirs gelés, nucléaire iranien... Les points de la discorde entre Washington et Téhéran",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.bfmtv.com/international/moyen-orient/iran/video-donald-trump-confirme-qu-il-ratera-le-mariage-de-son-fils-alors-que-les-negociations-avec-l-iran-continuent_VN-202605230069.html",
+        "source": "BFMTV",
+        "title": "Donald Trump confirme qu'il ratera le mariage de son fils alors que les négociations avec l'Iran continuent",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.bfmtv.com/international/moyen-orient/direct-guerre-en-iran-et-au-moyen-orient-teheran-accuse-les-etats-unis-de-saboter-les-negociations-de-paix_LN-202605230053.html",
+        "source": "BFMTV",
+        "title": "DIRECT. Guerre en Iran et au Moyen-Orient: Téhéran accuse les États-Unis de saboter les négociations de paix",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.france24.com/fr/moyen-orient/20260522-guerre-au-moyen-orient-un-m%C3%A9diateur-pakistanais-%C3%A0-t%C3%A9h%C3%A9ran-des-n%C3%A9gociations-dans-l-impasse",
+        "source": "France 24",
+        "title": "Guerre au Moyen-Orient : un médiateur pakistanais à Téhéran, des négociations dans l'impasse",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.lefigaro.fr/international/en-direct-guerre-au-moyen-orient-donald-trump-exige-l-uranium-iranien-et-la-suppression-des-peages-pour-les-navires-transitant-par-le-detroit-d-ormuz-20260522",
+        "source": "Le Figaro",
+        "title": "Guerre au Moyen-Orient : Trump envisage sérieusement de lancer de nouvelles frappes contre l’Iran, selon Axios",
+        "thumbnail": ""
+      }
+    ],
+    "sessionLabel": "23/05/2026 à 09:51:48",
+    "controversyLevel": "fort",
+    "leftScore": 7,
+    "ai": {
+      "arenaMode": "positions",
+      "debateScore": 8,
+      "controversyLevel": "fort",
+      "debateQuestion": "",
+      "resume": "",
+      "keywords": [
+        "Téhéran",
+        "Washington",
+        "Donald Trump",
+        "négociations Iran",
+        "guerre Moyen Orient",
+        "médiateur pakistanais",
+        "nucléaire iranien",
+        "avoirs gelés"
+      ],
+      "selectedLinks": [
+        "https://www.lemonde.fr/international/live/2026/05/23/en-direct-guerre-au-moyen-orient-teheran-estime-que-washington-sabote-les-negociations-donald-trump-bouleverse-son-agenda-et-alimente-les-speculations_6691823_3210.html",
+        "https://www.liberation.fr/international/moyen-orient/en-direct-guerre-au-moyen-orient-la-consommation-de-carburants-en-france-a-diminue-de-14-depuis-debut-mai-20260522_UEKR7KKXPBEVXLBZBVDURCP7HU/",
+        "https://www.rfi.fr/fr/moyen-orient/20260523-en-direct-moyen-orient-l-iran-accuse-les-%C3%A9tats-unis-de-positions-contradictoires-qui-perturbent-les-n%C3%A9gociations",
+        "https://www.bfmtv.com/international/moyen-orient/iran/video-avoirs-geles-nucleaire-iranien-les-points-de-la-discorde-entre-washington-et-teheran_VN-202605230073.html",
+        "https://www.bfmtv.com/international/moyen-orient/direct-guerre-en-iran-et-au-moyen-orient-teheran-accuse-les-etats-unis-de-saboter-les-negociations-de-paix_LN-202605230053.html",
+        "https://www.france24.com/fr/moyen-orient/20260522-guerre-au-moyen-orient-un-m%C3%A9diateur-pakistanais-%C3%A0-t%C3%A9h%C3%A9ran-des-n%C3%A9gociations-dans-l-impasse",
+        "https://www.lefigaro.fr/international/en-direct-guerre-au-moyen-orient-donald-trump-exige-l-uranium-iranien-et-la-suppression-des-peages-pour-les-navires-transitant-par-le-detroit-d-ormuz-20260522"
+      ],
+      "agonTheme": "International",
+      "positionA": "",
+      "positionB": "",
+      "leftScore": 7,
+      "sourceSubject": "EN DIRECT, guerre au Moyen-Orient : Téhéran estime que Washington sabote les négociations ; Donald Trump bouleverse son agenda et alimente les spéculations",
+      "fullArticleState": "short"
+    }
+  },
+  {
+    "action": "save",
+    "subject": "La mairie de Rouen affirme avoir déposé trois plaintes contre trois agents de la ville soupçonnés d'agression sexuelle sur mineurs, une enquête ouverte",
+    "debateScore": 8,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "Franceinfo, Le Monde",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.lemonde.fr/societe/article/2026/05/23/affaire-patrick-bruel-pres-de-trente-temoignages-au-moins-huit-plaintes-cinq-enquetes-et-un-cas-d-ecole-des-debats-sur-les-violences-sexuelles_6692624_3224.html",
+        "source": "Le Monde",
+        "title": "Affaire Patrick Bruel : près de trente témoignages, au moins huit plaintes, cinq enquêtes, et un cas d’école des débats sur les violences sexuelles",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.lemonde.fr/societe/article/2026/05/23/paris-deux-animateurs-ayant-exerce-a-l-ecole-saint-dominique-mis-en-examen-pour-viols-et-agressions-sexuelles-sur-mineurs_6692356_3224.html",
+        "source": "Le Monde",
+        "title": "Violences dans le périscolaire à Paris : deux animateurs ayant exercé à l’école Saint-Dominique mis en examen pour viols et agressions sexuelles sur mineurs",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.lemonde.fr/societe/article/2026/05/23/rouen-une-enquete-ouverte-pour-soupcons-de-violences-sexuelles-dans-une-creche_6692355_3224.html",
+        "source": "Le Monde",
+        "title": "A Rouen, une enquête ouverte pour soupçons de violences sexuelles dans une crèche",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.lemonde.fr/societe/article/2026/05/23/un-anesthesiste-normand-deja-radie-de-l-ordre-des-medecins-condamne-a-cinq-ans-de-prison-pour-viols-et-agression-sexuelle-sur-des-patientes_6692353_3224.html",
+        "source": "Le Monde",
+        "title": "Violences sexuelles : condamnation à cinq ans de prison pour viols et agression sexuelle sur des patientes pour un anesthésiste, déjà radié de l’Ordre des médecins",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.franceinfo.fr/societe/harcelement-sexuel/la-mairie-de-rouen-affirme-avoir-depose-trois-plaintes-contre-trois-agents-de-la-ville-soupconnes-d-agression-sexuelle-sur-mineurs-une-enquete-ouverte_8021639.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "title": "La mairie de Rouen affirme avoir déposé trois plaintes contre trois agents de la ville soupçonnés d'agression sexuelle sur mineurs, une enquête ouverte",
+        "thumbnail": ""
+      }
+    ],
+    "sessionLabel": "23/05/2026 à 09:51:48",
+    "controversyLevel": "fort",
+    "leftScore": 7,
+    "ai": {
+      "arenaMode": "positions",
+      "debateScore": 8,
+      "controversyLevel": "fort",
+      "debateQuestion": "",
+      "resume": "",
+      "keywords": [
+        "mairie de Rouen",
+        "agents de la ville",
+        "agression sexuelle",
+        "mineurs",
+        "enquête ouverte",
+        "violences sexuelles",
+        "crèche Rouen"
+      ],
+      "selectedLinks": [
+        "https://www.lemonde.fr/societe/article/2026/05/23/rouen-une-enquete-ouverte-pour-soupcons-de-violences-sexuelles-dans-une-creche_6692355_3224.html",
+        "https://www.franceinfo.fr/societe/harcelement-sexuel/la-mairie-de-rouen-affirme-avoir-depose-trois-plaintes-contre-trois-agents-de-la-ville-soupconnes-d-agression-sexuelle-sur-mineurs-une-enquete-ouverte_8021639.html#xtor=RSS-3-[lestitres]"
+      ],
+      "agonTheme": "Justice / faits divers",
+      "positionA": "",
+      "positionB": "",
+      "leftScore": 7,
+      "sourceSubject": "La mairie de Rouen affirme avoir déposé trois plaintes contre trois agents de la ville soupçonnés d'agression sexuelle sur mineurs, une enquête ouverte",
+      "fullArticleState": "short"
+    }
+  },
+  {
+    "action": "save",
     "subject": "Tulsi Gabbard, directrice du renseignement national, annonce sa démission de l’administration Trump",
     "debateScore": 5,
     "debateQuestion": "",

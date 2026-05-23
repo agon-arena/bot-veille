@@ -32,6 +32,7 @@ const MIN_DISTINCT_SOURCES = 2;
 const UPDATE_INTERVAL_MINUTES = 720;
 const MAX_SESSIONS_TO_KEEP = 12;
 const MAX_SUBJECTS_TO_ANALYZE_WITH_AI = 25;
+const MAX_SUBJECTS_TO_DEDUP_WITH_AI = 80;
 const FEED_TIMEOUT_MS = 15000;
 const DEFAULT_FETCH_HEADERS = {
   "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
@@ -608,6 +609,17 @@ function limitText(text, maxLength) {
   return value.slice(0, maxLength - 1).trimEnd() + "…";
 }
 
+function makeSubjectId(index) {
+  return `subject_${String(index + 1).padStart(3, "0")}`;
+}
+
+function ensureSubjectIds(subjects) {
+  return (Array.isArray(subjects) ? subjects : []).map((subject, index) => ({
+    ...subject,
+    subjectId: String(subject?.subjectId || makeSubjectId(index))
+  }));
+}
+
 function normalizeKeywordList(values, max = 8) {
   const seen = new Set();
   const results = [];
@@ -774,6 +786,83 @@ function safeJsonParse(text) {
   }
 }
 
+async function generateSubjectTagsWithAI(subject, compactContents = null) {
+  const fallback = extractNewsKeywords(subject);
+  const fallbackMainKeyword = fallback[0] || "";
+  const fallbackSecondaryKeywords = fallback.slice(1);
+  if (!openai) return { mainKeyword: fallbackMainKeyword, keywords: fallbackSecondaryKeywords };
+
+  const contents = Array.isArray(compactContents)
+    ? compactContents
+    : subject.contents.slice(0, 10).map(content => ({
+        type: content.type,
+        source: content.source,
+        orientation: content.orientation,
+        title: content.title,
+        summary: content.summary || "",
+        link: content.link || ""
+      }));
+
+  const prompt = `
+Tu es chargé d'extraire les tags éditoriaux d'une actualité pour une plateforme de débat.
+
+Sujet principal :
+${subject.subject}
+
+Sources :
+${subject.sources.join(", ")}
+
+Contenus :
+${JSON.stringify(contents, null, 2)}
+
+Réponds uniquement en JSON valide avec cette structure :
+{
+  "mainKeyword": "le tag principal",
+  "keywords": ["tags secondaires"]
+}
+
+Règle centrale :
+- "mainKeyword" est obligatoire ;
+- il doit définir le mieux l'actualité ;
+- il doit être immédiatement compréhensible seul, sans lire le titre ;
+- il doit nommer l'objet central de l'actualité : acteur, pays, institution, lieu, événement, loi, conflit, affaire ou phénomène précis ;
+- il ne doit pas être trop générique.
+
+Pour "keywords" :
+- donne 3 à 7 tags secondaires ;
+- avec "mainKeyword", l'ensemble doit faire 4 à 8 tags maximum ;
+- privilégie les noms propres et repères concrets ;
+- relève surtout les acteurs, lieux, institutions, pays, organisations, objets de crise ou enjeux précis ;
+- évite les mots trop génériques comme "politique", "débat", "actualité", "France" seuls s'ils n'apportent rien ;
+- n'écris ni phrase complète, ni explication ;
+- chaque tag doit tenir sur quelques mots maximum ;
+- n'utilise jamais de trait d'union : écris "Etats Unis" et non "Etats-Unis", "Moyen Orient" et non "Moyen-Orient" ;
+- ne répète pas le mainKeyword dans keywords ;
+- n'invente aucun acteur, lieu ou fait absent des contenus.
+`;
+
+  try {
+    const response = await openai.responses.create({
+      model: "gpt-4.1-mini",
+      input: prompt,
+      temperature: 0.15,
+      max_output_tokens: 350
+    });
+
+    const parsed = safeJsonParse(response.output_text);
+    const mainKeyword = filterKeywordNoise(subject, [parsed.mainKeyword], 1)[0] || "";
+    const secondaryKeywords = filterKeywordNoise(subject, parsed.keywords, 7).filter(keyword => keyword !== mainKeyword);
+    const merged = normalizeKeywordList([mainKeyword, ...secondaryKeywords].filter(Boolean), 8);
+    return {
+      mainKeyword: merged[0] || fallbackMainKeyword,
+      keywords: merged.slice(1).length ? merged.slice(1) : fallbackSecondaryKeywords
+    };
+  } catch (error) {
+    console.error(`Erreur IA tags pour le sujet "${subject.subject}" :`, error.message);
+    return { mainKeyword: fallbackMainKeyword, keywords: fallbackSecondaryKeywords };
+  }
+}
+
 async function analyzeOneSubjectWithAI(subject) {
   if (!openai) {
     const fallback = fallbackAiAnalysis(subject, subject.arenaMode);
@@ -816,7 +905,6 @@ Tu dois répondre uniquement en JSON valide avec ces champs :
 {
   "debateScore": nombre entier de 0 à 10,
   "controversyLevel": "faible" | "moyen" | "fort" | "très fort",
-  "keywords": ["4 à 8 mots-clés concrets liés à l'actualité : acteurs, lieux, institutions, pays, organisations ou objets du conflit"],
   "selectedLinks": ["liste des URLs des sources qui évoquent bien ce sujet et doivent rester cochées"],
   "agonTheme": "une thématique Agôn exacte",
   "leftScore": nombre entier de 0 à 10 indiquant l'intérêt du sujet pour un public de gauche progressiste
@@ -841,15 +929,6 @@ ${AGON_THEMES.map(theme => `- ${theme}`).join("\n")}
 
 Ne crée jamais une autre thématique.
 
-Pour "keywords" :
-- donne 4 à 8 mots-clés maximum ;
-- privilégie les noms propres et repères concrets ;
-- relève surtout les acteurs, lieux, institutions, pays, organisations ou objets de crise ;
-- évite les mots trop génériques comme "politique", "débat", "actualité", "France" seuls s'ils n'apportent rien ;
-- n'écris ni phrase complète, ni explication ;
-- chaque mot-clé doit tenir sur quelques mots au maximum ;
-- n'utilise jamais de trait d'union dans les mots-clés : écris "Etats Unis" et non "Etats-Unis", "Moyen Orient" et non "Moyen-Orient".
-
 Pour "selectedLinks" :
 - renvoie les URLs exactes des contenus qui parlent bien du sujet principal ;
 - si une source ne parle pas vraiment de ce sujet, ne la renvoie pas ;
@@ -862,7 +941,7 @@ Pour "selectedLinks" :
 - utilise uniquement les valeurs exactes du champ "link" dans les contenus ;
 - garde l'ordre d'apparition des contenus quand c'est possible.
 
-Ne génère pas de question de débat, pas de positions A/B et pas de résumé narratif à cette étape.
+Ne génère pas de tags, pas de question de débat, pas de positions A/B et pas de résumé narratif à cette étape.
 `;
 
 
@@ -878,16 +957,13 @@ Ne génère pas de question de débat, pas de positions A/B et pas de résumé n
     const parsed = safeJsonParse(text);
 
     const selectedLinks = selectRelevantLinksForSubject(subject, parsed.selectedLinks);
-
     return {
       arenaMode,
       debateScore: Number.isInteger(parsed.debateScore) ? parsed.debateScore : 0,
       controversyLevel: parsed.controversyLevel || "faible",
       debateQuestion: "",
       resume: "",
-      keywords: filterKeywordNoise(subject, parsed.keywords, 8).length
-        ? filterKeywordNoise(subject, parsed.keywords, 8)
-        : extractNewsKeywords(subject),
+      keywords: [],
       selectedLinks,
       agonTheme: normalizeAgonTheme(parsed.agonTheme),
       positionA: "",
@@ -1017,6 +1093,20 @@ apiApp.post("/analyze", async (req, res) => {
   }
 });
 
+apiApp.post("/generate-tags", async (req, res) => {
+  try {
+    const payload = buildAnalyzePayload(req.body);
+    if (!payload.subject) {
+      return res.status(400).json({ ok: false, error: "Sujet manquant" });
+    }
+
+    const tags = await generateSubjectTagsWithAI(payload);
+    res.json({ ok: true, mainKeyword: tags.mainKeyword || "", keywords: Array.isArray(tags.keywords) ? tags.keywords : [] });
+  } catch (error) {
+    res.status(500).json({ ok: false, error: error.message || "Erreur génération tags" });
+  }
+});
+
 apiApp.post("/refresh", async (req, res) => {
   if (isRunning) {
     return res.json({ ok: true, running: true });
@@ -1106,6 +1196,233 @@ async function analyzeScoresWithAI(subjects) {
     if (b.sourceCount !== a.sourceCount) return b.sourceCount - a.sourceCount;
     return b.contentCount - a.contentCount;
   });
+}
+
+function getControversyRank(level) {
+  const value = String(level || "").trim().toLowerCase();
+  if (value === "très fort" || value === "tres fort") return 4;
+  if (value === "fort") return 3;
+  if (value === "moyen") return 2;
+  if (value === "faible") return 1;
+  return 0;
+}
+
+function mergeSubjectRecords(keepSubject, mergeSubjects, suggestedTitle = "") {
+  const group = [keepSubject, ...mergeSubjects].filter(Boolean);
+  const contentsByKey = new Map();
+
+  group.forEach((subject) => {
+    (Array.isArray(subject.contents) ? subject.contents : []).forEach((content) => {
+      const key = String(content?.link || "").trim() || `${content?.source || ""}::${content?.title || ""}`;
+      if (!key) return;
+      if (!contentsByKey.has(key)) contentsByKey.set(key, content);
+    });
+  });
+
+  const contents = Array.from(contentsByKey.values()).sort((a, b) => {
+    const order = { left: 0, center: 1, right: 2 };
+    const oA = order[getOrientationGroup(a.orientation)] ?? 1;
+    const oB = order[getOrientationGroup(b.orientation)] ?? 1;
+    if (oA !== oB) return oA - oB;
+    return new Date(b.date || 0) - new Date(a.date || 0);
+  });
+  const sources = [...new Set(contents.map((content) => String(content?.source || "").trim()).filter(Boolean))];
+  const bestScoreSubject = group
+    .slice()
+    .sort((a, b) => Number(b?.debateScore || 0) - Number(a?.debateScore || 0))[0] || keepSubject;
+  const bestControversySubject = group
+    .slice()
+    .sort((a, b) => getControversyRank(b?.controversyLevel) - getControversyRank(a?.controversyLevel))[0] || keepSubject;
+
+  const mergedSubjectIds = [...new Set(group.map((subject) => String(subject?.subjectId || "").trim()).filter(Boolean))];
+  const mergedSubjectTitles = [...new Set(group.map((subject) => String(subject?.subject || "").trim()).filter(Boolean))];
+
+  return {
+    ...keepSubject,
+    subject: String(suggestedTitle || keepSubject.subject || "").trim() || keepSubject.subject,
+    sources,
+    sourceCount: sources.length,
+    contentCount: contents.length,
+    articleCount: contents.filter((content) => content.type === "article").length,
+    youtubeCount: contents.filter((content) => content.type === "youtube").length,
+    contents,
+    debateScore: Number(bestScoreSubject?.debateScore || keepSubject.debateScore || 0),
+    leftScore: Math.max(...group.map((subject) => Number(subject?.leftScore || 0))),
+    controversyLevel: bestControversySubject?.controversyLevel || keepSubject.controversyLevel,
+    mergedSubjectIds,
+    mergedSubjectTitles,
+    mergeTrace: {
+      keepSubjectId: keepSubject.subjectId,
+      mergedSubjectIds: mergedSubjectIds.filter((id) => id !== keepSubject.subjectId),
+      originalTitles: mergedSubjectTitles
+    }
+  };
+}
+
+function applySubjectMergeGroups(subjects, mergeResult) {
+  const safeSubjects = ensureSubjectIds(subjects);
+  const byId = new Map(safeSubjects.map((subject) => [String(subject.subjectId), subject]));
+  const consumed = new Set();
+  const merged = [];
+  const appliedGroups = [];
+
+  const groups = Array.isArray(mergeResult?.mergeGroups) ? mergeResult.mergeGroups : [];
+  groups.forEach((group) => {
+    const confidence = Number(group?.confidence || 0);
+    if (confidence < 0.8) return;
+
+    const keepId = String(group?.keepSubjectId || "").trim();
+    const mergeIds = (Array.isArray(group?.mergeSubjectIds) ? group.mergeSubjectIds : [])
+      .map((id) => String(id || "").trim())
+      .filter((id) => id && id !== keepId);
+    if (!keepId || !mergeIds.length || consumed.has(keepId)) return;
+
+    const keepSubject = byId.get(keepId);
+    const mergeSubjects = mergeIds
+      .filter((id) => !consumed.has(id))
+      .map((id) => byId.get(id))
+      .filter(Boolean);
+    if (!keepSubject || !mergeSubjects.length) return;
+
+    const mergedSubject = mergeSubjectRecords(keepSubject, mergeSubjects, group?.suggestedTitle || "");
+    merged.push(mergedSubject);
+    consumed.add(keepId);
+    mergeSubjects.forEach((subject) => consumed.add(String(subject.subjectId)));
+    appliedGroups.push({
+      keepSubjectId: keepId,
+      mergeSubjectIds: mergeSubjects.map((subject) => String(subject.subjectId)),
+      suggestedTitle: String(group?.suggestedTitle || "").trim(),
+      confidence,
+      reason: String(group?.reason || "").trim()
+    });
+  });
+
+  safeSubjects.forEach((subject) => {
+    if (!consumed.has(String(subject.subjectId))) merged.push(subject);
+  });
+
+  merged.sort((a, b) => {
+    if (Number(b.debateScore || 0) !== Number(a.debateScore || 0)) return Number(b.debateScore || 0) - Number(a.debateScore || 0);
+    if (Number(b.sourceCount || 0) !== Number(a.sourceCount || 0)) return Number(b.sourceCount || 0) - Number(a.sourceCount || 0);
+    return Number(b.contentCount || 0) - Number(a.contentCount || 0);
+  });
+
+  return {
+    subjects: merged,
+    appliedGroups,
+    doNotMerge: Array.isArray(mergeResult?.doNotMerge) ? mergeResult.doNotMerge : []
+  };
+}
+
+async function deduplicateSubjectsWithAI(subjects) {
+  const safeSubjects = ensureSubjectIds(subjects);
+  if (!openai || safeSubjects.length < 2) {
+    return { subjects: safeSubjects, mergeResult: { mergeGroups: [], doNotMerge: [] } };
+  }
+
+  const candidates = safeSubjects.slice(0, MAX_SUBJECTS_TO_DEDUP_WITH_AI).map((subject) => ({
+    subjectId: subject.subjectId,
+    subjectTitle: subject.subject
+  }));
+
+  const prompt = `
+Tu dois proposer une déduplication de sujets d'actualité.
+
+Objectif :
+éviter d’avoir plusieurs sujets séparés qui parlent en réalité de la même actualité, du même événement, de la même affaire, de la même décision ou de la même polémique.
+
+Attention :
+il ne faut surtout pas fusionner des sujets simplement parce qu’ils appartiennent à la même thématique générale.
+
+Exemples :
+- “Trump annonce de nouveaux droits de douane contre la Chine” et “Washington durcit sa politique commerciale face à Pékin” peuvent être fusionnés si les titres désignent bien la même séquence d’actualité.
+- “Trump”, “Commerce mondial” et “Rivalité Chine-États-Unis” ne doivent pas être fusionnés seulement parce qu’ils sont liés.
+- “Violences sexuelles dans le cinéma” et “Affaire Depardieu” ne doivent être fusionnés que si les titres parlent clairement de la même affaire précise, pas juste du même thème.
+
+Données disponibles :
+tu travailles uniquement à partir des sujets existants, avec :
+- subjectId
+- subjectTitle
+
+Tu ne disposes pas des articles complets, ni des résumés, ni du contenu détaillé.
+
+Règle de prudence :
+comme tu ne vois que les titres, tu dois être très conservateur.
+Tu ne proposes une fusion que si les titres indiquent clairement le même fait d’actualité, le même événement, la même affaire, la même décision, la même polémique ou la même séquence médiatique.
+
+Critères pour fusionner :
+- mêmes acteurs principaux ;
+- même événement ou même décision ;
+- même lieu ou zone directement concernée ;
+- même enjeu central précis ;
+- formulations différentes mais même actualité évidente ;
+- un lecteur trouverait étrange de voir ces sujets séparés.
+
+Critères pour ne pas fusionner :
+- simple proximité thématique ;
+- sujets trop vagues ;
+- titres qui peuvent désigner deux événements différents ;
+- besoin d’inventer du contexte pour relier les sujets ;
+- fusion trop large qui ferait perdre la précision du sujet.
+
+Seuil de confiance :
+ne propose une fusion que si la confiance est supérieure ou égale à 0.8.
+
+Sujet principal :
+pour chaque groupe fusionné, choisir comme sujet principal :
+- soit le subjectTitle le plus clair, précis et compréhensible ;
+- soit proposer un suggestedTitle court, clair et précis si aucun titre existant n’est satisfaisant.
+
+Après fusion :
+le système recalculera les sources distinctes associées au sujet fusionné.
+Les anciens subjectId fusionnés resteront traçables.
+
+Sujets à analyser :
+${JSON.stringify(candidates, null, 2)}
+
+Réponds uniquement en JSON valide, sans texte autour.
+
+Format JSON attendu :
+{
+  "mergeGroups": [
+    {
+      "keepSubjectId": "id_du_sujet_principal",
+      "mergeSubjectIds": ["id_sujet_a_fusionner_1", "id_sujet_a_fusionner_2"],
+      "suggestedTitle": "titre court et précis du sujet fusionné",
+      "confidence": 0.92,
+      "reason": "Les titres désignent clairement la même actualité, avec les mêmes acteurs et le même événement."
+    }
+  ],
+  "doNotMerge": [
+    {
+      "subjectIds": ["id_1", "id_2"],
+      "reason": "Sujets proches thématiquement mais événements différents ou trop peu précis."
+    }
+  ]
+}
+`;
+
+  try {
+    console.log(`${candidates.length} sujet(s) envoyés à la déduplication IA.`);
+    const response = await openai.responses.create({
+      model: "gpt-4.1-mini",
+      input: prompt,
+      temperature: 0.1,
+      max_output_tokens: 1800
+    });
+    const parsed = safeJsonParse(response.output_text);
+    const applied = applySubjectMergeGroups(safeSubjects, parsed);
+    return {
+      subjects: applied.subjects,
+      mergeResult: {
+        mergeGroups: applied.appliedGroups,
+        doNotMerge: applied.doNotMerge
+      }
+    };
+  } catch (error) {
+    console.error("Erreur déduplication IA :", error.message);
+    return { subjects: safeSubjects, mergeResult: { mergeGroups: [], doNotMerge: [] } };
+  }
 }
 
 async function analyzeSubjectsWithAI(subjects) {
@@ -1221,10 +1538,12 @@ function generateHtml(sessions) {
   }
 
   function buildKeywordsStaticHtml(ai) {
-    const keywords = Array.isArray(ai?.keywords) ? ai.keywords.filter(Boolean) : [];
-    if (!keywords.length) return "";
+    const rawKeywords = Array.isArray(ai?.keywords) ? ai.keywords.filter(Boolean) : [];
+    const mainKeyword = String(ai?.mainKeyword || rawKeywords[0] || "").trim();
+    const keywords = rawKeywords.filter(keyword => keyword && keyword !== mainKeyword);
     return '<div class="news-keywords">' +
       '<div class="news-keywords-label">Mots-clés relevés</div>' +
+      (mainKeyword ? '<span class="news-keyword-chip main-keyword-chip" data-main-keyword="' + escapeHtml(mainKeyword) + '">' + escapeHtml(mainKeyword) + '<button type="button" class="news-keyword-remove-btn" aria-label="Supprimer le tag principal">×</button></span>' : '') +
       keywords.map((keyword) => '<span class="news-keyword-chip" data-keyword="' + escapeHtml(keyword) + '">' + escapeHtml(keyword) + '<button type="button" class="news-keyword-remove-btn" aria-label="Supprimer le mot-clé">×</button></span>').join('') +
       '<div class="news-keyword-add-row"><input type="text" class="news-keyword-input" placeholder="Ajouter un mot-clé"><button type="button" class="news-keyword-add-btn">Ajouter</button></div>' +
     '</div>';
@@ -1382,6 +1701,7 @@ function generateHtml(sessions) {
               </select>
             </p>
             ${buildStoryLinkStaticHtml(ai.storyLink || null)}
+            <button type="button" class="tags-generate-btn">Générer tags</button>
             <button type="button" class="full-article-btn">${["summary", "full"].includes(String(ai.fullArticleState || "")) ? "✓ Résumé généré" : "Générer résumé de l’article"}</button>
             <button type="button" class="final-article-btn${["summary", "full"].includes(String(ai.fullArticleState || "")) ? "" : " hidden"}">${String(ai.fullArticleState || "") === "full" ? "✓ Article généré" : "Générer article"}</button>
             <button type="button" class="definitive-article-btn${["summary", "full"].includes(String(ai.fullArticleState || "")) ? "" : " hidden"}"${String(ai.fullArticleState || "") === "full" ? "" : " disabled"}>Article définitif</button>
@@ -2296,6 +2616,21 @@ function generateHtml(sessions) {
       font-weight: 600;
       line-height: 1.2;
     }
+    .main-keyword-chip {
+      background: #111;
+      border-color: #111;
+      color: #fff;
+      font-weight: 800;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+    }
+    .main-keyword-chip::before {
+      content: "Tag principal";
+      margin-right: 8px;
+      font-size: 0.68rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      opacity: 0.72;
+    }
     .news-keyword-chip button {
       margin-left: 8px;
       border: none;
@@ -2307,6 +2642,7 @@ function generateHtml(sessions) {
       line-height: 1;
       padding: 0;
     }
+    .main-keyword-chip button { color: #fff; opacity: 0.75; }
     .news-keyword-add-row {
       display: flex;
       gap: 8px;
@@ -2632,6 +2968,7 @@ function generateHtml(sessions) {
       text-decoration: none;
     }
 
+    .tags-generate-btn,
     .full-article-btn {
       margin-top: 14px;
       border: 1px solid rgba(37, 99, 235, 0.22);
@@ -2642,6 +2979,13 @@ function generateHtml(sessions) {
       font: inherit;
       font-weight: 700;
       cursor: pointer;
+    }
+
+    .tags-generate-btn {
+      margin-top: 10px;
+      border-color: rgba(17, 24, 39, 0.18);
+      background: #f8fafc;
+      color: #111827;
     }
 
     .final-article-btn {
@@ -3115,10 +3459,12 @@ function generateHtml(sessions) {
     }
 
     function buildKeywordsHtml(ai) {
-      const keywords = Array.isArray(ai?.keywords) ? ai.keywords.filter(Boolean) : [];
-      if (!keywords.length) return "";
+      const rawKeywords = Array.isArray(ai?.keywords) ? ai.keywords.filter(Boolean) : [];
+      const mainKeyword = String((ai && ai.mainKeyword) || rawKeywords[0] || "").trim();
+      const keywords = rawKeywords.filter(function(keyword) { return keyword && keyword !== mainKeyword; });
       return '<div class="news-keywords">' +
         '<div class="news-keywords-label">Mots-clés relevés</div>' +
+        (mainKeyword ? '<span class="news-keyword-chip main-keyword-chip" data-main-keyword="' + escapeHtmlClient(mainKeyword) + '">' + escapeHtmlClient(mainKeyword) + '<button type="button" class="news-keyword-remove-btn" aria-label="Supprimer le tag principal">×</button></span>' : '') +
         keywords.map(function(keyword) {
           return '<span class="news-keyword-chip" data-keyword="' + escapeHtmlClient(keyword) + '">' + escapeHtmlClient(keyword) + '<button type="button" class="news-keyword-remove-btn" aria-label="Supprimer le mot-clé">×</button></span>';
         }).join("") +
@@ -3138,20 +3484,39 @@ function generateHtml(sessions) {
       );
     }
 
-    function addKeywordToEditor(subjectEl, value) {
-      const keywordsWrap = subjectEl.querySelector(".news-keywords");
+    function getMainKeywordFromEditor(subjectEl) {
+      return String(subjectEl?.querySelector(".news-keyword-chip[data-main-keyword]")?.dataset.mainKeyword || "").trim();
+    }
+
+    function renderKeywordsInEditor(subjectEl, keywords, mainKeyword) {
+      const keywordsWrap = subjectEl?.querySelector(".news-keywords");
       if (!keywordsWrap) return;
-      const keywords = getKeywordsFromEditor(subjectEl);
-      const normalized = normalizeKeywordListClient(keywords.concat([value]), 10);
+      const normalized = normalizeKeywordListClient(keywords, 10);
+      const normalizedMainKeyword = String(mainKeyword || normalized[0] || "").trim();
+      const secondaryKeywords = normalized.filter(function(keyword) { return keyword && keyword !== normalizedMainKeyword; });
       const addRow = keywordsWrap.querySelector(".news-keyword-add-row");
       keywordsWrap.querySelectorAll(".news-keyword-chip").forEach(function(chip) { chip.remove(); });
-      normalized.forEach(function(keyword) {
+      if (normalizedMainKeyword) {
+        const chip = document.createElement("span");
+        chip.className = "news-keyword-chip main-keyword-chip";
+        chip.dataset.mainKeyword = normalizedMainKeyword;
+        chip.innerHTML = escapeHtmlClient(normalizedMainKeyword) + '<button type="button" class="news-keyword-remove-btn" aria-label="Supprimer le tag principal">×</button>';
+        keywordsWrap.insertBefore(chip, addRow);
+      }
+      secondaryKeywords.forEach(function(keyword) {
         const chip = document.createElement("span");
         chip.className = "news-keyword-chip";
         chip.dataset.keyword = keyword;
         chip.innerHTML = escapeHtmlClient(keyword) + '<button type="button" class="news-keyword-remove-btn" aria-label="Supprimer le mot-clé">×</button>';
         keywordsWrap.insertBefore(chip, addRow);
       });
+    }
+
+    function addKeywordToEditor(subjectEl, value) {
+      const keywordsWrap = subjectEl.querySelector(".news-keywords");
+      if (!keywordsWrap) return;
+      const keywords = getKeywordsFromEditor(subjectEl);
+      renderKeywordsInEditor(subjectEl, keywords.concat([value]), getMainKeywordFromEditor(subjectEl));
       const input = keywordsWrap.querySelector(".news-keyword-input");
       if (input) input.value = "";
     }
@@ -3663,6 +4028,7 @@ function generateHtml(sessions) {
           '<select class="agon-select">' + optionsHtml + "</select>" +
         "</p>" +
         buildStoryLinkHtml(ai.storyLink || {}) +
+        '<button type="button" class="tags-generate-btn">Générer tags</button>' +
         '<button type="button" class="full-article-btn">Générer résumé de l’article</button>' +
         '<button type="button" class="final-article-btn hidden">Générer article</button>' +
         '<button type="button" class="definitive-article-btn hidden" disabled>Article définitif</button>' +
@@ -3751,6 +4117,27 @@ function generateHtml(sessions) {
           };
         })
         .filter(function(item) { return item.link || item.title; });
+    }
+
+    function getSubjectAnalyzePayloadFromEditor(subjectEl) {
+      const basePayload = decodeStoryData(subjectEl?.dataset.subjectPayload || "") || {};
+      const contents = [...subjectEl.querySelectorAll(".content-item[data-link]")].map(function(item) {
+        return {
+          type: item.dataset.type || "article",
+          source: item.querySelector("strong")?.textContent.trim() || "",
+          orientation: item.dataset.orientation || "",
+          title: item.querySelector("a")?.textContent.trim() || "",
+          link: item.dataset.link || "",
+          summary: item.dataset.summary || ""
+        };
+      }).filter(function(item) { return item.link || item.title; });
+      const sources = [...new Set(contents.map(function(item) { return item.source; }).filter(Boolean))];
+      return {
+        subject: basePayload.subject || subjectEl.querySelector("h3")?.textContent.trim() || "",
+        sources,
+        contents,
+        arenaMode: basePayload.arenaMode || "positions"
+      };
     }
 
     function ensurePositionsBox(subjectEl, positionA, positionB) {
@@ -3853,6 +4240,40 @@ function generateHtml(sessions) {
     });
 
     document.addEventListener("click", async function(e) {
+      const tagsGenerateBtn = e.target.closest(".tags-generate-btn");
+      if (tagsGenerateBtn) {
+        const subjectEl = tagsGenerateBtn.closest(".subject");
+        const payload = getSubjectAnalyzePayloadFromEditor(subjectEl);
+        if (!payload.subject) return;
+
+        tagsGenerateBtn.disabled = true;
+        tagsGenerateBtn.textContent = "Tags en cours…";
+        try {
+          const response = await fetch("/generate-tags", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+          });
+          const data = await response.json().catch(function() { return { ok: false, error: "Erreur génération tags" }; });
+          if (!response.ok || data.ok === false) {
+            throw new Error(data.error || "Erreur génération tags");
+          }
+          renderKeywordsInEditor(subjectEl, Array.isArray(data.keywords) ? data.keywords : [], data.mainKeyword || "");
+          await fetch("/save-update", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ subject: payload.subject, ai: { mainKeyword: getMainKeywordFromEditor(subjectEl), keywords: getKeywordsFromEditor(subjectEl) } })
+          });
+          tagsGenerateBtn.textContent = "✓ Tags générés";
+        } catch (error) {
+          alert(error.message || "Erreur génération tags");
+          tagsGenerateBtn.textContent = "Générer tags";
+        } finally {
+          tagsGenerateBtn.disabled = false;
+        }
+        return;
+      }
+
       const fullArticleBtn = e.target.closest(".full-article-btn");
       if (fullArticleBtn) {
         const subjectEl = fullArticleBtn.closest(".subject");
@@ -4443,6 +4864,18 @@ function generateHtml(sessions) {
         await fetch("/save-update", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ subject: subjectData.subject, debateScore: ai.debateScore, controversyLevel: ai.controversyLevel, leftScore: ai.leftScore, ai: { ...ai, fullArticleState: "short" } }) });
       }
 
+      if (!getMainKeywordFromEditor(subjectEl) && !getKeywordsFromEditor(subjectEl).length) {
+        setStatus("Tags…");
+        const tagsPayload = getSubjectAnalyzePayloadFromEditor(subjectEl);
+        const tagsRes = await fetch("/generate-tags", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(tagsPayload) });
+        const tagsData = await tagsRes.json().catch(() => ({}));
+        if (!tagsRes.ok || tagsData.ok === false) throw new Error(tagsData.error || "Erreur tags");
+        renderKeywordsInEditor(subjectEl, Array.isArray(tagsData.keywords) ? tagsData.keywords : [], tagsData.mainKeyword || "");
+        const tagsBtn = subjectEl.querySelector(".tags-generate-btn");
+        if (tagsBtn) tagsBtn.textContent = "✓ Tags générés";
+        await fetch("/save-update", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ subject: tagsPayload.subject, ai: { mainKeyword: getMainKeywordFromEditor(subjectEl), keywords: getKeywordsFromEditor(subjectEl) } }) });
+      }
+
       const basePayload = decodeStoryData(subjectEl.dataset.subjectPayload || "") || {};
       const subjectTitle = basePayload.subject || subjectEl.querySelector("h3")?.textContent.trim() || "";
       const fullArticleState = subjectEl.querySelector(".full-article-state");
@@ -4755,9 +5188,9 @@ async function runWatchSession() {
   let analyzedSubjects;
 
   if (openai) {
-    analyzedSubjects = await analyzeScoresWithAI(subjects);
+    analyzedSubjects = await analyzeScoresWithAI(ensureSubjectIds(subjects));
   } else {
-    analyzedSubjects = subjects.map(subject => {
+    analyzedSubjects = ensureSubjectIds(subjects).map(subject => {
       const fb = fallbackAiAnalysis(subject);
       return {
         ...subject,
@@ -4771,6 +5204,9 @@ async function runWatchSession() {
     });
   }
 
+  const deduplication = await deduplicateSubjectsWithAI(analyzedSubjects);
+  analyzedSubjects = deduplication.subjects;
+
   const session = {
     generatedAt: startedAt.toISOString(),
     generatedAtLabel: startedAt.format("DD/MM/YYYY à HH:mm:ss"),
@@ -4779,6 +5215,8 @@ async function runWatchSession() {
     contentCount: contents.length,
     groupCount: groups.length,
     subjectCount: analyzedSubjects.length,
+    mergeCount: deduplication.mergeResult.mergeGroups.length,
+    deduplication: deduplication.mergeResult,
     aiEnabled: Boolean(openai),
     subjects: analyzedSubjects
   };

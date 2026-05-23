@@ -1,5 +1,762 @@
 [
   {
+    "subject": "\"Ce sera un vrai test\" : comment Gabriel Attal prépare son entrée dans la course à l’Élysée",
+    "sessionLabel": "23/05/2026 à 09:51:48",
+    "question": "Gabriel Attal est-il prêt à incarner un vrai renouveau politique ?",
+    "positionA": "Oui, il incarne un souffle nouveau",
+    "positionB": "Non, il reste un candidat traditionnel",
+    "theme": "Politique",
+    "resume": "Gabriel Attal s'apprête à franchir un cap décisif : il entre officiellement dans la course à l’Élysée. Pour lui, c’est bien plus qu’une simple étape, c’est un véritable test de son engagement politique et de sa capacité à s’imposer sur la scène nationale.\n\nDès le lancement de sa campagne, Attal déploie une stratégie millimétrée. Il intensifie sa présence médiatique, affine son discours et cherche à capter l’attention d’un électorat en quête de renouveau. Chaque intervention, chaque mot pèsent lourd dans un climat politique tendu, où la moindre erreur peut coûter cher. Sa volonté de convaincre se heurte à la dure réalité d’un paysage fragmenté, où fédérer autour d’un projet clair devient un défi de taille.\n\nCette campagne s’annonce donc comme un véritable champ de bataille, où Attal devra prouver sa force et sa détermination. La pression monte, les regards se croisent, et l’avenir reste incertain. Mais une chose est sûre : le jeu politique ne fait que commencer.\n\nGabriel Attal est-il prêt à incarner un vrai renouveau politique ?\n\nM. Camus",
+    "sources": "Marianne, C dans l'air",
+    "links": [
+      {
+        "title": "\"Ce sera un vrai test\" : comment Gabriel Attal prépare son entrée dans la course à l’Élysée",
+        "url": "https://www.marianne.net/politique/lrem/ce-sera-un-vrai-test-comment-gabriel-attal-prepare-son-entree-dans-la-course-a-lelysee#utm_source=RSS-MARIANNE&utm_medium=Flux-Rss&utm_campaign=RSS_general",
+        "source": "Marianne",
+        "type": "article",
+        "date": "23/05/2026",
+        "checked": true
+      },
+      {
+        "title": "",
+        "url": "https://www.youtube.com/watch?v=PKqK8uC_Xa8",
+        "source": "C dans l'air",
+        "type": "youtube",
+        "date": "22/05/2026",
+        "checked": true
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "05-la-vie-politique-francaise-traverse-une-periode-d-instabilite-et-de-recompositio",
+      "matchedStoryTitle": "La vie politique française traverse une période d’instabilité et de recomposition",
+      "previousEpisodeTitle": "Les élus doivent-ils être sanctionnés pour leurs propos privés en ligne ?",
+      "previousEpisodeUrl": "http://localhost:3001/debate?id=492",
+      "confidence": 0.85,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {},
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "course a l Elysée",
+      "La République En Marche",
+      "C dans l air",
+      "election presidentielle 2027"
+    ],
+    "sentAt": "2026-05-23T11:59:51.022Z"
+  },
+  {
+    "subject": "Sénégal : le Premier ministre Ousmane Sonko remercié par le président",
+    "sessionLabel": "23/05/2026 à 09:51:48",
+    "question": "Le limogeage de Sonko affaiblit-il la démocratie sénégalaise ?",
+    "positionA": "Un coup dur pour la démocratie",
+    "positionB": "Nécessaire pour la stabilité",
+    "theme": "Politique",
+    "resume": "Le 23 mai 2026, un séisme politique secoue le Sénégal : le président Bassirou Diomaye Faye annonce la fin du mandat de son Premier ministre, Ousmane Sonko. Ce choix brutal ouvre un nouveau chapitre, chargé d’incertitudes, dans l’histoire politique du pays.\n\nDans un geste à la fois solennel et ferme, le chef de l’État met un terme à la mission de Sonko, marquant une rupture nette au sommet du pouvoir. Cette décision s’inscrit dans un contexte électrique, où Diomaye Faye cherche à rééquilibrer les forces au sein de son gouvernement. Le départ du Premier ministre, imposé par la volonté présidentielle, fait vaciller les repères et laisse planer un doute pesant sur l’avenir politique du Sénégal.\n\nAlors que les regards se tournent vers les prochains mouvements dans l’exécutif, la tension reste palpable. Rien n’est encore joué, mais la scène politique sénégalaise vient de basculer.\n\nLe limogeage de Sonko affaiblit-il la démocratie sénégalaise ?\n\nR. Renaudot",
+    "sources": "France 24, RFI",
+    "links": [
+      {
+        "title": "Sénégal: entre Bassirou Diomaye Faye et Ousmane Sonko, récit d'une rupture annoncée",
+        "url": "https://www.rfi.fr/fr/afrique/20260523-s%C3%A9n%C3%A9gal-entre-bassirou-diomaye-faye-et-ousmane-sonko-r%C3%A9cit-d-une-rupture-annonc%C3%A9e",
+        "source": "RFI",
+        "type": "article",
+        "date": "23/05/2026",
+        "checked": false
+      },
+      {
+        "title": "Sénégal : le Premier ministre Ousmane Sonko remercié par le président",
+        "url": "https://www.france24.com/fr/vid%C3%A9o/20260523-s%C3%A9n%C3%A9gal-le-premier-ministre-ousmane-sonko-remerci%C3%A9-par-le-pr%C3%A9sident",
+        "source": "France 24",
+        "type": "article",
+        "date": "23/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Sénégal: le président Diomaye Faye limoge le Premier ministre Ousmane Sonko",
+        "url": "https://www.france24.com/fr/vid%C3%A9o/20260523-s%C3%A9n%C3%A9gal-le-pr%C3%A9sident-faye-limoge-le-premier-ministre-ousmane-sonko",
+        "source": "France 24",
+        "type": "article",
+        "date": "23/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Sénégal : le président Bassirou Diomaye Faye limoge le Premier ministre Ousmane Sonko",
+        "url": "https://www.france24.com/fr/vid%C3%A9o/20260522-s%C3%A9n%C3%A9gal-le-pr%C3%A9sident-bassirou-diomaye-faye-limoge-le-premier-ministre-ousmane-sonko",
+        "source": "France 24",
+        "type": "article",
+        "date": "23/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Sénégal: le président Bassirou Diomaye Faye met fin aux fonctions du Premier ministre Ousmane Sonko",
+        "url": "https://www.rfi.fr/fr/afrique/20260522-s%C3%A9n%C3%A9gal-le-pr%C3%A9sident-bassirou-diomaye-faye-met-fin-aux-fonctions-du-premier-ministre-ousmane-sonko",
+        "source": "RFI",
+        "type": "article",
+        "date": "23/05/2026",
+        "checked": true
+      },
+      {
+        "title": "",
+        "url": "https://www.youtube.com/watch?v=wuNgaNKhFxk",
+        "source": "France 24",
+        "type": "youtube",
+        "date": "23/05/2026",
+        "checked": false
+      },
+      {
+        "title": "Sénégal: le président Diomaye Faye limoge le Premier ministre Ousmane Sonko • FRANCE 24",
+        "url": "https://www.youtube.com/shorts/7sDJWFvWF6Q",
+        "source": "France 24",
+        "type": "youtube",
+        "date": "23/05/2026",
+        "checked": false
+      },
+      {
+        "title": "",
+        "url": "https://www.youtube.com/watch?v=VQLUxHtw5Ao",
+        "source": "France 24",
+        "type": "youtube",
+        "date": "23/05/2026",
+        "checked": false
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "11-les-crises-politiques-militaires-et-sociales-recomposent-plusieurs-regions-d-afr",
+      "matchedStoryTitle": "Les crises politiques, militaires et sociales recomposent plusieurs régions d’Afrique",
+      "previousEpisodeTitle": "",
+      "previousEpisodeUrl": "",
+      "confidence": 0.85,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {},
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "Sénégal",
+      "Bassirou Diomaye Faye",
+      "Premier ministre",
+      "limogeage",
+      "président Sénégal"
+    ],
+    "sentAt": "2026-05-23T11:59:28.775Z"
+  },
+  {
+    "subject": "Affaire des implants vaginaux : 71 femmes «mutilées» saisissent la justice pour rouvrir une enquête",
+    "sessionLabel": "23/05/2026 à 09:51:48",
+    "question": "Les fabricants doivent-ils être tenus responsables des implants défectueux ?",
+    "positionA": "Responsabilité totale des fabricants",
+    "positionB": "Responsabilité limitée aux autorités sanitaires",
+    "theme": "Santé - bien-être",
+    "resume": "Soixante et onze femmes brisent le silence et frappent fort : elles portent plainte pour relancer l’enquête sur des implants vaginaux défectueux qui ont bouleversé leur vie. Ces dispositifs médicaux, censés les aider, se sont transformés en sources de douleurs et de mutilations graves.\n\nFace à des séquelles physiques lourdes et un combat intime, ces patientes dénoncent une enquête bâclée, une vérité enterrée trop vite. Elles exigent un examen rigoureux des conditions de commercialisation et d’utilisation de ces implants, refusant que leur souffrance soit ignorée. Leur action collective vise à faire éclater la vérité, à pointer du doigt les responsabilités des fabricants et des autorités sanitaires.\n\nCe combat judiciaire s’annonce âpre, prêt à secouer le monde médical et à redéfinir les règles du jeu. Le dossier est loin d’être clos.\n\nLes fabricants doivent-ils être tenus responsables des implants défectueux ?\n\nR. Renaudot",
+    "sources": "Libération, La Croix, 20 Minutes",
+    "links": [
+      {
+        "title": "Affaire des implants vaginaux : 71 femmes «mutilées» saisissent la justice pour rouvrir une enquête",
+        "url": "https://www.liberation.fr/societe/sante/affaire-des-implants-vaginaux-71-femmes-mutilees-saisissent-la-justice-pour-rouvrir-une-enquete-20260522_MNKHPRALFBDPVAMADW7ILYQF4A/",
+        "source": "Libération",
+        "type": "article",
+        "date": "22/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Implants vaginaux : 71 femmes souffrant de complications portent plainte pour rouvrir le dossier",
+        "url": "https://www.20minutes.fr/justice/4225024-20260522-implants-vaginaux-71-femmes-souffrant-complications-portent-plainte-rouvrir-dossier?at_medium=display&at_campaign=149",
+        "source": "20 Minutes",
+        "type": "article",
+        "date": "23/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Implants vaginaux : 71 femmes saisissent la justice pour qu’elle enquête de nouveau",
+        "url": "https://www.la-croix.com/societe/implants-vaginaux-71-femmes-saisissent-la-justice-pour-qu-elle-enquete-de-nouveau-20260522",
+        "source": "La Croix",
+        "type": "article",
+        "date": "22/05/2026",
+        "checked": true
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "54-les-grandes-affaires-judiciaires-et-mediatiques-deviennent-des-debats-de-societe",
+      "matchedStoryTitle": "Les grandes affaires judiciaires et médiatiques deviennent des débats de société",
+      "previousEpisodeTitle": "Faut-il renforcer la surveillance des agents municipaux pour protéger les mineurs ?",
+      "previousEpisodeUrl": "http://localhost:3001/debate?id=513",
+      "confidence": 0.85,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {},
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "71 femmes mutilées",
+      "justice",
+      "réouverture enquête",
+      "complications médicales"
+    ],
+    "sentAt": "2026-05-23T11:59:04.622Z"
+  },
+  {
+    "subject": "EN DIRECT, guerre au Moyen-Orient : Téhéran estime que Washington sabote les négociations ; Donald Trump bouleverse son agenda et alimente les spéculations",
+    "sessionLabel": "23/05/2026 à 09:51:48",
+    "question": "Trump doit-il intervenir militairement en Iran malgré les négociations en cours ?",
+    "positionA": "Soutenir une intervention militaire immédiate",
+    "positionB": "Privilégier la diplomatie et éviter la guerre",
+    "theme": "International",
+    "resume": "Les négociations entre Téhéran et Washington sur le conflit au Moyen-Orient sont au point mort, tandis que la tension s’intensifie dangereusement. L’espoir d’un apaisement s’éloigne, assombri par des accusations mutuelles et des manoeuvres politiques lourdes de conséquences.\n\nDepuis la capitale iranienne, la diplomatie crie au sabotage américain, dénonçant des positions changeantes qui bloquent tout progrès, notamment sur des dossiers cruciaux comme le gel des avoirs iraniens et le programme nucléaire. La médiation d’un envoyé pakistanais peine à désamorcer cette impasse. Dans ce climat déjà explosif, Donald Trump bouleverse l’agenda politique en annonçant son absence à un événement familial majeur, déclenchant un flot de spéculations sur ses véritables intentions. Certains évoquent même la menace de frappes militaires imminentes contre l’Iran, jetant une ombre encore plus lourde sur une crise qui menace de basculer.\n\nLe jeu dangereux continue, les enjeux sont colossaux, et l’ombre d’un affrontement direct plane plus que jamais.\n\nTrump doit-il intervenir militairement en Iran malgré les négociations en cours ?\n\nM. Camus",
+    "sources": "Le Monde, Libération, Le Figaro, BFMTV, France 24, RFI",
+    "links": [
+      {
+        "title": "EN DIRECT, guerre au Moyen-Orient : Téhéran estime que Washington sabote les négociations ; Donald Trump bouleverse son agenda et alimente les spéculations",
+        "url": "https://www.lemonde.fr/international/live/2026/05/23/en-direct-guerre-au-moyen-orient-teheran-estime-que-washington-sabote-les-negociations-donald-trump-bouleverse-son-agenda-et-alimente-les-speculations_6691823_3210.html",
+        "source": "Le Monde",
+        "type": "article",
+        "date": "23/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Guerre au Moyen-Orient : un accord entre Téhéran et Washington n’est pas «imminent», selon la diplomatie iranienne",
+        "url": "https://www.liberation.fr/international/moyen-orient/en-direct-guerre-au-moyen-orient-la-consommation-de-carburants-en-france-a-diminue-de-14-depuis-debut-mai-20260522_UEKR7KKXPBEVXLBZBVDURCP7HU/",
+        "source": "Libération",
+        "type": "article",
+        "date": "22/05/2026",
+        "checked": true
+      },
+      {
+        "title": "EN DIRECT - Moyen-Orient: l'Iran accuse les États-Unis de «positions contradictoires» qui perturbent les négociations",
+        "url": "https://www.rfi.fr/fr/moyen-orient/20260523-en-direct-moyen-orient-l-iran-accuse-les-%C3%A9tats-unis-de-positions-contradictoires-qui-perturbent-les-n%C3%A9gociations",
+        "source": "RFI",
+        "type": "article",
+        "date": "23/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Avoirs gelés, nucléaire iranien... Les points de la discorde entre Washington et Téhéran",
+        "url": "https://www.bfmtv.com/international/moyen-orient/iran/video-avoirs-geles-nucleaire-iranien-les-points-de-la-discorde-entre-washington-et-teheran_VN-202605230073.html",
+        "source": "BFMTV",
+        "type": "article",
+        "date": "23/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Donald Trump confirme qu'il ratera le mariage de son fils alors que les négociations avec l'Iran continuent",
+        "url": "https://www.bfmtv.com/international/moyen-orient/iran/video-donald-trump-confirme-qu-il-ratera-le-mariage-de-son-fils-alors-que-les-negociations-avec-l-iran-continuent_VN-202605230069.html",
+        "source": "BFMTV",
+        "type": "article",
+        "date": "23/05/2026",
+        "checked": true
+      },
+      {
+        "title": "DIRECT. Guerre en Iran et au Moyen-Orient: Téhéran accuse les États-Unis de saboter les négociations de paix",
+        "url": "https://www.bfmtv.com/international/moyen-orient/direct-guerre-en-iran-et-au-moyen-orient-teheran-accuse-les-etats-unis-de-saboter-les-negociations-de-paix_LN-202605230053.html",
+        "source": "BFMTV",
+        "type": "article",
+        "date": "23/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Guerre au Moyen-Orient : un médiateur pakistanais à Téhéran, des négociations dans l'impasse",
+        "url": "https://www.france24.com/fr/moyen-orient/20260522-guerre-au-moyen-orient-un-m%C3%A9diateur-pakistanais-%C3%A0-t%C3%A9h%C3%A9ran-des-n%C3%A9gociations-dans-l-impasse",
+        "source": "France 24",
+        "type": "article",
+        "date": "23/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Guerre au Moyen-Orient : Trump envisage sérieusement de lancer de nouvelles frappes contre l’Iran, selon Axios",
+        "url": "https://www.lefigaro.fr/international/en-direct-guerre-au-moyen-orient-donald-trump-exige-l-uranium-iranien-et-la-suppression-des-peages-pour-les-navires-transitant-par-le-detroit-d-ormuz-20260522",
+        "source": "Le Figaro",
+        "type": "article",
+        "date": "23/05/2026",
+        "checked": true
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "01-les-conflits-au-moyen-orient-recomposent-les-equilibres-regionaux",
+      "matchedStoryTitle": "Les conflits au Moyen-Orient recomposent les équilibres régionaux",
+      "previousEpisodeTitle": "Les États-Unis sabotent-ils délibérément les négociations avec l’Iran ?",
+      "previousEpisodeUrl": "http://localhost:3001/debate?id=511",
+      "confidence": 0.85,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {},
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "Téhéran",
+      "Washington",
+      "Donald Trump",
+      "négociations Iran",
+      "guerre Moyen Orient",
+      "médiateur pakistanais",
+      "nucléaire iranien",
+      "avoirs gelés"
+    ],
+    "sentAt": "2026-05-23T11:58:40.939Z"
+  },
+  {
+    "subject": "L'Union européenne et le Mexique signent un accord commercial réduisant leurs droits de douane réciproques",
+    "sessionLabel": "23/05/2026 à 09:51:48",
+    "question": "L'accord UE-Mexique profitera-t-il vraiment aux économies locales ?",
+    "positionA": "Oui, il dynamisera la croissance et l'innovation",
+    "positionB": "Non, il favorisera surtout les grandes entreprises",
+    "theme": "Économie / emploi",
+    "resume": "L’Union européenne et le Mexique viennent de franchir un cap majeur en signant un accord commercial ambitieux, prêt à bouleverser leurs échanges économiques. Ce pacte promet de réduire progressivement les droits de douane, ouvrant un nouveau terrain de jeu pour leurs relations commerciales.\n\nEn levant les barrières tarifaires sur une large palette de produits, des terres rares au sirop d’agave, cet accord pourrait bien redessiner la carte des flux commerciaux entre les deux continents. Plus qu’un simple traité, il s’inscrit dans une stratégie européenne claire : renforcer son ancrage en Amérique latine par des liens économiques solides et durables. Pour les entreprises, c’est une opportunité de croissance et d’innovation, mais aussi un défi pour s’adapter à un marché en pleine mutation.\n\nCe partenariat marque une étape cruciale dans la coopération transatlantique, avec des enjeux lourds de conséquences pour les économies locales. Le chemin s’annonce semé d’incertitudes, et l’avenir de ce rapprochement reste à écrire.\n\nL'accord UE-Mexique profitera-t-il vraiment aux économies locales ?\n\nJ.L Grasso",
+    "sources": "Franceinfo, Le Monde, Euronews FR, 20 Minutes",
+    "links": [
+      {
+        "title": "Droits de douane : l’Union européenne et le Mexique signent un accord commercial réduisant leurs taxes réciproques",
+        "url": "https://www.lemonde.fr/economie/article/2026/05/22/droits-de-douane-l-union-europeenne-et-le-mexique-signent-un-accord-commercial-reduisant-leurs-taxes-reciproques_6692351_3234.html",
+        "source": "Le Monde",
+        "type": "article",
+        "date": "23/05/2026",
+        "checked": true
+      },
+      {
+        "title": "L'Union européenne et le Mexique signent un accord commercial réduisant leurs droits de douane réciproques",
+        "url": "https://www.franceinfo.fr/monde/europe/union-europeenne/l-union-europeenne-et-le-mexique-signent-un-accord-commercial-reduisant-leurs-droits-de-douane-reciproques_8022902.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "type": "article",
+        "date": "23/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Champions Cup : comment l’Union Bordeaux-Bègles est passée d’éternel deuxième à cador européen ?",
+        "url": "https://www.franceinfo.fr/sports/rugby/champions-cup/champions-cup-comment-l-union-bordeaux-begles-est-passee-d-eternel-deuxieme-a-cador-europeen_8019029.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "type": "article",
+        "date": "23/05/2026",
+        "checked": false
+      },
+      {
+        "title": "Sirop d’agave, terres rares… Que contient l’accord commercial signé entre l’UE et le Mexique ?",
+        "url": "https://www.20minutes.fr/monde/4225025-20260522-sirop-agave-terres-rares-contient-accord-commercial-signe-entre-ue-mexique?at_medium=display&at_campaign=149",
+        "source": "20 Minutes",
+        "type": "article",
+        "date": "23/05/2026",
+        "checked": true
+      },
+      {
+        "title": "L’UE conclut un accord commercial avec le Mexique pour renforcer sa présence en Amérique latine",
+        "url": "http://fr.euronews.com/my-europe/2026/05/22/lue-conclut-un-accord-commercial-avec-le-mexique-pour-renforcer-sa-presence-en-amerique-la",
+        "source": "Euronews FR",
+        "type": "article",
+        "date": "23/05/2026",
+        "checked": true
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "14-la-mondialisation-se-transforme-sous-l-effet-des-rivalites-economiques-et-geopol",
+      "matchedStoryTitle": "La mondialisation se transforme sous l’effet des rivalités économiques et géopolitiques",
+      "previousEpisodeTitle": "",
+      "previousEpisodeUrl": "",
+      "confidence": 0.85,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {},
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "droits de douane",
+      "sirop d agave",
+      "terres rares",
+      "Amérique latine",
+      "Union européenne",
+      "Mexique"
+    ],
+    "sentAt": "2026-05-23T10:41:09.657Z"
+  },
+  {
+    "subject": "En Chine, un accident minier fait au moins 82 morts, Xi Jinping appelle à  « tirer les leçons de cet accident »",
+    "sessionLabel": "23/05/2026 à 09:51:48",
+    "question": "La sécurité minière doit-elle primer sur la production économique en Chine ?",
+    "positionA": "Priorité à la sécurité des travailleurs",
+    "positionB": "Maintenir la production pour l’économie",
+    "theme": "International",
+    "resume": "Un souffle meurtrier a ravagé une mine de charbon en Chine, emportant au moins 82 vies dans une explosion de gaz dévastatrice. Ce drame brutal secoue le pays et déclenche une mobilisation d’urgence sans précédent.\n\nAu cœur des galeries sombres, les sauveteurs luttent contre le temps, chaque seconde comptant pour sauver d’éventuels survivants. Mais la réalité est implacable : le bilan s’alourdit, et l’ampleur de la tragédie impose une réponse immédiate. Au sommet de l’État, le président Xi Jinping s’exprime sans détour, appelant à « tirer les leçons » de ce sinistre événement. Son message est clair : la sécurité dans les mines doit devenir une priorité absolue.\n\nFace à ce choc, le gouvernement chinois semble prêt à durcir sa politique, conscient que la vie des travailleurs ne peut plus être sacrifiée sur l’autel de la production. Pourtant, dans un pays où l’industrie minière est un pilier économique, la tension entre sécurité et rendement reste palpable. Ce drame pourrait bien marquer un tournant décisif.\n\nLa sécurité minière doit-elle primer sur la production économique en Chine ?\n\nJ.L Grasso",
+    "sources": "Le Monde, Le Figaro, BFMTV",
+    "links": [
+      {
+        "title": "En Chine, un accident minier fait au moins 82 morts, Xi Jinping appelle à  « tirer les leçons de cet accident »",
+        "url": "https://www.lemonde.fr/international/article/2026/05/23/en-chine-un-accident-minier-fait-au-moins-82-morts-xi-jinping-appelle-a-tirer-les-lecons-de-cet-accident_6692710_3210.html",
+        "source": "Le Monde",
+        "type": "article",
+        "date": "23/05/2026",
+        "checked": true
+      },
+      {
+        "title": "\"Une explosion de gaz\": au moins 82 morts après l'accident d'une mine de charbon en Chine, des opérations de sauvetage en cours",
+        "url": "https://www.bfmtv.com/international/asie/chine/une-explosion-de-gaz-au-moins-82-morts-apres-l-accident-d-une-mine-de-charbon-en-chine-des-operations-de-sauvetage-en-cours_AD-202605230092.html",
+        "source": "BFMTV",
+        "type": "article",
+        "date": "23/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Dramatique accident minier en Chine, 82 morts selon le dernier bilan",
+        "url": "https://www.lefigaro.fr/international/dramatique-accident-minier-en-chine-82-morts-selon-le-dernier-bilan-20260523",
+        "source": "Le Figaro",
+        "type": "article",
+        "date": "23/05/2026",
+        "checked": true
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "03-la-rivalite-chine-etats-unis-redefinit-les-equilibres-mondiaux",
+      "matchedStoryTitle": "La rivalité Chine–États-Unis redéfinit les équilibres mondiaux",
+      "previousEpisodeTitle": "",
+      "previousEpisodeUrl": "",
+      "confidence": 0.75,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {},
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "accident minier en Chine",
+      "Xi Jinping",
+      "explosion de gaz",
+      "mine de charbon",
+      "opérations de sauvetage",
+      "bilan 82 morts"
+    ],
+    "sentAt": "2026-05-23T10:40:28.082Z"
+  },
+  {
+    "subject": "Prix des carburants : pourquoi des milliers de travailleurs sont injustement privés d’aide",
+    "sessionLabel": "23/05/2026 à 09:51:48",
+    "question": "Les critères d’aide aux carburants sont-ils injustement exclusifs ?",
+    "positionA": "Les critères protègent efficacement les plus vulnérables",
+    "positionB": "Les critères excluent trop de travailleurs en difficulté",
+    "theme": "Économie / emploi",
+    "resume": "Les prix du carburant s’envolent, frappant de plein fouet les travailleurs, notamment les petites entreprises et les indépendants. Ces derniers, déjà fragiles, peinent à absorber ces coûts qui grèvent leur quotidien, tandis que des milliers d’entre eux restent à la porte des aides essentielles.\n\nCette exclusion n’est pas un hasard, mais le résultat de critères d’éligibilité stricts qui laissent de côté une grande partie des professionnels les plus touchés. Malgré l’impact direct et brutal de la hausse des carburants sur leurs activités, ces travailleurs ne remplissent pas les conditions pour bénéficier des dispositifs d’aide. Le sentiment d’injustice monte, d’autant plus fort que ces acteurs sont en première ligne face à l’explosion des dépenses liées à leur métier.\n\nPrivés de soutien, ces travailleurs voient leur capacité à absorber les surcoûts s’effriter, menaçant la survie même de leurs entreprises. L’écart entre les mesures d’accompagnement et la réalité économique s’élargit, exposant ces professionnels à un risque grandissant, sans filet de protection adapté. La tension est palpable, et la situation reste loin d’être résolue.\n\nLes critères d’aide aux carburants sont-ils injustement exclusifs ?\n\nR. Renaudot",
+    "sources": "Marianne, BFMTV",
+    "links": [
+      {
+        "title": "L'inquiétude des petites entreprises et des indépendants, qui compensent difficilement la hausse des prix du carburant",
+        "url": "https://www.bfmtv.com/economie/video-l-inquietude-des-petites-entreprises-et-des-independants-qui-compensent-difficilement-la-hausse-des-prix-du-carburant_VN-202605230075.html",
+        "source": "BFMTV",
+        "type": "article",
+        "date": "23/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Prix des carburants : pourquoi des milliers de travailleurs sont injustement privés d’aide",
+        "url": "https://www.marianne.net/economie/economie-francaise/prix-des-carburants-pourquoi-des-milliers-de-travailleurs-sont-injustement-prives-daide#utm_source=RSS-MARIANNE&utm_medium=Flux-Rss&utm_campaign=RSS_general",
+        "source": "Marianne",
+        "type": "article",
+        "date": "23/05/2026",
+        "checked": true
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "17-le-pouvoir-d-achat-reste-au-centre-des-preoccupations-sociales",
+      "matchedStoryTitle": "Le pouvoir d’achat reste au centre des préoccupations sociales",
+      "previousEpisodeTitle": "",
+      "previousEpisodeUrl": "",
+      "confidence": 0.85,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {},
+      "selectionMode": "existing"
+    },
+    "keywords": [],
+    "sentAt": "2026-05-23T10:35:47.610Z"
+  },
+  {
+    "subject": "La mairie de Rouen affirme avoir déposé trois plaintes contre trois agents de la ville soupçonnés d'agression sexuelle sur mineurs, une enquête ouverte",
+    "sessionLabel": "23/05/2026 à 09:51:48",
+    "question": "Faut-il renforcer la surveillance des agents municipaux pour protéger les mineurs ?",
+    "positionA": "Oui, la prévention est indispensable",
+    "positionB": "Non, cela porte atteinte à la confiance",
+    "theme": "Justice / faits divers",
+    "resume": "Une ombre lourde s’abat sur Rouen : trois agents municipaux sont accusés d’agressions sexuelles sur des mineurs. La mairie, saisie par la gravité des faits, a immédiatement porté plainte, déclenchant une enquête qui promet de faire éclater la vérité.\n\nLes soupçons ont rapidement cristallisé une tension palpable au sein de la ville. Trois plaintes distinctes ont été déposées, chacune pointant des actes présumés d’une extrême gravité. Les services municipaux et judiciaires se mobilisent sans relâche, déterminés à démêler le vrai du faux. Dans ce climat lourd, chaque détail compte, chaque témoignage pèse.\n\nLa collectivité est suspendue à l’avancée de l’enquête, consciente que les révélations à venir pourraient bouleverser bien plus que des vies individuelles. La vigilance est de mise, mais le doute persiste, menaçant la confiance. La suite s’annonce décisive.\n\nFaut-il renforcer la surveillance des agents municipaux pour protéger les mineurs ?\n\nR. Renaudot",
+    "sources": "Franceinfo, Le Monde",
+    "links": [
+      {
+        "title": "Affaire Patrick Bruel : près de trente témoignages, au moins huit plaintes, cinq enquêtes, et un cas d’école des débats sur les violences sexuelles",
+        "url": "https://www.lemonde.fr/societe/article/2026/05/23/affaire-patrick-bruel-pres-de-trente-temoignages-au-moins-huit-plaintes-cinq-enquetes-et-un-cas-d-ecole-des-debats-sur-les-violences-sexuelles_6692624_3224.html",
+        "source": "Le Monde",
+        "type": "article",
+        "date": "23/05/2026",
+        "checked": false
+      },
+      {
+        "title": "Violences dans le périscolaire à Paris : deux animateurs ayant exercé à l’école Saint-Dominique mis en examen pour viols et agressions sexuelles sur mineurs",
+        "url": "https://www.lemonde.fr/societe/article/2026/05/23/paris-deux-animateurs-ayant-exerce-a-l-ecole-saint-dominique-mis-en-examen-pour-viols-et-agressions-sexuelles-sur-mineurs_6692356_3224.html",
+        "source": "Le Monde",
+        "type": "article",
+        "date": "23/05/2026",
+        "checked": false
+      },
+      {
+        "title": "A Rouen, une enquête ouverte pour soupçons de violences sexuelles dans une crèche",
+        "url": "https://www.lemonde.fr/societe/article/2026/05/23/rouen-une-enquete-ouverte-pour-soupcons-de-violences-sexuelles-dans-une-creche_6692355_3224.html",
+        "source": "Le Monde",
+        "type": "article",
+        "date": "23/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Violences sexuelles : condamnation à cinq ans de prison pour viols et agression sexuelle sur des patientes pour un anesthésiste, déjà radié de l’Ordre des médecins",
+        "url": "https://www.lemonde.fr/societe/article/2026/05/23/un-anesthesiste-normand-deja-radie-de-l-ordre-des-medecins-condamne-a-cinq-ans-de-prison-pour-viols-et-agression-sexuelle-sur-des-patientes_6692353_3224.html",
+        "source": "Le Monde",
+        "type": "article",
+        "date": "23/05/2026",
+        "checked": false
+      },
+      {
+        "title": "La mairie de Rouen affirme avoir déposé trois plaintes contre trois agents de la ville soupçonnés d'agression sexuelle sur mineurs, une enquête ouverte",
+        "url": "https://www.franceinfo.fr/societe/harcelement-sexuel/la-mairie-de-rouen-affirme-avoir-depose-trois-plaintes-contre-trois-agents-de-la-ville-soupconnes-d-agression-sexuelle-sur-mineurs-une-enquete-ouverte_8021639.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "type": "article",
+        "date": "22/05/2026",
+        "checked": true
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "54-les-grandes-affaires-judiciaires-et-mediatiques-deviennent-des-debats-de-societe",
+      "matchedStoryTitle": "Les grandes affaires judiciaires et médiatiques deviennent des débats de société",
+      "previousEpisodeTitle": "La centralisation des plaintes facilite-t-elle ou complique-t-elle la justice ?",
+      "previousEpisodeUrl": "http://localhost:3001/debate?id=439",
+      "confidence": 0.85,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {},
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "mairie de Rouen",
+      "agents de la ville",
+      "agression sexuelle",
+      "mineurs",
+      "enquête ouverte",
+      "violences sexuelles",
+      "crèche Rouen"
+    ],
+    "sentAt": "2026-05-23T06:23:31.027Z"
+  },
+  {
+    "subject": "Guerre au Moyen-Orient, jour 84 : 10 morts au Liban… Le bilan du vendredi 22 mai",
+    "sessionLabel": "23/05/2026 à 09:51:48",
+    "question": "Faut-il renforcer l'intervention internationale au Liban ?",
+    "positionA": "Oui, pour protéger les civils et stabiliser la région",
+    "positionB": "Non, cela risque d'aggraver le conflit et la dépendance ext…",
+    "theme": "International",
+    "resume": "Le sud-Liban s'embrase à nouveau. Le 22 mai, une nouvelle série de frappes aériennes israéliennes a fait dix morts, ravivant un conflit qui semblait ne jamais vouloir s'apaiser.\n\nCe vendredi fatidique, deux bâtiments proches de la frontière ont été pris pour cible, plongeant la région dans une atmosphère lourde et explosive. Ces attaques ne sont pas un simple incident isolé, mais bien une escalade dans une série d'affrontements qui s'enchaînent depuis plusieurs semaines. Chaque bombe, chaque victime, alourdit un bilan humain déjà dramatique et exacerbe les tensions dans cette zone fragile.\n\nLe sud-Liban, théâtre d'une lutte acharnée, se retrouve une fois de plus au cœur d'un brasier menaçant l'équilibre local et régional. La violence s'intensifie, et rien ne laisse présager un apaisement imminent. L'ombre d'une nouvelle phase du conflit plane, prête à s'étendre encore plus loin.\n\nFaut-il renforcer l'intervention internationale au Liban ?\n\nJ.L Grasso",
+    "sources": "La Croix, BFMTV",
+    "links": [
+      {
+        "title": "Guerre au Moyen-Orient: de quel arsenal militaire l'Iran dispose-t-il encore?",
+        "url": "https://www.bfmtv.com/international/moyen-orient/iran/video-guerre-au-moyen-orient-de-quel-arsenal-militaire-l-iran-dispose-t-il-encore_VN-202605230080.html",
+        "source": "BFMTV",
+        "type": "article",
+        "date": "23/05/2026",
+        "checked": false
+      },
+      {
+        "title": "Guerre au Moyen-Orient: deux bâtiments frappés par Israël ce vendredi dans le sud-Liban",
+        "url": "https://www.bfmtv.com/international/moyen-orient/iran/video-guerre-au-moyen-orient-deux-batiments-frappes-par-israel-ce-vendredi-dans-le-sud-liban_VN-202605230065.html",
+        "source": "BFMTV",
+        "type": "article",
+        "date": "23/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Guerre au Moyen-Orient: Donald Trump envisage \"sérieusement\" de reprendre les frappes en Iran",
+        "url": "https://www.bfmtv.com/international/moyen-orient/iran/video-guerre-au-moyen-orient-donald-trump-envisage-serieusement-de-reprendre-les-frappes-en-iran_VN-202605230054.html",
+        "source": "BFMTV",
+        "type": "article",
+        "date": "23/05/2026",
+        "checked": false
+      },
+      {
+        "title": "Guerre au Moyen-Orient, jour 84 : 10 morts au Liban… Le bilan du vendredi 22 mai",
+        "url": "https://www.la-croix.com/international/direct-guerre-iran-israel-usa-jour-84-moyen-orient-bilan-resume-aujourdhui-20260522",
+        "source": "La Croix",
+        "type": "article",
+        "date": "22/05/2026",
+        "checked": true
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "israel-mph1fbfh",
+      "matchedStoryTitle": "Israël",
+      "previousEpisodeTitle": "Les violences israéliennes contre la flottille sont-elles justifiables ?",
+      "previousEpisodeUrl": "http://localhost:3001/debate?id=495",
+      "confidence": 0.85,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {},
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "Liban",
+      "Israël",
+      "Iran",
+      "Moyen Orient",
+      "Hezbollah",
+      "Donald Trump",
+      "frappes militaires",
+      "10 morts"
+    ],
+    "sentAt": "2026-05-23T06:23:11.811Z"
+  },
+  {
+    "subject": "EN DIRECT, guerre en Ukraine : un dépôt pétrolier russe en feu après une attaque de drones ukrainienne",
+    "sessionLabel": "23/05/2026 à 09:51:48",
+    "question": "L’usage des drones transforme-t-il la nature du conflit en Ukraine ?",
+    "positionA": "Les drones renforcent l’efficacité offensive ukrainienne",
+    "positionB": "Les drones aggravent la violence et l’instabilité du conflit",
+    "theme": "International",
+    "resume": "Un dépôt pétrolier russe a été frappé par une attaque audacieuse de drones ukrainiens, déclenchant un incendie spectaculaire et marquant une nouvelle étape dans l’intensification du conflit en Ukraine.\n\nCette offensive, ciblant une installation énergétique cruciale sur le sol russe, a provoqué un incendie majeur, perturbant les flux logistiques adverses. Elle illustre la montée en puissance des forces ukrainiennes, qui exploitent désormais les technologies de drones pour atteindre des objectifs stratégiques avec une précision redoutable.\n\nAu-delà de l’impact matériel, cette action révèle une transformation profonde des tactiques militaires ukrainiennes. En s’appuyant sur des unités spécialisées dans la guerre des drones, Kiev modifie la donne, frappant au cœur des infrastructures russes et accentuant la pression sur Moscou. Cette évolution tactique promet de redessiner la dynamique du conflit dans les semaines à venir.\n\nL’usage des drones transforme-t-il la nature du conflit en Ukraine ?\n\nJ.L Grasso",
+    "sources": "Le Monde, Libération, Le Figaro",
+    "links": [
+      {
+        "title": "EN DIRECT, guerre en Ukraine : un dépôt pétrolier russe en feu après une attaque de drones ukrainienne",
+        "url": "https://www.lemonde.fr/international/live/2026/05/23/en-direct-guerre-en-ukraine-un-depot-petrolier-russe-en-feu-apres-une-attaque-de-drones-ukrainienne_6690053_3210.html",
+        "source": "Le Monde",
+        "type": "article",
+        "date": "23/05/2026",
+        "checked": true
+      },
+      {
+        "title": "L’Ukraine dément avoir visé des civils après une frappe sur un lycée en zone occupée par les Russes",
+        "url": "https://www.liberation.fr/international/europe/lukraine-dement-avoir-vise-des-civils-apres-une-frappe-sur-un-lycee-en-zone-occupee-par-les-russes-20260522_HMDJZ56IZNFDXNCBFQGFKXVNJA/",
+        "source": "Libération",
+        "type": "article",
+        "date": "22/05/2026",
+        "checked": false
+      },
+      {
+        "title": "Robert « Magyar » Brovdi, commandant de la guerre des drones en Ukraine, l’homme à abattre pour les Russes",
+        "url": "https://www.lefigaro.fr/international/robert-magyar-brovdi-commandant-de-la-guerre-des-drones-en-ukraine-l-homme-a-abattre-pour-les-russes-20260522",
+        "source": "Le Figaro",
+        "type": "article",
+        "date": "23/05/2026",
+        "checked": true
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "02-la-guerre-en-ukraine-transforme-les-rapports-entre-la-russie-l-europe-et-les-eta",
+      "matchedStoryTitle": "La guerre en Ukraine transforme les rapports entre la Russie, l’Europe et les États-Unis",
+      "previousEpisodeTitle": "",
+      "previousEpisodeUrl": "",
+      "confidence": 0.9,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {},
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "Ukraine",
+      "Russie",
+      "dépôt pétrolier",
+      "attaque de drones",
+      "Robert Magyar Brovdi",
+      "guerre en Ukraine",
+      "zone occupée",
+      "civils"
+    ],
+    "sentAt": "2026-05-23T06:22:52.345Z"
+  },
+  {
+    "subject": "EN DIRECT, guerre au Moyen-Orient : Téhéran estime que Washington sabote les négociations ; Donald Trump bouleverse son agenda et alimente les spéculations",
+    "sessionLabel": "23/05/2026 à 09:51:48",
+    "question": "Les États-Unis sabotent-ils délibérément les négociations avec l’Iran ?",
+    "positionA": "Washington freine les pourparlers pour préserver ses intérê…",
+    "positionB": "Les accusations iraniennes sont une stratégie politique",
+    "theme": "International",
+    "resume": "Les négociations entre Téhéran et Washington s’enlisent dans un climat de défiance croissante, alors que la tension explose sous le poids d’accusations réciproques et de manœuvres stratégiques surprenantes. L’Iran accuse les États-Unis de vouloir saboter les pourparlers, tandis que Donald Trump bouleverse son agenda, ravivant l’ombre d’une escalade militaire imminente.\n\nÀ Téhéran, on dénonce des « positions contradictoires » de Washington qui figent les discussions sur des enjeux cruciaux, comme le gel des avoirs iraniens et le programme nucléaire. Malgré l’intervention d’un médiateur pakistanais, la diplomatie iranienne reste sceptique, refusant de voir un accord à l’horizon et pointant du doigt un blocage volontaire des Américains. \n\nDans ce contexte explosif, l’ancien président américain envisage sérieusement de nouvelles frappes, bousculant un agenda déjà fragile et attisant les spéculations sur une aggravation du conflit. Le Moyen-Orient vacille, pris dans une spirale où toute avancée pacifique semble pour l’instant hors de portée.\n\nLes États-Unis sabotent-ils délibérément les négociations avec l’Iran ?\n\nJ.L Grasso",
+    "sources": "Le Monde, Libération, Le Figaro, BFMTV, France 24, RFI",
+    "links": [
+      {
+        "title": "EN DIRECT, guerre au Moyen-Orient : Téhéran estime que Washington sabote les négociations ; Donald Trump bouleverse son agenda et alimente les spéculations",
+        "url": "https://www.lemonde.fr/international/live/2026/05/23/en-direct-guerre-au-moyen-orient-teheran-estime-que-washington-sabote-les-negociations-donald-trump-bouleverse-son-agenda-et-alimente-les-speculations_6691823_3210.html",
+        "source": "Le Monde",
+        "type": "article",
+        "date": "23/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Guerre au Moyen-Orient : un accord entre Téhéran et Washington n’est pas «imminent», selon la diplomatie iranienne",
+        "url": "https://www.liberation.fr/international/moyen-orient/en-direct-guerre-au-moyen-orient-la-consommation-de-carburants-en-france-a-diminue-de-14-depuis-debut-mai-20260522_UEKR7KKXPBEVXLBZBVDURCP7HU/",
+        "source": "Libération",
+        "type": "article",
+        "date": "22/05/2026",
+        "checked": true
+      },
+      {
+        "title": "EN DIRECT - Moyen-Orient: l'Iran accuse les États-Unis de «positions contradictoires» qui perturbent les négociations",
+        "url": "https://www.rfi.fr/fr/moyen-orient/20260523-en-direct-moyen-orient-l-iran-accuse-les-%C3%A9tats-unis-de-positions-contradictoires-qui-perturbent-les-n%C3%A9gociations",
+        "source": "RFI",
+        "type": "article",
+        "date": "23/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Avoirs gelés, nucléaire iranien... Les points de la discorde entre Washington et Téhéran",
+        "url": "https://www.bfmtv.com/international/moyen-orient/iran/video-avoirs-geles-nucleaire-iranien-les-points-de-la-discorde-entre-washington-et-teheran_VN-202605230073.html",
+        "source": "BFMTV",
+        "type": "article",
+        "date": "23/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Donald Trump confirme qu'il ratera le mariage de son fils alors que les négociations avec l'Iran continuent",
+        "url": "https://www.bfmtv.com/international/moyen-orient/iran/video-donald-trump-confirme-qu-il-ratera-le-mariage-de-son-fils-alors-que-les-negociations-avec-l-iran-continuent_VN-202605230069.html",
+        "source": "BFMTV",
+        "type": "article",
+        "date": "23/05/2026",
+        "checked": false
+      },
+      {
+        "title": "DIRECT. Guerre en Iran et au Moyen-Orient: Téhéran accuse les États-Unis de saboter les négociations de paix",
+        "url": "https://www.bfmtv.com/international/moyen-orient/direct-guerre-en-iran-et-au-moyen-orient-teheran-accuse-les-etats-unis-de-saboter-les-negociations-de-paix_LN-202605230053.html",
+        "source": "BFMTV",
+        "type": "article",
+        "date": "23/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Guerre au Moyen-Orient : un médiateur pakistanais à Téhéran, des négociations dans l'impasse",
+        "url": "https://www.france24.com/fr/moyen-orient/20260522-guerre-au-moyen-orient-un-m%C3%A9diateur-pakistanais-%C3%A0-t%C3%A9h%C3%A9ran-des-n%C3%A9gociations-dans-l-impasse",
+        "source": "France 24",
+        "type": "article",
+        "date": "23/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Guerre au Moyen-Orient : Trump envisage sérieusement de lancer de nouvelles frappes contre l’Iran, selon Axios",
+        "url": "https://www.lefigaro.fr/international/en-direct-guerre-au-moyen-orient-donald-trump-exige-l-uranium-iranien-et-la-suppression-des-peages-pour-les-navires-transitant-par-le-detroit-d-ormuz-20260522",
+        "source": "Le Figaro",
+        "type": "article",
+        "date": "23/05/2026",
+        "checked": true
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "01-les-conflits-au-moyen-orient-recomposent-les-equilibres-regionaux",
+      "matchedStoryTitle": "Les conflits au Moyen-Orient recomposent les équilibres régionaux",
+      "previousEpisodeTitle": "La diffusion d’images humiliantes des détenus est-elle justifiable ?",
+      "previousEpisodeUrl": "http://localhost:3001/debate?id=453",
+      "confidence": 0.85,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {},
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "Téhéran",
+      "Washington",
+      "Donald Trump",
+      "négociations Iran",
+      "guerre Moyen Orient",
+      "médiateur pakistanais",
+      "nucléaire iranien",
+      "avoirs gelés"
+    ],
+    "sentAt": "2026-05-23T06:22:33.313Z"
+  },
+  {
     "subject": "Tulsi Gabbard, directrice du renseignement national, annonce sa démission de l’administration Trump",
     "sessionLabel": "22/05/2026 à 21:53:07",
     "question": "La démission de Tulsi Gabbard affaiblit-elle la sécurité nationale américaine ?",
