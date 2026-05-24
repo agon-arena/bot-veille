@@ -1308,7 +1308,6 @@ app.post("/mixte-login", (req, res) => {
 });
 
 const VEILLE_MIXTE_HTML = path.join(__dirname, "veille-mixte.html");
-const VEILLE_HTML = path.join(__dirname, "veille.html");
 const VEILLE_YOUTUBE_HTML = path.join(__dirname, "veille-youtube.html");
 
 function sendMissingPage(res, title, message) {
@@ -1330,10 +1329,7 @@ function sendMissingPage(res, title, message) {
 }
 
 app.get("/", (req, res) => {
-  if (!fs.existsSync(VEILLE_HTML)) {
-    return sendMissingPage(res, "Veille presse", "La veille n'a pas encore été générée.");
-  }
-  res.sendFile(VEILLE_HTML);
+  res.redirect("/mixte");
 });
 
 app.get("/youtube", (req, res) => {
@@ -1366,6 +1362,16 @@ app.post("/refresh", requireMixteAuth, async (req, res) => {
     res.json({ ok: true });
   } catch (err) {
     res.status(500).json({ error: err.message });
+  }
+});
+
+app.get("/progress", requireMixteAuth, async (req, res) => {
+  try {
+    const response = await fetch("http://127.0.0.1:3002/progress");
+    const data = await response.json();
+    res.json(data);
+  } catch (err) {
+    res.json({ running: false, done: false, stepIndex: 0, stepTotal: 6, step: "", detail: "" });
   }
 });
 
@@ -2388,10 +2394,15 @@ async function savePresse() {
   try {
     const r = await fetch('/api/medias', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(medias) });
     const d = await r.json();
-    showToast(d.ok ? 'Médias presse sauvegardés ✓' : 'Erreur : ' + d.error);
-    return !!d.ok;
+    if (d.ok) {
+      showToast(\`Médias presse sauvegardés ✓ (\${d.count} médias)\`);
+      return true;
+    } else {
+      showError('Échec de la sauvegarde : ' + d.error);
+      return false;
+    }
   } catch (err) {
-    showToast('Erreur : ' + err.message);
+    showError('Erreur réseau : ' + err.message);
     return false;
   }
 }
@@ -2465,10 +2476,15 @@ async function saveYoutube() {
   try {
     const r = await fetch('/api/youtube-chaines', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(chaines) });
     const d = await r.json();
-    showToast(d.ok ? 'Chaînes YouTube sauvegardées ✓' : 'Erreur : ' + d.error);
-    return !!d.ok;
+    if (d.ok) {
+      showToast(\`Chaînes YouTube sauvegardées ✓ (\${d.count} chaînes)\`);
+      return true;
+    } else {
+      showError('Échec de la sauvegarde : ' + d.error);
+      return false;
+    }
   } catch (err) {
-    showToast('Erreur : ' + err.message);
+    showError('Erreur réseau : ' + err.message);
     return false;
   }
 }
@@ -2478,6 +2494,23 @@ function showToast(msg) {
   t.textContent = msg;
   t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+function showError(msg) {
+  let banner = document.getElementById('error-banner');
+  if (!banner) {
+    banner = document.createElement('div');
+    banner.id = 'error-banner';
+    banner.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#c0392b;color:white;padding:14px 20px;font-size:0.95rem;font-weight:600;z-index:9999;display:flex;justify-content:space-between;align-items:center;';
+    const close = document.createElement('button');
+    close.textContent = '✕';
+    close.style.cssText = 'background:none;border:none;color:white;font-size:1.2rem;cursor:pointer;padding:0 4px;';
+    close.onclick = () => banner.remove();
+    banner.appendChild(document.createTextNode(''));
+    banner.appendChild(close);
+    document.body.prepend(banner);
+  }
+  banner.firstChild.textContent = msg;
 }
 
 init();
@@ -2498,10 +2531,18 @@ app.get("/api/medias", (req, res) => {
 
 app.post("/api/medias", (req, res) => {
   const filePath = path.join(__dirname, "medias.json");
+  if (!Array.isArray(req.body)) {
+    console.error("[admin] POST /api/medias : corps invalide :", req.body);
+    return res.status(400).json({ ok: false, error: "Corps de requête invalide (tableau attendu). Rechargez la page et réessayez." });
+  }
   try {
-    fs.writeFileSync(filePath, JSON.stringify(req.body, null, 2), "utf8");
-    res.json({ ok: true });
+    const json = JSON.stringify(req.body, null, 2);
+    fs.writeFileSync(filePath, json, "utf8");
+    const written = JSON.parse(fs.readFileSync(filePath, "utf8"));
+    console.log(`[admin] medias.json mis à jour : ${written.length} média(s).`);
+    res.json({ ok: true, count: written.length });
   } catch (err) {
+    console.error("[admin] Erreur écriture medias.json :", err.message);
     res.status(500).json({ ok: false, error: err.message });
   }
 });
@@ -2518,10 +2559,18 @@ app.get("/api/youtube-chaines", (req, res) => {
 
 app.post("/api/youtube-chaines", (req, res) => {
   const filePath = path.join(__dirname, "youtube-chaines.json");
+  if (!Array.isArray(req.body)) {
+    console.error("[admin] POST /api/youtube-chaines : corps invalide :", req.body);
+    return res.status(400).json({ ok: false, error: "Corps de requête invalide (tableau attendu). Rechargez la page et réessayez." });
+  }
   try {
-    fs.writeFileSync(filePath, JSON.stringify(req.body, null, 2), "utf8");
-    res.json({ ok: true });
+    const json = JSON.stringify(req.body, null, 2);
+    fs.writeFileSync(filePath, json, "utf8");
+    const written = JSON.parse(fs.readFileSync(filePath, "utf8"));
+    console.log(`[admin] youtube-chaines.json mis à jour : ${written.length} chaîne(s).`);
+    res.json({ ok: true, count: written.length });
   } catch (err) {
+    console.error("[admin] Erreur écriture youtube-chaines.json :", err.message);
     res.status(500).json({ ok: false, error: err.message });
   }
 });

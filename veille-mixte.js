@@ -10,7 +10,11 @@ const OpenAI = require("openai");
 const apiApp = express();
 apiApp.use(express.json({ limit: "2mb" }));
 
-const parser = new Parser();
+const BOT_USER_AGENT = "AgonBot/1.0 (+contact: kevinbruyat@live.fr ; N'hésitez pas à me contacter.)";
+
+const parser = new Parser({
+  headers: { "User-Agent": BOT_USER_AGENT }
+});
 
 const MEDIA_FILE = "medias.json";
 const CHANNELS_FILE = "youtube-chaines.json";
@@ -25,8 +29,8 @@ const API_PORT = 3002;
 const HOURS_BACK_ARTICLES = 24;
 const HOURS_BACK_YOUTUBE = 168;
 
-const SIMILARITY_THRESHOLD = 0.42;
-const MIN_SHARED_KEYWORDS = 1;
+const SIMILARITY_THRESHOLD = 0.52;
+const MIN_SHARED_KEYWORDS = 2;
 const MIN_DISTINCT_SOURCES = 2;
 
 const UPDATE_INTERVAL_MINUTES = 720;
@@ -35,8 +39,8 @@ const MAX_SUBJECTS_TO_ANALYZE_WITH_AI = 25;
 const MAX_SUBJECTS_TO_DEDUP_WITH_AI = 80;
 const FEED_TIMEOUT_MS = 15000;
 const DEFAULT_FETCH_HEADERS = {
-  "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
-  "Accept": "application/rss+xml, application/xml, text/xml, application/atom+xml, text/html;q=0.9, */*;q=0.8",
+  "User-Agent": BOT_USER_AGENT,
+  "Accept": "application/rss+xml, application/xml, text/xml, application/atom+xml, */*;q=0.8",
   "Accept-Language": "fr-FR,fr;q=0.9,en;q=0.8",
   "Cache-Control": "no-cache",
   "Pragma": "no-cache"
@@ -93,6 +97,31 @@ function withTimeout(promise, timeoutMs, label) {
   });
 }
 
+const PAUSE_DURATIONS_MS = {
+  403: 24 * 60 * 60 * 1000,
+  429: 6 * 60 * 60 * 1000
+};
+
+const pausedSources = new Map();
+
+function isSourcePaused(sourceName) {
+  const resumeAt = pausedSources.get(sourceName);
+  if (!resumeAt) return false;
+  if (Date.now() >= resumeAt) {
+    pausedSources.delete(sourceName);
+    return false;
+  }
+  return true;
+}
+
+function pauseSource(sourceName, httpStatus) {
+  const durationMs = PAUSE_DURATIONS_MS[httpStatus] || PAUSE_DURATIONS_MS[403];
+  const resumeAt = Date.now() + durationMs;
+  pausedSources.set(sourceName, resumeAt);
+  const hours = durationMs / (60 * 60 * 1000);
+  console.log(`[pause] ${sourceName} mis en pause (HTTP ${httpStatus}) pour ${hours}h — reprise le ${new Date(resumeAt).toLocaleString("fr-FR")}.`);
+}
+
 async function fetchTextWithTimeout(url, options, label, timeoutMs = FEED_TIMEOUT_MS) {
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
@@ -104,7 +133,9 @@ async function fetchTextWithTimeout(url, options, label, timeoutMs = FEED_TIMEOU
     });
 
     if (!response.ok) {
-      throw new Error(`${label} a répondu ${response.status}`);
+      const error = new Error(`${label} a répondu ${response.status}`);
+      error.httpStatus = response.status;
+      throw error;
     }
 
     return await response.text();
@@ -196,6 +227,28 @@ function countSharedKeywords(textA, textB) {
   return count;
 }
 
+function getProperNouns(originalTitle) {
+  const words = String(originalTitle || "").split(/\s+/);
+  const result = new Set();
+  for (let i = 1; i < words.length; i++) {
+    const word = words[i].replace(/[^\p{L}]/gu, "");
+    if (word.length >= 3 && /^\p{Lu}/u.test(word)) {
+      result.add(cleanText(word));
+    }
+  }
+  return result;
+}
+
+function hasConflictingProperNouns(titleA, titleB) {
+  const a = getProperNouns(titleA);
+  const b = getProperNouns(titleB);
+  if (a.size === 0 || b.size === 0) return false;
+  for (const noun of a) {
+    if (b.has(noun)) return false;
+  }
+  return true;
+}
+
 function getItemDate(item) {
   const rawDate = item.isoDate || item.pubDate || item.date;
   const parsed = dayjs(rawDate);
@@ -224,6 +277,18 @@ function getLastSessionCutoff() {
 
   const parsed = dayjs(lastGeneratedAt);
   return parsed.isValid() ? parsed : null;
+}
+
+function getPreviousSessionSources() {
+  const sessions = loadSessions();
+  if (!Array.isArray(sessions) || !sessions.length) return new Set();
+  const sources = new Set();
+  for (const subject of (sessions[0].subjects || [])) {
+    for (const source of (subject.sources || [])) {
+      sources.add(source);
+    }
+  }
+  return sources;
 }
 
 function isFreshSinceLastSession(date, lastSessionCutoff) {
@@ -406,15 +471,23 @@ function extractYouTubeVideoId(link) {
   return "";
 }
 
-async function collectArticles(lastSessionCutoff = null) {
+async function collectArticles(lastSessionCutoff = null, knownSources = new Set()) {
   const medias = JSON.parse(fs.readFileSync(MEDIA_FILE, "utf8"));
   const contents = [];
 
-  for (const media of medias) {
+  for (let _mi = 0; _mi < medias.length; _mi++) {
+    const media = medias[_mi];
+    setProgress(1, "Collecte des articles", `${_mi + 1} / ${medias.length} — ${media.nom}`);
     try {
+      if (isSourcePaused(media.nom)) {
+        console.log(`[pause] ${media.nom} ignoré (en pause).`);
+        continue;
+      }
+
       console.log(`Article — lecture de ${media.nom}...`);
 
       const feed = await fetchFeedWithFallback(media.rss, `Flux RSS ${media.nom}`);
+      const isNewSource = knownSources.size > 0 && !knownSources.has(media.nom);
 
       for (const item of feed.items || []) {
         const date = getItemDate(item);
@@ -423,7 +496,7 @@ async function collectArticles(lastSessionCutoff = null) {
           continue;
         }
 
-        if (!isFreshSinceLastSession(date, lastSessionCutoff)) {
+        if (!isNewSource && !isFreshSinceLastSession(date, lastSessionCutoff)) {
           continue;
         }
 
@@ -443,22 +516,34 @@ async function collectArticles(lastSessionCutoff = null) {
         });
       }
     } catch (error) {
-      console.error(`Erreur article avec ${media.nom}:`, error.message);
+      if (error.httpStatus === 403 || error.httpStatus === 429) {
+        pauseSource(media.nom, error.httpStatus);
+      } else {
+        console.error(`Erreur article avec ${media.nom}:`, error.message);
+      }
     }
   }
 
   return contents;
 }
 
-async function collectYouTubeVideos(lastSessionCutoff = null) {
+async function collectYouTubeVideos(lastSessionCutoff = null, knownSources = new Set()) {
   const channels = JSON.parse(fs.readFileSync(CHANNELS_FILE, "utf8"));
   const contents = [];
 
-  for (const channel of channels) {
+  for (let _ci = 0; _ci < channels.length; _ci++) {
+    const channel = channels[_ci];
+    setProgress(2, "Collecte des vidéos YouTube", `${_ci + 1} / ${channels.length} — ${channel.nom}`);
     try {
+      if (isSourcePaused(channel.nom)) {
+        console.log(`[pause] ${channel.nom} ignoré (en pause).`);
+        continue;
+      }
+
       console.log(`YouTube — lecture de ${channel.nom}...`);
 
       const { feed } = await getWorkingYouTubeRssUrl(channel);
+      const isNewSource = knownSources.size > 0 && !knownSources.has(channel.nom);
 
       for (const item of feed.items || []) {
         const date = getItemDate(item);
@@ -467,7 +552,7 @@ async function collectYouTubeVideos(lastSessionCutoff = null) {
           continue;
         }
 
-        if (!isFreshSinceLastSession(date, lastSessionCutoff)) {
+        if (!isNewSource && !isFreshSinceLastSession(date, lastSessionCutoff)) {
           continue;
         }
 
@@ -489,7 +574,11 @@ async function collectYouTubeVideos(lastSessionCutoff = null) {
         });
       }
     } catch (error) {
-      console.error(`Erreur YouTube avec ${channel.nom}:`, error.message);
+      if (error.httpStatus === 403 || error.httpStatus === 429) {
+        pauseSource(channel.nom, error.httpStatus);
+      } else {
+        console.error(`Erreur YouTube avec ${channel.nom}:`, error.message);
+      }
     }
   }
 
@@ -504,10 +593,17 @@ function groupContentsBySubject(contents) {
     let bestScore = 0;
 
     for (const group of groups) {
-      const score = stringSimilarity.compareTwoStrings(
+      let score = stringSimilarity.compareTwoStrings(
         content.comparableText,
         group.referenceText
       );
+
+      if (group.originalText !== group.referenceText) {
+        score = Math.max(
+          score,
+          stringSimilarity.compareTwoStrings(content.comparableText, group.originalText)
+        );
+      }
 
       if (score > bestScore) {
         bestScore = score;
@@ -519,10 +615,15 @@ function groupContentsBySubject(contents) {
       ? countSharedKeywords(content.title, bestGroup.subject)
       : 0;
 
+    const conflicting = bestGroup
+      ? hasConflictingProperNouns(content.title, bestGroup.subject)
+      : false;
+
     if (
       bestGroup &&
       bestScore >= SIMILARITY_THRESHOLD &&
-      sharedKeywords >= MIN_SHARED_KEYWORDS
+      sharedKeywords >= MIN_SHARED_KEYWORDS &&
+      !conflicting
     ) {
       bestGroup.contents.push(content);
 
@@ -532,6 +633,7 @@ function groupContentsBySubject(contents) {
     } else {
       groups.push({
         subject: content.title,
+        originalText: content.comparableText,
         referenceText: content.comparableText,
         contents: [content]
       });
@@ -629,16 +731,11 @@ function normalizeKeywordList(values, max = 8) {
     const keyword = String(value || "")
       .replace(/^[-–—•\s]+/, "")
       .replace(/[?!.;,:\s]+$/g, "")
+      .replace(/-/g, " - ")
+      .replace(/['']/g, " ' ")
+      .replace(/\s+/g, " ")
       .trim();
     if (!keyword) return;
-
-    if (keyword.includes("-")) {
-      const parts = keyword.split("-").map((p) => p.trim()).filter((p) => p.length >= 2);
-      if (parts.length >= 2) {
-        parts.forEach((p) => tokens.push(p));
-        return;
-      }
-    }
     tokens.push(keyword);
   });
 
@@ -993,7 +1090,8 @@ async function analyzeOneScoreWithAI(subject) {
     type: content.type,
     source: content.source,
     orientation: content.orientation,
-    title: content.title
+    title: content.title,
+    link: content.link || ""
   }));
 
   const prompt = `
@@ -1012,7 +1110,8 @@ Tu dois répondre uniquement en JSON valide avec ces champs :
 {
   "debateScore": nombre entier de 0 à 10,
   "controversyLevel": "faible" | "moyen" | "fort" | "très fort",
-  "leftScore": nombre entier de 0 à 10 indiquant l'intérêt du sujet pour un public de gauche progressiste
+  "leftScore": nombre entier de 0 à 10 indiquant l'intérêt du sujet pour un public de gauche progressiste,
+  "selectedLinks": ["URLs exactes des contenus qui parlent vraiment du sujet"]
 }
 
 Critères pour debateScore :
@@ -1027,6 +1126,14 @@ Critères pour leftScore (INDÉPENDANT du debateScore) :
 - 8 à 10 : sujet central pour la gauche (droits sociaux, inégalités, écologie, services publics, droits des travailleur·ses, libertés publiques, lutte contre les discriminations, annonce de politique sociale, rapport sur les inégalités, actualité syndicale ou climatique)
 - 5 à 7 : sujet d'intérêt général avec une dimension sociale ou politique pertinente
 - 0 à 4 : sujet peu pertinent pour un public de gauche (fait divers apolitique, résultat sportif, annonce culturelle neutre)
+
+Pour "selectedLinks" :
+- renvoie les URLs exactes des contenus qui parlent bien du sujet principal ;
+- si une source ne parle pas vraiment de ce sujet, ne la renvoie pas ;
+- une source qui mentionne seulement une même personnalité, un même pays ou une même institution ne suffit pas : elle doit parler du même événement, de la même décision, de la même déclaration ou du même conflit précis ;
+- ignore les sources qui traitent d'un autre épisode, d'un autre angle ou d'une information parallèle, même si elles concernent les mêmes acteurs ;
+- en cas de doute, exclue la source plutôt que de la garder ;
+- n'invente jamais d'URL ; utilise uniquement les valeurs exactes du champ "link" dans les contenus.
 `;
 
   try {
@@ -1034,19 +1141,62 @@ Critères pour leftScore (INDÉPENDANT du debateScore) :
       model: "gpt-4.1-mini",
       input: prompt,
       temperature: 0.2,
-      max_output_tokens: 80
+      max_output_tokens: 400
     });
 
     const parsed = safeJsonParse(response.output_text);
+    const selectedLinks = selectRelevantLinksForSubject(subject, parsed.selectedLinks);
     return {
       debateScore: Number.isInteger(parsed.debateScore) ? parsed.debateScore : 0,
       controversyLevel: parsed.controversyLevel || "faible",
-      leftScore: Number.isInteger(parsed.leftScore) ? parsed.leftScore : 5
+      leftScore: Number.isInteger(parsed.leftScore) ? parsed.leftScore : 5,
+      selectedLinks
     };
   } catch (error) {
     console.error(`Erreur IA (score) pour "${subject.subject}" :`, error.message);
     const fb = fallbackAiAnalysis(subject);
-    return { debateScore: fb.debateScore, controversyLevel: fb.controversyLevel, leftScore: fb.leftScore };
+    return { debateScore: fb.debateScore, controversyLevel: fb.controversyLevel, leftScore: fb.leftScore, selectedLinks: selectRelevantLinksForSubject(subject, []) };
+  }
+}
+
+async function verifySourcesWithAI(subject) {
+  if (!openai) return selectRelevantLinksForSubject(subject, []);
+
+  const compactContents = subject.contents.slice(0, 15).map(content => ({
+    source: content.source,
+    title: content.title,
+    link: content.link || ""
+  }));
+
+  const prompt = `Vérifie quelles sources parlent réellement du sujet suivant.
+
+Sujet : ${subject.subject}
+
+Contenus :
+${JSON.stringify(compactContents, null, 2)}
+
+Réponds uniquement en JSON valide :
+{ "selectedLinks": ["URLs exactes des contenus qui parlent vraiment du sujet"] }
+
+Règles :
+- renvoie les URLs exactes des contenus qui parlent bien du sujet principal ;
+- une source qui mentionne seulement une même personnalité, un même pays ou une même institution ne suffit pas : elle doit parler du même événement, de la même décision, de la même déclaration ou du même conflit précis ;
+- ignore les sources qui traitent d'un autre épisode ou d'un angle parallèle, même si elles concernent les mêmes acteurs ;
+- en cas de doute, exclue la source plutôt que de la garder ;
+- n'invente jamais d'URL ; utilise uniquement les valeurs exactes du champ "link" dans les contenus.`;
+
+  try {
+    const response = await openai.responses.create({
+      model: "gpt-4.1-mini",
+      input: prompt,
+      temperature: 0.1,
+      max_output_tokens: 400
+    });
+    const parsed = safeJsonParse(response.output_text);
+    return selectRelevantLinksForSubject(subject, parsed.selectedLinks);
+  } catch (error) {
+    console.error(`Erreur IA (vérification sources) pour "${subject.subject}" :`, error.message);
+    return selectRelevantLinksForSubject(subject, []);
   }
 }
 
@@ -1090,6 +1240,17 @@ apiApp.post("/analyze", async (req, res) => {
     res.json(ai);
   } catch (error) {
     res.status(500).json({ error: error.message || "Erreur analyse IA" });
+  }
+});
+
+apiApp.post("/verify-sources", async (req, res) => {
+  try {
+    const payload = buildAnalyzePayload(req.body);
+    if (!payload.subject) return res.status(400).json({ error: "Sujet manquant" });
+    const selectedLinks = await verifySourcesWithAI(payload);
+    res.json({ selectedLinks });
+  } catch (error) {
+    res.status(500).json({ error: error.message || "Erreur vérification sources" });
   }
 });
 
@@ -1177,7 +1338,9 @@ async function analyzeScoresWithAI(subjects) {
   console.log(`${subjects.length} sujet(s) envoyés à l'analyse de score IA.`);
   const results = [];
 
-  for (const subject of subjects) {
+  for (let _si = 0; _si < subjects.length; _si++) {
+    const subject = subjects[_si];
+    setProgress(4, "Analyse IA", `${_si + 1} / ${subjects.length} sujets`);
     console.log(`Score IA : ${subject.subject}`);
     const score = await analyzeOneScoreWithAI(subject);
     results.push({
@@ -1185,6 +1348,7 @@ async function analyzeScoresWithAI(subjects) {
       debateScore: score.debateScore,
       controversyLevel: score.controversyLevel,
       leftScore: score.leftScore,
+      selectedLinks: score.selectedLinks,
       scoreAnalyzed: true,
       ai: null,
       aiAnalyzed: false
@@ -1347,7 +1511,7 @@ tu travailles uniquement à partir des sujets existants, avec :
 Tu ne disposes pas des articles complets, ni des résumés, ni du contenu détaillé.
 
 Règle de prudence :
-comme tu ne vois que les titres, tu dois être très conservateur.
+comme tu ne vois que les titres, tu dois être conservateur.
 Tu ne proposes une fusion que si les titres indiquent clairement le même fait d’actualité, le même événement, la même affaire, la même décision, la même polémique ou la même séquence médiatique.
 
 Critères pour fusionner :
@@ -1358,15 +1522,19 @@ Critères pour fusionner :
 - formulations différentes mais même actualité évidente ;
 - un lecteur trouverait étrange de voir ces sujets séparés.
 
+Cas particulier — conflit ou affaire en cours :
+si les deux sujets se rapportent manifestement au même conflit armé, à la même crise géopolitique ou à la même affaire judiciaire en cours (même zone géographique, même belligérants ou protagonistes, même séquence temporelle), fusionne-les même si les formulations sont très différentes.
+Exemples : "Frappe à Téhéran : 9 morts" et "Guerre en Iran : les attaques ont repris" → même conflit, même zone, fusion justifiée. "Bombe à Gaza" et "Négociations sur le cessez-le-feu à Gaza" → même conflit mais événements de nature différente, ne pas fusionner.
+
 Critères pour ne pas fusionner :
 - simple proximité thématique ;
 - sujets trop vagues ;
-- titres qui peuvent désigner deux événements différents ;
+- titres qui peuvent désigner deux événements clairement distincts ;
 - besoin d’inventer du contexte pour relier les sujets ;
 - fusion trop large qui ferait perdre la précision du sujet.
 
 Seuil de confiance :
-ne propose une fusion que si la confiance est supérieure ou égale à 0.8.
+ne propose une fusion que si la confiance est supérieure ou égale à 0.75.
 
 Sujet principal :
 pour chaque groupe fusionné, choisir comme sujet principal :
@@ -1716,7 +1884,7 @@ function generateHtml(sessions) {
           </div>`;
 
       return `
-        <section class="subject" data-score="${debateScore}" data-sources="${subject.sourceCount}" data-left="${leftScore}">
+        <section class="subject" data-score="${debateScore}" data-sources="${subject.sourceCount}" data-left="${leftScore}" data-theme="${escapeHtml(isAnalyzed ? normalizeAgonTheme(ai.agonTheme) : "Non analysé")}">
           <div class="subject-number"></div>
           ${aiScoreHtml}
 
@@ -1736,6 +1904,7 @@ function generateHtml(sessions) {
           <button class="save-btn${isSaved ? " saved" : ""}" type="button" data-subject-title="${escapeHtml(subject.subject)}">${isSaved ? "★ Enregistré" : "☆ Enregistrer"}</button>
           <button class="agon-btn${isSent ? " sent" : ""}" type="button" data-subject-title="${escapeHtml(subject.subject)}" data-question="${escapeHtml(ai ? (ai.debateQuestion || subject.subject) : subject.subject)}" data-position-a="${escapeHtml(ai ? (ai.positionA || "") : "")}" data-position-b="${escapeHtml(ai ? (ai.positionB || "") : "")}" data-theme="${escapeHtml(ai ? normalizeAgonTheme(ai.agonTheme) : "")}" data-sources="${escapeHtml(subject.sources.join(", "))}">${isSent ? "✓ Envoyé" : "→ Agôn"}</button>
           <button class="republish-btn${isSent ? "" : " hidden"}" type="button" data-subject-title="${escapeHtml(subject.subject)}" data-question="${escapeHtml(ai ? (ai.debateQuestion || subject.subject) : subject.subject)}" data-position-a="${escapeHtml(ai ? (ai.positionA || "") : "")}" data-position-b="${escapeHtml(ai ? (ai.positionB || "") : "")}" data-theme="${escapeHtml(ai ? normalizeAgonTheme(ai.agonTheme) : "")}" data-sources="${escapeHtml(subject.sources.join(", "))}">↺ Republier</button>
+          <button class="verify-sources-btn" type="button" data-subject="${subjectDataForBtn}">Vérifier sources</button>
 
           ${
             articles.length
@@ -1892,6 +2061,41 @@ function generateHtml(sessions) {
     }
     .update-banner:hover { background: #1d4ed8; }
 
+    #progress-panel {
+      display: none;
+      background: #1e293b;
+      border-radius: 14px;
+      padding: 14px 18px;
+      margin-bottom: 16px;
+      color: white;
+    }
+    .progress-step-label {
+      font-size: 0.88rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .progress-bar-track {
+      background: rgba(255,255,255,0.15);
+      border-radius: 999px;
+      height: 6px;
+      margin-bottom: 8px;
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      background: #60a5fa;
+      height: 100%;
+      border-radius: 999px;
+      transition: width 0.5s ease;
+      width: 0%;
+    }
+    .progress-detail-text {
+      font-size: 0.78rem;
+      color: rgba(255,255,255,0.55);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
     .filter-bar {
       display: flex;
       gap: 10px;
@@ -1938,6 +2142,17 @@ function generateHtml(sessions) {
       color: white;
       border-color: #111;
       font-weight: 700;
+    }
+
+    .theme-header {
+      font-size: 1rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #555;
+      border-top: 2px solid #ddd;
+      padding: 18px 0 6px;
+      margin-top: 8px;
     }
 
     .session-tabs-wrapper {
@@ -2580,6 +2795,21 @@ function generateHtml(sessions) {
     }
 
     .republish-btn:hover { background: #eff6ff; }
+
+    .verify-sources-btn {
+      background: #fff;
+      border: 1px solid #059669;
+      border-radius: 999px;
+      padding: 4px 12px;
+      font: inherit;
+      font-size: 0.82rem;
+      cursor: pointer;
+      color: #059669;
+      margin-top: 10px;
+      margin-left: 6px;
+    }
+    .verify-sources-btn:hover { background: #ecfdf5; }
+    .verify-sources-btn:disabled { opacity: 0.5; cursor: wait; }
 
     .ai-box {
       background: #f5f5f5;
@@ -3260,7 +3490,14 @@ function generateHtml(sessions) {
     <button class="update-banner" id="update-banner" onclick="window.location.reload()">Nouvelle session disponible — Charger</button>
   </div>
 
+  <div id="progress-panel">
+    <div class="progress-step-label">Étape <span id="prog-step">…</span> / 6 — <span id="prog-name">Démarrage…</span></div>
+    <div class="progress-bar-track"><div class="progress-bar-fill" id="prog-bar"></div></div>
+    <div class="progress-detail-text" id="prog-detail"></div>
+  </div>
+
   <div class="filter-bar">
+    <button class="filter-btn" data-sort="theme">Par thématique</button>
     <button class="filter-btn active" data-sort="score">Sujets clivants</button>
     <button class="filter-btn" data-sort="sources">Sujets majeurs</button>
     <button class="filter-btn" data-sort="left">Sujets avec fort intérêt</button>
@@ -3448,6 +3685,9 @@ function generateHtml(sessions) {
         const keyword = String(value || "")
           .replace(/^[-–—•\\s]+/, "")
           .replace(/[?!.;,:\\s]+$/g, "")
+          .replace(/-/g, " - ")
+          .replace(/['']/g, " ' ")
+          .replace(/\s+/g, " ")
           .trim();
         if (!keyword || keyword.length < 2 || keyword.length > 40) return;
         const lower = keyword.toLowerCase();
@@ -4769,9 +5009,49 @@ function generateHtml(sessions) {
       if (countEl) countEl.textContent = String(count);
     }
 
+    function clearThemeHeaders(session) {
+      session.querySelectorAll(":scope > .theme-header").forEach(h => h.remove());
+    }
+
+    function applyThemeGrouping(activeSession) {
+      if (!activeSession) return;
+      clearThemeHeaders(activeSession);
+      const subjects = [...activeSession.querySelectorAll(":scope > .subject")];
+      subjects.forEach(s => { s.style.display = ""; });
+
+      const byTheme = new Map();
+      [...AGON_THEMES, "Non analysé"].forEach(t => byTheme.set(t, []));
+      subjects.forEach(s => {
+        const t = s.dataset.theme || "Non analysé";
+        (byTheme.has(t) ? byTheme.get(t) : byTheme.get("Non analysé")).push(s);
+      });
+
+      let visibleCount = 0;
+      byTheme.forEach((themeSubjects, theme) => {
+        if (!themeSubjects.length) return;
+        themeSubjects.sort((a, b) => Number(b.dataset.score) - Number(a.dataset.score));
+        const header = document.createElement("div");
+        header.className = "theme-header";
+        header.textContent = theme;
+        activeSession.appendChild(header);
+        themeSubjects.forEach((s, i) => {
+          activeSession.appendChild(s);
+          visibleCount++;
+          const badge = s.querySelector(".subject-number");
+          if (badge) badge.textContent = visibleCount + " / " + subjects.length;
+        });
+      });
+      updateSavedSelectionUi();
+    }
+
     function sortSubjects() {
       const activeSession = getActiveSession();
       if (!activeSession) return;
+      if (currentSort === "theme") {
+        applyThemeGrouping(activeSession);
+        return;
+      }
+      clearThemeHeaders(activeSession);
       const subjects = [...activeSession.querySelectorAll(":scope > .subject")];
       if (currentSort !== "saved") {
         subjects.sort((a, b) => Number(b.dataset[currentSort]) - Number(a.dataset[currentSort]));
@@ -5010,6 +5290,58 @@ function generateHtml(sessions) {
       generateBtn.textContent = "Tout générer";
     });
 
+    document.addEventListener("click", async (e) => {
+      if (!e.target.closest(".verify-sources-btn")) return;
+      const btn = e.target.closest(".verify-sources-btn");
+      const subjectEl = btn.closest(".subject");
+      if (!subjectEl) return;
+
+      btn.disabled = true;
+      const originalText = btn.textContent;
+      btn.textContent = "Vérification…";
+
+      try {
+        let subjectData;
+        const rawData = btn.dataset.subject;
+        if (rawData) {
+          subjectData = JSON.parse(rawData);
+        } else {
+          const payload = decodeStoryData(subjectEl.dataset.subjectPayload || "") || {};
+          const analyzeBtn = subjectEl.querySelector(".analyze-btn[data-mode='positions']");
+          subjectData = analyzeBtn
+            ? JSON.parse(analyzeBtn.dataset.subject)
+            : { subject: payload.subject || "", contents: payload.contents || [], sources: payload.sources || [] };
+        }
+
+        const res = await fetch("/verify-sources", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(subjectData)
+        });
+        if (!res.ok) throw new Error("Erreur serveur");
+        const data = await res.json();
+
+        const preselectedLinks = new Set(
+          Array.isArray(data.selectedLinks)
+            ? data.selectedLinks.map(l => String(l || "").trim()).filter(Boolean)
+            : []
+        );
+        subjectEl.querySelectorAll(".content-item[data-link]").forEach(item => {
+          const cb = item.querySelector('input[type="checkbox"]');
+          const sel = preselectedLinks.has(item.dataset.link);
+          if (cb) cb.checked = sel;
+          item.classList.toggle("preselected", sel);
+        });
+
+        btn.textContent = "✓ Sources vérifiées";
+        setTimeout(() => { btn.textContent = originalText; btn.disabled = false; }, 3000);
+      } catch (err) {
+        console.error("Erreur vérification sources :", err.message);
+        btn.textContent = "Erreur";
+        setTimeout(() => { btn.textContent = originalText; btn.disabled = false; }, 3000);
+      }
+    });
+
     document.querySelectorAll(".filter-btn").forEach(btn => {
       btn.addEventListener("click", () => {
         document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
@@ -5071,13 +5403,28 @@ function generateHtml(sessions) {
       else { el.classList.remove("visible"); }
     }
 
+    function renderProgress(prog) {
+      var pct = prog.stepTotal > 0 ? Math.min(100, Math.round((prog.stepIndex / prog.stepTotal) * 100)) : 0;
+      var bar = document.getElementById("prog-bar");
+      var step = document.getElementById("prog-step");
+      var name = document.getElementById("prog-name");
+      var detail = document.getElementById("prog-detail");
+      if (bar) bar.style.width = pct + "%";
+      if (step) step.textContent = prog.stepIndex || "…";
+      if (name) name.textContent = prog.step || "Démarrage…";
+      if (detail) detail.textContent = prog.detail || "";
+    }
+
     async function startRefresh() {
       if (ptrIsRefreshing) return;
       ptrIsRefreshing = true;
 
       var refreshBtn = document.querySelector(".refresh-btn");
       if (refreshBtn) { refreshBtn.disabled = true; refreshBtn.textContent = "En cours…"; }
-      setPtrIndicator("↻ Génération en cours…");
+
+      var panel = document.getElementById("progress-panel");
+      if (panel) { panel.style.display = "block"; }
+      renderProgress({ stepIndex: 0, stepTotal: 6, step: "Démarrage…", detail: "" });
 
       try {
         var r0 = await fetch("/sessions-mixte.json");
@@ -5087,27 +5434,34 @@ function generateHtml(sessions) {
 
       try { await fetch("/refresh", { method: "POST" }); } catch (e) {}
 
-      var poll = setInterval(async function() {
+      function finishRefresh() {
+        clearInterval(progressPoll);
+        clearInterval(completionPoll);
+        clearTimeout(timeoutId);
+        ptrIsRefreshing = false;
+        setPtrIndicator(null);
+        if (panel) panel.style.display = "none";
+        if (refreshBtn) { refreshBtn.disabled = false; refreshBtn.textContent = "Mettre à jour"; }
+        showUpdateBanner();
+      }
+
+      var progressPoll = setInterval(async function() {
+        try {
+          var r = await fetch("/progress?t=" + Date.now());
+          var prog = await r.json();
+          renderProgress(prog);
+        } catch (e) {}
+      }, 1500);
+
+      var completionPoll = setInterval(async function() {
         try {
           var r = await fetch("/sessions-mixte.json?t=" + Date.now());
           var s = await r.json();
-          if (s.length > 0 && s[0].generatedAt !== ptrBaseTimestamp) {
-            clearInterval(poll);
-            ptrIsRefreshing = false;
-            setPtrIndicator(null);
-            if (refreshBtn) { refreshBtn.disabled = false; refreshBtn.textContent = "Mettre à jour"; }
-            showUpdateBanner();
-          }
+          if (s.length > 0 && s[0].generatedAt !== ptrBaseTimestamp) finishRefresh();
         } catch (e) {}
-      }, 5000);
+      }, 3000);
 
-      setTimeout(function() {
-        clearInterval(poll);
-        ptrIsRefreshing = false;
-        setPtrIndicator(null);
-        if (refreshBtn) { refreshBtn.disabled = false; refreshBtn.textContent = "Mettre à jour"; }
-        showUpdateBanner();
-      }, 10 * 60 * 1000);
+      var timeoutId = setTimeout(finishRefresh, 15 * 60 * 1000);
     }
 
     var refreshBtn = document.querySelector(".refresh-btn");
@@ -5164,11 +5518,15 @@ async function runWatchSession() {
     console.log("Aucune session précédente : première collecte sur la fenêtre récente habituelle.");
   }
 
-  console.log("Collecte des articles...");
-  const articles = await collectArticles(lastSessionCutoff);
+  const previousSources = getPreviousSessionSources();
 
+  setProgress(1, "Collecte des articles", "Démarrage…");
+  console.log("Collecte des articles...");
+  const articles = await collectArticles(lastSessionCutoff, previousSources);
+
+  setProgress(2, "Collecte des vidéos YouTube", "Démarrage…");
   console.log("Collecte des vidéos YouTube...");
-  const videos = await collectYouTubeVideos(lastSessionCutoff);
+  const videos = await collectYouTubeVideos(lastSessionCutoff, previousSources);
 
   const contents = [...articles, ...videos];
 
@@ -5176,6 +5534,7 @@ async function runWatchSession() {
   console.log(`${videos.length} vidéo(s) récupérée(s) dans les flux.`);
   console.log(`${contents.length} contenu(s) récent(s) au total.`);
 
+  setProgress(3, "Regroupement des sujets", `${contents.length} contenus`);
   console.log("Regroupement des nouveaux sujets mixtes...");
   const groups = groupContentsBySubject(contents);
 
@@ -5188,6 +5547,7 @@ async function runWatchSession() {
   let analyzedSubjects;
 
   if (openai) {
+    setProgress(4, "Analyse IA", `0 / ${subjects.length} sujets`);
     analyzedSubjects = await analyzeScoresWithAI(ensureSubjectIds(subjects));
   } else {
     analyzedSubjects = ensureSubjectIds(subjects).map(subject => {
@@ -5204,6 +5564,7 @@ async function runWatchSession() {
     });
   }
 
+  setProgress(5, "Déduplication IA", "");
   const deduplication = await deduplicateSubjectsWithAI(analyzedSubjects);
   analyzedSubjects = deduplication.subjects;
 
@@ -5229,6 +5590,7 @@ async function runWatchSession() {
 
   saveSessions(limitedSessions);
 
+  setProgress(6, "Génération de la page", "");
   fs.writeFileSync(OUTPUT_JSON, JSON.stringify(analyzedSubjects, null, 2), "utf8");
   fs.writeFileSync(OUTPUT_HTML, generateHtml(limitedSessions), "utf8");
 
@@ -5238,13 +5600,24 @@ async function runWatchSession() {
 }
 
 let isRunning = false;
+let collectProgress = { running: false, done: false, stepIndex: 0, stepTotal: 6, step: "", detail: "" };
+
+function setProgress(stepIndex, step, detail) {
+  collectProgress = { running: true, done: false, stepIndex, stepTotal: 6, step, detail: detail || "" };
+}
+
+apiApp.get("/progress", (req, res) => {
+  res.json(collectProgress);
+});
 
 async function main() {
   isRunning = true;
+  collectProgress = { running: true, done: false, stepIndex: 0, stepTotal: 6, step: "Démarrage…", detail: "" };
   try {
     await runWatchSession();
   } finally {
     isRunning = false;
+    collectProgress = { ...collectProgress, running: false, done: true };
   }
 }
 

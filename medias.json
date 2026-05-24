@@ -123,5 +123,10 @@
     "nom": "Alternatives économiques",
     "orientation": "gauche",
     "rss": "https://www.alternatives-economiques.fr/rss.xml"
+  },
+  {
+    "nom": "Les Echos",
+    "orientation": "centre-droit / économie",
+    "rss": "https://www.lesechos.fr/rss/rss_une.xml"
   }
 ]
