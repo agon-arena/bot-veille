@@ -128,5 +128,10 @@
     "nom": "Les Echos",
     "orientation": "centre-droit / économie",
     "rss": "https://www.lesechos.fr/rss/rss_une.xml"
+  },
+  {
+    "nom": "Le Dauphiné Libéré",
+    "orientation": "généraliste / régional",
+    "rss": "https://www.ledauphine.com/rss"
   }
 ]

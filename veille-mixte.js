@@ -4475,6 +4475,8 @@ function generateHtml(sessions) {
             }
           })
         });
+
+        await suggestStoryForSubject(subjectEl);
       } catch (err) {
         btn.disabled = false;
         btn.textContent = "Réessayer (erreur)";
@@ -4777,7 +4779,7 @@ function generateHtml(sessions) {
         const theme = subjectEl.querySelector(".agon-select")?.value || btn.dataset.theme;
         const resumeEl3 = subjectEl.querySelector(".resume");
         const resume = (resumeEl3?.dataset.rawText || resumeEl3?.textContent.trim() || "").slice(0, AI_RESUME_MAX);
-        const keywords = getKeywordsFromEditor(subjectEl);
+        const keywords = [getMainKeywordFromEditor(subjectEl), ...getKeywordsFromEditor(subjectEl)].filter(Boolean);
         const sources = btn.dataset.sources;
         const links = [...subjectEl.querySelectorAll(".content-item[data-link]")].map(item => {
           const dateText = item.querySelector("small")?.textContent || "";
@@ -5255,7 +5257,7 @@ function generateHtml(sessions) {
       const finalPosB = finalEditables[1]?.textContent.trim() || agonBtnFinal.dataset.positionB;
       const theme = subjectEl.querySelector(".agon-select")?.value || agonBtnFinal.dataset.theme;
       const resumeForSend = resumeText.slice(0, AI_RESUME_MAX);
-      const keywords = getKeywordsFromEditor(subjectEl);
+      const keywords = [getMainKeywordFromEditor(subjectEl), ...getKeywordsFromEditor(subjectEl)].filter(Boolean);
       const links = [...subjectEl.querySelectorAll(".content-item[data-link]")].map(item => {
         const dateMatch = (item.querySelector("small")?.textContent || "").match(/(\\d{2}\\/\\d{2}\\/\\d{4})/);
         return { title: item.querySelector("a")?.textContent.trim() || "", url: item.dataset.link || "", source: item.querySelector("strong")?.textContent.trim() || "", type: item.dataset.type || "article", date: dateMatch ? dateMatch[1] : "", checked: item.querySelector('input[type="checkbox"]')?.checked ?? true };

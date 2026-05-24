@@ -1,5 +1,308 @@
 [
   {
+    "subject": "Rugby : finale de Champions Cup avec Bordeaux-Bègles et forfait d’Arthur Fils à Roland-Garros",
+    "sessionLabel": "23/05/2026 à 18:44:00",
+    "question": "Le forfait d’Arthur Fils affaiblit-il gravement Roland-Garros ?",
+    "positionA": "Oui, il prive le tournoi d’un grand espoir",
+    "positionB": "Non, le tournoi reste compétitif sans lui",
+    "theme": "Sports - loisirs",
+    "resume": "Ce week-end, le sport s’emballe avec une double actualité qui captive tous les regards. D’un côté, une finale de Champions Cup explosive entre Bordeaux-Bègles et le Leinster. De l’autre, Roland-Garros perd brutalement son espoir numéro un, Arthur Fils, contraint de renoncer à la dernière minute.\n\nSur le terrain, Bordeaux-Bègles ne se laisse pas impressionner par le tenant du titre européen. Malgré un début dominé par les Irlandais, les Bordelais prennent rapidement les commandes, affichant une rage de vaincre palpable. Ce choc oppose une équipe française avide de son premier triomphe à une formation irlandaise expérimentée, prête à défendre son couronne avec acharnement. Chaque minute intensifie la tension, chaque action fait vibrer le public, promettant un combat acharné jusqu’au bout.\n\nPendant ce temps, dans l’arène du tennis, l’annonce du forfait d’Arthur Fils, le prodige français, résonne comme un coup de tonnerre. Privé de sa tête d’affiche, Roland-Garros voit son visage masculin profondément transformé, laissant place à une incertitude palpable. Ce vide inattendu redistribue les cartes et fait planer le doute sur la suite du tournoi. Deux événements majeurs, deux histoires qui s’entrelacent et annoncent un week-end sportif sous haute tension, loin d’être terminé.\n\nLe forfait d’Arthur Fils affaiblit-il gravement Roland-Garros ?\n\nR. Renaudot",
+    "sources": "HuffPost France, Libération, Le Monde, Franceinfo, 20 Minutes, BFMTV, La Croix, Le Figaro, Europe 1",
+    "links": [
+      {
+        "title": "Arthur Fils annonce son forfait, Roland Garros se fera bien sans le numéro 1 français",
+        "url": "https://www.huffingtonpost.fr/sport/article/arthur-fils-annonce-son-forfait-roland-garros-se-fera-bien-sans-le-numero-1-francais_264046.html",
+        "source": "HuffPost France",
+        "type": "article",
+        "date": "23/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Roland-Garros 2026 : pourquoi le fisc français aimerait que les joueurs gagnent plus d’argent",
+        "url": "https://www.liberation.fr/sports/tennis/roland-garros-2026-pourquoi-le-fisc-francais-aimerait-que-les-joueurs-gagnent-plus-dargent-20260523_O2T5SIZWXBDENETPTPIKO7T7E4/",
+        "source": "Libération",
+        "type": "article",
+        "date": "23/05/2026",
+        "checked": false
+      },
+      {
+        "title": "EN DIRECT, UBB-Leinster : implacables, les champions d’Europe en titre imposent leur loi en première période",
+        "url": "https://www.lemonde.fr/sport/live/2026/05/23/en-direct-ubb-leinster-suivez-la-finale-de-la-champions-cup-de-rugby_6692751_3242.html",
+        "source": "Le Monde",
+        "type": "article",
+        "date": "23/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Coupe de France : 35 personnes interpellées à Paris en marge de la finale",
+        "url": "https://www.liberation.fr/societe/police-justice/coupe-de-france-35-personnes-interpellees-a-paris-en-marge-de-la-finale-20260523_YNQV5G77MJF2FJNLOTWFQ2NEXI/",
+        "source": "Libération",
+        "type": "article",
+        "date": "23/05/2026",
+        "checked": false
+      },
+      {
+        "title": "Barcelone-OL Lyonnes : « Personne ne peut nous enlever nos cinq victoires de suite en Ligue des champions », rappelle la Lyonnaise Ada Hegerberg avant la finale",
+        "url": "https://www.lemonde.fr/sport/article/2026/05/23/barcelone-ol-lyonnes-personne-ne-peut-nous-enlever-nos-cinq-victoires-de-suite-en-ligue-des-champions-rappelle-la-lyonnaise-ada-hegerberg-avant-la-finale_6692731_3242.html",
+        "source": "Le Monde",
+        "type": "article",
+        "date": "23/05/2026",
+        "checked": false
+      },
+      {
+        "title": "Finale de la Ligue des champions OL-Barça : «Il n’y avait que les Lyonnaises pour venir troubler la domination actuelle des clubs anglais ou espagnols»",
+        "url": "https://www.liberation.fr/sports/football/finale-de-la-ligue-des-champions-ol-barca-il-ny-avait-que-les-lyonnaises-pour-venir-troubler-la-domination-actuelle-des-clubs-anglais-ou-espagnols-20260523_2OSZBECAZFHEZNPRYGWWVUR54Y/",
+        "source": "Libération",
+        "type": "article",
+        "date": "23/05/2026",
+        "checked": false
+      },
+      {
+        "title": "OL Lyonnes-FC Barcelone : la finale de la Ligue des champions opposera ces deux joueuses qui sont en couple",
+        "url": "https://www.huffingtonpost.fr/sport/article/ol-lyonnes-fc-barcelone-la-finale-de-la-ligue-des-champions-opposera-ces-deux-joueuses-qui-sont-en-couple_264024.html",
+        "source": "HuffPost France",
+        "type": "article",
+        "date": "23/05/2026",
+        "checked": false
+      },
+      {
+        "title": "Roland-Garros 2026 : le numéro 1 français, Arthur Fils, annonce son forfait à la veille du début du tournoi",
+        "url": "https://www.franceinfo.fr/roland-garros/roland-garros-2026-le-numero-1-francais-arthur-fils-annonce-son-forfait-a-la-veille-du-debut-du-tournoi_8023409.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "type": "article",
+        "date": "23/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Roland-Garros 2026 : Arthur Fils déclare forfait, « ça ne tiendra jamais »",
+        "url": "https://www.20minutes.fr/sport/tennis/roland-garros/4225084-20260523-roland-garros-2026-arthur-fils-declare-forfait-ca-tiendra-jamais?at_medium=display&at_campaign=149",
+        "source": "20 Minutes",
+        "type": "article",
+        "date": "23/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Leinster-UBB : les Bordelais largement en tête à la pause... Suivez avec nous la finale de Champions Cup",
+        "url": "https://www.franceinfo.fr/sports/rugby/champions-cup/direct-leinster-ubb-les-bordelais-conserveront-ils-leur-titre-suivez-et-commentez-avec-nous-la-finale-de-champions-cup_8019047.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "type": "article",
+        "date": "23/05/2026",
+        "checked": true
+      },
+      {
+        "title": "DIRECT. Leinster-UBB: Bordeaux en démonstration dans une finale à sens unique !",
+        "url": "https://rmcsport.bfmtv.com/rugby/coupe-d-europe/direct-leinster-ubb-suivez-le-match-de-la-finale-de-champions-cup-en-live_LS-202605230048.html",
+        "source": "BFMTV",
+        "type": "article",
+        "date": "23/05/2026",
+        "checked": false
+      },
+      {
+        "title": "Roland Garros 2026 : le tennis français à l’école de la patience",
+        "url": "https://www.la-croix.com/sport/roland-garros-2026-le-tennis-francais-a-l-ecole-de-la-patience-20260523",
+        "source": "La Croix",
+        "type": "article",
+        "date": "23/05/2026",
+        "checked": false
+      },
+      {
+        "title": "EN DIRECT Leinster - UBB : Le doublé pour Bielle-Biarrey, les Bordelais inarrêtables… Suivez la finale de la Champions Cup avec nous…",
+        "url": "https://www.20minutes.fr/sport/rugby/champions_rugby_cup/4224705-20260523-direct-ubb-leinster-bordelais-conquete-deuxieme-titre-europeen-affilee-suivez-finale-champions-cup?at_medium=display&at_campaign=149",
+        "source": "20 Minutes",
+        "type": "article",
+        "date": "23/05/2026",
+        "checked": false
+      },
+      {
+        "title": "Champions Cup : comment l’Union Bordeaux-Bègles est passée d’éternel deuxième à cador européen ?",
+        "url": "https://www.franceinfo.fr/sports/rugby/champions-cup/champions-cup-comment-l-union-bordeaux-begles-est-passee-d-eternel-deuxieme-a-cador-europeen_8019029.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "type": "article",
+        "date": "23/05/2026",
+        "checked": false
+      },
+      {
+        "title": "EN DIRECT – UBB-Leinster : Bielle-Biarrey signe un doublé, Moefana enfonce le clou... Les Bordelais survolent la finale à Bilbao",
+        "url": "https://www.lefigaro.fr/sports/rugby/live/champions-cup/2026/948487/leinster-bordeaux-begles",
+        "source": "Le Figaro",
+        "type": "article",
+        "date": "23/05/2026",
+        "checked": false
+      },
+      {
+        "title": "Champions Cup : en vidéo, le récital de l’UBB contre le Leinster avec un Bielle-Biarrey phénoménal",
+        "url": "https://www.lefigaro.fr/sports/rugby/coupe-d-europe/champions-cup-en-video-le-premier-essai-du-leinster-qui-calme-les-ardeurs-de-l-ubb-20260523",
+        "source": "Le Figaro",
+        "type": "article",
+        "date": "23/05/2026",
+        "checked": false
+      },
+      {
+        "title": "Roland-Garros : énorme coup dur, Arthur Fils annonce son forfait",
+        "url": "https://www.lefigaro.fr/sports/tennis/roland-garros/roland-garros-enorme-coup-dur-arthur-fils-annonce-son-forfait-20260523",
+        "source": "Le Figaro",
+        "type": "article",
+        "date": "23/05/2026",
+        "checked": false
+      },
+      {
+        "title": "Irrésistible en Champions Cup, Bordeaux-Bègles veut faire coup double",
+        "url": "https://www.lefigaro.fr/sports/rugby/coupe-d-europe/irresistible-en-champions-cup-bordeaux-begles-veut-faire-coup-double-20260523",
+        "source": "Le Figaro",
+        "type": "article",
+        "date": "23/05/2026",
+        "checked": false
+      },
+      {
+        "title": "Roland-Garros : Arthur Fils prêt à changer de dimension, si le corps tient",
+        "url": "https://www.lefigaro.fr/sports/tennis/roland-garros-arthur-fils-pret-a-changer-de-dimension-si-le-corps-tient-20260523",
+        "source": "Le Figaro",
+        "type": "article",
+        "date": "23/05/2026",
+        "checked": false
+      },
+      {
+        "title": "",
+        "url": "https://www.youtube.com/watch?v=IDkHxdjl2Z0",
+        "source": "Europe 1",
+        "type": "youtube",
+        "date": "23/05/2026",
+        "checked": false
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "47-le-sport-devient-un-espace-de-pouvoir-d-argent-d-identite-et-de-soft-power",
+      "matchedStoryTitle": "Le sport devient un espace de pouvoir, d’argent, d’identité et de soft power",
+      "previousEpisodeTitle": "",
+      "previousEpisodeUrl": "",
+      "confidence": 0.85,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {},
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "Bordeaux-Bègle",
+      "Arthur Fil",
+      "Roland-Garro  2026",
+      "Lein ter",
+      "OL Lyonne",
+      "FC Barcelone"
+    ],
+    "sentAt": "2026-05-24T07:41:59.413Z"
+  },
+  {
+    "subject": "Canal+ assigné en justice pour discrimination liée à la tribune anti-Bolloré",
+    "sessionLabel": "23/05/2026 à 18:44:00",
+    "question": "La liberté d’expression doit-elle primer sur les intérêts économiques des médias ?",
+    "positionA": "Liberté d’expression doit être protégée",
+    "positionB": "Intérêts économiques justifient certaines exclusions",
+    "theme": "Justice / faits divers",
+    "resume": "Canal+ se trouve plongée au cœur d’un conflit judiciaire brûlant, où s’affrontent pouvoir économique et liberté d’expression. La chaîne est poursuivie pour discrimination après avoir exclu plusieurs figures du cinéma et de la culture, toutes signataires d’une tribune virulente contre Vincent Bolloré, principal actionnaire du groupe.\n\nTout a basculé avec la parution de la tribune « Zapper Bolloré », un cri d’alarme dénonçant l’emprise jugée excessive de Bolloré sur Canal+. En riposte, la direction a dressé une « liste noire », bannissant ces professionnels des futurs projets du groupe. Une décision radicale qui a rapidement été perçue comme une discrimination, déclenchant une bataille judiciaire acharnée pour faire reconnaître cette exclusion comme injustifiée.\n\nCe dossier met en lumière un choc frontal entre la défense acharnée de la liberté d’expression et les stratégies internes d’un mastodonte audiovisuel. Le secteur culturel et médiatique retient son souffle, conscient que ce combat pourrait redessiner les contours du pouvoir et des droits au sein des médias. Une lutte qui ne fait que commencer.\n\nLa liberté d’expression doit-elle primer sur les intérêts économiques des médias ?\n\nR. Renaudot",
+    "sources": "L'Obs, L'Humanité, HuffPost France, Libération, La Croix, Franceinfo, Euronews FR, RFI, 20 Minutes",
+    "links": [
+      {
+        "title": "Tribune anti-bolloré : la polémique qui agite le cinéma prend un tournant judiciaire",
+        "url": "https://www.nouvelobs.com/culture/20260523.OBS115182/tribune-anti-bollore-la-polemique-qui-agite-le-cinema-prend-un-tournant-judiciaire.html",
+        "source": "L'Obs",
+        "type": "article",
+        "date": "23/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Tribune Canal + : la CGT et la LDH appellent à « agir pour sortir Bolloré »",
+        "url": "https://www.humanite.fr/culture-et-savoir/canal-plus/tribune-canal-aucune-discrimination-na-sa-place-dans-le-cinema-annoncent-la-cgt-et-la-ldh",
+        "source": "L'Humanité",
+        "type": "article",
+        "date": "23/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Canal+ assigné en justice après sa réponse à la tribune anti-Bolloré et les menaces de Maxime Saada",
+        "url": "https://www.huffingtonpost.fr/medias/article/canal-assigne-en-justice-pour-sa-reponse-a-la-tribune-anti-bollore_264035.html",
+        "source": "HuffPost France",
+        "type": "article",
+        "date": "23/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Liste noire de Canal + après la tribune «Zapper Bolloré» : le groupe assigné en justice pour discrimination",
+        "url": "https://www.liberation.fr/culture/cinema/liste-noire-de-canal-apres-la-tribune-zapper-bollore-le-groupe-assigne-en-justice-pour-discrimination-20260523_DX5MWOYV3NDVBEJVT33D6OC3MQ/",
+        "source": "Libération",
+        "type": "article",
+        "date": "23/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Tribune anti-Bolloré : Canal+ assigné en justice pour discrimination",
+        "url": "https://www.la-croix.com/culture/tribune-anti-bollore-canal-assigne-en-justice-pour-discrimination-20260523",
+        "source": "La Croix",
+        "type": "article",
+        "date": "23/05/2026",
+        "checked": true
+      },
+      {
+        "title": "\"Discrimination\" : Canal+ assigné en justice après sa réponse au collectif \"Zapper Bolloré\"",
+        "url": "http://fr.euronews.com/culture/2026/05/23/discrimination-canal-assigne-en-justice-apres-sa-reponse-au-collectif-zapper-bollore",
+        "source": "Euronews FR",
+        "type": "article",
+        "date": "23/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Canal+ assigné en justice pour discrimination envers les signataires de la tribune anti-Bolloré, avec qui le groupe affirme ne plus vouloir travailler",
+        "url": "https://www.franceinfo.fr/economie/vincent-bollore/canal-assigne-en-justice-pour-discrimination-envers-les-signataires-de-la-tribune-anti-bollore-avec-qui-le-groupe-affirme-ne-plus-vouloir-travailler_8023007.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "type": "article",
+        "date": "23/05/2026",
+        "checked": true
+      },
+      {
+        "title": "France: Canal+ assigné en justice pour discrimination envers les signataires de la tribune anti-Bolloré",
+        "url": "https://www.rfi.fr/fr/france/20260523-france-canal-assign%C3%A9-en-justice-pour-discrimination-envers-les-signataires-de-la-tribune-anti-bollor%C3%A9",
+        "source": "RFI",
+        "type": "article",
+        "date": "23/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Canal+ assigné en justice pour discrimination après la réponse de son directeur à la tribune anti-Bolloré",
+        "url": "https://www.20minutes.fr/arts-stars/culture/4225057-20260523-canal-assigne-justice-discrimination-apres-reponse-directeur-tribune-anti-bollore?at_medium=display&at_campaign=149",
+        "source": "20 Minutes",
+        "type": "article",
+        "date": "23/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Tribune anti-Bolloré : Canal+ assigné en justice",
+        "url": "https://www.youtube.com/shorts/E_Bcdv_nt60",
+        "source": "Franceinfo",
+        "type": "youtube",
+        "date": "23/05/2026",
+        "checked": true
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "54-les-grandes-affaires-judiciaires-et-mediatiques-deviennent-des-debats-de-societe",
+      "matchedStoryTitle": "Les grandes affaires judiciaires et médiatiques deviennent des débats de société",
+      "previousEpisodeTitle": "Les fabricants doivent-ils être tenus responsables des implants défectueux ?",
+      "previousEpisodeUrl": "http://localhost:3001/debate?id=517",
+      "confidence": 0.85,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {},
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "Vincent Bolloré",
+      "collectif Zapper Bolloré",
+      "CGT",
+      "LDH",
+      "Maxime Saada"
+    ],
+    "sentAt": "2026-05-24T07:14:01.365Z"
+  },
+  {
     "subject": "\"Ce sera un vrai test\" : comment Gabriel Attal prépare son entrée dans la course à l’Élysée",
     "sessionLabel": "23/05/2026 à 09:51:48",
     "question": "Gabriel Attal est-il prêt à incarner un vrai renouveau politique ?",
