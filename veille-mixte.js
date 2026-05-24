@@ -359,8 +359,9 @@ function upsertSavedSubject(payload) {
     return { ok: true, saved: false };
   }
 
+  const isNew = existingIndex === -1;
   const nextItem = {
-    ...(existingIndex !== -1 ? saved[existingIndex] : {}),
+    ...(isNew ? {} : saved[existingIndex]),
     ...payload,
     subject
   };
@@ -734,8 +735,6 @@ function normalizeKeywordList(values, max = 8) {
     const keyword = String(value || "")
       .replace(/^[-–—•\s]+/, "")
       .replace(/[?!.;,:\s]+$/g, "")
-      .replace(/-/g, " - ")
-      .replace(/['']/g, " ' ")
       .replace(/\s+/g, " ")
       .trim();
     if (!keyword) return;
@@ -936,7 +935,7 @@ Pour "keywords" :
 - évite les mots trop génériques comme "politique", "débat", "actualité", "France" seuls s'ils n'apportent rien ;
 - n'écris ni phrase complète, ni explication ;
 - chaque tag doit tenir sur quelques mots maximum ;
-- n'utilise jamais de trait d'union : écris "Etats Unis" et non "Etats-Unis", "Moyen Orient" et non "Moyen-Orient" ;
+- tu peux utiliser des traits d'union et des apostrophes si nécessaire ("États-Unis", "Secours d'urgence") ;
 - ne répète pas le mainKeyword dans keywords ;
 - n'invente aucun acteur, lieu ou fait absent des contenus.
 `;
@@ -1285,7 +1284,9 @@ apiApp.post("/refresh", async (req, res) => {
 
 apiApp.post("/save", (req, res) => {
   try {
-    res.json(upsertSavedSubject(req.body || {}));
+    const body = req.body || {};
+    const result = upsertSavedSubject(body);
+    res.json(result);
   } catch (error) {
     res.status(500).json({ error: error.message || "Erreur sauvegarde" });
   }
@@ -3686,10 +3687,8 @@ function generateHtml(sessions) {
       const list = [];
       (Array.isArray(values) ? values : []).forEach(function(value) {
         const keyword = String(value || "")
-          .replace(/^[-–—•\\s]+/, "")
-          .replace(/[?!.;,:\\s]+$/g, "")
-          .replace(/-/g, " - ")
-          .replace(/['']/g, " ' ")
+          .replace(/^[-–—•\s]+/, "")
+          .replace(/[?!.;,:\s]+$/g, "")
           .replace(/\s+/g, " ")
           .trim();
         if (!keyword || keyword.length < 2 || keyword.length > 40) return;
@@ -5632,8 +5631,28 @@ localApiServer.on("error", (error) => {
   console.error("Erreur API mixte locale :", error.message);
 });
 
+const AUTO_COLLECT_MIN_INTERVAL_HOURS = 2;
+
+function getLastSessionAgeHours() {
+  try {
+    const sessions = JSON.parse(fs.readFileSync(HISTORY_FILE, "utf8"));
+    if (!Array.isArray(sessions) || sessions.length === 0) return Infinity;
+    const last = new Date(sessions[0].generatedAt);
+    if (isNaN(last.getTime())) return Infinity;
+    return (Date.now() - last.getTime()) / (1000 * 60 * 60);
+  } catch (e) {
+    return Infinity;
+  }
+}
+
 if (process.env.BOT_VEILLE_API_ONLY === "1") {
   console.log("Mode API seule : collecte des sources non lancée.");
 } else {
-  main();
+  const ageHours = getLastSessionAgeHours();
+  if (ageHours < AUTO_COLLECT_MIN_INTERVAL_HOURS) {
+    console.log(`Dernière session il y a ${ageHours.toFixed(1)}h — collecte automatique ignorée (seuil : ${AUTO_COLLECT_MIN_INTERVAL_HOURS}h).`);
+  } else {
+    console.log(`Dernière session il y a ${ageHours === Infinity ? "jamais" : ageHours.toFixed(1) + "h"} — lancement de la collecte.`);
+    main();
+  }
 }

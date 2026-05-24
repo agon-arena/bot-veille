@@ -2000,6 +2000,7 @@ app.get("/saved", requireMixteAuth, (req, res) => {
       alert('Erreur lors de la suppression.');
     }
   });
+
 </script>
 </body>
 </html>`);
