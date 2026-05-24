@@ -1317,12 +1317,49 @@ function sendMissingPage(res, title, message) {
     <head>
       <meta charset="UTF-8">
       <title>${title}</title>
+      <style>
+        body { font-family: system-ui; max-width: 500px; margin: 80px auto; padding: 0 16px; text-align: center; color: #111; }
+        h1 { font-size: 1.3rem; margin-bottom: 8px; }
+        p { color: #555; margin-bottom: 24px; }
+        #launch-btn {
+          background: #111; color: #fff; border: none; border-radius: 999px;
+          padding: 12px 28px; font: inherit; font-size: 1rem; font-weight: 700;
+          cursor: pointer; margin-bottom: 12px;
+        }
+        #launch-btn:disabled { opacity: 0.5; cursor: wait; }
+        #status { font-size: 0.88rem; color: #555; min-height: 20px; }
+      </style>
     </head>
-    <body style="font-family: system-ui; max-width: 800px; margin: 40px auto; padding: 0 16px;">
+    <body>
       <h1>${title}</h1>
       <p>${message}</p>
-      <p>Attends quelques instants puis rafraîchis la page.</p>
-      <p><a href="/">Retour</a></p>
+      <button id="launch-btn" onclick="launch()">Lancer la première collecte</button>
+      <div id="status"></div>
+      <script>
+        async function launch() {
+          const btn = document.getElementById('launch-btn');
+          const status = document.getElementById('status');
+          btn.disabled = true;
+          btn.textContent = 'Collecte en cours…';
+          status.textContent = 'Récupération des sources et analyse IA…';
+          try {
+            await fetch('/refresh', { method: 'POST' });
+            var poll = setInterval(async function() {
+              try {
+                var r = await fetch('/progress?t=' + Date.now());
+                var p = await r.json();
+                if (p.step) status.textContent = 'Étape ' + p.stepIndex + ' / ' + p.stepTotal + ' — ' + p.step + (p.detail ? ' (' + p.detail + ')' : '');
+                if (p.done) { clearInterval(poll); window.location.reload(); }
+              } catch(e) {}
+            }, 2000);
+            setTimeout(function() { clearInterval(poll); window.location.reload(); }, 15 * 60 * 1000);
+          } catch(e) {
+            status.textContent = 'Erreur : ' + e.message;
+            btn.disabled = false;
+            btn.textContent = 'Réessayer';
+          }
+        }
+      </script>
     </body>
     </html>
   `);

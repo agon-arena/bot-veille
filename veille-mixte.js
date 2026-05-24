@@ -203,7 +203,10 @@ function getKeywords(text) {
     "nouvelle", "nouvelles", "direct", "video", "videos", "youtube", "short",
     "shorts", "replay", "live", "emission", "debat", "analyse", "actualite",
     "actualites", "france", "monde", "politique", "international", "economie",
-    "societe", "sport", "culture", "invite", "invites", "interview"
+    "societe", "sport", "culture", "invite", "invites", "interview",
+    "pourquoi", "comment", "quand", "voici", "bilan", "point", "zoom",
+    "retour", "suite", "apres", "alors", "aussi", "encore", "toujours",
+    "vraiment", "enfin", "moins", "plus", "bien", "meme", "autre", "autres"
   ]);
 
   return cleanText(text)
@@ -612,7 +615,7 @@ function groupContentsBySubject(contents) {
     }
 
     const sharedKeywords = bestGroup
-      ? countSharedKeywords(content.title, bestGroup.subject)
+      ? countSharedKeywords(content.title, bestGroup.referenceText)
       : 0;
 
     const conflicting = bestGroup
