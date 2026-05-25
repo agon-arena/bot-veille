@@ -1,6 +1,119 @@
 [
   {
     "action": "save",
+    "subject": "Guerre au Moyen-Orient : un accord avec l'Iran est encore possible lundi, estime le secrétaire d'Etat américain",
+    "debateScore": 8,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [
+      "guerre au Moyen-Orient",
+      "I raël",
+      "Marco Rubio",
+      "Donald Trump",
+      "pèlerinage à La Mecque",
+      "protocole d'accord"
+    ],
+    "agonTheme": "International",
+    "positionA": "",
+    "positionB": "",
+    "sources": "Franceinfo, Libération, BFMTV, France 24, RFI, Le Dauphiné Libéré",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.liberation.fr/international/moyen-orient/en-direct-guerre-au-moyen-orient-washington-et-teheran-proches-dun-accord-20260524_E6SIMAJRBRHKDF36TQVNLDHLY4/",
+        "source": "Libération",
+        "title": "Guerre au Moyen-Orient : Donald Trump n’entend pas «se précipiter» en vue d’un accord avec l’Iran",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.franceinfo.fr/monde/iran/guerre-entre-les-etats-unis-israel-et-l-iran/guerre-au-moyen-orient-un-accord-avec-l-iran-est-encore-possible-lundi-estime-le-secretaire-d-etat-americain_8026529.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "title": "Guerre au Moyen-Orient : un accord avec l'Iran est encore possible lundi, estime le secrétaire d'Etat américain",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.ledauphine.com/defense-guerre-conflit/2026/05/25/accord-etats-unis-iran-les-reticences-d-israel-et-des-faucons-republicains",
+        "source": "Le Dauphiné Libéré",
+        "title": "Guerre au Moyen-Orient. Accord États-Unis - Iran : les réticences d’Israël et des “faucons” républicains",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.bfmtv.com/international/moyen-orient/iran/video-guerre-au-moyen-orient-un-accord-avec-l-iran-est-possible-aujourd-hui-affirme-marco-rubio-secretaire-d-etat-des-etats-unis_VN-202605250049.html",
+        "source": "BFMTV",
+        "title": "Guerre au Moyen-Orient: \"un accord avec l'Iran est possible aujourd'hui\", affirme Marco Rubio, secrétaire d'État des États-Unis",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.rfi.fr/fr/moyen-orient/20260525-hadj-le-p%C3%A8lerinage-%C3%A0-la-mecque-d%C3%A9bute-sur-fond-de-conflit-entre-l-iran-les-%C3%A9tats-unis-et-isra%C3%ABl-au-moyen-orient",
+        "source": "RFI",
+        "title": "Hadj: le pèlerinage à La Mecque débute sur fond de conflit entre l'Iran, les États-Unis et Israël au Moyen-Orient",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.france24.com/fr/vid%C3%A9o/20260524-guerre-au-moyen-orient-que-contient-le-protocole-d-accord-entre-les-%C3%A9tats-unis-et-l-iran",
+        "source": "France 24",
+        "title": "Guerre au Moyen-Orient : que contient le protocole d'accord entre les États-unis et l'Iran?",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.ledauphine.com/defense-guerre-conflit/2026/05/24/accules-les-etats-unis-et-l-iran-contraints-a-un-accord-mais-pas-a-n-importe-quel-prix",
+        "source": "Le Dauphiné Libéré",
+        "title": "Guerre au Moyen-Orient. Acculés, les États-Unis et l’Iran contraints à un accord mais pas à n'importe quel prix",
+        "thumbnail": ""
+      }
+    ],
+    "sessionLabel": "25/05/2026 à 08:45:27",
+    "ai": {
+      "storyLink": {
+        "story_decision": "existing_story",
+        "matched_story_id": "israel-mph1fbfh",
+        "matched_story_title": "Israël",
+        "matched_story_summary": "",
+        "previous_episode_id": "553",
+        "previous_episode_title": "L’accord USA-Iran menace-t-il la sécurité d’Israël ?",
+        "previous_episode_summary": "Un fragile espoir flotte sur le Moyen-Orient : un accord entre les États-Unis et l’Iran pourrait être conclu dans la journée, promettant de désamorcer des tensions anciennes. Mais cette lueur d’apaisement se heurte à une réalité brûlante, où la menace d’un conflit s’étend bien au-delà des négociations.\n\nDans l’ombre des pourparlers, le Liban s’embrase. Des frappes récentes ravivent la peur d’une escalade incontrôlable, tandis que les habitants, pris au piège, redoutent un engrenage vers une guerre plus vaste. Ce contexte explosif jette une ombre lourde sur les efforts diplomatiques, fragilisant un accord déjà précaire.\n\nEn Israël, la colère gronde. Plusieurs élus dénoncent ce projet d’accord, le percevant comme un danger imminent pour la sécurité régionale. Entre espoirs de paix et risques de confrontation, le Moyen-Orient vacille sur un fil tendu, où chaque décision pourrait déclencher une crise majeure. L’issue reste incertaine, mais la tension, elle, est palpable.\n\nL’accord USA-Iran menace-t-il la sécurité d’Israël ?\n\nJ.L Grasso",
+        "previous_episode_url": "http://localhost:3001/debate?id=553",
+        "confidence": 0.85,
+        "reason": "L'histoire \"Israël\" nomme plus précisément l'acteur ou le lieu dominant de cette actualité.",
+        "criteria": {
+          "main_actors_match": true,
+          "central_tension_match": true,
+          "temporal_continuity": true,
+          "editorial_theme_match": true,
+          "strong_keywords_match": true
+        },
+        "new_story": {
+          "story_title": "",
+          "story_summary": "",
+          "main_actors": [
+            "guerre",
+            "moyen",
+            "orient"
+          ],
+          "central_tension": "Faut-il conclure un accord avec l’Iran dès lundi malgré les oppositions israéliennes et républicai…",
+          "keywords": [
+            "guerre",
+            "moyen",
+            "orient",
+            "accord",
+            "iran",
+            "possible",
+            "lundi",
+            "estime"
+          ],
+          "status": "active"
+        }
+      }
+    }
+  },
+  {
+    "action": "save",
     "subject": "Canicule : vigilance jaune dans 13 départements de l’Ouest lundi, une première pour le mois de mai",
     "debateScore": 5,
     "debateQuestion": "",
@@ -235,82 +348,6 @@
       }
     ],
     "sessionLabel": "24/05/2026 à 22:41:25"
-  },
-  {
-    "action": "save",
-    "subject": "Guerre au Moyen-Orient : un accord avec l'Iran est encore possible lundi, estime le secrétaire d'Etat américain",
-    "debateScore": 8,
-    "debateQuestion": "",
-    "resume": "",
-    "keywords": [],
-    "agonTheme": "",
-    "positionA": "",
-    "positionB": "",
-    "sources": "Franceinfo, Libération, BFMTV, France 24, RFI, Le Dauphiné Libéré",
-    "contents": [
-      {
-        "type": "article",
-        "link": "https://www.liberation.fr/international/moyen-orient/en-direct-guerre-au-moyen-orient-washington-et-teheran-proches-dun-accord-20260524_E6SIMAJRBRHKDF36TQVNLDHLY4/",
-        "source": "Libération",
-        "title": "Guerre au Moyen-Orient : Donald Trump n’entend pas «se précipiter» en vue d’un accord avec l’Iran",
-        "thumbnail": ""
-      },
-      {
-        "type": "article",
-        "link": "https://www.franceinfo.fr/monde/iran/guerre-entre-les-etats-unis-israel-et-l-iran/guerre-au-moyen-orient-un-accord-avec-l-iran-est-encore-possible-lundi-estime-le-secretaire-d-etat-americain_8026529.html#xtor=RSS-3-[lestitres]",
-        "source": "Franceinfo",
-        "title": "Guerre au Moyen-Orient : un accord avec l'Iran est encore possible lundi, estime le secrétaire d'Etat américain",
-        "thumbnail": ""
-      },
-      {
-        "type": "article",
-        "link": "https://www.ledauphine.com/defense-guerre-conflit/2026/05/25/accord-etats-unis-iran-les-reticences-d-israel-et-des-faucons-republicains",
-        "source": "Le Dauphiné Libéré",
-        "title": "Guerre au Moyen-Orient. Accord États-Unis - Iran : les réticences d’Israël et des “faucons” républicains",
-        "thumbnail": ""
-      },
-      {
-        "type": "article",
-        "link": "https://www.bfmtv.com/international/moyen-orient/iran/video-guerre-au-moyen-orient-un-accord-avec-l-iran-est-possible-aujourd-hui-affirme-marco-rubio-secretaire-d-etat-des-etats-unis_VN-202605250049.html",
-        "source": "BFMTV",
-        "title": "Guerre au Moyen-Orient: \"un accord avec l'Iran est possible aujourd'hui\", affirme Marco Rubio, secrétaire d'État des États-Unis",
-        "thumbnail": ""
-      },
-      {
-        "type": "article",
-        "link": "https://www.rfi.fr/fr/moyen-orient/20260525-hadj-le-p%C3%A8lerinage-%C3%A0-la-mecque-d%C3%A9bute-sur-fond-de-conflit-entre-l-iran-les-%C3%A9tats-unis-et-isra%C3%ABl-au-moyen-orient",
-        "source": "RFI",
-        "title": "Hadj: le pèlerinage à La Mecque débute sur fond de conflit entre l'Iran, les États-Unis et Israël au Moyen-Orient",
-        "thumbnail": ""
-      },
-      {
-        "type": "article",
-        "link": "https://www.france24.com/fr/vid%C3%A9o/20260524-guerre-au-moyen-orient-que-contient-le-protocole-d-accord-entre-les-%C3%A9tats-unis-et-l-iran",
-        "source": "France 24",
-        "title": "Guerre au Moyen-Orient : que contient le protocole d'accord entre les États-unis et l'Iran?",
-        "thumbnail": ""
-      },
-      {
-        "type": "article",
-        "link": "https://www.ledauphine.com/defense-guerre-conflit/2026/05/24/accules-les-etats-unis-et-l-iran-contraints-a-un-accord-mais-pas-a-n-importe-quel-prix",
-        "source": "Le Dauphiné Libéré",
-        "title": "Guerre au Moyen-Orient. Acculés, les États-Unis et l’Iran contraints à un accord mais pas à n'importe quel prix",
-        "thumbnail": ""
-      }
-    ],
-    "sessionLabel": "25/05/2026 à 08:45:27",
-    "controversyLevel": "fort",
-    "ai": {
-      "mainKeyword": "accord États-Unis - Iran",
-      "keywords": [
-        "guerre au Moyen-Orient",
-        "I raël",
-        "Marco Rubio",
-        "Donald Trump",
-        "pèlerinage à La Mecque",
-        "protocole d'accord"
-      ]
-    }
   },
   {
     "action": "save",
