@@ -1736,6 +1736,8 @@ function sendMissingPage(res, title, message) {
         body { font-family: system-ui; max-width: 500px; margin: 80px auto; padding: 0 16px; text-align: center; color: #111; }
         h1 { font-size: 1.3rem; margin-bottom: 8px; }
         p { color: #555; margin-bottom: 24px; }
+        .min-sources-row { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 20px; font-size: 0.9rem; color: #555; }
+        .min-sources-row select { padding: 6px 10px; border: 1px solid #ccc; border-radius: 8px; font: inherit; font-size: 0.9rem; }
         #launch-btn {
           background: #111; color: #fff; border: none; border-radius: 999px;
           padding: 12px 28px; font: inherit; font-size: 1rem; font-weight: 700;
@@ -1748,6 +1750,16 @@ function sendMissingPage(res, title, message) {
     <body>
       <h1>${title}</h1>
       <p>${message}</p>
+      <div class="min-sources-row">
+        <label for="min-sources">Sources minimum :</label>
+        <select id="min-sources">
+          <option value="2">2 sources</option>
+          <option value="3">3 sources</option>
+          <option value="4" selected>4 sources (défaut)</option>
+          <option value="5">5 sources</option>
+          <option value="6">6 sources</option>
+        </select>
+      </div>
       <button id="launch-btn" onclick="launch()">Lancer la première collecte</button>
       <div id="status"></div>
       <script>
@@ -1778,7 +1790,8 @@ function sendMissingPage(res, title, message) {
           btn.textContent = 'Collecte en cours…';
           status.textContent = 'Récupération des sources et analyse IA…';
           try {
-            await fetch('/refresh', { method: 'POST' });
+            var minSources = Number(document.getElementById('min-sources')?.value) || 4;
+            await fetch('/refresh', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ minSources }) });
             var seenRunning = false;
             var poll = setInterval(async function() {
               try {
@@ -1832,7 +1845,7 @@ app.get("/veille-mixte.json", (req, res) => {
 
 app.post("/refresh", requireMixteAuth, async (req, res) => {
   try {
-    await fetch("http://127.0.0.1:3002/refresh", { method: "POST" });
+    await fetch("http://127.0.0.1:3002/refresh", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(req.body || {}) });
     res.json({ ok: true });
   } catch (err) {
     res.status(500).json({ error: err.message });

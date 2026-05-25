@@ -6,6 +6,7 @@ const Parser = require("rss-parser");
 const stringSimilarity = require("string-similarity");
 const dayjs = require("dayjs");
 const OpenAI = require("openai");
+const path = require("path");
 
 const apiApp = express();
 apiApp.use(express.json({ limit: "2mb" }));
@@ -625,7 +626,7 @@ function groupContentsBySubject(contents) {
   return groups;
 }
 
-function filterMultiSourceSubjects(groups) {
+function filterMultiSourceSubjects(groups, minSources = MIN_DISTINCT_SOURCES) {
   return groups
     .map(group => {
       const sources = [...new Set(group.contents.map(content => content.source))];
@@ -649,7 +650,7 @@ function filterMultiSourceSubjects(groups) {
         })
       };
     })
-    .filter(group => group.sourceCount >= MIN_DISTINCT_SOURCES)
+    .filter(group => group.sourceCount >= minSources)
     .sort((a, b) => {
       const bHasBoth = b.articleCount > 0 && b.youtubeCount > 0 ? 1 : 0;
       const aHasBoth = a.articleCount > 0 && a.youtubeCount > 0 ? 1 : 0;
@@ -1238,7 +1239,10 @@ apiApp.post("/refresh", async (req, res) => {
     return res.json({ ok: true, running: true });
   }
 
-  main().catch((error) => {
+  const rawMin = Number((req.body || {}).minSources);
+  const minSources = Number.isInteger(rawMin) && rawMin >= 1 && rawMin <= 10 ? rawMin : MIN_DISTINCT_SOURCES;
+
+  main(minSources).catch((error) => {
     console.error("Erreur refresh mixte :", error.message);
   });
 
@@ -1304,7 +1308,7 @@ async function analyzeScoresWithAI(subjects) {
 
   for (let _si = 0; _si < subjects.length; _si++) {
     const subject = subjects[_si];
-    setProgress(4, "Analyse IA", `${_si + 1} / ${subjects.length} sujets`);
+    setProgress(5, "Analyse IA", `${_si + 1} / ${subjects.length} sujets`);
     console.log(`Score IA : ${subject.subject}`);
     const score = await analyzeOneScoreWithAI(subject);
     results.push({
@@ -2014,6 +2018,23 @@ function generateHtml(sessions) {
       justify-content: space-between;
       align-items: center;
       gap: 16px;
+    }
+
+    .refresh-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .min-sources-select {
+      padding: 8px 10px;
+      border: 1px solid #ddd;
+      border-radius: 999px;
+      font: inherit;
+      font-size: 0.85rem;
+      background: white;
+      color: #111;
+      cursor: pointer;
     }
 
     .refresh-btn {
@@ -3509,7 +3530,16 @@ function generateHtml(sessions) {
       Presse : dernières <strong>${HOURS_BACK_ARTICLES} h</strong> —
       YouTube : dernières <strong>${HOURS_BACK_YOUTUBE} h</strong>
     </div>
-    <button class="refresh-btn" type="button">Mettre à jour</button>
+    <div class="refresh-row">
+      <select class="min-sources-select" id="min-sources-select" title="Sources minimum par sujet">
+        <option value="2">2 sources min.</option>
+        <option value="3">3 sources min.</option>
+        <option value="4" selected>4 sources min.</option>
+        <option value="5">5 sources min.</option>
+        <option value="6">6 sources min.</option>
+      </select>
+      <button class="refresh-btn" type="button">Mettre à jour</button>
+    </div>
     <div class="ptr-indicator" id="ptr-indicator"></div>
     <button class="update-banner" id="update-banner" onclick="window.location.reload()">Nouvelle session disponible — Charger</button>
   </div>
@@ -5129,8 +5159,8 @@ function generateHtml(sessions) {
         const subjects = [...activeSession.querySelectorAll(":scope > .subject")];
         const maxSources = Math.max(...subjects.map(s => Number(s.dataset.sources) || 0), 1);
         subjects.sort((a, b) => {
-          const sA = (Number(a.dataset.sources) / maxSources) * 0.70 + (Number(a.dataset.score) / 10) * 0.30;
-          const sB = (Number(b.dataset.sources) / maxSources) * 0.70 + (Number(b.dataset.score) / 10) * 0.30;
+          const sA = (Number(a.dataset.sources) / maxSources) * 0.50 + (Number(a.dataset.score) / 10) * 0.50;
+          const sB = (Number(b.dataset.sources) / maxSources) * 0.50 + (Number(b.dataset.score) / 10) * 0.50;
           return sB - sA;
         });
         subjects.forEach((s, i) => {
@@ -5576,7 +5606,8 @@ function generateHtml(sessions) {
         if (s0.length > 0) ptrBaseTimestamp = s0[0].generatedAt;
       } catch (e) {}
 
-      try { await fetch("/refresh", { method: "POST" }); } catch (e) {}
+      var minSourcesVal = Number(document.getElementById("min-sources-select")?.value) || 4;
+      try { await fetch("/refresh", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ minSources: minSourcesVal }) }); } catch (e) {}
 
       async function finishRefresh() {
         clearInterval(progressPoll);
@@ -5594,21 +5625,15 @@ function generateHtml(sessions) {
         showUpdateBanner();
       }
 
+      var completionPoll = null;
       var progressPoll = setInterval(async function() {
         try {
           var r = await fetch("/progress?t=" + Date.now());
           var prog = await r.json();
           renderProgress(prog);
+          if (prog.done) finishRefresh();
         } catch (e) {}
       }, 1500);
-
-      var completionPoll = setInterval(async function() {
-        try {
-          var r = await fetch("/sessions-mixte.json?t=" + Date.now());
-          var s = await r.json();
-          if (s.length > 0 && s[0].generatedAt !== ptrBaseTimestamp) finishRefresh();
-        } catch (e) {}
-      }, 3000);
 
       var timeoutId = setTimeout(finishRefresh, 15 * 60 * 1000);
     }
@@ -5668,7 +5693,7 @@ function generateHtml(sessions) {
 `;
 }
 
-async function runWatchSession() {
+async function runWatchSession(minSources = MIN_DISTINCT_SOURCES) {
   const startedAt = dayjs();
   const lastSessionCutoff = getLastSessionCutoff();
 
@@ -5704,17 +5729,23 @@ async function runWatchSession() {
 
   console.log(`${groups.length} groupe(s) détecté(s).`);
 
-  const subjects = filterMultiSourceSubjects(groups);
+  const rawSubjects = filterMultiSourceSubjects(groups, minSources);
 
-  console.log(`${subjects.length} sujet(s) repris par plusieurs sources.`);
+  console.log(`${rawSubjects.length} sujet(s) repris par plusieurs sources.`);
+
+  setProgress(4, "Déduplication IA", "");
+  const deduplication = await deduplicateSubjectsWithAI(rawSubjects);
+  const dedupedSubjects = deduplication.subjects;
+
+  console.log(`${dedupedSubjects.length} sujet(s) après déduplication.`);
 
   let analyzedSubjects;
 
   if (openai) {
-    setProgress(4, "Analyse IA", `0 / ${subjects.length} sujets`);
-    analyzedSubjects = await analyzeScoresWithAI(ensureSubjectIds(subjects));
+    setProgress(5, "Analyse IA", `0 / ${dedupedSubjects.length} sujets`);
+    analyzedSubjects = await analyzeScoresWithAI(ensureSubjectIds(dedupedSubjects));
   } else {
-    analyzedSubjects = ensureSubjectIds(subjects).map(subject => {
+    analyzedSubjects = ensureSubjectIds(dedupedSubjects).map(subject => {
       const fb = fallbackAiAnalysis(subject);
       return {
         ...subject,
@@ -5726,10 +5757,6 @@ async function runWatchSession() {
       };
     });
   }
-
-  setProgress(5, "Déduplication IA", "");
-  const deduplication = await deduplicateSubjectsWithAI(analyzedSubjects);
-  analyzedSubjects = deduplication.subjects;
 
   const session = {
     generatedAt: startedAt.toISOString(),
@@ -5774,11 +5801,11 @@ apiApp.get("/progress", (req, res) => {
   res.json(collectProgress);
 });
 
-async function main() {
+async function main(minSources = MIN_DISTINCT_SOURCES) {
   isRunning = true;
   collectProgress = { running: true, done: false, stepIndex: 0, stepTotal: 6, step: "Démarrage…", detail: "" };
   try {
-    await runWatchSession();
+    await runWatchSession(minSources);
   } finally {
     isRunning = false;
     const historyPath = path.join(__dirname, HISTORY_FILE);
