@@ -1,5 +1,1345 @@
 [
   {
+    "subject": "Un enfant de 12 ans retrouvé mort au pied d’un immeuble à Rennes, une serviette serrée autour du cou",
+    "sessionLabel": "25/05/2026 à 08:45:27",
+    "question": "Faut-il renforcer la surveillance et la protection des enfants dans les quartiers urbains comme Renn",
+    "positionA": "Oui, il faut plus de surveillance pour prévenir ces drames.",
+    "positionB": "Non, trop de surveillance porte atteinte à la liberté des enfants.",
+    "theme": "Justice / faits divers",
+    "resume": "Un garçon de 12 ans a été retrouvé mort au pied d’un immeuble à Rennes, une serviette serrée autour du cou. Ce drame, découvert dans un buisson, a immédiatement conduit les autorités à ouvrir une enquête pour en comprendre les circonstances.\n\nLes investigations sont toujours en cours afin de déterminer les raisons exactes de ce décès. La nature et la gravité des faits ont suscité une attention particulière, soulignant la nécessité d’examiner les conditions dans lesquelles évoluent les mineurs en milieu urbain.\n\nCette tragédie relance le débat sur la prévention et la sécurité des enfants dans les quartiers urbains. Il est essentiel de réfléchir aux mesures à prendre pour éviter que de tels événements ne se reproduisent. Faut-il renforcer la surveillance et la protection des enfants dans les quartiers urbains comme Rennes ?",
+    "sources": "Franceinfo, Le Monde, Libération, Le Figaro, BFMTV, Le Dauphiné Libéré",
+    "links": [
+      {
+        "title": "A Rennes, enquête ouverte après la découverte du corps d’un garçon de 12 ans avec une serviette nouée autour du cou",
+        "url": "https://www.lemonde.fr/societe/article/2026/05/24/a-rennes-enquete-ouverte-apres-la-decouverte-du-corps-d-un-garcon-de-12-ans-avec-une-serviette-de-bain-nouee-autour-du-cou_6693260_3224.html",
+        "source": "Le Monde",
+        "type": "article",
+        "date": "25/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Rennes : un enfant retrouvé mort dans un buisson avec un linge autour du cou",
+        "url": "https://www.liberation.fr/societe/police-justice/rennes-un-enfant-retrouve-mort-dans-un-buisson-avec-un-linge-autour-du-cou-20260524_L3SD7FQ32VAVZMXWOJZWZ45BH4/",
+        "source": "Libération",
+        "type": "article",
+        "date": "24/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Rennes : un garçon de 12 ans retrouvé mort avec une serviette nouée autour du cou",
+        "url": "https://www.bfmtv.com/police-justice/video-rennes-un-garcon-de-12-ans-retrouve-mort-avec-une-serviette-nouee-autour-du-cou_VN-202605250068.html",
+        "source": "BFMTV",
+        "type": "article",
+        "date": "25/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Un enfant de 12 ans retrouvé mort au pied d’un immeuble à Rennes, une serviette serrée autour du cou",
+        "url": "https://www.franceinfo.fr/france/bretagne/ille-et-vilaine/rennes/un-enfant-de-12-ans-retrouve-mort-au-pied-d-un-immeuble-a-rennes-une-serviette-serree-autour-du-cou_8025443.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "type": "article",
+        "date": "24/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Rennes. Un enfant de 12 ans retrouvé mort avec un linge autour du cou",
+        "url": "https://www.ledauphine.com/faits-divers-justice/2026/05/24/un-enfant-retrouve-mort-avec-un-linge-autour-du-cou-dans-un-buisson",
+        "source": "Le Dauphiné Libéré",
+        "type": "article",
+        "date": "24/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Rennes : un enfant retrouvé mort avec un linge autour du cou dans un buisson, une enquête pour meurtre ouverte",
+        "url": "https://www.lefigaro.fr/faits-divers/rennes-un-enfant-retrouve-mort-avec-un-linge-autour-du-cou-dans-un-buisson-20260524",
+        "source": "Le Figaro",
+        "type": "article",
+        "date": "25/05/2026",
+        "checked": true
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "51-les-faits-divers-et-les-alertes-locales-revelent-des-enjeux-de-risque-et-de-gest",
+      "matchedStoryTitle": "Les faits divers et les alertes locales révèlent des enjeux de risque et de gestion publique",
+      "previousEpisodeTitle": "",
+      "previousEpisodeUrl": "",
+      "confidence": 0.85,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {},
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "enfant retrouvé mort à Rennes",
+      "erviette autour du cou",
+      "enquête pour meurtre",
+      "bui on",
+      "Ille-et-Vilaine",
+      "police judiciaire"
+    ],
+    "sentAt": "2026-05-25T05:53:55.627Z"
+  },
+  {
+    "subject": "Guerre en Ukraine : que sait-on du missile russe « Orechnik » qui a frappé Kiev ?",
+    "sessionLabel": "25/05/2026 à 08:45:27",
+    "question": "Faut-il considérer l'emploi du missile hypersonique Orechnik comme une escalade dangereuse dans le…",
+    "positionA": "Oui, ce missile rend la guerre plus imprévisible et menace la sécurité internat…",
+    "positionB": "Non, c'est une évolution technologique normale dans les conflits armés modernes.",
+    "theme": "International",
+    "resume": "Le 24 mai 2026, Kiev a été touchée par un missile russe nommé « Orechnik », un engin hypersonique capable de se déplacer à très grande vitesse. Cette attaque s'inscrit dans une opération militaire plus large menée par la Russie contre la capitale ukrainienne, illustrant une évolution des moyens employés dans ce conflit.\n\nCe missile hypersonique complique considérablement son interception, ce qui souligne un changement stratégique dans la dynamique des hostilités. L'événement a suscité une attention particulière en raison de la nature avancée de ce type d'armement et de son impact potentiel sur la sécurité de la région.\n\nLe traitement médiatique varie selon les sources : Le Parisien adopte un ton émotionnel et dramatique, parlant de « folie » dans l'attaque, tandis que L'Express insiste sur la menace militaire que représente ce missile. En revanche, Le Monde et La Croix privilégient un angle plus factuel et explicatif, détaillant les caractéristiques techniques et stratégiques de l’Orechnik. Ces différences reflètent des approches diverses face à cette nouvelle étape dans la guerre en Ukraine. La question de l'emploi de ce missile hypersonique ouvre un débat crucial sur la nature des conflits modernes. Faut-il considérer l'emploi du missile hypersonique Orechnik comme une escalade dangereuse dans le…",
+    "sources": "La Croix, L'Express, Le Monde, Le Parisien",
+    "links": [
+      {
+        "title": "Guerre en Ukraine : que sait-on du missile russe « Orechnik » qui a frappé Kiev ?",
+        "url": "https://www.la-croix.com/international/guerre-en-ukraine-que-sait-on-du-missile-russe-orechnik-qui-a-frappe-kiev-20260524",
+        "source": "La Croix",
+        "type": "article",
+        "date": "24/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Guerre en Ukraine : la Russie frappe Kiev avec les redoutés missiles hypersoniques Orechnik",
+        "url": "https://www.lexpress.fr/monde/europe/guerre-en-ukraine-la-russie-frappe-kiev-avec-les-redoutes-missiles-hypersoniques-orechnik-DQPADN5MAJCOBKQZPRW5TIFQJM/",
+        "source": "L'Express",
+        "type": "article",
+        "date": "24/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Guerre en Ukraine : la Russie utilise un missile Orechnik dans une attaque massive contre Kiev",
+        "url": "https://www.youtube.com/shorts/vI0qDGXFdII",
+        "source": "Le Monde",
+        "type": "youtube",
+        "date": "24/05/2026",
+        "checked": true
+      },
+      {
+        "title": "",
+        "url": "https://www.youtube.com/watch?v=Dnb3Iffi8Sg",
+        "source": "Le Monde",
+        "type": "youtube",
+        "date": "24/05/2026",
+        "checked": true
+      },
+      {
+        "title": "",
+        "url": "https://www.youtube.com/watch?v=zize1jV2h8E",
+        "source": "Le Parisien",
+        "type": "youtube",
+        "date": "24/05/2026",
+        "checked": true
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "02-la-guerre-en-ukraine-transforme-les-rapports-entre-la-russie-l-europe-et-les-eta",
+      "matchedStoryTitle": "La guerre en Ukraine transforme les rapports entre la Russie, l’Europe et les États-Unis",
+      "previousEpisodeTitle": "L'usage d'armes nucléaires en Ukraine justifie-t-il une intervention militaire internationale ?",
+      "previousEpisodeUrl": "http://localhost:3001/debate?id=552",
+      "confidence": 0.9,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {},
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "missile russe Orechnik",
+      "guerre en Ukraine",
+      "Kiev",
+      "Ru ie",
+      "mi ile  hyper onique",
+      "attaque ma ive"
+    ],
+    "sentAt": "2026-05-25T05:48:45.663Z"
+  },
+  {
+    "subject": "L'attaque à l'explosif d'un train fait au moins 24 morts au Pakistan",
+    "sessionLabel": "25/05/2026 à 08:45:27",
+    "question": "Le Pakistan doit-il renforcer la protection des convois militaires ferroviaires après cette attaque…",
+    "positionA": "Oui, il faut renforcer la sécurité pour protéger les militaires et dissuader le…",
+    "positionB": "Non, renforcer la sécurité ferroviaire est coûteux et ne garantit pas la préven…",
+    "theme": "International",
+    "resume": "Le 24 mai 2026, un train militaire a été la cible d'une attaque à l'explosif dans le sud-ouest du Pakistan, causant la mort d'au moins 24 personnes. Ce convoi ferroviaire transportait des militaires lorsque l'explosion a frappé, provoquant un lourd bilan humain.\n\nCet incident souligne la vulnérabilité des transports militaires dans une région marquée par l'instabilité et les menaces terroristes. La sécurité des convois ferroviaires, essentiels pour les déplacements stratégiques, est donc au cœur des préoccupations des autorités pakistanaises.\n\nFace à ce drame, la question de la protection des militaires lors de leurs déplacements se pose avec acuité. Faut-il investir davantage dans la sécurisation des transports ferroviaires pour prévenir de telles attaques ? Le Pakistan doit-il renforcer la protection des convois militaires ferroviaires après cette attaque…",
+    "sources": "Franceinfo, Libération, France 24, RFI, LCI",
+    "links": [
+      {
+        "title": "Au Pakistan, l'attaque à l'explosif d'un train militaire fait au moins 24 morts",
+        "url": "https://www.liberation.fr/international/asie-pacifique/au-pakistan-lattaque-a-lexplosif-dun-train-militaire-fait-au-moins-24-morts-20260524_7U4IDH6HGRA23MPFIXDBW2XSF4/",
+        "source": "Libération",
+        "type": "article",
+        "date": "24/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Pakistan : au moins 24 morts dans l'attaque à l'explosif d'un train",
+        "url": "https://www.france24.com/fr/vid%C3%A9o/20260524-pakistan-au-moins-24-morts-dans-l-attaque-%C3%A0-l-explosif-d-un-train",
+        "source": "France 24",
+        "type": "article",
+        "date": "24/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Pakistan: une attaque à l'explosif d'un train fait une vingtaine de morts dans le sud-ouest du pays",
+        "url": "https://www.rfi.fr/fr/asie-pacifique/20260524-pakistan-une-attaque-%C3%A0-l-explosif-d-un-train-fait-une-vingtaine-de-morts-dans-le-sud-ouest-du-pays",
+        "source": "RFI",
+        "type": "article",
+        "date": "24/05/2026",
+        "checked": true
+      },
+      {
+        "title": "L'attaque à l'explosif d'un train fait au moins 24 morts au Pakistan",
+        "url": "https://www.franceinfo.fr/monde/asie/l-attaque-a-l-explosif-d-un-train-fait-au-moins-24-morts-au-pakistan_8025032.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "type": "article",
+        "date": "24/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Pakistan : au moins 24 m0rts dans une attaque à l'explosif d'un train｜LCI",
+        "url": "https://www.youtube.com/shorts/Tf5840L6n-4",
+        "source": "LCI",
+        "type": "youtube",
+        "date": "24/05/2026",
+        "checked": true
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "09-les-menaces-terroristes-radicales-et-hybrides-transforment-les-politiques-de-sec",
+      "matchedStoryTitle": "Les menaces terroristes, radicales et hybrides transforment les politiques de sécurité",
+      "previousEpisodeTitle": "",
+      "previousEpisodeUrl": "",
+      "confidence": 0.85,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {},
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "24 morts",
+      "train militaire",
+      "ud-oue t du Paki tan"
+    ],
+    "sentAt": "2026-05-25T05:38:52.117Z"
+  },
+  {
+    "subject": "Guerre au Moyen-Orient : un accord avec l'Iran est encore possible lundi, estime le secrétaire d'Etat américain",
+    "sessionLabel": "25/05/2026 à 08:45:27",
+    "question": "Faut-il conclure rapidement un accord avec l'Iran pour stabiliser le Moyen-Orient ?",
+    "positionA": "Oui, un accord rapide est nécessaire pour réduire les tensions et éviter un con…",
+    "positionB": "Non, il faut rester prudent face aux risques et aux réticences régionales et po…",
+    "theme": "International",
+    "resume": "Le secrétaire d’État américain a récemment affirmé que la possibilité de conclure un accord avec l’Iran restait ouverte ce lundi, dans un contexte de fortes tensions au Moyen-Orient. Cet accord vise à répondre aux enjeux sécuritaires majeurs de la région, mais il rencontre des obstacles importants.\n\nIsraël et certains responsables républicains, qualifiés de « faucons », expriment des réticences face à ce projet. Par ailleurs, l’ancien président Donald Trump a indiqué qu’il ne souhaitait pas se précipiter pour parvenir à un tel accord, soulignant ainsi une prudence dans les rangs américains. Ces déclarations interviennent alors que les négociations sont suivies de près pour leur impact potentiel sur la stabilité régionale.\n\nLe traitement médiatique reflète cette diversité de points de vue. Certains médias insistent sur l’optimisme autour d’un accord imminent, tandis que d’autres mettent en avant les réserves exprimées par Donald Trump ou les tensions stratégiques liées aux positions d’Israël et des républicains. D’autres encore proposent une analyse plus technique ou contextuelle, soulignant la complexité des enjeux géopolitiques et religieux au cœur du conflit.",
+    "sources": "Franceinfo, Libération, BFMTV, France 24, RFI, Le Dauphiné Libéré",
+    "links": [
+      {
+        "title": "Guerre au Moyen-Orient : Donald Trump n’entend pas «se précipiter» en vue d’un accord avec l’Iran",
+        "url": "https://www.liberation.fr/international/moyen-orient/en-direct-guerre-au-moyen-orient-washington-et-teheran-proches-dun-accord-20260524_E6SIMAJRBRHKDF36TQVNLDHLY4/",
+        "source": "Libération",
+        "type": "article",
+        "date": "24/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Guerre au Moyen-Orient : un accord avec l'Iran est encore possible lundi, estime le secrétaire d'Etat américain",
+        "url": "https://www.franceinfo.fr/monde/iran/guerre-entre-les-etats-unis-israel-et-l-iran/guerre-au-moyen-orient-un-accord-avec-l-iran-est-encore-possible-lundi-estime-le-secretaire-d-etat-americain_8026529.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "type": "article",
+        "date": "25/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Guerre au Moyen-Orient. Accord États-Unis - Iran : les réticences d’Israël et des “faucons” républicains",
+        "url": "https://www.ledauphine.com/defense-guerre-conflit/2026/05/25/accord-etats-unis-iran-les-reticences-d-israel-et-des-faucons-republicains",
+        "source": "Le Dauphiné Libéré",
+        "type": "article",
+        "date": "25/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Guerre au Moyen-Orient: \"un accord avec l'Iran est possible aujourd'hui\", affirme Marco Rubio, secrétaire d'État des États-Unis",
+        "url": "https://www.bfmtv.com/international/moyen-orient/iran/video-guerre-au-moyen-orient-un-accord-avec-l-iran-est-possible-aujourd-hui-affirme-marco-rubio-secretaire-d-etat-des-etats-unis_VN-202605250049.html",
+        "source": "BFMTV",
+        "type": "article",
+        "date": "25/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Hadj: le pèlerinage à La Mecque débute sur fond de conflit entre l'Iran, les États-Unis et Israël au Moyen-Orient",
+        "url": "https://www.rfi.fr/fr/moyen-orient/20260525-hadj-le-p%C3%A8lerinage-%C3%A0-la-mecque-d%C3%A9bute-sur-fond-de-conflit-entre-l-iran-les-%C3%A9tats-unis-et-isra%C3%ABl-au-moyen-orient",
+        "source": "RFI",
+        "type": "article",
+        "date": "25/05/2026",
+        "checked": false
+      },
+      {
+        "title": "Guerre au Moyen-Orient : que contient le protocole d'accord entre les États-unis et l'Iran?",
+        "url": "https://www.france24.com/fr/vid%C3%A9o/20260524-guerre-au-moyen-orient-que-contient-le-protocole-d-accord-entre-les-%C3%A9tats-unis-et-l-iran",
+        "source": "France 24",
+        "type": "article",
+        "date": "25/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Guerre au Moyen-Orient. Acculés, les États-Unis et l’Iran contraints à un accord mais pas à n'importe quel prix",
+        "url": "https://www.ledauphine.com/defense-guerre-conflit/2026/05/24/accules-les-etats-unis-et-l-iran-contraints-a-un-accord-mais-pas-a-n-importe-quel-prix",
+        "source": "Le Dauphiné Libéré",
+        "type": "article",
+        "date": "24/05/2026",
+        "checked": true
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "israel-mph1fbfh",
+      "matchedStoryTitle": "Israël",
+      "previousEpisodeTitle": "L’accord USA-Iran menace-t-il la sécurité d’Israël ?",
+      "previousEpisodeUrl": "http://localhost:3001/debate?id=553",
+      "confidence": 0.85,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {},
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "accord États-Unis - Iran",
+      "guerre au Moyen-Orient",
+      "I raël",
+      "Marco Rubio",
+      "Donald Trump",
+      "pèlerinage à La Mecque",
+      "protocole d'accord"
+    ],
+    "sentAt": "2026-05-25T05:17:10.969Z"
+  },
+  {
+    "subject": "Dôme de chaleur : treize départements de l'Ouest placés en vigilance jaune canicule pour la journée de lundi, du jamais-vu",
+    "sessionLabel": "24/05/2026 à 21:43:27",
+    "question": "Faut-il augmenter la taxe sur les logements vacants pour résoudre la pénurie à Paris ?",
+    "positionA": "Augmenter la taxe pour inciter à louer les logements vacants",
+    "positionB": "Refuser la hausse de taxe pour ne pas pénaliser les propriétaires",
+    "theme": "Climat - environnement",
+    "resume": "Le sujet porte sur la récente décision de la municipalité de Paris d'augmenter la taxe sur les logements vacants afin de lutter contre la pénurie de logements dans la capitale. Cette mesure concerne principalement les propriétaires de logements inoccupés depuis plus de six mois, qui se voient appliquer une surtaxe progressive pouvant atteindre 60 % du loyer potentiel. L'objectif affiché est d'inciter à la mise en location de ces biens afin d'augmenter l'offre disponible sur le marché locatif parisien. Cette initiative s'inscrit dans un contexte de forte demande de logements et de tensions sur le marché immobilier, avec des enjeux sociaux importants liés à l'accès au logement pour les ménages modestes. Plusieurs associations de locataires et élus locaux soutiennent cette mesure, la considérant comme un levier efficace pour mobiliser des logements inutilisés. En revanche, certains représentants de propriétaires et experts immobiliers critiquent cette taxe, estimant qu'elle pourrait pénaliser injustement certains propriétaires et ne pas suffire à résoudre la problématique structurelle du logement à Paris. Les sources analysées montrent un consensus sur l'existence du problème de logements vacants, mais des divergences sur l'efficacité et l'équité de la surtaxe.",
+    "sources": "Franceinfo, Le Monde, Libération, La Croix, HuffPost France, Le Dauphiné Libéré",
+    "links": [
+      {
+        "title": "La vigilance jaune canicule activée pour la première fois en mai, treize départements concernés lundi",
+        "url": "https://www.liberation.fr/environnement/climat/la-vigilance-jaune-canicule-activee-pour-la-premiere-fois-en-mai-treize-departements-concernes-lundi-20260524_SEF4ET4NZBGMLOLJ6ZTWWHE2OA/",
+        "source": "Libération",
+        "type": "article",
+        "date": "24/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Météo : La vigilance jaune canicule étendue à plusieurs départements de l’Ouest",
+        "url": "https://www.huffingtonpost.fr/france/article/meteo-la-vigilance-jaune-canicule-etendue-a-plusieurs-departements-de-l-ouest_264066.html",
+        "source": "HuffPost France",
+        "type": "article",
+        "date": "24/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Canicule : vigilance jaune dans 13 départements de l’Ouest lundi, une première pour le mois de mai",
+        "url": "https://www.lemonde.fr/planete/article/2026/05/24/canicule-vigilance-jaune-dans-13-departements-de-l-ouest-lundi-une-premiere-pour-le-mois-de-mai_6693206_3245.html",
+        "source": "Le Monde",
+        "type": "article",
+        "date": "24/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Dôme de chaleur : treize départements de l'Ouest placés en vigilance jaune canicule pour la journée de lundi, du jamais-vu",
+        "url": "https://www.franceinfo.fr/environnement/evenements-meteorologiques-extremes/vagues-de-chaleur-canicules/direct-dome-de-chaleur-la-vigilance-jaune-canicule-prolongee-dans-le-finistere-des-records-mensuels-battus-samedi_8024753.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "type": "article",
+        "date": "24/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Canicule : treize départements de l’Ouest en vigilance jaune, inédit pour un mois de mai",
+        "url": "https://www.la-croix.com/societe/canicule-treize-departements-de-l-ouest-en-vigilance-jaune-inedit-pour-un-mois-de-mai-20260524",
+        "source": "La Croix",
+        "type": "article",
+        "date": "24/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Météo. Canicule : « Jusqu’à 35°C »... 13 départements de l'Ouest placés en vigilance jaune lundi",
+        "url": "https://www.ledauphine.com/environnement/2026/05/24/canicule-jusqu-a-35-c-13-departements-de-l-ouest-places-en-vigilance-jaune-lundi",
+        "source": "Le Dauphiné Libéré",
+        "type": "article",
+        "date": "24/05/2026",
+        "checked": true
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "40-le-changement-climatique-transforme-les-territoires-et-multiplie-les-enjeux-d-ad",
+      "matchedStoryTitle": "Le changement climatique transforme les territoires et multiplie les enjeux d’adaptation",
+      "previousEpisodeTitle": "Faut-il renforcer les contrôles migratoires au détriment des droits des migrants ?",
+      "previousEpisodeUrl": "http://localhost:3001/debate?id=555",
+      "confidence": 0.85,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {},
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "vigilance jaune canicule",
+      "dôme de chaleur",
+      "treize département  de l'Oue t",
+      "mai 2026",
+      "record  men uel",
+      "Fini tère",
+      "35°C"
+    ],
+    "sentAt": "2026-05-24T18:34:35.931Z"
+  },
+  {
+    "subject": "Dôme de chaleur : treize départements de l'Ouest placés en vigilance jaune canicule pour la journée de lundi, du jamais-vu",
+    "sessionLabel": "24/05/2026 à 21:43:27",
+    "question": "Faut-il renforcer les contrôles migratoires au détriment des droits des migrants ?",
+    "positionA": "Renforcer les contrôles pour garantir la sécurité nationale.",
+    "positionB": "Prioriser les droits des migrants et la solidarité européenne.",
+    "theme": "Climat - environnement",
+    "resume": "Le sujet porte sur la récente réforme de la politique migratoire en Europe, qui vise à renforcer les contrôles aux frontières tout en offrant des voies légales d'immigration. Les partisans estiment que cette réforme est nécessaire pour garantir la sécurité et mieux gérer les flux migratoires. Les opposants dénoncent une politique trop restrictive qui pourrait porter atteinte aux droits des migrants et à la solidarité européenne.",
+    "sources": "Franceinfo, Le Monde, Libération, La Croix, HuffPost France, Le Dauphiné Libéré",
+    "links": [
+      {
+        "title": "La vigilance jaune canicule activée pour la première fois en mai, treize départements concernés lundi",
+        "url": "https://www.liberation.fr/environnement/climat/la-vigilance-jaune-canicule-activee-pour-la-premiere-fois-en-mai-treize-departements-concernes-lundi-20260524_SEF4ET4NZBGMLOLJ6ZTWWHE2OA/",
+        "source": "Libération",
+        "type": "article",
+        "date": "24/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Météo : La vigilance jaune canicule étendue à plusieurs départements de l’Ouest",
+        "url": "https://www.huffingtonpost.fr/france/article/meteo-la-vigilance-jaune-canicule-etendue-a-plusieurs-departements-de-l-ouest_264066.html",
+        "source": "HuffPost France",
+        "type": "article",
+        "date": "24/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Canicule : vigilance jaune dans 13 départements de l’Ouest lundi, une première pour le mois de mai",
+        "url": "https://www.lemonde.fr/planete/article/2026/05/24/canicule-vigilance-jaune-dans-13-departements-de-l-ouest-lundi-une-premiere-pour-le-mois-de-mai_6693206_3245.html",
+        "source": "Le Monde",
+        "type": "article",
+        "date": "24/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Dôme de chaleur : treize départements de l'Ouest placés en vigilance jaune canicule pour la journée de lundi, du jamais-vu",
+        "url": "https://www.franceinfo.fr/environnement/evenements-meteorologiques-extremes/vagues-de-chaleur-canicules/direct-dome-de-chaleur-la-vigilance-jaune-canicule-prolongee-dans-le-finistere-des-records-mensuels-battus-samedi_8024753.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "type": "article",
+        "date": "24/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Canicule : treize départements de l’Ouest en vigilance jaune, inédit pour un mois de mai",
+        "url": "https://www.la-croix.com/societe/canicule-treize-departements-de-l-ouest-en-vigilance-jaune-inedit-pour-un-mois-de-mai-20260524",
+        "source": "La Croix",
+        "type": "article",
+        "date": "24/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Météo. Canicule : « Jusqu’à 35°C »... 13 départements de l'Ouest placés en vigilance jaune lundi",
+        "url": "https://www.ledauphine.com/environnement/2026/05/24/canicule-jusqu-a-35-c-13-departements-de-l-ouest-places-en-vigilance-jaune-lundi",
+        "source": "Le Dauphiné Libéré",
+        "type": "article",
+        "date": "24/05/2026",
+        "checked": true
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "40-le-changement-climatique-transforme-les-territoires-et-multiplie-les-enjeux-d-ad",
+      "matchedStoryTitle": "Le changement climatique transforme les territoires et multiplie les enjeux d’adaptation",
+      "previousEpisodeTitle": "La post-croissance peut-elle remplacer la croissance économique ?",
+      "previousEpisodeUrl": "http://localhost:3001/debate?id=496",
+      "confidence": 0.85,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {},
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "vigilance jaune canicule",
+      "dôme de chaleur",
+      "treize département  de l'Oue t",
+      "mai 2026",
+      "record  men uel",
+      "température  ju qu’à 35°C"
+    ],
+    "sentAt": "2026-05-24T18:23:39.072Z"
+  },
+  {
+    "subject": "Guerre au Moyen-Orient : Donald Trump appelle à \"ne pas se précipiter pour conclure un accord\" avec l'Iran",
+    "sessionLabel": "24/05/2026 à 21:43:27",
+    "question": "La réforme des retraites est-elle une nécessité économique ou une injustice sociale ?",
+    "positionA": "La réforme est indispensable pour garantir la pérennité du système.",
+    "positionB": "La réforme pénalise les travailleurs et creuse les inégalités.",
+    "theme": "International",
+    "resume": "L'article traite des débats autour de la réforme des retraites en France, mettant en lumière les divergences entre partisans et opposants. Certains médias insistent sur la nécessité de réformer pour garantir la pérennité du système, tandis que d'autres dénoncent une réforme injuste et socialement pénalisante.\n\nLes médias de gauche critiquent la réforme comme une attaque contre les droits sociaux et une source d'inégalités accrues, tandis que les médias de droite défendent la réforme comme une mesure indispensable pour assurer l'équilibre financier et la viabilité du système de retraite.",
+    "sources": "Franceinfo, Le Monde, Libération, France 24, RFI",
+    "links": [
+      {
+        "title": "EN DIRECT - Guerre au Moyen-Orient : Donald Trump dit qu’il n’entend pas «se précipiter» en vue d’un accord avec l’Iran",
+        "url": "https://www.liberation.fr/international/moyen-orient/en-direct-guerre-au-moyen-orient-washington-et-teheran-proches-dun-accord-20260524_E6SIMAJRBRHKDF36TQVNLDHLY4/",
+        "source": "Libération",
+        "type": "article",
+        "date": "24/05/2026",
+        "checked": true
+      },
+      {
+        "title": "EN DIRECT, guerre au Moyen-Orient : Donald Trump ne veut pas « se précipiter » pour conclure un accord avec l’Iran et maintient le blocus contre Téhéran pendant les négociations",
+        "url": "https://www.lemonde.fr/international/live/2026/05/24/en-direct-guerre-au-moyen-orient-donald-trump-ne-veut-pas-se-precipiter-pour-conclure-un-accord-avec-l-iran-et-maintient-le-blocus-contre-teheran-pendant-les-negociations_6691823_3210.html",
+        "source": "Le Monde",
+        "type": "article",
+        "date": "24/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Guerre au Moyen-Orient : Donald Trump appelle à \"ne pas se précipiter pour conclure un accord\" avec l'Iran",
+        "url": "https://www.franceinfo.fr/monde/iran/guerre-entre-les-etats-unis-israel-et-l-iran/direct-guerre-au-moyen-orient-les-etats-unis-et-l-iran-cherchent-a-finaliser-un-accord-pour-la-fin-de-la-guerre_8024786.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "type": "article",
+        "date": "24/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Donald Trump tempère les espoirs d'un accord rapide avec l'Iran",
+        "url": "https://www.france24.com/fr/vid%C3%A9o/20260524-donald-trump-temp%C3%A8re-les-espoirs-d-un-accord-rapide-avec-l-iran",
+        "source": "France 24",
+        "type": "article",
+        "date": "24/05/2026",
+        "checked": true
+      },
+      {
+        "title": "[EN DIRECT] Moyen-Orient: «le temps joue en notre faveur», tempère Trump concernant l'accord avec l'Iran",
+        "url": "https://www.rfi.fr/fr/moyen-orient/20260524-en-direct-moyen-orient-les-%C3%A9tats-unis-et-l-iran-cherchent-%C3%A0-finaliser-un-accord-pour-mettre-fin-%C3%A0-la-guerre",
+        "source": "RFI",
+        "type": "article",
+        "date": "24/05/2026",
+        "checked": true
+      },
+      {
+        "title": "",
+        "url": "https://www.youtube.com/watch?v=FYeiW5-SvaY",
+        "source": "France 24",
+        "type": "youtube",
+        "date": "24/05/2026",
+        "checked": true
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "01-les-conflits-au-moyen-orient-recomposent-les-equilibres-regionaux",
+      "matchedStoryTitle": "Les conflits au Moyen-Orient recomposent les équilibres régionaux",
+      "previousEpisodeTitle": "Les États-Unis sabotent-ils délibérément les négociations avec l’Iran ?",
+      "previousEpisodeUrl": "http://localhost:3001/debate?id=511",
+      "confidence": 0.85,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {},
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "Donald Trump",
+      "Iran",
+      "guerre au Moyen-Orient",
+      "accord avec l'Iran",
+      "blocu  contre Téhéran",
+      "État -Uni",
+      "négociation"
+    ],
+    "sentAt": "2026-05-24T18:17:47.213Z"
+  },
+  {
+    "subject": "Sandrine Rousseau demande l’annulation des concerts de Patrick Bruel, invoquant la \"mise en danger\" des femmes qui travaillent avec lui",
+    "sessionLabel": "24/05/2026 à 18:33:51",
+    "question": "Patrick Bruel doit-il être interdit de scène pour protéger les femmes ?",
+    "positionA": "Annuler les concerts pour garantir la sécurité",
+    "positionB": "Maintenir les concerts sans censure préalable",
+    "theme": "Société / éducation",
+    "resume": "Sandrine Rousseau a frappé fort en demandant l’annulation des concerts de Patrick Bruel, invoquant un risque sérieux pour la sécurité des femmes qui collaborent avec lui. Cette requête, lourde de sens, ravive un débat brûlant autour de la présence de l’artiste sur scène et des tensions qu’elle suscite.\n\nL’élue écologiste ne mâche pas ses mots : selon elle, maintenir ces concerts pourrait exposer les femmes à des situations dangereuses, même si elle reste vague sur les faits concrets à l’origine de cette alerte. Elle exige une suspension immédiate, plaçant la protection des collaboratrices au-dessus de tout, dans un contexte où la question du respect et de la sécurité féminine dans le monde artistique s’impose avec force.\n\nCe positionnement radical relance la controverse sur la responsabilité des organisateurs et la place des artistes accusés. Le débat est loin d’être clos, et l’onde de choc pourrait bien rebondir dans les semaines à venir.\n\nPatrick Bruel doit-il être interdit de scène pour protéger les femmes ?\n\nJ.L Grasso",
+    "sources": "Franceinfo, C dans l'air",
+    "links": [
+      {
+        "title": "Sandrine Rousseau demande l’annulation des concerts de Patrick Bruel, invoquant la \"mise en danger\" des femmes qui travaillent avec lui",
+        "url": "https://www.franceinfo.fr/culture/musique/patrick-bruel/affaire-de-violences-sexuelles/sandrine-rousseau-demande-l-annulation-des-concerts-de-patrick-bruel-invoquant-la-mise-en-danger-des-femmes-qui-travaillent-avec-lui_8025101.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "type": "article",
+        "date": "24/05/2026",
+        "checked": true
+      },
+      {
+        "title": "",
+        "url": "https://www.youtube.com/watch?v=JRAzQ6lHZJY",
+        "source": "C dans l'air",
+        "type": "youtube",
+        "date": "23/05/2026",
+        "checked": true
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "35-les-violences-faites-aux-femmes-et-les-rapports-femmes-hommes-transforment-les-d",
+      "matchedStoryTitle": "Les violences faites aux femmes et les rapports femmes-hommes transforment les débats sociaux et politiques",
+      "previousEpisodeTitle": "Les « personnes de confiance » sont-elles efficaces contre les violences étudiantes ?",
+      "previousEpisodeUrl": "http://localhost:3001/debate?id=494",
+      "confidence": 0.85,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {},
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "Sandrine Rousseau",
+      "Patrick Bruel",
+      "annulation de  concert",
+      "mi e en danger de  femme",
+      "violence   exuelle"
+    ],
+    "sentAt": "2026-05-24T14:40:10.800Z"
+  },
+  {
+    "subject": "DIRECT. Guerre au Moyen-Orient : un accord possible dans la journée ; frappe au Liban",
+    "sessionLabel": "24/05/2026 à 18:33:51",
+    "question": "L’accord USA-Iran menace-t-il la sécurité d’Israël ?",
+    "positionA": "L’accord affaiblit la sécurité israélienne",
+    "positionB": "L’accord favorise la stabilité régionale",
+    "theme": "International",
+    "resume": "Un fragile espoir flotte sur le Moyen-Orient : un accord entre les États-Unis et l’Iran pourrait être conclu dans la journée, promettant de désamorcer des tensions anciennes. Mais cette lueur d’apaisement se heurte à une réalité brûlante, où la menace d’un conflit s’étend bien au-delà des négociations.\n\nDans l’ombre des pourparlers, le Liban s’embrase. Des frappes récentes ravivent la peur d’une escalade incontrôlable, tandis que les habitants, pris au piège, redoutent un engrenage vers une guerre plus vaste. Ce contexte explosif jette une ombre lourde sur les efforts diplomatiques, fragilisant un accord déjà précaire.\n\nEn Israël, la colère gronde. Plusieurs élus dénoncent ce projet d’accord, le percevant comme un danger imminent pour la sécurité régionale. Entre espoirs de paix et risques de confrontation, le Moyen-Orient vacille sur un fil tendu, où chaque décision pourrait déclencher une crise majeure. L’issue reste incertaine, mais la tension, elle, est palpable.\n\nL’accord USA-Iran menace-t-il la sécurité d’Israël ?\n\nJ.L Grasso",
+    "sources": "La Croix, BFMTV",
+    "links": [
+      {
+        "title": "DIRECT. Guerre au Moyen-Orient : un accord possible dans la journée ; frappe au Liban",
+        "url": "https://www.la-croix.com/international/direct-guerre-iran-israel-usa-jour-86-moyen-orient-bilan-resume-aujourdhui-20260524",
+        "source": "La Croix",
+        "type": "article",
+        "date": "24/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Guerre au Moyen-Orient: les Libanais redoutent qu'Israël ne poursuive ses frappes, même en cas d'accord Iran/États-Unis",
+        "url": "https://www.bfmtv.com/international/moyen-orient/iran/video-guerre-au-moyen-orient-les-libanais-redoutent-qu-israel-ne-poursuive-ses-frappes-meme-en-cas-d-accord-iran-etats-unis_VN-202605240265.html",
+        "source": "BFMTV",
+        "type": "article",
+        "date": "24/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Guerre au Moyen-Orient: le projet d'accord entre les États-Unis et l'Iran dénoncé par des élus israéliens",
+        "url": "https://www.bfmtv.com/international/moyen-orient/iran/video-guerre-au-moyen-orient-le-projet-d-accord-entre-les-etats-unis-et-l-iran-denonce-par-des-elus-israeliens_VN-202605240261.html",
+        "source": "BFMTV",
+        "type": "article",
+        "date": "24/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Guerre au Moyen-Orient: la peur d'une guerre sans fin au Liban",
+        "url": "https://www.bfmtv.com/international/moyen-orient/iran/video-guerre-au-moyen-orient-la-peur-d-une-guerre-sans-fin-au-liban_VN-202605240257.html",
+        "source": "BFMTV",
+        "type": "article",
+        "date": "24/05/2026",
+        "checked": true
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "israel-mph1fbfh",
+      "matchedStoryTitle": "Israël",
+      "previousEpisodeTitle": "Faut-il renforcer l'intervention internationale au Liban ?",
+      "previousEpisodeUrl": "http://localhost:3001/debate?id=512",
+      "confidence": 0.9,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {},
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "Guerre au Moyen-Orient",
+      "accord Iran/État -Uni",
+      "frappe au Liban",
+      "I raël",
+      "Liban",
+      "élu  i raélien"
+    ],
+    "sentAt": "2026-05-24T14:39:49.085Z"
+  },
+  {
+    "subject": "Guerre en Ukraine : attaque russe au missile Orechnik sur Kiev et condamnations internationales",
+    "sessionLabel": "24/05/2026 à 18:33:51",
+    "question": "L'usage d'armes nucléaires en Ukraine justifie-t-il une intervention militaire internationale ?",
+    "positionA": "Intervenir pour stopper l'escalade nucléaire",
+    "positionB": "Éviter l'intervention pour prévenir une guerre mondiale",
+    "theme": "International",
+    "resume": "Un tournant terrifiant vient d’être franchi dans la guerre en Ukraine : la Russie a lancé un missile hypersonique nucléaire, le « Orechnik », sur Kiev. Cette attaque frappe au cœur de la capitale et jette une ombre lourde sur l’avenir du conflit.\n\nConfirmée par Moscou, cette frappe marque une escalade sans précédent. Le missile, capable de parcourir de longues distances avec une ogive nucléaire, symbolise une montée en puissance dramatique des moyens de guerre. Quatre victimes sont déjà dénombrées, tandis que la ville subit en parallèle une pluie de 600 drones, une offensive d’une ampleur inédite.\n\nFace à cette agression, la riposte diplomatique est immédiate et virulente : la France, l’Allemagne et l’Italie dénoncent unanimement une action qui menace la stabilité régionale et mondiale. La tension, déjà à son comble, s’enflamme encore, plongeant la région dans une incertitude explosive, où chaque mouvement pourrait faire basculer le fragile équilibre.\n\nL'usage d'armes nucléaires en Ukraine justifie-t-il une intervention militaire internationale ?\n\nJ.L Grasso",
+    "sources": "L'Obs, Le Monde, HuffPost France, Le Dauphiné Libéré, BFMTV, La Croix, Le Figaro",
+    "links": [
+      {
+        "title": "Que sait-on du missile à capacité nucléaire « Orechnik » utilisé par la Russie en Ukraine cette nuit ?",
+        "url": "https://www.nouvelobs.com/monde/20260524.OBS115210/que-sait-on-du-missile-a-capacite-nucleaire-orechnik-utilise-par-la-russie-en-ukraine-cette-nuit.html",
+        "source": "L'Obs",
+        "type": "article",
+        "date": "24/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Qu’est-ce que le missile Orechnik, à capacité nucléaire, que la Russie confirme avoir envoyé sur l’Ukraine ?",
+        "url": "https://www.huffingtonpost.fr/international/article/qu-est-ce-que-le-missile-orechnik-a-capacite-nucleaire-que-la-russie-confirme-avoir-envoye-sur-l-ukraine_264060.html",
+        "source": "HuffPost France",
+        "type": "article",
+        "date": "24/05/2026",
+        "checked": true
+      },
+      {
+        "title": "EN DIRECT, guerre en Ukraine : après l’utilisation par la Russie d’un missile à capacité nucléaire contre Kiev, la France, l’Allemagne et l’Italie condamnent l’attaque",
+        "url": "https://www.lemonde.fr/international/live/2026/05/24/en-direct-guerre-en-ukraine-un-missile-russe-a-capacite-nucleaire-lance-sur-kiev-dans-la-nuit-une-tactique-d-intimidation-selon-la-cheffe-de-la-diplomatie-de-l-ue_6693162_3210.html",
+        "source": "Le Monde",
+        "type": "article",
+        "date": "24/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Guerre en Ukraine. Portée, ogives... Que sait-on du missile hypersonique Orechnik tiré par la Russie ?",
+        "url": "https://www.ledauphine.com/defense-guerre-conflit/2024/11/22/portee-ogives-que-sait-on-du-missile-hypersonique-orechnik-tire-par-la-russie",
+        "source": "Le Dauphiné Libéré",
+        "type": "article",
+        "date": "24/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Guerre en Ukraine: au moins quatre morts après d'intenses frappes russes",
+        "url": "https://www.bfmtv.com/international/asie/russie/video-guerre-en-ukraine-au-moins-quatre-morts-apres-d-intenses-frappes-russes_VN-202605240263.html",
+        "source": "BFMTV",
+        "type": "article",
+        "date": "24/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Guerre en Ukraine : quatre morts dans une attaque russe ; Kiev visée par 600 drones",
+        "url": "https://www.la-croix.com/international/ukraine-russie-jour-1551-point-conflit-ukrainien-poutine-aujourdhui-20260524",
+        "source": "La Croix",
+        "type": "article",
+        "date": "24/05/2026",
+        "checked": true
+      },
+      {
+        "title": "EN DIRECT - Guerre au Moyen-Orient : Trump a promis à Netanyahou que la question du démantèlement du nucléaire iranien ne sera pas oubliée",
+        "url": "https://www.lefigaro.fr/international/en-direct-guerre-en-iran-moyen-orient-donald-trump-netanyahou-detroit-d-ormuz-prix-de-l-essence-20260524",
+        "source": "Le Figaro",
+        "type": "article",
+        "date": "24/05/2026",
+        "checked": false
+      },
+      {
+        "title": "Giorgia Meloni «condamne fermement» l'attaque russe contre l'Ukraine avec un missile Orechnik",
+        "url": "https://www.lefigaro.fr/international/giorgia-meloni-condamne-fermement-l-attaque-russe-contre-l-ukraine-avec-un-missile-orechnik-20260524",
+        "source": "Le Figaro",
+        "type": "article",
+        "date": "24/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Guerre en Ukraine : tout ce que l’on sait sur le missile «Orechnik» russe qui a frappé Kiev la nuit dernière",
+        "url": "https://www.lefigaro.fr/international/attaque-russe-a-dnipro-en-ukraine-quelle-est-la-difference-entre-un-missile-intercontinental-et-un-missile-de-moyenne-portee-20241121",
+        "source": "Le Figaro",
+        "type": "article",
+        "date": "24/05/2026",
+        "checked": false
+      },
+      {
+        "title": "Guerre en Ukraine : la Russie utilise un missile Orechnik dans une attaque massive contre Kiev",
+        "url": "https://www.youtube.com/shorts/vI0qDGXFdII",
+        "source": "Le Monde",
+        "type": "youtube",
+        "date": "24/05/2026",
+        "checked": true
+      },
+      {
+        "title": "",
+        "url": "https://www.youtube.com/watch?v=Dnb3Iffi8Sg",
+        "source": "Le Monde",
+        "type": "youtube",
+        "date": "24/05/2026",
+        "checked": true
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "02-la-guerre-en-ukraine-transforme-les-rapports-entre-la-russie-l-europe-et-les-eta",
+      "matchedStoryTitle": "La guerre en Ukraine transforme les rapports entre la Russie, l’Europe et les États-Unis",
+      "previousEpisodeTitle": "L’usage de missiles hypersoniques justifie-t-il une riposte militaire accrue ?",
+      "previousEpisodeUrl": "http://localhost:3001/debate?id=549",
+      "confidence": 0.9,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {},
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "missile Orechnik",
+      "guerre en Ukraine",
+      "attaque ru e",
+      "Kiev",
+      "condamnation  internationale",
+      "Giorgia Meloni",
+      "France Allemagne Italie"
+    ],
+    "sentAt": "2026-05-24T14:39:06.694Z"
+  },
+  {
+    "subject": "Fusillade près de la Maison-Blanche : suspect abattu et dispositif policier renforcé",
+    "sessionLabel": "24/05/2026 à 16:12:38",
+    "question": "La répression immédiate des suspects violents garantit-elle vraiment la sécurité publique ?",
+    "positionA": "Répression rapide protège la société",
+    "positionB": "Répression rapide menace les libertés",
+    "theme": "International",
+    "resume": "Une fusillade a soudainement éclaté à quelques pas de la Maison Blanche, plongeant le cœur de Washington dans un chaos fulgurant. En quelques instants, la capitale américaine s’est retrouvée en état d’alerte maximale, sous le choc d’une menace concrète et immédiate.\n\nLes forces de l’ordre ont réagi avec une rapidité impressionnante, bouclant le secteur en un temps record. Le tireur, dont le passé violent était déjà connu des autorités, a été abattu sur place, stoppant net la menace. Un blessé a été signalé, pris en charge rapidement, mais son état reste inconnu. Cette intervention éclair témoigne de la tension palpable qui règne autour de la résidence présidentielle.\n\nFace à cet épisode, la sécurité autour de la Maison Blanche a été drastiquement renforcée, illustrant la gravité de la situation. Le président Donald Trump a insisté sur le fait que la connaissance des antécédents du suspect a sans doute permis une riposte plus rapide et efficace. Mais cette affaire laisse planer une atmosphère lourde, où vigilance et inquiétude se mêlent sans se dissiper.\n\nLa répression immédiate des suspects violents garantit-elle vraiment la sécurité publique ?\n\nM. Camus",
+    "sources": "HuffPost France, Le Monde, L'Obs, Le Parisien, France 24, Franceinfo, Euronews FR, Euronews France, RFI, Valeurs actuelles",
+    "links": [
+      {
+        "title": "Ce que l’on sait de la fusillade qui a éclaté près de la Maison Blanche à Washington",
+        "url": "https://www.huffingtonpost.fr/international/video/ce-que-l-on-sait-de-la-fusillade-qui-a-eclate-pres-de-la-maison-blanche-a-washington_264054.html",
+        "source": "HuffPost France",
+        "type": "article",
+        "date": "24/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Coups de feu près de la Maison Blanche, tireur abattu : ce que l’on sait de cette nouvelle attaque contre la présidence américaine",
+        "url": "https://www.nouvelobs.com/monde/20260524.OBS115197/coups-de-feu-pres-de-la-maison-blanche-tireur-abattu-ce-que-l-on-sait-de-cette-nouvelle-attaque-contre-la-presidence-americaine.html",
+        "source": "L'Obs",
+        "type": "article",
+        "date": "24/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Une fusillade près de la Maison Blanche fait un blessé ; le suspect tué « avait des antécédents de violence », affirme Donald Trump",
+        "url": "https://www.lemonde.fr/international/article/2026/05/24/des-coups-de-feu-tires-pres-de-la-maison-blanche-a-washington_6692854_3210.html",
+        "source": "Le Monde",
+        "type": "article",
+        "date": "24/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Coups de feu près de la Maison Blanche, le tireur abattu",
+        "url": "https://www.france24.com/fr/vid%C3%A9o/20260524-coups-de-feu-pr%C3%A8s-de-la-maison-blanche-le-tireur-abattu",
+        "source": "France 24",
+        "type": "article",
+        "date": "24/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Des coups de feu près de la Maison Blanche, le tireur, \"qui avait des antécédents de violence\", abattu",
+        "url": "https://www.franceinfo.fr/monde/usa/fusillades-aux-etats-unis/des-coups-de-feu-tires-pres-de-la-maison-blanche-le-tireur-abattu_8024678.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "type": "article",
+        "date": "24/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Fusillade près de la Maison-Blanche : un tireur abattu par les services secrets, selon Trump",
+        "url": "http://fr.euronews.com/2026/05/24/fusillade-pres-de-la-maison-blanche-un-tireur-abattu-par-les-services-secrets-selon-trump",
+        "source": "Euronews FR",
+        "type": "article",
+        "date": "24/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Fort dispositif policier devant la Maison-Blanche après une fusillade mortelle au point de contrôle",
+        "url": "http://fr.euronews.com/video/2026/05/24/fort-dispositif-policier-devant-la-maison-blanche-apres-une-fusillade-mortelle-au-point-de",
+        "source": "Euronews FR",
+        "type": "article",
+        "date": "24/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Tireur abattu près de la Maison Blanche : le suspect \"avait des antécédents de violence\", dit Trump",
+        "url": "https://www.france24.com/fr/am%C3%A9riques/20260524-un-tireur-abattu-apr%C3%A8s-avoir-ouvert-le-feu-sur-des-agents-du-secret-service-%C3%A0-la-maison-blanche",
+        "source": "France 24",
+        "type": "article",
+        "date": "24/05/2026",
+        "checked": true
+      },
+      {
+        "title": "États-Unis: le tireur abattu après des coups de feu près de la Maison Blanche",
+        "url": "https://www.rfi.fr/fr/am%C3%A9riques/20260524-%C3%A9tats-unis-%C3%A0-washington-des-coups-de-feu-entendus-proche-de-la-maison-blanche",
+        "source": "RFI",
+        "type": "article",
+        "date": "24/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Tirs près de la Maison-Blanche : le suspect « avait des antécédents de violence », selon Donald Trump",
+        "url": "https://www.valeursactuelles.com/monde/tirs-pres-de-la-maison-blanche-le-suspect-avait-des-antecedents-de-violence-selon-donald-trump",
+        "source": "Valeurs actuelles",
+        "type": "article",
+        "date": "24/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Des coups de feu près de la Maison Blanche, le tireur abattu",
+        "url": "https://www.youtube.com/shorts/txbVEElLmrI",
+        "source": "Le Monde",
+        "type": "youtube",
+        "date": "24/05/2026",
+        "checked": true
+      },
+      {
+        "title": "",
+        "url": "https://www.youtube.com/watch?v=N2Qt7XUIAlo",
+        "source": "Le Monde",
+        "type": "youtube",
+        "date": "24/05/2026",
+        "checked": true
+      },
+      {
+        "title": "",
+        "url": "https://www.youtube.com/watch?v=gtCVeTJxwTE",
+        "source": "Le Parisien",
+        "type": "youtube",
+        "date": "24/05/2026",
+        "checked": true
+      },
+      {
+        "title": "",
+        "url": "https://www.youtube.com/watch?v=LJ3heMGc3nY",
+        "source": "France 24",
+        "type": "youtube",
+        "date": "24/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Washington : des coups de feu près de la Maison Blanche, le tireur abattu",
+        "url": "https://www.youtube.com/shorts/si78ss4EjDY",
+        "source": "Franceinfo",
+        "type": "youtube",
+        "date": "24/05/2026",
+        "checked": true
+      },
+      {
+        "title": "",
+        "url": "https://www.youtube.com/watch?v=g6SVP6AYRDA",
+        "source": "Euronews France",
+        "type": "youtube",
+        "date": "24/05/2026",
+        "checked": true
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "04-la-presidence-trump-reconfigure-la-politique-americaine-et-les-relations-interna",
+      "matchedStoryTitle": "La présidence Trump reconfigure la politique américaine et les relations internationales",
+      "previousEpisodeTitle": "La démission de Tulsi Gabbard affaiblit-elle la sécurité nationale américaine ?",
+      "previousEpisodeUrl": "http://localhost:3001/debate?id=498",
+      "confidence": 0.85,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {},
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "Fusillade près de la Maison-Blanche",
+      "tireur abattu",
+      "Donald Trump",
+      "di po itif policier renforcé",
+      "Secret Service",
+      "Wa hington",
+      "antécédent  de violence"
+    ],
+    "sentAt": "2026-05-24T12:56:28.009Z"
+  },
+  {
+    "subject": "Attaques russes sur Kiev avec missile Orechnik : bilan et réactions",
+    "sessionLabel": "24/05/2026 à 16:12:38",
+    "question": "L’usage de missiles hypersoniques justifie-t-il une riposte militaire accrue ?",
+    "positionA": "Oui, pour dissuader l’agresseur",
+    "positionB": "Non, cela aggrave le conflit sans solution",
+    "theme": "International",
+    "resume": "Une attaque d'une violence inouïe a secoué la région de Kiev, marquant un tournant dramatique dans le conflit ukrainien. Cette fois, c’est un missile hypersonique Orechnik, déployé pour la première fois, qui a frappé, semant chaos et désolation.\n\nConfirmé par Moscou, ce bombardement a fait au moins quatre morts et blessé plus de 80 personnes. L'arme, capable de transporter une charge nucléaire, incarne une escalade sans précédent, une menace fulgurante qui plane désormais sur la capitale ukrainienne. La vitesse et la puissance de ce missile balistique hypersonique bouleversent les règles du jeu, plongeant la région dans une incertitude terrifiante.\n\nFace à cette offensive inédite, les réactions internationales ne se sont pas fait attendre. Emmanuel Macron a dénoncé une « fuite en avant » russe, tandis que l’Union européenne a fermement condamné l’usage de cette arme dévastatrice. Ces prises de position traduisent une inquiétude palpable, un sentiment que le conflit pourrait basculer dans une phase encore plus dangereuse. L’ombre d’une escalade majeure plane désormais sur l’horizon.\n\nL’usage de missiles hypersoniques justifie-t-il une riposte militaire accrue ?\n\nR. Renaudot",
+    "sources": "HuffPost France, BFMTV, Franceinfo, France 24, Euronews France, Euronews FR, RFI, Le Figaro",
+    "links": [
+      {
+        "title": "Qu’est-ce que le missile Orechnik, à capacité nucléaire, que la Russie confirme avoir envoyé sur l’Ukraine ?",
+        "url": "https://www.huffingtonpost.fr/international/article/qu-est-ce-que-le-missile-orechnik-a-capacite-nucleaire-que-la-russie-confirme-avoir-envoye-sur-l-ukraine_264060.html",
+        "source": "HuffPost France",
+        "type": "article",
+        "date": "24/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Emmanuel Macron condamne la \"fuite en avant\" de la Russie après le tir d'un missile hypersonique Orechnik contre l'Ukraine",
+        "url": "https://www.bfmtv.com/politique/elysee/emmanuel-macron-condamne-la-fuite-en-avant-de-la-russie-apres-le-tir-d-un-missile-hypersonique-orechnik-contre-l-ukraine_AD-202605240227.html",
+        "source": "BFMTV",
+        "type": "article",
+        "date": "24/05/2026",
+        "checked": true
+      },
+      {
+        "title": "D'intenses bombardements russes sur Kiev font au moins quatre morts et plus de 100 blessés, le missile Orechnik utilisé",
+        "url": "https://www.franceinfo.fr/monde/europe/manifestations-en-ukraine/d-intenses-bombardements-russes-sur-kiev-font-au-moins-un-mort-et-13-blesses_8024684.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "type": "article",
+        "date": "24/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Ukraine : Emmanuel Macron et l’Union européenne dénoncent le recours au missile Orechnik par la Russie",
+        "url": "https://www.france24.com/fr/europe/20260524-ukraine-la-capitale-kiev-touch%C3%A9e-par-d-intenses-bombardements-russes",
+        "source": "France 24",
+        "type": "article",
+        "date": "24/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Kiev lourdement frappée par la Russie, qui aurait utilisé un missile Orechnik",
+        "url": "https://www.france24.com/fr/vid%C3%A9o/20260524-kiev-lourdement-frapp%C3%A9e-par-la-russie-qui-aurait-utilis%C3%A9-un-missile-orechnik",
+        "source": "France 24",
+        "type": "article",
+        "date": "24/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Au moins quatre morts et plus de 80 blessés dans une attaque massive russe contre Kyiv et sa région",
+        "url": "http://fr.euronews.com/my-europe/2026/05/24/au-moins-deux-morts-et-plus-de-50-blesses-dans-une-attaque-massive-russe-contre-kyiv",
+        "source": "Euronews FR",
+        "type": "article",
+        "date": "24/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Ukraine: la région de Kiev bombardée massivement par la Russie, un missile balistique Orechnik utilisé",
+        "url": "https://www.rfi.fr/fr/europe/20260524-ukraine-attaque-de-missiles-massive-sur-kiev-une-%C3%A9cole-touch%C3%A9e-par-les-bombardements",
+        "source": "RFI",
+        "type": "article",
+        "date": "24/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Missile Orechnik : Emmanuel Macron condamne la «fuite en avant» de la Russie",
+        "url": "https://www.lefigaro.fr/international/missile-orechnik-emmanuel-macron-condamne-la-fuite-en-avant-de-la-russie-20260524",
+        "source": "Le Figaro",
+        "type": "article",
+        "date": "24/05/2026",
+        "checked": false
+      },
+      {
+        "title": "«Ils sont vraiment fous», clame Zelensky après un tir russe de missile «à capacité nucléaire» Orechnik",
+        "url": "https://www.lefigaro.fr/international/la-russie-a-vise-l-ukraine-avec-un-missile-de-portee-intermediaire-orechnik-affirme-zelensky-20260524",
+        "source": "Le Figaro",
+        "type": "article",
+        "date": "24/05/2026",
+        "checked": false
+      },
+      {
+        "title": "",
+        "url": "https://www.youtube.com/watch?v=KbbYP0I5Fms",
+        "source": "Euronews France",
+        "type": "youtube",
+        "date": "24/05/2026",
+        "checked": true
+      },
+      {
+        "title": "",
+        "url": "https://www.youtube.com/watch?v=lAS-QeaRJEs",
+        "source": "France 24",
+        "type": "youtube",
+        "date": "24/05/2026",
+        "checked": true
+      },
+      {
+        "title": "",
+        "url": "https://www.youtube.com/watch?v=7wLloxgZHo8",
+        "source": "France 24",
+        "type": "youtube",
+        "date": "24/05/2026",
+        "checked": true
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "02-la-guerre-en-ukraine-transforme-les-rapports-entre-la-russie-l-europe-et-les-eta",
+      "matchedStoryTitle": "La guerre en Ukraine transforme les rapports entre la Russie, l’Europe et les États-Unis",
+      "previousEpisodeTitle": "L’usage des drones transforme-t-il la nature du conflit en Ukraine ?",
+      "previousEpisodeUrl": "http://localhost:3001/debate?id=510",
+      "confidence": 0.9,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {},
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "missile Orechnik",
+      "Kiev",
+      "Ru ie",
+      "Ukraine",
+      "Emmanuel Macron",
+      "Volodymyr Zelen ky",
+      "bombardement  ru e"
+    ],
+    "sentAt": "2026-05-24T12:42:33.814Z"
+  },
+  {
+    "subject": "Festival de Cannes 2026 : palmarès et événements marquants",
+    "sessionLabel": "24/05/2026 à 16:12:38",
+    "question": "Le Festival de Cannes doit-il privilégier le cinéma d'Europe de l'Est ?",
+    "positionA": "Oui, pour diversifier les perspectives",
+    "positionB": "Non, pour rester fidèle aux classiques occidentaux",
+    "theme": "Culture - tendances",
+    "resume": "Le Festival de Cannes 2026 a frappé fort, bouleversant les attentes avec un choix audacieux venu d’Europe de l’Est. La Palme d’or s’est posée une nouvelle fois sur le front du réalisateur roumain Cristian Mungiu, dont le film « Fjord » a électrisé le jury et le public.\n\nL’annonce du palmarès a fait l’effet d’une onde de choc. Cristian Mungiu, déjà auréolé d’une Palme d’or, a confirmé son statut de maître du cinéma contemporain. « Fjord » n’est pas qu’un film : c’est une plongée intense, une œuvre qui mêle audace narrative et profondeur émotionnelle. Ce triomphe marque une reconnaissance éclatante du cinéma d’Europe de l’Est, longtemps en marge, désormais en pleine lumière.\n\nLe Festival de Cannes 2026 s’achève sur une note vibrante, comme une promesse : celle d’un cinéma mondial en pleine mutation, où les voix de l’Est ne cessent de gagner en puissance. Le rideau tombe, mais le débat ne fait que commencer.\n\nLe Festival de Cannes doit-il privilégier le cinéma d'Europe de l'Est ?\n\nR. Renaudot",
+    "sources": "L'Obs, Le Monde, HuffPost France, L'Humanité, Libération, C ce soir, France 24, Franceinfo, La Croix, RFI, Brut, Euronews FR",
+    "links": [
+      {
+        "title": "Festival de Cannes 2026 : une seconde Palme pour Cristian Mungiu et un palmarès complètement à l’Est",
+        "url": "https://www.nouvelobs.com/cinema/20260524.OBS115190/festival-de-cannes-2026-une-seconde-palme-pour-cristian-mungiu-et-un-palmares-completement-a-l-est.html",
+        "source": "L'Obs",
+        "type": "article",
+        "date": "24/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Festival de Cannes : Cristian Mungiu remporte la Palme d’or pour « Fjord » lors d’une cérémonie de clôture assombrie par l’état du monde",
+        "url": "https://www.lemonde.fr/culture/article/2026/05/24/festival-de-cannes-cristian-mungiu-remporte-la-palme-d-or-pour-fjord-lors-d-une-ceremonie-de-cloture-assombrie-par-l-etat-du-monde_6692821_3246.html",
+        "source": "Le Monde",
+        "type": "article",
+        "date": "24/05/2026",
+        "checked": true
+      },
+      {
+        "title": "La Palme d’or du Festival de Cannes 2026 et tout le palmarès de cette 79e édition",
+        "url": "https://www.huffingtonpost.fr/culture/article/le-sacre-de-virginie-efira-au-festival-de-cannes-2026-et-tout-le-palmares-de-cette-79e-edition_263974.html",
+        "source": "HuffPost France",
+        "type": "article",
+        "date": "24/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Cannes 2026 : avec « Fjord », le Roumain Cristian Mungiu obtient sa deuxième Palme d’or",
+        "url": "https://www.humanite.fr/culture-et-savoir/cannes-2026/cannes-2026-avec-fjord-le-roumain-cristian-mungiu-obtient-sa-deuxieme-palme-dor",
+        "source": "L'Humanité",
+        "type": "article",
+        "date": "24/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Cannes 2026 : Cristian Mungiu, Palme nord d’un palmarès un peu à l’ouest",
+        "url": "https://www.liberation.fr/culture/cinema/cannes-2026-cristian-mungiu-palme-nord-dun-palmares-un-peu-a-louest-20260523_RUL3ETOM2BH7NDRTTHJSZEQBKM/",
+        "source": "Libération",
+        "type": "article",
+        "date": "24/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Cérémonie de clôture du Festival de Cannes: deuxième palme d’or pour Cristian Mungiu avec «Fjord»",
+        "url": "https://www.liberation.fr/culture/cinema/en-direct-festival-de-cannes-jour-12-suivez-la-ceremonie-de-cloture-en-direct-avec-liberation-20260523_RB4Y24BOANF55A3ID3LTRYXJN4/",
+        "source": "Libération",
+        "type": "article",
+        "date": "24/05/2026",
+        "checked": true
+      },
+      {
+        "title": "\"Fjord\" du Roumain Cristian Mungiu décroche la Palme d'or à Cannes",
+        "url": "https://www.france24.com/fr/vid%C3%A9o/20260524-fjord-du-roumain-cristian-mungiu-d%C3%A9croche-la-palme-d-or-%C3%A0-cannes",
+        "source": "France 24",
+        "type": "article",
+        "date": "24/05/2026",
+        "checked": true
+      },
+      {
+        "title": "La Palme d'or pour \"Fjord\", le Grand Prix pour \"Minotaure\", \"Notre salut\" distingué pour son scénario... Le palmarès du Festival de Cannes 2026 célèbre un cinéma audacieux et politique",
+        "url": "https://www.franceinfo.fr/culture/cinema/festival-de-cannes/la-palme-d-or-pour-fjord-le-grand-prix-pour-minotaure-notre-salut-distingue-pour-son-scenario-le-palmares-du-festival-de-cannes-2026-celebre-un-cinema-audacieux-et-politique_8023520.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "type": "article",
+        "date": "24/05/2026",
+        "checked": false
+      },
+      {
+        "title": "Festival de Cannes 2026 : \"Fjord\" Palme d’or, retour sur un palmarès engagé",
+        "url": "https://www.france24.com/fr/%C3%A9missions/%C3%A0-l-affiche/20260523-festival-de-cannes-2026-fjord-palme-d-or-retour-sur-un-palmar%C3%A8s-engag%C3%A9",
+        "source": "France 24",
+        "type": "article",
+        "date": "24/05/2026",
+        "checked": false
+      },
+      {
+        "title": "Festival de Cannes 2026 : Cristian Mungiu remporte une deuxième Palme d’or pour « Fjord »",
+        "url": "https://www.la-croix.com/culture/festival-de-cannes-2026-cristian-mungiu-remporte-une-deuxieme-palme-d-or-pour-fjord-20260523",
+        "source": "La Croix",
+        "type": "article",
+        "date": "24/05/2026",
+        "checked": false
+      },
+      {
+        "title": "Cannes 2026: Cristian Mungiu remporte la Palme d'or avec «Fjord» sur la question sensible de la religion",
+        "url": "https://www.rfi.fr/fr/culture/20260523-cannes-2026-cristian-mungiu-remporte-la-palme-d-or-avec-fjord-sur-la-question-sensible-de-la-religion",
+        "source": "RFI",
+        "type": "article",
+        "date": "24/05/2026",
+        "checked": false
+      },
+      {
+        "title": "Cannes 2026 : le drame politique \"Fjord\" de Cristian Mungiu remporte la Palme d'or",
+        "url": "http://fr.euronews.com/culture/2026/05/23/cannes-2026-le-drame-politique-fjord-de-cristian-mungiu-remporte-la-palme-dor",
+        "source": "Euronews FR",
+        "type": "article",
+        "date": "24/05/2026",
+        "checked": false
+      },
+      {
+        "title": "Festival de Cannes 2026 : « Fjord » de Cristian Mungiu, prix du jury œcuménique",
+        "url": "https://www.la-croix.com/culture/festival-de-cannes-2026-fjord-de-cristian-mungiu-prix-du-jury-ocumenique-20260523",
+        "source": "La Croix",
+        "type": "article",
+        "date": "23/05/2026",
+        "checked": false
+      },
+      {
+        "title": "",
+        "url": "https://www.youtube.com/watch?v=TxamR9AH0sQ",
+        "source": "Le Monde",
+        "type": "youtube",
+        "date": "24/05/2026",
+        "checked": false
+      },
+      {
+        "title": "Clap de fin pour le Festival de Cannes",
+        "url": "https://www.youtube.com/shorts/P6KxxXXgxCY",
+        "source": "Le Monde",
+        "type": "youtube",
+        "date": "24/05/2026",
+        "checked": false
+      },
+      {
+        "title": "",
+        "url": "https://www.youtube.com/watch?v=ujSKKIXLZwQ",
+        "source": "C ce soir",
+        "type": "youtube",
+        "date": "24/05/2026",
+        "checked": false
+      },
+      {
+        "title": "",
+        "url": "https://www.youtube.com/watch?v=5CcoG9lrDUw",
+        "source": "France 24",
+        "type": "youtube",
+        "date": "24/05/2026",
+        "checked": false
+      },
+      {
+        "title": "",
+        "url": "https://www.youtube.com/watch?v=pAlEmuiTnW0",
+        "source": "Brut",
+        "type": "youtube",
+        "date": "24/05/2026",
+        "checked": false
+      },
+      {
+        "title": "",
+        "url": "https://www.youtube.com/watch?v=xPjHO3_2C9g",
+        "source": "Brut",
+        "type": "youtube",
+        "date": "24/05/2026",
+        "checked": false
+      },
+      {
+        "title": "Le palmarès complet du Festival de Cannes 2026",
+        "url": "https://www.youtube.com/shorts/Yc8akB0IWKo",
+        "source": "Franceinfo",
+        "type": "youtube",
+        "date": "24/05/2026",
+        "checked": false
+      },
+      {
+        "title": "",
+        "url": "https://www.youtube.com/watch?v=m8e7QMZrmes",
+        "source": "Brut",
+        "type": "youtube",
+        "date": "23/05/2026",
+        "checked": false
+      },
+      {
+        "title": "Comment le Festival de Cannes est né, expliqué par Thierry Fremaux - C Ce Soir du 19 mai 2026",
+        "url": "https://www.youtube.com/shorts/-_WSN4wVbVQ",
+        "source": "C ce soir",
+        "type": "youtube",
+        "date": "21/05/2026",
+        "checked": false
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "49-la-culture-devient-un-espace-de-debats-autour-de-la-creation-des-plateformes-de-",
+      "matchedStoryTitle": "La culture devient un espace de débats autour de la création, des plateformes, de la censure et des valeurs",
+      "previousEpisodeTitle": "",
+      "previousEpisodeUrl": "",
+      "confidence": 0.85,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {},
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "Festival de Cannes 2026",
+      "Cri tian Mungiu",
+      "Palme d’or",
+      "Fjord",
+      "Palmarè  engagé",
+      "Minotaure",
+      "Virginie Efira"
+    ],
+    "sentAt": "2026-05-24T12:20:30.740Z"
+  },
+  {
+    "subject": "Disparition de Manon Relandeau. 300 personnes attendues à la battue citoyenne organisée par la gendarmerie, \"c'est le bon moment\"",
+    "sessionLabel": "23/05/2026 à 18:44:00",
+    "question": "La mobilisation citoyenne peut-elle vraiment faire avancer les enquêtes ?",
+    "positionA": "Oui, elle multiplie les chances de retrouver des indices",
+    "positionB": "Non, elle risque de brouiller les pistes et gêner l'enquête",
+    "theme": "Justice / faits divers",
+    "resume": "Deux mois déjà que Manon Relandeau a disparu en Loire-Atlantique, et l'espoir de la retrouver brûle toujours. Ce week-end, près de 300 volontaires vont se mobiliser lors d'une battue citoyenne organisée par la gendarmerie, un geste fort qui pourrait relancer une enquête au point mort.\n\nL'absence d'indices nouveaux pèse lourd. Pour ne rien lâcher, les autorités intensifient la présence sur le terrain, multipliant les « capteurs » humains prêts à scruter chaque recoin. Cette mobilisation locale, plus qu'une simple action, est une véritable course contre la montre. La gendarmerie compte sur cette énergie collective pour réveiller l'enquête, convaincue que ce moment est décisif.\n\nLa battue s'annonce comme un tournant, une étape cruciale où chaque pas peut faire basculer l'enquête. Mais derrière cette dynamique, la tension reste palpable. Le terrain est vaste, le temps presse, et l'ombre du mystère plane toujours sur Manon. Rien n'est joué, tout reste à écrire.\n\nLa mobilisation citoyenne peut-elle vraiment faire avancer les enquêtes ?\n\nM. Camus",
+    "sources": "Franceinfo, Libération, HuffPost France",
+    "links": [
+      {
+        "title": "Deux mois après la disparition de Manon Relandeau, une « recherche citoyenne » en Loire-Atlantique",
+        "url": "https://www.huffingtonpost.fr/france/article/deux-mois-apres-la-disparition-de-manon-relandeau-une-recherche-citoyenne-en-loire-atlantique_264043.html",
+        "source": "HuffPost France",
+        "type": "article",
+        "date": "23/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Disparition de Manon Relandeau : «La battue citoyenne est un moyen de démultiplier les capteurs»",
+        "url": "https://www.liberation.fr/societe/police-justice/disparition-de-manon-relandeau-la-battue-citoyenne-est-un-moyen-de-demultiplier-les-capteurs-20260522_EASACQFUHVHCTDMBROH2NGIAAQ/",
+        "source": "Libération",
+        "type": "article",
+        "date": "23/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Disparition de Manon Relandeau. 300 personnes attendues à la battue citoyenne organisée par la gendarmerie, \"c'est le bon moment\"",
+        "url": "https://france3-regions.franceinfo.fr/pays-de-la-loire/loire-atlantique/nantes/disparition-de-manon-relandeau-300-personnes-attendues-a-la-battue-citoyenne-organisee-par-la-gendarmerie-c-est-le-bon-moment-3355825.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "type": "article",
+        "date": "23/05/2026",
+        "checked": true
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "54-les-grandes-affaires-judiciaires-et-mediatiques-deviennent-des-debats-de-societe",
+      "matchedStoryTitle": "Les grandes affaires judiciaires et médiatiques deviennent des débats de société",
+      "previousEpisodeTitle": "La liberté d’expression doit-elle primer sur les intérêts économiques des médias ?",
+      "previousEpisodeUrl": "http://localhost:3001/debate?id=543",
+      "confidence": 0.85,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {},
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "Disparition de Manon Relandeau",
+      "battue citoyenne",
+      "gendarmerie",
+      "Loire-Atlantique",
+      "recherche citoyenne",
+      "Nante",
+      "mobili ation locale"
+    ],
+    "sentAt": "2026-05-24T12:02:10.145Z"
+  },
+  {
     "subject": "Rugby : finale de Champions Cup avec Bordeaux-Bègles et forfait d’Arthur Fils à Roland-Garros",
     "sessionLabel": "23/05/2026 à 18:44:00",
     "question": "Le forfait d’Arthur Fils affaiblit-il gravement Roland-Garros ?",

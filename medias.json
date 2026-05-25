@@ -133,5 +133,20 @@
     "nom": "Le Dauphiné Libéré",
     "orientation": "généraliste / régional",
     "rss": "https://www.ledauphine.com/rss"
+  },
+  {
+    "nom": "L'Express",
+    "orientation": "droite",
+    "rss": "https://www.lexpress.fr/arc/outboundfeeds/rss/alaune.xml"
+  },
+  {
+    "nom": "TEST",
+    "orientation": "TEST",
+    "rss": "www.test.fr"
+  },
+  {
+    "nom": "Orange actu",
+    "orientation": "généraliste",
+    "rss": "https://actu.orange.fr/rss.xml"
   }
 ]

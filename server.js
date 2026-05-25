@@ -549,7 +549,7 @@ async function generateCompleteNarrativeContext(payload, storySelection) {
       .trim();
   }
 
-  const selectedContents = (Array.isArray(payload?.contents) ? payload.contents : [])
+  const allContents = (Array.isArray(payload?.contents) ? payload.contents : [])
     .map((item) => ({
       source: String(item?.source || "").trim(),
       title: cleanSummarySourceTitle(item?.title || ""),
@@ -560,6 +560,19 @@ async function generateCompleteNarrativeContext(payload, storySelection) {
     }))
     .filter((item) => item.title || item.url);
 
+  // Priorité à la diversité des sources : 1 article par source en premier, puis compléter
+  const selectedContents = (() => {
+    const seenSources = new Set();
+    const picked = [];
+    const rest = [];
+    for (const item of allContents) {
+      const key = item.source || item.url;
+      if (!seenSources.has(key)) { seenSources.add(key); picked.push(item); }
+      else { rest.push(item); }
+    }
+    return [...picked, ...rest].slice(0, 6);
+  })();
+
   if (!selectedContents.length) {
     throw new Error("Aucune source sélectionnée pour générer le compte rendu.");
   }
@@ -568,56 +581,47 @@ async function generateCompleteNarrativeContext(payload, storySelection) {
     throw new Error("OPENAI_API_KEY manquant pour générer le résumé.");
   }
 
-  const prompt = `
-Tu es un analyste éditorial.
+  const prompt = `Tu es un assistant éditorial pour Agôn.
 
-Ta mission :
-Rédiger un compte rendu clair du sujet à partir des sources sélectionnées uniquement.
+Ta mission : à partir des sources fournies, rédiger un résumé factuel, sobre et neutre du sujet.
 
-Objectif :
-Résumer ce qui se passe et montrer ce que les sources confirment ensemble.
+Important :
+Ce résumé sert uniquement à comprendre les faits. Il ne doit contenir aucune analyse éditoriale, aucune opinion, aucune question de débat et aucune comparaison entre médias.
 
-Règle de cadrage prioritaire :
-- Tu dois d'abord identifier le sujet principal à partir du champ "Sujet".
-- Le compte rendu doit parler uniquement de ce sujet principal.
-- Les sources sélectionnées peuvent contenir du bruit, des titres voisins ou des informations parallèles sur les mêmes personnes.
-- Ignore entièrement toute information qui ne concerne pas directement le sujet principal, même si elle apparaît dans une source sélectionnée.
-- Ne mentionne pas les éléments ignorés, même pour dire qu'ils sont "sans lien direct", "en parallèle" ou "dans l'agenda" d'un acteur.
-- Si une source contient à la fois une information centrale et une information périphérique, ne conserve que l'information centrale.
-- Ne transforme jamais un sujet secondaire en contexte du résumé.
+Règles :
+- Utilise au maximum 3 sources.
+- Ne rien inventer.
+- Ne pas extrapoler.
+- Ne pas dramatiser.
+- Ne pas employer un ton polémique.
+- Ne pas poser de question.
+- Ne pas analyser les différences de traitement médiatique.
+- Expliquer simplement :
+  1. de quoi parle le sujet ;
+  2. qui est concerné ;
+  3. ce qui s'est passé ;
+  4. pourquoi le sujet est repris ou discuté.
+- Ne pas écrire "les médias" en général si seulement quelques sources sont utilisées.
+- Si une information est incertaine ou absente des sources, ne pas l'ajouter.
+
+Sortie attendue :
+Texte brut uniquement, sans titre, sans signature, sans liste.
+
+Longueur :
+600 à 1000 caractères.
 
 Sujet :
 ${payload.subject || ""}
 
 Sources sélectionnées :
 ${JSON.stringify({
-  contents: selectedContents.slice(0, 12).map((item) => ({
+  contents: selectedContents.slice(0, 3).map((item) => ({
     title: item.title,
     type: item.type,
     date: item.date,
     summary: item.summary || ""
   }))
-}, null, 2)}
-
-Consignes :
-- Réponds uniquement avec le compte rendu, en texte brut.
-- Longueur obligatoire : entre 800 et 1500 caractères.
-- Commence OBLIGATOIREMENT par un chapô : un paragraphe d'introduction COURT (2 phrases maximum), qui résume l'essentiel et donne envie de lire, séparé du reste par une ligne vide.
-- L'article doit comporter le chapô suivi d'au moins 2 paragraphes séparés par une ligne vide.
-- Ne mets aucun titre.
-- Ne propose aucune position A/B.
-- Ne termine pas par le titre de l'arène.
-- N'ajoute pas de question de débat.
-- Base-toi uniquement sur les sources sélectionnées.
-- Ne cite jamais les noms des médias ou des sources.
-- Ne recopie pas les titres.
-- Ne juxtapose pas les titres les uns après les autres.
-- Transforme les informations en un vrai résumé rédigé, fluide et synthétique.
-- Regroupe les répétitions : si plusieurs sources disent la même chose, écris-le une seule fois.
-- Si les sources contiennent des désaccords, contradictions ou incertitudes réels, fais-les ressortir naturellement ; sinon, ne les mentionne pas et ne les cherche pas.
-- N'invente aucun fait absent des sources.
-- N'écris jamais un paragraphe qui commence par "Par ailleurs", "En parallèle", "Dans le même temps" ou toute formule servant à introduire un sujet secondaire.
-`;
+}, null, 2)}`;
 
   try {
     const response = await openai.responses.create({
@@ -634,195 +638,605 @@ Consignes :
   }
 }
 
-async function generateFinalArticleFromSummary(payload) {
+async function generateMediaAnalysis(payload) {
   const summary = String(payload?.summary || "").trim();
   const subject = String(payload?.subject || "").trim();
+  const contents = Array.isArray(payload?.contents) ? payload.contents : [];
 
   if (!summary) {
-    throw new Error("Résumé manquant pour générer l'article définitif.");
+    throw new Error("Résumé manquant pour l'analyse médiatique.");
   }
 
-  const fallbackQuestion = limitStoryText(subject || "Ce sujet doit-il ouvrir un débat ?", 100);
   if (!openai) {
-    return {
-      article: limitStoryText(summary, 1500),
-      debateQuestion: fallbackQuestion,
-      positionA: "Accord",
-      positionB: "Désaccord"
-    };
+    return { hasMediaContrast: false, mediaTreatment: "" };
   }
 
-  const prompt = `Tu es un rédacteur éditorial pour une plateforme d’actualité et de débat.
+  const allSourcesList = contents.map(c => ({
+    source: c.source,
+    orientation: c.orientation || "généraliste",
+    title: c.title,
+    type: c.type,
+    summary: c.summary || ""
+  }));
+
+  const prompt = `Tu es un assistant d'analyse médiatique pour Agôn.
+
+Tu reçois :
+1. un résumé factuel brut du sujet ;
+2. toutes les sources utilisées, pas uniquement les 3 sources du résumé factuel.
+
+Ta mission :
+Analyser uniquement le traitement médiatique du sujet dans toutes les sources retenues, seulement s'il existe une différence significative entre les sources.
+
+Tu ne dois pas rédiger l'article final.
+Tu ne dois pas créer de question de débat.
+Tu ne dois pas créer de positions.
+Tu ne dois pas reformuler tout le résumé.
+Tu ne dois pas ajouter de faits nouveaux.
+
+Objectif :
+Déterminer si les sources traitent le sujet de manière réellement différente.
+
+Règle prioritaire :
+Tu dois seulement signaler une différence de traitement médiatique si elle est réelle, significative et directement visible dans les sources.
+
+Si la différence est faible, minime, vague, incertaine ou forcée, tu dois considérer qu'il n'y a pas de contraste médiatique significatif.
+
+Attention :
+Ne confonds jamais les divergences entre acteurs de l'actualité avec une différence de traitement médiatique.
+
+Exemples :
+- Si une source cite l'optimisme d'un responsable politique et une autre cite les réserves d'un autre acteur, ce n'est pas forcément une différence de traitement médiatique.
+- Si plusieurs sources rapportent des positions différentes d'acteurs concernés, cela peut simplement refléter la complexité du sujet.
+- Il y a contraste médiatique seulement si les sources cadrent réellement le sujet différemment : angle principal différent, vocabulaire nettement différent, hiérarchisation différente, insistance différente ou lecture éditoriale différente.
+
+Champ "hasMediaContrast" :
+- true uniquement s'il existe une vraie différence significative de cadrage, d'angle, d'insistance, de vocabulaire ou de hiérarchisation entre les sources.
+- false dans tous les autres cas.
+
+Champ "mediaTreatment" :
+- Si hasMediaContrast = true : expliquer brièvement la différence observée.
+- Si hasMediaContrast = false : écrire une chaîne vide "".
+
+Règles :
+- Compare les angles choisis par les sources.
+- Compare les mots employés, si cela est visible.
+- Compare ce que chaque source met en avant ou laisse au second plan.
+- Ne pas inventer de différence de traitement.
+- Ne pas supposer une orientation politique si elle n'est pas explicitement visible.
+- Ne jamais écrire "les médias de gauche" ou "les médias de droite" sauf si les sources fournies permettent clairement de l'établir.
+- Ne pas écrire "certains médias" ou "d'autres médias" de manière vague.
+- Si les sources racontent globalement la même chose, considérer qu'il n'y a pas de contraste médiatique significatif.
+- Si seulement une source est exploitable, considérer qu'il n'y a pas de contraste médiatique significatif.
+- Si mediaTreatment est produit, il doit être précis, concret et directement exploitable dans l'article final.
+
+JSON attendu uniquement :
+{
+  "hasMediaContrast": true/false,
+  "mediaTreatment": "..."
+}
 
 Sujet : ${subject}
 
-Résumé à retravailler :
+Résumé factuel :
 ${summary}
 
-Ta mission : transformer ce résumé en article définitif plus fluide, plus captivant et plus narratif, sans rien inventer ni ajouter.
+Sources disponibles :
+${JSON.stringify(allSourcesList, null, 2)}
 
-Règles pour le champ "article" :
-- entre 800 et 1400 caractères de texte narratif ;
-- texte brut, sans titre, sans liste ;
-- minimum 2 paragraphes séparés par une ligne vide ;
-- commencer OBLIGATOIREMENT par un chapô : un paragraphe d'introduction COURT (2 phrases maximum, jamais plus), qui résume l'essentiel en une ou deux phrases percutantes et donne envie de lire, séparé du reste par une ligne vide ;
-- après le chapô, commencer par une accroche forte ;
-- installer progressivement la tension si elle existe dans le résumé ;
-- expliquer clairement les faits, les acteurs et les enjeux ;
-- ne jamais inventer de fait, chiffre, citation, nom ou contexte absent du résumé ;
-- ne pas conclure artificiellement ;
-- ne pas ajouter de question ni de signature à la fin ;
-- finir par une phrase affirmative, tendue et ouverte, qui laisse une impression de suite possible sans poser de question.
-
-Règles pour "debateQuestion" :
-- une seule question claire et clivante ;
-- maximum 100 caractères ;
-- pas de formulation molle ou neutre ;
-- varier impérativement la forme : éviter de commencer par "Faut-il", bannir les tournures répétitives ; alterner entre formulations directes, inverses, provocatrices ou nominales.
-
-Règles pour "positionA" et "positionB" :
-- deux camps opposés ;
-- maximum 60 caractères chacun ;
-- pas de "car", "parce que", "afin de" ;
-- formulations courtes, lisibles et opposées.
-
-Réponds UNIQUEMENT en JSON valide, sans balises markdown :
-{"article":"...","debateQuestion":"...","positionA":"...","positionB":"..."}`;
+Réponds UNIQUEMENT en JSON valide, sans balises markdown.`;
 
   const response = await openai.responses.create({
     model: "gpt-4.1-mini",
     input: prompt,
-    temperature: 0.35,
-    max_output_tokens: 1600
+    temperature: 0.2,
+    max_output_tokens: 600
   });
-
-  console.log("[article définitif] output_text brut :", response.output_text?.slice(0, 300));
 
   let parsed = {};
   try {
     parsed = safeJsonParse(response.output_text || "");
   } catch (error) {
-    const rawText = String(response.output_text || "").trim();
-    parsed = {
-      article: rawText || summary,
-      debateQuestion: fallbackQuestion,
-      positionA: "Accord",
-      positionB: "Désaccord"
-    };
+    parsed = { hasMediaContrast: false, mediaTreatment: "" };
   }
 
-  const signatures = ["J.L Grasso", "R. Renaudot", "M. Camus"];
-  const signature = signatures[Math.floor(Math.random() * signatures.length)];
-  const articleBody = limitStoryText(parsed.article || summary, 1500);
-  const debateQuestion = limitStoryText(parsed.debateQuestion || fallbackQuestion, 100);
-  const fullArticle = `${articleBody}\n\n${debateQuestion}\n\n${signature}`;
-
+  const hasMediaContrast = parsed.hasMediaContrast === true;
   return {
-    article: fullArticle,
-    debateQuestion,
-    positionA: limitStoryText(parsed.positionA || "Accord", 60),
-    positionB: limitStoryText(parsed.positionB || "Désaccord", 60)
+    hasMediaContrast,
+    mediaTreatment: hasMediaContrast ? String(parsed.mediaTreatment || "").trim() : ""
   };
 }
 
-async function generateStyledArticle(payload) {
-  const article = String(payload?.article || "").trim();
-  const debateQuestion = String(payload?.debateQuestion || "").trim();
-  const positionA = String(payload?.positionA || "").trim();
-  const positionB = String(payload?.positionB || "").trim();
-  const signatures = ["J.L Grasso", "R. Renaudot", "M. Camus"];
-  const articleParts = article.split(/\n\n+/).map((part) => part.trim()).filter(Boolean);
-  const existingSignature = articleParts.length >= 3 ? articleParts[articleParts.length - 1] : "";
-  const signature = signatures.includes(existingSignature)
-    ? existingSignature
-    : signatures[Math.floor(Math.random() * signatures.length)];
-  const articleBody = articleParts.length >= 3
-    ? articleParts.slice(0, -2).join("\n\n")
-    : article;
+async function generateProblematique(payload) {
+  const summary = String(payload?.summary || "").trim();
+  const subject = String(payload?.subject || "").trim();
+  const hasMediaContrast = payload?.hasMediaContrast === true;
+  const mediaTreatment = String(payload?.mediaTreatment || "").trim();
 
-  if (!article) {
-    throw new Error("Article manquant pour la réécriture.");
+  if (!summary) {
+    throw new Error("Résumé manquant pour générer la problématique.");
   }
-
-  const previousJson = JSON.stringify({
-    article: articleBody,
-    debateQuestion,
-    positionA,
-    positionB
-  }, null, 2);
 
   if (!openai) {
     return {
-      article: `${limitStoryText(articleBody, 1500)}\n\n${debateQuestion}\n\n${signature}`,
+      debateAngle: limitStoryText(subject, 180),
+      debateQuestion: limitStoryText(subject, 99),
+      positionA: "Pour",
+      positionB: "Contre"
+    };
+  }
+
+  const mediaSection = hasMediaContrast && mediaTreatment
+    ? `\nAnalyse du traitement médiatique :\n${mediaTreatment}`
+    : "";
+
+  const prompt = `Tu es un assistant éditorial pour Agôn.
+
+Tu reçois :
+1. un résumé factuel brut du sujet ;
+2. éventuellement l'analyse du traitement médiatique.
+
+Ta mission :
+Transformer le sujet d'actualité en débat clair, compréhensible et clivant pour Agôn.
+
+Tu ne dois pas rédiger l'article final.
+Tu ne dois pas réécrire le résumé factuel.
+Tu ne dois pas ajouter de faits nouveaux.
+Tu dois uniquement produire :
+1. un angle de débat ;
+2. une question claire ;
+3. deux positions opposées.
+
+Objectif :
+Faire comprendre immédiatement le sujet de l'actualité et ce qui peut diviser les lecteurs.
+
+Règles :
+- Identifier l'enjeu de débat contenu dans l'actualité.
+- La problématique doit venir des faits, pas d'un enjeu inventé.
+- Ne pas forcer une polémique si le sujet ne s'y prête pas.
+- La question doit rendre clair ce qui peut diviser les lecteurs.
+- La question doit permettre de comprendre le sujet de l'actualité sans lire l'article.
+- Les deux positions doivent répondre directement à la question.
+- Les deux positions doivent être équilibrées : ne pas rendre un camp ridicule ou évident.
+- Si une analyse du traitement médiatique existe, elle peut aider à formuler l'angle, mais elle ne doit pas remplacer les faits.
+
+Champ "debateAngle" :
+- Résumer en une phrase l'enjeu central du débat.
+- Maximum 180 caractères, espaces compris.
+- Ne pas poser une question ici.
+
+Champ "debateQuestion" :
+- Une seule question claire, directe et clivante.
+- Maximum 99 caractères, espaces compris. Ne jamais dépasser 99 caractères, sans exception.
+- La question doit permettre de comprendre le sujet de l'actualité sans lire l'article.
+- Elle doit contenir l'objet précis du débat : mesure, décision, événement, acteur ou problème concerné.
+- Elle doit partir du sujet réel.
+- Elle ne doit pas ajouter d'enjeu absent du résumé.
+- Éviter les questions trop vagues comme "faut-il s'inquiéter ?", "est-ce une bonne chose ?" ou "qui a raison ?".
+- Préférer une formulation concrète : "Faut-il…", "Doit-on…", "La France doit-elle…", "Cette mesure peut-elle…".
+
+Champ "positionA" et "positionB" :
+- Deux positions opposées.
+- Maximum 80 caractères chacune, espaces compris.
+- Formulations courtes, nettes et débattables.
+- Ne pas utiliser "car", "parce que" ou de justification longue.
+- Les positions doivent répondre directement à la question.
+- Les positions doivent être compréhensibles seules.
+- Les positions doivent rester liées au sujet précis de l'actualité.
+
+JSON attendu uniquement :
+{
+  "debateAngle": "...",
+  "debateQuestion": "...",
+  "positionA": "...",
+  "positionB": "..."
+}
+
+Sujet : ${subject}
+
+Résumé factuel :
+${summary}
+${mediaSection}
+
+Réponds UNIQUEMENT en JSON valide, sans balises markdown.`;
+
+  const response = await openai.responses.create({
+    model: "gpt-4.1-mini",
+    input: prompt,
+    temperature: 0.3,
+    max_output_tokens: 600
+  });
+
+  let parsed = {};
+  try {
+    parsed = safeJsonParse(response.output_text || "");
+  } catch (error) {
+    parsed = {};
+  }
+
+  return {
+    debateAngle: limitStoryText(parsed.debateAngle || subject, 180),
+    debateQuestion: limitStoryText(parsed.debateQuestion || subject, 99),
+    positionA: limitStoryText(parsed.positionA || "Pour", 80),
+    positionB: limitStoryText(parsed.positionB || "Contre", 80)
+  };
+}
+
+
+function buildFallbackStorySuggestion(payload, stories = []) {
+  const text = [
+    payload.subject,
+    payload.ai?.debateQuestion,
+    payload.ai?.resume,
+    ...(payload.sources || []),
+    ...((payload.contents || []).map((item) => item.title))
+  ].filter(Boolean).join(" ");
+  const keywords = [...new Set(getStoryKeywords(text))].slice(0, 8);
+  const newStory = {
+    story_title: "",
+    story_summary: "",
+    main_actors: keywords.slice(0, 3),
+    central_tension: limitStoryText(payload.ai?.debateQuestion || payload.subject || "Tension politique à suivre.", 140),
+    keywords,
+    status: "active"
+  };
+
+  if (!stories.length) {
+    return {
+      story_decision: "new_story",
+      matched_story_id: null,
+      matched_story_title: null,
+      confidence: 0.2,
+      reason: "Aucune histoire existante n'est disponible pour ce sujet.",
+      criteria: {
+        main_actors_match: false,
+        central_tension_match: false,
+        temporal_continuity: false,
+        editorial_theme_match: false,
+        strong_keywords_match: false
+      },
+      new_story: newStory
+    };
+  }
+
+  const referenceText = [payload.subject, payload.ai?.debateQuestion, payload.ai?.resume].filter(Boolean).join(" ");
+  const referenceKeywords = new Set(getStoryKeywords(referenceText));
+  let bestStory = null;
+  let bestScore = 0;
+
+  for (const story of stories) {
+    const titleText = String(story.story_title || "").trim();
+    const titleKeywords = new Set(getStoryKeywords(titleText));
+    const storyKeywords = new Set(getStoryKeywords([
+      story.story_title
+    ].filter(Boolean).join(" ")));
+
+    const sharedTitleKeywords = [...referenceKeywords].filter((word) => titleKeywords.has(word)).length;
+    const sharedStoryKeywords = [...referenceKeywords].filter((word) => storyKeywords.has(word)).length;
+    const titleSimilarity = stringSimilarity.compareTwoStrings(normalizeStoryText(referenceText), normalizeStoryText(titleText));
+
+    const score = (sharedTitleKeywords * 0.28) + (sharedStoryKeywords * 0.12) + (titleSimilarity * 0.9);
+
+    if (score > bestScore) {
+      bestScore = score;
+      bestStory = {
+        ...story,
+        _sharedTitleKeywords: sharedTitleKeywords,
+        _sharedStoryKeywords: sharedStoryKeywords,
+        _titleSimilarity: titleSimilarity
+      };
+    }
+  }
+
+  if (bestStory) {
+    const strongTitleMatch = bestStory._sharedTitleKeywords >= 2 || bestStory._titleSimilarity >= 0.62;
+    const mediumTitleMatch = bestStory._sharedTitleKeywords >= 1 || bestStory._titleSimilarity >= 0.46;
+
+    if (strongTitleMatch) {
+      return {
+        story_decision: "existing_story",
+        matched_story_id: bestStory.story_id,
+        matched_story_title: bestStory.story_title,
+        matched_story_summary: bestStory.story_summary || "",
+        previous_episode_id: bestStory.latest_episode_id || "",
+        previous_episode_title: bestStory.latest_episode_title || "",
+        previous_episode_summary: bestStory.latest_episode_summary || "",
+        previous_episode_url: buildAgonDebateUrl(bestStory.latest_episode_id || ""),
+        confidence: Number(Math.min(0.96, 0.72 + bestStory._titleSimilarity * 0.2).toFixed(2)),
+        reason: "Le sujet recoupe directement le titre d'une histoire existante, plus precise que les autres options.",
+        criteria: {
+          main_actors_match: bestStory._sharedTitleKeywords >= 1,
+          central_tension_match: true,
+          temporal_continuity: bestStory._sharedStoryKeywords >= 1,
+          editorial_theme_match: true,
+          strong_keywords_match: bestStory._sharedTitleKeywords >= 1
+        },
+        new_story: newStory
+      };
+    }
+
+    if (mediumTitleMatch && bestStory._sharedStoryKeywords >= 1) {
+      return {
+        story_decision: "uncertain",
+        matched_story_id: bestStory.story_id,
+        matched_story_title: bestStory.story_title,
+        matched_story_summary: bestStory.story_summary || "",
+        previous_episode_id: bestStory.latest_episode_id || "",
+        previous_episode_title: bestStory.latest_episode_title || "",
+        previous_episode_summary: bestStory.latest_episode_summary || "",
+        previous_episode_url: buildAgonDebateUrl(bestStory.latest_episode_id || ""),
+        confidence: Number(Math.min(0.79, 0.58 + bestStory._titleSimilarity * 0.18).toFixed(2)),
+        reason: "Le sujet semble correspondre a une histoire existante, mais une verification editoriale reste utile.",
+        criteria: {
+          main_actors_match: bestStory._sharedTitleKeywords >= 1,
+          central_tension_match: true,
+          temporal_continuity: bestStory._sharedStoryKeywords >= 1,
+          editorial_theme_match: true,
+          strong_keywords_match: bestStory._sharedTitleKeywords >= 1
+        },
+        new_story: newStory
+      };
+    }
+  }
+
+  return {
+    story_decision: "new_story",
+    matched_story_id: null,
+    matched_story_title: null,
+    confidence: Number(bestScore.toFixed(2)),
+    reason: "Aucune continuite narrative nette n'a ete detectee avec les histoires existantes.",
+    criteria: {
+      main_actors_match: false,
+      central_tension_match: false,
+      temporal_continuity: false,
+      editorial_theme_match: false,
+      strong_keywords_match: false
+    },
+    new_story: newStory
+  };
+}
+
+function findSpecificStoryTitleMatch(payload, stories = []) {
+  const referenceText = [
+    payload.subject,
+    payload.ai?.debateQuestion,
+    payload.ai?.resume,
+    ...(Array.isArray(payload.ai?.keywords) ? payload.ai.keywords : []),
+    ...((payload.contents || []).map((item) => item.title))
+  ].filter(Boolean).join(" ");
+  const normalizedReference = normalizeStoryText(referenceText);
+  const referenceKeywords = new Set(getStoryKeywords(referenceText));
+  let best = null;
+
+  for (const story of stories) {
+    const title = String(story.story_title || "").trim();
+    const normalizedTitle = normalizeStoryText(title);
+    const titleKeywords = getStoryKeywords(title);
+    if (!title || !titleKeywords.length || titleKeywords.length > 4) continue;
+    const allTitleWordsMatch = titleKeywords.every((word) => referenceKeywords.has(word));
+    if (!allTitleWordsMatch) continue;
+
+    const exactPhraseMatch = normalizedTitle && normalizedReference.includes(normalizedTitle);
+    const specificityBonus = 3 / titleKeywords.length;
+    const score = (exactPhraseMatch ? 4 : 2) + specificityBonus;
+
+    if (!best || score > best.score) {
+      best = { story, score };
+    }
+  }
+
+  return best?.story || null;
+}
+
+async function loadAgonStories() {
+  function readLocalAgonStories() {
+    try {
+      if (!AGON_STORIES_FILE || !fs.existsSync(AGON_STORIES_FILE)) return [];
+      const parsed = JSON.parse(fs.readFileSync(AGON_STORIES_FILE, "utf8") || "[]");
+      return Array.isArray(parsed)
+        ? parsed.filter((story) => String(story?.status || "active").trim().toLowerCase() !== "archived")
+        : [];
+    } catch (error) {
+      console.warn("[stories] Impossible de lire le fichier local Agôn :", error.message);
+      return [];
+    }
+  }
+
+  try {
+    const response = await fetch(`${AGON_URL}/api/veille/stories`);
+    if (!response.ok) return readLocalAgonStories();
+    const data = await response.json();
+    const apiStories = Array.isArray(data?.stories) ? data.stories : [];
+    return apiStories.length ? apiStories : readLocalAgonStories();
+  } catch (error) {
+    return readLocalAgonStories();
+  }
+}
+
+async function suggestStoryLink(payload) {
+  const stories = await loadAgonStories();
+  const compactStories = stories.slice(0, 200).map((story) => ({
+    story_id: story.story_id,
+    story_title: story.story_title,
+    story_summary: story.story_summary,
+    main_actors: Array.isArray(story.main_actors) ? story.main_actors.slice(0, 5) : [],
+    central_tension: story.central_tension || "",
+    keywords: Array.isArray(story.keywords) ? story.keywords.slice(0, 8) : [],
+    latest_episode_id: story.latest_episode_id || "",
+    latest_episode_title: story.latest_episode_title || "",
+    latest_episode_summary: story.latest_episode_summary || "",
+    updated_at: story.updated_at || ""
+  }));
+  const titleOnlyStories = compactStories.map((story) => ({
+    story_id: story.story_id,
+    story_title: story.story_title
+  }));
+
+  const fallback = buildFallbackStorySuggestion(payload, compactStories);
+  const specificTitleMatch = findSpecificStoryTitleMatch(payload, compactStories);
+  const storiesHaveSparseMetadata = compactStories.every((story) => {
+    return !String(story.story_summary || "").trim()
+      && !String(story.central_tension || "").trim()
+      && !(Array.isArray(story.main_actors) && story.main_actors.length)
+      && !(Array.isArray(story.keywords) && story.keywords.length)
+      && !String(story.latest_episode_summary || "").trim();
+  });
+
+  if (!openai) {
+    return fallback;
+  }
+
+}
+
+async function generateStyledArticle(payload) {
+  const subject = String(payload?.subject || "").trim();
+  const summary = String(payload?.summary || "").trim();
+  const hasMediaContrast = payload?.hasMediaContrast === true;
+  const mediaTreatment = String(payload?.mediaTreatment || "").trim();
+  const debateAngle = String(payload?.debateAngle || "").trim();
+  const debateQuestion = String(payload?.debateQuestion || "").trim();
+  const positionA = String(payload?.positionA || "").trim();
+  const positionB = String(payload?.positionB || "").trim();
+
+  if (!summary) {
+    throw new Error("Résumé manquant pour générer l'article final.");
+  }
+
+  if (!openai) {
+    return {
+      article: limitStoryText(summary, 1600),
       debateQuestion,
       positionA,
       positionB
     };
   }
 
-  const prompt = `Tu es un éditeur stylistique.
+  const inputJson = JSON.stringify({
+    subject,
+    resumeFactuel: summary,
+    analyseMediatique: {
+      hasMediaContrast,
+      mediaTreatment: hasMediaContrast ? mediaTreatment : ""
+    },
+    elementsDebat: {
+      debateAngle,
+      debateQuestion,
+      positionA,
+      positionB
+    }
+  }, null, 2);
 
-Tu vas recevoir un JSON déjà généré contenant exactement ces champs :
-- article
-- debateQuestion
-- positionA
-- positionB
+  const prompt = `Tu es éditeur pour Agôn.
 
-Ta mission : améliorer uniquement le style du champ "article".
+Tu reçois :
+1. un résumé factuel brut du sujet ;
+2. l'analyse du traitement médiatique, contenant :
+   - hasMediaContrast ;
+   - mediaTreatment ;
+3. les éléments de débat Agôn, contenant :
+   - debateAngle ;
+   - debateQuestion ;
+   - positionA ;
+   - positionB.
 
-RÈGLE ABSOLUE
-Tu ne dois modifier aucune information factuelle.
-Tu ne dois rien ajouter.
-Tu ne dois rien supprimer d’important.
-Tu ne dois pas modifier le sens.
-Tu ne dois pas modifier "debateQuestion", "positionA" ni "positionB".
-Tu dois recopier "debateQuestion", "positionA" et "positionB" strictement à l’identique, caractère par caractère.
+Ta mission :
+Rédiger l'article final affiché dans Agôn.
 
-OBJECTIF POUR "article"
-Réécrire uniquement le champ "article" pour le rendre plus palpitant, plus fluide, plus vivant et plus narratif, sans changer le fond.
+Règles absolues :
+- Ne rien inventer.
+- Ne pas ajouter de fait absent du résumé factuel.
+- Ne pas extrapoler.
+- Ne pas dramatiser.
+- Ne pas écrire de titre.
+- Ne pas ajouter de signature.
+- Le résumé factuel doit rester prioritaire.
+- L'article doit se terminer par debateQuestion.
+- debateQuestion doit être la toute dernière phrase du champ "article".
+- debateQuestion doit apparaître une seule fois dans l'article.
+- Aucune autre question ne doit apparaître dans l'article.
+- Recopier debateQuestion strictement à l'identique dans la dernière phrase de l'article.
+- La phrase précédente doit être affirmative et préparer naturellement debateQuestion.
+- Ne pas coller la question brutalement à la fin.
+- Si hasMediaContrast = false, ne pas évoquer les médias ni le traitement médiatique.
+- Si hasMediaContrast = true, intégrer brièvement mediaTreatment, sans dépasser 30 % de l'article.
+- Même si hasMediaContrast = true, ne pas écrire de paragraphe général sur "le traitement médiatique".
+- Ne mentionner le traitement médiatique que si mediaTreatment contient une différence précise, concrète et directement exploitable.
+- Ne jamais écrire "les médias de gauche", "les médias de droite" ou "les médias généralistes" si cela n'est pas explicitement présent dans mediaTreatment.
+- Ne pas confondre divergence entre acteurs politiques, économiques, sociaux ou diplomatiques et différence de traitement entre médias.
 
-STYLE ATTENDU
-- texte plus rythmé ;
-- accroche plus forte dès la première phrase ;
-- montée progressive de la tension ;
-- style journalistique vivant, mais crédible ;
-- phrases variées, parfois courtes ;
-- éviter le ton scolaire ;
-- éviter le résumé plat ;
-- faire ressortir uniquement les tensions déjà présentes ;
-- créer une fin ouverte tendue, avec une impression de suite possible.
+Références aux articles :
+- Tu peux faire référence aux articles ou aux sources lorsqu'elles apportent une précision utile.
+- Les références doivent rester sobres et intégrées naturellement au texte.
+- Tu peux écrire par exemple : "selon les articles analysés", "plusieurs sources rappellent que", "les articles consultés soulignent que".
+- Ne pas multiplier ces formules.
+- Ne pas transformer l'article en revue de presse.
+- Ne pas citer longuement les sources.
+- Ne pas écrire "les médias disent" de manière vague.
+- Ne pas utiliser les références aux articles pour créer artificiellement un traitement médiatique différent.
 
-FIN DE L’ARTICLE
-- ne termine jamais par une question ;
-- ne termine pas par une formule artificielle ;
-- ne termine pas par une signature ;
-- termine par une phrase affirmative, courte ou tendue, qui donne envie de lire la suite.
+Structure obligatoire de l'article :
+1. Un chapeau d'introduction de 2 à 3 phrases courtes.
+2. Un saut de ligne.
+3. Deux ou trois paragraphes développés.
+4. Chaque paragraphe doit être séparé par une ligne vide.
+5. Le dernier paragraphe doit conduire naturellement à debateQuestion.
+6. Après le dernier paragraphe, ajouter une ligne vide.
+7. La dernière ligne de l'article doit être exactement debateQuestion, seule sur sa ligne.
 
-CONTRAINTES
-- entre 800 et 1400 caractères pour "article" ;
-- commencer OBLIGATOIREMENT par un chapô : un paragraphe d'introduction COURT (2 phrases maximum), qui résume l'essentiel et donne envie de lire, séparé du reste par une ligne vide ;
-- l'article doit comporter le chapô suivi d'au moins 2 paragraphes séparés par une ligne vide ;
-- texte brut dans le champ "article" ;
-- JSON valide uniquement ;
-- aucune clé supplémentaire ;
-- aucun commentaire hors JSON ;
-- aucune balise markdown.
+Contenu attendu :
+- Le chapeau doit accrocher le lecteur sans exagérer.
+- Il doit présenter rapidement le sujet, les acteurs concernés et l'enjeu principal.
+- Les paragraphes doivent expliquer clairement les faits, le contexte immédiat et pourquoi le sujet est repris.
+- Si une différence significative de traitement médiatique existe, l'évoquer sobrement dans le dernier paragraphe.
+- Si la différence de traitement médiatique est absente, minime, vague ou incertaine, ne rien écrire à ce sujet.
+- La fin de l'article doit créer une transition logique entre les faits, les enjeux et debateQuestion.
+- La phrase juste avant debateQuestion doit être affirmative, pas interrogative.
+- debateQuestion doit apparaître seule, séparée du reste par une ligne vide.
 
-JSON À RETRAVAILLER :
-${previousJson}
+Style :
+- Clair.
+- Fluide.
+- Sobre.
+- Accessible.
+- Captivant sans être sensationnaliste.
+- Ton éditorial, mais neutre.
+- Formulations vivantes, avec des phrases qui donnent envie de lire.
+- Légère touche d'ironie ou d'humour possible, seulement si le sujet s'y prête.
+- L'humour doit rester fin, discret et jamais moqueur envers les personnes concernées.
+- Aucun humour sur les drames, accidents, violences, décès, maladies ou situations de détresse.
+- Pas d'effet dramatique artificiel.
+- Pas de vocabulaire alarmiste si les faits ne le justifient pas.
+- Éviter les tournures plates comme "ce sujet fait débat" ou "cette affaire suscite des réactions", sauf si elles sont vraiment nécessaires.
 
-Réponds UNIQUEMENT en JSON valide, avec exactement cette structure :
-{"article":"...","debateQuestion":"...","positionA":"...","positionB":"..."}`;
+Longueur :
+900 à 1600 caractères.
+
+JSON attendu uniquement :
+{
+  "article": "...",
+  "debateQuestion": "...",
+  "positionA": "...",
+  "positionB": "..."
+}
+
+Règle finale :
+- Recopier debateQuestion, positionA et positionB strictement à l'identique depuis les éléments de débat Agôn.
+- Dans le champ "article", debateQuestion doit aussi apparaître strictement à l'identique en dernière phrase.
+
+JSON à traiter :
+${inputJson}
+
+Réponds UNIQUEMENT en JSON valide, sans balises markdown.`;
 
   const response = await openai.responses.create({
     model: "gpt-4.1-mini",
     input: prompt,
-    temperature: 0.45,
-    max_output_tokens: 1200
+    temperature: 0.35,
+    max_output_tokens: 2000
   });
 
   const rawText = String(response.output_text || "").trim();
-  if (!rawText) throw new Error("Réponse vide de l'IA pour l'article définitif.");
+  if (!rawText) throw new Error("Réponse vide de l'IA pour l'article final.");
 
   let parsed = {};
   try {
@@ -838,12 +1252,13 @@ Réponds UNIQUEMENT en JSON valide, avec exactement cette structure :
   }
 
   return {
-    article: `${limitStoryText(parsed.article || articleBody, 1500)}\n\n${debateQuestion}\n\n${signature}`,
-    debateQuestion,
-    positionA,
-    positionB
+    article: limitStoryText(parsed.article || summary, 1600),
+    debateQuestion: String(parsed.debateQuestion || debateQuestion).trim(),
+    positionA: String(parsed.positionA || positionA).trim(),
+    positionB: String(parsed.positionB || positionB).trim()
   };
 }
+
 
 function buildFallbackStorySuggestion(payload, stories = []) {
   const text = [
@@ -1493,10 +1908,20 @@ app.post("/generate-full-article", requireMixteAuth, async (req, res) => {
 app.post("/generate-final-article", requireMixteAuth, async (req, res) => {
   try {
     const payload = req.body || {};
-    const result = await generateFinalArticleFromSummary(payload);
+    const result = await generateMediaAnalysis(payload);
     res.json({ ok: true, ...result });
   } catch (err) {
-    res.status(500).json({ ok: false, error: err.message || "Erreur génération article définitif" });
+    res.status(500).json({ ok: false, error: err.message || "Erreur analyse médiatique" });
+  }
+});
+
+app.post("/generate-problematique", requireMixteAuth, async (req, res) => {
+  try {
+    const payload = req.body || {};
+    const result = await generateProblematique(payload);
+    res.json({ ok: true, ...result });
+  } catch (err) {
+    res.status(500).json({ ok: false, error: err.message || "Erreur génération problématique" });
   }
 });
 
@@ -1722,8 +2147,6 @@ app.get("/saved", requireMixteAuth, (req, res) => {
 </head>
 <body>
   <div class="nav">
-    <a href="/">Presse seule</a>
-    <a href="/youtube">YouTube seul</a>
     <a href="/mixte">Veille mixte</a>
     <a href="/mixte#saved">Sujets enregistrés</a>
     <a href="/admin">⚙ Admin</a>
@@ -2067,8 +2490,6 @@ app.get("/sent-to-agon", requireMixteAuth, (req, res) => {
 </head>
 <body>
   <div class="nav">
-    <a href="/">Presse seule</a>
-    <a href="/youtube">YouTube seul</a>
     <a href="/mixte">Veille mixte</a>
     <a href="/saved">Sujets enregistrés</a>
     <a href="/sent-to-agon">Articles envoyés vers Agôn</a>
@@ -2159,8 +2580,6 @@ app.get("/admin", (req, res) => {
 </head>
 <body>
   <nav class="nav">
-    <a href="/">Presse seule</a>
-    <a href="/youtube">YouTube seul</a>
     <a href="/mixte">Veille mixte</a>
     <a href="/mixte#saved">Sujets enregistrés</a>
     <a href="/admin" style="background:#111;color:white;border-color:#111;">⚙ Admin</a>

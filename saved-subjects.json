@@ -1,7 +1,937 @@
 [
   {
     "action": "save",
-    "subject": "Rugby : finale de Champions Cup avec Bordeaux-Bègles et forfait d’Arthur Fils à Roland-Garros",
+    "subject": "Un enfant de 12 ans retrouvé mort au pied d’un immeuble à Rennes, une serviette serrée autour du cou",
+    "debateScore": 4,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "Franceinfo, Le Monde, Libération, Le Figaro, BFMTV, Le Dauphiné Libéré",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.lemonde.fr/societe/article/2026/05/24/a-rennes-enquete-ouverte-apres-la-decouverte-du-corps-d-un-garcon-de-12-ans-avec-une-serviette-de-bain-nouee-autour-du-cou_6693260_3224.html",
+        "source": "Le Monde",
+        "title": "A Rennes, enquête ouverte après la découverte du corps d’un garçon de 12 ans avec une serviette nouée autour du cou",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.liberation.fr/societe/police-justice/rennes-un-enfant-retrouve-mort-dans-un-buisson-avec-un-linge-autour-du-cou-20260524_L3SD7FQ32VAVZMXWOJZWZ45BH4/",
+        "source": "Libération",
+        "title": "Rennes : un enfant retrouvé mort dans un buisson avec un linge autour du cou",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.bfmtv.com/police-justice/video-rennes-un-garcon-de-12-ans-retrouve-mort-avec-une-serviette-nouee-autour-du-cou_VN-202605250068.html",
+        "source": "BFMTV",
+        "title": "Rennes : un garçon de 12 ans retrouvé mort avec une serviette nouée autour du cou",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.franceinfo.fr/france/bretagne/ille-et-vilaine/rennes/un-enfant-de-12-ans-retrouve-mort-au-pied-d-un-immeuble-a-rennes-une-serviette-serree-autour-du-cou_8025443.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "title": "Un enfant de 12 ans retrouvé mort au pied d’un immeuble à Rennes, une serviette serrée autour du cou",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.ledauphine.com/faits-divers-justice/2026/05/24/un-enfant-retrouve-mort-avec-un-linge-autour-du-cou-dans-un-buisson",
+        "source": "Le Dauphiné Libéré",
+        "title": "Rennes. Un enfant de 12 ans retrouvé mort avec un linge autour du cou",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.lefigaro.fr/faits-divers/rennes-un-enfant-retrouve-mort-avec-un-linge-autour-du-cou-dans-un-buisson-20260524",
+        "source": "Le Figaro",
+        "title": "Rennes : un enfant retrouvé mort avec un linge autour du cou dans un buisson, une enquête pour meurtre ouverte",
+        "thumbnail": ""
+      }
+    ],
+    "sessionLabel": "25/05/2026 à 08:45:27",
+    "controversyLevel": "moyen",
+    "ai": {
+      "mainKeyword": "enfant retrouvé mort à Rennes",
+      "keywords": [
+        "erviette autour du cou",
+        "enquête pour meurtre",
+        "bui on",
+        "Ille-et-Vilaine",
+        "police judiciaire"
+      ]
+    }
+  },
+  {
+    "action": "save",
+    "subject": "Guerre en Ukraine : que sait-on du missile russe « Orechnik » qui a frappé Kiev ?",
+    "debateScore": 7,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "La Croix, L'Express, Le Monde, Le Parisien",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.la-croix.com/international/guerre-en-ukraine-que-sait-on-du-missile-russe-orechnik-qui-a-frappe-kiev-20260524",
+        "source": "La Croix",
+        "title": "Guerre en Ukraine : que sait-on du missile russe « Orechnik » qui a frappé Kiev ?",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.lexpress.fr/monde/europe/guerre-en-ukraine-la-russie-frappe-kiev-avec-les-redoutes-missiles-hypersoniques-orechnik-DQPADN5MAJCOBKQZPRW5TIFQJM/",
+        "source": "L'Express",
+        "title": "Guerre en Ukraine : la Russie frappe Kiev avec les redoutés missiles hypersoniques Orechnik",
+        "thumbnail": ""
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/shorts/vI0qDGXFdII",
+        "source": "Le Monde",
+        "title": "Guerre en Ukraine : la Russie utilise un missile Orechnik dans une attaque massive contre Kiev",
+        "thumbnail": ""
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/watch?v=Dnb3Iffi8Sg",
+        "source": "Le Monde",
+        "title": "",
+        "thumbnail": "https://i.ytimg.com/vi/Dnb3Iffi8Sg/hqdefault.jpg"
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/watch?v=zize1jV2h8E",
+        "source": "Le Parisien",
+        "title": "",
+        "thumbnail": "https://i.ytimg.com/vi/zize1jV2h8E/hqdefault.jpg"
+      }
+    ],
+    "sessionLabel": "25/05/2026 à 08:45:27",
+    "controversyLevel": "fort",
+    "ai": {
+      "mainKeyword": "missile russe Orechnik",
+      "keywords": [
+        "guerre en Ukraine",
+        "Kiev",
+        "Ru ie",
+        "mi ile  hyper onique",
+        "attaque ma ive"
+      ]
+    }
+  },
+  {
+    "action": "save",
+    "subject": "Que sait-on du missile à capacité nucléaire « Orechnik » utilisé par la Russie en Ukraine cette nuit ?",
+    "debateScore": 8,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "L'Obs, Le Figaro, Euronews FR, Euronews France",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.nouvelobs.com/monde/20260524.OBS115210/que-sait-on-du-missile-a-capacite-nucleaire-orechnik-utilise-par-la-russie-en-ukraine-cette-nuit.html",
+        "source": "L'Obs",
+        "title": "Que sait-on du missile à capacité nucléaire « Orechnik » utilisé par la Russie en Ukraine cette nuit ?",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "http://fr.euronews.com/my-europe/2026/05/24/au-moins-deux-morts-et-plus-de-50-blesses-dans-une-attaque-massive-russe-contre-kyiv",
+        "source": "Euronews FR",
+        "title": "La Russie a tiré un missile Orechnik à capacité nucléaire contre la région de Kyiv",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.lefigaro.fr/international/attaque-russe-a-dnipro-en-ukraine-quelle-est-la-difference-entre-un-missile-intercontinental-et-un-missile-de-moyenne-portee-20241121",
+        "source": "Le Figaro",
+        "title": "Guerre en Ukraine : tout ce que l'on sait sur le missile «Orechnik» russe qui a frappé Kiev la nuit dernière",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.lefigaro.fr/international/la-russie-a-vise-l-ukraine-avec-un-missile-de-portee-intermediaire-orechnik-affirme-zelensky-20260524",
+        "source": "Le Figaro",
+        "title": "«Ils sont vraiment fous», clame Zelensky après un tir russe de missile «à capacité nucléaire» Orechnik",
+        "thumbnail": ""
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/watch?v=tJxTxAbhjCA",
+        "source": "Euronews France",
+        "title": "",
+        "thumbnail": "https://i.ytimg.com/vi/tJxTxAbhjCA/hqdefault.jpg"
+      }
+    ],
+    "sessionLabel": "24/05/2026 à 22:41:25"
+  },
+  {
+    "action": "save",
+    "subject": "Guerre au Moyen-Orient : un accord avec l'Iran est encore possible lundi, estime le secrétaire d'Etat américain",
+    "debateScore": 8,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "Franceinfo, Libération, BFMTV, France 24, RFI, Le Dauphiné Libéré",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.liberation.fr/international/moyen-orient/en-direct-guerre-au-moyen-orient-washington-et-teheran-proches-dun-accord-20260524_E6SIMAJRBRHKDF36TQVNLDHLY4/",
+        "source": "Libération",
+        "title": "Guerre au Moyen-Orient : Donald Trump n’entend pas «se précipiter» en vue d’un accord avec l’Iran",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.franceinfo.fr/monde/iran/guerre-entre-les-etats-unis-israel-et-l-iran/guerre-au-moyen-orient-un-accord-avec-l-iran-est-encore-possible-lundi-estime-le-secretaire-d-etat-americain_8026529.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "title": "Guerre au Moyen-Orient : un accord avec l'Iran est encore possible lundi, estime le secrétaire d'Etat américain",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.ledauphine.com/defense-guerre-conflit/2026/05/25/accord-etats-unis-iran-les-reticences-d-israel-et-des-faucons-republicains",
+        "source": "Le Dauphiné Libéré",
+        "title": "Guerre au Moyen-Orient. Accord États-Unis - Iran : les réticences d’Israël et des “faucons” républicains",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.bfmtv.com/international/moyen-orient/iran/video-guerre-au-moyen-orient-un-accord-avec-l-iran-est-possible-aujourd-hui-affirme-marco-rubio-secretaire-d-etat-des-etats-unis_VN-202605250049.html",
+        "source": "BFMTV",
+        "title": "Guerre au Moyen-Orient: \"un accord avec l'Iran est possible aujourd'hui\", affirme Marco Rubio, secrétaire d'État des États-Unis",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.rfi.fr/fr/moyen-orient/20260525-hadj-le-p%C3%A8lerinage-%C3%A0-la-mecque-d%C3%A9bute-sur-fond-de-conflit-entre-l-iran-les-%C3%A9tats-unis-et-isra%C3%ABl-au-moyen-orient",
+        "source": "RFI",
+        "title": "Hadj: le pèlerinage à La Mecque débute sur fond de conflit entre l'Iran, les États-Unis et Israël au Moyen-Orient",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.france24.com/fr/vid%C3%A9o/20260524-guerre-au-moyen-orient-que-contient-le-protocole-d-accord-entre-les-%C3%A9tats-unis-et-l-iran",
+        "source": "France 24",
+        "title": "Guerre au Moyen-Orient : que contient le protocole d'accord entre les États-unis et l'Iran?",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.ledauphine.com/defense-guerre-conflit/2026/05/24/accules-les-etats-unis-et-l-iran-contraints-a-un-accord-mais-pas-a-n-importe-quel-prix",
+        "source": "Le Dauphiné Libéré",
+        "title": "Guerre au Moyen-Orient. Acculés, les États-Unis et l’Iran contraints à un accord mais pas à n'importe quel prix",
+        "thumbnail": ""
+      }
+    ],
+    "sessionLabel": "25/05/2026 à 08:45:27",
+    "controversyLevel": "fort",
+    "ai": {
+      "mainKeyword": "accord États-Unis - Iran",
+      "keywords": [
+        "guerre au Moyen-Orient",
+        "I raël",
+        "Marco Rubio",
+        "Donald Trump",
+        "pèlerinage à La Mecque",
+        "protocole d'accord"
+      ]
+    }
+  },
+  {
+    "action": "save",
+    "subject": "Dôme de chaleur : treize départements de l'Ouest placés en vigilance jaune canicule pour la journée de lundi, du jamais-vu",
+    "debateScore": 6,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "Franceinfo, Le Monde, Libération, La Croix, HuffPost France, Le Dauphiné Libéré",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.liberation.fr/environnement/climat/la-vigilance-jaune-canicule-activee-pour-la-premiere-fois-en-mai-treize-departements-concernes-lundi-20260524_SEF4ET4NZBGMLOLJ6ZTWWHE2OA/",
+        "source": "Libération",
+        "title": "La vigilance jaune canicule activée pour la première fois en mai, treize départements concernés lundi",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.huffingtonpost.fr/france/article/meteo-la-vigilance-jaune-canicule-etendue-a-plusieurs-departements-de-l-ouest_264066.html",
+        "source": "HuffPost France",
+        "title": "Météo : La vigilance jaune canicule étendue à plusieurs départements de l’Ouest",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.lemonde.fr/planete/article/2026/05/24/canicule-vigilance-jaune-dans-13-departements-de-l-ouest-lundi-une-premiere-pour-le-mois-de-mai_6693206_3245.html",
+        "source": "Le Monde",
+        "title": "Canicule : vigilance jaune dans 13 départements de l’Ouest lundi, une première pour le mois de mai",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.franceinfo.fr/environnement/evenements-meteorologiques-extremes/vagues-de-chaleur-canicules/direct-dome-de-chaleur-la-vigilance-jaune-canicule-prolongee-dans-le-finistere-des-records-mensuels-battus-samedi_8024753.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "title": "Dôme de chaleur : treize départements de l'Ouest placés en vigilance jaune canicule pour la journée de lundi, du jamais-vu",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.la-croix.com/societe/canicule-treize-departements-de-l-ouest-en-vigilance-jaune-inedit-pour-un-mois-de-mai-20260524",
+        "source": "La Croix",
+        "title": "Canicule : treize départements de l’Ouest en vigilance jaune, inédit pour un mois de mai",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.ledauphine.com/environnement/2026/05/24/canicule-jusqu-a-35-c-13-departements-de-l-ouest-places-en-vigilance-jaune-lundi",
+        "source": "Le Dauphiné Libéré",
+        "title": "Météo. Canicule : « Jusqu’à 35°C »... 13 départements de l'Ouest placés en vigilance jaune lundi",
+        "thumbnail": ""
+      }
+    ],
+    "sessionLabel": "24/05/2026 à 21:43:27",
+    "controversyLevel": "moyen",
+    "ai": {
+      "arenaMode": "positions",
+      "debateScore": 6,
+      "controversyLevel": "moyen",
+      "debateQuestion": "",
+      "resume": "",
+      "keywords": [],
+      "selectedLinks": [
+        "https://www.liberation.fr/environnement/climat/la-vigilance-jaune-canicule-activee-pour-la-premiere-fois-en-mai-treize-departements-concernes-lundi-20260524_SEF4ET4NZBGMLOLJ6ZTWWHE2OA/",
+        "https://www.huffingtonpost.fr/france/article/meteo-la-vigilance-jaune-canicule-etendue-a-plusieurs-departements-de-l-ouest_264066.html",
+        "https://www.lemonde.fr/planete/article/2026/05/24/canicule-vigilance-jaune-dans-13-departements-de-l-ouest-lundi-une-premiere-pour-le-mois-de-mai_6693206_3245.html",
+        "https://www.franceinfo.fr/environnement/evenements-meteorologiques-extremes/vagues-de-chaleur-canicules/direct-dome-de-chaleur-la-vigilance-jaune-canicule-prolongee-dans-le-finistere-des-records-mensuels-battus-samedi_8024753.html#xtor=RSS-3-[lestitres]",
+        "https://www.la-croix.com/societe/canicule-treize-departements-de-l-ouest-en-vigilance-jaune-inedit-pour-un-mois-de-mai-20260524",
+        "https://www.ledauphine.com/environnement/2026/05/24/canicule-jusqu-a-35-c-13-departements-de-l-ouest-places-en-vigilance-jaune-lundi"
+      ],
+      "agonTheme": "Climat - environnement",
+      "positionA": "",
+      "positionB": "",
+      "sourceSubject": "Dôme de chaleur : treize départements de l'Ouest placés en vigilance jaune canicule pour la journée de lundi, du jamais-vu",
+      "fullArticleState": "short"
+    }
+  },
+  {
+    "action": "save",
+    "subject": "Guerre au Moyen-Orient : Donald Trump appelle à \"ne pas se précipiter pour conclure un accord\" avec l'Iran",
+    "debateScore": 8,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "Franceinfo, Le Monde, Libération, France 24, RFI",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.liberation.fr/international/moyen-orient/en-direct-guerre-au-moyen-orient-washington-et-teheran-proches-dun-accord-20260524_E6SIMAJRBRHKDF36TQVNLDHLY4/",
+        "source": "Libération",
+        "title": "EN DIRECT - Guerre au Moyen-Orient : Donald Trump dit qu’il n’entend pas «se précipiter» en vue d’un accord avec l’Iran",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.lemonde.fr/international/live/2026/05/24/en-direct-guerre-au-moyen-orient-donald-trump-ne-veut-pas-se-precipiter-pour-conclure-un-accord-avec-l-iran-et-maintient-le-blocus-contre-teheran-pendant-les-negociations_6691823_3210.html",
+        "source": "Le Monde",
+        "title": "EN DIRECT, guerre au Moyen-Orient : Donald Trump ne veut pas « se précipiter » pour conclure un accord avec l’Iran et maintient le blocus contre Téhéran pendant les négociations",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.franceinfo.fr/monde/iran/guerre-entre-les-etats-unis-israel-et-l-iran/direct-guerre-au-moyen-orient-les-etats-unis-et-l-iran-cherchent-a-finaliser-un-accord-pour-la-fin-de-la-guerre_8024786.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "title": "Guerre au Moyen-Orient : Donald Trump appelle à \"ne pas se précipiter pour conclure un accord\" avec l'Iran",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.france24.com/fr/vid%C3%A9o/20260524-donald-trump-temp%C3%A8re-les-espoirs-d-un-accord-rapide-avec-l-iran",
+        "source": "France 24",
+        "title": "Donald Trump tempère les espoirs d'un accord rapide avec l'Iran",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.rfi.fr/fr/moyen-orient/20260524-en-direct-moyen-orient-les-%C3%A9tats-unis-et-l-iran-cherchent-%C3%A0-finaliser-un-accord-pour-mettre-fin-%C3%A0-la-guerre",
+        "source": "RFI",
+        "title": "[EN DIRECT] Moyen-Orient: «le temps joue en notre faveur», tempère Trump concernant l'accord avec l'Iran",
+        "thumbnail": ""
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/watch?v=FYeiW5-SvaY",
+        "source": "France 24",
+        "title": "",
+        "thumbnail": "https://i.ytimg.com/vi/FYeiW5-SvaY/hqdefault.jpg"
+      }
+    ],
+    "sessionLabel": "24/05/2026 à 21:43:27",
+    "controversyLevel": "fort",
+    "ai": {
+      "arenaMode": "positions",
+      "debateScore": 8,
+      "controversyLevel": "fort",
+      "debateQuestion": "",
+      "resume": "",
+      "keywords": [],
+      "selectedLinks": [
+        "https://www.liberation.fr/international/moyen-orient/en-direct-guerre-au-moyen-orient-washington-et-teheran-proches-dun-accord-20260524_E6SIMAJRBRHKDF36TQVNLDHLY4/",
+        "https://www.lemonde.fr/international/live/2026/05/24/en-direct-guerre-au-moyen-orient-donald-trump-ne-veut-pas-se-precipiter-pour-conclure-un-accord-avec-l-iran-et-maintient-le-blocus-contre-teheran-pendant-les-negociations_6691823_3210.html",
+        "https://www.franceinfo.fr/monde/iran/guerre-entre-les-etats-unis-israel-et-l-iran/direct-guerre-au-moyen-orient-les-etats-unis-et-l-iran-cherchent-a-finaliser-un-accord-pour-la-fin-de-la-guerre_8024786.html#xtor=RSS-3-[lestitres]",
+        "https://www.france24.com/fr/vid%C3%A9o/20260524-donald-trump-temp%C3%A8re-les-espoirs-d-un-accord-rapide-avec-l-iran",
+        "https://www.youtube.com/watch?v=FYeiW5-SvaY",
+        "https://www.rfi.fr/fr/moyen-orient/20260524-en-direct-moyen-orient-les-%C3%A9tats-unis-et-l-iran-cherchent-%C3%A0-finaliser-un-accord-pour-mettre-fin-%C3%A0-la-guerre"
+      ],
+      "agonTheme": "International",
+      "positionA": "",
+      "positionB": "",
+      "sourceSubject": "Guerre au Moyen-Orient : Donald Trump appelle à \"ne pas se précipiter pour conclure un accord\" avec l'Iran",
+      "fullArticleState": "short"
+    }
+  },
+  {
+    "action": "save",
+    "subject": "Guerre en Ukraine : attaque russe au missile Orechnik sur Kiev et condamnations internationales",
+    "debateScore": 8,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "L'Obs, Le Monde, HuffPost France, Le Dauphiné Libéré, BFMTV, La Croix, Le Figaro",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.nouvelobs.com/monde/20260524.OBS115210/que-sait-on-du-missile-a-capacite-nucleaire-orechnik-utilise-par-la-russie-en-ukraine-cette-nuit.html",
+        "source": "L'Obs",
+        "title": "Que sait-on du missile à capacité nucléaire « Orechnik » utilisé par la Russie en Ukraine cette nuit ?",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.huffingtonpost.fr/international/article/qu-est-ce-que-le-missile-orechnik-a-capacite-nucleaire-que-la-russie-confirme-avoir-envoye-sur-l-ukraine_264060.html",
+        "source": "HuffPost France",
+        "title": "Qu’est-ce que le missile Orechnik, à capacité nucléaire, que la Russie confirme avoir envoyé sur l’Ukraine ?",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.lemonde.fr/international/live/2026/05/24/en-direct-guerre-en-ukraine-un-missile-russe-a-capacite-nucleaire-lance-sur-kiev-dans-la-nuit-une-tactique-d-intimidation-selon-la-cheffe-de-la-diplomatie-de-l-ue_6693162_3210.html",
+        "source": "Le Monde",
+        "title": "EN DIRECT, guerre en Ukraine : après l’utilisation par la Russie d’un missile à capacité nucléaire contre Kiev, la France, l’Allemagne et l’Italie condamnent l’attaque",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.ledauphine.com/defense-guerre-conflit/2024/11/22/portee-ogives-que-sait-on-du-missile-hypersonique-orechnik-tire-par-la-russie",
+        "source": "Le Dauphiné Libéré",
+        "title": "Guerre en Ukraine. Portée, ogives... Que sait-on du missile hypersonique Orechnik tiré par la Russie ?",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.bfmtv.com/international/asie/russie/video-guerre-en-ukraine-au-moins-quatre-morts-apres-d-intenses-frappes-russes_VN-202605240263.html",
+        "source": "BFMTV",
+        "title": "Guerre en Ukraine: au moins quatre morts après d'intenses frappes russes",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.la-croix.com/international/ukraine-russie-jour-1551-point-conflit-ukrainien-poutine-aujourdhui-20260524",
+        "source": "La Croix",
+        "title": "Guerre en Ukraine : quatre morts dans une attaque russe ; Kiev visée par 600 drones",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.lefigaro.fr/international/en-direct-guerre-en-iran-moyen-orient-donald-trump-netanyahou-detroit-d-ormuz-prix-de-l-essence-20260524",
+        "source": "Le Figaro",
+        "title": "EN DIRECT - Guerre au Moyen-Orient : Trump a promis à Netanyahou que la question du démantèlement du nucléaire iranien ne sera pas oubliée",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.lefigaro.fr/international/giorgia-meloni-condamne-fermement-l-attaque-russe-contre-l-ukraine-avec-un-missile-orechnik-20260524",
+        "source": "Le Figaro",
+        "title": "Giorgia Meloni «condamne fermement» l'attaque russe contre l'Ukraine avec un missile Orechnik",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.lefigaro.fr/international/attaque-russe-a-dnipro-en-ukraine-quelle-est-la-difference-entre-un-missile-intercontinental-et-un-missile-de-moyenne-portee-20241121",
+        "source": "Le Figaro",
+        "title": "Guerre en Ukraine : tout ce que l’on sait sur le missile «Orechnik» russe qui a frappé Kiev la nuit dernière",
+        "thumbnail": ""
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/shorts/vI0qDGXFdII",
+        "source": "Le Monde",
+        "title": "Guerre en Ukraine : la Russie utilise un missile Orechnik dans une attaque massive contre Kiev",
+        "thumbnail": ""
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/watch?v=Dnb3Iffi8Sg",
+        "source": "Le Monde",
+        "title": "",
+        "thumbnail": "https://i.ytimg.com/vi/Dnb3Iffi8Sg/hqdefault.jpg"
+      }
+    ],
+    "sessionLabel": "24/05/2026 à 18:33:51",
+    "controversyLevel": "fort",
+    "leftScore": 7,
+    "ai": {
+      "mainKeyword": "missile Orechnik",
+      "keywords": [
+        "guerre en Ukraine",
+        "attaque ru e",
+        "Kiev",
+        "condamnation  internationale",
+        "Giorgia Meloni",
+        "France Allemagne Italie"
+      ]
+    }
+  },
+  {
+    "action": "save",
+    "subject": "Sandrine Rousseau demande l’annulation des concerts de Patrick Bruel, invoquant la \"mise en danger\" des femmes qui travaillent avec lui",
+    "debateScore": 8,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "Franceinfo, C dans l'air",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.franceinfo.fr/culture/musique/patrick-bruel/affaire-de-violences-sexuelles/sandrine-rousseau-demande-l-annulation-des-concerts-de-patrick-bruel-invoquant-la-mise-en-danger-des-femmes-qui-travaillent-avec-lui_8025101.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "title": "Sandrine Rousseau demande l’annulation des concerts de Patrick Bruel, invoquant la \"mise en danger\" des femmes qui travaillent avec lui",
+        "thumbnail": ""
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/watch?v=JRAzQ6lHZJY",
+        "source": "C dans l'air",
+        "title": "",
+        "thumbnail": "https://i.ytimg.com/vi/JRAzQ6lHZJY/hqdefault.jpg"
+      }
+    ],
+    "sessionLabel": "24/05/2026 à 18:33:51",
+    "controversyLevel": "fort",
+    "leftScore": 9,
+    "ai": {
+      "mainKeyword": "Sandrine Rousseau",
+      "keywords": [
+        "Patrick Bruel",
+        "annulation de  concert",
+        "mi e en danger de  femme",
+        "violence   exuelle"
+      ]
+    }
+  },
+  {
+    "action": "save",
+    "subject": "DIRECT. Guerre au Moyen-Orient : un accord possible dans la journée ; frappe au Liban",
+    "debateScore": 8,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "La Croix, BFMTV",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.la-croix.com/international/direct-guerre-iran-israel-usa-jour-86-moyen-orient-bilan-resume-aujourdhui-20260524",
+        "source": "La Croix",
+        "title": "DIRECT. Guerre au Moyen-Orient : un accord possible dans la journée ; frappe au Liban",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.bfmtv.com/international/moyen-orient/iran/video-guerre-au-moyen-orient-les-libanais-redoutent-qu-israel-ne-poursuive-ses-frappes-meme-en-cas-d-accord-iran-etats-unis_VN-202605240265.html",
+        "source": "BFMTV",
+        "title": "Guerre au Moyen-Orient: les Libanais redoutent qu'Israël ne poursuive ses frappes, même en cas d'accord Iran/États-Unis",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.bfmtv.com/international/moyen-orient/iran/video-guerre-au-moyen-orient-le-projet-d-accord-entre-les-etats-unis-et-l-iran-denonce-par-des-elus-israeliens_VN-202605240261.html",
+        "source": "BFMTV",
+        "title": "Guerre au Moyen-Orient: le projet d'accord entre les États-Unis et l'Iran dénoncé par des élus israéliens",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.bfmtv.com/international/moyen-orient/iran/video-guerre-au-moyen-orient-la-peur-d-une-guerre-sans-fin-au-liban_VN-202605240257.html",
+        "source": "BFMTV",
+        "title": "Guerre au Moyen-Orient: la peur d'une guerre sans fin au Liban",
+        "thumbnail": ""
+      }
+    ],
+    "sessionLabel": "24/05/2026 à 18:33:51",
+    "controversyLevel": "très fort",
+    "leftScore": 7,
+    "ai": {
+      "mainKeyword": "Guerre au Moyen-Orient",
+      "keywords": [
+        "accord Iran/État -Uni",
+        "frappe au Liban",
+        "I raël",
+        "Liban",
+        "élu  i raélien"
+      ]
+    }
+  },
+  {
+    "action": "save",
+    "subject": "Fusillade près de la Maison-Blanche : suspect abattu et dispositif policier renforcé",
+    "debateScore": 7,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "HuffPost France, Le Monde, L'Obs, Le Parisien, France 24, Franceinfo, Euronews FR, Euronews France, RFI, Valeurs actuelles",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.huffingtonpost.fr/international/video/ce-que-l-on-sait-de-la-fusillade-qui-a-eclate-pres-de-la-maison-blanche-a-washington_264054.html",
+        "source": "HuffPost France",
+        "title": "Ce que l’on sait de la fusillade qui a éclaté près de la Maison Blanche à Washington",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.nouvelobs.com/monde/20260524.OBS115197/coups-de-feu-pres-de-la-maison-blanche-tireur-abattu-ce-que-l-on-sait-de-cette-nouvelle-attaque-contre-la-presidence-americaine.html",
+        "source": "L'Obs",
+        "title": "Coups de feu près de la Maison Blanche, tireur abattu : ce que l’on sait de cette nouvelle attaque contre la présidence américaine",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.lemonde.fr/international/article/2026/05/24/des-coups-de-feu-tires-pres-de-la-maison-blanche-a-washington_6692854_3210.html",
+        "source": "Le Monde",
+        "title": "Une fusillade près de la Maison Blanche fait un blessé ; le suspect tué « avait des antécédents de violence », affirme Donald Trump",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.france24.com/fr/vid%C3%A9o/20260524-coups-de-feu-pr%C3%A8s-de-la-maison-blanche-le-tireur-abattu",
+        "source": "France 24",
+        "title": "Coups de feu près de la Maison Blanche, le tireur abattu",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.franceinfo.fr/monde/usa/fusillades-aux-etats-unis/des-coups-de-feu-tires-pres-de-la-maison-blanche-le-tireur-abattu_8024678.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "title": "Des coups de feu près de la Maison Blanche, le tireur, \"qui avait des antécédents de violence\", abattu",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "http://fr.euronews.com/2026/05/24/fusillade-pres-de-la-maison-blanche-un-tireur-abattu-par-les-services-secrets-selon-trump",
+        "source": "Euronews FR",
+        "title": "Fusillade près de la Maison-Blanche : un tireur abattu par les services secrets, selon Trump",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "http://fr.euronews.com/video/2026/05/24/fort-dispositif-policier-devant-la-maison-blanche-apres-une-fusillade-mortelle-au-point-de",
+        "source": "Euronews FR",
+        "title": "Fort dispositif policier devant la Maison-Blanche après une fusillade mortelle au point de contrôle",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.france24.com/fr/am%C3%A9riques/20260524-un-tireur-abattu-apr%C3%A8s-avoir-ouvert-le-feu-sur-des-agents-du-secret-service-%C3%A0-la-maison-blanche",
+        "source": "France 24",
+        "title": "Tireur abattu près de la Maison Blanche : le suspect \"avait des antécédents de violence\", dit Trump",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.rfi.fr/fr/am%C3%A9riques/20260524-%C3%A9tats-unis-%C3%A0-washington-des-coups-de-feu-entendus-proche-de-la-maison-blanche",
+        "source": "RFI",
+        "title": "États-Unis: le tireur abattu après des coups de feu près de la Maison Blanche",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.valeursactuelles.com/monde/tirs-pres-de-la-maison-blanche-le-suspect-avait-des-antecedents-de-violence-selon-donald-trump",
+        "source": "Valeurs actuelles",
+        "title": "Tirs près de la Maison-Blanche : le suspect « avait des antécédents de violence », selon Donald Trump",
+        "thumbnail": ""
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/shorts/txbVEElLmrI",
+        "source": "Le Monde",
+        "title": "Des coups de feu près de la Maison Blanche, le tireur abattu",
+        "thumbnail": ""
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/watch?v=N2Qt7XUIAlo",
+        "source": "Le Monde",
+        "title": "",
+        "thumbnail": "https://i.ytimg.com/vi/N2Qt7XUIAlo/hqdefault.jpg"
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/watch?v=gtCVeTJxwTE",
+        "source": "Le Parisien",
+        "title": "",
+        "thumbnail": "https://i.ytimg.com/vi/gtCVeTJxwTE/hqdefault.jpg"
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/watch?v=LJ3heMGc3nY",
+        "source": "France 24",
+        "title": "",
+        "thumbnail": "https://i.ytimg.com/vi/LJ3heMGc3nY/hqdefault.jpg"
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/shorts/si78ss4EjDY",
+        "source": "Franceinfo",
+        "title": "Washington : des coups de feu près de la Maison Blanche, le tireur abattu",
+        "thumbnail": ""
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/watch?v=g6SVP6AYRDA",
+        "source": "Euronews France",
+        "title": "",
+        "thumbnail": "https://i.ytimg.com/vi/g6SVP6AYRDA/hqdefault.jpg"
+      }
+    ],
+    "sessionLabel": "24/05/2026 à 16:12:38",
+    "controversyLevel": "fort",
+    "leftScore": 6,
+    "ai": {
+      "mainKeyword": "Fusillade près de la Maison-Blanche",
+      "keywords": [
+        "tireur abattu",
+        "Donald Trump",
+        "di po itif policier renforcé",
+        "Secret Service",
+        "Wa hington",
+        "antécédent  de violence"
+      ]
+    }
+  },
+  {
+    "action": "save",
+    "subject": "L'attaque à l'explosif d'un train fait au moins 24 morts au Pakistan",
+    "debateScore": 7,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "Franceinfo, Le Monde, Libération, France 24, RFI, Euronews FR",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.liberation.fr/international/asie-pacifique/au-pakistan-lattaque-a-lexplosif-dun-train-militaire-fait-au-moins-24-morts-20260524_7U4IDH6HGRA23MPFIXDBW2XSF4/",
+        "source": "Libération",
+        "title": "Au Pakistan, l’attaque à l’explosif d’un train militaire fait au moins 24 morts",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.lemonde.fr/international/article/2026/05/24/au-pakistan-au-moins-24-morts-dans-une-attaque-a-l-explosif-d-un-train_6693209_3210.html",
+        "source": "Le Monde",
+        "title": "Au Pakistan, au moins 24 morts dans une attaque à l’explosif d’un train",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.rfi.fr/fr/asie-pacifique/20260524-pakistan-une-attaque-%C3%A0-l-explosif-d-un-train-fait-une-vingtaine-de-morts-dans-le-sud-ouest-du-pays",
+        "source": "RFI",
+        "title": "Pakistan: une attaque à l'explosif d'un train fait une vingtaine de morts dans le sud-ouest du pays",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.franceinfo.fr/monde/asie/l-attaque-a-l-explosif-d-un-train-fait-au-moins-24-morts-au-pakistan_8025032.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "title": "L'attaque à l'explosif d'un train fait au moins 24 morts au Pakistan",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "http://fr.euronews.com/2026/05/24/pakistan-lattaque-a-lexplosif-dun-train-fait-au-moins-24-morts",
+        "source": "Euronews FR",
+        "title": "Pakistan : l'attaque à l'explosif d'un train fait au moins 24 morts",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.france24.com/fr/moyen-orient/20260524-pakistan-au-moins-24-morts-dans-l-attaque-%C3%A0-l-explosif-d-un-train",
+        "source": "France 24",
+        "title": "Au Pakistan, un attentat à la bombe revendiqué par des militants séparatistes fait au moins 24 morts",
+        "thumbnail": ""
+      }
+    ],
+    "sessionLabel": "24/05/2026 à 16:12:38",
+    "controversyLevel": "fort",
+    "ai": {
+      "mainKeyword": "24 morts",
+      "keywords": [
+        "train militaire",
+        "ud-oue t du Paki tan"
+      ]
+    }
+  },
+  {
+    "action": "save",
+    "subject": "Attaques russes sur Kiev avec missile Orechnik : bilan et réactions",
+    "debateScore": 8,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "HuffPost France, BFMTV, Franceinfo, France 24, Euronews France, Euronews FR, RFI, Le Figaro",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.huffingtonpost.fr/international/article/qu-est-ce-que-le-missile-orechnik-a-capacite-nucleaire-que-la-russie-confirme-avoir-envoye-sur-l-ukraine_264060.html",
+        "source": "HuffPost France",
+        "title": "Qu’est-ce que le missile Orechnik, à capacité nucléaire, que la Russie confirme avoir envoyé sur l’Ukraine ?",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.bfmtv.com/politique/elysee/emmanuel-macron-condamne-la-fuite-en-avant-de-la-russie-apres-le-tir-d-un-missile-hypersonique-orechnik-contre-l-ukraine_AD-202605240227.html",
+        "source": "BFMTV",
+        "title": "Emmanuel Macron condamne la \"fuite en avant\" de la Russie après le tir d'un missile hypersonique Orechnik contre l'Ukraine",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.franceinfo.fr/monde/europe/manifestations-en-ukraine/d-intenses-bombardements-russes-sur-kiev-font-au-moins-un-mort-et-13-blesses_8024684.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "title": "D'intenses bombardements russes sur Kiev font au moins quatre morts et plus de 100 blessés, le missile Orechnik utilisé",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.france24.com/fr/europe/20260524-ukraine-la-capitale-kiev-touch%C3%A9e-par-d-intenses-bombardements-russes",
+        "source": "France 24",
+        "title": "Ukraine : Emmanuel Macron et l’Union européenne dénoncent le recours au missile Orechnik par la Russie",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.france24.com/fr/vid%C3%A9o/20260524-kiev-lourdement-frapp%C3%A9e-par-la-russie-qui-aurait-utilis%C3%A9-un-missile-orechnik",
+        "source": "France 24",
+        "title": "Kiev lourdement frappée par la Russie, qui aurait utilisé un missile Orechnik",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "http://fr.euronews.com/my-europe/2026/05/24/au-moins-deux-morts-et-plus-de-50-blesses-dans-une-attaque-massive-russe-contre-kyiv",
+        "source": "Euronews FR",
+        "title": "Au moins quatre morts et plus de 80 blessés dans une attaque massive russe contre Kyiv et sa région",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.rfi.fr/fr/europe/20260524-ukraine-attaque-de-missiles-massive-sur-kiev-une-%C3%A9cole-touch%C3%A9e-par-les-bombardements",
+        "source": "RFI",
+        "title": "Ukraine: la région de Kiev bombardée massivement par la Russie, un missile balistique Orechnik utilisé",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.lefigaro.fr/international/missile-orechnik-emmanuel-macron-condamne-la-fuite-en-avant-de-la-russie-20260524",
+        "source": "Le Figaro",
+        "title": "Missile Orechnik : Emmanuel Macron condamne la «fuite en avant» de la Russie",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.lefigaro.fr/international/la-russie-a-vise-l-ukraine-avec-un-missile-de-portee-intermediaire-orechnik-affirme-zelensky-20260524",
+        "source": "Le Figaro",
+        "title": "«Ils sont vraiment fous», clame Zelensky après un tir russe de missile «à capacité nucléaire» Orechnik",
+        "thumbnail": ""
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/watch?v=KbbYP0I5Fms",
+        "source": "Euronews France",
+        "title": "",
+        "thumbnail": "https://i.ytimg.com/vi/KbbYP0I5Fms/hqdefault.jpg"
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/watch?v=lAS-QeaRJEs",
+        "source": "France 24",
+        "title": "",
+        "thumbnail": "https://i.ytimg.com/vi/lAS-QeaRJEs/hqdefault.jpg"
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/watch?v=7wLloxgZHo8",
+        "source": "France 24",
+        "title": "",
+        "thumbnail": "https://i.ytimg.com/vi/7wLloxgZHo8/hqdefault.jpg"
+      }
+    ],
+    "sessionLabel": "24/05/2026 à 16:12:38",
+    "controversyLevel": "fort",
+    "leftScore": 7,
+    "ai": {
+      "mainKeyword": "missile Orechnik",
+      "keywords": [
+        "Kiev",
+        "Ru ie",
+        "Ukraine",
+        "Emmanuel Macron",
+        "Volodymyr Zelen ky",
+        "bombardement  ru e"
+      ]
+    }
+  },
+  {
+    "action": "save",
+    "subject": "Festival de Cannes 2026 : palmarès et événements marquants",
     "debateScore": 5,
     "debateQuestion": "",
     "resume": "",
@@ -9,161 +939,450 @@
     "agonTheme": "",
     "positionA": "",
     "positionB": "",
-    "sources": "HuffPost France, Libération, Le Monde, Franceinfo, 20 Minutes, BFMTV, La Croix, Le Figaro, Europe 1",
+    "sources": "L'Obs, Le Monde, HuffPost France, L'Humanité, Libération, C ce soir, France 24, Franceinfo, La Croix, RFI, Brut, Euronews FR",
     "contents": [
       {
         "type": "article",
-        "link": "https://www.huffingtonpost.fr/sport/article/arthur-fils-annonce-son-forfait-roland-garros-se-fera-bien-sans-le-numero-1-francais_264046.html",
-        "source": "HuffPost France",
-        "title": "Arthur Fils annonce son forfait, Roland Garros se fera bien sans le numéro 1 français",
+        "link": "https://www.nouvelobs.com/cinema/20260524.OBS115190/festival-de-cannes-2026-une-seconde-palme-pour-cristian-mungiu-et-un-palmares-completement-a-l-est.html",
+        "source": "L'Obs",
+        "title": "Festival de Cannes 2026 : une seconde Palme pour Cristian Mungiu et un palmarès complètement à l’Est",
         "thumbnail": ""
       },
       {
         "type": "article",
-        "link": "https://www.liberation.fr/sports/tennis/roland-garros-2026-pourquoi-le-fisc-francais-aimerait-que-les-joueurs-gagnent-plus-dargent-20260523_O2T5SIZWXBDENETPTPIKO7T7E4/",
-        "source": "Libération",
-        "title": "Roland-Garros 2026 : pourquoi le fisc français aimerait que les joueurs gagnent plus d’argent",
-        "thumbnail": ""
-      },
-      {
-        "type": "article",
-        "link": "https://www.lemonde.fr/sport/live/2026/05/23/en-direct-ubb-leinster-suivez-la-finale-de-la-champions-cup-de-rugby_6692751_3242.html",
+        "link": "https://www.lemonde.fr/culture/article/2026/05/24/festival-de-cannes-cristian-mungiu-remporte-la-palme-d-or-pour-fjord-lors-d-une-ceremonie-de-cloture-assombrie-par-l-etat-du-monde_6692821_3246.html",
         "source": "Le Monde",
-        "title": "EN DIRECT, UBB-Leinster : implacables, les champions d’Europe en titre imposent leur loi en première période",
+        "title": "Festival de Cannes : Cristian Mungiu remporte la Palme d’or pour « Fjord » lors d’une cérémonie de clôture assombrie par l’état du monde",
         "thumbnail": ""
       },
       {
         "type": "article",
-        "link": "https://www.liberation.fr/societe/police-justice/coupe-de-france-35-personnes-interpellees-a-paris-en-marge-de-la-finale-20260523_YNQV5G77MJF2FJNLOTWFQ2NEXI/",
-        "source": "Libération",
-        "title": "Coupe de France : 35 personnes interpellées à Paris en marge de la finale",
-        "thumbnail": ""
-      },
-      {
-        "type": "article",
-        "link": "https://www.lemonde.fr/sport/article/2026/05/23/barcelone-ol-lyonnes-personne-ne-peut-nous-enlever-nos-cinq-victoires-de-suite-en-ligue-des-champions-rappelle-la-lyonnaise-ada-hegerberg-avant-la-finale_6692731_3242.html",
-        "source": "Le Monde",
-        "title": "Barcelone-OL Lyonnes : « Personne ne peut nous enlever nos cinq victoires de suite en Ligue des champions », rappelle la Lyonnaise Ada Hegerberg avant la finale",
-        "thumbnail": ""
-      },
-      {
-        "type": "article",
-        "link": "https://www.liberation.fr/sports/football/finale-de-la-ligue-des-champions-ol-barca-il-ny-avait-que-les-lyonnaises-pour-venir-troubler-la-domination-actuelle-des-clubs-anglais-ou-espagnols-20260523_2OSZBECAZFHEZNPRYGWWVUR54Y/",
-        "source": "Libération",
-        "title": "Finale de la Ligue des champions OL-Barça : «Il n’y avait que les Lyonnaises pour venir troubler la domination actuelle des clubs anglais ou espagnols»",
-        "thumbnail": ""
-      },
-      {
-        "type": "article",
-        "link": "https://www.huffingtonpost.fr/sport/article/ol-lyonnes-fc-barcelone-la-finale-de-la-ligue-des-champions-opposera-ces-deux-joueuses-qui-sont-en-couple_264024.html",
+        "link": "https://www.huffingtonpost.fr/culture/article/le-sacre-de-virginie-efira-au-festival-de-cannes-2026-et-tout-le-palmares-de-cette-79e-edition_263974.html",
         "source": "HuffPost France",
-        "title": "OL Lyonnes-FC Barcelone : la finale de la Ligue des champions opposera ces deux joueuses qui sont en couple",
+        "title": "La Palme d’or du Festival de Cannes 2026 et tout le palmarès de cette 79e édition",
         "thumbnail": ""
       },
       {
         "type": "article",
-        "link": "https://www.franceinfo.fr/roland-garros/roland-garros-2026-le-numero-1-francais-arthur-fils-annonce-son-forfait-a-la-veille-du-debut-du-tournoi_8023409.html#xtor=RSS-3-[lestitres]",
+        "link": "https://www.humanite.fr/culture-et-savoir/cannes-2026/cannes-2026-avec-fjord-le-roumain-cristian-mungiu-obtient-sa-deuxieme-palme-dor",
+        "source": "L'Humanité",
+        "title": "Cannes 2026 : avec « Fjord », le Roumain Cristian Mungiu obtient sa deuxième Palme d’or",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.liberation.fr/culture/cinema/cannes-2026-cristian-mungiu-palme-nord-dun-palmares-un-peu-a-louest-20260523_RUL3ETOM2BH7NDRTTHJSZEQBKM/",
+        "source": "Libération",
+        "title": "Cannes 2026 : Cristian Mungiu, Palme nord d’un palmarès un peu à l’ouest",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.liberation.fr/culture/cinema/en-direct-festival-de-cannes-jour-12-suivez-la-ceremonie-de-cloture-en-direct-avec-liberation-20260523_RB4Y24BOANF55A3ID3LTRYXJN4/",
+        "source": "Libération",
+        "title": "Cérémonie de clôture du Festival de Cannes: deuxième palme d’or pour Cristian Mungiu avec «Fjord»",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.france24.com/fr/vid%C3%A9o/20260524-fjord-du-roumain-cristian-mungiu-d%C3%A9croche-la-palme-d-or-%C3%A0-cannes",
+        "source": "France 24",
+        "title": "\"Fjord\" du Roumain Cristian Mungiu décroche la Palme d'or à Cannes",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.franceinfo.fr/culture/cinema/festival-de-cannes/la-palme-d-or-pour-fjord-le-grand-prix-pour-minotaure-notre-salut-distingue-pour-son-scenario-le-palmares-du-festival-de-cannes-2026-celebre-un-cinema-audacieux-et-politique_8023520.html#xtor=RSS-3-[lestitres]",
         "source": "Franceinfo",
-        "title": "Roland-Garros 2026 : le numéro 1 français, Arthur Fils, annonce son forfait à la veille du début du tournoi",
+        "title": "La Palme d'or pour \"Fjord\", le Grand Prix pour \"Minotaure\", \"Notre salut\" distingué pour son scénario... Le palmarès du Festival de Cannes 2026 célèbre un cinéma audacieux et politique",
         "thumbnail": ""
       },
       {
         "type": "article",
-        "link": "https://www.20minutes.fr/sport/tennis/roland-garros/4225084-20260523-roland-garros-2026-arthur-fils-declare-forfait-ca-tiendra-jamais?at_medium=display&at_campaign=149",
-        "source": "20 Minutes",
-        "title": "Roland-Garros 2026 : Arthur Fils déclare forfait, « ça ne tiendra jamais »",
+        "link": "https://www.france24.com/fr/%C3%A9missions/%C3%A0-l-affiche/20260523-festival-de-cannes-2026-fjord-palme-d-or-retour-sur-un-palmar%C3%A8s-engag%C3%A9",
+        "source": "France 24",
+        "title": "Festival de Cannes 2026 : \"Fjord\" Palme d’or, retour sur un palmarès engagé",
         "thumbnail": ""
       },
       {
         "type": "article",
-        "link": "https://www.franceinfo.fr/sports/rugby/champions-cup/direct-leinster-ubb-les-bordelais-conserveront-ils-leur-titre-suivez-et-commentez-avec-nous-la-finale-de-champions-cup_8019047.html#xtor=RSS-3-[lestitres]",
-        "source": "Franceinfo",
-        "title": "Leinster-UBB : les Bordelais largement en tête à la pause... Suivez avec nous la finale de Champions Cup",
-        "thumbnail": ""
-      },
-      {
-        "type": "article",
-        "link": "https://rmcsport.bfmtv.com/rugby/coupe-d-europe/direct-leinster-ubb-suivez-le-match-de-la-finale-de-champions-cup-en-live_LS-202605230048.html",
-        "source": "BFMTV",
-        "title": "DIRECT. Leinster-UBB: Bordeaux en démonstration dans une finale à sens unique !",
-        "thumbnail": ""
-      },
-      {
-        "type": "article",
-        "link": "https://www.la-croix.com/sport/roland-garros-2026-le-tennis-francais-a-l-ecole-de-la-patience-20260523",
+        "link": "https://www.la-croix.com/culture/festival-de-cannes-2026-cristian-mungiu-remporte-une-deuxieme-palme-d-or-pour-fjord-20260523",
         "source": "La Croix",
-        "title": "Roland Garros 2026 : le tennis français à l’école de la patience",
+        "title": "Festival de Cannes 2026 : Cristian Mungiu remporte une deuxième Palme d’or pour « Fjord »",
         "thumbnail": ""
       },
       {
         "type": "article",
-        "link": "https://www.20minutes.fr/sport/rugby/champions_rugby_cup/4224705-20260523-direct-ubb-leinster-bordelais-conquete-deuxieme-titre-europeen-affilee-suivez-finale-champions-cup?at_medium=display&at_campaign=149",
-        "source": "20 Minutes",
-        "title": "EN DIRECT Leinster - UBB : Le doublé pour Bielle-Biarrey, les Bordelais inarrêtables… Suivez la finale de la Champions Cup avec nous…",
+        "link": "https://www.rfi.fr/fr/culture/20260523-cannes-2026-cristian-mungiu-remporte-la-palme-d-or-avec-fjord-sur-la-question-sensible-de-la-religion",
+        "source": "RFI",
+        "title": "Cannes 2026: Cristian Mungiu remporte la Palme d'or avec «Fjord» sur la question sensible de la religion",
         "thumbnail": ""
       },
       {
         "type": "article",
-        "link": "https://www.franceinfo.fr/sports/rugby/champions-cup/champions-cup-comment-l-union-bordeaux-begles-est-passee-d-eternel-deuxieme-a-cador-europeen_8019029.html#xtor=RSS-3-[lestitres]",
-        "source": "Franceinfo",
-        "title": "Champions Cup : comment l’Union Bordeaux-Bègles est passée d’éternel deuxième à cador européen ?",
+        "link": "http://fr.euronews.com/culture/2026/05/23/cannes-2026-le-drame-politique-fjord-de-cristian-mungiu-remporte-la-palme-dor",
+        "source": "Euronews FR",
+        "title": "Cannes 2026 : le drame politique \"Fjord\" de Cristian Mungiu remporte la Palme d'or",
         "thumbnail": ""
       },
       {
         "type": "article",
-        "link": "https://www.lefigaro.fr/sports/rugby/live/champions-cup/2026/948487/leinster-bordeaux-begles",
-        "source": "Le Figaro",
-        "title": "EN DIRECT – UBB-Leinster : Bielle-Biarrey signe un doublé, Moefana enfonce le clou... Les Bordelais survolent la finale à Bilbao",
-        "thumbnail": ""
-      },
-      {
-        "type": "article",
-        "link": "https://www.lefigaro.fr/sports/rugby/coupe-d-europe/champions-cup-en-video-le-premier-essai-du-leinster-qui-calme-les-ardeurs-de-l-ubb-20260523",
-        "source": "Le Figaro",
-        "title": "Champions Cup : en vidéo, le récital de l’UBB contre le Leinster avec un Bielle-Biarrey phénoménal",
-        "thumbnail": ""
-      },
-      {
-        "type": "article",
-        "link": "https://www.lefigaro.fr/sports/tennis/roland-garros/roland-garros-enorme-coup-dur-arthur-fils-annonce-son-forfait-20260523",
-        "source": "Le Figaro",
-        "title": "Roland-Garros : énorme coup dur, Arthur Fils annonce son forfait",
-        "thumbnail": ""
-      },
-      {
-        "type": "article",
-        "link": "https://www.lefigaro.fr/sports/rugby/coupe-d-europe/irresistible-en-champions-cup-bordeaux-begles-veut-faire-coup-double-20260523",
-        "source": "Le Figaro",
-        "title": "Irrésistible en Champions Cup, Bordeaux-Bègles veut faire coup double",
-        "thumbnail": ""
-      },
-      {
-        "type": "article",
-        "link": "https://www.lefigaro.fr/sports/tennis/roland-garros-arthur-fils-pret-a-changer-de-dimension-si-le-corps-tient-20260523",
-        "source": "Le Figaro",
-        "title": "Roland-Garros : Arthur Fils prêt à changer de dimension, si le corps tient",
+        "link": "https://www.la-croix.com/culture/festival-de-cannes-2026-fjord-de-cristian-mungiu-prix-du-jury-ocumenique-20260523",
+        "source": "La Croix",
+        "title": "Festival de Cannes 2026 : « Fjord » de Cristian Mungiu, prix du jury œcuménique",
         "thumbnail": ""
       },
       {
         "type": "youtube",
-        "link": "https://www.youtube.com/watch?v=IDkHxdjl2Z0",
-        "source": "Europe 1",
+        "link": "https://www.youtube.com/watch?v=TxamR9AH0sQ",
+        "source": "Le Monde",
         "title": "",
-        "thumbnail": "https://i.ytimg.com/vi/IDkHxdjl2Z0/hqdefault.jpg"
+        "thumbnail": "https://i.ytimg.com/vi/TxamR9AH0sQ/hqdefault.jpg"
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/shorts/P6KxxXXgxCY",
+        "source": "Le Monde",
+        "title": "Clap de fin pour le Festival de Cannes",
+        "thumbnail": ""
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/watch?v=ujSKKIXLZwQ",
+        "source": "C ce soir",
+        "title": "",
+        "thumbnail": "https://i.ytimg.com/vi/ujSKKIXLZwQ/hqdefault.jpg"
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/watch?v=5CcoG9lrDUw",
+        "source": "France 24",
+        "title": "",
+        "thumbnail": "https://i.ytimg.com/vi/5CcoG9lrDUw/hqdefault.jpg"
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/watch?v=pAlEmuiTnW0",
+        "source": "Brut",
+        "title": "",
+        "thumbnail": "https://i.ytimg.com/vi/pAlEmuiTnW0/hqdefault.jpg"
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/watch?v=xPjHO3_2C9g",
+        "source": "Brut",
+        "title": "",
+        "thumbnail": "https://i.ytimg.com/vi/xPjHO3_2C9g/hqdefault.jpg"
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/shorts/Yc8akB0IWKo",
+        "source": "Franceinfo",
+        "title": "Le palmarès complet du Festival de Cannes 2026",
+        "thumbnail": ""
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/watch?v=m8e7QMZrmes",
+        "source": "Brut",
+        "title": "",
+        "thumbnail": "https://i.ytimg.com/vi/m8e7QMZrmes/hqdefault.jpg"
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/shorts/-_WSN4wVbVQ",
+        "source": "C ce soir",
+        "title": "Comment le Festival de Cannes est né, expliqué par Thierry Fremaux - C Ce Soir du 19 mai 2026",
+        "thumbnail": ""
+      }
+    ],
+    "sessionLabel": "24/05/2026 à 16:12:38",
+    "controversyLevel": "moyen",
+    "leftScore": 6,
+    "ai": {
+      "mainKeyword": "Festival de Cannes 2026",
+      "keywords": [
+        "Cri tian Mungiu",
+        "Palme d’or",
+        "Fjord",
+        "Palmarè  engagé",
+        "Minotaure",
+        "Virginie Efira"
+      ]
+    }
+  },
+  {
+    "action": "save",
+    "subject": "Négociations entre les États-Unis et l'Iran pour un accord de paix",
+    "debateScore": 7,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "Libération, Le Monde, BFMTV, Franceinfo, La Croix, France 24, Le Dauphiné Libéré, RFI, Le Figaro",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.liberation.fr/international/moyen-orient/en-direct-guerre-au-moyen-orient-washington-et-teheran-proches-dun-accord-20260524_E6SIMAJRBRHKDF36TQVNLDHLY4/",
+        "source": "Libération",
+        "title": "EN DIRECT - Guerre au Moyen-Orient : les aides maintenues en France en cas d’accord entre Téhéran et Washington",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.lemonde.fr/international/live/2026/05/24/en-direct-guerre-au-moyen-orient-marco-rubio-estime-qu-une-annonce-d-accord-avec-l-iran-pourrait-etre-faite-dimanche-des-progres-salues-par-keir-starmer_6691823_3210.html",
+        "source": "Le Monde",
+        "title": "EN DIRECT, guerre au Moyen-Orient : une annonce d’accord entre les Etats-Unis et l’Iran pourrait être faite dimanche, selon Marco Rubio ; « des progrès » salués par Keir Starmer et Ursula von der Leyen",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.bfmtv.com/international/moyen-orient/iran/video-les-eclaireurs-le-contenu-du-protocole-d-accord-entre-les-etats-unis-et-l-iran_VN-202605240232.html",
+        "source": "BFMTV",
+        "title": "LES ÉCLAIREURS: le contenu du protocole d'accord entre les États-Unis et l'Iran",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.franceinfo.fr/monde/iran/guerre-entre-les-etats-unis-israel-et-l-iran/direct-guerre-au-moyen-orient-les-etats-unis-et-l-iran-cherchent-a-finaliser-un-accord-pour-la-fin-de-la-guerre_8024786.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "title": "Guerre au Moyen-Orient : Ursula von der Leyen salue les progrès vers un accord entre les Etats-Unis et l'Iran",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.bfmtv.com/international/moyen-orient/iran/video-guerre-au-moyen-orient-donald-trump-annonce-que-l-accord-avec-l-iran-prevoit-la-reouverture-du-detroit-d-ormuz-teheran-precise-qu-il-resterait-sous-controle-iranien_VN-202605240221.html",
+        "source": "BFMTV",
+        "title": "Guerre au Moyen-Orient: Donald Trump annonce que l'accord avec l'Iran prévoit la réouverture du détroit d'Ormuz, Téhéran précise qu'il resterait \"sous contrôle\" iranien",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.la-croix.com/international/direct-guerre-iran-israel-usa-jour-86-moyen-orient-bilan-resume-aujourdhui-20260524",
+        "source": "La Croix",
+        "title": "DIRECT. Guerre au Moyen-Orient : un accord possible dans la journée ; frappe au Liban",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.france24.com/fr/vid%C3%A9o/20260524-les-%C3%A9tats-unis-et-l-iran-cherchent-%C3%A0-finaliser-un-accord-pour-la-fin-de-la-guerre",
+        "source": "France 24",
+        "title": "Les États-Unis et l'Iran cherchent à finaliser un accord pour la fin de la guerre",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.ledauphine.com/defense-guerre-conflit/2026/05/24/vers-un-accord-entre-l-iran-et-les-etats-unis-il-est-largement-negocie-selon-trump",
+        "source": "Le Dauphiné Libéré",
+        "title": "Guerre au Moyen-Orient. Vers un accord entre l'Iran et les États-Unis ? Une annonce pourrait être faite ce dimanche",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.rfi.fr/fr/moyen-orient/20260524-en-direct-moyen-orient-les-%C3%A9tats-unis-et-l-iran-cherchent-%C3%A0-finaliser-un-accord-pour-mettre-fin-%C3%A0-la-guerre",
+        "source": "RFI",
+        "title": "[EN DIRECT] Moyen-Orient: les États-Unis et l'Iran cherchent à finaliser un accord pour mettre fin à la guerre",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.bfmtv.com/international/moyen-orient/direct-guerre-en-iran-et-au-moyen-orient-washington-et-teheran-cherchent-a-finaliser-un-accord-pour-la-fin-de-la-guerre_LN-202605240053.html",
+        "source": "BFMTV",
+        "title": "DIRECT. Guerre en Iran et au Moyen-Orient: Ursula von der Leyen salue \"les progrès vers un accord entre les États-Unis et l’Iran\"",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.france24.com/fr/moyen-orient/20260524-en-direct-moyen-orient-iran-donald-trump-etats-unis-negociations-accord-detroit-dormuz-pakistan",
+        "source": "France 24",
+        "title": "Iran en direct : Marco Rubio dit qu'une \"bonne nouvelle\" pourrait être annoncée dans les prochaines heures",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.franceinfo.fr/monde/iran/guerre-entre-les-etats-unis-israel-et-l-iran/direct-guerre-au-moyen-orient-les-etats-unis-evoquent-un-possible-accord-avec-l-iran-des-samedi-teheran-dit-finaliser-des-protocoles-de-fin-de-conflit_8023340.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "title": "Guerre au Moyen-Orient : un accord avec l'Iran \"se rapproche grandement\", assure Donald Trump",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.lefigaro.fr/conso/accord-entre-l-iran-et-les-etats-unis-pourquoi-les-prix-des-carburants-vont-mettre-du-temps-a-baisser-20260524",
+        "source": "Le Figaro",
+        "title": "En cas d’accord entre l’Iran et les États-Unis, les prix des carburants vont mettre du temps à baisser",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.lefigaro.fr/international/en-direct-guerre-en-iran-moyen-orient-donald-trump-netanyahou-detroit-d-ormuz-prix-de-l-essence-20260524",
+        "source": "Le Figaro",
+        "title": "EN DIRECT - Guerre en Iran : «Il est possible que le monde reçoive une bonne nouvelle» dans les prochaines heures, estime Marco Rubio",
+        "thumbnail": ""
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/watch?v=CTQTDUyD9FE",
+        "source": "France 24",
+        "title": "",
+        "thumbnail": "https://i.ytimg.com/vi/CTQTDUyD9FE/hqdefault.jpg"
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/watch?v=aHD_5k27wUA",
+        "source": "France 24",
+        "title": "",
+        "thumbnail": "https://i.ytimg.com/vi/aHD_5k27wUA/hqdefault.jpg"
+      }
+    ],
+    "sessionLabel": "24/05/2026 à 16:12:38"
+  },
+  {
+    "action": "save",
+    "subject": "La France interdit l'accès à son territoire au ministre israélien Itamar Ben Gvir après sa vidéo devant des militants de la \"flottille pour Gaza\"",
+    "debateScore": 8,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "Franceinfo, Libération, Le Figaro, Marianne, La Croix, France 24, RFI, Euronews FR, 20 Minutes, HuffPost France",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.huffingtonpost.fr/politique/article/apres-le-tolle-sur-la-video-de-la-flottille-pour-gaza-le-ministre-israelien-ben-gvir-interdit-d-entrer-en-france_264042.html",
+        "source": "HuffPost France",
+        "title": "Après le tollé sur la vidéo de « la Flottille pour Gaza », le ministre israélien Ben Gvir interdit d’entrer en France",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.liberation.fr/international/moyen-orient/critique-pour-avoir-humilie-des-militants-de-la-flottille-pour-gaza-itamar-ben-gvir-interdit-de-territoire-francais-20260523_WMTLDC2SJZHGXPLLGCHNACOO5Q/",
+        "source": "Libération",
+        "title": "Critiqué pour avoir humilié des militants de la flottille pour Gaza, Itamar Ben Gvir interdit de territoire français",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.liberation.fr/international/moyen-orient/on-a-ete-affames-violentes-deshabilles-des-militants-de-la-flottille-pour-gaza-racontent-le-calvaire-vecu-en-israel-20260522_RGZJVK6WFRASNK42AVRYFVPKPA/",
+        "source": "Libération",
+        "title": "«On a été affamés, violentés, déshabillés» : des militants de la flottille pour Gaza racontent le calvaire vécu en Israël",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "http://fr.euronews.com/2026/05/23/flottille-pour-gaza-itamar-ben-gvir-interdit-de-territoire-francais",
+        "source": "Euronews FR",
+        "title": "\"Flottille pour Gaza\" : Itamar Ben Gvir interdit de territoire français",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.20minutes.fr/monde/israel/4225077-20260523-ministre-israelien-ben-gvir-interdit-territoire-francais-apres-video-flottille-gaza-agenouillee?at_medium=display&at_campaign=149",
+        "source": "20 Minutes",
+        "title": "Le ministre israélien Ben Gvir interdit de territoire français après la vidéo de la « flottille pour Gaza » agenouillée",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.franceinfo.fr/monde/proche-orient/israel-palestine/la-france-interdit-l-acces-a-son-territoire-au-ministre-israelien-itamar-ben-gvir-apres-sa-video-devant-des-militants-de-la-flottille-pour-gaza_8023295.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "title": "La France interdit l'accès à son territoire au ministre israélien Itamar Ben Gvir après sa vidéo devant des militants de la \"flottille pour Gaza\"",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.la-croix.com/international/direct-guerre-iran-israel-usa-jour-85-moyen-orient-bilan-resume-aujourdhui-20260523",
+        "source": "La Croix",
+        "title": "Guerre au Moyen-Orient : Le ministre israélien Ben Gvir interdit de territoire français",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.rfi.fr/fr/france/20260523-flottille-pour-gaza-le-ministre-isra%C3%A9lien-itamar-ben-gvir-interdit-de-territoire-fran%C3%A7ais",
+        "source": "RFI",
+        "title": "«Flottille pour Gaza»: le ministre israélien Itamar Ben Gvir interdit de territoire français",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.france24.com/fr/moyen-orient/20260523-flottille-pour-gaza-ministre-isra%C3%A9lien-ben-gvir-interdit-territoire-fran%C3%A7ais",
+        "source": "France 24",
+        "title": "\"Flotille pour Gaza\" : le ministre israélien Itamar Ben Gvir interdit de territoire français",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.france24.com/fr/moyen-orient/20260523-flottille-pour-gaza-ministre-isra%C3%A9lien-ben-gvir-interdit-territoire-fran%C3%A7ais",
+        "source": "France 24",
+        "title": "\"Flottille pour Gaza\" : le ministre israélien Itamar Ben Gvir persona non grata en France",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.marianne.net/monde/maintenant-ils-font-moins-les-heros-quand-itamar-ben-gvir-filme-lhumiliation-de-militants-europeens#utm_source=RSS-MARIANNE&utm_medium=Flux-Rss&utm_campaign=RSS_general",
+        "source": "Marianne",
+        "title": "\"Maintenant, ils font moins les héros\" : quand Itamar Ben Gvir filme l’humiliation de militants européens",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.lefigaro.fr/flash-actu/le-ministre-israelien-itamar-ben-gvir-desormais-interdit-de-territoire-francais-20260523",
+        "source": "Le Figaro",
+        "title": "Le ministre israélien Itamar Ben Gvir désormais interdit de territoire français",
+        "thumbnail": ""
+      }
+    ],
+    "sessionLabel": "23/05/2026 à 18:44:00"
+  },
+  {
+    "action": "save",
+    "subject": "Disparition de Manon Relandeau. 300 personnes attendues à la battue citoyenne organisée par la gendarmerie, \"c'est le bon moment\"",
+    "debateScore": 5,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "Franceinfo, Libération, HuffPost France",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.huffingtonpost.fr/france/article/deux-mois-apres-la-disparition-de-manon-relandeau-une-recherche-citoyenne-en-loire-atlantique_264043.html",
+        "source": "HuffPost France",
+        "title": "Deux mois après la disparition de Manon Relandeau, une « recherche citoyenne » en Loire-Atlantique",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.liberation.fr/societe/police-justice/disparition-de-manon-relandeau-la-battue-citoyenne-est-un-moyen-de-demultiplier-les-capteurs-20260522_EASACQFUHVHCTDMBROH2NGIAAQ/",
+        "source": "Libération",
+        "title": "Disparition de Manon Relandeau : «La battue citoyenne est un moyen de démultiplier les capteurs»",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://france3-regions.franceinfo.fr/pays-de-la-loire/loire-atlantique/nantes/disparition-de-manon-relandeau-300-personnes-attendues-a-la-battue-citoyenne-organisee-par-la-gendarmerie-c-est-le-bon-moment-3355825.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "title": "Disparition de Manon Relandeau. 300 personnes attendues à la battue citoyenne organisée par la gendarmerie, \"c'est le bon moment\"",
+        "thumbnail": ""
       }
     ],
     "sessionLabel": "23/05/2026 à 18:44:00",
     "controversyLevel": "moyen",
-    "leftScore": 4,
+    "leftScore": 6,
     "ai": {
-      "mainKeyword": "Finale Champions Cup 2026",
+      "mainKeyword": "Disparition de Manon Relandeau",
       "keywords": [
-        "Bordeaux-Bègle",
-        "Arthur Fil",
-        "Roland-Garro  2026",
-        "Lein ter",
-        "OL Lyonne",
-        "FC Barcelone"
+        "battue citoyenne",
+        "gendarmerie",
+        "Loire-Atlantique",
+        "recherche citoyenne",
+        "Nante",
+        "mobili ation locale"
       ]
     }
   },
