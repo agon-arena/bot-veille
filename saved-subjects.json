@@ -1,6 +1,125 @@
 [
   {
     "action": "save",
+    "subject": "Canicule : vigilance jaune dans 13 départements de l’Ouest lundi, une première pour le mois de mai",
+    "debateScore": 5,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "Le Monde, Libération, La Croix, BFMTV, HuffPost France",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.liberation.fr/environnement/climat/la-vigilance-jaune-canicule-activee-pour-la-premiere-fois-en-mai-treize-departements-concernes-lundi-20260524_SEF4ET4NZBGMLOLJ6ZTWWHE2OA/",
+        "source": "Libération",
+        "title": "La vigilance jaune canicule activée pour la première fois en mai, treize départements concernés lundi",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.huffingtonpost.fr/france/article/meteo-la-vigilance-jaune-canicule-etendue-a-plusieurs-departements-de-l-ouest_264066.html",
+        "source": "HuffPost France",
+        "title": "Météo : La vigilance jaune canicule étendue à plusieurs départements de l’Ouest",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.lemonde.fr/planete/article/2026/05/24/canicule-vigilance-jaune-dans-13-departements-de-l-ouest-lundi-une-premiere-pour-le-mois-de-mai_6693206_3245.html",
+        "source": "Le Monde",
+        "title": "Canicule : vigilance jaune dans 13 départements de l’Ouest lundi, une première pour le mois de mai",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.bfmtv.com/meteo/canicule/video-13-departements-places-en-vigilance-jaune-canicule-la-meteo-du-lundi-25-mai_VN-202605250091.html",
+        "source": "BFMTV",
+        "title": "13 départements placés en vigilance jaune canicule: la météo du lundi 25 mai",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.bfmtv.com/meteo/canicule/video-canicule-la-vigilance-jaune-prolongee-dans-le-finistere_VN-202605250072.html",
+        "source": "BFMTV",
+        "title": "Canicule: la vigilance jaune prolongée dans le Finistère",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.la-croix.com/societe/canicule-treize-departements-de-l-ouest-en-vigilance-jaune-inedit-pour-un-mois-de-mai-20260524",
+        "source": "La Croix",
+        "title": "Canicule : treize départements de l’Ouest en vigilance jaune, inédit pour un mois de mai",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.la-croix.com/episode-de-chaleur-la-vigilance-jaune-canicule-prolongee-dans-le-finistere-20260524",
+        "source": "La Croix",
+        "title": "Météo : le Finistère placé en vigilance jaune canicule, une première pour un mois de mai en France",
+        "thumbnail": ""
+      }
+    ],
+    "sessionLabel": "25/05/2026 à 08:45:27",
+    "controversyLevel": "moyen",
+    "ai": {
+      "arenaMode": "positions",
+      "debateScore": 5,
+      "controversyLevel": "moyen",
+      "debateQuestion": "",
+      "resume": "",
+      "keywords": [
+        "13 département  de l’Oue t",
+        "Fini tère",
+        "canicule"
+      ],
+      "selectedLinks": [
+        "https://www.liberation.fr/environnement/climat/la-vigilance-jaune-canicule-activee-pour-la-premiere-fois-en-mai-treize-departements-concernes-lundi-20260524_SEF4ET4NZBGMLOLJ6ZTWWHE2OA/",
+        "https://www.huffingtonpost.fr/france/article/meteo-la-vigilance-jaune-canicule-etendue-a-plusieurs-departements-de-l-ouest_264066.html",
+        "https://www.lemonde.fr/planete/article/2026/05/24/canicule-vigilance-jaune-dans-13-departements-de-l-ouest-lundi-une-premiere-pour-le-mois-de-mai_6693206_3245.html",
+        "https://www.bfmtv.com/meteo/canicule/video-13-departements-places-en-vigilance-jaune-canicule-la-meteo-du-lundi-25-mai_VN-202605250091.html",
+        "https://www.bfmtv.com/meteo/canicule/video-canicule-la-vigilance-jaune-prolongee-dans-le-finistere_VN-202605250072.html",
+        "https://www.la-croix.com/societe/canicule-treize-departements-de-l-ouest-en-vigilance-jaune-inedit-pour-un-mois-de-mai-20260524",
+        "https://www.la-croix.com/episode-de-chaleur-la-vigilance-jaune-canicule-prolongee-dans-le-finistere-20260524"
+      ],
+      "agonTheme": "Climat - environnement",
+      "positionA": "",
+      "positionB": "",
+      "sourceSubject": "Canicule : vigilance jaune dans 13 départements de l’Ouest lundi, une première pour le mois de mai",
+      "fullArticleState": "short",
+      "mainKeyword": "vigilance jaune canicule en mai",
+      "storyLink": {
+        "story_decision": "existing_story",
+        "matched_story_id": "40-le-changement-climatique-transforme-les-territoires-et-multiplie-les-enjeux-d-ad",
+        "matched_story_title": "Le changement climatique transforme les territoires et multiplie les enjeux d’adaptation",
+        "matched_story_summary": "",
+        "previous_episode_id": "557",
+        "previous_episode_title": "Faut-il augmenter la taxe sur les logements vacants pour résoudre la pénurie à Paris ?",
+        "previous_episode_summary": "Le sujet porte sur la récente décision de la municipalité de Paris d'augmenter la taxe sur les logements vacants afin de lutter contre la pénurie de logements dans la capitale. Cette mesure concerne principalement les propriétaires de logements inoccupés depuis plus de six mois, qui se voient appliquer une surtaxe progressive pouvant atteindre 60 % du loyer potentiel. L'objectif affiché est d'inciter à la mise en location de ces biens afin d'augmenter l'offre disponible sur le marché locatif parisien. Cette initiative s'inscrit dans un contexte de forte demande de logements et de tensions sur le marché immobilier, avec des enjeux sociaux importants liés à l'accès au logement pour les ménages modestes. Plusieurs associations de locataires et élus locaux soutiennent cette mesure, la considérant comme un levier efficace pour mobiliser des logements inutilisés. En revanche, certains représentants de propriétaires et experts immobiliers critiquent cette taxe, estimant qu'elle pourrait pénaliser injustement certains propriétaires et ne pas suffire à résoudre la problématique structurelle du logement à Paris. Les sources analysées montrent un consensus sur l'existence du problème de logements vacants, mais des divergences sur l'efficacité et l'équité de la surtaxe.",
+        "previous_episode_url": "http://localhost:3001/debate?id=557",
+        "confidence": 0.85,
+        "reason": "L'actualité porte sur une canicule précoce liée au climat, ce qui correspond clairement aux enjeux du changement climatique et de ses impacts territoriaux.",
+        "criteria": {
+          "main_actors_match": false,
+          "central_tension_match": true,
+          "temporal_continuity": true,
+          "editorial_theme_match": true,
+          "strong_keywords_match": true
+        },
+        "new_story": {
+          "story_title": "",
+          "story_summary": "",
+          "main_actors": [],
+          "central_tension": "Faut-il renforcer les alertes canicule dès les premières chaleurs inhabituelles en mai ?",
+          "keywords": [],
+          "status": "active"
+        }
+      }
+    }
+  },
+  {
+    "action": "save",
     "subject": "Un enfant de 12 ans retrouvé mort au pied d’un immeuble à Rennes, une serviette serrée autour du cou",
     "debateScore": 4,
     "debateQuestion": "",
@@ -64,67 +183,6 @@
         "bui on",
         "Ille-et-Vilaine",
         "police judiciaire"
-      ]
-    }
-  },
-  {
-    "action": "save",
-    "subject": "Guerre en Ukraine : que sait-on du missile russe « Orechnik » qui a frappé Kiev ?",
-    "debateScore": 7,
-    "debateQuestion": "",
-    "resume": "",
-    "keywords": [],
-    "agonTheme": "",
-    "positionA": "",
-    "positionB": "",
-    "sources": "La Croix, L'Express, Le Monde, Le Parisien",
-    "contents": [
-      {
-        "type": "article",
-        "link": "https://www.la-croix.com/international/guerre-en-ukraine-que-sait-on-du-missile-russe-orechnik-qui-a-frappe-kiev-20260524",
-        "source": "La Croix",
-        "title": "Guerre en Ukraine : que sait-on du missile russe « Orechnik » qui a frappé Kiev ?",
-        "thumbnail": ""
-      },
-      {
-        "type": "article",
-        "link": "https://www.lexpress.fr/monde/europe/guerre-en-ukraine-la-russie-frappe-kiev-avec-les-redoutes-missiles-hypersoniques-orechnik-DQPADN5MAJCOBKQZPRW5TIFQJM/",
-        "source": "L'Express",
-        "title": "Guerre en Ukraine : la Russie frappe Kiev avec les redoutés missiles hypersoniques Orechnik",
-        "thumbnail": ""
-      },
-      {
-        "type": "youtube",
-        "link": "https://www.youtube.com/shorts/vI0qDGXFdII",
-        "source": "Le Monde",
-        "title": "Guerre en Ukraine : la Russie utilise un missile Orechnik dans une attaque massive contre Kiev",
-        "thumbnail": ""
-      },
-      {
-        "type": "youtube",
-        "link": "https://www.youtube.com/watch?v=Dnb3Iffi8Sg",
-        "source": "Le Monde",
-        "title": "",
-        "thumbnail": "https://i.ytimg.com/vi/Dnb3Iffi8Sg/hqdefault.jpg"
-      },
-      {
-        "type": "youtube",
-        "link": "https://www.youtube.com/watch?v=zize1jV2h8E",
-        "source": "Le Parisien",
-        "title": "",
-        "thumbnail": "https://i.ytimg.com/vi/zize1jV2h8E/hqdefault.jpg"
-      }
-    ],
-    "sessionLabel": "25/05/2026 à 08:45:27",
-    "controversyLevel": "fort",
-    "ai": {
-      "mainKeyword": "missile russe Orechnik",
-      "keywords": [
-        "guerre en Ukraine",
-        "Kiev",
-        "Ru ie",
-        "mi ile  hyper onique",
-        "attaque ma ive"
       ]
     }
   },

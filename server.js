@@ -1175,7 +1175,7 @@ Références aux articles :
 - Ne pas utiliser les références aux articles pour créer artificiellement un traitement médiatique différent.
 
 Structure obligatoire de l'article :
-1. Un chapeau d'introduction de 2 à 3 phrases courtes.
+1. Un chapeau d'introduction de 2 phrases courtes maximum.
 2. Un saut de ligne.
 3. Deux ou trois paragraphes développés.
 4. Chaque paragraphe doit être séparé par une ligne vide.
@@ -1184,7 +1184,7 @@ Structure obligatoire de l'article :
 7. La dernière ligne de l'article doit être exactement debateQuestion, seule sur sa ligne.
 
 Contenu attendu :
-- Le chapeau doit accrocher le lecteur sans exagérer.
+- Le chapeau doit accrocher le lecteur sans exagérer. Maximum 2 phrases courtes.
 - Il doit présenter rapidement le sujet, les acteurs concernés et l'enjeu principal.
 - Les paragraphes doivent expliquer clairement les faits, le contexte immédiat et pourquoi le sujet est repris.
 - Si une différence significative de traitement médiatique existe, l'évoquer sobrement dans le dernier paragraphe.
@@ -1751,6 +1751,26 @@ function sendMissingPage(res, title, message) {
       <button id="launch-btn" onclick="launch()">Lancer la première collecte</button>
       <div id="status"></div>
       <script>
+        (async function autoHookRunning() {
+          try {
+            var r = await fetch('/progress?t=' + Date.now());
+            var p = await r.json();
+            if (!p.running) return;
+            var btn = document.getElementById('launch-btn');
+            var status = document.getElementById('status');
+            if (btn) { btn.disabled = true; btn.textContent = 'Collecte en cours…'; }
+            if (status) status.textContent = 'Collecte déjà en cours, veuillez patienter…';
+            var poll = setInterval(async function() {
+              try {
+                var r2 = await fetch('/progress?t=' + Date.now());
+                var p2 = await r2.json();
+                if (p2.step && status) status.textContent = 'Étape ' + p2.stepIndex + ' / ' + p2.stepTotal + ' — ' + p2.step + (p2.detail ? ' (' + p2.detail + ')' : '');
+                if (!p2.running && p2.done) { clearInterval(poll); window.location.reload(); }
+              } catch(e) {}
+            }, 2000);
+          } catch(e) {}
+        })();
+
         async function launch() {
           const btn = document.getElementById('launch-btn');
           const status = document.getElementById('status');
@@ -1759,12 +1779,14 @@ function sendMissingPage(res, title, message) {
           status.textContent = 'Récupération des sources et analyse IA…';
           try {
             await fetch('/refresh', { method: 'POST' });
+            var seenRunning = false;
             var poll = setInterval(async function() {
               try {
                 var r = await fetch('/progress?t=' + Date.now());
                 var p = await r.json();
+                if (p.running) seenRunning = true;
                 if (p.step) status.textContent = 'Étape ' + p.stepIndex + ' / ' + p.stepTotal + ' — ' + p.step + (p.detail ? ' (' + p.detail + ')' : '');
-                if (p.done) { clearInterval(poll); window.location.reload(); }
+                if (seenRunning && p.done) { clearInterval(poll); window.location.reload(); }
               } catch(e) {}
             }, 2000);
             setTimeout(function() { clearInterval(poll); window.location.reload(); }, 15 * 60 * 1000);
@@ -2520,7 +2542,11 @@ app.post("/save-update", requireMixteAuth, async (req, res) => {
     const { subject, ...updates } = req.body || {};
     const idx = saved.findIndex(s => s.subject === subject);
     if (idx !== -1) {
-      saved[idx] = { ...saved[idx], ...updates };
+      const merged = { ...saved[idx], ...updates };
+      if (updates.ai && saved[idx]?.ai) {
+        merged.ai = { ...saved[idx].ai, ...updates.ai };
+      }
+      saved[idx] = merged;
       fs.writeFileSync(savedFile, JSON.stringify(saved, null, 2), "utf8");
     }
     res.json({ ok: true });

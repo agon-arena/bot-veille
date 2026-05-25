@@ -4242,6 +4242,13 @@ function generateHtml(sessions) {
         if (!data || !data.ok || !data.suggestion) return;
         box.dataset.storySuggested = "true";
         await applyStorySuggestion(box, data.suggestion);
+        if (subjectTitle) {
+          fetch("/save-update", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ subject: subjectTitle, ai: { storyLink: data.suggestion } })
+          }).catch(function() {});
+        }
       } catch (error) {
         console.error("Erreur suggestion histoire :", error.message);
       }
@@ -5612,6 +5619,21 @@ function generateHtml(sessions) {
     }
 
     initializeStoryBoxes(document);
+
+    (function autoSuggestMissingStories() {
+      var subjectsNeedingStory = Array.from(document.querySelectorAll(".subject")).filter(function(el) {
+        var resume = el.querySelector(".resume");
+        var hasResume = resume && (resume.dataset.rawText || resume.textContent.trim());
+        var box = el.querySelector(".story-link-box");
+        var hasStory = box && (box.dataset.selectedMode === "existing" || box.dataset.storyDecision === "existing_story" || box.dataset.storyDecision === "uncertain");
+        return hasResume && !hasStory;
+      });
+      var delay = 0;
+      subjectsNeedingStory.forEach(function(el) {
+        setTimeout(function() { suggestStoryForSubject(el); }, delay);
+        delay += 800;
+      });
+    })();
 
     var ptrTouchStartY = 0;
     var ptrPullDist = 0;

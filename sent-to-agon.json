@@ -1,5 +1,91 @@
 [
   {
+    "subject": "Canicule : vigilance jaune dans 13 départements de l’Ouest lundi, une première pour le mois de mai",
+    "sessionLabel": "25/05/2026 à 08:45:27",
+    "question": "Faut-il renforcer les alertes canicule dès les premières chaleurs inhabituelles en mai ?",
+    "positionA": "Oui, il faut alerter tôt pour protéger les populations vulnérables.",
+    "positionB": "Non, ces alertes précoces peuvent provoquer une alerte inutile et une fatigue d…",
+    "theme": "Climat - environnement",
+    "resume": "Lundi 25 mai 2026, treize départements de l’Ouest de la France ont été placés en vigilance jaune canicule. Cette alerte concerne des régions où des températures élevées sont attendues pour la première fois en mai, ce qui est inhabituel à cette période de l’année. La vigilance jaune signale un risque modéré de fortes chaleurs pouvant entraîner des désagréments pour la santé, notamment chez les personnes vulnérables.\n\nCette mesure vise à informer la population et à encourager la prudence face à ces conditions météorologiques exceptionnelles pour un mois de mai. La vigilance jaune est un outil d’anticipation qui permet de sensibiliser sans alarmer outre mesure, en rappelant les gestes simples pour limiter les effets du chaud.\n\nFace à cette situation nouvelle, la question de l’adaptation des systèmes d’alerte se pose naturellement. Il s’agit de trouver un équilibre entre la protection des populations à risque et la gestion de la crédibilité des alertes. Faut-il renforcer les alertes canicule dès les premières chaleurs inhabituelles en mai ?",
+    "sources": "Le Monde, Libération, La Croix, BFMTV, HuffPost France",
+    "links": [
+      {
+        "title": "La vigilance jaune canicule activée pour la première fois en mai, treize départements concernés lundi",
+        "url": "https://www.liberation.fr/environnement/climat/la-vigilance-jaune-canicule-activee-pour-la-premiere-fois-en-mai-treize-departements-concernes-lundi-20260524_SEF4ET4NZBGMLOLJ6ZTWWHE2OA/",
+        "source": "Libération",
+        "type": "article",
+        "date": "24/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Météo : La vigilance jaune canicule étendue à plusieurs départements de l’Ouest",
+        "url": "https://www.huffingtonpost.fr/france/article/meteo-la-vigilance-jaune-canicule-etendue-a-plusieurs-departements-de-l-ouest_264066.html",
+        "source": "HuffPost France",
+        "type": "article",
+        "date": "24/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Canicule : vigilance jaune dans 13 départements de l’Ouest lundi, une première pour le mois de mai",
+        "url": "https://www.lemonde.fr/planete/article/2026/05/24/canicule-vigilance-jaune-dans-13-departements-de-l-ouest-lundi-une-premiere-pour-le-mois-de-mai_6693206_3245.html",
+        "source": "Le Monde",
+        "type": "article",
+        "date": "24/05/2026",
+        "checked": true
+      },
+      {
+        "title": "13 départements placés en vigilance jaune canicule: la météo du lundi 25 mai",
+        "url": "https://www.bfmtv.com/meteo/canicule/video-13-departements-places-en-vigilance-jaune-canicule-la-meteo-du-lundi-25-mai_VN-202605250091.html",
+        "source": "BFMTV",
+        "type": "article",
+        "date": "25/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Canicule: la vigilance jaune prolongée dans le Finistère",
+        "url": "https://www.bfmtv.com/meteo/canicule/video-canicule-la-vigilance-jaune-prolongee-dans-le-finistere_VN-202605250072.html",
+        "source": "BFMTV",
+        "type": "article",
+        "date": "25/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Canicule : treize départements de l’Ouest en vigilance jaune, inédit pour un mois de mai",
+        "url": "https://www.la-croix.com/societe/canicule-treize-departements-de-l-ouest-en-vigilance-jaune-inedit-pour-un-mois-de-mai-20260524",
+        "source": "La Croix",
+        "type": "article",
+        "date": "24/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Météo : le Finistère placé en vigilance jaune canicule, une première pour un mois de mai en France",
+        "url": "https://www.la-croix.com/episode-de-chaleur-la-vigilance-jaune-canicule-prolongee-dans-le-finistere-20260524",
+        "source": "La Croix",
+        "type": "article",
+        "date": "24/05/2026",
+        "checked": true
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "40-le-changement-climatique-transforme-les-territoires-et-multiplie-les-enjeux-d-ad",
+      "matchedStoryTitle": "Le changement climatique transforme les territoires et multiplie les enjeux d’adaptation",
+      "previousEpisodeTitle": "Faut-il augmenter la taxe sur les logements vacants pour résoudre la pénurie à Paris ?",
+      "previousEpisodeUrl": "http://localhost:3001/debate?id=557",
+      "confidence": 0.85,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {},
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "vigilance jaune canicule en mai",
+      "13 département  de l’Oue t",
+      "Fini tère",
+      "canicule"
+    ],
+    "sentAt": "2026-05-25T12:46:34.156Z"
+  },
+  {
     "subject": "Un enfant de 12 ans retrouvé mort au pied d’un immeuble à Rennes, une serviette serrée autour du cou",
     "sessionLabel": "25/05/2026 à 08:45:27",
     "question": "Faut-il renforcer la surveillance et la protection des enfants dans les quartiers urbains comme Renn",
