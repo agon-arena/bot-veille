@@ -583,46 +583,29 @@ async function generateCompleteNarrativeContext(payload, storySelection) {
 
   const prompt = `Tu es un assistant éditorial pour Agôn.
 
-Ta mission : produire un résumé factuel clair à partir des sources fournies.
+Ta mission : à partir des sources fournies, rédiger un résumé factuel, sobre et neutre du sujet.
 
-Agôn ne veut pas republier une revue de presse. Cette étape sert uniquement à comprendre ce qui s’est passé, de façon neutre et fiable.
+Important :
+Ce résumé sert uniquement à comprendre les faits. Il ne doit contenir aucune analyse éditoriale, aucune opinion, aucune question de débat et aucune comparaison entre médias.
 
-Objectif :
-- établir les faits principaux ;
-- identifier les acteurs concernés ;
-- distinguer ce qui est confirmé de ce qui reste incertain ;
-- rester strictement dans les informations présentes dans les sources.
-
-Règles absolues :
+Règles :
+- Utilise au maximum 3 sources.
 - Ne rien inventer.
 - Ne pas extrapoler.
 - Ne pas dramatiser.
-- Ne pas créer de débat.
+- Ne pas employer un ton polémique.
 - Ne pas poser de question.
 - Ne pas analyser les différences de traitement médiatique.
-- Ne pas écrire comme une dépêche froide.
-- Ne pas copier les formulations des sources.
-- Ne pas mentionner “les médias” en général si les sources ne permettent pas de le dire.
-- Si une information est absente, incertaine ou contradictoire, le signaler sobrement ou ne pas l’ajouter.
-
-Utilise au maximum 5 sources.
-
-Priorité :
-1. Privilégie les sources généralistes fiables pour établir les faits.
-2. Si possible, sélectionne des sources qui se recoupent sur les informations principales.
-3. Évite les sources trop éditorialisées pour cette étape : elles pourront être utilisées dans l’analyse médiatique.
-4. Ne sélectionne pas les vidéos YouTube pour cette étape.
-
-Important :
-Le résumé doit rester factuel, neutre et strictement fondé sur les informations présentes dans les sources.
+- Expliquer simplement :
+  1. de quoi parle le sujet ;
+  2. qui est concerné ;
+  3. ce qui s'est passé ;
+  4. pourquoi le sujet est repris ou discuté.
+- Ne pas écrire "les médias" en général si seulement quelques sources sont utilisées.
+- Si une information est incertaine ou absente des sources, ne pas l'ajouter.
 
 Sortie attendue :
 Texte brut uniquement, sans titre, sans signature, sans liste.
-
-Structure du texte :
-1. Une première phrase qui résume clairement le sujet.
-2. Quelques phrases qui expliquent les faits principaux.
-3. Une phrase finale qui indique l’enjeu immédiat ou ce qui reste à clarifier.
 
 Longueur :
 600 à 1000 caractères.
@@ -638,9 +621,7 @@ ${JSON.stringify({
     date: item.date,
     summary: item.summary || ""
   }))
-}, null, 2)}
-
-Réponds uniquement en texte brut.`;
+}, null, 2)}`;
 
   try {
     const response = await openai.responses.create({
@@ -678,92 +659,64 @@ async function generateMediaAnalysis(payload) {
     summary: c.summary || ""
   }));
 
-  const prompt = `Tu es un assistant d’analyse médiatique pour Agôn.
+  const prompt = `Tu es un assistant d'analyse médiatique pour Agôn.
 
 Tu reçois :
-1. un résumé factuel neutre ;
-2. plusieurs sources ayant traité le sujet.
+1. un résumé factuel brut du sujet ;
+2. toutes les sources utilisées, pas uniquement les 3 sources du résumé factuel.
 
 Ta mission :
-repérer si les sources cadrent le sujet différemment et identifier l’enjeu principal que cette actualité fait apparaître.
+Analyser uniquement le traitement médiatique du sujet dans toutes les sources retenues, seulement s'il existe une différence significative entre les sources.
 
-Tu ne dois pas rédiger l’article final.
+Tu ne dois pas rédiger l'article final.
 Tu ne dois pas créer de question de débat.
 Tu ne dois pas créer de positions.
-Tu ne dois pas répéter tout le résumé factuel.
+Tu ne dois pas reformuler tout le résumé.
 Tu ne dois pas ajouter de faits nouveaux.
 
 Objectif :
-aider Agôn à comprendre les angles, les biais de lecture possibles et l’enjeu éditorial du sujet.
+Déterminer si les sources traitent le sujet de manière réellement différente.
 
 Règle prioritaire :
-ne signale une différence de traitement médiatique que si elle est réelle, significative et visible dans les sources.
+Tu dois seulement signaler une différence de traitement médiatique si elle est réelle, significative et directement visible dans les sources.
+
+Si la différence est faible, minime, vague, incertaine ou forcée, tu dois considérer qu'il n'y a pas de contraste médiatique significatif.
 
 Attention :
-ne confonds jamais :
-- les divergences entre acteurs de l’actualité ;
-- et les différences de traitement entre médias.
+Ne confonds jamais les divergences entre acteurs de l'actualité avec une différence de traitement médiatique.
 
-Pour analyser les angles médiatiques, compare toutes les sources disponibles.
+Exemples :
+- Si une source cite l'optimisme d'un responsable politique et une autre cite les réserves d'un autre acteur, ce n'est pas forcément une différence de traitement médiatique.
+- Si plusieurs sources rapportent des positions différentes d'acteurs concernés, cela peut simplement refléter la complexité du sujet.
+- Il y a contraste médiatique seulement si les sources cadrent réellement le sujet différemment : angle principal différent, vocabulaire nettement différent, hiérarchisation différente, insistance différente ou lecture éditoriale différente.
 
-Si des sources éditorialement marquées ou de presse d’opinion sont disponibles, utilise-les pour repérer les différences de cadrage, de vocabulaire, d’insistance ou de hiérarchisation.
+Champ "hasMediaContrast" :
+- true uniquement s'il existe une vraie différence significative de cadrage, d'angle, d'insistance, de vocabulaire ou de hiérarchisation entre les sources.
+- false dans tous les autres cas.
 
-Si elles ne sont pas disponibles, compare les sources généralistes.
-
-Il y a contraste médiatique seulement si les sources cadrent réellement le sujet différemment :
-- angle principal différent ;
-- vocabulaire nettement différent ;
-- hiérarchisation différente ;
-- insistance différente ;
-- lecture éditoriale différente.
-
-Si les sources racontent globalement la même chose, indique qu’il n’y a pas de contraste médiatique significatif.
-
-Champs attendus :
-
-hasMediaContrast :
-true uniquement s’il existe une vraie différence significative de cadrage, d’angle, d’insistance, de vocabulaire ou de hiérarchisation entre les sources.
-false dans tous les autres cas.
-
-mediaTreatment :
-si hasMediaContrast = true, explique brièvement et concrètement la différence observée.
-si hasMediaContrast = false, chaîne vide.
-
-mainIssue :
-l’enjeu principal que cette actualité révèle, en une phrase courte.
-Exemple : “la sécurité des élèves face au coût des infrastructures”, “la diplomatie face au rapport de force militaire”.
-
-possibleBiases :
-2 à 4 biais de lecture ou cadrages possibles.
-Exemples : sécuritaire, humanitaire, économique, diplomatique, politique, social, judiciaire, écologique, éducatif, technologique.
-
-debatePotential :
-fort / moyen / faible.
-
-editorialWarning :
-alerte courte si le sujet est tragique, trop sensible, peu débattable ou risque de produire une question évidente.
-Sinon chaîne vide.
+Champ "mediaTreatment" :
+- Si hasMediaContrast = true : expliquer brièvement la différence observée.
+- Si hasMediaContrast = false : écrire une chaîne vide "".
 
 Règles :
-- Ne juge pas les médias.
-- Ne dis jamais qu’un média ment ou manipule.
-- Ne suppose pas une orientation politique si elle n’est pas explicitement visible.
-- Ne jamais écrire “médias de gauche” ou “médias de droite” sauf si les sources fournies permettent clairement de l’établir.
-- Si seulement une source est exploitable, considère qu’il n’y a pas de contraste médiatique significatif.
-- Reste court, précis et exploitable.
+- Compare les angles choisis par les sources.
+- Compare les mots employés, si cela est visible.
+- Compare ce que chaque source met en avant ou laisse au second plan.
+- Ne pas inventer de différence de traitement.
+- Ne pas supposer une orientation politique si elle n'est pas explicitement visible.
+- Ne jamais écrire "les médias de gauche" ou "les médias de droite" sauf si les sources fournies permettent clairement de l'établir.
+- Ne pas écrire "certains médias" ou "d'autres médias" de manière vague.
+- Si les sources racontent globalement la même chose, considérer qu'il n'y a pas de contraste médiatique significatif.
+- Si seulement une source est exploitable, considérer qu'il n'y a pas de contraste médiatique significatif.
+- Si mediaTreatment est produit, il doit être précis, concret et directement exploitable dans l'article final.
 
 JSON attendu uniquement :
 {
   "hasMediaContrast": true/false,
-  "mediaTreatment": "...",
-  "mainIssue": "...",
-  "possibleBiases": ["...", "..."],
-  "debatePotential": "fort/moyen/faible",
-  "editorialWarning": "..."
+  "mediaTreatment": "..."
 }
 
-Sujet :
-${subject}
+Sujet : ${subject}
 
 Résumé factuel :
 ${summary}
@@ -771,7 +724,7 @@ ${summary}
 Sources disponibles :
 ${JSON.stringify(allSourcesList, null, 2)}
 
-Réponds uniquement en JSON valide, sans balises markdown.`;
+Réponds UNIQUEMENT en JSON valide, sans balises markdown.`;
 
   const response = await openai.responses.create({
     model: "gpt-4.1-mini",
@@ -788,17 +741,9 @@ Réponds uniquement en JSON valide, sans balises markdown.`;
   }
 
   const hasMediaContrast = parsed.hasMediaContrast === true;
-  const possibleBiases = Array.isArray(parsed.possibleBiases)
-    ? parsed.possibleBiases.map((item) => String(item || "").trim()).filter(Boolean).slice(0, 4)
-    : [];
-
   return {
     hasMediaContrast,
-    mediaTreatment: hasMediaContrast ? String(parsed.mediaTreatment || "").trim() : "",
-    mainIssue: String(parsed.mainIssue || "").trim(),
-    possibleBiases,
-    debatePotential: String(parsed.debatePotential || "").trim(),
-    editorialWarning: String(parsed.editorialWarning || "").trim()
+    mediaTreatment: hasMediaContrast ? String(parsed.mediaTreatment || "").trim() : ""
   };
 }
 
@@ -807,12 +752,6 @@ async function generateProblematique(payload) {
   const subject = String(payload?.subject || "").trim();
   const hasMediaContrast = payload?.hasMediaContrast === true;
   const mediaTreatment = String(payload?.mediaTreatment || "").trim();
-  const mainIssue = String(payload?.mainIssue || "").trim();
-  const debatePotential = String(payload?.debatePotential || "").trim();
-  const editorialWarning = String(payload?.editorialWarning || "").trim();
-  const possibleBiases = Array.isArray(payload?.possibleBiases)
-    ? payload.possibleBiases.map((item) => String(item || "").trim()).filter(Boolean).slice(0, 4)
-    : [];
 
   if (!summary) {
     throw new Error("Résumé manquant pour générer la problématique.");
@@ -827,153 +766,79 @@ async function generateProblematique(payload) {
     };
   }
 
-  const mediaSection = [
-    hasMediaContrast && mediaTreatment ? `Traitement médiatique : ${mediaTreatment}` : "",
-    mainIssue ? `Enjeu principal : ${mainIssue}` : "",
-    possibleBiases.length ? `Biais de lecture possibles : ${possibleBiases.join(", ")}` : "",
-    debatePotential ? `Potentiel de débat : ${debatePotential}` : "",
-    editorialWarning ? `Alerte éditoriale : ${editorialWarning}` : ""
-  ].filter(Boolean).join("\n");
+  const mediaSection = hasMediaContrast && mediaTreatment
+    ? `\nAnalyse du traitement médiatique :\n${mediaTreatment}`
+    : "";
 
   const prompt = `Tu es un assistant éditorial pour Agôn.
 
 Tu reçois :
-1. un résumé factuel neutre ;
-2. une analyse des angles médiatiques et de l’enjeu du sujet.
+1. un résumé factuel brut du sujet ;
+2. éventuellement l'analyse du traitement médiatique.
 
 Ta mission :
-transformer l’actualité en question Agôn claire, concrète et débattable.
+Transformer le sujet d'actualité en débat clair, compréhensible et clivant pour Agôn.
 
-Tu ne dois pas rédiger l’article final.
-Tu ne dois pas refaire le résumé.
+Tu ne dois pas rédiger l'article final.
+Tu ne dois pas réécrire le résumé factuel.
 Tu ne dois pas ajouter de faits nouveaux.
+Tu dois uniquement produire :
+1. un angle de débat ;
+2. une question claire ;
+3. deux positions opposées.
 
-Agôn ne cherche pas une question artificielle. Agôn cherche le vrai choix collectif, le vrai désaccord ou le vrai enjeu que l’actualité révèle.
-
-Règle centrale :
-évite les questions trop évidentes.
-
-Exemples de questions faibles :
-- “Faut-il éviter les accidents ?”
-- “Faut-il protéger les enfants ?”
-- “Faut-il renforcer la sécurité ?”
-- “Faut-il empêcher la guerre ?”
-- “Faut-il s’inquiéter ?”
-
-Ces questions sont mauvaises parce qu’un camp paraît évident.
-
-Si la question naturelle est trop évidente, cherche le vrai débat derrière :
-- sécurité maximale vs coût / faisabilité ;
-- diplomatie vs rapport de force ;
-- liberté vs sécurité ;
-- exigence vs accompagnement ;
-- innovation vs protection ;
-- responsabilité individuelle vs action publique ;
-- urgence vs prudence ;
-- intérêt national vs coopération internationale.
-
-Champs attendus :
-
-debateAngle :
-une phrase courte qui résume le vrai enjeu du débat.
-Maximum 180 caractères.
-Ne pas poser une question.
-
-debateQuestion :
-une seule question claire, directe et débattable.
-Maximum 99 caractères, espaces compris.
-Elle doit être compréhensible sans lire l’article.
-Elle doit être ancrée dans le sujet précis de l’actualité.
-Elle doit permettre deux positions défendables.
-Elle ne doit pas être trop générale.
-Elle ne doit pas être une évidence morale.
-
-positionA :
-
-un camp général, court et neutre.
-
-Maximum 55 caractères.
-
-Ne doit contenir aucun argument, aucune justification, aucun “pour”, aucun “car”.
-
-La position doit seulement nommer l’orientation générale du camp.
-
-positionB :
-
-le camp opposé, général, court et neutre.
-
-Maximum 55 caractères.
-
-Ne doit contenir aucun argument, aucune justification, aucun “pour”, aucun “car”.
-
-La position doit seulement nommer l’orientation générale du camp.
-
-Les positions ne doivent pas être des arguments.
-Elles doivent être des étiquettes de camp, très générales.
-
-Exemples corrects :
-- Suspendre les frappes
-- Maintenir la pression militaire
-- Renforcer la sécurité
-- Limiter les nouvelles contraintes
-- Assouplir la notation
-- Maintenir l’exigence
-- Évacuer par prudence
-- Maintenir la présence diplomatique
-
-Exemples interdits :
-- Suspendre les frappes pour préserver la paix
-- Maintenir la pression car l’Iran menace la région
-- Renforcer la sécurité afin d’éviter un nouveau drame
-- Assouplir la notation pour aider les élèves en difficulté
-
-editorialDecision :
-choisir exactement une valeur :
-- "arena"
-- "understand"
-- "reformulate"
-- "avoid"
-
-Règles pour editorialDecision :
-- "arena" si la question permet un vrai débat public.
-- "understand" si le sujet est important mais pas vraiment clivant.
-- "reformulate" si le sujet est intéressant mais la question reste trop évidente ou fragile.
-- "avoid" si le sujet est trop tragique, trop sensible, trop incertain ou trop risqué à transformer en débat.
-
-
-
-questionQuality :
-note de 1 à 10 sur la qualité de la question pour Agôn.
+Objectif :
+Faire comprendre immédiatement le sujet de l'actualité et ce qui peut diviser les lecteurs.
 
 Règles :
-- Ne force jamais un débat.
-- Les deux camps doivent sembler défendables.
-- Aucun camp ne doit être ridicule.
-- Ne transforme pas une tragédie récente en duel émotionnel.
-- Si le sujet est tragique, privilégie une question d’action publique ou classe en “understand”.
-- La question doit révéler l’enjeu derrière l’actualité, pas seulement réagir au fait brut.
-- Préférer une formulation concrète : “Faut-il…”, “Doit-on…”, “La France doit-elle…”, “Peut-on…”, “Les États doivent-ils…”.
+- Identifier l'enjeu de débat contenu dans l'actualité.
+- La problématique doit venir des faits, pas d'un enjeu inventé.
+- Ne pas forcer une polémique si le sujet ne s'y prête pas.
+- La question doit rendre clair ce qui peut diviser les lecteurs.
+- La question doit permettre de comprendre le sujet de l'actualité sans lire l'article.
+- Les deux positions doivent répondre directement à la question.
+- Les deux positions doivent être équilibrées : ne pas rendre un camp ridicule ou évident.
+- Si une analyse du traitement médiatique existe, elle peut aider à formuler l'angle, mais elle ne doit pas remplacer les faits.
+
+Champ "debateAngle" :
+- Résumer en une phrase l'enjeu central du débat.
+- Maximum 180 caractères, espaces compris.
+- Ne pas poser une question ici.
+
+Champ "debateQuestion" :
+- Une seule question claire, directe et clivante.
+- Maximum 99 caractères, espaces compris. Ne jamais dépasser 99 caractères, sans exception.
+- La question doit permettre de comprendre le sujet de l'actualité sans lire l'article.
+- Elle doit contenir l'objet précis du débat : mesure, décision, événement, acteur ou problème concerné.
+- Elle doit partir du sujet réel.
+- Elle ne doit pas ajouter d'enjeu absent du résumé.
+- Éviter les questions trop vagues comme "faut-il s'inquiéter ?", "est-ce une bonne chose ?" ou "qui a raison ?".
+- Préférer une formulation concrète : "Faut-il…", "Doit-on…", "La France doit-elle…", "Cette mesure peut-elle…".
+
+Champ "positionA" et "positionB" :
+- Deux positions opposées.
+- Maximum 80 caractères chacune, espaces compris.
+- Formulations courtes, nettes et débattables.
+- Ne pas utiliser "car", "parce que" ou de justification longue.
+- Les positions doivent répondre directement à la question.
+- Les positions doivent être compréhensibles seules.
+- Les positions doivent rester liées au sujet précis de l'actualité.
 
 JSON attendu uniquement :
 {
   "debateAngle": "...",
   "debateQuestion": "...",
   "positionA": "...",
-  "positionB": "...",
-  "editorialDecision": "arena/understand/reformulate/avoid",
-  "questionQuality": 0
+  "positionB": "..."
 }
 
-Sujet :
-${subject}
+Sujet : ${subject}
 
 Résumé factuel :
 ${summary}
-
-Analyse médiatique et enjeu :
 ${mediaSection}
 
-Réponds uniquement en JSON valide, sans balises markdown.`;
+Réponds UNIQUEMENT en JSON valide, sans balises markdown.`;
 
   const response = await openai.responses.create({
     model: "gpt-4.1-mini",
@@ -989,21 +854,11 @@ Réponds uniquement en JSON valide, sans balises markdown.`;
     parsed = {};
   }
 
-  const allowedEditorialDecisions = new Set(["arena", "understand", "reformulate", "avoid"]);
-  const editorialDecision = allowedEditorialDecisions.has(String(parsed.editorialDecision || "").trim())
-    ? String(parsed.editorialDecision || "").trim()
-    : "reformulate";
-  const questionQuality = Number.isFinite(Number(parsed.questionQuality))
-    ? Math.max(1, Math.min(10, Number(parsed.questionQuality)))
-    : 0;
-
   return {
     debateAngle: limitStoryText(parsed.debateAngle || subject, 180),
     debateQuestion: limitStoryText(parsed.debateQuestion || subject, 99),
-    positionA: limitStoryText(parsed.positionA || "Pour", 55),
-    positionB: limitStoryText(parsed.positionB || "Contre", 55),
-    editorialDecision,
-    questionQuality
+    positionA: limitStoryText(parsed.positionA || "Pour", 80),
+    positionB: limitStoryText(parsed.positionB || "Contre", 80)
   };
 }
 
@@ -1242,14 +1097,6 @@ async function generateStyledArticle(payload) {
   const debateQuestion = String(payload?.debateQuestion || "").trim();
   const positionA = String(payload?.positionA || "").trim();
   const positionB = String(payload?.positionB || "").trim();
-  const mainIssue = String(payload?.mainIssue || "").trim();
-  const debatePotential = String(payload?.debatePotential || "").trim();
-  const editorialWarning = String(payload?.editorialWarning || "").trim();
-  const editorialDecision = String(payload?.editorialDecision || "").trim();
-  const questionQuality = payload?.questionQuality ?? "";
-  const possibleBiases = Array.isArray(payload?.possibleBiases)
-    ? payload.possibleBiases.map((item) => String(item || "").trim()).filter(Boolean).slice(0, 4)
-    : [];
 
   if (!summary) {
     throw new Error("Résumé manquant pour générer l'article final.");
@@ -1269,176 +1116,131 @@ async function generateStyledArticle(payload) {
     resumeFactuel: summary,
     analyseMediatique: {
       hasMediaContrast,
-      mediaTreatment: hasMediaContrast ? mediaTreatment : "",
-      mainIssue,
-      possibleBiases,
-      debatePotential,
-      editorialWarning
+      mediaTreatment: hasMediaContrast ? mediaTreatment : ""
     },
     elementsDebat: {
       debateAngle,
       debateQuestion,
       positionA,
-      positionB,
-      editorialDecision,
-      questionQuality
+      positionB
     }
   }, null, 2);
 
   const prompt = `Tu es éditeur pour Agôn.
 
 Tu reçois :
-1. un résumé factuel neutre ;
-2. une analyse des angles médiatiques ;
-3. une question Agôn ;
-4. deux positions opposées.
+1. un résumé factuel brut du sujet ;
+2. l'analyse du traitement médiatique, contenant :
+   - hasMediaContrast ;
+   - mediaTreatment ;
+3. les éléments de débat Agôn, contenant :
+   - debateAngle ;
+   - debateQuestion ;
+   - positionA ;
+   - positionB.
 
 Ta mission :
-rédiger l’article final visible dans Agôn.
-
-Agôn ne publie pas une revue de presse classique.
-Agôn questionne l’actualité pour faire ressortir les enjeux, les biais de lecture et les désaccords possibles.
-
-Le texte final doit rester naturel :
-ne pas afficher de rubriques comme “Pourquoi ça fait parler”, “Tension d’opinion”, “Biais”, “Le nœud du débat” ou “Enjeu caché”.
-
-Structure obligatoire du champ article :
-1. Un premier paragraphe court : ce qui s’est passé.
-2. Un deuxième paragraphe court : l’enjeu, le contraste ou le choix collectif que l’actualité révèle.
-3. Une ligne vide.
-4. La question Agôn seule sur la dernière ligne.
-5. Une ligne vide.
-6. La signature seule sur la toute dernière ligne.
-
-Signature obligatoire :
-- L’article doit toujours se terminer par une signature.
-- La signature doit être placée après la question finale.
-- Choisir un seul nom parmi cette liste :
-  J.L Grasso / F. Glorennec / T. Guyomarch / M. Guillot / P. Ratsky
-- La signature doit être seule sur la dernière ligne.
-- Format exact :
-  J.L Grasso
-  ou
-  F. Glorennec
-  ou
-  T. Guyomarch
-  ou
-  M. Guillot
-  ou
-  P. Ratsky
-- Ne jamais inventer d’autre nom.
-- Ne jamais expliquer le choix du nom.
+Rédiger l'article final affiché dans Agôn.
 
 Règles absolues :
-
 - Ne rien inventer.
-
 - Ne pas ajouter de fait absent du résumé factuel.
-
 - Ne pas extrapoler.
-
 - Ne pas dramatiser.
+- Ne pas écrire de titre.
+- Ne pas ajouter de signature.
+- Le résumé factuel doit rester prioritaire.
+- L'article doit se terminer par debateQuestion.
+- debateQuestion doit être la toute dernière phrase du champ "article".
+- debateQuestion doit apparaître une seule fois dans l'article.
+- Aucune autre question ne doit apparaître dans l'article.
+- Recopier debateQuestion strictement à l'identique dans la dernière phrase de l'article.
+- La phrase précédente doit être affirmative et préparer naturellement debateQuestion.
+- Ne pas coller la question brutalement à la fin.
+- Si hasMediaContrast = false, ne pas évoquer les médias ni le traitement médiatique.
+- Si hasMediaContrast = true, intégrer brièvement mediaTreatment, sans dépasser 30 % de l'article.
+- Même si hasMediaContrast = true, ne pas écrire de paragraphe général sur "le traitement médiatique".
+- Ne mentionner le traitement médiatique que si mediaTreatment contient une différence précise, concrète et directement exploitable.
+- Ne jamais écrire "les médias de gauche", "les médias de droite" ou "les médias généralistes" si cela n'est pas explicitement présent dans mediaTreatment.
+- Ne pas confondre divergence entre acteurs politiques, économiques, sociaux ou diplomatiques et différence de traitement entre médias.
 
-- Ne pas écrire de titre dans le champ article.
+Références aux articles :
+- Tu peux faire référence aux articles ou aux sources lorsqu'elles apportent une précision utile.
+- Les références doivent rester sobres et intégrées naturellement au texte.
+- Tu peux écrire par exemple : "selon les articles analysés", "plusieurs sources rappellent que", "les articles consultés soulignent que".
+- Ne pas multiplier ces formules.
+- Ne pas transformer l'article en revue de presse.
+- Ne pas citer longuement les sources.
+- Ne pas écrire "les médias disent" de manière vague.
+- Ne pas utiliser les références aux articles pour créer artificiellement un traitement médiatique différent.
 
-- Ajouter obligatoirement une signature en toute fin d’article, après la question.
+Structure obligatoire de l'article :
+1. Un chapeau d'introduction de 2 phrases courtes maximum.
+2. Un saut de ligne.
+3. Deux ou trois paragraphes développés.
+4. Chaque paragraphe doit être séparé par une ligne vide.
+5. Le dernier paragraphe doit conduire naturellement à debateQuestion.
+6. Une ligne vide obligatoire après le dernier paragraphe — toujours, sans exception.
+7. debateQuestion seule sur la dernière ligne, précédée impérativement de cette ligne vide.
 
-- Ne pas transformer l’article en revue de presse.
+Rappel de format de fin d'article (à respecter à la lettre) :
+[dernier paragraphe]
+[ligne vide]
+[debateQuestion]
 
-- Ne pas multiplier les formules “selon les sources” ou “les médias”.
-
-- Si hasMediaContrast = false, ne pas évoquer le traitement médiatique.
-
-- Si hasMediaContrast = true, intégrer la différence de traitement uniquement si elle aide vraiment à comprendre l’enjeu.
-
-- Même si hasMediaContrast = true, ne pas créer un paragraphe scolaire sur “les médias”.
-
-- Ne pas afficher les positions dans l’article.
-
-- La question doit apparaître une seule fois dans l’article.
-
-- La question doit être l’avant-dernière ligne du champ article.
-
-- La signature doit être la toute dernière ligne du champ article.
-
-- La question doit être précédée d’une ligne vide.
-
-- La signature doit être précédée d’une ligne vide.
-
-- Aucune autre question ne doit apparaître dans l’article.
-
-- La phrase avant la question doit être affirmative et préparer naturellement la question.
+Contenu attendu :
+- Le chapeau doit accrocher le lecteur sans exagérer. Maximum 2 phrases courtes.
+- Il doit présenter rapidement le sujet, les acteurs concernés et l'enjeu principal.
+- Les paragraphes doivent expliquer clairement les faits, le contexte immédiat et pourquoi le sujet est repris.
+- Si une différence significative de traitement médiatique existe, l'évoquer sobrement dans le dernier paragraphe.
+- Si la différence de traitement médiatique est absente, minime, vague ou incertaine, ne rien écrire à ce sujet.
+- La fin de l'article doit créer une transition logique entre les faits, les enjeux et debateQuestion.
+- La phrase juste avant debateQuestion doit être affirmative, pas interrogative.
+- debateQuestion doit toujours être précédée d'une ligne vide et apparaître seule en dernière ligne.
 
 Style :
 - Clair.
 - Fluide.
 - Sobre.
-- Vivant.
 - Accessible.
 - Captivant sans être sensationnaliste.
 - Ton éditorial, mais neutre.
-- Phrases assez courtes.
-- Pas de formule plate comme “ce sujet fait débat” ou “cette affaire suscite des réactions”.
+- Formulations vivantes, avec des phrases qui donnent envie de lire.
+- Légère touche d'ironie ou d'humour possible, seulement si le sujet s'y prête.
+- L'humour doit rester fin, discret et jamais moqueur envers les personnes concernées.
 - Aucun humour sur les drames, accidents, violences, décès, maladies ou situations de détresse.
-Évite les formulations scolaires ou trop analytiques comme :
-- “Cette situation révèle…”
-- “Ce sujet met en lumière…”
-- “Le choix collectif porte sur…”
-- “Cela questionne la capacité de…”
-- “Il s’agit d’équilibrer deux impératifs…”
-- “Cette actualité illustre…”
-
-Préférer des formulations plus naturelles et éditoriales :
-- “Le message devient difficile à tenir…”
-- “Le problème, c’est que…”
-- “D’un côté…, de l’autre…”
-- “Pour les uns…, pour les autres…”
-- “Dans un équilibre aussi fragile…”
-- “Reste une question…”
-
-Le deuxième paragraphe ne doit pas expliquer mécaniquement “le dilemme”.
-Il doit le faire sentir naturellement, en montrant le contraste entre deux lectures possibles.
+- Pas d'effet dramatique artificiel.
+- Pas de vocabulaire alarmiste si les faits ne le justifient pas.
+- Éviter les tournures plates comme "ce sujet fait débat" ou "cette affaire suscite des réactions", sauf si elles sont vraiment nécessaires.
 
 Longueur :
-800 à 1400 caractères.
+900 à 1600 caractères.
 
-Amélioration possible :
-Tu peux améliorer debateQuestion, positionA et positionB si nécessaire, mais seulement pour les rendre plus clairs, plus concrets et plus adaptés à Agôn.
+Amélioration de la question et des positions :
+Tu peux — et tu dois si nécessaire — améliorer debateQuestion, positionA et positionB reçus.
 
 Règles pour debateQuestion :
-- Maximum 99 caractères, espaces compris.
-- Question claire, concrète et débattable.
-- Ancrée dans le sujet précis.
-- Pas de question molle : “faut-il s’inquiéter ?”, “est-ce une bonne chose ?”, “qui a raison ?”.
-- Pas de question évidente : “faut-il éviter un drame ?”, “faut-il protéger les enfants ?”.
-- Si la question reçue est déjà bonne, conserve-la.
+- Maximum 99 caractères, espaces compris. Règle absolue, sans aucune exception.
+- La question doit être très clivante : elle doit provoquer une réponse tranchée (oui/non, pour/contre).
+- Elle doit être directement ancrée dans le sujet précis de l'actualité — pas une question générale.
+- Elle doit contenir l'objet concret du débat : la mesure, la décision, l'acteur ou l'enjeu précis.
+- Préférer des formulations directes : "Faut-il…", "Doit-on…", "La France doit-elle…", "Est-ce…", "Faut-il vraiment…".
+- Interdire les questions molles ou tièdes : "est-ce une bonne chose ?", "faut-il s'inquiéter ?", "qui a raison ?".
+- Si la question reçue est déjà excellente (clivante, concrète, ≤ 99 car.), la conserver telle quelle.
+- Si elle est trop longue, trop vague ou trop molle, réécrire complètement.
 
 Règles pour positionA et positionB :
-- Maximum 55 caractères chacune.
-- Ce sont des étiquettes de camp, pas des arguments.
-- Elles doivent être très générales, courtes et neutres.
-- Elles doivent répondre directement à la question.
-- Elles ne doivent contenir aucune justification.
-- Ne jamais utiliser “car”, “parce que”, “afin de”, “pour que”.
-- Éviter aussi “pour” si cela transforme la position en argument.
-- Les deux positions doivent être symétriques et défendables.
-- Si les positions reçues contiennent des arguments, les raccourcir en simples étiquettes.
+- Deux positions franchement opposées, brèves et tranchées.
+- Maximum 80 caractères chacune, espaces compris.
+- Elles doivent répondre directement et clairement à debateQuestion.
+- Formulations nettes, sans nuance inutile, sans justification longue.
+- Interdire "car", "parce que", "étant donné que" ou toute subordonnée causale.
+- Les deux camps doivent sembler défendables — ni l'un ni l'autre ne doit paraître ridicule ou évident.
+- Si les positions reçues sont déjà excellentes, les conserver telles quelles.
 
-Exemples corrects :
-- Suspendre les frappes
-- Maintenir la pression militaire
-- Renforcer la sécurité
-- Limiter les nouvelles contraintes
-- Assouplir la notation
-- Maintenir l’exigence
-- Évacuer par prudence
-- Maintenir la présence diplomatique
-
-Exemples interdits :
-- Suspendre les frappes pour préserver la paix
-- Maintenir la pression car l’Iran menace la région
-- Renforcer la sécurité afin d’éviter un nouveau drame
-- Assouplir la notation pour aider les élèves en difficulté
+Règle finale :
+- Dans le champ "article", debateQuestion (version finale, améliorée si nécessaire) doit apparaître strictement à l'identique en dernière phrase.
+- Les champs "debateQuestion", "positionA", "positionB" du JSON doivent contenir les versions finales (améliorées ou conservées).
 
 JSON attendu uniquement :
 {
@@ -1448,10 +1250,10 @@ JSON attendu uniquement :
   "positionB": "..."
 }
 
-Données à traiter :
+JSON à traiter :
 ${inputJson}
 
-Réponds uniquement en JSON valide, sans balises markdown.`;
+Réponds UNIQUEMENT en JSON valide, sans balises markdown.`;
 
   const response = await openai.responses.create({
     model: "gpt-4.1-mini",

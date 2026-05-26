@@ -1,5 +1,211 @@
 [
   {
+    "subject": "Tensions et frappes entre États-Unis et Iran dans le contexte du cessez-le-feu au Moyen-Orient",
+    "sessionLabel": "26/05/2026 à 17:55:20",
+    "question": "Les États-Unis doivent-ils suspendre toute action militaire pour préserver le cessez-le-feu avec l’I",
+    "positionA": "Oui, la priorité est de maintenir le cessez-le-feu pour éviter une escalade.",
+    "positionB": "Non, les frappes sont nécessaires pour dissuader et protéger les intérêts stratégiques.",
+    "theme": "International",
+    "resume": "Les tensions entre les États-Unis et l’Iran ont augmenté récemment malgré un cessez-le-feu au Moyen-Orient. Alors que des négociations cherchaient à stabiliser la région, les États-Unis ont frappé des positions iraniennes. L’Iran a dénoncé ces attaques comme une violation du cessez-le-feu intervenu moins de 48 heures plus tôt.\n\nD’un côté, ces frappes peuvent apparaître comme un frein aux efforts de paix, risquant de raviver les hostilités. De l’autre, elles sont vues comme une mesure nécessaire pour dissuader et protéger des intérêts stratégiques dans un contexte toujours fragile.\n\nLes États-Unis doivent-ils suspendre toute action militaire pour préserver le cessez-le-feu avec l’Iran ?",
+    "sources": "Libération, L'Obs, HuffPost France, Franceinfo, La Croix, France 24, BFMTV, Euronews FR",
+    "links": [
+      {
+        "title": "EN DIRECT - Moyen-Orient : l’Iran accuse les Etats-Unis d’avoir violé le cessez-le-feu ces dernières 48 heures",
+        "url": "https://www.liberation.fr/international/moyen-orient/en-direct-moyen-orient-les-etats-unis-frappent-des-sites-de-missiles-en-iran-20260526_VN3NKJOZSJEV5BTSAIEHAI576M/",
+        "source": "Libération",
+        "type": "article",
+        "date": "26/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Les Etats-Unis frappent l’Iran malgré l’avancée des négociations pour régler la guerre au Moyen-Orient",
+        "url": "https://www.nouvelobs.com/monde/20260526.OBS115239/les-etats-unis-frappent-l-iran-malgre-l-avancee-des-negociations-pour-regler-la-guerre-au-moyen-orient.html",
+        "source": "L'Obs",
+        "type": "article",
+        "date": "26/05/2026",
+        "checked": true
+      },
+      {
+        "title": "L’Iran à nouveau frappé par les États-Unis malgré le cessez-le-feu et les progrès diplomatiques",
+        "url": "https://www.huffingtonpost.fr/international/article/l-iran-a-nouveau-frappe-par-les-etats-unis-malgre-le-cessez-le-feu-et-les-progres-diplomatiques_264100.html",
+        "source": "HuffPost France",
+        "type": "article",
+        "date": "26/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Guerre au Moyen-Orient : l'Iran accuse les Etats-Unis d'avoir violé le cessez-le-feu",
+        "url": "https://www.franceinfo.fr/monde/iran/guerre-entre-les-etats-unis-israel-et-l-iran/direct-guerre-au-moyen-orient-les-etats-unis-annoncent-avoir-mene-des-frappes-dans-le-sud-de-l-iran-inquietudes-pour-la-suite-des-negociations_8028455.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "type": "article",
+        "date": "26/05/2026",
+        "checked": true
+      },
+      {
+        "title": "DIRECT. Guerre au Moyen-Orient : l’Iran accuse les États-Unis de violer le cessez-le-feu",
+        "url": "https://www.la-croix.com/international/direct-guerre-iran-israel-usa-jour-88-moyen-orient-bilan-resume-aujourdhui-20260526",
+        "source": "La Croix",
+        "type": "article",
+        "date": "26/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Les États-Unis frappent l'Iran malgré les progrès des négociations",
+        "url": "https://www.france24.com/fr/vid%C3%A9o/20260526-les-%C3%A9tats-unis-frappent-l-iran-malgr%C3%A9-les-progr%C3%A8s-des-n%C3%A9gociations",
+        "source": "France 24",
+        "type": "article",
+        "date": "26/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Les États-Unis disent avoir mené des frappes préventives sur le sud de l’Iran",
+        "url": "http://fr.euronews.com/2026/05/26/larmee-americaine-lance-de-nouvelles-frappes-en-iran-dont-des-sites-de-missiles",
+        "source": "Euronews FR",
+        "type": "article",
+        "date": "26/05/2026",
+        "checked": true
+      },
+      {
+        "title": "",
+        "url": "https://www.youtube.com/watch?v=FQI8aRQqiEw",
+        "source": "BFMTV",
+        "type": "youtube",
+        "date": "26/05/2026",
+        "checked": true
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "01-les-conflits-au-moyen-orient-recomposent-les-equilibres-regionaux",
+      "matchedStoryTitle": "Les conflits au Moyen-Orient recomposent les équilibres régionaux",
+      "previousEpisodeTitle": "Faut-il conclure rapidement un accord avec l'Iran pour stabiliser le Moyen-Orient ?",
+      "previousEpisodeUrl": "http://localhost:3001/debate?id=556",
+      "confidence": 0.85,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {
+        "main_actors_match": true,
+        "central_tension_match": true,
+        "temporal_continuity": true,
+        "editorial_theme_match": true,
+        "strong_keywords_match": true
+      },
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "Frappes USA-Iran au Moyen-Orient",
+      "ce ez-le-feu",
+      "négociation  diplomatique",
+      "Iran",
+      "État -Uni",
+      "ite  de mi ile",
+      "guerre au Moyen-Orient"
+    ],
+    "sentAt": "2026-05-26T18:31:09.752Z"
+  },
+  {
+    "subject": "Tensions et frappes entre États-Unis et Iran dans le contexte du cessez-le-feu au Moyen-Orient",
+    "sessionLabel": "26/05/2026 à 17:55:20",
+    "question": "Les États-Unis doivent-ils suspendre leurs frappes pour préserver le cessez-le-feu avec l’Iran ?",
+    "positionA": "Suspendre les frappes",
+    "positionB": "Maintenir les frappes",
+    "theme": "International",
+    "resume": "Les tensions entre les États-Unis et l’Iran ont augmenté malgré un cessez-le-feu en place au Moyen-Orient. Les États-Unis ont mené des frappes contre des positions iraniennes, ce que l’Iran a dénoncé comme une violation du cessez-le-feu dans les 48 dernières heures. Ces actions interviennent alors que des négociations diplomatiques tentent de trouver une issue pacifique au conflit régional.\n\nLe message devient difficile à tenir : d’un côté, la nécessité de maintenir la pression militaire pour défendre certains intérêts, de l’autre, l’urgence de préserver un fragile cessez-le-feu pour éviter une escalade. Dans ce contexte, chaque frappe risque de compromettre les efforts diplomatiques, tandis que leur suspension peut être perçue comme un signe de faiblesse.\n\nLes États-Unis doivent-ils suspendre leurs frappes pour préserver le cessez-le-feu avec l’Iran ?\n\n— P. Ratsky",
+    "sources": "Libération, L'Obs, HuffPost France, Franceinfo, La Croix, France 24, BFMTV, Euronews FR",
+    "links": [
+      {
+        "title": "EN DIRECT - Moyen-Orient : l’Iran accuse les Etats-Unis d’avoir violé le cessez-le-feu ces dernières 48 heures",
+        "url": "https://www.liberation.fr/international/moyen-orient/en-direct-moyen-orient-les-etats-unis-frappent-des-sites-de-missiles-en-iran-20260526_VN3NKJOZSJEV5BTSAIEHAI576M/",
+        "source": "Libération",
+        "type": "article",
+        "date": "26/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Les Etats-Unis frappent l’Iran malgré l’avancée des négociations pour régler la guerre au Moyen-Orient",
+        "url": "https://www.nouvelobs.com/monde/20260526.OBS115239/les-etats-unis-frappent-l-iran-malgre-l-avancee-des-negociations-pour-regler-la-guerre-au-moyen-orient.html",
+        "source": "L'Obs",
+        "type": "article",
+        "date": "26/05/2026",
+        "checked": true
+      },
+      {
+        "title": "L’Iran à nouveau frappé par les États-Unis malgré le cessez-le-feu et les progrès diplomatiques",
+        "url": "https://www.huffingtonpost.fr/international/article/l-iran-a-nouveau-frappe-par-les-etats-unis-malgre-le-cessez-le-feu-et-les-progres-diplomatiques_264100.html",
+        "source": "HuffPost France",
+        "type": "article",
+        "date": "26/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Guerre au Moyen-Orient : l'Iran accuse les Etats-Unis d'avoir violé le cessez-le-feu",
+        "url": "https://www.franceinfo.fr/monde/iran/guerre-entre-les-etats-unis-israel-et-l-iran/direct-guerre-au-moyen-orient-les-etats-unis-annoncent-avoir-mene-des-frappes-dans-le-sud-de-l-iran-inquietudes-pour-la-suite-des-negociations_8028455.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "type": "article",
+        "date": "26/05/2026",
+        "checked": true
+      },
+      {
+        "title": "DIRECT. Guerre au Moyen-Orient : l’Iran accuse les États-Unis de violer le cessez-le-feu",
+        "url": "https://www.la-croix.com/international/direct-guerre-iran-israel-usa-jour-88-moyen-orient-bilan-resume-aujourdhui-20260526",
+        "source": "La Croix",
+        "type": "article",
+        "date": "26/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Les États-Unis frappent l'Iran malgré les progrès des négociations",
+        "url": "https://www.france24.com/fr/vid%C3%A9o/20260526-les-%C3%A9tats-unis-frappent-l-iran-malgr%C3%A9-les-progr%C3%A8s-des-n%C3%A9gociations",
+        "source": "France 24",
+        "type": "article",
+        "date": "26/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Les États-Unis disent avoir mené des frappes préventives sur le sud de l’Iran",
+        "url": "http://fr.euronews.com/2026/05/26/larmee-americaine-lance-de-nouvelles-frappes-en-iran-dont-des-sites-de-missiles",
+        "source": "Euronews FR",
+        "type": "article",
+        "date": "26/05/2026",
+        "checked": true
+      },
+      {
+        "title": "",
+        "url": "https://www.youtube.com/watch?v=FQI8aRQqiEw",
+        "source": "BFMTV",
+        "type": "youtube",
+        "date": "26/05/2026",
+        "checked": true
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "01-les-conflits-au-moyen-orient-recomposent-les-equilibres-regionaux",
+      "matchedStoryTitle": "Les conflits au Moyen-Orient recomposent les équilibres régionaux",
+      "previousEpisodeTitle": "Faut-il conclure rapidement un accord avec l'Iran pour stabiliser le Moyen-Orient ?",
+      "previousEpisodeUrl": "http://localhost:3001/debate?id=556",
+      "confidence": 0.85,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {
+        "main_actors_match": true,
+        "central_tension_match": true,
+        "temporal_continuity": true,
+        "editorial_theme_match": true,
+        "strong_keywords_match": true
+      },
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "Frappes USA-Iran au Moyen-Orient",
+      "ce ez-le-feu",
+      "négociation  diplomatique",
+      "Iran",
+      "État -Uni",
+      "ite  de mi ile",
+      "guerre au Moyen-Orient"
+    ],
+    "sentAt": "2026-05-26T18:50:45.601Z"
+  },
+  {
     "subject": "Gaël Monfils fait ses adieux à Roland-Garros après sa défaite en cinq sets contre Hugo Gaston au 1er tour",
     "sessionLabel": "26/05/2026 à 07:14:04",
     "question": "Gaël Monfils doit-il être considéré comme un des plus grands joueurs français de Roland-Garros ?",
