@@ -1180,8 +1180,13 @@ Structure obligatoire de l'article :
 3. Deux ou trois paragraphes développés.
 4. Chaque paragraphe doit être séparé par une ligne vide.
 5. Le dernier paragraphe doit conduire naturellement à debateQuestion.
-6. Après le dernier paragraphe, ajouter une ligne vide.
-7. La dernière ligne de l'article doit être exactement debateQuestion, seule sur sa ligne.
+6. Une ligne vide obligatoire après le dernier paragraphe — toujours, sans exception.
+7. debateQuestion seule sur la dernière ligne, précédée impérativement de cette ligne vide.
+
+Rappel de format de fin d'article (à respecter à la lettre) :
+[dernier paragraphe]
+[ligne vide]
+[debateQuestion]
 
 Contenu attendu :
 - Le chapeau doit accrocher le lecteur sans exagérer. Maximum 2 phrases courtes.
@@ -1191,7 +1196,7 @@ Contenu attendu :
 - Si la différence de traitement médiatique est absente, minime, vague ou incertaine, ne rien écrire à ce sujet.
 - La fin de l'article doit créer une transition logique entre les faits, les enjeux et debateQuestion.
 - La phrase juste avant debateQuestion doit être affirmative, pas interrogative.
-- debateQuestion doit apparaître seule, séparée du reste par une ligne vide.
+- debateQuestion doit toujours être précédée d'une ligne vide et apparaître seule en dernière ligne.
 
 Style :
 - Clair.
@@ -1211,6 +1216,32 @@ Style :
 Longueur :
 900 à 1600 caractères.
 
+Amélioration de la question et des positions :
+Tu peux — et tu dois si nécessaire — améliorer debateQuestion, positionA et positionB reçus.
+
+Règles pour debateQuestion :
+- Maximum 99 caractères, espaces compris. Règle absolue, sans aucune exception.
+- La question doit être très clivante : elle doit provoquer une réponse tranchée (oui/non, pour/contre).
+- Elle doit être directement ancrée dans le sujet précis de l'actualité — pas une question générale.
+- Elle doit contenir l'objet concret du débat : la mesure, la décision, l'acteur ou l'enjeu précis.
+- Préférer des formulations directes : "Faut-il…", "Doit-on…", "La France doit-elle…", "Est-ce…", "Faut-il vraiment…".
+- Interdire les questions molles ou tièdes : "est-ce une bonne chose ?", "faut-il s'inquiéter ?", "qui a raison ?".
+- Si la question reçue est déjà excellente (clivante, concrète, ≤ 99 car.), la conserver telle quelle.
+- Si elle est trop longue, trop vague ou trop molle, réécrire complètement.
+
+Règles pour positionA et positionB :
+- Deux positions franchement opposées, brèves et tranchées.
+- Maximum 80 caractères chacune, espaces compris.
+- Elles doivent répondre directement et clairement à debateQuestion.
+- Formulations nettes, sans nuance inutile, sans justification longue.
+- Interdire "car", "parce que", "étant donné que" ou toute subordonnée causale.
+- Les deux camps doivent sembler défendables — ni l'un ni l'autre ne doit paraître ridicule ou évident.
+- Si les positions reçues sont déjà excellentes, les conserver telles quelles.
+
+Règle finale :
+- Dans le champ "article", debateQuestion (version finale, améliorée si nécessaire) doit apparaître strictement à l'identique en dernière phrase.
+- Les champs "debateQuestion", "positionA", "positionB" du JSON doivent contenir les versions finales (améliorées ou conservées).
+
 JSON attendu uniquement :
 {
   "article": "...",
@@ -1218,10 +1249,6 @@ JSON attendu uniquement :
   "positionA": "...",
   "positionB": "..."
 }
-
-Règle finale :
-- Recopier debateQuestion, positionA et positionB strictement à l'identique depuis les éléments de débat Agôn.
-- Dans le champ "article", debateQuestion doit aussi apparaître strictement à l'identique en dernière phrase.
 
 JSON à traiter :
 ${inputJson}
@@ -2640,7 +2667,12 @@ app.get("/admin", (req, res) => {
         <h3 id="form-presse-title">Nouveau média</h3>
         <div class="form-grid">
           <div><label>Nom</label><input id="p-nom" placeholder="Le Monde"></div>
-          <div><label>Orientation</label><input id="p-orientation" placeholder="centre-gauche / généraliste"></div>
+          <div><label>Orientation</label><select id="p-orientation">
+            <option value="généraliste">Généraliste</option>
+            <option value="gauche">Gauche</option>
+            <option value="droite">Droite</option>
+            <option value="autre">Autre</option>
+          </select></div>
         </div>
         <div style="margin-bottom:14px"><label>URL RSS</label><input id="p-rss" placeholder="https://..."></div>
         <div class="form-actions">
@@ -2660,7 +2692,12 @@ app.get("/admin", (req, res) => {
         <h3 id="form-youtube-title">Nouvelle chaîne</h3>
         <div class="form-grid">
           <div><label>Nom</label><input id="y-nom" placeholder="Blast"></div>
-          <div><label>Orientation</label><input id="y-orientation" placeholder="gauche / critique sociale"></div>
+          <div><label>Orientation</label><select id="y-orientation">
+            <option value="généraliste">Généraliste</option>
+            <option value="gauche">Gauche</option>
+            <option value="droite">Droite</option>
+            <option value="autre">Autre</option>
+          </select></div>
         </div>
         <div class="form-grid">
           <div><label>URL de la chaîne</label><input id="y-url" placeholder="https://www.youtube.com/@..."></div>
@@ -2681,6 +2718,15 @@ let medias = [];
 let chaines = [];
 let editingPresse = null;
 let editingYoutube = null;
+
+function normalizeOrientationToSelect(val) {
+  const v = (val || '').toLowerCase();
+  if (v.includes('gauche')) return 'gauche';
+  if (v.includes('droite') || v.includes('conservateur') || v.includes('souverainiste')) return 'droite';
+  if (v.includes('généraliste') || v.includes('generaliste') || v.includes('centre') || v.includes('régional') || v.includes('regional') || v.includes('service public') || v.includes('institutionnel')) return 'généraliste';
+  if (val && val.trim()) return 'autre';
+  return 'généraliste';
+}
 let hasUnsavedFormChanges = false;
 
 const ORIENT_GROUPS = [
@@ -2750,9 +2796,13 @@ function clearUnsavedFormChanges() {
 }
 
 function bindUnsavedFormWarning() {
-  ['p-nom', 'p-orientation', 'p-rss', 'y-nom', 'y-orientation', 'y-url', 'y-rss'].forEach(id => {
+  ['p-nom', 'p-rss', 'y-nom', 'y-url', 'y-rss'].forEach(id => {
     const input = document.getElementById(id);
     if (input) input.addEventListener('input', markUnsavedFormChanges);
+  });
+  ['p-orientation', 'y-orientation'].forEach(id => {
+    const sel = document.getElementById(id);
+    if (sel) sel.addEventListener('change', markUnsavedFormChanges);
   });
 
   window.addEventListener('beforeunload', event => {
@@ -2828,7 +2878,7 @@ function editPresse(i) {
   editingPresse = i;
   const m = medias[i];
   document.getElementById('p-nom').value = m.nom;
-  document.getElementById('p-orientation').value = m.orientation;
+  document.getElementById('p-orientation').value = normalizeOrientationToSelect(m.orientation);
   document.getElementById('p-rss').value = m.rss;
   document.getElementById('form-presse-title').textContent = 'Modifier le média';
   document.getElementById('form-presse-wrap').open = true;
@@ -2838,7 +2888,7 @@ function editPresse(i) {
 function cancelPresse() {
   editingPresse = null;
   document.getElementById('p-nom').value = '';
-  document.getElementById('p-orientation').value = '';
+  document.getElementById('p-orientation').value = 'généraliste';
   document.getElementById('p-rss').value = '';
   document.getElementById('form-presse-title').textContent = 'Nouveau média';
   document.getElementById('form-presse-wrap').open = false;
@@ -2907,7 +2957,7 @@ function editYoutube(i) {
   editingYoutube = i;
   const c = chaines[i];
   document.getElementById('y-nom').value = c.nom;
-  document.getElementById('y-orientation').value = c.orientation;
+  document.getElementById('y-orientation').value = normalizeOrientationToSelect(c.orientation);
   document.getElementById('y-url').value = c.url;
   document.getElementById('y-rss').value = c.rss;
   document.getElementById('form-youtube-title').textContent = 'Modifier la chaîne';
@@ -2918,7 +2968,7 @@ function editYoutube(i) {
 function cancelYoutube() {
   editingYoutube = null;
   document.getElementById('y-nom').value = '';
-  document.getElementById('y-orientation').value = '';
+  document.getElementById('y-orientation').value = 'généraliste';
   document.getElementById('y-url').value = '';
   document.getElementById('y-rss').value = '';
   document.getElementById('form-youtube-title').textContent = 'Nouvelle chaîne';

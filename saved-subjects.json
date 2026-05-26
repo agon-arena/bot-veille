@@ -1,6 +1,744 @@
 [
   {
     "action": "save",
+    "subject": "Gaël Monfils fait ses adieux à Roland-Garros après sa défaite en cinq sets contre Hugo Gaston au 1er tour",
+    "debateScore": 3,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "Franceinfo, Le Monde, Libération, Le Figaro, France 24",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.liberation.fr/sports/tennis/gael-monfils-battu-pour-son-dernier-roland-garros-apres-une-ultime-bataille-en-cinq-sets-20260526_IDBDHYE73RADTL4WVWHFGXRQJQ/",
+        "source": "Libération",
+        "title": "Gaël Monfils battu pour son dernier Roland-Garros, après une ultime bataille en cinq sets",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.lemonde.fr/sport/article/2026/05/26/gael-monfils-avec-ses-adieux-a-roland-garros-referme-une-page-de-l-histoire-du-tennis-francais_6693694_3242.html",
+        "source": "Le Monde",
+        "title": "Gaël Monfils, avec ses adieux à Roland-Garros, referme une page de l’histoire du tennis français",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.franceinfo.fr/roland-garros/gael-monfils-elimine-au-1er-tour-pour-son-dernier-roland-garros-par-son-compatriote-hugo-gaston-au-terme-d-un-marathon_8027456.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "title": "Gaël Monfils fait ses adieux à Roland-Garros après sa défaite en cinq sets contre Hugo Gaston au 1er tour",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.france24.com/fr/sports/20260525-tennis-gael-monfils-elimine-dernier-roland-garros-premier-tour-hugo-gaston",
+        "source": "France 24",
+        "title": "Gaël Monfils fait ses adieux à Roland-Garros, éliminé au premier tour",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.france24.com/fr/sports/20260525-tennis-gael-monfils-elimine-dernier-roland-garros-premier-tour-hugo-gaston",
+        "source": "France 24",
+        "title": "Éliminé dès le premier tour, Gaël Monfils fait ses adieux à Roland-Garros",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.lefigaro.fr/sports/tennis/roland-garros/roland-garros-au-bout-de-la-nuit-gael-monfils-fait-ses-adieux-au-grand-chelem-parisien-20260526",
+        "source": "Le Figaro",
+        "title": "Roland-Garros : au bout de la nuit, Gaël Monfils fait ses adieux à l’issue d’un dernier thriller",
+        "thumbnail": ""
+      }
+    ],
+    "sessionLabel": "26/05/2026 à 07:14:04",
+    "controversyLevel": "faible",
+    "ai": {
+      "arenaMode": "positions",
+      "debateScore": 3,
+      "controversyLevel": "faible",
+      "debateQuestion": "",
+      "resume": "",
+      "keywords": [
+        "Roland-Garro",
+        "Hugo Ga ton",
+        "tenni  françai",
+        "premier tour",
+        "défaite en cinq  et"
+      ],
+      "selectedLinks": [
+        "https://www.liberation.fr/sports/tennis/gael-monfils-battu-pour-son-dernier-roland-garros-apres-une-ultime-bataille-en-cinq-sets-20260526_IDBDHYE73RADTL4WVWHFGXRQJQ/",
+        "https://www.lemonde.fr/sport/article/2026/05/26/gael-monfils-avec-ses-adieux-a-roland-garros-referme-une-page-de-l-histoire-du-tennis-francais_6693694_3242.html",
+        "https://www.franceinfo.fr/roland-garros/gael-monfils-elimine-au-1er-tour-pour-son-dernier-roland-garros-par-son-compatriote-hugo-gaston-au-terme-d-un-marathon_8027456.html#xtor=RSS-3-[lestitres]",
+        "https://www.france24.com/fr/sports/20260525-tennis-gael-monfils-elimine-dernier-roland-garros-premier-tour-hugo-gaston",
+        "https://www.france24.com/fr/sports/20260525-tennis-gael-monfils-elimine-dernier-roland-garros-premier-tour-hugo-gaston",
+        "https://www.lefigaro.fr/sports/tennis/roland-garros/roland-garros-au-bout-de-la-nuit-gael-monfils-fait-ses-adieux-au-grand-chelem-parisien-20260526"
+      ],
+      "agonTheme": "Sports - loisirs",
+      "positionA": "",
+      "positionB": "",
+      "sourceSubject": "Gaël Monfils fait ses adieux à Roland-Garros après sa défaite en cinq sets contre Hugo Gaston au 1er tour",
+      "fullArticleState": "short",
+      "mainKeyword": "Gaël Monfils",
+      "storyLink": {
+        "story_decision": "existing_story",
+        "matched_story_id": "47-le-sport-devient-un-espace-de-pouvoir-d-argent-d-identite-et-de-soft-power",
+        "matched_story_title": "Le sport devient un espace de pouvoir, d’argent, d’identité et de soft power",
+        "matched_story_summary": "",
+        "previous_episode_id": "544",
+        "previous_episode_title": "Le forfait d’Arthur Fils affaiblit-il gravement Roland-Garros ?",
+        "previous_episode_summary": "Ce week-end, le sport s’emballe avec une double actualité qui captive tous les regards. D’un côté, une finale de Champions Cup explosive entre Bordeaux-Bègles et le Leinster. De l’autre, Roland-Garros perd brutalement son espoir numéro un, Arthur Fils, contraint de renoncer à la dernière minute.\n\nSur le terrain, Bordeaux-Bègles ne se laisse pas impressionner par le tenant du titre européen. Malgré un début dominé par les Irlandais, les Bordelais prennent rapidement les commandes, affichant une rage de vaincre palpable. Ce choc oppose une équipe française avide de son premier triomphe à une formation irlandaise expérimentée, prête à défendre son couronne avec acharnement. Chaque minute intensifie la tension, chaque action fait vibrer le public, promettant un combat acharné jusqu’au bout.\n\nPendant ce temps, dans l’arène du tennis, l’annonce du forfait d’Arthur Fils, le prodige français, résonne comme un coup de tonnerre. Privé de sa tête d’affiche, Roland-Garros voit son visage masculin profondément transformé, laissant place à une incertitude palpable. Ce vide inattendu redistribue les cartes et fait planer le doute sur la suite du tournoi. Deux événements majeurs, deux histoires qui s’entrelacent et annoncent un week-end sportif sous haute tension, loin d’être terminé.\n\nLe forfait d’Arthur Fils affaiblit-il gravement Roland-Garros ?\n\nR. Renaudot",
+        "previous_episode_url": "http://localhost:3001/debate?id=544",
+        "confidence": 0.85,
+        "reason": "L'actualité porte sur un événement sportif majeur avec un acteur français connu, Gaël Monfils, et un tournoi emblématique, Roland-Garros, ce qui correspond bien à l'histoire sur le sport comme espace d'identité et de pouvoir.",
+        "criteria": {
+          "main_actors_match": true,
+          "central_tension_match": true,
+          "temporal_continuity": true,
+          "editorial_theme_match": true,
+          "strong_keywords_match": true
+        },
+        "new_story": {
+          "story_title": "",
+          "story_summary": "",
+          "main_actors": [],
+          "central_tension": "Gaël Monfils doit-il être considéré comme un des plus grands joueurs français de Roland-Garros ?",
+          "keywords": [],
+          "status": "active"
+        }
+      }
+    }
+  },
+  {
+    "action": "save",
+    "subject": "Hantavirus : l'un des Espagnols en quarantaine à Madrid testé positif",
+    "debateScore": 5,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "Franceinfo, Le Monde, Libération, Le Dauphiné Libéré",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.liberation.fr/societe/sante/hantavirus-lun-des-croisieristes-espagnols-en-quarantaine-teste-positif-20260525_4IJNDMJSM5BR3HJL5U2VDLQTTA/",
+        "source": "Libération",
+        "title": "Hantavirus : l’un des croisiéristes espagnols en quarantaine testé positif",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.lemonde.fr/planete/article/2026/05/25/hantavirus-l-un-des-espagnols-en-quarantaine-a-madrid-declare-positif-annonce-le-ministere-de-la-sante_6693691_3244.html",
+        "source": "Le Monde",
+        "title": "Hantavirus : l’un des Espagnols en quarantaine à Madrid déclaré positif, annonce le ministère de la santé",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.franceinfo.fr/sante/maladie/hantavirus/hantavirus-l-un-des-espagnols-en-quarantaine-a-madrid-teste-positif_8027450.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "title": "Hantavirus : l'un des Espagnols en quarantaine à Madrid testé positif",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.ledauphine.com/sante/2026/05/25/hantavirus-l-un-des-espagnols-en-quarantaine-a-madrid-teste-positif",
+        "source": "Le Dauphiné Libéré",
+        "title": "Santé. Hantavirus : l'un des Espagnols en quarantaine à Madrid testé positif",
+        "thumbnail": ""
+      }
+    ],
+    "sessionLabel": "26/05/2026 à 07:14:04",
+    "controversyLevel": "moyen",
+    "ai": {
+      "arenaMode": "positions",
+      "debateScore": 5,
+      "controversyLevel": "moyen",
+      "debateQuestion": "",
+      "resume": "",
+      "keywords": [
+        "E pagnol  en quarantaine",
+        "mini tère de la  anté",
+        "croi iéri te  e pagnol",
+        "Madrid"
+      ],
+      "selectedLinks": [
+        "https://www.liberation.fr/societe/sante/hantavirus-lun-des-croisieristes-espagnols-en-quarantaine-teste-positif-20260525_4IJNDMJSM5BR3HJL5U2VDLQTTA/",
+        "https://www.lemonde.fr/planete/article/2026/05/25/hantavirus-l-un-des-espagnols-en-quarantaine-a-madrid-declare-positif-annonce-le-ministere-de-la-sante_6693691_3244.html",
+        "https://www.franceinfo.fr/sante/maladie/hantavirus/hantavirus-l-un-des-espagnols-en-quarantaine-a-madrid-teste-positif_8027450.html#xtor=RSS-3-[lestitres]",
+        "https://www.ledauphine.com/sante/2026/05/25/hantavirus-l-un-des-espagnols-en-quarantaine-a-madrid-teste-positif"
+      ],
+      "agonTheme": "Santé - bien-être",
+      "positionA": "",
+      "positionB": "",
+      "sourceSubject": "Hantavirus : l'un des Espagnols en quarantaine à Madrid testé positif",
+      "fullArticleState": "short",
+      "mainKeyword": "Hantavirus à Madrid",
+      "storyLink": {
+        "story_decision": "existing_story",
+        "matched_story_id": "29-le-systeme-de-sante-fait-face-a-des-tensions-d-acces-aux-soins-de-moyens-et-de-c",
+        "matched_story_title": "Le système de santé fait face à des tensions d’accès aux soins, de moyens et de confiance",
+        "matched_story_summary": "",
+        "previous_episode_id": "441",
+        "previous_episode_title": "Faut-il renforcer immédiatement les mesures internationales contre Ebola en RDC ?",
+        "previous_episode_summary": "Une nouvelle épidémie d’Ebola frappe actuellement la République démocratique du Congo, marquée par un variant d’une virulence exceptionnelle. Plusieurs centaines de cas suspects ont été signalés, poussant l’Organisation mondiale de la santé à élever son niveau d’alerte au rang d’« urgence internationale ». Cette mesure traduit l’ampleur de la menace et appelle à une mobilisation globale renforcée. Le ministère de la Santé affirme maintenir un dialogue permanent avec des experts pour évaluer le risque de propagation vers d’autres régions, notamment Mayotte, témoignant d’une vigilance accrue face à la possible diffusion du virus. Pourtant, l’efficacité des dispositifs déployés reste incertaine, tout comme l’évolution précise du nombre de cas confirmés, ce qui entretient une zone d’ombre sur la capacité à contenir cette flambée. Si aucun désaccord majeur ne semble diviser les institutions sur la gravité de la situation, la fragilité et le caractère évolutif de la crise soulignent des enjeux cruciaux pour la santé publique à l’échelle régionale et mondiale. Le cours des événements reste à suivre de près, dans un contexte où chaque nouvelle donnée pourrait modifier la donne.",
+        "previous_episode_url": "http://localhost:3001/debate?id=441",
+        "confidence": 0.85,
+        "reason": "L'actualité porte sur un cas sanitaire précis (Hantavirus) en Espagne, relevant des tensions et enjeux dans le système de santé, ce qui correspond bien à l'histoire sur les tensions dans le système de santé.",
+        "criteria": {
+          "main_actors_match": false,
+          "central_tension_match": true,
+          "temporal_continuity": true,
+          "editorial_theme_match": true,
+          "strong_keywords_match": true
+        },
+        "new_story": {
+          "story_title": "",
+          "story_summary": "",
+          "main_actors": [
+            "Espagne",
+            "Hantavirus"
+          ],
+          "central_tension": "Gestion des risques sanitaires émergents",
+          "keywords": [
+            "Hantavirus",
+            "quarantaine",
+            "Madrid",
+            "Espagne",
+            "santé"
+          ],
+          "status": "active"
+        }
+      }
+    }
+  },
+  {
+    "action": "save",
+    "subject": "Deux adolescents en garde à vue, appel à l'aide, enquête pour meurtre... Ce que l'on sait de la mort à Rennes d'un enfant de 11 ans, retrouvé une serviette nouée autour du cou",
+    "debateScore": 5,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "Franceinfo, Libération, L'Obs, Euronews FR, HuffPost France",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.nouvelobs.com/faits-divers/20260525.OBS115223/enfant-retrouve-mort-a-rennes-serviette-nouee-autour-du-cou-enquete-pour-meurtre-ce-que-l-on-sait.html",
+        "source": "L'Obs",
+        "title": "Enfant retrouvé mort à Rennes : serviette nouée autour du cou, enquête pour meurtre… Ce que l’on sait",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.liberation.fr/societe/police-justice/adolescents-en-garde-a-vue-serviette-de-bain-tres-serree-autour-du-cou-ce-que-lon-sait-apres-la-decouverte-du-corps-dun-enfant-de-11-ans-a-rennes-20260525_SJGNZMO3N5B4TOCVR2MTINSHCA/",
+        "source": "Libération",
+        "title": "Adolescents en garde à vue, serviette de bain «très serrée» autour du cou… Ce que l’on sait après la découverte du corps d’un enfant de 11 ans à Rennes",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.huffingtonpost.fr/france/article/a-rennes-un-enfant-de-12-ans-retrouve-mort-avec-une-serviette-autour-du-cou-un-mineur-de-16-ans-arrete_264082.html",
+        "source": "HuffPost France",
+        "title": "Deux ados en garde à vue, enquête pour meurtre... Ce que l’on sait de la mort d’un enfant de 11 ans à Rennes",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.liberation.fr/societe/police-justice/rennes-un-enfant-retrouve-mort-dans-un-buisson-avec-un-linge-autour-du-cou-20260524_L3SD7FQ32VAVZMXWOJZWZ45BH4/",
+        "source": "Libération",
+        "title": "Découverte d’un enfant mort à Rennes, une serviette «nouée très serrée» autour du cou : deux adolescents placés en garde à vue",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "http://fr.euronews.com/my-europe/2026/05/25/mort-dun-enfant-de-12-ans-a-rennes-deux-adolescents-en-garde-a-vue",
+        "source": "Euronews FR",
+        "title": "Mort d'un enfant de 11 ans à Rennes : deux adolescents en garde à vue",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.franceinfo.fr/faits-divers/deux-adolescents-en-garde-a-vue-appel-a-l-aide-enquete-pour-meurtre-ce-que-l-on-sait-de-la-mort-a-rennes-d-un-enfant-de-11-ans-retrouve-une-serviette-nouee-autour-du-cou_8027126.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "title": "Deux adolescents en garde à vue, appel à l'aide, enquête pour meurtre... Ce que l'on sait de la mort à Rennes d'un enfant de 11 ans, retrouvé une serviette nouée autour du cou",
+        "thumbnail": ""
+      }
+    ],
+    "sessionLabel": "26/05/2026 à 07:14:04",
+    "controversyLevel": "moyen",
+    "ai": {
+      "arenaMode": "positions",
+      "debateScore": 5,
+      "controversyLevel": "moyen",
+      "debateQuestion": "",
+      "resume": "",
+      "keywords": [
+        "deux adole cent  en garde à vue",
+        "erviette nouée autour du cou",
+        "enquête pour meurtre",
+        "appel à l'aide",
+        "Renne"
+      ],
+      "selectedLinks": [
+        "https://www.nouvelobs.com/faits-divers/20260525.OBS115223/enfant-retrouve-mort-a-rennes-serviette-nouee-autour-du-cou-enquete-pour-meurtre-ce-que-l-on-sait.html",
+        "https://www.liberation.fr/societe/police-justice/adolescents-en-garde-a-vue-serviette-de-bain-tres-serree-autour-du-cou-ce-que-lon-sait-apres-la-decouverte-du-corps-dun-enfant-de-11-ans-a-rennes-20260525_SJGNZMO3N5B4TOCVR2MTINSHCA/",
+        "https://www.huffingtonpost.fr/france/article/a-rennes-un-enfant-de-12-ans-retrouve-mort-avec-une-serviette-autour-du-cou-un-mineur-de-16-ans-arrete_264082.html",
+        "https://www.liberation.fr/societe/police-justice/rennes-un-enfant-retrouve-mort-dans-un-buisson-avec-un-linge-autour-du-cou-20260524_L3SD7FQ32VAVZMXWOJZWZ45BH4/",
+        "http://fr.euronews.com/my-europe/2026/05/25/mort-dun-enfant-de-12-ans-a-rennes-deux-adolescents-en-garde-a-vue",
+        "https://www.franceinfo.fr/faits-divers/deux-adolescents-en-garde-a-vue-appel-a-l-aide-enquete-pour-meurtre-ce-que-l-on-sait-de-la-mort-a-rennes-d-un-enfant-de-11-ans-retrouve-une-serviette-nouee-autour-du-cou_8027126.html#xtor=RSS-3-[lestitres]"
+      ],
+      "agonTheme": "Justice / faits divers",
+      "positionA": "",
+      "positionB": "",
+      "sourceSubject": "Deux adolescents en garde à vue, appel à l'aide, enquête pour meurtre... Ce que l'on sait de la mort à Rennes d'un enfant de 11 ans, retrouvé une serviette nouée autour du cou",
+      "fullArticleState": "short",
+      "mainKeyword": "mort d'un enfant de 11 ans à Rennes",
+      "storyLink": {
+        "story_decision": "existing_story",
+        "matched_story_id": "51-les-faits-divers-et-les-alertes-locales-revelent-des-enjeux-de-risque-et-de-gest",
+        "matched_story_title": "Les faits divers et les alertes locales révèlent des enjeux de risque et de gestion publique",
+        "matched_story_summary": "",
+        "previous_episode_id": "559",
+        "previous_episode_title": "Faut-il renforcer la surveillance et la protection des enfants dans les quartiers urbains comme Renn",
+        "previous_episode_summary": "Un garçon de 12 ans a été retrouvé mort au pied d’un immeuble à Rennes, une serviette serrée autour du cou. Ce drame, découvert dans un buisson, a immédiatement conduit les autorités à ouvrir une enquête pour en comprendre les circonstances.\n\nLes investigations sont toujours en cours afin de déterminer les raisons exactes de ce décès. La nature et la gravité des faits ont suscité une attention particulière, soulignant la nécessité d’examiner les conditions dans lesquelles évoluent les mineurs en milieu urbain.\n\nCette tragédie relance le débat sur la prévention et la sécurité des enfants dans les quartiers urbains. Il est essentiel de réfléchir aux mesures à prendre pour éviter que de tels événements ne se reproduisent. Faut-il renforcer la surveillance et la protection des enfants dans les quartiers urbains comme Rennes ?",
+        "previous_episode_url": "http://localhost:3001/debate?id=559",
+        "confidence": 0.85,
+        "reason": "L'actualité concerne un fait divers précis avec enquête judiciaire locale, correspondant clairement à l'histoire sur les faits divers et enjeux locaux.",
+        "criteria": {
+          "main_actors_match": true,
+          "central_tension_match": true,
+          "temporal_continuity": true,
+          "editorial_theme_match": true,
+          "strong_keywords_match": true
+        },
+        "new_story": {
+          "story_title": "",
+          "story_summary": "",
+          "main_actors": [],
+          "central_tension": "Faut-il appliquer des sanctions pénales sévères aux adolescents impliqués dans ce meurtre à Rennes…",
+          "keywords": [],
+          "status": "active"
+        }
+      }
+    }
+  },
+  {
+    "action": "save",
+    "subject": "Episode de chaleur : huit départements placés en vigilance orange canicule mardi, Lecornu réunit ses ministres jeudi",
+    "debateScore": 6,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "Libération, BFMTV, Le Dauphiné Libéré",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.liberation.fr/environnement/climat/la-vigilance-jaune-canicule-activee-pour-la-premiere-fois-en-mai-treize-departements-concernes-lundi-20260524_SEF4ET4NZBGMLOLJ6ZTWWHE2OA/",
+        "source": "Libération",
+        "title": "Episode de chaleur : huit départements placés en vigilance orange canicule mardi, Lecornu réunit ses ministres jeudi",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.bfmtv.com/politique/gouvernement/canicule-le-premier-ministre-sebastien-lecornu-presidera-une-reunion-interministerielle-jeudi_AD-202605250895.html",
+        "source": "BFMTV",
+        "title": "Canicule: le Premier ministre Sébastien Lecornu présidera une réunion interministérielle jeudi",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.ledauphine.com/environnement/2026/05/25/canicule-presidee-par-sebastien-lecornu-une-reunion-interministerielle-prevue-jeudi",
+        "source": "Le Dauphiné Libéré",
+        "title": "Météo. Canicule : présidée par Sébastien Lecornu, une réunion interministérielle prévue jeudi",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.bfmtv.com/environnement/climat/direct-fortes-chaleurs-huit-departements-de-l-ouest-de-la-france-places-en-vigilance-orange-canicule_LN-202605250550.html",
+        "source": "BFMTV",
+        "title": "Fortes chaleurs: Sébastien Lecornu présidera jeudi après-midi une réunion interministérielle consacrée à l'épisode de canicule",
+        "thumbnail": ""
+      }
+    ],
+    "sessionLabel": "26/05/2026 à 07:14:04",
+    "controversyLevel": "moyen",
+    "ai": {
+      "arenaMode": "positions",
+      "debateScore": 6,
+      "controversyLevel": "moyen",
+      "debateQuestion": "",
+      "resume": "",
+      "keywords": [
+        "Séba tien Lecornu",
+        "réunion intermini térielle",
+        "huit département",
+        "épi ode de chaleur",
+        "vigilance canicule"
+      ],
+      "selectedLinks": [
+        "https://www.liberation.fr/environnement/climat/la-vigilance-jaune-canicule-activee-pour-la-premiere-fois-en-mai-treize-departements-concernes-lundi-20260524_SEF4ET4NZBGMLOLJ6ZTWWHE2OA/",
+        "https://www.bfmtv.com/politique/gouvernement/canicule-le-premier-ministre-sebastien-lecornu-presidera-une-reunion-interministerielle-jeudi_AD-202605250895.html",
+        "https://www.ledauphine.com/environnement/2026/05/25/canicule-presidee-par-sebastien-lecornu-une-reunion-interministerielle-prevue-jeudi",
+        "https://www.bfmtv.com/environnement/climat/direct-fortes-chaleurs-huit-departements-de-l-ouest-de-la-france-places-en-vigilance-orange-canicule_LN-202605250550.html"
+      ],
+      "agonTheme": "Climat - environnement",
+      "positionA": "",
+      "positionB": "",
+      "sourceSubject": "Episode de chaleur : huit départements placés en vigilance orange canicule mardi, Lecornu réunit ses ministres jeudi",
+      "fullArticleState": "short",
+      "mainKeyword": "canicule vigilance orange",
+      "storyLink": {
+        "story_decision": "existing_story",
+        "matched_story_id": "40-le-changement-climatique-transforme-les-territoires-et-multiplie-les-enjeux-d-ad",
+        "matched_story_title": "Le changement climatique transforme les territoires et multiplie les enjeux d’adaptation",
+        "matched_story_summary": "",
+        "previous_episode_id": "560",
+        "previous_episode_title": "Faut-il renforcer les alertes canicule dès les premières chaleurs inhabituelles en mai ?",
+        "previous_episode_summary": "Lundi 25 mai 2026, treize départements de l’Ouest de la France ont été placés en vigilance jaune canicule. Cette alerte concerne des régions où des températures élevées sont attendues pour la première fois en mai, ce qui est inhabituel à cette période de l’année. La vigilance jaune signale un risque modéré de fortes chaleurs pouvant entraîner des désagréments pour la santé, notamment chez les personnes vulnérables.\n\nCette mesure vise à informer la population et à encourager la prudence face à ces conditions météorologiques exceptionnelles pour un mois de mai. La vigilance jaune est un outil d’anticipation qui permet de sensibiliser sans alarmer outre mesure, en rappelant les gestes simples pour limiter les effets du chaud.\n\nFace à cette situation nouvelle, la question de l’adaptation des systèmes d’alerte se pose naturellement. Il s’agit de trouver un équilibre entre la protection des populations à risque et la gestion de la crédibilité des alertes. Faut-il renforcer les alertes canicule dès les premières chaleurs inhabituelles en mai ?",
+        "previous_episode_url": "http://localhost:3001/debate?id=560",
+        "confidence": 0.85,
+        "reason": "L'actualité porte sur un épisode de chaleur et une vigilance canicule, clairement liés aux enjeux climatiques et environnementaux, ce qui correspond précisément au thème du changement climatique et ses impacts sur les territoires.",
+        "criteria": {
+          "main_actors_match": false,
+          "central_tension_match": true,
+          "temporal_continuity": true,
+          "editorial_theme_match": true,
+          "strong_keywords_match": true
+        },
+        "new_story": {
+          "story_title": "",
+          "story_summary": "",
+          "main_actors": [],
+          "central_tension": "La réunion ministérielle de Lecornu peut-elle améliorer la gestion des canicules en France ?",
+          "keywords": [],
+          "status": "active"
+        }
+      }
+    }
+  },
+  {
+    "action": "save",
+    "subject": "Guerre en Ukraine : Moscou appelle étrangers et diplomates à quitter Kiev avant de nouvelles frappes russes",
+    "debateScore": 8,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "Franceinfo, BFMTV, France 24",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.bfmtv.com/international/europe/ukraine/edouard-philippe-attendu-ce-mardi-a-kiev-malgre-l-appel-de-moscou-aux-etrangers-a-quitter-la-capitale-ukrainienne_AN-202605250863.html",
+        "source": "BFMTV",
+        "title": "Édouard Philippe attendu ce mardi à Kiev, malgré l'appel de Moscou aux étrangers à quitter la capitale ukrainienne",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.france24.com/fr/europe/20260525-la-russie-appelle-les-etrangers-et-diplomates-%C3%A0-quitter-kiev-avant-de-nouveaux-bombardements-missile",
+        "source": "France 24",
+        "title": "La Russie appelle les étrangers et diplomates à quitter Kiev avant de nouveaux bombardements",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.franceinfo.fr/monde/europe/manifestations-en-ukraine/guerre-en-ukraine-moscou-appelle-etrangers-et-diplomates-a-quitter-kiev-avant-de-nouvelles-frappes-russes_8027480.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "title": "Guerre en Ukraine : Moscou appelle étrangers et diplomates à quitter Kiev avant de nouvelles frappes russes",
+        "thumbnail": ""
+      }
+    ],
+    "sessionLabel": "26/05/2026 à 07:14:04",
+    "controversyLevel": "fort",
+    "ai": {
+      "arenaMode": "positions",
+      "debateScore": 8,
+      "controversyLevel": "fort",
+      "debateQuestion": "",
+      "resume": "",
+      "keywords": [
+        "étranger",
+        "diplomate",
+        "nouvelle  frappe  ru e",
+        "Édouard Philippe",
+        "guerre en Ukraine"
+      ],
+      "selectedLinks": [
+        "https://www.bfmtv.com/international/europe/ukraine/edouard-philippe-attendu-ce-mardi-a-kiev-malgre-l-appel-de-moscou-aux-etrangers-a-quitter-la-capitale-ukrainienne_AN-202605250863.html",
+        "https://www.france24.com/fr/europe/20260525-la-russie-appelle-les-etrangers-et-diplomates-%C3%A0-quitter-kiev-avant-de-nouveaux-bombardements-missile",
+        "https://www.franceinfo.fr/monde/europe/manifestations-en-ukraine/guerre-en-ukraine-moscou-appelle-etrangers-et-diplomates-a-quitter-kiev-avant-de-nouvelles-frappes-russes_8027480.html#xtor=RSS-3-[lestitres]"
+      ],
+      "agonTheme": "International",
+      "positionA": "",
+      "positionB": "",
+      "sourceSubject": "Guerre en Ukraine : Moscou appelle étrangers et diplomates à quitter Kiev avant de nouvelles frappes russes",
+      "fullArticleState": "short",
+      "mainKeyword": "appel de Moscou à quitter Kiev",
+      "storyLink": {
+        "story_decision": "existing_story",
+        "matched_story_id": "02-la-guerre-en-ukraine-transforme-les-rapports-entre-la-russie-l-europe-et-les-eta",
+        "matched_story_title": "La guerre en Ukraine transforme les rapports entre la Russie, l’Europe et les États-Unis",
+        "matched_story_summary": "",
+        "previous_episode_id": "558",
+        "previous_episode_title": "Faut-il considérer l'emploi du missile hypersonique Orechnik comme une escalade dangereuse ?",
+        "previous_episode_summary": "Le 24 mai 2026, Kiev a été touchée par un missile russe nommé « Orechnik », un engin hypersonique capable de se déplacer à très grande vitesse. Cette attaque s'inscrit dans une opération militaire plus large menée par la Russie contre la capitale ukrainienne, illustrant une évolution des moyens employés dans ce conflit.\n\nCe missile hypersonique complique considérablement son interception, ce qui souligne un changement stratégique dans la dynamique des hostilités. L'événement a suscité une attention particulière en raison de la nature avancée de ce type d'armement et de son impact potentiel sur la sécurité de la région.\n\nLe traitement médiatique varie selon les sources : Le Parisien adopte un ton émotionnel et dramatique, parlant de « folie » dans l'attaque, tandis que L'Express insiste sur la menace militaire que représente ce missile. En revanche, Le Monde et La Croix privilégient un angle plus factuel et explicatif, détaillant les caractéristiques techniques et stratégiques de l’Orechnik. Ces différences reflètent des approches diverses face à cette nouvelle étape dans la guerre en Ukraine. La question de l'emploi de ce missile hypersonique ouvre un débat crucial sur la nature des conflits modernes. \n\nFaut-il considérer l'emploi du missile hypersonique Orechnik comme une escalade dangereuse ?",
+        "previous_episode_url": "http://localhost:3001/debate?id=558",
+        "confidence": 0.9,
+        "reason": "L'actualité porte sur la guerre en Ukraine avec un focus sur Moscou et Kiev, ce qui correspond précisément à l'histoire sur la guerre en Ukraine et ses impacts géopolitiques.",
+        "criteria": {
+          "main_actors_match": true,
+          "central_tension_match": true,
+          "temporal_continuity": true,
+          "editorial_theme_match": true,
+          "strong_keywords_match": true
+        },
+        "new_story": {
+          "story_title": "",
+          "story_summary": "",
+          "main_actors": [
+            "guerre",
+            "ukraine",
+            "moscou"
+          ],
+          "central_tension": "Faut-il suivre l'appel russe et évacuer les diplomates étrangers de Kiev avant les frappes ?",
+          "keywords": [
+            "guerre",
+            "ukraine",
+            "moscou",
+            "appelle",
+            "etrangers",
+            "diplomates",
+            "quitter",
+            "kiev"
+          ],
+          "status": "active"
+        }
+      }
+    }
+  },
+  {
+    "action": "save",
+    "subject": "Sénégal : Ahmadou Al Aminou Mohamed Lô nommé premier ministre après le limogeage d’Ousmane Sonko",
+    "debateScore": 7,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "Le Monde, Le Figaro, France 24, RFI",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.lemonde.fr/afrique/article/2026/05/26/senegal-ahmadou-al-aminou-mohamed-lo-nomme-premier-ministre-apres-le-limogeage-d-ousmane-sonko_6693693_3212.html",
+        "source": "Le Monde",
+        "title": "Sénégal : Ahmadou Al Aminou Mohamed Lô nommé premier ministre après le limogeage d’Ousmane Sonko",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.rfi.fr/fr/afrique/20260525-s%C3%A9n%C3%A9gal-ahmadou-al-aminou-mohamed-lo-nomm%C3%A9-premier-ministre-apr%C3%A8s-le-limogeage-d-ousmane-sonko",
+        "source": "RFI",
+        "title": "Sénégal: Ahmadou Al Aminou Mohamed Lo nommé Premier ministre après le limogeage d'Ousmane Sonko",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.france24.com/fr/afrique/20260525-senegal-ahmadou-al-aminou-lo-nouveau-premier-ministre-apres-le-limogeage-de-sonko-president-faye",
+        "source": "France 24",
+        "title": "Sénégal : l'économiste Ahmadou ‌Al Aminou Lo nommé Premier ministre après le limogeage de Sonko",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.france24.com/fr/afrique/20260525-senegal-ahmadou-al-aminou-lo-nouveau-premier-ministre-apres-le-limogeage-de-sonko-president-faye",
+        "source": "France 24",
+        "title": "Sénégal : l'économiste Ahmadou ‌Al Aminou Lô nommé Premier ministre",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.lefigaro.fr/flash-actu/senegal-un-ancien-de-la-banque-centrale-nomme-premier-ministre-apres-le-limogeage-de-sonko-20260525",
+        "source": "Le Figaro",
+        "title": "Sénégal : un ancien de la Banque centrale nommé premier ministre après le limogeage de Sonko",
+        "thumbnail": ""
+      }
+    ],
+    "sessionLabel": "26/05/2026 à 07:14:04",
+    "controversyLevel": "fort",
+    "ai": {
+      "arenaMode": "positions",
+      "debateScore": 7,
+      "controversyLevel": "fort",
+      "debateQuestion": "",
+      "resume": "",
+      "keywords": [
+        "Sénégal",
+        "Ou mane Sonko",
+        "Premier mini tre",
+        "Banque centrale",
+        "économi te",
+        "limogeage"
+      ],
+      "selectedLinks": [
+        "https://www.lemonde.fr/afrique/article/2026/05/26/senegal-ahmadou-al-aminou-mohamed-lo-nomme-premier-ministre-apres-le-limogeage-d-ousmane-sonko_6693693_3212.html",
+        "https://www.rfi.fr/fr/afrique/20260525-s%C3%A9n%C3%A9gal-ahmadou-al-aminou-mohamed-lo-nomm%C3%A9-premier-ministre-apr%C3%A8s-le-limogeage-d-ousmane-sonko",
+        "https://www.france24.com/fr/afrique/20260525-senegal-ahmadou-al-aminou-lo-nouveau-premier-ministre-apres-le-limogeage-de-sonko-president-faye",
+        "https://www.france24.com/fr/afrique/20260525-senegal-ahmadou-al-aminou-lo-nouveau-premier-ministre-apres-le-limogeage-de-sonko-president-faye",
+        "https://www.lefigaro.fr/flash-actu/senegal-un-ancien-de-la-banque-centrale-nomme-premier-ministre-apres-le-limogeage-de-sonko-20260525"
+      ],
+      "agonTheme": "Politique",
+      "positionA": "",
+      "positionB": "",
+      "sourceSubject": "Sénégal : Ahmadou Al Aminou Mohamed Lô nommé premier ministre après le limogeage d’Ousmane Sonko",
+      "fullArticleState": "short",
+      "mainKeyword": "Ahmadou Al Aminou Mohamed Lô",
+      "storyLink": {
+        "story_decision": "existing_story",
+        "matched_story_id": "11-les-crises-politiques-militaires-et-sociales-recomposent-plusieurs-regions-d-afr",
+        "matched_story_title": "Les crises politiques, militaires et sociales recomposent plusieurs régions d’Afrique",
+        "matched_story_summary": "",
+        "previous_episode_id": "516",
+        "previous_episode_title": "Le limogeage de Sonko affaiblit-il la démocratie sénégalaise ?",
+        "previous_episode_summary": "Le 23 mai 2026, un séisme politique secoue le Sénégal : le président Bassirou Diomaye Faye annonce la fin du mandat de son Premier ministre, Ousmane Sonko. Ce choix brutal ouvre un nouveau chapitre, chargé d’incertitudes, dans l’histoire politique du pays.\n\nDans un geste à la fois solennel et ferme, le chef de l’État met un terme à la mission de Sonko, marquant une rupture nette au sommet du pouvoir. Cette décision s’inscrit dans un contexte électrique, où Diomaye Faye cherche à rééquilibrer les forces au sein de son gouvernement. Le départ du Premier ministre, imposé par la volonté présidentielle, fait vaciller les repères et laisse planer un doute pesant sur l’avenir politique du Sénégal.\n\nAlors que les regards se tournent vers les prochains mouvements dans l’exécutif, la tension reste palpable. Rien n’est encore joué, mais la scène politique sénégalaise vient de basculer.\n\nLe limogeage de Sonko affaiblit-il la démocratie sénégalaise ?\n\nR. Renaudot",
+        "previous_episode_url": "http://localhost:3001/debate?id=516",
+        "confidence": 0.85,
+        "reason": "L'actualité concerne un changement politique majeur au Sénégal, un pays africain, avec un enjeu politique clair (limogeage et nomination de Premier ministre), ce qui correspond bien à une crise politique en Afrique.",
+        "criteria": {
+          "main_actors_match": true,
+          "central_tension_match": true,
+          "temporal_continuity": true,
+          "editorial_theme_match": true,
+          "strong_keywords_match": true
+        },
+        "new_story": {
+          "story_title": "",
+          "story_summary": "",
+          "main_actors": [
+            "senegal",
+            "ahmadou",
+            "aminou"
+          ],
+          "central_tension": "La nomination d’Ahmadou Al Aminou Mohamed Lô est-elle une meilleure option que le maintien d’Ousma…",
+          "keywords": [
+            "senegal",
+            "ahmadou",
+            "aminou",
+            "mohamed",
+            "nomme",
+            "premier",
+            "ministre",
+            "limogeage"
+          ],
+          "status": "active"
+        }
+      }
+    }
+  },
+  {
+    "action": "save",
+    "subject": "EN DIRECT - Guerre au Moyen-Orient : Netanyahou affirme qu’Israël va «intensifier» l’offensive au Liban pour «écraser» le Hezbollah",
+    "debateScore": 9,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "Le Figaro, BFMTV, France 24",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.france24.com/fr/moyen-orient/20260525-liban-israel-veut-intensifier-offensive-hezbollah-frappes-netanyahu",
+        "source": "France 24",
+        "title": "Israël veut \"intensifier\" son offensive au Liban pour écraser le Hezbollah",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.bfmtv.com/international/moyen-orient/israel/j-ai-demande-a-accelerer-benjamin-netanyahu-affirme-qu-israel-va-intensifier-l-offensive-au-liban-pour-ecraser-le-hezbollah_AD-202605250841.html",
+        "source": "BFMTV",
+        "title": "\"J'ai demandé à accélérer\": Benjamin Netanyahu affirme qu'Israël va \"intensifier\" l'offensive au Liban pour \"écraser\" le Hezbollah",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.lefigaro.fr/international/en-direct-guerre-au-moyen-orient-marco-rubio-affirme-qu-israel-aura-toujours-le-droit-de-se-defendre-20260525",
+        "source": "Le Figaro",
+        "title": "EN DIRECT - Guerre au Moyen-Orient : Netanyahou affirme qu’Israël va «intensifier» l’offensive au Liban pour «écraser» le Hezbollah",
+        "thumbnail": ""
+      }
+    ],
+    "sessionLabel": "26/05/2026 à 07:14:04",
+    "controversyLevel": "très fort",
+    "ai": {
+      "arenaMode": "positions",
+      "debateScore": 9,
+      "controversyLevel": "très fort",
+      "debateQuestion": "",
+      "resume": "",
+      "keywords": [
+        "Benjamin Netanyahu",
+        "Hezbollah",
+        "guerre au Moyen-Orient",
+        "Liban",
+        "I raël"
+      ],
+      "selectedLinks": [
+        "https://www.france24.com/fr/moyen-orient/20260525-liban-israel-veut-intensifier-offensive-hezbollah-frappes-netanyahu",
+        "https://www.bfmtv.com/international/moyen-orient/israel/j-ai-demande-a-accelerer-benjamin-netanyahu-affirme-qu-israel-va-intensifier-l-offensive-au-liban-pour-ecraser-le-hezbollah_AD-202605250841.html",
+        "https://www.lefigaro.fr/international/en-direct-guerre-au-moyen-orient-marco-rubio-affirme-qu-israel-aura-toujours-le-droit-de-se-defendre-20260525"
+      ],
+      "agonTheme": "International",
+      "positionA": "",
+      "positionB": "",
+      "sourceSubject": "EN DIRECT - Guerre au Moyen-Orient : Netanyahou affirme qu’Israël va «intensifier» l’offensive au Liban pour «écraser» le Hezbollah",
+      "fullArticleState": "short",
+      "mainKeyword": "offensive israélienne au Liban",
+      "storyLink": {
+        "story_decision": "existing_story",
+        "matched_story_id": "israel-mph1fbfh",
+        "matched_story_title": "Israël",
+        "matched_story_summary": "",
+        "previous_episode_id": "553",
+        "previous_episode_title": "L’accord USA-Iran menace-t-il la sécurité d’Israël ?",
+        "previous_episode_summary": "Un fragile espoir flotte sur le Moyen-Orient : un accord entre les États-Unis et l’Iran pourrait être conclu dans la journée, promettant de désamorcer des tensions anciennes. Mais cette lueur d’apaisement se heurte à une réalité brûlante, où la menace d’un conflit s’étend bien au-delà des négociations.\n\nDans l’ombre des pourparlers, le Liban s’embrase. Des frappes récentes ravivent la peur d’une escalade incontrôlable, tandis que les habitants, pris au piège, redoutent un engrenage vers une guerre plus vaste. Ce contexte explosif jette une ombre lourde sur les efforts diplomatiques, fragilisant un accord déjà précaire.\n\nEn Israël, la colère gronde. Plusieurs élus dénoncent ce projet d’accord, le percevant comme un danger imminent pour la sécurité régionale. Entre espoirs de paix et risques de confrontation, le Moyen-Orient vacille sur un fil tendu, où chaque décision pourrait déclencher une crise majeure. L’issue reste incertaine, mais la tension, elle, est palpable.\n\nL’accord USA-Iran menace-t-il la sécurité d’Israël ?\n\nJ.L Grasso",
+        "previous_episode_url": "http://localhost:3001/debate?id=553",
+        "confidence": 0.9,
+        "reason": "L'actualité porte sur une offensive israélienne au Liban contre le Hezbollah, avec Benjamin Netanyahu en acteur principal, ce qui correspond précisément à l'histoire centrée sur Israël.",
+        "criteria": {
+          "main_actors_match": true,
+          "central_tension_match": true,
+          "temporal_continuity": true,
+          "editorial_theme_match": true,
+          "strong_keywords_match": true
+        },
+        "new_story": {
+          "story_title": "",
+          "story_summary": "",
+          "main_actors": [],
+          "central_tension": "Faut-il soutenir l'intensification de l'offensive israélienne au Liban contre le Hezbollah ?",
+          "keywords": [],
+          "status": "active"
+        }
+      }
+    }
+  },
+  {
+    "action": "save",
     "subject": "Guerre au Moyen-Orient : un accord avec l'Iran est encore possible lundi, estime le secrétaire d'Etat américain",
     "debateScore": 8,
     "debateQuestion": "",

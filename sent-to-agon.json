@@ -1,5 +1,477 @@
 [
   {
+    "subject": "Gaël Monfils fait ses adieux à Roland-Garros après sa défaite en cinq sets contre Hugo Gaston au 1er tour",
+    "sessionLabel": "26/05/2026 à 07:14:04",
+    "question": "Gaël Monfils doit-il être considéré comme un des plus grands joueurs français de Roland-Garros ?",
+    "positionA": "Oui, son style et sa longévité ont marqué le tennis français.",
+    "positionB": "Non, il n'a jamais remporté Roland-Garros ni atteint la finale.",
+    "theme": "Sports - loisirs",
+    "resume": "Gaël Monfils a disputé son dernier match à Roland-Garros lors du premier tour de l’édition 2026. Son adversaire, Hugo Gaston, l’a battu en cinq sets, mettant fin à la participation de Monfils au tournoi.\n\nCette défaite marque la fin d’une étape importante dans la carrière de Monfils sur la terre battue parisienne. Le match a été une lutte intense entre les deux joueurs, illustrant la combativité et le style spectaculaire qui ont caractérisé Monfils tout au long de sa présence à Roland-Garros.\n\nLa fin de carrière de Gaël Monfils à Roland-Garros invite à réfléchir à son héritage dans le tennis français. Son parcours soulève des questions sur la place qu’il occupe parmi les grands joueurs français de ce tournoi. Gaël Monfils doit-il être considéré comme un des plus grands joueurs français de Roland-Garros ?",
+    "sources": "Franceinfo, Le Monde, Libération, Le Figaro, France 24",
+    "links": [
+      {
+        "title": "Gaël Monfils battu pour son dernier Roland-Garros, après une ultime bataille en cinq sets",
+        "url": "https://www.liberation.fr/sports/tennis/gael-monfils-battu-pour-son-dernier-roland-garros-apres-une-ultime-bataille-en-cinq-sets-20260526_IDBDHYE73RADTL4WVWHFGXRQJQ/",
+        "source": "Libération",
+        "type": "article",
+        "date": "26/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Gaël Monfils, avec ses adieux à Roland-Garros, referme une page de l’histoire du tennis français",
+        "url": "https://www.lemonde.fr/sport/article/2026/05/26/gael-monfils-avec-ses-adieux-a-roland-garros-referme-une-page-de-l-histoire-du-tennis-francais_6693694_3242.html",
+        "source": "Le Monde",
+        "type": "article",
+        "date": "26/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Gaël Monfils fait ses adieux à Roland-Garros après sa défaite en cinq sets contre Hugo Gaston au 1er tour",
+        "url": "https://www.franceinfo.fr/roland-garros/gael-monfils-elimine-au-1er-tour-pour-son-dernier-roland-garros-par-son-compatriote-hugo-gaston-au-terme-d-un-marathon_8027456.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "type": "article",
+        "date": "26/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Gaël Monfils fait ses adieux à Roland-Garros, éliminé au premier tour",
+        "url": "https://www.france24.com/fr/sports/20260525-tennis-gael-monfils-elimine-dernier-roland-garros-premier-tour-hugo-gaston",
+        "source": "France 24",
+        "type": "article",
+        "date": "26/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Éliminé dès le premier tour, Gaël Monfils fait ses adieux à Roland-Garros",
+        "url": "https://www.france24.com/fr/sports/20260525-tennis-gael-monfils-elimine-dernier-roland-garros-premier-tour-hugo-gaston",
+        "source": "France 24",
+        "type": "article",
+        "date": "26/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Roland-Garros : au bout de la nuit, Gaël Monfils fait ses adieux à l’issue d’un dernier thriller",
+        "url": "https://www.lefigaro.fr/sports/tennis/roland-garros/roland-garros-au-bout-de-la-nuit-gael-monfils-fait-ses-adieux-au-grand-chelem-parisien-20260526",
+        "source": "Le Figaro",
+        "type": "article",
+        "date": "26/05/2026",
+        "checked": true
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "47-le-sport-devient-un-espace-de-pouvoir-d-argent-d-identite-et-de-soft-power",
+      "matchedStoryTitle": "Le sport devient un espace de pouvoir, d’argent, d’identité et de soft power",
+      "previousEpisodeTitle": "Le forfait d’Arthur Fils affaiblit-il gravement Roland-Garros ?",
+      "previousEpisodeUrl": "http://localhost:3001/debate?id=544",
+      "confidence": 0.85,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {},
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "Gaël Monfils",
+      "Roland-Garro",
+      "Hugo Ga ton",
+      "tenni  françai",
+      "premier tour",
+      "défaite en cinq  et"
+    ],
+    "sentAt": "2026-05-26T03:21:46.958Z"
+  },
+  {
+    "subject": "Hantavirus : l'un des Espagnols en quarantaine à Madrid testé positif",
+    "sessionLabel": "26/05/2026 à 07:14:04",
+    "question": "Faut-il renforcer les mesures de quarantaine pour contenir le hantavirus à Madrid ?",
+    "positionA": "Oui, il faut durcir la quarantaine pour éviter une épidémie plus large.",
+    "positionB": "Non, les mesures actuelles suffisent et ne doivent pas être excessives.",
+    "theme": "Santé - bien-être",
+    "resume": "Un Espagnol placé en quarantaine à Madrid a été testé positif au hantavirus. Cette découverte a été confirmée par le ministère de la Santé.\n\nCette personne faisait partie d’un groupe de croisiéristes espagnols mis en isolement par précaution, afin de surveiller d’éventuels cas suite à une exposition présumée au virus. La détection d’un cas positif a confirmé la présence du hantavirus parmi ces individus, justifiant la poursuite des mesures sanitaires et le suivi médical des personnes concernées.\n\nLa gestion de cette quarantaine soulève des questions importantes sur la prévention et la réponse sanitaire face au hantavirus. Il est essentiel d’évaluer si les mesures actuelles sont adaptées pour contenir efficacement la propagation du virus.\n\nFaut-il renforcer les mesures de quarantaine pour contenir le hantavirus à Madrid ?",
+    "sources": "Franceinfo, Le Monde, Libération, Le Dauphiné Libéré",
+    "links": [
+      {
+        "title": "Hantavirus : l’un des croisiéristes espagnols en quarantaine testé positif",
+        "url": "https://www.liberation.fr/societe/sante/hantavirus-lun-des-croisieristes-espagnols-en-quarantaine-teste-positif-20260525_4IJNDMJSM5BR3HJL5U2VDLQTTA/",
+        "source": "Libération",
+        "type": "article",
+        "date": "25/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Hantavirus : l’un des Espagnols en quarantaine à Madrid déclaré positif, annonce le ministère de la santé",
+        "url": "https://www.lemonde.fr/planete/article/2026/05/25/hantavirus-l-un-des-espagnols-en-quarantaine-a-madrid-declare-positif-annonce-le-ministere-de-la-sante_6693691_3244.html",
+        "source": "Le Monde",
+        "type": "article",
+        "date": "25/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Hantavirus : l'un des Espagnols en quarantaine à Madrid testé positif",
+        "url": "https://www.franceinfo.fr/sante/maladie/hantavirus/hantavirus-l-un-des-espagnols-en-quarantaine-a-madrid-teste-positif_8027450.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "type": "article",
+        "date": "25/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Santé. Hantavirus : l'un des Espagnols en quarantaine à Madrid testé positif",
+        "url": "https://www.ledauphine.com/sante/2026/05/25/hantavirus-l-un-des-espagnols-en-quarantaine-a-madrid-teste-positif",
+        "source": "Le Dauphiné Libéré",
+        "type": "article",
+        "date": "25/05/2026",
+        "checked": true
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "29-le-systeme-de-sante-fait-face-a-des-tensions-d-acces-aux-soins-de-moyens-et-de-c",
+      "matchedStoryTitle": "Le système de santé fait face à des tensions d’accès aux soins, de moyens et de confiance",
+      "previousEpisodeTitle": "Faut-il renforcer immédiatement les mesures internationales contre Ebola en RDC ?",
+      "previousEpisodeUrl": "http://localhost:3001/debate?id=441",
+      "confidence": 0.85,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {},
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "Hantavirus à Madrid",
+      "E pagnol  en quarantaine",
+      "mini tère de la  anté",
+      "croi iéri te  e pagnol",
+      "Madrid"
+    ],
+    "sentAt": "2026-05-26T03:21:26.104Z"
+  },
+  {
+    "subject": "Deux adolescents en garde à vue, appel à l'aide, enquête pour meurtre... Ce que l'on sait de la mort à Rennes d'un enfant de 11 ans, retrouvé une serviette nouée autour du cou",
+    "sessionLabel": "26/05/2026 à 07:14:04",
+    "question": "Faut-il appliquer des sanctions pénales sévères aux adolescents impliqués dans ce meurtre à Rennes…",
+    "positionA": "Oui, ils doivent être punis sévèrement pour leur responsabilité dans ce crime g…",
+    "positionB": "Non, leur âge impose une approche éducative plutôt que punitive.",
+    "theme": "Justice / faits divers",
+    "resume": "Un enfant de 11 ans a été retrouvé mort à Rennes, une serviette nouée très serrée autour du cou. Deux adolescents ont été placés en garde à vue dans le cadre de l’enquête ouverte pour meurtre.\n\nLes circonstances exactes du décès restent à éclaircir, mais les autorités ont rapidement déclenché une investigation judiciaire. Ce dossier est suivi de près en raison de la gravité des faits et de l’implication de mineurs dans cette affaire.\n\nLa question de la responsabilité et de la justice face à un meurtre impliquant des adolescents soulève un débat sensible. Il s'agit désormais de déterminer comment la justice doit traiter ces jeunes impliqués dans un crime aussi grave. Faut-il appliquer des sanctions pénales sévères aux adolescents impliqués dans ce meurtre à Rennes…",
+    "sources": "Franceinfo, Libération, L'Obs, Euronews FR, HuffPost France",
+    "links": [
+      {
+        "title": "Enfant retrouvé mort à Rennes : serviette nouée autour du cou, enquête pour meurtre… Ce que l’on sait",
+        "url": "https://www.nouvelobs.com/faits-divers/20260525.OBS115223/enfant-retrouve-mort-a-rennes-serviette-nouee-autour-du-cou-enquete-pour-meurtre-ce-que-l-on-sait.html",
+        "source": "L'Obs",
+        "type": "article",
+        "date": "25/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Adolescents en garde à vue, serviette de bain «très serrée» autour du cou… Ce que l’on sait après la découverte du corps d’un enfant de 11 ans à Rennes",
+        "url": "https://www.liberation.fr/societe/police-justice/adolescents-en-garde-a-vue-serviette-de-bain-tres-serree-autour-du-cou-ce-que-lon-sait-apres-la-decouverte-du-corps-dun-enfant-de-11-ans-a-rennes-20260525_SJGNZMO3N5B4TOCVR2MTINSHCA/",
+        "source": "Libération",
+        "type": "article",
+        "date": "25/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Deux ados en garde à vue, enquête pour meurtre... Ce que l’on sait de la mort d’un enfant de 11 ans à Rennes",
+        "url": "https://www.huffingtonpost.fr/france/article/a-rennes-un-enfant-de-12-ans-retrouve-mort-avec-une-serviette-autour-du-cou-un-mineur-de-16-ans-arrete_264082.html",
+        "source": "HuffPost France",
+        "type": "article",
+        "date": "25/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Découverte d’un enfant mort à Rennes, une serviette «nouée très serrée» autour du cou : deux adolescents placés en garde à vue",
+        "url": "https://www.liberation.fr/societe/police-justice/rennes-un-enfant-retrouve-mort-dans-un-buisson-avec-un-linge-autour-du-cou-20260524_L3SD7FQ32VAVZMXWOJZWZ45BH4/",
+        "source": "Libération",
+        "type": "article",
+        "date": "25/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Mort d'un enfant de 11 ans à Rennes : deux adolescents en garde à vue",
+        "url": "http://fr.euronews.com/my-europe/2026/05/25/mort-dun-enfant-de-12-ans-a-rennes-deux-adolescents-en-garde-a-vue",
+        "source": "Euronews FR",
+        "type": "article",
+        "date": "25/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Deux adolescents en garde à vue, appel à l'aide, enquête pour meurtre... Ce que l'on sait de la mort à Rennes d'un enfant de 11 ans, retrouvé une serviette nouée autour du cou",
+        "url": "https://www.franceinfo.fr/faits-divers/deux-adolescents-en-garde-a-vue-appel-a-l-aide-enquete-pour-meurtre-ce-que-l-on-sait-de-la-mort-a-rennes-d-un-enfant-de-11-ans-retrouve-une-serviette-nouee-autour-du-cou_8027126.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "type": "article",
+        "date": "25/05/2026",
+        "checked": true
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "51-les-faits-divers-et-les-alertes-locales-revelent-des-enjeux-de-risque-et-de-gest",
+      "matchedStoryTitle": "Les faits divers et les alertes locales révèlent des enjeux de risque et de gestion publique",
+      "previousEpisodeTitle": "Faut-il renforcer la surveillance et la protection des enfants dans les quartiers urbains comme Renn",
+      "previousEpisodeUrl": "http://localhost:3001/debate?id=559",
+      "confidence": 0.85,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {},
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "mort d'un enfant de 11 ans à Rennes",
+      "deux adole cent  en garde à vue",
+      "erviette nouée autour du cou",
+      "enquête pour meurtre",
+      "appel à l'aide",
+      "Renne"
+    ],
+    "sentAt": "2026-05-26T03:21:03.320Z"
+  },
+  {
+    "subject": "Episode de chaleur : huit départements placés en vigilance orange canicule mardi, Lecornu réunit ses ministres jeudi",
+    "sessionLabel": "26/05/2026 à 07:14:04",
+    "question": "La réunion ministérielle de Lecornu peut-elle améliorer la gestion des canicules en France ?",
+    "positionA": "Oui, elle permettra une meilleure coordination et protection des populations.",
+    "positionB": "Non, ces réunions sont inefficaces face à l'urgence climatique croissante.",
+    "theme": "Climat - environnement",
+    "resume": "Un épisode de chaleur intense a conduit à la mise en vigilance orange canicule mardi dans huit départements français. Cette alerte concerne directement les habitants et les autorités locales, qui doivent redoubler de vigilance face aux températures élevées.\n\nPour répondre à cette situation, le Premier ministre Sébastien Lecornu a annoncé la tenue d’une réunion interministérielle jeudi. L’objectif est de coordonner les mesures à adopter pour gérer au mieux cet épisode caniculaire et protéger les populations vulnérables.\n\nCette réunion s’inscrit dans un contexte où la gestion des épisodes de canicule devient un enjeu majeur de santé publique et de politique climatique. Elle vise à renforcer la préparation et la réactivité des pouvoirs publics face à ces phénomènes. La réunion ministérielle de Lecornu peut-elle améliorer la gestion des canicules en France ?",
+    "sources": "Libération, BFMTV, Le Dauphiné Libéré",
+    "links": [
+      {
+        "title": "Episode de chaleur : huit départements placés en vigilance orange canicule mardi, Lecornu réunit ses ministres jeudi",
+        "url": "https://www.liberation.fr/environnement/climat/la-vigilance-jaune-canicule-activee-pour-la-premiere-fois-en-mai-treize-departements-concernes-lundi-20260524_SEF4ET4NZBGMLOLJ6ZTWWHE2OA/",
+        "source": "Libération",
+        "type": "article",
+        "date": "25/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Canicule: le Premier ministre Sébastien Lecornu présidera une réunion interministérielle jeudi",
+        "url": "https://www.bfmtv.com/politique/gouvernement/canicule-le-premier-ministre-sebastien-lecornu-presidera-une-reunion-interministerielle-jeudi_AD-202605250895.html",
+        "source": "BFMTV",
+        "type": "article",
+        "date": "26/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Météo. Canicule : présidée par Sébastien Lecornu, une réunion interministérielle prévue jeudi",
+        "url": "https://www.ledauphine.com/environnement/2026/05/25/canicule-presidee-par-sebastien-lecornu-une-reunion-interministerielle-prevue-jeudi",
+        "source": "Le Dauphiné Libéré",
+        "type": "article",
+        "date": "25/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Fortes chaleurs: Sébastien Lecornu présidera jeudi après-midi une réunion interministérielle consacrée à l'épisode de canicule",
+        "url": "https://www.bfmtv.com/environnement/climat/direct-fortes-chaleurs-huit-departements-de-l-ouest-de-la-france-places-en-vigilance-orange-canicule_LN-202605250550.html",
+        "source": "BFMTV",
+        "type": "article",
+        "date": "25/05/2026",
+        "checked": true
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "40-le-changement-climatique-transforme-les-territoires-et-multiplie-les-enjeux-d-ad",
+      "matchedStoryTitle": "Le changement climatique transforme les territoires et multiplie les enjeux d’adaptation",
+      "previousEpisodeTitle": "Faut-il renforcer les alertes canicule dès les premières chaleurs inhabituelles en mai ?",
+      "previousEpisodeUrl": "http://localhost:3001/debate?id=560",
+      "confidence": 0.85,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {},
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "canicule vigilance orange",
+      "Séba tien Lecornu",
+      "réunion intermini térielle",
+      "huit département",
+      "épi ode de chaleur",
+      "vigilance canicule"
+    ],
+    "sentAt": "2026-05-26T03:20:40.807Z"
+  },
+  {
+    "subject": "Guerre en Ukraine : Moscou appelle étrangers et diplomates à quitter Kiev avant de nouvelles frappes russes",
+    "sessionLabel": "26/05/2026 à 07:14:04",
+    "question": "Faut-il suivre l'appel russe et évacuer les diplomates étrangers de Kiev avant les frappes ?",
+    "positionA": "Oui, pour protéger la vie des diplomates et éviter un incident international.",
+    "positionB": "Non, rester à Kiev est essentiel pour soutenir l'Ukraine et maintenir la pressi…",
+    "theme": "International",
+    "resume": "La Russie a récemment demandé aux étrangers et diplomates présents à Kiev de quitter la capitale ukrainienne avant de nouvelles frappes militaires. Cette annonce intervient dans un contexte de tensions persistantes et d'opérations militaires ciblées sur la ville.\n\nMalgré cet appel de Moscou, certaines visites diplomatiques sont maintenues, comme celle attendue d'Édouard Philippe. Cette situation illustre le dilemme entre la sécurité des représentants étrangers et la volonté de soutenir l'Ukraine face au conflit.\n\nCe choix soulève un débat important sur la conduite à adopter dans un contexte aussi tendu. Il est crucial de peser les risques et les enjeux politiques liés à la présence diplomatique à Kiev. Faut-il suivre l'appel russe et évacuer les diplomates étrangers de Kiev avant les frappes ?",
+    "sources": "Franceinfo, BFMTV, France 24",
+    "links": [
+      {
+        "title": "Édouard Philippe attendu ce mardi à Kiev, malgré l'appel de Moscou aux étrangers à quitter la capitale ukrainienne",
+        "url": "https://www.bfmtv.com/international/europe/ukraine/edouard-philippe-attendu-ce-mardi-a-kiev-malgre-l-appel-de-moscou-aux-etrangers-a-quitter-la-capitale-ukrainienne_AN-202605250863.html",
+        "source": "BFMTV",
+        "type": "article",
+        "date": "26/05/2026",
+        "checked": true
+      },
+      {
+        "title": "La Russie appelle les étrangers et diplomates à quitter Kiev avant de nouveaux bombardements",
+        "url": "https://www.france24.com/fr/europe/20260525-la-russie-appelle-les-etrangers-et-diplomates-%C3%A0-quitter-kiev-avant-de-nouveaux-bombardements-missile",
+        "source": "France 24",
+        "type": "article",
+        "date": "25/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Guerre en Ukraine : Moscou appelle étrangers et diplomates à quitter Kiev avant de nouvelles frappes russes",
+        "url": "https://www.franceinfo.fr/monde/europe/manifestations-en-ukraine/guerre-en-ukraine-moscou-appelle-etrangers-et-diplomates-a-quitter-kiev-avant-de-nouvelles-frappes-russes_8027480.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "type": "article",
+        "date": "25/05/2026",
+        "checked": true
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "02-la-guerre-en-ukraine-transforme-les-rapports-entre-la-russie-l-europe-et-les-eta",
+      "matchedStoryTitle": "La guerre en Ukraine transforme les rapports entre la Russie, l’Europe et les États-Unis",
+      "previousEpisodeTitle": "Faut-il considérer l'emploi du missile hypersonique Orechnik comme une escalade dangereuse ?",
+      "previousEpisodeUrl": "http://localhost:3001/debate?id=558",
+      "confidence": 0.9,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {},
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "appel de Moscou à quitter Kiev",
+      "étranger",
+      "diplomate",
+      "nouvelle  frappe  ru e",
+      "Édouard Philippe",
+      "guerre en Ukraine"
+    ],
+    "sentAt": "2026-05-26T03:20:20.684Z"
+  },
+  {
+    "subject": "Sénégal : Ahmadou Al Aminou Mohamed Lô nommé premier ministre après le limogeage d’Ousmane Sonko",
+    "sessionLabel": "26/05/2026 à 07:14:04",
+    "question": "La nomination d’Ahmadou Al Aminou Mohamed Lô est-elle une meilleure option que le maintien d’Ousmane",
+    "positionA": "Lô apportera une expertise économique nécessaire pour stabiliser et développer…",
+    "positionB": "Sonko représentait une voix politique forte et son limogeage affaiblit la démoc…",
+    "theme": "Politique",
+    "resume": "Au Sénégal, un changement important s'est opéré au sommet du gouvernement. Ahmadou Al Aminou Mohamed Lô a été nommé Premier ministre le 26 mai 2026, succédant à Ousmane Sonko, récemment limogé.\n\nÉconomiste de formation, Ahmadou Al Aminou Mohamed Lô apporte une nouvelle orientation à la tête du gouvernement sénégalais. Ce remplacement intervient dans un contexte politique où les raisons précises du départ de Sonko n'ont pas été rendues publiques. Cette nomination marque donc une évolution notable dans la gestion politique et économique du pays.\n\nSans indication claire sur les motifs du limogeage, ce changement soulève des interrogations sur la direction future du Sénégal. La nomination d’un économiste à ce poste clé peut être perçue comme un signe d’une volonté de recentrer les priorités gouvernementales. La question de savoir si cette nouvelle orientation est préférable reste ouverte. La nomination d’Ahmadou Al Aminou Mohamed Lô est-elle une meilleure option que le maintien d’Ousmane Sonko ?",
+    "sources": "Le Monde, Le Figaro, France 24, RFI",
+    "links": [
+      {
+        "title": "Sénégal : Ahmadou Al Aminou Mohamed Lô nommé premier ministre après le limogeage d’Ousmane Sonko",
+        "url": "https://www.lemonde.fr/afrique/article/2026/05/26/senegal-ahmadou-al-aminou-mohamed-lo-nomme-premier-ministre-apres-le-limogeage-d-ousmane-sonko_6693693_3212.html",
+        "source": "Le Monde",
+        "type": "article",
+        "date": "26/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Sénégal: Ahmadou Al Aminou Mohamed Lo nommé Premier ministre après le limogeage d'Ousmane Sonko",
+        "url": "https://www.rfi.fr/fr/afrique/20260525-s%C3%A9n%C3%A9gal-ahmadou-al-aminou-mohamed-lo-nomm%C3%A9-premier-ministre-apr%C3%A8s-le-limogeage-d-ousmane-sonko",
+        "source": "RFI",
+        "type": "article",
+        "date": "26/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Sénégal : l'économiste Ahmadou ‌Al Aminou Lo nommé Premier ministre après le limogeage de Sonko",
+        "url": "https://www.france24.com/fr/afrique/20260525-senegal-ahmadou-al-aminou-lo-nouveau-premier-ministre-apres-le-limogeage-de-sonko-president-faye",
+        "source": "France 24",
+        "type": "article",
+        "date": "26/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Sénégal : l'économiste Ahmadou ‌Al Aminou Lô nommé Premier ministre",
+        "url": "https://www.france24.com/fr/afrique/20260525-senegal-ahmadou-al-aminou-lo-nouveau-premier-ministre-apres-le-limogeage-de-sonko-president-faye",
+        "source": "France 24",
+        "type": "article",
+        "date": "26/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Sénégal : un ancien de la Banque centrale nommé premier ministre après le limogeage de Sonko",
+        "url": "https://www.lefigaro.fr/flash-actu/senegal-un-ancien-de-la-banque-centrale-nomme-premier-ministre-apres-le-limogeage-de-sonko-20260525",
+        "source": "Le Figaro",
+        "type": "article",
+        "date": "26/05/2026",
+        "checked": true
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "11-les-crises-politiques-militaires-et-sociales-recomposent-plusieurs-regions-d-afr",
+      "matchedStoryTitle": "Les crises politiques, militaires et sociales recomposent plusieurs régions d’Afrique",
+      "previousEpisodeTitle": "Le limogeage de Sonko affaiblit-il la démocratie sénégalaise ?",
+      "previousEpisodeUrl": "http://localhost:3001/debate?id=516",
+      "confidence": 0.85,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {},
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "Ahmadou Al Aminou Mohamed Lô",
+      "Sénégal",
+      "Ou mane Sonko",
+      "Premier mini tre",
+      "Banque centrale",
+      "économi te",
+      "limogeage"
+    ],
+    "sentAt": "2026-05-26T03:19:59.224Z"
+  },
+  {
+    "subject": "EN DIRECT - Guerre au Moyen-Orient : Netanyahou affirme qu’Israël va «intensifier» l’offensive au Liban pour «écraser» le Hezbollah",
+    "sessionLabel": "26/05/2026 à 07:14:04",
+    "question": "Faut-il soutenir l'intensification de l'offensive israélienne au Liban contre le Hezbollah ?",
+    "positionA": "Oui, il faut écraser le Hezbollah pour garantir la sécurité d'Israël.",
+    "positionB": "Non, cette intensification risque d'aggraver la crise humanitaire et régionale.",
+    "theme": "International",
+    "resume": "Le Premier ministre israélien Benjamin Netanyahou a annoncé une intensification de l'offensive militaire d'Israël au Liban. Cette décision vise à écraser le groupe armé Hezbollah, considéré comme une menace sécuritaire majeure.\n\nDans le contexte du conflit au Moyen-Orient, Israël cherche à affaiblir la capacité militaire du Hezbollah par une accélération des actions ciblées sur ses positions au Liban. Cette montée en intensité traduit une volonté claire de modifier le rapport de force dans la région.\n\nCette évolution soulève des enjeux importants, notamment en termes de conséquences régionales et humanitaires. La question de la légitimité et des effets de cette intensification est désormais au cœur du débat public. Faut-il soutenir l'intensification de l'offensive israélienne au Liban contre le Hezbollah ?",
+    "sources": "Le Figaro, BFMTV, France 24",
+    "links": [
+      {
+        "title": "Israël veut \"intensifier\" son offensive au Liban pour écraser le Hezbollah",
+        "url": "https://www.france24.com/fr/moyen-orient/20260525-liban-israel-veut-intensifier-offensive-hezbollah-frappes-netanyahu",
+        "source": "France 24",
+        "type": "article",
+        "date": "26/05/2026",
+        "checked": true
+      },
+      {
+        "title": "\"J'ai demandé à accélérer\": Benjamin Netanyahu affirme qu'Israël va \"intensifier\" l'offensive au Liban pour \"écraser\" le Hezbollah",
+        "url": "https://www.bfmtv.com/international/moyen-orient/israel/j-ai-demande-a-accelerer-benjamin-netanyahu-affirme-qu-israel-va-intensifier-l-offensive-au-liban-pour-ecraser-le-hezbollah_AD-202605250841.html",
+        "source": "BFMTV",
+        "type": "article",
+        "date": "26/05/2026",
+        "checked": true
+      },
+      {
+        "title": "EN DIRECT - Guerre au Moyen-Orient : Netanyahou affirme qu’Israël va «intensifier» l’offensive au Liban pour «écraser» le Hezbollah",
+        "url": "https://www.lefigaro.fr/international/en-direct-guerre-au-moyen-orient-marco-rubio-affirme-qu-israel-aura-toujours-le-droit-de-se-defendre-20260525",
+        "source": "Le Figaro",
+        "type": "article",
+        "date": "25/05/2026",
+        "checked": true
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "israel-mph1fbfh",
+      "matchedStoryTitle": "Israël",
+      "previousEpisodeTitle": "L’accord USA-Iran menace-t-il la sécurité d’Israël ?",
+      "previousEpisodeUrl": "http://localhost:3001/debate?id=553",
+      "confidence": 0.9,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {},
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "offensive israélienne au Liban",
+      "Benjamin Netanyahu",
+      "Hezbollah",
+      "guerre au Moyen-Orient",
+      "Liban",
+      "I raël"
+    ],
+    "sentAt": "2026-05-26T03:19:20.482Z"
+  },
+  {
     "subject": "Canicule : vigilance jaune dans 13 départements de l’Ouest lundi, une première pour le mois de mai",
     "sessionLabel": "25/05/2026 à 08:45:27",
     "question": "Faut-il renforcer les alertes canicule dès les premières chaleurs inhabituelles en mai ?",

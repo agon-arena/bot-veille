@@ -334,5 +334,41 @@
     "orientation": "géopolitique / souverainiste",
     "url": "https://www.youtube.com/@omertamediaoff",
     "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UC3lacWBPVK-JfmGyyHx4AAw"
+  },
+  {
+    "nom": "C à vous",
+    "orientation": "débat / service public",
+    "url": "https://www.youtube.com/@CaVousFrance5",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCzMZUE_W7iorKjQWUxhsuBg"
+  },
+  {
+    "nom": "Stade 2",
+    "orientation": "sport / service public",
+    "url": "https://www.youtube.com/@stade2officiel",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCHc-VZKrIkbSQ1b5swP3lZg"
+  },
+  {
+    "nom": "Konbini News",
+    "orientation": "actualité / jeunesse",
+    "url": "https://www.youtube.com/@konbini",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCDRBRLjFHK7gu_h2-MmhL9A"
+  },
+  {
+    "nom": "Les Jours",
+    "orientation": "investigation / gauche",
+    "url": "https://www.youtube.com/@Lesjours",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCq_L0zmm4uoHFxnnkJHFbSA"
+  },
+  {
+    "nom": "L'Obs",
+    "orientation": "centre-gauche",
+    "url": "https://www.youtube.com/@lenouvelobs",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCvG0OKqvCFMYTiJ1Rnd5XBQ"
+  },
+  {
+    "nom": "POLITICO Europe",
+    "orientation": "européen / libéral",
+    "url": "https://www.youtube.com/@POLITICO",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCHuV9Y0L1o5oa8XPuSr_GOA"
   }
 ]

@@ -902,7 +902,8 @@ Règle centrale :
 - il doit définir le mieux l'actualité ;
 - il doit être immédiatement compréhensible seul, sans lire le titre ;
 - il doit nommer l'objet central de l'actualité : acteur, pays, institution, lieu, événement, loi, conflit, affaire ou phénomène précis ;
-- il ne doit pas être trop générique.
+- il ne doit pas être trop générique ;
+- il doit faire 30 caractères maximum, espaces compris.
 
 Pour "keywords" :
 - donne 3 à 7 tags secondaires ;
