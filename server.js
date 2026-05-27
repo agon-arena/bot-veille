@@ -3476,7 +3476,77 @@ const CERTAMEN_HTML = path.join(__dirname, "certamen.html");
 
 app.get("/certamen", requireMixteAuth, (req, res) => {
   if (!fs.existsSync(CERTAMEN_HTML)) {
-    return sendMissingPage(res, "Certamen", "Le mode Certamen n'a pas encore été lancé. Cliquez pour lancer la première analyse.");
+    return res.send(`<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Certamen — Première analyse</title>
+  <style>
+    body { font-family: system-ui; max-width: 500px; margin: 80px auto; padding: 0 16px; text-align: center; color: #111; }
+    nav { display: flex; gap: 16px; justify-content: center; margin-bottom: 40px; }
+    nav a { color: #555; font-size: 0.9rem; text-decoration: none; }
+    nav a:hover { color: #111; }
+    h1 { font-size: 1.3rem; margin-bottom: 8px; }
+    p { color: #555; margin-bottom: 24px; }
+    #launch-btn { background: #111; color: #fff; border: none; border-radius: 999px; padding: 12px 28px; font: inherit; font-size: 1rem; font-weight: 700; cursor: pointer; margin-bottom: 12px; }
+    #launch-btn:disabled { opacity: 0.5; cursor: wait; }
+    #status { font-size: 0.88rem; color: #555; min-height: 20px; }
+  </style>
+</head>
+<body>
+  <nav><a href="/mixte">Veille mixte</a><a href="/admin">Admin</a></nav>
+  <h1>Certamen</h1>
+  <p>Le mode Certamen n'a pas encore été lancé.</p>
+  <button id="launch-btn" onclick="launch()">Lancer la première analyse</button>
+  <div id="status"></div>
+  <script>
+    (async function checkRunning() {
+      try {
+        var r = await fetch('/certamen/progress?t=' + Date.now());
+        var p = await r.json();
+        if (!p.running) return;
+        var btn = document.getElementById('launch-btn');
+        var status = document.getElementById('status');
+        if (btn) { btn.disabled = true; btn.textContent = 'Analyse en cours…'; }
+        if (status) status.textContent = 'Analyse déjà en cours, veuillez patienter…';
+        var poll = setInterval(async function() {
+          try {
+            var r2 = await fetch('/certamen/progress?t=' + Date.now());
+            var p2 = await r2.json();
+            if (p2.step && status) status.textContent = 'Étape ' + p2.stepIndex + ' / ' + p2.stepTotal + ' — ' + p2.step + (p2.detail ? ' (' + p2.detail + ')' : '');
+            if (!p2.running && p2.done) { clearInterval(poll); window.location.reload(); }
+          } catch(e) {}
+        }, 2000);
+      } catch(e) {}
+    })();
+    async function launch() {
+      var btn = document.getElementById('launch-btn');
+      var status = document.getElementById('status');
+      btn.disabled = true;
+      btn.textContent = 'Analyse en cours…';
+      status.textContent = 'Collecte et analyse IA…';
+      try {
+        await fetch('/certamen/refresh', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' });
+        var seenRunning = false;
+        var poll = setInterval(async function() {
+          try {
+            var r = await fetch('/certamen/progress?t=' + Date.now());
+            var p = await r.json();
+            if (p.running) seenRunning = true;
+            if (p.step) status.textContent = 'Étape ' + p.stepIndex + ' / ' + p.stepTotal + ' — ' + p.step + (p.detail ? ' (' + p.detail + ')' : '');
+            if (seenRunning && p.done) { clearInterval(poll); window.location.reload(); }
+          } catch(e) {}
+        }, 2000);
+        setTimeout(function() { clearInterval(poll); window.location.reload(); }, 15 * 60 * 1000);
+      } catch(e) {
+        status.textContent = 'Erreur : ' + e.message;
+        btn.disabled = false;
+        btn.textContent = 'Réessayer';
+      }
+    }
+  </script>
+</body>
+</html>`);
   }
   res.sendFile(CERTAMEN_HTML);
 });
