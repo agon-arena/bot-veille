@@ -5833,7 +5833,10 @@ async function main(minSources = MIN_DISTINCT_SOURCES) {
 const CERTAMEN_OUTPUT_HTML = "certamen.html";
 const CERTAMEN_HISTORY_FILE = "certamen-sessions.json";
 const CERTAMEN_MAX_SESSIONS = 6;
-const MAX_CERTAMEN_SUBJECTS_FOR_AI = 40;
+const MAX_CERTAMEN_SUBJECTS_FOR_AI = (() => {
+  const env = Number(process.env.CERTAMEN_AI_LIMIT);
+  return Number.isFinite(env) && env > 0 ? Math.round(env) : 120;
+})();
 
 const CERTAMEN_DEBATE_MARKERS = [
   "faut-il", "doit-on", "peut-on", "interdire", "autoriser", "réformer",
@@ -5852,30 +5855,48 @@ const CERTAMEN_EXCLUDE_KEYWORDS = [
   "en direct :", "live :", "direct :"
 ];
 
+function certamenComputeScore(subject) {
+  const text = [
+    subject.subject,
+    ...((subject.contents || []).map(function(c) {
+      return [c.title || "", c.summary || ""].join(" ");
+    }))
+  ].join(" ").toLowerCase();
+
+  const markerCount = CERTAMEN_DEBATE_MARKERS.filter(function(m) {
+    return text.includes(m);
+  }).length;
+
+  const excludeCount = CERTAMEN_EXCLUDE_KEYWORDS.filter(function(k) {
+    return text.includes(k);
+  }).length;
+
+  const sourceCount = Number(subject.sourceCount || 1);
+  const hasMultiSources = sourceCount > 1;
+  const hasMixedTypes = subject.articleCount > 0 && subject.youtubeCount > 0;
+
+  // Score automatique : marqueurs débat = signal principal, sources = bonus
+  const score = (markerCount * 3)
+    + (hasMultiSources ? Math.min(sourceCount, 5) * 0.5 : 0)
+    + (hasMixedTypes ? 1 : 0);
+
+  // Exclure si : mots d'exclusion présents ET aucun marqueur débat
+  const excluded = excludeCount > 0 && markerCount === 0;
+
+  return { text, markerCount, excludeCount, score, excluded };
+}
+
 function certamenPrefilter(subjects) {
-  return subjects.map(function(subject) {
-    const text = [
-      subject.subject,
-      ...((subject.contents || []).map(function(c) {
-        return [c.title || "", c.summary || ""].join(" ");
-      }))
-    ].join(" ").toLowerCase();
-
-    const markerCount = CERTAMEN_DEBATE_MARKERS.filter(function(m) {
-      return text.includes(m);
-    }).length;
-
-    const excludeCount = CERTAMEN_EXCLUDE_KEYWORDS.filter(function(k) {
-      return text.includes(k);
-    }).length;
-
-    // Exclure seulement si : marqueurs exclusion présents ET aucun marqueur débat
-    const excluded = excludeCount > 0 && markerCount === 0;
-    return Object.assign({}, subject, {
-      _certamenMarkers: markerCount,
-      _certamenExcluded: excluded
-    });
-  }).filter(function(s) { return !s._certamenExcluded; });
+  return subjects
+    .map(function(subject) {
+      const { markerCount, score, excluded } = certamenComputeScore(subject);
+      return Object.assign({}, subject, {
+        _certamenMarkers: markerCount,
+        _certamenScore: score,
+        _certamenExcluded: excluded
+      });
+    })
+    .filter(function(s) { return !s._certamenExcluded; });
 }
 
 async function analyzeCertamenSubjectWithAI(subject) {
@@ -6246,8 +6267,16 @@ async function runCertamenSession() {
   const prefiltered = certamenPrefilter(rawSubjects);
   console.log(`Certamen : ${prefiltered.length} sujet(s) après préfiltrage sans IA.`);
 
-  setCertamenProgress(4, "Analyse IA Certamen", `0 / ${Math.min(prefiltered.length, MAX_CERTAMEN_SUBJECTS_FOR_AI)}`);
-  const candidates = prefiltered.slice(0, MAX_CERTAMEN_SUBJECTS_FOR_AI);
+  // Tri par score automatique décroissant avant envoi à l'IA
+  const sortedCandidates = prefiltered.slice().sort(function(a, b) {
+    return (b._certamenScore || 0) - (a._certamenScore || 0);
+  });
+
+  const limit = MAX_CERTAMEN_SUBJECTS_FOR_AI;
+  const candidates = sortedCandidates.slice(0, limit);
+  console.log(`Certamen : ${candidates.length} sujet(s) envoyés à l'IA sur limite ${limit}.`);
+
+  setCertamenProgress(4, "Analyse IA Certamen", `0 / ${candidates.length}`);
   const analyzed = [];
 
   for (let i = 0; i < candidates.length; i++) {
@@ -6262,7 +6291,7 @@ async function runCertamenSession() {
     .filter(function(s) { return s.certamen.editorialDecision !== "avoid"; })
     .sort(function(a, b) { return (b.certamen.debatePotentialScore || 0) - (a.certamen.debatePotentialScore || 0); });
 
-  console.log(`Certamen : ${debatables.length} sujet(s) débattable(s) trouvé(s).`);
+  console.log(`Certamen : ${debatables.length} sujet(s) débattable(s) retenu(s).`);
 
   const session = {
     generatedAt: startedAt.toISOString(),
