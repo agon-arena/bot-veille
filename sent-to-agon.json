@@ -1,5 +1,251 @@
 [
   {
+    "subject": "Bombardements israéliens dans l’est du Liban avec plusieurs morts et renforts envoyés",
+    "sessionLabel": "26/05/2026 à 17:55:20",
+    "question": "La France doit-elle soutenir les renforts israéliens malgré les risques d’escalade au Liban ?",
+    "positionA": "Soutenir les renforts israéliens",
+    "positionB": "Appeler à la désescalade et au dialogue",
+    "theme": "International",
+    "resume": "Des bombardements israéliens ont touché le village de Machghara, dans l’est du Liban, faisant au moins une dizaine de morts. En réaction, Israël a envoyé des renforts militaires dans la région, accentuant la tension déjà forte.\n\nD’un côté, ces frappes sont vues comme une réponse nécessaire à des menaces perçues, justifiant un renforcement militaire. De l’autre, elles risquent d’aggraver l’instabilité locale et d’entraîner une escalade plus large, posant la question d’un retour au dialogue.\n\nLa France doit-elle soutenir les renforts israéliens malgré les risques d’escalade au Liban ?\n\nJ.L Grasso",
+    "sources": "Le Monde, Euronews France, Euronews FR, BFMTV, L'Express",
+    "links": [
+      {
+        "title": "EN DIRECT, guerre au Moyen-Orient : au moins 11 morts dans le bombardement israélien de Machghara, à l’est du Liban",
+        "url": "https://www.lemonde.fr/international/live/2026/05/26/en-direct-guerre-au-moyen-orient-l-armee-israelienne-affirme-avoir-frappe-plus-d-une-centaine-d-infrastructures-du-hezbollah-dans-le-sud-du-liban_6691823_3210.html",
+        "source": "Le Monde",
+        "type": "article",
+        "date": "26/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Frappe israélienne dans un village de l’est du Liban: 12 morts, Israël envoie des renforts",
+        "url": "http://fr.euronews.com/2026/05/26/frappe-israelienne-dans-un-village-de-lest-du-liban-12-morts-israel-envoie-des-renforts",
+        "source": "Euronews FR",
+        "type": "article",
+        "date": "26/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Guerre au Moyen-Orient: les Gardiens de la Révolution déclarent avoir abattu un drone américain dans son espace aérien",
+        "url": "https://www.bfmtv.com/international/moyen-orient/iran/video-guerre-au-moyen-orient-les-gardiens-de-la-revolution-declarent-avoir-abattu-un-drone-americain-dans-son-espace-aerien_VN-202605260535.html",
+        "source": "BFMTV",
+        "type": "article",
+        "date": "26/05/2026",
+        "checked": false
+      },
+      {
+        "title": "Guerre au Moyen-Orient : l'armée américaine annonce avoir frappé l'Iran",
+        "url": "https://www.lexpress.fr/monde/proche-moyen-orient/guerre-au-moyen-orient-larmee-americaine-annonce-avoir-frappe-liran-ABT2HHYKPJEN3KIQSV5WFRTDDY/",
+        "source": "L'Express",
+        "type": "article",
+        "date": "26/05/2026",
+        "checked": false
+      },
+      {
+        "title": "",
+        "url": "https://www.youtube.com/watch?v=LT6J9IVmmZ4",
+        "source": "Euronews France",
+        "type": "youtube",
+        "date": "26/05/2026",
+        "checked": true
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "israel-mph1fbfh",
+      "matchedStoryTitle": "Israël",
+      "previousEpisodeTitle": "Faut-il soutenir l'intensification de l'offensive israélienne au Liban contre le Hezbollah ?",
+      "previousEpisodeUrl": "http://localhost:3001/debate?id=566",
+      "confidence": 0.85,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {},
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "Machghara",
+      "Hezbollah",
+      "Gardien  de la Révolution",
+      "Iran",
+      "armée américaine",
+      "renfort  i raélien"
+    ],
+    "sentAt": "2026-05-27T05:41:57.036Z"
+  },
+  {
+    "subject": "Enquête et révélations sur les tirs lors de la manifestation de Sainte-Soline",
+    "sessionLabel": "26/05/2026 à 17:55:20",
+    "question": "Faut-il renforcer le contrôle judiciaire des forces de l’ordre lors des manifestations ?",
+    "positionA": "Renforcer le contrôle judiciaire",
+    "positionB": "Maintenir l’autonomie policière",
+    "theme": "Politique",
+    "resume": "Lors de la manifestation de Sainte-Soline, un tir de grenade a failli coûter la vie à un manifestant, Serge Duteuil-Graziani. Deux ans plus tard, une enquête conjointe de Médiapart et Libération a identifié le gendarme responsable grâce à l’analyse minutieuse d’images vidéo. Cette révélation établit clairement la responsabilité d’un membre des forces de l’ordre dans cet incident grave.\n\nLe problème, c’est que cette identification relance le débat sur la manière dont la force est utilisée lors des manifestations et sur la capacité des institutions à contrôler les actions individuelles des agents. D’un côté, certains appellent à un renforcement du contrôle judiciaire pour garantir la transparence et la responsabilité. De l’autre, d’autres défendent l’autonomie policière, estimant qu’elle est nécessaire pour assurer l’efficacité et la rapidité des interventions.\n\nFaut-il renforcer le contrôle judiciaire des forces de l’ordre lors des manifestations ?\n\nJ.L Grasso",
+    "sources": "Reporterre, Mediapart, Libération, Franceinfo",
+    "links": [
+      {
+        "title": "Sainte-Soline : le gendarme qui a failli tuer Serge Duteuil-Graziani identifié",
+        "url": "https://reporterre.net/Sainte-Soline-le-gendarme-qui-a-failli-tuer-Serge-Duteuil-Graziani-identifie",
+        "source": "Reporterre",
+        "type": "article",
+        "date": "26/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Révélations sur Sainte-Soline : on a identifié le gendarme qui a failli tuer Serge Duteuil-Graziani",
+        "url": "https://www.liberation.fr/societe/police-justice/revelations-sur-sainte-soline-on-a-identifie-le-gendarme-qui-a-failli-tuer-serge-duteuil-graziani-20260526_VZKVNHGO6VCYLONH6L6JF6BINI/",
+        "source": "Libération",
+        "type": "article",
+        "date": "26/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Sainte-Soline: révélations sur le tir tendu qui a failli tuer Serge Duteuil-Graziani",
+        "url": "https://www.mediapart.fr/journal/france/260526/sainte-soline-revelations-sur-le-tir-tendu-qui-failli-tuer-serge-duteuil-graziani",
+        "source": "Mediapart",
+        "type": "article",
+        "date": "26/05/2026",
+        "checked": false
+      },
+      {
+        "title": "Sainte-Soline : deux ans après, une enquête vidéo de Médiapart et Libération identifie le tir qui a failli tuer un manifestant",
+        "url": "https://france3-regions.franceinfo.fr/occitanie/haute-garonne/toulouse/sainte-soline-deux-ans-apres-une-enquete-video-de-mediapart-et-liberation-identifie-le-tir-qui-a-failli-tuer-un-manifestant-3357067.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "type": "article",
+        "date": "26/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Sainte-Soline : le tir tendu qui a failli tuer un manifestant feat ⁠@liberation #shorts #mediapart",
+        "url": "https://www.youtube.com/shorts/0l9JhxT5-xE",
+        "source": "Mediapart",
+        "type": "youtube",
+        "date": "26/05/2026",
+        "checked": true
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "les-violences-policieres-ravivent-les-tensions-e-mphv0lsu",
+      "matchedStoryTitle": "Les violences policières ravivent les tensions entre sécurité, justice et libertés publiques",
+      "previousEpisodeTitle": "",
+      "previousEpisodeUrl": "",
+      "confidence": 0.85,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {},
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "tirs à Sainte-Soline",
+      "Serge Duteuil-Graziani",
+      "gendarmerie",
+      "enquête vidéo",
+      "manife tant"
+    ],
+    "sentAt": "2026-05-27T05:38:13.506Z"
+  },
+  {
+    "subject": "Tensions et frappes entre États-Unis et Iran dans le contexte du cessez-le-feu au Moyen-Orient",
+    "sessionLabel": "26/05/2026 à 17:55:20",
+    "question": "Tensions et frappes entre États-Unis et Iran dans le contexte du cessez-le-feu au Moyen-Orient",
+    "positionA": "",
+    "positionB": "",
+    "theme": "International",
+    "resume": "",
+    "sources": "Libération, L'Obs, HuffPost France, Franceinfo, La Croix, France 24, BFMTV, Euronews FR",
+    "links": [
+      {
+        "title": "EN DIRECT - Moyen-Orient : l’Iran accuse les Etats-Unis d’avoir violé le cessez-le-feu ces dernières 48 heures",
+        "url": "https://www.liberation.fr/international/moyen-orient/en-direct-moyen-orient-les-etats-unis-frappent-des-sites-de-missiles-en-iran-20260526_VN3NKJOZSJEV5BTSAIEHAI576M/",
+        "source": "Libération",
+        "type": "article",
+        "date": "26/05/2026",
+        "checked": false
+      },
+      {
+        "title": "Les Etats-Unis frappent l’Iran malgré l’avancée des négociations pour régler la guerre au Moyen-Orient",
+        "url": "https://www.nouvelobs.com/monde/20260526.OBS115239/les-etats-unis-frappent-l-iran-malgre-l-avancee-des-negociations-pour-regler-la-guerre-au-moyen-orient.html",
+        "source": "L'Obs",
+        "type": "article",
+        "date": "26/05/2026",
+        "checked": false
+      },
+      {
+        "title": "L’Iran à nouveau frappé par les États-Unis malgré le cessez-le-feu et les progrès diplomatiques",
+        "url": "https://www.huffingtonpost.fr/international/article/l-iran-a-nouveau-frappe-par-les-etats-unis-malgre-le-cessez-le-feu-et-les-progres-diplomatiques_264100.html",
+        "source": "HuffPost France",
+        "type": "article",
+        "date": "26/05/2026",
+        "checked": false
+      },
+      {
+        "title": "Guerre au Moyen-Orient : l'Iran accuse les Etats-Unis d'avoir violé le cessez-le-feu",
+        "url": "https://www.franceinfo.fr/monde/iran/guerre-entre-les-etats-unis-israel-et-l-iran/direct-guerre-au-moyen-orient-les-etats-unis-annoncent-avoir-mene-des-frappes-dans-le-sud-de-l-iran-inquietudes-pour-la-suite-des-negociations_8028455.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "type": "article",
+        "date": "26/05/2026",
+        "checked": false
+      },
+      {
+        "title": "DIRECT. Guerre au Moyen-Orient : l’Iran accuse les États-Unis de violer le cessez-le-feu",
+        "url": "https://www.la-croix.com/international/direct-guerre-iran-israel-usa-jour-88-moyen-orient-bilan-resume-aujourdhui-20260526",
+        "source": "La Croix",
+        "type": "article",
+        "date": "26/05/2026",
+        "checked": false
+      },
+      {
+        "title": "Les États-Unis frappent l'Iran malgré les progrès des négociations",
+        "url": "https://www.france24.com/fr/vid%C3%A9o/20260526-les-%C3%A9tats-unis-frappent-l-iran-malgr%C3%A9-les-progr%C3%A8s-des-n%C3%A9gociations",
+        "source": "France 24",
+        "type": "article",
+        "date": "26/05/2026",
+        "checked": false
+      },
+      {
+        "title": "Les États-Unis disent avoir mené des frappes préventives sur le sud de l’Iran",
+        "url": "http://fr.euronews.com/2026/05/26/larmee-americaine-lance-de-nouvelles-frappes-en-iran-dont-des-sites-de-missiles",
+        "source": "Euronews FR",
+        "type": "article",
+        "date": "26/05/2026",
+        "checked": false
+      },
+      {
+        "title": "",
+        "url": "https://www.youtube.com/watch?v=FQI8aRQqiEw",
+        "source": "BFMTV",
+        "type": "youtube",
+        "date": "26/05/2026",
+        "checked": false
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "01-les-conflits-au-moyen-orient-recomposent-les-equilibres-regionaux",
+      "matchedStoryTitle": "Les conflits au Moyen-Orient recomposent les équilibres régionaux",
+      "previousEpisodeTitle": "Les États-Unis doivent-ils suspendre leurs frappes pour préserver le cessez-le-feu avec l’Iran ?",
+      "previousEpisodeUrl": "http://localhost:3001/debate?id=588",
+      "confidence": 0.85,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {
+        "main_actors_match": true,
+        "central_tension_match": true,
+        "temporal_continuity": true,
+        "editorial_theme_match": true,
+        "strong_keywords_match": true
+      },
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "Frappes USA-Iran au Moyen-Orient",
+      "ce ez-le-feu",
+      "négociation  diplomatique",
+      "Iran",
+      "État -Uni",
+      "ite  de mi ile",
+      "guerre au Moyen-Orient"
+    ],
+    "sentAt": "2026-05-27T04:20:48.765Z"
+  },
+  {
     "subject": "Tensions et frappes entre États-Unis et Iran dans le contexte du cessez-le-feu au Moyen-Orient",
     "sessionLabel": "26/05/2026 à 17:55:20",
     "question": "Les États-Unis doivent-ils suspendre toute action militaire pour préserver le cessez-le-feu avec l’I",

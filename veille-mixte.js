@@ -50,27 +50,34 @@ const DEFAULT_FETCH_HEADERS = {
 const AGON_THEMES = [
   "Politique",
   "International",
-  "Économie / emploi",
-  "Société / éducation",
-  "Sciences et technologie",
+  "Économie - emploi",
+  "Société - éducation",
+  "Sciences - technologie",
   "Climat - environnement",
-  "Justice / faits divers",
-  "Culture - tendances",
+  "Justice - faits divers",
+  "Culture - modes",
+  "Philosophie - sciences sociales",
   "Médias - divertissements",
   "Sports - loisirs",
   "Santé - bien-être",
-  "Vie personnelle et modes de vie",
+  "Vie personnelle - modes de vie",
   "Espace jeunes"
 ];
 
 const AGON_THEME_ALIASES = {
   "Politique, économie et relations internationales": "Politique",
-  "Société, éducation et justice": "Société / éducation",
-  "Sciences, technologies et environnement": "Sciences et technologie",
-  "Culture, modes et médias": "Culture - tendances",
+  "Société, éducation et justice": "Société - éducation",
+  "Sciences, technologies et environnement": "Sciences - technologie",
+  "Culture, modes et médias": "Culture - modes",
   "Santé, corps et bien-être": "Santé - bien-être",
   "Sport, loisirs et passions": "Sports - loisirs",
-  "Espace jeunes (collégiens - lycéens)": "Espace jeunes"
+  "Espace jeunes (collégiens - lycéens)": "Espace jeunes",
+  "Économie / emploi": "Économie - emploi",
+  "Société / éducation": "Société - éducation",
+  "Sciences et technologie": "Sciences - technologie",
+  "Justice / faits divers": "Justice - faits divers",
+  "Culture - tendances": "Culture - modes",
+  "Vie personnelle et modes de vie": "Vie personnelle - modes de vie"
 };
 
 function normalizeAgonTheme(theme) {
@@ -720,7 +727,7 @@ function normalizeKeywordList(values, max = 8) {
 
   tokens.forEach((keyword) => {
     if (!keyword) return;
-    if (keyword.length < 2 || keyword.length > 40) return;
+    if (keyword.length < 2 || keyword.length > 28) return;
     const lower = keyword.toLowerCase();
     if (seen.has(lower)) return;
     seen.add(lower);
@@ -3744,7 +3751,7 @@ function generateHtml(sessions) {
           .replace(/[?!.;,:\s]+$/g, "")
           .replace(/\s+/g, " ")
           .trim();
-        if (!keyword || keyword.length < 2 || keyword.length > 40) return;
+        if (!keyword || keyword.length < 2 || keyword.length > 28) return;
         const lower = keyword.toLowerCase();
         if (seen.has(lower)) return;
         seen.add(lower);
@@ -3787,7 +3794,8 @@ function generateHtml(sessions) {
       const keywordsWrap = subjectEl?.querySelector(".news-keywords");
       if (!keywordsWrap) return;
       const normalized = normalizeKeywordListClient(keywords, 10);
-      const normalizedMainKeyword = String(mainKeyword || normalized[0] || "").trim();
+      const rawMain = String(mainKeyword || "").trim();
+      const normalizedMainKeyword = (rawMain && rawMain.length <= 28 ? rawMain : (normalized[0] || "")).trim();
       const secondaryKeywords = normalized.filter(function(keyword) { return keyword && keyword !== normalizedMainKeyword; });
       const addRow = keywordsWrap.querySelector(".news-keyword-add-row");
       keywordsWrap.querySelectorAll(".news-keyword-chip").forEach(function(chip) { chip.remove(); });
@@ -5827,28 +5835,4 @@ localApiServer.on("error", (error) => {
   console.error("Erreur API mixte locale :", error.message);
 });
 
-const AUTO_COLLECT_MIN_INTERVAL_HOURS = 2;
-
-function getLastSessionAgeHours() {
-  try {
-    const sessions = JSON.parse(fs.readFileSync(HISTORY_FILE, "utf8"));
-    if (!Array.isArray(sessions) || sessions.length === 0) return Infinity;
-    const last = new Date(sessions[0].generatedAt);
-    if (isNaN(last.getTime())) return Infinity;
-    return (Date.now() - last.getTime()) / (1000 * 60 * 60);
-  } catch (e) {
-    return Infinity;
-  }
-}
-
-if (process.env.BOT_VEILLE_API_ONLY === "1") {
-  console.log("Mode API seule : collecte des sources non lancée.");
-} else {
-  const ageHours = getLastSessionAgeHours();
-  if (ageHours < AUTO_COLLECT_MIN_INTERVAL_HOURS) {
-    console.log(`Dernière session il y a ${ageHours.toFixed(1)}h — collecte automatique ignorée (seuil : ${AUTO_COLLECT_MIN_INTERVAL_HOURS}h).`);
-  } else {
-    console.log(`Dernière session il y a ${ageHours === Infinity ? "jamais" : ageHours.toFixed(1) + "h"} — lancement de la collecte.`);
-    main();
-  }
-}
+console.log("Bot veille prêt — collecte manuelle uniquement (bouton Mise à jour).");

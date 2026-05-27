@@ -1,6 +1,233 @@
 [
   {
     "action": "save",
+    "subject": "Bombardements israéliens dans l’est du Liban avec plusieurs morts et renforts envoyés",
+    "debateScore": 9,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "Le Monde, Euronews France, Euronews FR, BFMTV, L'Express",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.lemonde.fr/international/live/2026/05/26/en-direct-guerre-au-moyen-orient-l-armee-israelienne-affirme-avoir-frappe-plus-d-une-centaine-d-infrastructures-du-hezbollah-dans-le-sud-du-liban_6691823_3210.html",
+        "source": "Le Monde",
+        "title": "EN DIRECT, guerre au Moyen-Orient : au moins 11 morts dans le bombardement israélien de Machghara, à l’est du Liban",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "http://fr.euronews.com/2026/05/26/frappe-israelienne-dans-un-village-de-lest-du-liban-12-morts-israel-envoie-des-renforts",
+        "source": "Euronews FR",
+        "title": "Frappe israélienne dans un village de l’est du Liban: 12 morts, Israël envoie des renforts",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.bfmtv.com/international/moyen-orient/iran/video-guerre-au-moyen-orient-les-gardiens-de-la-revolution-declarent-avoir-abattu-un-drone-americain-dans-son-espace-aerien_VN-202605260535.html",
+        "source": "BFMTV",
+        "title": "Guerre au Moyen-Orient: les Gardiens de la Révolution déclarent avoir abattu un drone américain dans son espace aérien",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.lexpress.fr/monde/proche-moyen-orient/guerre-au-moyen-orient-larmee-americaine-annonce-avoir-frappe-liran-ABT2HHYKPJEN3KIQSV5WFRTDDY/",
+        "source": "L'Express",
+        "title": "Guerre au Moyen-Orient : l'armée américaine annonce avoir frappé l'Iran",
+        "thumbnail": ""
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/watch?v=LT6J9IVmmZ4",
+        "source": "Euronews France",
+        "title": "",
+        "thumbnail": "https://i.ytimg.com/vi/LT6J9IVmmZ4/hqdefault.jpg"
+      }
+    ],
+    "sessionLabel": "26/05/2026 à 17:55:20",
+    "controversyLevel": "très fort",
+    "ai": {
+      "arenaMode": "positions",
+      "debateScore": 9,
+      "controversyLevel": "très fort",
+      "debateQuestion": "",
+      "resume": "",
+      "keywords": [
+        "Hezbollah",
+        "Gardien  de la Révolution",
+        "Iran",
+        "armée américaine",
+        "renfort  i raélien"
+      ],
+      "selectedLinks": [
+        "https://www.lemonde.fr/international/live/2026/05/26/en-direct-guerre-au-moyen-orient-l-armee-israelienne-affirme-avoir-frappe-plus-d-une-centaine-d-infrastructures-du-hezbollah-dans-le-sud-du-liban_6691823_3210.html",
+        "https://www.youtube.com/watch?v=LT6J9IVmmZ4",
+        "http://fr.euronews.com/2026/05/26/frappe-israelienne-dans-un-village-de-lest-du-liban-12-morts-israel-envoie-des-renforts"
+      ],
+      "agonTheme": "International",
+      "positionA": "",
+      "positionB": "",
+      "sourceSubject": "Bombardements israéliens dans l’est du Liban avec plusieurs morts et renforts envoyés",
+      "fullArticleState": "short",
+      "mainKeyword": "Machghara",
+      "storyLink": {
+        "story_decision": "existing_story",
+        "matched_story_id": "israel-mph1fbfh",
+        "matched_story_title": "Israël",
+        "matched_story_summary": "",
+        "previous_episode_id": "566",
+        "previous_episode_title": "Faut-il soutenir l'intensification de l'offensive israélienne au Liban contre le Hezbollah ?",
+        "previous_episode_summary": "Le Premier ministre israélien Benjamin Netanyahou a annoncé une intensification de l'offensive militaire d'Israël au Liban. Cette décision vise à écraser le groupe armé Hezbollah, considéré comme une menace sécuritaire majeure.\n\nDans le contexte du conflit au Moyen-Orient, Israël cherche à affaiblir la capacité militaire du Hezbollah par une accélération des actions ciblées sur ses positions au Liban. Cette montée en intensité traduit une volonté claire de modifier le rapport de force dans la région.\n\nCette évolution soulève des enjeux importants, notamment en termes de conséquences régionales et humanitaires. La question de la légitimité et des effets de cette intensification est désormais au cœur du débat public. Faut-il soutenir l'intensification de l'offensive israélienne au Liban contre le Hezbollah ?",
+        "previous_episode_url": "http://localhost:3001/debate?id=566",
+        "confidence": 0.85,
+        "reason": "L'histoire \"Israël\" nomme plus précisément l'acteur ou le lieu dominant de cette actualité.",
+        "criteria": {
+          "main_actors_match": true,
+          "central_tension_match": true,
+          "temporal_continuity": true,
+          "editorial_theme_match": true,
+          "strong_keywords_match": true
+        },
+        "new_story": {
+          "story_title": "",
+          "story_summary": "",
+          "main_actors": [
+            "bombardements",
+            "israeliens",
+            "liban"
+          ],
+          "central_tension": "La France doit-elle soutenir les renforts israéliens malgré les risques d’escalade au Liban ?",
+          "keywords": [
+            "bombardements",
+            "israeliens",
+            "liban",
+            "plusieurs",
+            "morts",
+            "renforts",
+            "envoyes",
+            "doit"
+          ],
+          "status": "active"
+        }
+      }
+    }
+  },
+  {
+    "action": "save",
+    "subject": "Enquête et révélations sur les tirs lors de la manifestation de Sainte-Soline",
+    "debateScore": 8,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "Reporterre, Mediapart, Libération, Franceinfo",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://reporterre.net/Sainte-Soline-le-gendarme-qui-a-failli-tuer-Serge-Duteuil-Graziani-identifie",
+        "source": "Reporterre",
+        "title": "Sainte-Soline : le gendarme qui a failli tuer Serge Duteuil-Graziani identifié",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.liberation.fr/societe/police-justice/revelations-sur-sainte-soline-on-a-identifie-le-gendarme-qui-a-failli-tuer-serge-duteuil-graziani-20260526_VZKVNHGO6VCYLONH6L6JF6BINI/",
+        "source": "Libération",
+        "title": "Révélations sur Sainte-Soline : on a identifié le gendarme qui a failli tuer Serge Duteuil-Graziani",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.mediapart.fr/journal/france/260526/sainte-soline-revelations-sur-le-tir-tendu-qui-failli-tuer-serge-duteuil-graziani",
+        "source": "Mediapart",
+        "title": "Sainte-Soline: révélations sur le tir tendu qui a failli tuer Serge Duteuil-Graziani",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://france3-regions.franceinfo.fr/occitanie/haute-garonne/toulouse/sainte-soline-deux-ans-apres-une-enquete-video-de-mediapart-et-liberation-identifie-le-tir-qui-a-failli-tuer-un-manifestant-3357067.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "title": "Sainte-Soline : deux ans après, une enquête vidéo de Médiapart et Libération identifie le tir qui a failli tuer un manifestant",
+        "thumbnail": ""
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/shorts/0l9JhxT5-xE",
+        "source": "Mediapart",
+        "title": "Sainte-Soline : le tir tendu qui a failli tuer un manifestant feat ⁠@liberation #shorts #mediapart",
+        "thumbnail": ""
+      }
+    ],
+    "sessionLabel": "26/05/2026 à 17:55:20",
+    "controversyLevel": "fort",
+    "ai": {
+      "arenaMode": "positions",
+      "debateScore": 8,
+      "controversyLevel": "fort",
+      "debateQuestion": "",
+      "resume": "",
+      "keywords": [
+        "Serge Duteuil-Graziani",
+        "gendarmerie",
+        "enquête vidéo",
+        "manife tant"
+      ],
+      "selectedLinks": [
+        "https://reporterre.net/Sainte-Soline-le-gendarme-qui-a-failli-tuer-Serge-Duteuil-Graziani-identifie",
+        "https://www.youtube.com/shorts/0l9JhxT5-xE",
+        "https://www.liberation.fr/societe/police-justice/revelations-sur-sainte-soline-on-a-identifie-le-gendarme-qui-a-failli-tuer-serge-duteuil-graziani-20260526_VZKVNHGO6VCYLONH6L6JF6BINI/",
+        "https://france3-regions.franceinfo.fr/occitanie/haute-garonne/toulouse/sainte-soline-deux-ans-apres-une-enquete-video-de-mediapart-et-liberation-identifie-le-tir-qui-a-failli-tuer-un-manifestant-3357067.html#xtor=RSS-3-[lestitres]"
+      ],
+      "agonTheme": "Justice - faits divers",
+      "positionA": "",
+      "positionB": "",
+      "sourceSubject": "Enquête et révélations sur les tirs lors de la manifestation de Sainte-Soline",
+      "fullArticleState": "short",
+      "mainKeyword": "tirs à Sainte-Soline",
+      "storyLink": {
+        "story_decision": "existing_story",
+        "matched_story_id": "les-violences-policieres-ravivent-les-tensions-e-mphv0lsu",
+        "matched_story_title": "Les violences policières ravivent les tensions entre sécurité, justice et libertés publiques",
+        "matched_story_summary": "",
+        "previous_episode_id": "",
+        "previous_episode_title": "",
+        "previous_episode_summary": "",
+        "previous_episode_url": "",
+        "confidence": 0.85,
+        "reason": "L'actualité porte sur une enquête concernant un tir de gendarmerie lors d'une manifestation, ce qui correspond précisément aux violences policières et aux tensions entre sécurité, justice et libertés publiques.",
+        "criteria": {
+          "main_actors_match": true,
+          "central_tension_match": true,
+          "temporal_continuity": true,
+          "editorial_theme_match": true,
+          "strong_keywords_match": true
+        },
+        "new_story": {
+          "story_title": "",
+          "story_summary": "",
+          "main_actors": [
+            "gendarmerie",
+            "manifestants"
+          ],
+          "central_tension": "Violences policières et enquêtes judiciaires",
+          "keywords": [
+            "Sainte-Soline",
+            "tir tendu",
+            "enquête vidéo",
+            "Serge Duteuil-Graziani"
+          ],
+          "status": "active"
+        }
+      }
+    }
+  },
+  {
+    "action": "save",
     "subject": "Tensions et frappes entre États-Unis et Iran dans le contexte du cessez-le-feu au Moyen-Orient",
     "debateScore": 8,
     "debateQuestion": "",
