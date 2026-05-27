@@ -3470,6 +3470,42 @@ app.post("/send-to-agon", requireMixteAuth, async (req, res) => {
   }
 });
 
+// ==================== ROUTES CERTAMEN ====================
+
+const CERTAMEN_HTML = path.join(__dirname, "certamen.html");
+
+app.get("/certamen", requireMixteAuth, (req, res) => {
+  if (!fs.existsSync(CERTAMEN_HTML)) {
+    return sendMissingPage(res, "Certamen", "Le mode Certamen n'a pas encore été lancé. Cliquez pour lancer la première analyse.");
+  }
+  res.sendFile(CERTAMEN_HTML);
+});
+
+app.post("/certamen/refresh", requireMixteAuth, async (req, res) => {
+  try {
+    await fetch("http://127.0.0.1:3002/certamen/refresh", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(req.body || {})
+    });
+    res.json({ ok: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.get("/certamen/progress", requireMixteAuth, async (req, res) => {
+  try {
+    const response = await fetch("http://127.0.0.1:3002/certamen/progress");
+    const data = await response.json();
+    res.json(data);
+  } catch (err) {
+    res.json({ running: false, done: false, stepIndex: 0, stepTotal: 4, step: "", detail: "" });
+  }
+});
+
+// ==================== FIN ROUTES CERTAMEN ====================
+
 const httpServer = app.listen(PORT, () => {
   console.log(`Serveur lancé sur le port ${PORT}`);
 });

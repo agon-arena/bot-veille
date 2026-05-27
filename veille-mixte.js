@@ -3521,6 +3521,7 @@ function generateHtml(sessions) {
 
   <div class="nav">
     <a href="/mixte">Veille mixte</a>
+    <a href="/certamen">Certamen</a>
     <a href="/admin">⚙ Admin</a>
     <button class="nav-refresh-btn" onclick="startRefresh()">↻ Actualiser</button>
   </div>
@@ -5826,6 +5827,480 @@ async function main(minSources = MIN_DISTINCT_SOURCES) {
     collectProgress = { ...collectProgress, running: false, done: true, collectReport: lastReport };
   }
 }
+
+// ==================== MODE CERTAMEN ====================
+
+const CERTAMEN_OUTPUT_HTML = "certamen.html";
+const CERTAMEN_HISTORY_FILE = "certamen-sessions.json";
+const CERTAMEN_MAX_SESSIONS = 6;
+const MAX_CERTAMEN_SUBJECTS_FOR_AI = 40;
+
+const CERTAMEN_DEBATE_MARKERS = [
+  "faut-il", "doit-on", "peut-on", "interdire", "autoriser", "réformer",
+  "taxer", "supprimer", "maintenir", "renforcer", "assouplir", "durcir",
+  "limiter", "obliger", "sanctionner", "contrôler", "réguler",
+  "polémique", "controverse", "débat", "divise", "inquiète",
+  "colère", "critique", "tribune", "sondage"
+];
+
+const CERTAMEN_EXCLUDE_KEYWORDS = [
+  "mort de", "décès de", "tué", "décédée", "décédé", "deuil",
+  "collision", "carambolage", "crash aérien", "naufrage",
+  "météo du", "températures prévues", "canicule attendue",
+  "résultats du match", "victoire de", "défaite de",
+  "programme tv", "ce soir à la télé",
+  "en direct :", "live :", "direct :"
+];
+
+function certamenPrefilter(subjects) {
+  return subjects.map(function(subject) {
+    const text = [
+      subject.subject,
+      ...((subject.contents || []).map(function(c) {
+        return [c.title || "", c.summary || ""].join(" ");
+      }))
+    ].join(" ").toLowerCase();
+
+    const markerCount = CERTAMEN_DEBATE_MARKERS.filter(function(m) {
+      return text.includes(m);
+    }).length;
+
+    const excludeCount = CERTAMEN_EXCLUDE_KEYWORDS.filter(function(k) {
+      return text.includes(k);
+    }).length;
+
+    // Exclure seulement si : marqueurs exclusion présents ET aucun marqueur débat
+    const excluded = excludeCount > 0 && markerCount === 0;
+    return Object.assign({}, subject, {
+      _certamenMarkers: markerCount,
+      _certamenExcluded: excluded
+    });
+  }).filter(function(s) { return !s._certamenExcluded; });
+}
+
+async function analyzeCertamenSubjectWithAI(subject) {
+  if (!openai) {
+    return {
+      isDebatable: subject._certamenMarkers > 0,
+      debatePotentialScore: subject._certamenMarkers > 0 ? 5 : 2,
+      editorialDecision: subject._certamenMarkers > 0 ? "reformulate" : "avoid",
+      reason: "Analyse IA non disponible.",
+      suggestedQuestion: subject.subject,
+      positionA: "Pour",
+      positionB: "Contre",
+      theme: AGON_THEMES[0],
+      risk: "medium"
+    };
+  }
+
+  const compactContents = (subject.contents || []).slice(0, 6).map(function(c) {
+    return {
+      source: c.source,
+      title: c.title,
+      summary: (c.summary || "").slice(0, 300),
+      type: c.type
+    };
+  });
+
+  const prompt = `Tu es un éditeur pour Agôn, une plateforme de débat public.
+
+Ta mission : évaluer si cette actualité peut devenir une bonne arène Agôn.
+
+Critères d'un bon sujet Agôn :
+- deux positions défendables ;
+- question non évidente ;
+- enjeu collectif réel ;
+- sujet compréhensible sans expertise ;
+- pas seulement informatif ;
+- pas une tragédie exploitée à chaud ;
+- opposition de valeurs, de responsabilités, de solutions ou de priorités.
+
+Sujet :
+${subject.subject}
+
+Sources (${(subject.sources || []).join(", ")}) :
+${JSON.stringify(compactContents, null, 2)}
+
+Réponds uniquement en JSON valide :
+{
+  "isDebatable": true/false,
+  "debatePotentialScore": entier de 0 à 10,
+  "editorialDecision": "arena" | "understand" | "reformulate" | "avoid",
+  "reason": "explication courte (max 120 caractères)",
+  "suggestedQuestion": "question Agôn (max 99 caractères)",
+  "positionA": "camp A (max 55 caractères)",
+  "positionB": "camp B (max 55 caractères)",
+  "theme": "thème exact parmi : ${AGON_THEMES.join(" / ")}",
+  "risk": "low" | "medium" | "high"
+}
+
+Règles pour suggestedQuestion :
+- question claire, concrète et débattable ;
+- ancrée dans le sujet précis ;
+- pas de question évidente ("faut-il éviter les accidents ?") ;
+- les deux camps doivent sembler défendables.
+
+Règles pour positionA/positionB :
+- étiquettes de camp courtes et neutres ;
+- pas d'arguments, pas de "car", "pour que", "afin de" ;
+- symétriques et défendables.
+
+Règles pour editorialDecision :
+- "arena" : peut devenir une arène Agôn immédiatement ;
+- "understand" : intéressant mais pas vraiment clivant ;
+- "reformulate" : potentiel mais question trop évidente ou fragile ;
+- "avoid" : trop sensible, tragique ou peu débattable.
+
+Ne force jamais un débat. Si le sujet ne s'y prête pas, réponds "avoid".`;
+
+  try {
+    const response = await openai.responses.create({
+      model: "gpt-4.1-mini",
+      input: prompt,
+      temperature: 0.2,
+      max_output_tokens: 600
+    });
+    const parsed = safeJsonParse(response.output_text || "");
+    const allowedDecisions = new Set(["arena", "understand", "reformulate", "avoid"]);
+    const allowedRisks = new Set(["low", "medium", "high"]);
+    return {
+      isDebatable: parsed.isDebatable === true,
+      debatePotentialScore: Number.isFinite(Number(parsed.debatePotentialScore))
+        ? Math.max(0, Math.min(10, Number(parsed.debatePotentialScore))) : 0,
+      editorialDecision: allowedDecisions.has(String(parsed.editorialDecision || ""))
+        ? parsed.editorialDecision : "avoid",
+      reason: String(parsed.reason || "").slice(0, 200),
+      suggestedQuestion: String(parsed.suggestedQuestion || "").slice(0, 99),
+      positionA: String(parsed.positionA || "").slice(0, 55),
+      positionB: String(parsed.positionB || "").slice(0, 55),
+      theme: normalizeAgonTheme(parsed.theme),
+      risk: allowedRisks.has(String(parsed.risk || "")) ? parsed.risk : "medium"
+    };
+  } catch (error) {
+    console.error(`Erreur IA Certamen pour "${subject.subject}" :`, error.message);
+    return {
+      isDebatable: false,
+      debatePotentialScore: 0,
+      editorialDecision: "avoid",
+      reason: "Erreur d'analyse IA.",
+      suggestedQuestion: subject.subject,
+      positionA: "",
+      positionB: "",
+      theme: AGON_THEMES[0],
+      risk: "medium"
+    };
+  }
+}
+
+function loadCertamenSessions() {
+  if (!fs.existsSync(CERTAMEN_HISTORY_FILE)) return [];
+  try {
+    return JSON.parse(fs.readFileSync(CERTAMEN_HISTORY_FILE, "utf8"));
+  } catch { return []; }
+}
+
+function saveCertamenSessions(sessions) {
+  fs.writeFileSync(CERTAMEN_HISTORY_FILE, JSON.stringify(sessions, null, 2), "utf8");
+}
+
+function generateCertamenHtml(sessions) {
+  const generatedAt = dayjs().format("DD/MM/YYYY HH:mm:ss");
+
+  function esc(text) {
+    return String(text || "")
+      .replaceAll("&", "&amp;").replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;").replaceAll('"', "&quot;");
+  }
+
+  const decisionColors = {
+    arena: "#16a34a",
+    understand: "#2563eb",
+    reformulate: "#d97706",
+    avoid: "#dc2626"
+  };
+  const riskLabels = { low: "Faible", medium: "Moyen", high: "Élevé" };
+
+  const sessionBlocks = sessions.map(function(session, si) {
+    const subjects = session.subjects || [];
+    const subjectBlocks = subjects.map(function(subject) {
+      const ai = subject.certamen || {};
+      const color = decisionColors[ai.editorialDecision] || "#888";
+      const sourceList = esc((subject.sources || []).join(", "));
+      const articleLinks = (subject.contents || []).slice(0, 3).map(function(c) {
+        return `<div class="cs-article"><a href="${esc(c.link || "")}" target="_blank" rel="noopener noreferrer">${esc(c.title)}</a> <span class="cs-article-source">(${esc(c.source)})</span></div>`;
+      }).join("");
+
+      return `<div class="certamen-subject" data-score="${ai.debatePotentialScore || 0}" data-decision="${esc(ai.editorialDecision || "")}">
+  <div class="cs-header">
+    <span class="cs-score">${ai.debatePotentialScore || 0}/10</span>
+    <span class="cs-decision" style="color:${color}">${esc(ai.editorialDecision || "—")}</span>
+    <span class="cs-risk">Risque : ${esc(riskLabels[ai.risk] || ai.risk || "—")}</span>
+  </div>
+  <h3 class="cs-title">${esc(subject.subject)}</h3>
+  ${ai.suggestedQuestion ? `<div class="cs-question">${esc(ai.suggestedQuestion)}</div>` : ""}
+  ${(ai.positionA || ai.positionB) ? `<div class="cs-positions"><span class="cs-pos">A : ${esc(ai.positionA)}</span><span class="cs-pos">B : ${esc(ai.positionB)}</span></div>` : ""}
+  ${ai.reason ? `<div class="cs-reason">${esc(ai.reason)}</div>` : ""}
+  <div class="cs-meta">
+    <span class="cs-theme">${esc(ai.theme || "—")}</span>
+    <span class="cs-sources">${esc(String(subject.sourceCount || 1))} source(s) : ${sourceList}</span>
+  </div>
+  ${articleLinks}
+</div>`;
+    }).join("");
+
+    const nbArena = subjects.filter(function(s) { return s.certamen && s.certamen.editorialDecision === "arena"; }).length;
+    const nbReform = subjects.filter(function(s) { return s.certamen && s.certamen.editorialDecision === "reformulate"; }).length;
+    const isFirst = si === 0;
+
+    return `<div class="certamen-session ${isFirst ? "active-session" : "hidden-session"}" data-session-index="${si}">
+  <div class="cs-session-header">
+    <h2>${esc(session.generatedAtLabel || `Session ${si + 1}`)}</h2>
+    <div class="cs-session-stats">
+      <span>${subjects.length} sujet(s)</span>
+      <span>${nbArena} arène(s) prête(s)</span>
+      ${nbReform ? `<span>${nbReform} à reformuler</span>` : ""}
+    </div>
+  </div>
+  ${subjectBlocks || '<p class="cs-empty">Aucun sujet débattable trouvé.</p>'}
+</div>`;
+  }).join("");
+
+  const sessionTabs = sessions.length > 1 ? sessions.map(function(session, si) {
+    const label = (session.generatedAtLabel || `Session ${si + 1}`).replace(" à ", " ").replace(/:\d{2}$/, "");
+    return `<button class="cs-tab ${si === 0 ? "active" : ""}" data-si="${si}">${si === 0 ? "Dernière · " : ""}${esc(label)}</button>`;
+  }).join("") : "";
+
+  return `<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Certamen — Sujets débattables</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: system-ui, sans-serif; background: #f5f5f5; color: #111; }
+.nav { background: #111; color: white; padding: 12px 20px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.nav a { color: #ccc; text-decoration: none; font-size: 0.9rem; }
+.nav a:hover { color: white; }
+.nav-title { font-weight: 700; font-size: 1rem; color: white; margin-right: auto; }
+.refresh-btn { background: white; color: #111; border: none; border-radius: 999px; padding: 7px 18px; font: inherit; font-size: 0.88rem; font-weight: 600; cursor: pointer; }
+.refresh-btn:disabled { opacity: 0.5; cursor: wait; }
+.main { max-width: 860px; margin: 0 auto; padding: 24px 16px; }
+h1 { font-size: 1.5rem; margin-bottom: 4px; }
+.subtitle { color: #666; font-size: 0.9rem; margin-bottom: 20px; }
+.filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+.filter-btn { background: #f0f0f0; border: 1.5px solid #ddd; border-radius: 999px; padding: 5px 14px; font: inherit; font-size: 0.84rem; cursor: pointer; }
+.filter-btn.active { background: #111; color: white; border-color: #111; }
+.tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 20px; }
+.cs-tab { background: #e8e8e8; border: none; border-radius: 999px; padding: 5px 14px; font: inherit; font-size: 0.82rem; cursor: pointer; }
+.cs-tab.active { background: #111; color: white; }
+.certamen-session.hidden-session { display: none; }
+.cs-session-header { background: #111; color: white; border-radius: 12px; padding: 14px 18px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+.cs-session-header h2 { font-size: 1rem; }
+.cs-session-stats { display: flex; gap: 12px; font-size: 0.82rem; color: #ccc; }
+.certamen-subject { background: white; border-radius: 12px; padding: 16px 20px; margin-bottom: 12px; border-left: 4px solid #ddd; }
+.certamen-subject[data-decision="arena"] { border-left-color: #16a34a; }
+.certamen-subject[data-decision="understand"] { border-left-color: #2563eb; }
+.certamen-subject[data-decision="reformulate"] { border-left-color: #d97706; }
+.certamen-subject[data-decision="avoid"] { border-left-color: #dc2626; opacity: 0.65; }
+.certamen-subject.cs-hidden { display: none; }
+.cs-header { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; font-size: 0.82rem; }
+.cs-score { font-weight: 700; font-size: 1.1rem; background: #f0f0f0; border-radius: 8px; padding: 2px 8px; }
+.cs-decision { font-weight: 600; text-transform: uppercase; font-size: 0.78rem; }
+.cs-risk { color: #888; }
+.cs-title { font-size: 1rem; font-weight: 600; margin-bottom: 8px; }
+.cs-question { background: #f8f8f8; border-radius: 8px; padding: 8px 12px; font-size: 0.9rem; font-weight: 500; margin-bottom: 8px; }
+.cs-positions { display: flex; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }
+.cs-pos { background: #f0f0f0; border-radius: 6px; padding: 3px 10px; font-size: 0.82rem; }
+.cs-reason { color: #555; font-size: 0.83rem; margin-bottom: 8px; font-style: italic; }
+.cs-meta { display: flex; gap: 12px; font-size: 0.78rem; color: #888; margin-bottom: 6px; flex-wrap: wrap; }
+.cs-theme { background: #eff6ff; color: #2563eb; border-radius: 4px; padding: 1px 7px; }
+.cs-article { font-size: 0.8rem; color: #555; margin-top: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cs-article a { color: #2563eb; text-decoration: none; }
+.cs-article a:hover { text-decoration: underline; }
+.cs-article-source { color: #999; }
+.cs-empty { color: #888; font-style: italic; padding: 20px 0; }
+.progress-panel { background: white; border-radius: 12px; padding: 16px; margin-bottom: 16px; display: none; }
+.prog-bar-bg { background: #eee; border-radius: 99px; height: 6px; overflow: hidden; margin-bottom: 8px; }
+.prog-bar { background: #111; height: 100%; width: 0%; transition: width 0.3s; border-radius: 99px; }
+.prog-info { font-size: 0.82rem; color: #666; }
+</style>
+</head>
+<body>
+<nav class="nav">
+  <span class="nav-title">Certamen</span>
+  <a href="/mixte">Veille mixte</a>
+  <a href="/admin">Admin</a>
+  <button class="refresh-btn">Mettre à jour</button>
+</nav>
+<div class="main">
+  <h1>Sujets débattables</h1>
+  <p class="subtitle">Générée le ${generatedAt}</p>
+  <div id="progress-panel" class="progress-panel">
+    <div class="prog-bar-bg"><div class="prog-bar" id="prog-bar"></div></div>
+    <div class="prog-info">Étape <span id="prog-step">…</span> / <span id="prog-total">…</span> — <span id="prog-name"></span> <span id="prog-detail"></span></div>
+  </div>
+  <div class="filters">
+    <button class="filter-btn active" data-filter="all">Tous</button>
+    <button class="filter-btn" data-filter="arena">Arène prête</button>
+    <button class="filter-btn" data-filter="reformulate">À reformuler</button>
+    <button class="filter-btn" data-filter="understand">À comprendre</button>
+  </div>
+  ${sessionTabs ? `<div class="tabs">${sessionTabs}</div>` : ""}
+  <div id="sessions-container">
+    ${sessionBlocks || '<p class="cs-empty">Aucune session Certamen générée pour le moment.</p>'}
+  </div>
+</div>
+<script>
+  var currentFilter = "all";
+  function applyFilter() {
+    document.querySelectorAll(".certamen-subject").forEach(function(el) {
+      var decision = el.dataset.decision || "";
+      el.classList.toggle("cs-hidden", currentFilter !== "all" && decision !== currentFilter);
+    });
+  }
+  document.querySelectorAll(".filter-btn").forEach(function(btn) {
+    btn.addEventListener("click", function() {
+      currentFilter = btn.dataset.filter;
+      document.querySelectorAll(".filter-btn").forEach(function(b) { b.classList.remove("active"); });
+      btn.classList.add("active");
+      applyFilter();
+    });
+  });
+  document.querySelectorAll(".cs-tab").forEach(function(tab) {
+    tab.addEventListener("click", function() {
+      var si = tab.dataset.si;
+      document.querySelectorAll(".cs-tab").forEach(function(t) { t.classList.toggle("active", t.dataset.si === si); });
+      document.querySelectorAll(".certamen-session").forEach(function(s) {
+        var active = s.dataset.sessionIndex === si;
+        s.classList.toggle("active-session", active);
+        s.classList.toggle("hidden-session", !active);
+      });
+    });
+  });
+  var isRefreshing = false;
+  async function startRefresh() {
+    if (isRefreshing) return;
+    isRefreshing = true;
+    var btn = document.querySelector(".refresh-btn");
+    var panel = document.getElementById("progress-panel");
+    if (btn) { btn.disabled = true; btn.textContent = "En cours…"; }
+    if (panel) panel.style.display = "block";
+    try {
+      await fetch("/certamen/refresh", { method: "POST", headers: { "Content-Type": "application/json" }, body: "{}" });
+    } catch(e) {}
+    var poll = setInterval(async function() {
+      try {
+        var r = await fetch("/certamen/progress?t=" + Date.now());
+        var p = await r.json();
+        var bar = document.getElementById("prog-bar");
+        var step = document.getElementById("prog-step");
+        var total = document.getElementById("prog-total");
+        var name = document.getElementById("prog-name");
+        var detail = document.getElementById("prog-detail");
+        if (bar) bar.style.width = (p.stepTotal > 0 ? Math.round((p.stepIndex / p.stepTotal) * 100) : 0) + "%";
+        if (step) step.textContent = p.stepIndex || "…";
+        if (total) total.textContent = p.stepTotal || "…";
+        if (name) name.textContent = p.step || "";
+        if (detail) detail.textContent = p.detail || "";
+        if (!p.running && p.done) { clearInterval(poll); window.location.reload(); }
+      } catch(e) {}
+    }, 1500);
+    setTimeout(function() { clearInterval(poll); window.location.reload(); }, 15 * 60 * 1000);
+  }
+  var refreshBtn = document.querySelector(".refresh-btn");
+  if (refreshBtn) refreshBtn.addEventListener("click", function() { startRefresh(); });
+</script>
+</body>
+</html>`;
+}
+
+let certamenIsRunning = false;
+let certamenProgress = { running: false, done: false, stepIndex: 0, stepTotal: 4, step: "", detail: "" };
+
+function setCertamenProgress(stepIndex, step, detail) {
+  certamenProgress = { running: true, done: false, stepIndex, stepTotal: 4, step, detail: detail || "" };
+}
+
+async function runCertamenSession() {
+  const startedAt = dayjs();
+  console.log("");
+  console.log("======================================");
+  console.log(`Nouvelle session Certamen : ${startedAt.format("DD/MM/YYYY HH:mm:ss")}`);
+  console.log("======================================");
+
+  setCertamenProgress(1, "Collecte des articles", "Démarrage…");
+  const { contents: articles } = await collectArticles(null, new Set());
+
+  setCertamenProgress(2, "Collecte des vidéos YouTube", "Démarrage…");
+  const { contents: videos } = await collectYouTubeVideos(null, new Set());
+
+  const contents = [...articles, ...videos];
+  console.log(`Certamen : ${contents.length} contenu(s) collecté(s).`);
+
+  setCertamenProgress(3, "Regroupement et préfiltrage", "");
+  const groups = groupContentsBySubject(contents);
+  const rawSubjects = filterMultiSourceSubjects(groups, 1); // min 1 source (vs 4 en mode mixte)
+  console.log(`Certamen : ${rawSubjects.length} sujet(s) après regroupement (seuil 1 source).`);
+
+  const prefiltered = certamenPrefilter(rawSubjects);
+  console.log(`Certamen : ${prefiltered.length} sujet(s) après préfiltrage sans IA.`);
+
+  setCertamenProgress(4, "Analyse IA Certamen", `0 / ${Math.min(prefiltered.length, MAX_CERTAMEN_SUBJECTS_FOR_AI)}`);
+  const candidates = prefiltered.slice(0, MAX_CERTAMEN_SUBJECTS_FOR_AI);
+  const analyzed = [];
+
+  for (let i = 0; i < candidates.length; i++) {
+    const subject = candidates[i];
+    setCertamenProgress(4, "Analyse IA Certamen", `${i + 1} / ${candidates.length}`);
+    console.log(`Certamen IA : ${subject.subject}`);
+    const certamen = await analyzeCertamenSubjectWithAI(subject);
+    analyzed.push(Object.assign({}, subject, { certamen }));
+  }
+
+  const debatables = analyzed
+    .filter(function(s) { return s.certamen.editorialDecision !== "avoid"; })
+    .sort(function(a, b) { return (b.certamen.debatePotentialScore || 0) - (a.certamen.debatePotentialScore || 0); });
+
+  console.log(`Certamen : ${debatables.length} sujet(s) débattable(s) trouvé(s).`);
+
+  const session = {
+    generatedAt: startedAt.toISOString(),
+    generatedAtLabel: startedAt.format("DD/MM/YYYY à HH:mm"),
+    subjectCount: debatables.length,
+    subjects: debatables
+  };
+
+  const sessions = loadCertamenSessions();
+  sessions.unshift(session);
+  const trimmed = sessions.slice(0, CERTAMEN_MAX_SESSIONS);
+  saveCertamenSessions(trimmed);
+  fs.writeFileSync(CERTAMEN_OUTPUT_HTML, generateCertamenHtml(trimmed), "utf8");
+  console.log(`Certamen : session sauvegardée.`);
+}
+
+apiApp.get("/certamen/progress", function(req, res) {
+  res.json(certamenProgress);
+});
+
+apiApp.post("/certamen/refresh", async function(req, res) {
+  if (certamenIsRunning) {
+    return res.json({ ok: true, running: true });
+  }
+  certamenIsRunning = true;
+  certamenProgress = { running: true, done: false, stepIndex: 0, stepTotal: 4, step: "Démarrage…", detail: "" };
+
+  runCertamenSession().catch(function(err) {
+    console.error("Erreur session Certamen :", err.message);
+  }).finally(function() {
+    certamenIsRunning = false;
+    certamenProgress = Object.assign({}, certamenProgress, { running: false, done: true });
+  });
+
+  res.json({ ok: true, started: true });
+});
+
+// ==================== FIN MODE CERTAMEN ====================
 
 const localApiServer = apiApp.listen(API_PORT, "127.0.0.1", () => {
   console.log(`API mixte lancée sur 127.0.0.1:${API_PORT}`);
