@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Certamen — Sujets débattables</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: system-ui, sans-serif; background: #f5f5f5; color: #111; }
+.nav { background: #111; color: white; padding: 12px 20px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.nav a { color: #ccc; text-decoration: none; font-size: 0.9rem; }
+.nav a:hover { color: white; }
+.nav-title { font-weight: 700; font-size: 1rem; color: white; margin-right: auto; }
+.refresh-btn { background: white; color: #111; border: none; border-radius: 999px; padding: 7px 18px; font: inherit; font-size: 0.88rem; font-weight: 600; cursor: pointer; }
+.refresh-btn:disabled { opacity: 0.5; cursor: wait; }
+.main { max-width: 860px; margin: 0 auto; padding: 24px 16px; }
+h1 { font-size: 1.5rem; margin-bottom: 4px; }
+.subtitle { color: #666; font-size: 0.9rem; margin-bottom: 20px; }
+.filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+.filter-btn { background: #f0f0f0; border: 1.5px solid #ddd; border-radius: 999px; padding: 5px 14px; font: inherit; font-size: 0.84rem; cursor: pointer; }
+.filter-btn.active { background: #111; color: white; border-color: #111; }
+.tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 20px; }
+.cs-tab { background: #e8e8e8; border: none; border-radius: 999px; padding: 5px 14px; font: inherit; font-size: 0.82rem; cursor: pointer; }
+.cs-tab.active { background: #111; color: white; }
+.certamen-session.hidden-session { display: none; }
+.cs-session-header { background: #111; color: white; border-radius: 12px; padding: 14px 18px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+.cs-session-header h2 { font-size: 1rem; }
+.cs-session-stats { display: flex; gap: 12px; font-size: 0.82rem; color: #ccc; }
+.certamen-subject { background: white; border-radius: 12px; padding: 16px 20px; margin-bottom: 12px; border-left: 4px solid #ddd; }
+.certamen-subject[data-decision="arena"] { border-left-color: #16a34a; }
+.certamen-subject[data-decision="understand"] { border-left-color: #2563eb; }
+.certamen-subject[data-decision="reformulate"] { border-left-color: #d97706; }
+.certamen-subject[data-decision="avoid"] { border-left-color: #dc2626; opacity: 0.65; }
+.certamen-subject.cs-hidden { display: none; }
+.cs-header { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; font-size: 0.82rem; }
+.cs-score { font-weight: 700; font-size: 1.1rem; background: #f0f0f0; border-radius: 8px; padding: 2px 8px; }
+.cs-decision { font-weight: 600; text-transform: uppercase; font-size: 0.78rem; }
+.cs-risk { color: #888; }
+.cs-title { font-size: 1rem; font-weight: 600; margin-bottom: 8px; }
+.cs-question { background: #f8f8f8; border-radius: 8px; padding: 8px 12px; font-size: 0.9rem; font-weight: 500; margin-bottom: 8px; }
+.cs-positions { display: flex; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }
+.cs-pos { background: #f0f0f0; border-radius: 6px; padding: 3px 10px; font-size: 0.82rem; }
+.cs-reason { color: #555; font-size: 0.83rem; margin-bottom: 8px; font-style: italic; }
+.cs-meta { display: flex; gap: 12px; font-size: 0.78rem; color: #888; margin-bottom: 6px; flex-wrap: wrap; }
+.cs-theme { background: #eff6ff; color: #2563eb; border-radius: 4px; padding: 1px 7px; }
+.cs-article { font-size: 0.8rem; color: #555; margin-top: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cs-article a { color: #2563eb; text-decoration: none; }
+.cs-article a:hover { text-decoration: underline; }
+.cs-article-source { color: #999; }
+.cs-empty { color: #888; font-style: italic; padding: 20px 0; }
+.progress-panel { background: white; border-radius: 12px; padding: 16px; margin-bottom: 16px; display: none; }
+.prog-bar-bg { background: #eee; border-radius: 99px; height: 6px; overflow: hidden; margin-bottom: 8px; }
+.prog-bar { background: #111; height: 100%; width: 0%; transition: width 0.3s; border-radius: 99px; }
+.prog-info { font-size: 0.82rem; color: #666; }
+</style>
+</head>
+<body>
+<nav class="nav">
+  <span class="nav-title">Certamen</span>
+  <a href="/mixte">Veille mixte</a>
+  <a href="/admin">Admin</a>
+  <button class="refresh-btn">Mettre à jour</button>
+</nav>
+<div class="main">
+  <h1>Sujets débattables</h1>
+  <p class="subtitle">Générée le 27/05/2026 15:23:27</p>
+  <div id="progress-panel" class="progress-panel">
+    <div class="prog-bar-bg"><div class="prog-bar" id="prog-bar"></div></div>
+    <div class="prog-info">Étape <span id="prog-step">…</span> / <span id="prog-total">…</span> — <span id="prog-name"></span> <span id="prog-detail"></span></div>
+  </div>
+  <div class="filters">
+    <button class="filter-btn active" data-filter="all">Tous</button>
+    <button class="filter-btn" data-filter="arena">Arène prête</button>
+    <button class="filter-btn" data-filter="reformulate">À reformuler</button>
+    <button class="filter-btn" data-filter="understand">À comprendre</button>
+  </div>
+  
+  <div id="sessions-container">
+    <div class="certamen-session active-session" data-session-index="0">
+  <div class="cs-session-header">
+    <h2>27/05/2026 à 15:18</h2>
+    <div class="cs-session-stats">
+      <span>34 sujet(s)</span>
+      <span>30 arène(s) prête(s)</span>
+      <span>4 à reformuler</span>
+    </div>
+  </div>
+  <div class="certamen-subject" data-score="8" data-decision="arena">
+  <div class="cs-header">
+    <span class="cs-score">8/10</span>
+    <span class="cs-decision" style="color:#16a34a">arena</span>
+    <span class="cs-risk">Risque : Moyen</span>
+  </div>
+  <h3 class="cs-title">Protection de l’enfance : les personnels ayant eu des comportements inappropriés à l’école seront inscrits sur une « liste noire »</h3>
+  <div class="cs-question">Faut-il inscrire sur une liste noire les personnels scolaires aux comportements inappropriés ?</div>
+  <div class="cs-positions"><span class="cs-pos">A : Pour la liste noire pour protéger les enfants</span><span class="cs-pos">B : Contre la liste noire pour respecter la présomption d'i</span></div>
+  <div class="cs-reason">Opposition claire sur sécurité vs présomption d'innocence en milieu scolaire</div>
+  <div class="cs-meta">
+    <span class="cs-theme">Société - éducation</span>
+    <span class="cs-sources">3 source(s) : Le Monde, Le Figaro, BFMTV</span>
+  </div>
+  <div class="cs-article"><a href="https://www.lemonde.fr/societe/article/2026/05/27/protection-de-l-enfance-les-personnels-ayant-eu-des-comportements-inappropries-a-l-ecole-seront-inscrits-sur-une-liste-noire_6694199_3224.html" target="_blank" rel="noopener noreferrer">Protection de l’enfance : les personnels ayant eu des comportements inappropriés à l’école seront inscrits sur une « liste noire »</a> <span class="cs-article-source">(Le Monde)</span></div><div class="cs-article"><a href="https://www.bfmtv.com/politique/les-personnels-ayant-eu-des-comportements-inappropries-a-l-ecole-seront-inscrits-sur-une-liste-noire_AD-202605270487.html" target="_blank" rel="noopener noreferrer">Les personnels ayant eu des comportements inappropriés à l'école seront inscrits sur une &quot;liste noire&quot;</a> <span class="cs-article-source">(BFMTV)</span></div><div class="cs-article"><a href="https://www.lefigaro.fr/actualite-france/protection-de-l-enfance-les-personnels-scolaires-aux-comportements-deplaces-inscrits-sur-une-liste-noire-20260527" target="_blank" rel="noopener noreferrer">Protection de l’enfance : les personnels scolaires aux comportements déplacés inscrits sur une «liste noire»</a> <span class="cs-article-source">(Le Figaro)</span></div>
+</div><div class="certamen-subject" data-score="7" data-decision="arena">
+  <div class="cs-header">
+    <span class="cs-score">7/10</span>
+    <span class="cs-decision" style="color:#16a34a">arena</span>
+    <span class="cs-risk">Risque : Moyen</span>
+  </div>
+  <h3 class="cs-title">Guerre en Ukraine : la Russie répond aux attaques de drones sur Moscou par des missiles Orechnik sur Kiev</h3>
+  <div class="cs-question">La riposte russe aux attaques de drones ukrainiens est-elle justifiée ?</div>
+  <div class="cs-positions"><span class="cs-pos">A : La riposte russe est une défense légitime</span><span class="cs-pos">B : La riposte russe aggrave le conflit inutilement</span></div>
+  <div class="cs-reason">Conflit avec enjeux stratégiques et moraux, deux positions claires possibles</div>
+  <div class="cs-meta">
+    <span class="cs-theme">International</span>
+    <span class="cs-sources">4 source(s) : L'Humanité, BFMTV, RFI, Le Monde</span>
+  </div>
+  <div class="cs-article"><a href="https://www.humanite.fr/monde/guerre-en-ukraine/guerre-en-ukraine-la-russie-repond-aux-attaques-de-drones-sur-moscou-par-des-missiles-orechnik-sur-kiev" target="_blank" rel="noopener noreferrer">Guerre en Ukraine : la Russie répond aux attaques de drones sur Moscou par des missiles Orechnik sur Kiev</a> <span class="cs-article-source">(L'Humanité)</span></div><div class="cs-article"><a href="https://www.youtube.com/shorts/vI0qDGXFdII" target="_blank" rel="noopener noreferrer">Guerre en Ukraine : la Russie utilise un missile Orechnik dans une attaque massive contre Kiev</a> <span class="cs-article-source">(Le Monde)</span></div><div class="cs-article"><a href="https://www.youtube.com/watch?v=Dnb3Iffi8Sg" target="_blank" rel="noopener noreferrer">Guerre en Ukraine : la Russie utilise un missile Orechnik dans une attaque massive contre Kiev</a> <span class="cs-article-source">(Le Monde)</span></div>
+</div><div class="certamen-subject" data-score="7" data-decision="arena">
+  <div class="cs-header">
+    <span class="cs-score">7/10</span>
+    <span class="cs-decision" style="color:#16a34a">arena</span>
+    <span class="cs-risk">Risque : Faible</span>
+  </div>
+  <h3 class="cs-title">&quot;On va frôler les 30°C en classe&quot; : comment les enseignants s'adaptent pour protéger les élèves face aux fortes chaleurs</h3>
+  <div class="cs-question">Les écoles doivent-elles être rénovées pour mieux gérer les fortes chaleurs ?</div>
+  <div class="cs-positions"><span class="cs-pos">A : Prioriser la rénovation des écoles pour le confort ther</span><span class="cs-pos">B : Adapter les pratiques sans lourds investissements</span></div>
+  <div class="cs-reason">Sujet clivant sur la gestion des écoles face à la chaleur, enjeux collectifs réels</div>
+  <div class="cs-meta">
+    <span class="cs-theme">Société - éducation</span>
+    <span class="cs-sources">3 source(s) : Franceinfo, BFMTV, Sud Radio</span>
+  </div>
+  <div class="cs-article"><a href="https://www.bfmtv.com/sante/remplacer-la-biere-et-le-cafe-par-du-bouillon-cube-les-conseils-pour-se-proteger-des-fortes-chaleurs-en-france_AN-202605270543.html" target="_blank" rel="noopener noreferrer">Remplacer la bière et le café par du bouillon cube: les conseils pour se protéger des fortes chaleurs en France</a> <span class="cs-article-source">(BFMTV)</span></div><div class="cs-article"><a href="https://www.franceinfo.fr/environnement/evenements-meteorologiques-extremes/vagues-de-chaleur-canicules/temoignages-on-va-froler-les-30-c-en-classe-comment-les-enseignants-s-adaptent-pour-proteger-les-eleves-face-aux-fortes-chaleurs_8029334.html#xtor=RSS-3-[lestitres]" target="_blank" rel="noopener noreferrer">&quot;On va frôler les 30°C en classe&quot; : comment les enseignants s'adaptent pour protéger les élèves face aux fortes chaleurs</a> <span class="cs-article-source">(Franceinfo)</span></div><div class="cs-article"><a href="https://www.youtube.com/watch?v=wxkPo9nJ4I4" target="_blank" rel="noopener noreferrer">&quot;Les écoles ne sont pas adaptées aux fortes chaleurs&quot;, alertent les chefs d'établissement</a> <span class="cs-article-source">(Sud Radio)</span></div>
+</div><div class="certamen-subject" data-score="7" data-decision="reformulate">
+  <div class="cs-header">
+    <span class="cs-score">7/10</span>
+    <span class="cs-decision" style="color:#d97706">reformulate</span>
+    <span class="cs-risk">Risque : Faible</span>
+  </div>
+  <h3 class="cs-title">« Je dois être président » : comment Raphaël Glucksmann fonce vers une candidature</h3>
+  <div class="cs-question">Raphaël Glucksmann est-il un bon choix pour représenter la gauche en 2027 ?</div>
+  <div class="cs-positions"><span class="cs-pos">A : Glucksmann incarne une gauche renouvelée</span><span class="cs-pos">B : Glucksmann reste trop centriste pour la gauche</span></div>
+  <div class="cs-reason">Sujet politique intéressant mais question trop centrée sur une personne</div>
+  <div class="cs-meta">
+    <span class="cs-theme">Politique</span>
+    <span class="cs-sources">3 source(s) : L'Obs, La Croix, France Inter</span>
+  </div>
+  <div class="cs-article"><a href="https://www.youtube.com/shorts/BgbKx9H7Qkg" target="_blank" rel="noopener noreferrer">Présidentielle : Raphaël Glucksmann se donne trois mois pour se décider</a> <span class="cs-article-source">(France Inter)</span></div><div class="cs-article"><a href="https://www.nouvelobs.com/politique/20260526.OBS115253/je-dois-etre-president-comment-raphael-glucksmann-fonce-vers-une-candidature.html" target="_blank" rel="noopener noreferrer">« Je dois être président » : comment Raphaël Glucksmann fonce vers une candidature</a> <span class="cs-article-source">(L'Obs)</span></div><div class="cs-article"><a href="https://www.la-croix.com/politique/presidentielle-2027-comment-raphael-glucksmann-espere-convaincre-la-gauche-20260526" target="_blank" rel="noopener noreferrer">Présidentielle 2027 : comment Raphaël Glucksmann espère convaincre la gauche</a> <span class="cs-article-source">(La Croix)</span></div>
+</div><div class="certamen-subject" data-score="7" data-decision="arena">
+  <div class="cs-header">
+    <span class="cs-score">7/10</span>
+    <span class="cs-decision" style="color:#16a34a">arena</span>
+    <span class="cs-risk">Risque : Moyen</span>
+  </div>
+  <h3 class="cs-title">Sénégal : Ousmane Sonko élu président de l'Assemblée nationale</h3>
+  <div class="cs-question">L'élection de Sonko à l'Assemblée nationale est-elle une avancée démocratique ?</div>
+  <div class="cs-positions"><span class="cs-pos">A : Oui, un renouveau démocratique</span><span class="cs-pos">B : Non, une crise institutionnelle</span></div>
+  <div class="cs-reason">Élection controversée avec boycott, enjeux politiques clairs et opposés</div>
+  <div class="cs-meta">
+    <span class="cs-theme">Politique</span>
+    <span class="cs-sources">2 source(s) : France 24, RFI</span>
+  </div>
+  <div class="cs-article"><a href="https://www.rfi.fr/fr/afrique/20260527-s%C3%A9n%C3%A9gal-l-%C3%A9lection-d-ousmane-sonko-%C3%A0-la-pr%C3%A9sidence-de-l-assembl%C3%A9e-ouvre-une-p%C3%A9riode-d-incertitude-politique" target="_blank" rel="noopener noreferrer">Sénégal: l'élection d'Ousmane Sonko à la présidence de l'Assemblée ouvre une période d’incertitude politique</a> <span class="cs-article-source">(RFI)</span></div><div class="cs-article"><a href="https://www.france24.com/fr/vid%C3%A9o/20260526-s%C3%A9n%C3%A9gal-ousmane-sonko-%C3%A9lu-pr%C3%A9sident-de-l-assembl%C3%A9e-nationale" target="_blank" rel="noopener noreferrer">Sénégal : Ousmane Sonko élu président de l'Assemblée nationale</a> <span class="cs-article-source">(France 24)</span></div><div class="cs-article"><a href="https://www.youtube.com/shorts/VmAfivqqM-U" target="_blank" rel="noopener noreferrer">🇸🇳#Sénégal : Ousmane #Sonko élu président de l'Assemblée nationale • FRANCE 24</a> <span class="cs-article-source">(France 24)</span></div>
+</div><div class="certamen-subject" data-score="7" data-decision="arena">
+  <div class="cs-header">
+    <span class="cs-score">7/10</span>
+    <span class="cs-decision" style="color:#16a34a">arena</span>
+    <span class="cs-risk">Risque : Moyen</span>
+  </div>
+  <h3 class="cs-title">Géorgie: une manifestation pro-UE rassemble des milliers de personnes lors de fête de l'indépendance</h3>
+  <div class="cs-question">La Géorgie doit-elle prioriser son intégration à l'UE ou préserver son indépendance politique ?</div>
+  <div class="cs-positions"><span class="cs-pos">A : Prioriser l'intégration européenne</span><span class="cs-pos">B : Préserver l'indépendance politique nationale</span></div>
+  <div class="cs-reason">Sujet international avec enjeux politiques et choix d'avenir clairs et opposés</div>
+  <div class="cs-meta">
+    <span class="cs-theme">International</span>
+    <span class="cs-sources">2 source(s) : Euronews FR, Euronews France</span>
+  </div>
+  <div class="cs-article"><a href="https://www.youtube.com/watch?v=3S7-ZqsvaX0" target="_blank" rel="noopener noreferrer">Géorgie: une manifestation pro-UE rassemble des milliers de personnes lors de fête de l'indépendance</a> <span class="cs-article-source">(Euronews France)</span></div><div class="cs-article"><a href="http://fr.euronews.com/2026/05/27/georgie-une-manifestation-pro-ue-rassemble-des-milliers-de-personnes-lors-de-fete-de-linde" target="_blank" rel="noopener noreferrer">Géorgie: une manifestation pro-UE rassemble des milliers de personnes lors de fête de l'indépendance</a> <span class="cs-article-source">(Euronews FR)</span></div><div class="cs-article"><a href="https://www.youtube.com/watch?v=pj0iS2O_bkU" target="_blank" rel="noopener noreferrer">Géorgie : des milliers de manifestants défient le pouvoir lors d'une grande marche pro-UE</a> <span class="cs-article-source">(Euronews France)</span></div>
+</div><div class="certamen-subject" data-score="7" data-decision="arena">
+  <div class="cs-header">
+    <span class="cs-score">7/10</span>
+    <span class="cs-decision" style="color:#16a34a">arena</span>
+    <span class="cs-risk">Risque : Faible</span>
+  </div>
+  <h3 class="cs-title">L'écologiste Marine Tondelier propose un &quot;congé climatique&quot; pour les travailleurs exposés à la chaleur</h3>
+  <div class="cs-question">Faut-il instaurer un congé climatique pour les travailleurs exposés à la chaleur ?</div>
+  <div class="cs-positions"><span class="cs-pos">A : Pour un congé climatique dédié</span><span class="cs-pos">B : Contre un congé spécifique</span></div>
+  <div class="cs-reason">Sujet clivant sur droits des travailleurs et adaptation au changement climatique</div>
+  <div class="cs-meta">
+    <span class="cs-theme">Climat - environnement</span>
+    <span class="cs-sources">2 source(s) : Franceinfo, Sud Radio</span>
+  </div>
+  <div class="cs-article"><a href="https://www.franceinfo.fr/replay-magazine/franceinfo/l-invite-politique/vague-de-chaleur-on-est-dans-une-impreparation-comme-souvent-dans-ce-pays-estime-l-ecologiste-marine-tondelier_7988627.html#xtor=RSS-3-[lestitres]" target="_blank" rel="noopener noreferrer">L'écologiste Marine Tondelier propose un &quot;congé climatique&quot; pour les travailleurs exposés à la chaleur</a> <span class="cs-article-source">(Franceinfo)</span></div><div class="cs-article"><a href="https://www.youtube.com/watch?v=A0P5uOgcABw" target="_blank" rel="noopener noreferrer">Marine Tondelier, secrétaire générale du parti Les Écologistes, est l'invitée politique</a> <span class="cs-article-source">(Franceinfo)</span></div><div class="cs-article"><a href="https://www.youtube.com/watch?v=-JCuNqyVLSU" target="_blank" rel="noopener noreferrer">Marine Tondelier propose un congé climatique</a> <span class="cs-article-source">(Sud Radio)</span></div>
+</div><div class="certamen-subject" data-score="7" data-decision="arena">
+  <div class="cs-header">
+    <span class="cs-score">7/10</span>
+    <span class="cs-decision" style="color:#16a34a">arena</span>
+    <span class="cs-risk">Risque : Faible</span>
+  </div>
+  <h3 class="cs-title">Automobile : les ventes de voitures neuves augmentent, les électriques presque en tête</h3>
+  <div class="cs-question">Faut-il privilégier les voitures électriques pour la transition automobile ?</div>
+  <div class="cs-positions"><span class="cs-pos">A : Favoriser les voitures électriques</span><span class="cs-pos">B : Maintenir la diversité des motorisations</span></div>
+  <div class="cs-reason">Opposition claire entre croissance électrique et choix traditionnels auto.</div>
+  <div class="cs-meta">
+    <span class="cs-theme">Climat - environnement</span>
+    <span class="cs-sources">2 source(s) : La Croix, BFMTV</span>
+  </div>
+  <div class="cs-article"><a href="https://www.youtube.com/watch?v=Cj3en3syiIo" target="_blank" rel="noopener noreferrer">Les ventes de voitures électriques en hausse</a> <span class="cs-article-source">(BFMTV)</span></div><div class="cs-article"><a href="https://www.la-croix.com/economie/automobile-les-ventes-de-voitures-neuves-augmentent-les-electriques-presque-en-tete-20260527" target="_blank" rel="noopener noreferrer">Automobile : les ventes de voitures neuves augmentent, les électriques presque en tête</a> <span class="cs-article-source">(La Croix)</span></div>
+</div><div class="certamen-subject" data-score="7" data-decision="arena">
+  <div class="cs-header">
+    <span class="cs-score">7/10</span>
+    <span class="cs-decision" style="color:#16a34a">arena</span>
+    <span class="cs-risk">Risque : Moyen</span>
+  </div>
+  <h3 class="cs-title">Protection de l’enfance : le recours aux proches encouragé par le gouvernement</h3>
+  <div class="cs-question">Faut-il privilégier l'accueil chez les proches pour protéger les enfants en danger ?</div>
+  <div class="cs-positions"><span class="cs-pos">A : Favoriser l'accueil chez les proches</span><span class="cs-pos">B : Maintenir l'accueil en foyer spécialisé</span></div>
+  <div class="cs-reason">Deux visions opposées sur l'accueil des enfants retirés à leurs proches ou en foyer.</div>
+  <div class="cs-meta">
+    <span class="cs-theme">Justice - faits divers</span>
+    <span class="cs-sources">2 source(s) : La Croix, Europe 1</span>
+  </div>
+  <div class="cs-article"><a href="https://www.la-croix.com/societe/protection-de-l-enfance-le-recours-aux-proches-encourage-par-le-gouvernement-20260526" target="_blank" rel="noopener noreferrer">Protection de l’enfance : le recours aux proches encouragé par le gouvernement</a> <span class="cs-article-source">(La Croix)</span></div><div class="cs-article"><a href="https://www.youtube.com/watch?v=xYTkfL0kx-c" target="_blank" rel="noopener noreferrer">Le gouvernement présente un projet de loi de protection de l'enfance</a> <span class="cs-article-source">(Europe 1)</span></div>
+</div><div class="certamen-subject" data-score="7" data-decision="arena">
+  <div class="cs-header">
+    <span class="cs-score">7/10</span>
+    <span class="cs-decision" style="color:#16a34a">arena</span>
+    <span class="cs-risk">Risque : Moyen</span>
+  </div>
+  <h3 class="cs-title">Arabie saoudite : plus de 1,5 million de pèlerins accomplissent le rituel de lapidation à Mina</h3>
+  <div class="cs-question">Le rituel de lapidation du Hajj doit-il être réformé ou préservé ?</div>
+  <div class="cs-positions"><span class="cs-pos">A : Préserver le rituel traditionnel</span><span class="cs-pos">B : Réformer ou abolir le rituel</span></div>
+  <div class="cs-reason">Rituel religieux controversé avec enjeux culturels et droits humains</div>
+  <div class="cs-meta">
+    <span class="cs-theme">Culture - modes</span>
+    <span class="cs-sources">2 source(s) : Euronews FR, Euronews France</span>
+  </div>
+  <div class="cs-article"><a href="https://www.youtube.com/watch?v=GCV1dmq1JD0" target="_blank" rel="noopener noreferrer">Arabie saoudite : plus de 1,5 million de pèlerins accomplissent le rituel de lapidation à Mina</a> <span class="cs-article-source">(Euronews France)</span></div><div class="cs-article"><a href="http://fr.euronews.com/video/2026/05/27/arabie-saoudite-plus-de-15-million-de-pelerins-accomplissent-le-rituel-de-lapidation-a-min" target="_blank" rel="noopener noreferrer">Arabie saoudite : plus de 1,5 million de pèlerins accomplissent le rituel de lapidation à Mina</a> <span class="cs-article-source">(Euronews FR)</span></div>
+</div><div class="certamen-subject" data-score="7" data-decision="arena">
+  <div class="cs-header">
+    <span class="cs-score">7/10</span>
+    <span class="cs-decision" style="color:#16a34a">arena</span>
+    <span class="cs-risk">Risque : Faible</span>
+  </div>
+  <h3 class="cs-title">Une bannière Greenpeace déployée à 2 300 mètres sous l’océan</h3>
+  <div class="cs-question">Faut-il interdire l'exploitation minière des fonds marins pour protéger l'océan ?</div>
+  <div class="cs-positions"><span class="cs-pos">A : Protéger les fonds marins</span><span class="cs-pos">B : Exploiter les ressources sous-marines</span></div>
+  <div class="cs-reason">Opposition claire entre protection environnementale et exploitation économique.</div>
+  <div class="cs-meta">
+    <span class="cs-theme">Climat - environnement</span>
+    <span class="cs-sources">2 source(s) : Euronews FR, Euronews France</span>
+  </div>
+  <div class="cs-article"><a href="https://www.youtube.com/watch?v=ZdDJQL2HZwE" target="_blank" rel="noopener noreferrer">Une bannière Greenpeace déployée à 2 300 mètres sous l’océan</a> <span class="cs-article-source">(Euronews France)</span></div><div class="cs-article"><a href="http://fr.euronews.com/video/2026/05/27/greenpeace-mene-une-action-record-en-eaux-profondes-contre-lexploitation-miniere-des-fonds" target="_blank" rel="noopener noreferrer">Une bannière Greenpeace déployée à 2 300 mètres sous l’océan</a> <span class="cs-article-source">(Euronews FR)</span></div>
+</div><div class="certamen-subject" data-score="7" data-decision="arena">
+  <div class="cs-header">
+    <span class="cs-score">7/10</span>
+    <span class="cs-decision" style="color:#16a34a">arena</span>
+    <span class="cs-risk">Risque : Moyen</span>
+  </div>
+  <h3 class="cs-title">Israël étend son offensive dans le sud Liban face au Hezbollah</h3>
+  <div class="cs-question">Faut-il soutenir l'offensive israélienne contre le Hezbollah au Liban ?</div>
+  <div class="cs-positions"><span class="cs-pos">A : Soutenir l'offensive israélienne</span><span class="cs-pos">B : S'opposer à l'offensive israélienne</span></div>
+  <div class="cs-reason">Conflit avec enjeux géopolitiques et sécurité, positions claires à défendre</div>
+  <div class="cs-meta">
+    <span class="cs-theme">International</span>
+    <span class="cs-sources">2 source(s) : Euronews FR, Euronews France</span>
+  </div>
+  <div class="cs-article"><a href="https://www.youtube.com/watch?v=u00lzf7dTxE" target="_blank" rel="noopener noreferrer">Israël étend son offensive dans le sud Liban face au Hezbollah</a> <span class="cs-article-source">(Euronews France)</span></div><div class="cs-article"><a href="http://fr.euronews.com/2026/05/27/israel-etend-son-offensive-dans-le-sud-liban-face-au-hezbollah" target="_blank" rel="noopener noreferrer">Israël étend son offensive dans le sud Liban face au Hezbollah</a> <span class="cs-article-source">(Euronews FR)</span></div>
+</div><div class="certamen-subject" data-score="7" data-decision="arena">
+  <div class="cs-header">
+    <span class="cs-score">7/10</span>
+    <span class="cs-decision" style="color:#16a34a">arena</span>
+    <span class="cs-risk">Risque : Faible</span>
+  </div>
+  <h3 class="cs-title">Chine : les Galeries Lafayette ferment leur magasin à Pékin, treize ans après son ouverture</h3>
+  <div class="cs-question">Les Galeries Lafayette doivent-elles adapter leur offre ou maintenir leur modèle en Chine ?</div>
+  <div class="cs-positions"><span class="cs-pos">A : Adapter l'offre aux attentes locales</span><span class="cs-pos">B : Maintenir le modèle traditionnel français</span></div>
+  <div class="cs-reason">fermeture soulève débat sur adaptation vs présence internationale</div>
+  <div class="cs-meta">
+    <span class="cs-theme">Économie - emploi</span>
+    <span class="cs-sources">2 source(s) : Euronews FR, Euronews France</span>
+  </div>
+  <div class="cs-article"><a href="https://www.youtube.com/watch?v=9itPUvSut6o" target="_blank" rel="noopener noreferrer">Chine : les Galeries Lafayette ferment leur magasin à Pékin, treize ans après son ouverture</a> <span class="cs-article-source">(Euronews France)</span></div><div class="cs-article"><a href="http://fr.euronews.com/business/2026/05/27/chine-treize-ans-apres-les-galeries-lafayette-ferment-leur-magasin-a-pekin" target="_blank" rel="noopener noreferrer">Chine : les Galeries Lafayette ferment leur magasin à Pékin, treize ans après son ouverture</a> <span class="cs-article-source">(Euronews FR)</span></div>
+</div><div class="certamen-subject" data-score="7" data-decision="arena">
+  <div class="cs-header">
+    <span class="cs-score">7/10</span>
+    <span class="cs-decision" style="color:#16a34a">arena</span>
+    <span class="cs-risk">Risque : Moyen</span>
+  </div>
+  <h3 class="cs-title">Europe Today : manœuvres de l'OTAN près de la frontière russe, VDL alerte sur la menace des drones</h3>
+  <div class="cs-question">Faut-il renforcer ou réduire les manœuvres de l'OTAN près de la Russie ?</div>
+  <div class="cs-positions"><span class="cs-pos">A : Renforcer la présence militaire de l'OTAN</span><span class="cs-pos">B : Réduire les tensions par la désescalade militaire</span></div>
+  <div class="cs-reason">Opposition claire sur la sécurité européenne et la gestion des tensions avec la Russie</div>
+  <div class="cs-meta">
+    <span class="cs-theme">International</span>
+    <span class="cs-sources">2 source(s) : Euronews FR, Euronews France</span>
+  </div>
+  <div class="cs-article"><a href="https://www.youtube.com/watch?v=tlnEuowmwqM" target="_blank" rel="noopener noreferrer">Europe Today : manœuvres de l'OTAN près de la frontière russe, VDL alerte sur la menace des drones</a> <span class="cs-article-source">(Euronews France)</span></div><div class="cs-article"><a href="http://fr.euronews.com/my-europe/2026/05/27/europe-today-manoeuvres-de-lotan-pres-de-la-frontiere-russe-vdl-alerte-sur-la-menace-des-d" target="_blank" rel="noopener noreferrer">Europe Today : manœuvres de l'OTAN près de la frontière russe, VDL alerte sur la menace des drones</a> <span class="cs-article-source">(Euronews FR)</span></div>
+</div><div class="certamen-subject" data-score="7" data-decision="arena">
+  <div class="cs-header">
+    <span class="cs-score">7/10</span>
+    <span class="cs-decision" style="color:#16a34a">arena</span>
+    <span class="cs-risk">Risque : Moyen</span>
+  </div>
+  <h3 class="cs-title">Face aux incursions de drones à l'est de l'UE, Ursula von der Leyen souhaite plus de fermeté</h3>
+  <div class="cs-question">L'UE doit-elle renforcer sa fermeté face aux incursions de drones à l'est ?</div>
+  <div class="cs-positions"><span class="cs-pos">A : Renforcer la fermeté pour protéger l'UE</span><span class="cs-pos">B : Privilégier la diplomatie pour éviter l'escalade</span></div>
+  <div class="cs-reason">Opposition claire sur la fermeté face aux incursions de drones en UE</div>
+  <div class="cs-meta">
+    <span class="cs-theme">International</span>
+    <span class="cs-sources">2 source(s) : Euronews FR, Euronews France</span>
+  </div>
+  <div class="cs-article"><a href="https://www.youtube.com/watch?v=YHhzs1rgeTE" target="_blank" rel="noopener noreferrer">Face aux incursions de drones à l'est de l'UE, Ursula von der Leyen souhaite plus de fermeté</a> <span class="cs-article-source">(Euronews France)</span></div><div class="cs-article"><a href="http://fr.euronews.com/my-europe/2026/05/27/face-aux-incursions-de-drones-a-lest-de-lue-ursula-von-der-leyen-souhaite-plus-de-fermete" target="_blank" rel="noopener noreferrer">Face aux incursions de drones à l'est de l'UE, Ursula von der Leyen souhaite plus de fermeté</a> <span class="cs-article-source">(Euronews FR)</span></div>
+</div><div class="certamen-subject" data-score="7" data-decision="arena">
+  <div class="cs-header">
+    <span class="cs-score">7/10</span>
+    <span class="cs-decision" style="color:#16a34a">arena</span>
+    <span class="cs-risk">Risque : Faible</span>
+  </div>
+  <h3 class="cs-title">Face aux fortes chaleurs, le gouvernement accusé d’impréparation</h3>
+  <div class="cs-question">Le gouvernement a-t-il suffisamment anticipé la gestion des fortes chaleurs ?</div>
+  <div class="cs-positions"><span class="cs-pos">A : Le gouvernement a mal anticipé</span><span class="cs-pos">B : Le gouvernement a fait ce qu’il pouvait</span></div>
+  <div class="cs-reason">Question claire avec deux camps sur la gestion et l’anticipation gouvernementale</div>
+  <div class="cs-meta">
+    <span class="cs-theme">Politique</span>
+    <span class="cs-sources">2 source(s) : HuffPost France, Sud Radio</span>
+  </div>
+  <div class="cs-article"><a href="https://www.huffingtonpost.fr/politique/article/face-aux-fortes-chaleurs-le-gouvernement-accuse-d-impreparation_264145.html" target="_blank" rel="noopener noreferrer">Face aux fortes chaleurs, le gouvernement accusé d’impréparation</a> <span class="cs-article-source">(HuffPost France)</span></div><div class="cs-article"><a href="https://www.youtube.com/watch?v=xrMGgv1YCpk" target="_blank" rel="noopener noreferrer">Adaptation aux fortes chaleurs : la France à la traîne ?</a> <span class="cs-article-source">(Sud Radio)</span></div>
+</div><div class="certamen-subject" data-score="7" data-decision="arena">
+  <div class="cs-header">
+    <span class="cs-score">7/10</span>
+    <span class="cs-decision" style="color:#16a34a">arena</span>
+    <span class="cs-risk">Risque : Faible</span>
+  </div>
+  <h3 class="cs-title">Electrification : Emmanuel Macron enfile le costume de sélectionneur</h3>
+  <div class="cs-question">L'État doit-il piloter strictement l'électrification ou laisser plus de liberté aux acteurs privés </div>
+  <div class="cs-positions"><span class="cs-pos">A : État pilote centralisé</span><span class="cs-pos">B : Liberté aux acteurs privés</span></div>
+  <div class="cs-reason">Mobilisation pour électrification soulève choix stratégiques et priorités collectives</div>
+  <div class="cs-meta">
+    <span class="cs-theme">Économie - emploi</span>
+    <span class="cs-sources">2 source(s) : L'Express, LCP - Assemblée nationale</span>
+  </div>
+  <div class="cs-article"><a href="https://www.youtube.com/watch?v=8KAMKrtoq68" target="_blank" rel="noopener noreferrer">Électrification : Emmanuel Macron sonne la mobilisation | Chaque voix compte - 26/05/26</a> <span class="cs-article-source">(LCP - Assemblée nationale)</span></div><div class="cs-article"><a href="https://www.lexpress.fr/environnement/electrification-emmanuel-macron-enfile-le-costume-de-selectionneur-ZOOICS6XPFFGDBAXIAHG5XS2FE/" target="_blank" rel="noopener noreferrer">Electrification : Emmanuel Macron enfile le costume de sélectionneur</a> <span class="cs-article-source">(L'Express)</span></div>
+</div><div class="certamen-subject" data-score="7" data-decision="arena">
+  <div class="cs-header">
+    <span class="cs-score">7/10</span>
+    <span class="cs-decision" style="color:#16a34a">arena</span>
+    <span class="cs-risk">Risque : Faible</span>
+  </div>
+  <h3 class="cs-title">Yaël Braun-Pivet revient sur les coulisses de la dissolution de 2024 : &quot;J'avais le sentiment d'être quantité négligeable&quot;</h3>
+  <div class="cs-question">La dissolution décidée sans consultation nuit-elle à la démocratie parlementaire ?</div>
+  <div class="cs-positions"><span class="cs-pos">A : La dissolution sans consultation est justifiée</span><span class="cs-pos">B : La dissolution doit respecter la consultation parlement</span></div>
+  <div class="cs-reason">Question sur la démocratie interne et le rôle du Parlement, enjeu collectif réel.</div>
+  <div class="cs-meta">
+    <span class="cs-theme">Politique</span>
+    <span class="cs-sources">1 source(s) : Franceinfo</span>
+  </div>
+  <div class="cs-article"><a href="https://www.franceinfo.fr/politique/yael-braun-pivet-revient-sur-les-coulisses-de-la-dissolution-de-2024-j-avais-le-sentiment-d-etre-quantite-negligeable_8029601.html#xtor=RSS-3-[lestitres]" target="_blank" rel="noopener noreferrer">Yaël Braun-Pivet revient sur les coulisses de la dissolution de 2024 : &quot;J'avais le sentiment d'être quantité négligeable&quot;</a> <span class="cs-article-source">(Franceinfo)</span></div><div class="cs-article"><a href="https://www.youtube.com/watch?v=-TSPDreiVbo" target="_blank" rel="noopener noreferrer">Yaël Braun-Pivet revient sur la dissolution : &quot;J'avais le sentiment d'être quantité négligeable&quot;</a> <span class="cs-article-source">(Franceinfo)</span></div>
+</div><div class="certamen-subject" data-score="7" data-decision="reformulate">
+  <div class="cs-header">
+    <span class="cs-score">7/10</span>
+    <span class="cs-decision" style="color:#d97706">reformulate</span>
+    <span class="cs-risk">Risque : Faible</span>
+  </div>
+  <h3 class="cs-title">Bon sondage pour Jean-Luc Mélenchon : « Ça doit être un sérieux clignotant orange pour la gauche sociale et écologiste »</h3>
+  <div class="cs-question">La gauche sociale et écologiste doit-elle changer de stratégie face à Mélenchon ?</div>
+  <div class="cs-positions"><span class="cs-pos">A : Soutenir la stratégie actuelle</span><span class="cs-pos">B : Changer de stratégie rapidement</span></div>
+  <div class="cs-reason">Sujet politique clivant mais question actuelle et peu claire</div>
+  <div class="cs-meta">
+    <span class="cs-theme">Politique</span>
+    <span class="cs-sources">1 source(s) : Public Sénat</span>
+  </div>
+  <div class="cs-article"><a href="https://www.publicsenat.fr/actualites/politique/bon-sondage-pour-jean-luc-melenchon-ca-doit-etre-un-serieux-clignotant-orange-pour-la-gauche-sociale-et-ecologiste" target="_blank" rel="noopener noreferrer">Bon sondage pour Jean-Luc Mélenchon : « Ça doit être un sérieux clignotant orange pour la gauche sociale et écologiste »</a> <span class="cs-article-source">(Public Sénat)</span></div><div class="cs-article"><a href="https://www.youtube.com/shorts/qifhwColD7U" target="_blank" rel="noopener noreferrer">Jean-Luc Mélenchon bien placé pour le second tour dans notre sondage pendant que le PS cherche toujo</a> <span class="cs-article-source">(Public Sénat)</span></div>
+</div><div class="certamen-subject" data-score="7" data-decision="arena">
+  <div class="cs-header">
+    <span class="cs-score">7/10</span>
+    <span class="cs-decision" style="color:#16a34a">arena</span>
+    <span class="cs-risk">Risque : Faible</span>
+  </div>
+  <h3 class="cs-title">Créateurs de contenus d’information : les aides publiques considérées comme « la clé d’une indépendance structurelle » par le secteur</h3>
+  <div class="cs-question">Les aides publiques garantissent-elles l'indépendance des créateurs d'information ?</div>
+  <div class="cs-positions"><span class="cs-pos">A : Oui, elles assurent une indépendance structurelle</span><span class="cs-pos">B : Non, elles compromettent l'autonomie éditoriale</span></div>
+  <div class="cs-reason">Sujet clivant sur rôle et impact des aides publiques pour l'indépendance info</div>
+  <div class="cs-meta">
+    <span class="cs-theme">Médias - divertissements</span>
+    <span class="cs-sources">1 source(s) : Public Sénat</span>
+  </div>
+  <div class="cs-article"><a href="https://www.publicsenat.fr/actualites/politique/createurs-de-contenus-dinformation-les-aides-publiques-considerees-comme-la-cle-dune-independance-structurelle-par-le-secteur" target="_blank" rel="noopener noreferrer">Créateurs de contenus d’information : les aides publiques considérées comme « la clé d’une indépendance structurelle » par le secteur</a> <span class="cs-article-source">(Public Sénat)</span></div><div class="cs-article"><a href="https://www.youtube.com/watch?v=41ifrDljJxk" target="_blank" rel="noopener noreferrer">Créateurs de contenu d’information : les aides publiques « la clé d’une indépendance structurelle »</a> <span class="cs-article-source">(Public Sénat)</span></div>
+</div><div class="certamen-subject" data-score="7" data-decision="arena">
+  <div class="cs-header">
+    <span class="cs-score">7/10</span>
+    <span class="cs-decision" style="color:#16a34a">arena</span>
+    <span class="cs-risk">Risque : Moyen</span>
+  </div>
+  <h3 class="cs-title">Cyrielle Chatelain (Les Écologistes) : &quot;Sur la flottille pour Gaza, c'est de la torture&quot;</h3>
+  <div class="cs-question">La flottille pour Gaza est-elle une action légitime malgré les risques encourus ?</div>
+  <div class="cs-positions"><span class="cs-pos">A : Soutien à la flottille pour Gaza</span><span class="cs-pos">B : Opposition à la flottille pour Gaza</span></div>
+  <div class="cs-reason">Sujet clivant sur la légitimité et les méthodes de la flottille pour Gaza</div>
+  <div class="cs-meta">
+    <span class="cs-theme">International</span>
+    <span class="cs-sources">1 source(s) : France 24</span>
+  </div>
+  <div class="cs-article"><a href="https://www.youtube.com/watch?v=S5-cW20BeLk" target="_blank" rel="noopener noreferrer">Cyrielle Chatelain (Les Écologistes) : &quot;Sur la flottille pour Gaza, c'est de la torture&quot;</a> <span class="cs-article-source">(France 24)</span></div><div class="cs-article"><a href="https://www.france24.com/fr/%C3%A9missions/mardi-politique/20260526-cyrielle-chatelain-les-%C3%A9cologistes-sur-la-flottille-pour-gaza-c-est-de-la-torture" target="_blank" rel="noopener noreferrer">Cyrielle Chatelain (Les Écologistes) : &quot;Sur la flottille pour Gaza, c'est de la torture&quot;</a> <span class="cs-article-source">(France 24)</span></div>
+</div><div class="certamen-subject" data-score="7" data-decision="reformulate">
+  <div class="cs-header">
+    <span class="cs-score">7/10</span>
+    <span class="cs-decision" style="color:#d97706">reformulate</span>
+    <span class="cs-risk">Risque : Élevé</span>
+  </div>
+  <h3 class="cs-title">Mali : des réfugiés témoignent de tortures et d'assassinats par l'armée et des combattants russes</h3>
+  <div class="cs-question">Faut-il revoir le rôle des forces étrangères dans le conflit malien ?</div>
+  <div class="cs-positions"><span class="cs-pos">A : Maintenir l'appui militaire international</span><span class="cs-pos">B : Réduire l'intervention étrangère au Mali</span></div>
+  <div class="cs-reason">Sujet sensible avec témoignages graves, question actuelle mais à reformuler</div>
+  <div class="cs-meta">
+    <span class="cs-theme">International</span>
+    <span class="cs-sources">1 source(s) : France 24</span>
+  </div>
+  <div class="cs-article"><a href="https://www.france24.com/fr/vid%C3%A9o/20260526-mali-des-r%C3%A9fugi%C3%A9s-t%C3%A9moignent-de-tortures-et-d-assassinats-par-l-arm%C3%A9e-et-des-combattants-russes" target="_blank" rel="noopener noreferrer">Mali : des réfugiés témoignent de tortures et d'assassinats par l'armée et des combattants russes</a> <span class="cs-article-source">(France 24)</span></div><div class="cs-article"><a href="https://www.youtube.com/watch?v=rAzVFKgs9VU" target="_blank" rel="noopener noreferrer">Mali : des réfugiés témoignent de tortures et d'assassinats par l'armée et des combattants russes</a> <span class="cs-article-source">(France 24)</span></div>
+</div><div class="certamen-subject" data-score="7" data-decision="arena">
+  <div class="cs-header">
+    <span class="cs-score">7/10</span>
+    <span class="cs-decision" style="color:#16a34a">arena</span>
+    <span class="cs-risk">Risque : Moyen</span>
+  </div>
+  <h3 class="cs-title">Liban : au moins 11 morts dans une frappe israélienne dans l'est du pays</h3>
+  <div class="cs-question">La frappe israélienne au Liban est-elle justifiable au regard de la sécurité régionale ?</div>
+  <div class="cs-positions"><span class="cs-pos">A : Soutenir la frappe pour la sécurité d'Israël</span><span class="cs-pos">B : Condamner la frappe pour respecter la souveraineté liba</span></div>
+  <div class="cs-reason">Conflit international avec enjeux de sécurité et souveraineté, deux positions claires.</div>
+  <div class="cs-meta">
+    <span class="cs-theme">International</span>
+    <span class="cs-sources">1 source(s) : France 24</span>
+  </div>
+  <div class="cs-article"><a href="https://www.france24.com/fr/vid%C3%A9o/20260526-liban-au-moins-11-morts-dans-une-frappe-isra%C3%A9lienne-dans-l-est-du-pays" target="_blank" rel="noopener noreferrer">Liban : au moins 11 morts dans une frappe israélienne dans l'est du pays</a> <span class="cs-article-source">(France 24)</span></div><div class="cs-article"><a href="https://www.youtube.com/watch?v=RFHMLz2Z9nc" target="_blank" rel="noopener noreferrer">Liban : au moins 11 morts dans une frappe israélienne dans l'est du pays • FRANCE 24</a> <span class="cs-article-source">(France 24)</span></div>
+</div><div class="certamen-subject" data-score="7" data-decision="arena">
+  <div class="cs-header">
+    <span class="cs-score">7/10</span>
+    <span class="cs-decision" style="color:#16a34a">arena</span>
+    <span class="cs-risk">Risque : Moyen</span>
+  </div>
+  <h3 class="cs-title">Ebola en RD Congo : comment l’IA peut aider à contenir l’épidémie</h3>
+  <div class="cs-question">L'IA est-elle une solution fiable pour contenir Ebola en RD Congo ?</div>
+  <div class="cs-positions"><span class="cs-pos">A : L'IA est un outil efficace pour lutter contre Ebola</span><span class="cs-pos">B : L'IA ne peut pas remplacer les méthodes traditionnelles</span></div>
+  <div class="cs-reason">Opposition claire sur l'usage et les limites de l'IA en santé publique</div>
+  <div class="cs-meta">
+    <span class="cs-theme">Santé - bien-être</span>
+    <span class="cs-sources">1 source(s) : France 24</span>
+  </div>
+  <div class="cs-article"><a href="https://www.france24.com/fr/vid%C3%A9o/20260526-ebola-en-rd-congo-comment-l-ia-peut-aider-%C3%A0-contenir-l-%C3%A9pid%C3%A9mie" target="_blank" rel="noopener noreferrer">Ebola en RD Congo : comment l’IA peut aider à contenir l’épidémie</a> <span class="cs-article-source">(France 24)</span></div><div class="cs-article"><a href="https://www.youtube.com/watch?v=iz_xAKDcWuU" target="_blank" rel="noopener noreferrer">Ebola en RD Congo : comment l’IA peut aider à contenir l’épidémie • FRANCE 24</a> <span class="cs-article-source">(France 24)</span></div>
+</div><div class="certamen-subject" data-score="7" data-decision="arena">
+  <div class="cs-header">
+    <span class="cs-score">7/10</span>
+    <span class="cs-decision" style="color:#16a34a">arena</span>
+    <span class="cs-risk">Risque : Moyen</span>
+  </div>
+  <h3 class="cs-title">Opération Ajax : le coup d’Etat qui a changé l’Iran</h3>
+  <div class="cs-question">L'Opération Ajax était-elle justifiée pour protéger les intérêts occidentaux ?</div>
+  <div class="cs-positions"><span class="cs-pos">A : Justification pragmatique</span><span class="cs-pos">B : Condamnation de l'ingérence</span></div>
+  <div class="cs-reason">Sujet historique avec enjeux géopolitiques et choix moraux opposables</div>
+  <div class="cs-meta">
+    <span class="cs-theme">International</span>
+    <span class="cs-sources">1 source(s) : L'Express</span>
+  </div>
+  <div class="cs-article"><a href="https://www.youtube.com/watch?v=cCa8TF-3Sl4" target="_blank" rel="noopener noreferrer">Opération Ajax : le coup d’Etat qui a changé l’Iran</a> <span class="cs-article-source">(L'Express)</span></div><div class="cs-article"><a href="https://www.lexpress.fr/podcasts/nid-despions/operation-ajax-le-coup-detat-qui-a-change-liran-ZGPEEITIQ5A7LPYFL4E62WZANA/" target="_blank" rel="noopener noreferrer">Opération Ajax : le coup d’Etat qui a changé l’Iran</a> <span class="cs-article-source">(L'Express)</span></div>
+</div><div class="certamen-subject" data-score="7" data-decision="arena">
+  <div class="cs-header">
+    <span class="cs-score">7/10</span>
+    <span class="cs-decision" style="color:#16a34a">arena</span>
+    <span class="cs-risk">Risque : Faible</span>
+  </div>
+  <h3 class="cs-title">La déforestation à son niveau le plus bas depuis 2019 en Amazonie brésilienne</h3>
+  <div class="cs-question">Faut-il prioriser la lutte contre la déforestation ou le développement économique en Amazonie ?</div>
+  <div class="cs-positions"><span class="cs-pos">A : Prioriser la protection de l'Amazonie</span><span class="cs-pos">B : Prioriser le développement économique local</span></div>
+  <div class="cs-reason">Deux visions opposées sur la gestion et la priorité à donner à la déforestation</div>
+  <div class="cs-meta">
+    <span class="cs-theme">Climat - environnement</span>
+    <span class="cs-sources">5 source(s) : Franceinfo, Libération, Reporterre, La Croix, France 24</span>
+  </div>
+  <div class="cs-article"><a href="https://reporterre.net/BVE-L-Amazonie-va-mieux" target="_blank" rel="noopener noreferrer">Amazonie : la déforestation a atteint son niveau le plus bas depuis 2019</a> <span class="cs-article-source">(Reporterre)</span></div><div class="cs-article"><a href="https://www.liberation.fr/environnement/la-deforestation-en-amazonie-au-plus-bas-depuis-2019-20260527_3Y6L4L5NG5HRRGXHPQT7Z4L6UM/" target="_blank" rel="noopener noreferrer">La déforestation en Amazonie au plus bas depuis 2019</a> <span class="cs-article-source">(Libération)</span></div><div class="cs-article"><a href="https://www.franceinfo.fr/environnement/en-amazonie-bresilienne-la-deforestation-est-a-son-niveau-le-plus-bas-depuis-2019_8030846.html#xtor=RSS-3-[lestitres]" target="_blank" rel="noopener noreferrer">La déforestation à son niveau le plus bas depuis 2019 en Amazonie brésilienne</a> <span class="cs-article-source">(Franceinfo)</span></div>
+</div><div class="certamen-subject" data-score="7" data-decision="arena">
+  <div class="cs-header">
+    <span class="cs-score">7/10</span>
+    <span class="cs-decision" style="color:#16a34a">arena</span>
+    <span class="cs-risk">Risque : Moyen</span>
+  </div>
+  <h3 class="cs-title">La proposition de loi post-Bétharram sur les violences à l'école adoptée en commission à l'Assemblée, avant un examen le 1er juin</h3>
+  <div class="cs-question">Faut-il renforcer le contrôle des personnels éducatifs pour lutter contre les violences à l'école ?</div>
+  <div class="cs-positions"><span class="cs-pos">A : Renforcer le contrôle et signalement</span><span class="cs-pos">B : Préserver la confiance et autonomie des écoles</span></div>
+  <div class="cs-reason">Sujet clivant sur la gestion des violences scolaires et responsabilités étatiques</div>
+  <div class="cs-meta">
+    <span class="cs-theme">Société - éducation</span>
+    <span class="cs-sources">4 source(s) : Franceinfo, Libération, L'Humanité, HuffPost France</span>
+  </div>
+  <div class="cs-article"><a href="https://www.huffingtonpost.fr/politique/article/ce-que-contient-la-proposition-de-loi-betharram-qui-arrive-a-l-assemblee_264137.html" target="_blank" rel="noopener noreferrer">Ce que contient la proposition de loi Bétharram qui arrive à l’Assemblée</a> <span class="cs-article-source">(HuffPost France)</span></div><div class="cs-article"><a href="https://www.humanite.fr/politique/assemblee-nationale/malgre-les-manoeuvres-des-macronistes-et-du-rn-la-proposition-de-loi-post-affaire-betharram-adoptee-en-commission" target="_blank" rel="noopener noreferrer">Malgré les manœuvres des macronistes et du RN, la proposition de loi post-affaire Bétharram adoptée en commission</a> <span class="cs-article-source">(L'Humanité)</span></div><div class="cs-article"><a href="https://www.liberation.fr/societe/protection-de-lenfance-une-proposition-de-loi-post-betharram-adoptee-en-commission-a-lassemblee-20260527_MNDXCODDZJCLJCBTLPZCX2KHOE/" target="_blank" rel="noopener noreferrer">Protection de l’enfance : une proposition de loi post-Bétharram adoptée en commission à l’Assemblée</a> <span class="cs-article-source">(Libération)</span></div>
+</div><div class="certamen-subject" data-score="7" data-decision="arena">
+  <div class="cs-header">
+    <span class="cs-score">7/10</span>
+    <span class="cs-decision" style="color:#16a34a">arena</span>
+    <span class="cs-risk">Risque : Faible</span>
+  </div>
+  <h3 class="cs-title">Des employés de Samsung en Corée du Sud vont toucher une prime record de 290 000 euros liée aux profits de l'IA</h3>
+  <div class="cs-question">Les primes record liées à l'IA sont-elles justifiées pour les salariés ?</div>
+  <div class="cs-positions"><span class="cs-pos">A : Oui, elles récompensent la contribution des employés</span><span class="cs-pos">B : Non, elles creusent les inégalités et favorisent les él</span></div>
+  <div class="cs-reason">Prime record soulève débat sur juste répartition des profits IA</div>
+  <div class="cs-meta">
+    <span class="cs-theme">Économie - emploi</span>
+    <span class="cs-sources">4 source(s) : Franceinfo, Libération, France 24, Le Dauphiné Libéré</span>
+  </div>
+  <div class="cs-article"><a href="https://www.liberation.fr/international/coree-du-sud-les-employes-de-samsung-en-lien-avec-lia-empocheront-une-prime-de-290-000-euros-20260527_BTOU6IUP2RE3BFSHXLUEXTUKUY/" target="_blank" rel="noopener noreferrer">Corée du Sud : les employés de Samsung en lien avec l’IA empocheront une prime de 290 000 euros</a> <span class="cs-article-source">(Libération)</span></div><div class="cs-article"><a href="https://www.ledauphine.com/economie/2026/05/27/samsung-les-employes-approuvent-l-accord-sur-une-mega-prime-ia-de-pres-de-290-000-euros" target="_blank" rel="noopener noreferrer">Corée du Sud. Samsung : les employés approuvent l'accord sur une méga-prime IA de près de 290 000 euros</a> <span class="cs-article-source">(Le Dauphiné Libéré)</span></div><div class="cs-article"><a href="https://www.franceinfo.fr/monde/coree-du-sud/en-coree-du-sud-des-employes-de-samsung-vont-toucher-une-prime-record-de-290-000-euros-liee-aux-profits-de-l-ia_8030813.html#xtor=RSS-3-[lestitres]" target="_blank" rel="noopener noreferrer">Des employés de Samsung en Corée du Sud vont toucher une prime record de 290 000 euros liée aux profits de l'IA</a> <span class="cs-article-source">(Franceinfo)</span></div>
+</div><div class="certamen-subject" data-score="7" data-decision="arena">
+  <div class="cs-header">
+    <span class="cs-score">7/10</span>
+    <span class="cs-decision" style="color:#16a34a">arena</span>
+    <span class="cs-risk">Risque : Moyen</span>
+  </div>
+  <h3 class="cs-title">EN DIRECT - Guerre au Moyen-Orient : les Gardiens de la révolution jugent «faible» la probabilité d’une reprise de la guerre</h3>
+  <div class="cs-question">Faut-il privilégier la diplomatie ou la fermeté militaire au Moyen-Orient ?</div>
+  <div class="cs-positions"><span class="cs-pos">A : Privilégier la diplomatie</span><span class="cs-pos">B : Privilégier la fermeté militaire</span></div>
+  <div class="cs-reason">Conflit avec enjeux géopolitiques et deux visions opposées claires</div>
+  <div class="cs-meta">
+    <span class="cs-theme">International</span>
+    <span class="cs-sources">4 source(s) : Libération, Le Figaro, BFMTV, RFI</span>
+  </div>
+  <div class="cs-article"><a href="https://www.liberation.fr/international/moyen-orient/en-direct-guerre-au-moyen-orient-les-cessez-le-feu-en-iran-et-au-liban-menaces-20260527_A5EZDHUNPRHZ5FGYA3CP2KN6LA/" target="_blank" rel="noopener noreferrer">EN DIRECT - Guerre au Moyen-Orient : les Gardiens de la révolution jugent «faible» la probabilité d’une reprise de la guerre</a> <span class="cs-article-source">(Libération)</span></div><div class="cs-article"><a href="https://www.bfmtv.com/international/moyen-orient/iran/direct-guerre-au-moyen-orient-le-trafic-aerien-a-repris-sans-interruption-dans-dix-aeroports-en-iran_LN-202605270141.html" target="_blank" rel="noopener noreferrer">DIRECT. Guerre au Moyen-Orient: l'Iran accuse les États-Unis et Israël de chercher à &quot;renverser&quot; la République islamique</a> <span class="cs-article-source">(BFMTV)</span></div><div class="cs-article"><a href="https://www.rfi.fr/fr/moyen-orient/20260527-en-direct-guerre-au-moyen-orient-l-arm%C3%A9e-isra%C3%A9lienne-frappe-le-sud-du-liban-et-%C3%A9tend-ses-op%C3%A9rations-terrestres" target="_blank" rel="noopener noreferrer">EN DIRECT - Moyen-Orient: les Gardiens de la Révolution iraniens jugent «faible» la probabilité d'une reprise de la guerre</a> <span class="cs-article-source">(RFI)</span></div>
+</div><div class="certamen-subject" data-score="7" data-decision="arena">
+  <div class="cs-header">
+    <span class="cs-score">7/10</span>
+    <span class="cs-decision" style="color:#16a34a">arena</span>
+    <span class="cs-risk">Risque : Moyen</span>
+  </div>
+  <h3 class="cs-title">Procès des financements libyens : « L’absence de Claude Guéant a été utilisée par Nicolas Sarkozy »</h3>
+  <div class="cs-question">L'absence de Claude Guéant a-t-elle été exploitée par Nicolas Sarkozy au procès libyen ?</div>
+  <div class="cs-positions"><span class="cs-pos">A : L'absence de Guéant a été utilisée stratégiquement par </span><span class="cs-pos">B : L'absence de Guéant n'a pas influencé la stratégie de S</span></div>
+  <div class="cs-reason">Conflit clair entre responsabilités et stratégies politiques dans un procès sensible</div>
+  <div class="cs-meta">
+    <span class="cs-theme">Justice - faits divers</span>
+    <span class="cs-sources">4 source(s) : L'Humanité, Mediapart, Le Figaro, France 24</span>
+  </div>
+  <div class="cs-article"><a href="https://www.mediapart.fr/journal/france/270526/l-avocat-de-claude-gueant-au-proces-des-financements-libyens-le-numero-2-fait-strictement-ce-que-lui-dit-l" target="_blank" rel="noopener noreferrer">L’avocat de Claude Guéant au procès des financements libyens: «Le numéro 2 fait strictement ce que lui dit le numéro 1!»</a> <span class="cs-article-source">(Mediapart)</span></div><div class="cs-article"><a href="https://www.humanite.fr/politique/claude-gueant/proces-des-financements-libyens-labsence-de-claude-gueant-a-ete-utilisee-par-nicolas-sarkozy" target="_blank" rel="noopener noreferrer">Procès des financements libyens : « L’absence de Claude Guéant a été utilisée par Nicolas Sarkozy »</a> <span class="cs-article-source">(L'Humanité)</span></div><div class="cs-article"><a href="https://www.france24.com/fr/france/20260526-proc%C3%A8s-libyen-en-appel-la-d%C3%A9fense-de-claude-gu%C3%A9ant-cogne-sur-nicolas-sarkozy" target="_blank" rel="noopener noreferrer">Procès libyen en appel : la défense de Claude Guéant cogne sur Nicolas Sarkozy</a> <span class="cs-article-source">(France 24)</span></div>
+</div><div class="certamen-subject" data-score="7" data-decision="arena">
+  <div class="cs-header">
+    <span class="cs-score">7/10</span>
+    <span class="cs-decision" style="color:#16a34a">arena</span>
+    <span class="cs-risk">Risque : Faible</span>
+  </div>
+  <h3 class="cs-title">Aide carburant : ce qu’il faut savoir de l’indemnité destinée aux « grands rouleurs » et disponible à partir d’aujourd’hui</h3>
+  <div class="cs-question">L’aide carburant aux grands rouleurs est-elle juste et efficace ?</div>
+  <div class="cs-positions"><span class="cs-pos">A : Soutenir l’aide ciblée aux grands rouleurs modestes</span><span class="cs-pos">B : Favoriser une aide plus large ou différente pour tous l</span></div>
+  <div class="cs-reason">Aide ciblée soulève débat sur justice sociale et efficacité économique</div>
+  <div class="cs-meta">
+    <span class="cs-theme">Économie - emploi</span>
+    <span class="cs-sources">3 source(s) : Le Monde, Libération, HuffPost France</span>
+  </div>
+  <div class="cs-article"><a href="https://www.lemonde.fr/economie/article/2026/05/27/carburants-les-grands-rouleurs-peuvent-desormais-demander-l-indemnite-de-100-euros-pour-faire-face-a-la-hausse-des-prix_6694167_3234.html" target="_blank" rel="noopener noreferrer">Aide carburant : ce qu’il faut savoir de l’indemnité destinée aux « grands rouleurs » et disponible à partir d’aujourd’hui</a> <span class="cs-article-source">(Le Monde)</span></div><div class="cs-article"><a href="https://www.huffingtonpost.fr/france/article/voici-qui-est-concerne-par-l-aide-grands-rouleurs-accessible-a-partir-de-ce-mercredi_264130.html" target="_blank" rel="noopener noreferrer">Voici qui est concerné par l’aide « grands rouleurs », accessible à partir de ce mercredi</a> <span class="cs-article-source">(HuffPost France)</span></div><div class="cs-article"><a href="https://www.liberation.fr/economie/conso/aide-carburant-le-site-pour-demander-lindemnite-grands-rouleurs-ouvre-ce-mercredi-20260527_HSDVFRULDJEBTCPRUM2WJSS7CI/" target="_blank" rel="noopener noreferrer">Aide carburant : le site pour demander l’indemnité «grands rouleurs» ouvre ce mercredi</a> <span class="cs-article-source">(Libération)</span></div>
+</div><div class="certamen-subject" data-score="7" data-decision="arena">
+  <div class="cs-header">
+    <span class="cs-score">7/10</span>
+    <span class="cs-decision" style="color:#16a34a">arena</span>
+    <span class="cs-risk">Risque : Moyen</span>
+  </div>
+  <h3 class="cs-title">Moyen-Orient : l’Iran rétablit partiellement l’accès à internet après une coupure de trois mois</h3>
+  <div class="cs-question">L'Iran doit-il prioriser la sécurité ou la liberté d'accès à internet ?</div>
+  <div class="cs-positions"><span class="cs-pos">A : Prioriser la sécurité nationale</span><span class="cs-pos">B : Garantir la liberté d'accès à internet</span></div>
+  <div class="cs-reason">Opposition claire sur contrôle vs liberté d'internet en contexte géopolitique</div>
+  <div class="cs-meta">
+    <span class="cs-theme">International</span>
+    <span class="cs-sources">3 source(s) : Libération, BFMTV, France 24</span>
+  </div>
+  <div class="cs-article"><a href="https://www.liberation.fr/international/moyen-orient/en-direct-moyen-orient-les-etats-unis-frappent-des-sites-de-missiles-en-iran-20260526_VN3NKJOZSJEV5BTSAIEHAI576M/" target="_blank" rel="noopener noreferrer">Moyen-Orient : l’Iran rétablit partiellement l’accès à internet après une coupure de trois mois</a> <span class="cs-article-source">(Libération)</span></div><div class="cs-article"><a href="https://www.bfmtv.com/international/moyen-orient/iran/video-guerre-au-moyen-orient-l-acces-a-internet-partiellement-retabli-en-iran_VN-202605270508.html" target="_blank" rel="noopener noreferrer">Guerre au Moyen-Orient: l'accès à internet partiellement rétabli en Iran</a> <span class="cs-article-source">(BFMTV)</span></div><div class="cs-article"><a href="https://www.france24.com/fr/asie-pacifique/20260526-en-iran-l-acc%C3%A8s-%C3%A0-internet-partiellement-r%C3%A9tabli-apr%C3%A8s-trois-mois-de-coupure" target="_blank" rel="noopener noreferrer">En Iran, l'accès à Internet partiellement rétabli après trois mois de coupure</a> <span class="cs-article-source">(France 24)</span></div>
+</div><div class="certamen-subject" data-score="7" data-decision="arena">
+  <div class="cs-header">
+    <span class="cs-score">7/10</span>
+    <span class="cs-decision" style="color:#16a34a">arena</span>
+    <span class="cs-risk">Risque : Moyen</span>
+  </div>
+  <h3 class="cs-title">Ingérence étrangère contre LFI aux municipales : le parquet de Paris ouvre une enquête</h3>
+  <div class="cs-question">Faut-il renforcer la lutte contre l'ingérence étrangère en politique ?</div>
+  <div class="cs-positions"><span class="cs-pos">A : Renforcer la lutte contre l'ingérence étrangère</span><span class="cs-pos">B : Préserver la liberté politique sans surenchère sécurita</span></div>
+  <div class="cs-reason">Sujet politique clivant avec enjeux démocratiques et deux visions opposées.</div>
+  <div class="cs-meta">
+    <span class="cs-theme">Politique</span>
+    <span class="cs-sources">3 source(s) : L'Obs, Valeurs actuelles, L'Express</span>
+  </div>
+  <div class="cs-article"><a href="https://www.nouvelobs.com/politique/20260526.OBS115264/ingerence-etrangere-contre-lfi-aux-municipales-le-parquet-de-paris-ouvre-une-enquete.html" target="_blank" rel="noopener noreferrer">Ingérence étrangère contre LFI aux municipales : le parquet de Paris ouvre une enquête</a> <span class="cs-article-source">(L'Obs)</span></div><div class="cs-article"><a href="https://www.valeursactuelles.com/politique/municipales-2026-le-parquet-ouvre-une-enquete-sur-des-soupcons-dingerence-israelienne-ciblant-lfi" target="_blank" rel="noopener noreferrer">Municipales 2026 : le parquet ouvre une enquête sur des soupçons d’ingérence israélienne ciblant LFI</a> <span class="cs-article-source">(Valeurs actuelles)</span></div><div class="cs-article"><a href="https://www.lexpress.fr/politique/municipales-ce-que-lon-sait-de-lenquete-sur-une-ingerence-etrangere-visant-des-candidats-lfi-3TJJTDMKCFADFME3R76YQAV4CE/" target="_blank" rel="noopener noreferrer">Municipales : ce que l’on sait de l’enquête sur une ingérence étrangère visant des candidats LFI</a> <span class="cs-article-source">(L'Express)</span></div>
+</div><div class="certamen-subject" data-score="6" data-decision="reformulate">
+  <div class="cs-header">
+    <span class="cs-score">6/10</span>
+    <span class="cs-decision" style="color:#d97706">reformulate</span>
+    <span class="cs-risk">Risque : Faible</span>
+  </div>
+  <h3 class="cs-title">Budapest achève ses préparatifs avant d'accueillir sa première finale de Ligue des champions de foot</h3>
+  <div class="cs-question">Faut-il privilégier l'accueil d'événements sportifs majeurs pour dynamiser une ville ?</div>
+  <div class="cs-positions"><span class="cs-pos">A : Prioriser les grands événements sportifs</span><span class="cs-pos">B : Favoriser d'autres formes de développement urbain</span></div>
+  <div class="cs-reason">Sujet intéressant mais question actuelle trop positive et peu clivante</div>
+  <div class="cs-meta">
+    <span class="cs-theme">Sports - loisirs</span>
+    <span class="cs-sources">2 source(s) : Euronews FR, Euronews France</span>
+  </div>
+  <div class="cs-article"><a href="https://www.youtube.com/watch?v=SxJJwG_0sUg" target="_blank" rel="noopener noreferrer">Budapest achève ses préparatifs avant d'accueillir sa première finale de Ligue des champions de foot</a> <span class="cs-article-source">(Euronews France)</span></div><div class="cs-article"><a href="http://fr.euronews.com/my-europe/2026/05/27/budapest-acheve-ses-preparatifs-avant-daccueillir-sa-premiere-finale-de-ligue-des-champion" target="_blank" rel="noopener noreferrer">Budapest achève ses préparatifs avant d'accueillir sa première finale de Ligue des champions de foot</a> <span class="cs-article-source">(Euronews FR)</span></div>
+</div>
+</div>
+  </div>
+</div>
+<script>
+  var currentFilter = "all";
+  function applyFilter() {
+    document.querySelectorAll(".certamen-subject").forEach(function(el) {
+      var decision = el.dataset.decision || "";
+      el.classList.toggle("cs-hidden", currentFilter !== "all" && decision !== currentFilter);
+    });
+  }
+  document.querySelectorAll(".filter-btn").forEach(function(btn) {
+    btn.addEventListener("click", function() {
+      currentFilter = btn.dataset.filter;
+      document.querySelectorAll(".filter-btn").forEach(function(b) { b.classList.remove("active"); });
+      btn.classList.add("active");
+      applyFilter();
+    });
+  });
+  document.querySelectorAll(".cs-tab").forEach(function(tab) {
+    tab.addEventListener("click", function() {
+      var si = tab.dataset.si;
+      document.querySelectorAll(".cs-tab").forEach(function(t) { t.classList.toggle("active", t.dataset.si === si); });
+      document.querySelectorAll(".certamen-session").forEach(function(s) {
+        var active = s.dataset.sessionIndex === si;
+        s.classList.toggle("active-session", active);
+        s.classList.toggle("hidden-session", !active);
+      });
+    });
+  });
+  var isRefreshing = false;
+  async function startRefresh() {
+    if (isRefreshing) return;
+    isRefreshing = true;
+    var btn = document.querySelector(".refresh-btn");
+    var panel = document.getElementById("progress-panel");
+    if (btn) { btn.disabled = true; btn.textContent = "En cours…"; }
+    if (panel) panel.style.display = "block";
+    try {
+      await fetch("/certamen/refresh", { method: "POST", headers: { "Content-Type": "application/json" }, body: "{}" });
+    } catch(e) {}
+    var poll = setInterval(async function() {
+      try {
+        var r = await fetch("/certamen/progress?t=" + Date.now());
+        var p = await r.json();
+        var bar = document.getElementById("prog-bar");
+        var step = document.getElementById("prog-step");
+        var total = document.getElementById("prog-total");
+        var name = document.getElementById("prog-name");
+        var detail = document.getElementById("prog-detail");
+        if (bar) bar.style.width = (p.stepTotal > 0 ? Math.round((p.stepIndex / p.stepTotal) * 100) : 0) + "%";
+        if (step) step.textContent = p.stepIndex || "…";
+        if (total) total.textContent = p.stepTotal || "…";
+        if (name) name.textContent = p.step || "";
+        if (detail) detail.textContent = p.detail || "";
+        if (!p.running && p.done) { clearInterval(poll); window.location.reload(); }
+      } catch(e) {}
+    }, 1500);
+    setTimeout(function() { clearInterval(poll); window.location.reload(); }, 15 * 60 * 1000);
+  }
+  var refreshBtn = document.querySelector(".refresh-btn");
+  if (refreshBtn) refreshBtn.addEventListener("click", function() { startRefresh(); });
+</script>
+</body>
+</html>
