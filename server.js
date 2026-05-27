@@ -2048,7 +2048,14 @@ function sendMissingPage(res, title, message) {
 }
 
 app.get("/", (req, res) => {
-  res.redirect("/mixte");
+  res.redirect("/veille-mixte.html");
+});
+
+app.get("/veille-mixte.html", requireMixteAuth, (req, res) => {
+  if (!fs.existsSync(VEILLE_MIXTE_HTML)) {
+    return sendMissingPage(res, "Veille mixte", "La veille mixte n'a pas encore été générée. Sources minimum : lancer la collecte...");
+  }
+  res.sendFile(VEILLE_MIXTE_HTML);
 });
 
 app.get("/youtube", (req, res) => {
