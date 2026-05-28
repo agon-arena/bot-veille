@@ -1,5 +1,93 @@
 [
   {
+    "subject": "Patrick Bruel interrompu par #NousToutes sur la scène du théâtre Edouard VII",
+    "sessionLabel": "28/05/2026 à 15:37:18",
+    "question": "Faut-il autoriser les interruptions militantes lors de spectacles pour dénoncer des accusations?",
+    "positionA": "Autoriser les interruptions militantes",
+    "positionB": "Protéger la continuité des spectacles",
+    "theme": "Société - éducation",
+    "resume": "Trois militantes du collectif #NousToutes ont interrompu une représentation au théâtre Édouard VII, accusant Patrick Bruel de viol.\n\nCette interruption a suspendu la pièce, exposant le spectacle à devenir un espace de contestation publique. Autoriser ces actions offre une tribune immédiate aux revendications féministes, renforçant la visibilité des accusations et la parole des victimes, mais cela fragilise la tenue des représentations, crée une incertitude pour les artistes et le public, et peut transformer un lieu culturel en scène de conflit. À l’inverse, empêcher ces interruptions protège l’intégrité artistique et la continuité du spectacle, mais risque d’étouffer des dénonciations importantes, de marginaliser les voix contestataires et de maintenir un silence sur des faits graves. La tension entre visibilité et stabilité reste vive.\n\nVis an veritas\n\nFaut-il autoriser les interruptions militantes lors de spectacles pour dénoncer des accusations?\n\nJ.L Grasso",
+    "sources": "Libération, L'Humanité, Valeurs actuelles, HuffPost France, Franceinfo, Le Parisien, Brut",
+    "links": [
+      {
+        "title": "« Bruel ! Violeur ! » : la pièce de théâtre du chanteur interrompue par trois militantes de Nous Toutes",
+        "url": "https://www.humanite.fr/societe/noustoutes/bruel-violeur-la-piece-de-theatre-du-chanteur-interrompue-par-trois-militantes-de-nous-toutes",
+        "source": "L'Humanité",
+        "type": "article",
+        "date": "28/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Patrick Bruel interrompu par #NousToutes sur la scène du théâtre Edouard VII",
+        "url": "https://www.liberation.fr/societe/police-justice/patrick-bruel-interrompu-par-noustoutes-sur-la-scene-du-theatre-edouard-vii-20260528_2DAAGVCDUJEPPOZMPZ63L5URTQ/",
+        "source": "Libération",
+        "type": "article",
+        "date": "28/05/2026",
+        "checked": true
+      },
+      {
+        "title": "« Bruel violeur ! » : des militantes féministes interrompent la pièce du chanteur à Paris",
+        "url": "https://www.huffingtonpost.fr/culture/article/bruel-violeur-des-militantes-feministes-interrompent-la-piece-du-chanteur-a-paris_264177.html",
+        "source": "HuffPost France",
+        "type": "article",
+        "date": "28/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Patrick Bruel interrompu en plein spectacle par des militantes féministes du collectif « Nous Toutes »",
+        "url": "https://www.valeursactuelles.com/societe/patrick-bruel-interrompu-en-plein-spectacle-par-des-militantes-feministes-du-collectif-nous-toutes",
+        "source": "Valeurs actuelles",
+        "type": "article",
+        "date": "28/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Le collectif « Nous Toutes » perturbe la pièce de Patrick Bruel à Paris",
+        "url": "https://www.youtube.com/shorts/P0JXrn6KNfQ",
+        "source": "Le Parisien",
+        "type": "youtube",
+        "date": "28/05/2026",
+        "checked": true
+      },
+      {
+        "title": "\"'Bruel violeur\". Des militantes ont interrompu une représentation de Patrick Bruel.",
+        "url": "https://www.youtube.com/shorts/x46aEv-A9xE",
+        "source": "Brut",
+        "type": "youtube",
+        "date": "28/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Trois militantes féministes interrompent le spectacle de Patrick Bruel",
+        "url": "https://www.youtube.com/shorts/klOiBvje-rg",
+        "source": "Franceinfo",
+        "type": "youtube",
+        "date": "28/05/2026",
+        "checked": true
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "35-les-violences-faites-aux-femmes-et-les-rapports-femmes-hommes-transforment-les-d",
+      "matchedStoryTitle": "Les violences faites aux femmes et les rapports femmes-hommes transforment les débats sociaux et politiques",
+      "previousEpisodeTitle": "Patrick Bruel doit-il être interdit de scène pour protéger les femmes ?",
+      "previousEpisodeUrl": "http://localhost:3001/debate?id=551",
+      "confidence": 0.85,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {},
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "Patrick Bruel interrompu",
+      "Nous Toutes",
+      "théâtre Edouard VII",
+      "militantes féministes",
+      "pièce de théâtre",
+      "accusations de viol"
+    ],
+    "sentAt": "2026-05-28T14:36:03.964Z"
+  },
+  {
     "subject": "L’UE inflige une amende de 200 millions d’euros à Temu, géant chinois du commerce en ligne, pour avoir permis la vente de produits illégaux",
     "sessionLabel": "28/05/2026 à 15:37:18",
     "question": "L’UE doit-elle renforcer les contrôles sur les plateformes étrangères au risque de freiner?",
