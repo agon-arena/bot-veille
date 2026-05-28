@@ -1,5 +1,2717 @@
 [
   {
+    "subject": "L’UE inflige une amende de 200 millions d’euros à Temu, géant chinois du commerce en ligne, pour avoir permis la vente de produits illégaux",
+    "sessionLabel": "28/05/2026 à 15:37:18",
+    "question": "L’UE doit-elle renforcer les contrôles sur les plateformes étrangères au risque de freiner?",
+    "positionA": "Renforcer les contrôles et sanctions",
+    "positionB": "Limiter les contraintes pour favoriser le commerce",
+    "theme": "Économie - emploi",
+    "resume": "L’Union européenne a infligé une amende de 200 millions d’euros à Temu, une grande plateforme chinoise de commerce en ligne, pour avoir laissé circuler des produits illégaux, dont des jouets pour bébés dangereux et des chargeurs électriques défectueux.\n\nCette sanction fait suite à une enquête qui a révélé un manque de contrôle sérieux sur la sécurité des articles vendus aux consommateurs européens.\n\nRenforcer les contrôles peut protéger les consommateurs, mais cela risque de ralentir les échanges et d’alourdir les procédures pour les plateformes étrangères. À l’inverse, alléger ces contraintes faciliterait le commerce, au prix d’une exposition accrue aux produits non conformes. Reste à savoir jusqu’où l’UE peut pousser sans freiner le dynamisme du marché.\n\nLex an securitas\n\nL’UE doit-elle renforcer les contrôles sur les plateformes étrangères au risque de freiner?\n\nT. Guyomarch",
+    "sources": "Le Monde, Libération, La Croix, BFMTV, Euronews FR",
+    "links": [
+      {
+        "title": "Vente de produits illégaux : l’UE inflige une amende de 200 millions d’euros à Temu",
+        "url": "https://www.liberation.fr/international/europe/vente-de-produits-illegaux-lue-inflige-une-amende-de-200-millions-deuros-a-temu-20260528_6RREIMNA3NF7XEZBUZ3JADZ2CM/",
+        "source": "Libération",
+        "type": "article",
+        "date": "28/05/2026",
+        "checked": true
+      },
+      {
+        "title": "L’UE inflige une amende de 200 millions d’euros à Temu, géant chinois du commerce en ligne, pour avoir permis la vente de produits illégaux",
+        "url": "https://www.lemonde.fr/economie/article/2026/05/28/l-ue-inflige-une-amende-de-200-millions-d-euros-a-temu-geant-chinois-du-commerce-en-ligne-pour-avoir-permis-la-vente-de-produits-illegaux_6694456_3234.html",
+        "source": "Le Monde",
+        "type": "article",
+        "date": "28/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Jouets pour bébés dangereux, chargeurs défectueux... Bruxelles inflige 200 millions d'euros d'amende à Temu pour la vente de produits illégaux aux consommateurs européens",
+        "url": "https://www.bfmtv.com/economie/entreprises/jouets-pour-bebes-dangereux-chargeurs-defectueux-bruxelles-inflige-200-millions-d-euros-d-amende-au-geant-chinois-du-commerce-en-ligne-temu-ali-express-et-shein-pourraient-suivre_AD-202605280473.html",
+        "source": "BFMTV",
+        "type": "article",
+        "date": "28/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Vente de produits illégaux : l’UE inflige une amende de 200 millions d’euros à Temu",
+        "url": "https://www.la-croix.com/l-ue-met-temu-a-l-amende-pour-avoir-permis-la-vente-de-produits-illegaux-20260528",
+        "source": "La Croix",
+        "type": "article",
+        "date": "28/05/2026",
+        "checked": true
+      },
+      {
+        "title": "L’UE inflige 200 millions € d’amende à Temu pour jouets bébé et chargeurs dangereux",
+        "url": "http://fr.euronews.com/next/2026/05/28/lue-inflige-200-millions-damende-a-temu-pour-jouets-bebe-et-chargeurs-dangereux",
+        "source": "Euronews FR",
+        "type": "article",
+        "date": "28/05/2026",
+        "checked": true
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "07-l-union-europeenne-cherche-sa-place-face-aux-crises-internes-et-aux-tensions-int",
+      "matchedStoryTitle": "L’Union européenne cherche sa place face aux crises internes et aux tensions internationales",
+      "previousEpisodeTitle": "L’Union européenne doit-elle maintenir un ordre commercial fondé sur ses valeurs ou adopter une a?",
+      "previousEpisodeUrl": "http://localhost:3001/debate?id=619",
+      "confidence": 0.85,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {},
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "Amende UE à Temu",
+      "commerce en ligne",
+      "produits illégaux",
+      "jouets pour bébés",
+      "chargeurs défectueux",
+      "Bruxelles",
+      "géant chinois"
+    ],
+    "sentAt": "2026-05-28T13:27:58.018Z"
+  },
+  {
+    "subject": "Le remboursement des médicaments contre l'obésité Wegovy et Mounjaro débutera mi-juin, pour une population cible d'un million de personnes",
+    "sessionLabel": "28/05/2026 à 15:37:18",
+    "question": "La France doit-elle élargir le remboursement des médicaments anti-obésité malgré leur coût élevé?",
+    "positionA": "Élargir le remboursement",
+    "positionB": "Restreindre le remboursement",
+    "theme": "Santé - bien-être",
+    "resume": "Le remboursement des médicaments anti-obésité débute mi-juin.\n\nWegovy et Mounjaro seront pris en charge pour un million de patients souffrant d’obésité sévère ou de comorbidités, sous conditions strictes et suivi médical. Ces traitements ciblent la régulation de l’appétit et la perte de poids, offrant une nouvelle option thérapeutique innovante. Les modalités d’éligibilité restent encadrées pour garantir un usage approprié.\n\nUn accès facilité à ces médicaments pourrait réduire les complications liées à l’obésité et améliorer la qualité de vie, mais cela risque d’entraîner une hausse significative des dépenses de santé. À l’inverse, limiter le remboursement préserverait les budgets publics, mais risquerait de restreindre l’accès à des traitements efficaces pour une partie importante des patients concernés. Chaque option implique un compromis entre maîtrise des coûts et amélioration de la prise en charge. La décision devra peser ces enjeux avec précision.\n\nCura an pretium\n\nLa France doit-elle élargir le remboursement des médicaments anti-obésité malgré leur coût élevé?\n\nP. Ratsky",
+    "sources": "Franceinfo, Libération, Valeurs actuelles, La Croix, L'Express",
+    "links": [
+      {
+        "title": "Médicaments anti-obésité : le Wegovy et le Mounjaro seront remboursés à compter de la mi-juin",
+        "url": "https://www.liberation.fr/societe/sante/medicaments-anti-obesite-le-wegovy-et-le-mounjaro-en-passe-detre-rembourses-20260527_OPTBN6TTDVGTPOUURKDMCTCFOM/",
+        "source": "Libération",
+        "type": "article",
+        "date": "28/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Le remboursement des médicaments contre l'obésité Wegovy et Mounjaro débutera mi-juin, pour une population cible d'un million de personnes",
+        "url": "https://www.franceinfo.fr/sante/medicament/les-medicaments-contre-l-obesite-wegovy-et-mounjaro-seront-officiellement-rembourses-des-la-mi-juin_8032076.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "type": "article",
+        "date": "28/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Obésité : les médicaments Wegovy et Mounjaro bientôt remboursés mais sous conditions",
+        "url": "https://www.la-croix.com/sante/obesite-les-medicaments-wegovy-et-mounjaro-bientot-rembourses-mais-sous-conditions-20260528",
+        "source": "La Croix",
+        "type": "article",
+        "date": "28/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Médicaments anti-obésité : le Wegovy et le Mounjaro bientôt remboursés par la Sécurité sociale",
+        "url": "https://www.lexpress.fr/sciences-sante/sante/medicaments-anti-obesite-le-wegovy-et-le-mounjaro-bientot-rembourses-par-la-securite-sociale-CLBOL4G7XFE4JMMEGXBUU7RWWU/",
+        "source": "L'Express",
+        "type": "article",
+        "date": "28/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Médicaments anti-obésité : le Wegovy et le Mounjaro bientôt remboursés par la Sécurité sociale",
+        "url": "https://www.valeursactuelles.com/societe/medicaments-anti-obesite-le-wegovy-et-le-mounjaro-bientot-rembourses-par-la-securite-sociale",
+        "source": "Valeurs actuelles",
+        "type": "article",
+        "date": "28/05/2026",
+        "checked": true
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "29-le-systeme-de-sante-fait-face-a-des-tensions-d-acces-aux-soins-de-moyens-et-de-c",
+      "matchedStoryTitle": "Le système de santé fait face à des tensions d’accès aux soins, de moyens et de confiance",
+      "previousEpisodeTitle": "L’Ouganda doit-il maintenir la fermeture de ses frontières avec la RDC malgré les conséquences éco…",
+      "previousEpisodeUrl": "http://localhost:3001/debate?id=613",
+      "confidence": 0.85,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {},
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "médicaments anti-obésité",
+      "Sécurité sociale",
+      "population cible",
+      "mi-juin"
+    ],
+    "sentAt": "2026-05-28T13:26:18.526Z"
+  },
+  {
+    "subject": "Michelin annonce un plan de départs volontaires en France, \"jusqu'à 1 500 postes\" supprimés",
+    "sessionLabel": "28/05/2026 à 15:37:18",
+    "question": "Michelin doit-il privilégier la réduction des effectifs via des départs volontaires ou protéger?",
+    "positionA": "Réduire les effectifs par départs volontaires",
+    "positionB": "Protéger l’emploi local à tout prix",
+    "theme": "Économie - emploi",
+    "resume": "Michelin a annoncé un plan de départs volontaires en France, visant à supprimer jusqu’à 1 500 postes sur trois ans.\n\nCette réduction par départs volontaires limite les tensions sociales immédiates mais risque de provoquer une perte progressive de compétences clés et d’affaiblir la capacité industrielle locale. En revanche, maintenir tous les emplois sans ajustement pourrait empêcher le groupe de s’adapter aux évolutions technologiques et économiques, réduisant sa compétitivité face à des concurrents plus agiles. Ce choix engage donc la survie industrielle à moyen terme contre la stabilité sociale à court terme. La question reste de savoir jusqu’où Michelin peut aller sans compromettre son avenir.\n\nIndustria an tutela\n\nMichelin doit-il privilégier la réduction des effectifs via des départs volontaires ou protéger?\n\nM. Guillot",
+    "sources": "Franceinfo, Le Monde, Libération, La Croix, RFI",
+    "links": [
+      {
+        "title": "Michelin annonce un plan de départs volontaires en France qui concernera « jusqu’à 1 500 postes sur trois ans »",
+        "url": "https://www.lemonde.fr/economie/article/2026/05/28/michelin-annonce-un-plan-de-departs-volontaires-en-france-qui-concernera-jusqu-a-1-500-postes-sur-trois-ans_6694448_3234.html",
+        "source": "Le Monde",
+        "type": "article",
+        "date": "28/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Le groupe Michelin annonce la suppression de 1 500 postes en France d’ici trois ans",
+        "url": "https://www.liberation.fr/economie/le-groupe-michelin-annonce-la-suppression-de-1-500-postes-en-france-dici-trois-ans-20260528_YMCPXM4XZVHZHDOJPINZUGHLUU/",
+        "source": "Libération",
+        "type": "article",
+        "date": "28/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Michelin annonce un plan de départs volontaires en France, \"jusqu'à 1 500 postes\" supprimés",
+        "url": "https://www.franceinfo.fr/economie/michelin-annonce-un-plan-de-departs-volontaires-en-france-jusqu-a-1-500-postes-supprimes_8033726.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "type": "article",
+        "date": "28/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Michelin : jusqu’à 1 500 postes supprimés en France dans le cadre d’un plan de départs volontaires",
+        "url": "https://www.la-croix.com/michelin-annonce-un-plan-de-departs-volontaires-en-france-jusqu-a-1-500-postes-supprimes-20260528",
+        "source": "La Croix",
+        "type": "article",
+        "date": "28/05/2026",
+        "checked": true
+      },
+      {
+        "title": "En France, Michelin envisage de supprimer jusqu'à 1500 postes sur trois ans",
+        "url": "https://www.rfi.fr/fr/france/20260528-en-france-michelin-envisage-de-supprimer-jusqu-%C3%A0-1500-postes-sur-trois-ans",
+        "source": "RFI",
+        "type": "article",
+        "date": "28/05/2026",
+        "checked": true
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "22-le-travail-se-transforme-avec-les-debats-sur-les-salaires-les-retraites-le-telet",
+      "matchedStoryTitle": "Le travail se transforme avec les débats sur les salaires, les retraites, le télétravail et l’automatisation",
+      "previousEpisodeTitle": "",
+      "previousEpisodeUrl": "",
+      "confidence": 0.85,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {},
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "suppression de postes",
+      "industrie pneumatique",
+      "plan social"
+    ],
+    "sentAt": "2026-05-28T13:20:14.708Z"
+  },
+  {
+    "subject": "L'Assemblée nationale approuve à l'unanimité l'abrogation du Code noir, près de 180 ans après l'abolition de l'esclavage",
+    "sessionLabel": "28/05/2026 à 15:37:18",
+    "question": "Faut-il abroger le Code noir ou le conserver pour préserver la mémoire historique?",
+    "positionA": "Abroger le Code noir",
+    "positionB": "Conserver le Code noir comme mémoire",
+    "theme": "Société - éducation",
+    "resume": "L’Assemblée nationale a adopté à l’unanimité l’abrogation du Code noir, près de 180 ans après l’abolition de l’esclavage en France.\n\nCette décision entraîne la suppression d’un texte juridique qui structure encore symboliquement la mémoire de l’esclavage. Retirer le Code noir peut contribuer à rompre avec un passé légalement inscrit, mais cela risque aussi de faire disparaître un repère essentiel pour comprendre les mécanismes historiques des inégalités. En effaçant ce cadre, on peut apaiser les consciences, mais on court le risque de diluer la vigilance nécessaire face aux héritages persistants de l’esclavage. À l’inverse, conserver ce texte, même obsolète, maintient un témoignage concret et un rappel institutionnel, mais peut aussi perpétuer une forme de reconnaissance implicite d’un passé inacceptable. La tension reste vive entre effacement et mémoire.\n\nFaut-il abroger le Code noir ou le conserver pour préserver la mémoire historique?\n\nM. Guillot",
+    "sources": "Franceinfo, Le Monde, Libération, Le Figaro, BFMTV, France 24, HuffPost France, Le Dauphiné Libéré",
+    "links": [
+      {
+        "title": "L’émotion de Steevy Gustave avant l’abrogation du Code noir a saisi toute l’Assemblée",
+        "url": "https://www.huffingtonpost.fr/politique/video/l-emotion-de-steevy-gustave-avant-l-abrogation-du-code-noir-a-saisi-toute-l-assemblee_264187.html",
+        "source": "HuffPost France",
+        "type": "article",
+        "date": "28/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Esclavage : l’Assemblée nationale approuve à l’unanimité l’abrogation du «Code noir»",
+        "url": "https://www.liberation.fr/politique/esclavage-lassemblee-nationale-approuve-a-lunanimite-labrogation-du-code-noir-20260528_BKBPW3E2FFGWJED7C37VYR7PVY/",
+        "source": "Libération",
+        "type": "article",
+        "date": "28/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Esclavage : l’Assemblée nationale approuve à l’unanimité l’abrogation du Code noir",
+        "url": "https://www.lemonde.fr/societe/article/2026/05/28/esclavage-l-assemblee-nationale-approuve-a-l-unanimite-l-abrogation-du-code-noir_6694459_3224.html",
+        "source": "Le Monde",
+        "type": "article",
+        "date": "28/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Politique. 178 ans après l'abolition de l'esclavage, l'Assemblée nationale approuve à l'unanimité l'abrogation du Code noir",
+        "url": "https://www.ledauphine.com/politique/2026/05/28/178-ans-apres-l-abolition-de-l-esclavage-l-assemblee-nationale-approuve-a-l-unanimite-l-abrogation-du-code-noir",
+        "source": "Le Dauphiné Libéré",
+        "type": "article",
+        "date": "28/05/2026",
+        "checked": true
+      },
+      {
+        "title": "L'Assemblée nationale approuve à l'unanimité l'abrogation du Code noir, près de 180 ans après l'abolition de l'esclavage",
+        "url": "https://www.franceinfo.fr/politique/l-assemblee-nationale-approuve-a-l-unanimite-l-abrogation-du-code-noir-pres-de-180-ans-apres-l-abolition-de-l-esclavage_8033588.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "type": "article",
+        "date": "28/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Esclavage: l'Assemblée nationale approuve à l'unanimité l'abrogation du Code noir",
+        "url": "https://www.bfmtv.com/politique/esclavage-l-assemblee-nationale-approuve-a-l-unanimite-l-abrogation-du-code-noir_AN-202605280468.html",
+        "source": "BFMTV",
+        "type": "article",
+        "date": "28/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Esclavage : l'Assemblée nationale approuve à l'unanimité l'abrogation du Code noir",
+        "url": "https://www.bfmtv.com/politique/video-esclavage-l-assemblee-nationale-approuve-a-l-unanimite-l-abrogation-du-code-noir_VN-202605280466.html",
+        "source": "BFMTV",
+        "type": "article",
+        "date": "28/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Le Code noir abrogé à l'unanimité par les députés français, 178 ans après l'abolition de l'esclavage",
+        "url": "https://www.france24.com/fr/france/20260528-assembl%C3%A9e-nationale-abroge-code-noir-178-ans-apr%C3%A8s-abolition-esclavage",
+        "source": "France 24",
+        "type": "article",
+        "date": "28/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Les députés français abrogent le Code noir, 178 ans après l'abolition de l'esclavage",
+        "url": "https://www.france24.com/fr/france/20260528-assembl%C3%A9e-nationale-abroge-code-noir-178-ans-apr%C3%A8s-abolition-esclavage",
+        "source": "France 24",
+        "type": "article",
+        "date": "28/05/2026",
+        "checked": true
+      },
+      {
+        "title": "L’Assemblée nationale approuve à l’unanimité l’abrogation du «Code noir», 178 ans après l’abolition de l’esclavage",
+        "url": "https://www.lefigaro.fr/politique/les-deputes-s-appretent-a-voter-ce-jeudi-pour-l-abrogation-du-code-noir-178-ans-apres-l-abolition-de-l-esclavage-20260528",
+        "source": "Le Figaro",
+        "type": "article",
+        "date": "28/05/2026",
+        "checked": true
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "65-les-debats-sur-l-identite-nationale-la-memoire-et-les-symboles-collectifs-resten",
+      "matchedStoryTitle": "Les débats sur l’identité nationale, la mémoire et les symboles collectifs restent centraux",
+      "previousEpisodeTitle": "",
+      "previousEpisodeUrl": "",
+      "confidence": 0.85,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {
+        "main_actors_match": true,
+        "central_tension_match": true,
+        "temporal_continuity": true,
+        "editorial_theme_match": true,
+        "strong_keywords_match": true
+      },
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "abrogation du Code noir",
+      "A emblée nationale",
+      "abolition de l'e clavage",
+      "Steevy Gu tave",
+      "député françai",
+      "178 an aprè"
+    ],
+    "sentAt": "2026-05-28T13:03:53.710Z"
+  },
+  {
+    "subject": "L'Assemblée nationale approuve à l'unanimité l'abrogation du Code noir, près de 180 ans après l'abolition de l'esclavage",
+    "sessionLabel": "28/05/2026 à 15:37:18",
+    "question": "Faut-il abroger officiellement le Code noir malgré son absence d’effet pratique actuel?",
+    "positionA": "Abroger le Code noir pour marquer la rupture",
+    "positionB": "Conserver le Code noir pour préserver la mémoire histo…",
+    "theme": "Société - éducation",
+    "resume": "L’Assemblée nationale a adopté à l’unanimité la loi abrogeant le Code noir, un texte du XVIIe siècle qui régissait l’esclavage dans les colonies françaises.\n\nCette abrogation efface un vestige juridique d’un passé inacceptable, mais elle peut aussi affaiblir la mémoire collective en supprimant un rappel tangible des injustices. Retirer le Code noir affirme une rupture nette avec l’esclavage et les valeurs qu’il portait, renforçant ainsi la cohérence des principes républicains actuels. En revanche, le conserver aurait maintenu une trace juridique visible, utile pour nourrir la réflexion historique et la vigilance contre les discriminations. Cette décision soulève donc la question de l’équilibre entre effacement symbolique et mémoire critique. La République doit choisir entre effacer un texte obsolète et risquer d’atténuer la conscience des héritages douloureux, ou préserver un rappel juridique qui peut aussi être perçu comme une survivance problématique. La tension reste vive.\n\nFaut-il abroger officiellement le Code noir malgré son absence d’effet pratique actuel?\n\nP. Ratsky",
+    "sources": "Franceinfo, Le Monde, Libération, Le Figaro, BFMTV, France 24, HuffPost France, Le Dauphiné Libéré",
+    "links": [
+      {
+        "title": "L’émotion de Steevy Gustave avant l’abrogation du Code noir a saisi toute l’Assemblée",
+        "url": "https://www.huffingtonpost.fr/politique/video/l-emotion-de-steevy-gustave-avant-l-abrogation-du-code-noir-a-saisi-toute-l-assemblee_264187.html",
+        "source": "HuffPost France",
+        "type": "article",
+        "date": "28/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Esclavage : l’Assemblée nationale approuve à l’unanimité l’abrogation du «Code noir»",
+        "url": "https://www.liberation.fr/politique/esclavage-lassemblee-nationale-approuve-a-lunanimite-labrogation-du-code-noir-20260528_BKBPW3E2FFGWJED7C37VYR7PVY/",
+        "source": "Libération",
+        "type": "article",
+        "date": "28/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Esclavage : l’Assemblée nationale approuve à l’unanimité l’abrogation du Code noir",
+        "url": "https://www.lemonde.fr/societe/article/2026/05/28/esclavage-l-assemblee-nationale-approuve-a-l-unanimite-l-abrogation-du-code-noir_6694459_3224.html",
+        "source": "Le Monde",
+        "type": "article",
+        "date": "28/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Politique. 178 ans après l'abolition de l'esclavage, l'Assemblée nationale approuve à l'unanimité l'abrogation du Code noir",
+        "url": "https://www.ledauphine.com/politique/2026/05/28/178-ans-apres-l-abolition-de-l-esclavage-l-assemblee-nationale-approuve-a-l-unanimite-l-abrogation-du-code-noir",
+        "source": "Le Dauphiné Libéré",
+        "type": "article",
+        "date": "28/05/2026",
+        "checked": true
+      },
+      {
+        "title": "L'Assemblée nationale approuve à l'unanimité l'abrogation du Code noir, près de 180 ans après l'abolition de l'esclavage",
+        "url": "https://www.franceinfo.fr/politique/l-assemblee-nationale-approuve-a-l-unanimite-l-abrogation-du-code-noir-pres-de-180-ans-apres-l-abolition-de-l-esclavage_8033588.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "type": "article",
+        "date": "28/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Esclavage: l'Assemblée nationale approuve à l'unanimité l'abrogation du Code noir",
+        "url": "https://www.bfmtv.com/politique/esclavage-l-assemblee-nationale-approuve-a-l-unanimite-l-abrogation-du-code-noir_AN-202605280468.html",
+        "source": "BFMTV",
+        "type": "article",
+        "date": "28/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Esclavage : l'Assemblée nationale approuve à l'unanimité l'abrogation du Code noir",
+        "url": "https://www.bfmtv.com/politique/video-esclavage-l-assemblee-nationale-approuve-a-l-unanimite-l-abrogation-du-code-noir_VN-202605280466.html",
+        "source": "BFMTV",
+        "type": "article",
+        "date": "28/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Le Code noir abrogé à l'unanimité par les députés français, 178 ans après l'abolition de l'esclavage",
+        "url": "https://www.france24.com/fr/france/20260528-assembl%C3%A9e-nationale-abroge-code-noir-178-ans-apr%C3%A8s-abolition-esclavage",
+        "source": "France 24",
+        "type": "article",
+        "date": "28/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Les députés français abrogent le Code noir, 178 ans après l'abolition de l'esclavage",
+        "url": "https://www.france24.com/fr/france/20260528-assembl%C3%A9e-nationale-abroge-code-noir-178-ans-apr%C3%A8s-abolition-esclavage",
+        "source": "France 24",
+        "type": "article",
+        "date": "28/05/2026",
+        "checked": true
+      },
+      {
+        "title": "L’Assemblée nationale approuve à l’unanimité l’abrogation du «Code noir», 178 ans après l’abolition de l’esclavage",
+        "url": "https://www.lefigaro.fr/politique/les-deputes-s-appretent-a-voter-ce-jeudi-pour-l-abrogation-du-code-noir-178-ans-apres-l-abolition-de-l-esclavage-20260528",
+        "source": "Le Figaro",
+        "type": "article",
+        "date": "28/05/2026",
+        "checked": true
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "les-discriminations-restent-au-c-ur-des-fracture-mphuzzj0",
+      "matchedStoryTitle": "Les discriminations restent au cœur des fractures sociales",
+      "previousEpisodeTitle": "",
+      "previousEpisodeUrl": "",
+      "confidence": 0.85,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {},
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "abrogation du Code noir",
+      "A emblée nationale",
+      "abolition de l'e clavage",
+      "Steevy Gu tave",
+      "député  françai",
+      "178 an  aprè"
+    ],
+    "sentAt": "2026-05-28T12:56:03.485Z"
+  },
+  {
+    "subject": "EN DIRECT - Moyen-Orient : les Etats-Unis frappent l’Iran, qui réplique en visant une base américaine",
+    "sessionLabel": "28/05/2026 à 15:37:18",
+    "question": "Les États-Unis doivent-ils poursuivre les frappes ou privilégier la désescalade?",
+    "positionA": "Poursuivre les frappes militaires",
+    "positionB": "Privilégier la désescalade diplomatique",
+    "theme": "International",
+    "resume": "Les États-Unis ont frappé des positions en Iran, provoquant une riposte iranienne contre une base américaine au Moyen-Orient.\n\nUne nouvelle attaque américaine risque d’aggraver la violence et de provoquer des pertes civiles et militaires supplémentaires dans une région déjà fragilisée. En revanche, s’abstenir de répondre fermement pourrait être perçu comme un signe de faiblesse, incitant Téhéran à multiplier les agressions contre les intérêts américains et leurs alliés. Chaque option porte donc un coût : soit l’escalade militaire, soit la perte d’influence stratégique. La région oscille entre une spirale de violences et une fragile retenue.\n\nLes États-Unis doivent-ils poursuivre les frappes ou privilégier la désescalade?\n\nP. Ratsky",
+    "sources": "Libération, Le Figaro, La Croix, France 24",
+    "links": [
+      {
+        "title": "EN DIRECT - Moyen-Orient : les Etats-Unis frappent l’Iran, qui réplique en visant une base américaine",
+        "url": "https://www.liberation.fr/international/moyen-orient/en-direct-moyen-orient-les-etats-unis-frappent-liran-qui-replique-en-visant-une-base-americaine-20260528_KV2UPB3G4NBUHJDMFZYC2SRJJY/",
+        "source": "Libération",
+        "type": "article",
+        "date": "28/05/2026",
+        "checked": true
+      },
+      {
+        "title": "DIRECT. Guerre au Moyen-Orient : frappes meurtrières sur le Liban… Le point à la mi-journée",
+        "url": "https://www.la-croix.com/international/direct-guerre-iran-israel-usa-jour-90-moyen-orient-bilan-resume-aujourdhui-20260528",
+        "source": "La Croix",
+        "type": "article",
+        "date": "28/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Les États-Unis frappent l'Iran, Téhéran cible une base américaine",
+        "url": "https://www.france24.com/fr/vid%C3%A9o/20260528-les-%C3%A9tats-unis-frappent-l-iran-t%C3%A9h%C3%A9ran-cible-une-base-am%C3%A9ricaine",
+        "source": "France 24",
+        "type": "article",
+        "date": "28/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Les États-Unis frappent l'Iran, Téhéran réplique en ciblant une base américaine",
+        "url": "https://www.france24.com/fr/moyen-orient/20260528-%C3%A9tats-unis-frappes-iran-r%C3%A9plique-base-am%C3%A9ricaine-koweit",
+        "source": "France 24",
+        "type": "article",
+        "date": "28/05/2026",
+        "checked": true
+      },
+      {
+        "title": "EN DIRECT - Guerre au Moyen-Orient : l’armée américaine dénonce une «violation flagrante du cessez-le-feu» par l’Iran",
+        "url": "https://www.lefigaro.fr/international/en-direct-guerre-au-moyen-orient-les-etats-unis-ont-mene-de-nouvelles-frappes-dans-le-sud-de-l-iran-teheran-affirme-avoir-vise-une-base-americaine-20260528",
+        "source": "Le Figaro",
+        "type": "article",
+        "date": "28/05/2026",
+        "checked": true
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "01-les-conflits-au-moyen-orient-recomposent-les-equilibres-regionaux",
+      "matchedStoryTitle": "Les conflits au Moyen-Orient recomposent les équilibres régionaux",
+      "previousEpisodeTitle": "Le État -Uni doivent-il privilégier la ripo te militaire ou la diplomatie face à l’Iran?",
+      "previousEpisodeUrl": "http://localhost:3001/debate?id=631",
+      "confidence": 0.85,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {
+        "main_actors_match": true,
+        "central_tension_match": true,
+        "temporal_continuity": true,
+        "editorial_theme_match": true,
+        "strong_keywords_match": true
+      },
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "frappes américaines en Iran",
+      "réplique iranienne",
+      "ba e américaine vi ée",
+      "Moyen-Orient",
+      "guerre Iran-USA",
+      "Liban",
+      "ce ez-le-feu"
+    ],
+    "sentAt": "2026-05-28T12:06:42.253Z"
+  },
+  {
+    "subject": "EN DIRECT - Moyen-Orient : les Etats-Unis frappent l’Iran, qui réplique en visant une base américaine",
+    "sessionLabel": "28/05/2026 à 15:37:18",
+    "question": "Le État -Uni doivent-il privilégier la ripo te militaire ou la diplomatie face à l’Iran?",
+    "positionA": "Privilégier la riposte militaire",
+    "positionB": "Favoriser la diplomatie et la désescalade",
+    "theme": "International",
+    "resume": "Les États-Unis ont frappé des sites en Iran, déclenchant une riposte immédiate de Téhéran contre une base américaine dans la région.\n\nCes attaques s’inscrivent dans un contexte de tensions croissantes au Moyen-Orient, avec des frappes meurtrières également signalées au Liban. Les autorités américaines ont confirmé les opérations contre des cibles iraniennes, tandis que l’Iran a reconnu avoir lancé des tirs contre une installation militaire américaine, sans préciser l’ampleur des dégâts ou le nombre de victimes. La situation reste volatile, avec un risque élevé d’escalade, alors que les acteurs impliqués maintiennent une posture offensive.\n\nUne riposte militaire américaine peut renforcer la dissuasion en montrant une fermeté face à l’Iran, mais elle risque aussi d’enflammer un conflit déjà dangereux, conduisant à une escalade incontrôlée et à une instabilité accrue dans la région. À l’inverse, ne pas répondre militairement peut apaiser temporairement les tensions et éviter une guerre ouverte, mais cela expose les États-Unis à de nouvelles provocations et à une perte de crédibilité stratégique. Chaque option porte un coût lourd, entre risque d’embrasement et vulnérabilité. La région reste suspendue à cette décision qui pourrait contenir ou aggraver la crise.\n\nLes États-Unis doivent-ils privilégier la riposte militaire ou la diplomatie face à l’Iran?\n\nT. Guyomarch",
+    "sources": "Libération, Le Figaro, La Croix, France 24",
+    "links": [
+      {
+        "title": "EN DIRECT - Moyen-Orient : les Etats-Unis frappent l’Iran, qui réplique en visant une base américaine",
+        "url": "https://www.liberation.fr/international/moyen-orient/en-direct-moyen-orient-les-etats-unis-frappent-liran-qui-replique-en-visant-une-base-americaine-20260528_KV2UPB3G4NBUHJDMFZYC2SRJJY/",
+        "source": "Libération",
+        "type": "article",
+        "date": "28/05/2026",
+        "checked": true
+      },
+      {
+        "title": "DIRECT. Guerre au Moyen-Orient : frappes meurtrières sur le Liban… Le point à la mi-journée",
+        "url": "https://www.la-croix.com/international/direct-guerre-iran-israel-usa-jour-90-moyen-orient-bilan-resume-aujourdhui-20260528",
+        "source": "La Croix",
+        "type": "article",
+        "date": "28/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Les États-Unis frappent l'Iran, Téhéran cible une base américaine",
+        "url": "https://www.france24.com/fr/vid%C3%A9o/20260528-les-%C3%A9tats-unis-frappent-l-iran-t%C3%A9h%C3%A9ran-cible-une-base-am%C3%A9ricaine",
+        "source": "France 24",
+        "type": "article",
+        "date": "28/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Les États-Unis frappent l'Iran, Téhéran réplique en ciblant une base américaine",
+        "url": "https://www.france24.com/fr/moyen-orient/20260528-%C3%A9tats-unis-frappes-iran-r%C3%A9plique-base-am%C3%A9ricaine-koweit",
+        "source": "France 24",
+        "type": "article",
+        "date": "28/05/2026",
+        "checked": true
+      },
+      {
+        "title": "EN DIRECT - Guerre au Moyen-Orient : l’armée américaine dénonce une «violation flagrante du cessez-le-feu» par l’Iran",
+        "url": "https://www.lefigaro.fr/international/en-direct-guerre-au-moyen-orient-les-etats-unis-ont-mene-de-nouvelles-frappes-dans-le-sud-de-l-iran-teheran-affirme-avoir-vise-une-base-americaine-20260528",
+        "source": "Le Figaro",
+        "type": "article",
+        "date": "28/05/2026",
+        "checked": true
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "01-les-conflits-au-moyen-orient-recomposent-les-equilibres-regionaux",
+      "matchedStoryTitle": "Les conflits au Moyen-Orient recomposent les équilibres régionaux",
+      "previousEpisodeTitle": "Les États-Unis doivent-ils privilégier la riposte militaire ou la désescalade face à l’Iran au Mo?",
+      "previousEpisodeUrl": "http://localhost:3001/debate?id=630",
+      "confidence": 0.85,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {
+        "main_actors_match": true,
+        "central_tension_match": true,
+        "temporal_continuity": true,
+        "editorial_theme_match": true,
+        "strong_keywords_match": true
+      },
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "frappes américaines en Iran",
+      "réplique iranienne",
+      "ba e américaine vi ée",
+      "Moyen-Orient",
+      "guerre Iran-USA",
+      "Liban",
+      "ce ez-le-feu"
+    ],
+    "sentAt": "2026-05-28T11:59:31.559Z"
+  },
+  {
+    "subject": "EN DIRECT - Moyen-Orient : les Etats-Unis frappent l’Iran, qui réplique en visant une base américaine",
+    "sessionLabel": "28/05/2026 à 15:37:18",
+    "question": "Les États-Unis doivent-ils poursuivre les frappes pour dissuader l’Iran ou privilégier la désesca?",
+    "positionA": "Poursuivre les frappes pour dissuader l’Iran",
+    "positionB": "Privilégier la désescalade pour éviter l’escalade",
+    "theme": "International",
+    "resume": "Les États-Unis ont frappé des positions iraniennes au Moyen-Orient.\n\nL’Iran a riposté en ciblant une base américaine, marquant une nouvelle étape dans leur confrontation directe. Cette escalade a intensifié les violences au Liban, où des affrontements liés au conflit régional ont été signalés, élargissant ainsi le champ des tensions. Aucun bilan officiel n’a encore été publié, ce qui maintient une incertitude sur l’ampleur réelle des dégâts et des pertes humaines. La situation reste extrêmement volatile, avec un risque élevé de nouvelles représailles dans les jours à venir.\n\nUne poursuite des frappes américaines pourrait déclencher une spirale de représailles plus violentes, renforçant l’instabilité dans une région déjà fragile. En revanche, un arrêt ou un ralentissement des opérations expose les forces américaines à une menace persistante, laissant l’Iran gagner en influence et en capacité militaire. Chaque option porte un coût immédiat et un risque stratégique à moyen terme. La marge de manœuvre se réduit rapidement.\n\nPoursuivre les frappes\n\nPrivilégier la désescalade\n\nLes États-Unis doivent-ils poursuivre les frappes pour dissuader l’Iran ou privilégier la désesca?\n\nM. Guillot",
+    "sources": "Libération, Le Figaro, La Croix, France 24",
+    "links": [
+      {
+        "title": "EN DIRECT - Moyen-Orient : les Etats-Unis frappent l’Iran, qui réplique en visant une base américaine",
+        "url": "https://www.liberation.fr/international/moyen-orient/en-direct-moyen-orient-les-etats-unis-frappent-liran-qui-replique-en-visant-une-base-americaine-20260528_KV2UPB3G4NBUHJDMFZYC2SRJJY/",
+        "source": "Libération",
+        "type": "article",
+        "date": "28/05/2026",
+        "checked": true
+      },
+      {
+        "title": "DIRECT. Guerre au Moyen-Orient : frappes meurtrières sur le Liban… Le point à la mi-journée",
+        "url": "https://www.la-croix.com/international/direct-guerre-iran-israel-usa-jour-90-moyen-orient-bilan-resume-aujourdhui-20260528",
+        "source": "La Croix",
+        "type": "article",
+        "date": "28/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Les États-Unis frappent l'Iran, Téhéran cible une base américaine",
+        "url": "https://www.france24.com/fr/vid%C3%A9o/20260528-les-%C3%A9tats-unis-frappent-l-iran-t%C3%A9h%C3%A9ran-cible-une-base-am%C3%A9ricaine",
+        "source": "France 24",
+        "type": "article",
+        "date": "28/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Les États-Unis frappent l'Iran, Téhéran réplique en ciblant une base américaine",
+        "url": "https://www.france24.com/fr/moyen-orient/20260528-%C3%A9tats-unis-frappes-iran-r%C3%A9plique-base-am%C3%A9ricaine-koweit",
+        "source": "France 24",
+        "type": "article",
+        "date": "28/05/2026",
+        "checked": true
+      },
+      {
+        "title": "EN DIRECT - Guerre au Moyen-Orient : l’armée américaine dénonce une «violation flagrante du cessez-le-feu» par l’Iran",
+        "url": "https://www.lefigaro.fr/international/en-direct-guerre-au-moyen-orient-les-etats-unis-ont-mene-de-nouvelles-frappes-dans-le-sud-de-l-iran-teheran-affirme-avoir-vise-une-base-americaine-20260528",
+        "source": "Le Figaro",
+        "type": "article",
+        "date": "28/05/2026",
+        "checked": true
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "01-les-conflits-au-moyen-orient-recomposent-les-equilibres-regionaux",
+      "matchedStoryTitle": "Les conflits au Moyen-Orient recomposent les équilibres régionaux",
+      "previousEpisodeTitle": "Les États-Unis doivent-ils privilégier la riposte militaire ou la désescalade face à l’Iran au Mo?",
+      "previousEpisodeUrl": "http://localhost:3001/debate?id=630",
+      "confidence": 0.85,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {
+        "main_actors_match": true,
+        "central_tension_match": true,
+        "temporal_continuity": true,
+        "editorial_theme_match": true,
+        "strong_keywords_match": true
+      },
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "frappes américaines en Iran",
+      "réplique iranienne",
+      "ba e américaine vi ée",
+      "Moyen-Orient",
+      "guerre Iran-USA",
+      "Liban",
+      "ce ez-le-feu"
+    ],
+    "sentAt": "2026-05-28T11:57:29.178Z"
+  },
+  {
+    "subject": "EN DIRECT - Moyen-Orient : les Etats-Unis frappent l’Iran, qui réplique en visant une base américaine",
+    "sessionLabel": "28/05/2026 à 15:37:18",
+    "question": "Les États-Unis doivent-ils privilégier la riposte militaire ou la désescalade face à l’Iran au Mo?",
+    "positionA": "Privilégier la riposte militaire",
+    "positionB": "Favoriser la désescalade diplomatique",
+    "theme": "International",
+    "resume": "Les États-Unis ont frappé des positions iraniennes au Moyen-Orient, provoquant une riposte iranienne contre une base américaine. Selon les déclarations officielles, l’armée américaine a qualifié cette attaque iranienne de « violation flagrante du cessez-le-feu » en vigueur. Les frappes américaines visaient des installations liées à des groupes armés soutenus par Téhéran, tandis que la réponse iranienne s’est traduite par des tirs de missiles sur une base où sont stationnées des forces américaines. Aucun bilan précis n’a été communiqué pour le moment, et les autorités des deux camps restent sur un pied de tension. La situation reste instable, avec un risque de nouvelles escalades, tandis que la communauté internationale suit de près l’évolution du conflit.\n\nRépondre par une frappe peut renforcer la dissuasion américaine, mais expose la région à une escalade incontrôlée, avec des risques de pertes humaines et une déstabilisation accrue. À l’inverse, opter pour la désescalade limite le risque immédiat de confrontation, mais peut être perçu comme un signe de faiblesse, encourageant de nouvelles provocations iraniennes ou de leurs alliés. Chaque option porte un coût stratégique et sécuritaire important. La région reste suspendue à cette dynamique.\n\nAgôn\n\nLes États-Unis doivent-ils privilégier la riposte militaire ou la désescalade face à l’Iran au Mo?\n\nT. Guyomarch",
+    "sources": "Libération, Le Figaro, La Croix, France 24",
+    "links": [
+      {
+        "title": "EN DIRECT - Moyen-Orient : les Etats-Unis frappent l’Iran, qui réplique en visant une base américaine",
+        "url": "https://www.liberation.fr/international/moyen-orient/en-direct-moyen-orient-les-etats-unis-frappent-liran-qui-replique-en-visant-une-base-americaine-20260528_KV2UPB3G4NBUHJDMFZYC2SRJJY/",
+        "source": "Libération",
+        "type": "article",
+        "date": "28/05/2026",
+        "checked": true
+      },
+      {
+        "title": "DIRECT. Guerre au Moyen-Orient : frappes meurtrières sur le Liban… Le point à la mi-journée",
+        "url": "https://www.la-croix.com/international/direct-guerre-iran-israel-usa-jour-90-moyen-orient-bilan-resume-aujourdhui-20260528",
+        "source": "La Croix",
+        "type": "article",
+        "date": "28/05/2026",
+        "checked": false
+      },
+      {
+        "title": "Les États-Unis frappent l'Iran, Téhéran cible une base américaine",
+        "url": "https://www.france24.com/fr/vid%C3%A9o/20260528-les-%C3%A9tats-unis-frappent-l-iran-t%C3%A9h%C3%A9ran-cible-une-base-am%C3%A9ricaine",
+        "source": "France 24",
+        "type": "article",
+        "date": "28/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Les États-Unis frappent l'Iran, Téhéran réplique en ciblant une base américaine",
+        "url": "https://www.france24.com/fr/moyen-orient/20260528-%C3%A9tats-unis-frappes-iran-r%C3%A9plique-base-am%C3%A9ricaine-koweit",
+        "source": "France 24",
+        "type": "article",
+        "date": "28/05/2026",
+        "checked": true
+      },
+      {
+        "title": "EN DIRECT - Guerre au Moyen-Orient : l’armée américaine dénonce une «violation flagrante du cessez-le-feu» par l’Iran",
+        "url": "https://www.lefigaro.fr/international/en-direct-guerre-au-moyen-orient-les-etats-unis-ont-mene-de-nouvelles-frappes-dans-le-sud-de-l-iran-teheran-affirme-avoir-vise-une-base-americaine-20260528",
+        "source": "Le Figaro",
+        "type": "article",
+        "date": "28/05/2026",
+        "checked": true
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "01-les-conflits-au-moyen-orient-recomposent-les-equilibres-regionaux",
+      "matchedStoryTitle": "Les conflits au Moyen-Orient recomposent les équilibres régionaux",
+      "previousEpisodeTitle": "Faut-il privilégier la dissuasion militaire ou la retenue diplomatique face aux menaces au Liban?",
+      "previousEpisodeUrl": "http://localhost:3001/debate?id=626",
+      "confidence": 0.85,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {},
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "frappes américaines en Iran",
+      "réplique iranienne",
+      "ba e américaine vi ée",
+      "Moyen-Orient",
+      "guerre Iran-USA",
+      "Liban",
+      "ce ez-le-feu"
+    ],
+    "sentAt": "2026-05-28T11:46:52.872Z"
+  },
+  {
+    "subject": "Jordan Bardella porte plainte contre un rappeur pour menaces de mort",
+    "sessionLabel": "27/05/2026 à 21:14:59",
+    "question": "Faut-il sanctionner les artistes pour des paroles violentes visant des personnalités publiques?",
+    "positionA": "Sanctionner les paroles violentes",
+    "positionB": "Protéger la liberté d’expression artistique",
+    "theme": "Politique",
+    "resume": "Jordan Bardella a annoncé le 27 mai 2026 qu’il porterait plainte contre le rappeur Soli pour menaces de mort. Le clip incriminé montre une mise à tabac de Bardella, accompagnée de paroles appelant à un « coup de pied dans la tête d’un facho ». Le leader politique considère ces images et paroles comme une menace directe.\n\nIgnorer ces propos pourrait encourager une escalade verbale et physique, en donnant l’impression que la violence contre des personnalités publiques est tolérée. Sanctionner ces paroles risquerait cependant de restreindre la liberté d’expression artistique, en imposant des limites qui pourraient être perçues comme une censure. La décision judiciaire devra peser entre la nécessité de protéger les individus contre des menaces explicites et le respect d’un espace de création où la provocation est souvent utilisée. La frontière entre expression et incitation reste étroite.\n\nFaut-il sanctionner les artistes pour des paroles violentes visant des personnalités publiques?\n\nF. Glorennec",
+    "sources": "HuffPost France, Libération, BFMTV, Europe 1, Valeurs actuelles",
+    "links": [
+      {
+        "title": "Jordan Bardella annonce une plainte contre le rappeur Soli qui met en scène son passage à tabac",
+        "url": "https://www.huffingtonpost.fr/politique/article/jordan-bardella-annonce-une-plainte-contre-le-rappeur-soli-qui-met-en-scene-son-passage-a-tabac_264172.html",
+        "source": "HuffPost France",
+        "type": "article",
+        "date": "27/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Jordan Bardella veut porter plainte contre un rappeur pour «menaces de mort»",
+        "url": "https://www.liberation.fr/politique/jordan-bardella-veut-porter-plainte-contre-un-rappeur-pour-menaces-de-mort-20260527_3IZL4AIIQRD53KYTA47LOIYXNI/",
+        "source": "Libération",
+        "type": "article",
+        "date": "27/05/2026",
+        "checked": true
+      },
+      {
+        "title": "\"Coup de pied dans la tête d'un facho, quelle bonne saveur\": Jordan Bardella annonce porter plainte contre un rappeur pour \"menaces de mort\"",
+        "url": "https://www.bfmtv.com/police-justice/coup-de-pied-dans-la-tete-d-un-facho-quelle-bonne-saveur-jordan-bardella-annonce-porter-plainte-contre-un-rappeur-pour-menaces-de-mort_AN-202605270798.html",
+        "source": "BFMTV",
+        "type": "article",
+        "date": "27/05/2026",
+        "checked": true
+      },
+      {
+        "title": "« Un bon raciste, c’est un raciste blotti dans son cercueil » : Jordan Bardella porte plainte contre le rappeur Soli, qui a mis en scène son exécution",
+        "url": "https://www.valeursactuelles.com/politique/un-bon-raciste-cest-un-raciste-blotti-dans-son-cercueil-le-rappeur-soli-met-en-scene-lexecution-de-jordan-bardella",
+        "source": "Valeurs actuelles",
+        "type": "article",
+        "date": "27/05/2026",
+        "checked": true
+      },
+      {
+        "title": "",
+        "url": "https://www.youtube.com/watch?v=MVnwpHOBjBY",
+        "source": "Europe 1",
+        "type": "youtube",
+        "date": "27/05/2026",
+        "checked": true
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "06-les-droites-radicales-progressent-dans-plusieurs-democraties-europeennes",
+      "matchedStoryTitle": "Les droites radicales progressent dans plusieurs démocraties européennes",
+      "previousEpisodeTitle": "La justice doit-elle sanctionner plus sévèrement les propos violents dans le rap politique ?",
+      "previousEpisodeUrl": "http://localhost:3001/debate?id=607",
+      "confidence": 0.85,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {
+        "main_actors_match": true,
+        "central_tension_match": true,
+        "temporal_continuity": true,
+        "editorial_theme_match": true,
+        "strong_keywords_match": true
+      },
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "Plainte de Jordan Bardella",
+      "rappeur Soli",
+      "menace  de mort",
+      "pa age à tabac",
+      "extrême droite"
+    ],
+    "sentAt": "2026-05-28T11:41:29.692Z"
+  },
+  {
+    "subject": "\"Je n'ai pas reçu un centime d'argent libyen\", répète Nicolas Sarkozy à la fin de son procès en appel, décision rendue le 30 novembre",
+    "sessionLabel": "27/05/2026 à 21:14:59",
+    "question": "La justice doit-elle privilégier la présomption d'innocence ou la vigilance anticorruption?",
+    "positionA": "Prioriser la présomption d'innocence",
+    "positionB": "Renforcer la vigilance anticorruption",
+    "theme": "Justice - faits divers",
+    "resume": "Nicolas Sarkozy a clos son procès en appel en niant avoir reçu un centime d’argent libyen. Ce procès, centré sur des accusations de financement illégal de sa campagne de 2007, attend sa décision finale le 30 novembre. Tout au long de l’audience, l’ancien président a rejeté les accusations, affirmant n’avoir jamais trahi la confiance des Français. Les juges doivent maintenant trancher sur la crédibilité des preuves et des témoignages.\n\nUn verdict en faveur de l’innocence protégerait la présomption fondamentale mais pourrait laisser la lutte contre les financements occultes en suspens. À l’inverse, une condamnation renforcerait la vigilance anticorruption mais risquerait de fragiliser la confiance si les preuves ne sont pas irréfutables. La justice est face à un choix qui pourrait redéfinir ses priorités.\n\nLex an fides\n\nLa justice doit-elle privilégier la présomption d'innocence ou la vigilance anticorruption?\n\nJ.L Grasso",
+    "sources": "Franceinfo, Libération, Le Figaro, BFMTV, Euronews FR, Le Dauphiné Libéré, France 24",
+    "links": [
+      {
+        "title": "Vigilance orange canicule, enquête ouverte contre la Fifa, fin du procès libyen en appel de Sarkozy… l’actu de ce mercredi 27 mai",
+        "url": "https://www.liberation.fr/international/europe/vigilance-orange-canicule-enquete-ouverte-contre-la-fifa-fin-du-proces-libyen-en-appel-de-sarkozy-lactu-de-ce-mercredi-27-mai-20260527_WCGAJHP6JVEWRJ5ZKPFL43GW3Y/",
+        "source": "Libération",
+        "type": "article",
+        "date": "27/05/2026",
+        "checked": true
+      },
+      {
+        "title": "«Est-ce que je vais y retourner ?» les derniers mots de Nicolas Sarkozy au procès en appel de l’argent libyen",
+        "url": "https://www.liberation.fr/societe/police-justice/au-proces-de-largent-libyen-la-defense-de-sarkozy-jette-ses-dernieres-forces-et-fustige-un-roman-grotesque-20260527_IKMIVVUKCJDANHVPR5BXTZ4N7Q/",
+        "source": "Libération",
+        "type": "article",
+        "date": "27/05/2026",
+        "checked": true
+      },
+      {
+        "title": "\"Je n'ai pas reçu un centime d'argent libyen\", répète Nicolas Sarkozy à la fin de son procès en appel, décision rendue le 30 novembre",
+        "url": "https://www.franceinfo.fr/politique/affaire/financement-de-la-campagne-de-sarkozy/direct-nicolas-sarkozy-est-innocent-et-nous-le-demontrerons-au-proces-en-appel-du-financement-libyen-l-heure-des-plaidoiries-de-la-defense-de-l-ex-president-de-la-republique_8029064.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "type": "article",
+        "date": "27/05/2026",
+        "checked": true
+      },
+      {
+        "title": "\"Je n'ai pas trahi la confiance des Français\": les derniers mots de Nicolas Sarkozy à la clôture du procès en appel de l'affaire libyenne",
+        "url": "https://www.bfmtv.com/police-justice/je-n-ai-pas-trahi-la-confiance-des-francais-les-derniers-mots-de-nicolas-sarkozy-a-la-cloture-du-proces-en-appel-de-l-affaire-libyenne_AD-202605270744.html",
+        "source": "BFMTV",
+        "type": "article",
+        "date": "27/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Fin du procès en appel de Nicolas Sarkozy dans l'affaire libyenne, verdict attendu le 30 novembre",
+        "url": "http://fr.euronews.com/my-europe/2026/05/27/fin-du-proces-en-appel-de-nicolas-sarkozy-dans-laffaire-libyenne-verdict-attendu-le-30-nov",
+        "source": "Euronews FR",
+        "type": "article",
+        "date": "27/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Justice. Au dernier jour de son procès, Nicolas Sarkozy affirme qu'il n'a « pas trahi la confiance des Français »",
+        "url": "https://www.ledauphine.com/faits-divers-justice/2026/05/27/au-dernier-jour-de-son-proces-nicolas-sarkozy-affirme-qu-il-n-a-pas-trahi-la-confiance-des-francais",
+        "source": "Le Dauphiné Libéré",
+        "type": "article",
+        "date": "27/05/2026",
+        "checked": true
+      },
+      {
+        "title": "EN DIRECT - Procès libyen : «Je n’ai pas trahi la confiance des Français», assure Nicolas Sarkozy en conclusion de l’audience",
+        "url": "https://www.lefigaro.fr/actualite-france/en-direct-proces-libyen-la-defense-de-nicolas-sarkozy-fustige-le-roman-grotesque-d-un-financement-libyen-de-sa-campagne-20260527",
+        "source": "Le Figaro",
+        "type": "article",
+        "date": "27/05/2026",
+        "checked": true
+      },
+      {
+        "title": "",
+        "url": "https://www.youtube.com/watch?v=4basp6vSxas",
+        "source": "France 24",
+        "type": "youtube",
+        "date": "27/05/2026",
+        "checked": true
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "56-les-affaires-de-probite-politique-interrogent-la-responsabilite-des-responsables",
+      "matchedStoryTitle": "Les affaires de probité politique interrogent la responsabilité des responsables publics",
+      "previousEpisodeTitle": "Le groupe Bolloré doit-il s'engager davantage dans le débat politique ou rester neutre?",
+      "previousEpisodeUrl": "http://localhost:3001/debate?id=620",
+      "confidence": 0.9,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {
+        "main_actors_match": true,
+        "central_tension_match": true,
+        "temporal_continuity": true,
+        "editorial_theme_match": true,
+        "strong_keywords_match": true
+      },
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "procès en appel Sarkozy",
+      "argent libyen",
+      "financement campagne",
+      "Nicola  Sarkozy",
+      "verdict 30 novembre",
+      "affaire libyenne"
+    ],
+    "sentAt": "2026-05-28T11:37:57.436Z"
+  },
+  {
+    "subject": "Le proche de Zemmour Jean Messiha accusé d’avoir encaissé les 42 000 euros destinés aux veuves des victimes de l’évasion de Mohammed Amra",
+    "sessionLabel": "27/05/2026 à 21:14:59",
+    "question": "Comment garantir la transparence des dons aux victimes sans freiner leur versement?",
+    "positionA": "Renforcer les contrôles stricts",
+    "positionB": "Favoriser une gestion rapide",
+    "theme": "Politique",
+    "resume": "Jean Messiha, proche d’Éric Zemmour, est accusé d’avoir encaissé 42 000 euros destinés aux veuves des agents tués lors de l’évasion de Mohamed Amra. Il a reconnu avoir reçu cette somme et s’est engagé à la rembourser d’ici la fin de la semaine, sans que les modalités précises soient clarifiées. Cette somme provenait d’une collecte organisée pour soutenir les familles des victimes, mais la gestion de ces fonds soulève désormais des interrogations sur la transparence et la responsabilité des acteurs impliqués.\n\nUn contrôle renforcé des fonds limiterait les risques de détournement et garantirait une meilleure traçabilité, mais il pourrait aussi retarder considérablement l’aide financière urgente que les familles attendent. À l’inverse, une gestion plus souple accélère les versements et répond rapidement aux besoins, mais elle expose à des suspicions de mauvaise gestion ou d’abus, ce qui pourrait entacher la crédibilité des collectes futures. La confiance entre donateurs, bénéficiaires et organisateurs est en jeu. La question de la transparence se pose avec acuité dans un climat politique déjà divisé.\n\nFides an celeritas\n\nComment garantir la transparence des dons aux victimes sans freiner leur versement?\n\nP. Ratsky",
+    "sources": "Libération, BFMTV",
+    "links": [
+      {
+        "title": "Le proche de Zemmour Jean Messiha accusé d’avoir encaissé les 42 000 euros destinés aux veuves des victimes de l’évasion de Mohammed Amra",
+        "url": "https://www.liberation.fr/politique/le-proche-de-zemmour-jean-messiha-accuse-davoir-encaisse-les-42-000-euros-destines-aux-veuves-des-victimes-de-levasion-de-mohammed-amra-20260527_E4A76A4BKBE47KWXTL7NYKNGL4/",
+        "source": "Libération",
+        "type": "article",
+        "date": "27/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Jean Messiha assure \"rembourser d'ici la fin de la semaine\" les 42.000 euros destinés aux familles des agents tués lors de l'évasion de Mohamed Amra",
+        "url": "https://www.bfmtv.com/police-justice/video-jean-messiha-assure-rembourser-d-ici-la-fin-de-la-semaine-les-42-000-euros-destines-aux-familles-des-agents-tues-lors-de-l-evasion-de-mohamed-amra_VN-202605270774.html",
+        "source": "BFMTV",
+        "type": "article",
+        "date": "27/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Jean Messiha, accusé d'avoir empoché la cagnotte destinée aux familles des agents tués lors de l'évasion de Mohamed Amra, répond",
+        "url": "https://www.bfmtv.com/police-justice/video-jean-messiha-accuse-d-avoir-empoche-la-cagnotte-destinee-aux-familles-des-agents-tues-lors-de-l-evasion-de-mohamed-amra-repond_VN-202605270752.html",
+        "source": "BFMTV",
+        "type": "article",
+        "date": "27/05/2026",
+        "checked": true
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "56-les-affaires-de-probite-politique-interrogent-la-responsabilite-des-responsables",
+      "matchedStoryTitle": "Les affaires de probité politique interrogent la responsabilité des responsables publics",
+      "previousEpisodeTitle": "Le groupe Bolloré doit-il s'engager davantage dans le débat politique ou rester neutre?",
+      "previousEpisodeUrl": "http://localhost:3001/debate?id=620",
+      "confidence": 0.85,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {
+        "main_actors_match": true,
+        "central_tension_match": true,
+        "temporal_continuity": true,
+        "editorial_theme_match": true,
+        "strong_keywords_match": true
+      },
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "Jean Messiha",
+      "Mohammed Amra",
+      "veuve  de  victime",
+      "famille  de  agent  tué",
+      "encai é 42 000 euro",
+      "rembour ement",
+      "éva ion"
+    ],
+    "sentAt": "2026-05-28T08:59:40.283Z"
+  },
+  {
+    "subject": "Canicule : 13 départements toujours en vigilance orange, Paris et la petite couronne concernés à partir de jeudi midi",
+    "sessionLabel": "27/05/2026 à 21:14:59",
+    "question": "Faut-il étendre les mesures de vigilance canicule pour mieux protéger ou limiter leur portée pour?",
+    "positionA": "Étendre les mesures de vigilance canicule",
+    "positionB": "Limiter la portée des mesures de vigilance",
+    "theme": "Climat - environnement",
+    "resume": "Jeudi 28 mai, treize départements restent en vigilance orange canicule, avec Paris et la petite couronne placés sous alerte à partir de midi. Jusqu’à 17 départements ont été concernés dans la journée, avec des températures atteignant 39 °C en Île-de-France. Les autorités maintiennent ces alertes pour anticiper les risques sanitaires, notamment dans les zones urbaines où la chaleur s’accumule.\n\nRenforcer les mesures de vigilance protège mieux les populations vulnérables, mais risque de freiner l’activité économique et de compliquer le quotidien. À l’inverse, alléger ces mesures limite les contraintes immédiates, mais expose davantage aux effets graves de la chaleur, surtout en milieu urbain dense. La question reste de savoir jusqu’où aller.\n\nFaut-il étendre les mesures de vigilance canicule ou limiter leur portée ?\n\nFaut-il étendre les mesures de vigilance canicule pour mieux protéger ou limiter leur portée pour?\n\nF. Glorennec",
+    "sources": "Franceinfo, L'Obs, Le Figaro, La Croix, HuffPost France",
+    "links": [
+      {
+        "title": "Météo : la vigilance orange canicule s’étend encore pour la journée de jeudi, notamment à Paris",
+        "url": "https://www.huffingtonpost.fr/france/article/meteo-la-vigilance-orange-canicule-s-etend-encore-pour-la-journee-de-jeudi-notamment-a-paris_264170.html",
+        "source": "HuffPost France",
+        "type": "article",
+        "date": "27/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Canicule : 17 départements en vigilance orange jeudi, des pointes à 39 °C… Le point sur une vague de chaleur inédite",
+        "url": "https://www.nouvelobs.com/ecologie/20260527.OBS115283/canicule-17-departements-en-vigilance-orange-jeudi-des-pointes-a-39-c-le-point-sur-une-vague-de-chaleur-inedite.html",
+        "source": "L'Obs",
+        "type": "article",
+        "date": "27/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Canicule : Paris et trois nouveaux départements placés en vigilance orange",
+        "url": "https://www.la-croix.com/planete/canicule-paris-et-trois-nouveaux-departements-desormais-en-vigilance-orange-20260527",
+        "source": "La Croix",
+        "type": "article",
+        "date": "27/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Canicule : 13 départements toujours en vigilance orange, Paris et la petite couronne concernés à partir de jeudi midi",
+        "url": "https://www.franceinfo.fr/environnement/evenements-meteorologiques-extremes/vagues-de-chaleur-canicules/direct-episode-inedit-de-fortes-chaleurs-la-france-continue-de-suffoquer-des-pointes-a-39-c-attendues-ce-mercredi_8030669.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "type": "article",
+        "date": "27/05/2026",
+        "checked": true
+      },
+      {
+        "title": "EN DIRECT - Canicule : la vigilance orange étendue à 17 départements jeudi, dont Paris",
+        "url": "https://www.lefigaro.fr/meteo/en-direct-canicule-la-france-suffoque-sous-le-dome-de-chaleur-13-departements-en-vigilance-orange-et-la-vitesse-abaissee-en-ile-de-france-20260527",
+        "source": "Le Figaro",
+        "type": "article",
+        "date": "27/05/2026",
+        "checked": true
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "40-le-changement-climatique-transforme-les-territoires-et-multiplie-les-enjeux-d-ad",
+      "matchedStoryTitle": "Le changement climatique transforme les territoires et multiplie les enjeux d’adaptation",
+      "previousEpisodeTitle": "La réunion ministérielle de Lecornu peut-elle améliorer la gestion des canicules en France ?",
+      "previousEpisodeUrl": "http://localhost:3001/debate?id=567",
+      "confidence": 0.85,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {
+        "main_actors_match": false,
+        "central_tension_match": true,
+        "temporal_continuity": true,
+        "editorial_theme_match": true,
+        "strong_keywords_match": true
+      },
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "vigilance orange canicule",
+      "Pari",
+      "petite couronne",
+      "13 département",
+      "17 département",
+      "vague de chaleur",
+      "température  à 39 °C"
+    ],
+    "sentAt": "2026-05-28T08:15:08.399Z"
+  },
+  {
+    "subject": "Guerre au Moyen-Orient : Une frappe touche les environs de Tyr, dans le sud du Liban, après un avertissement israélien",
+    "sessionLabel": "27/05/2026 à 21:14:59",
+    "question": "Faut-il privilégier la dissuasion militaire ou la retenue diplomatique face aux menaces au Liban?",
+    "positionA": "Privilégier la dissuasion militaire",
+    "positionB": "Privilégier la retenue diplomatique",
+    "theme": "International",
+    "resume": "Une frappe aérienne israélienne a touché les environs de Tyr, dans le sud du Liban, peu après un avertissement lancé par Israël. Les cibles exactes et les dégâts restent inconnus, tandis que les autorités locales n’ont pas confirmé l’ampleur des impacts. Les Gardiens de la révolution iraniens estiment que le risque d’escalade majeure demeure faible.\n\nFrapper peut renforcer la dissuasion et montrer une fermeté face aux groupes armés, mais cela expose aussi à une riposte qui pourrait embraser la région. À l’inverse, freiner les actions militaires limite le risque immédiat d’une escalade, mais risque d’encourager les provocations et de faire reculer la crédibilité d’Israël. La frontière entre fermeté et prudence reste fragile.\n\nVis aut cautela\n\nFaut-il privilégier la dissuasion militaire ou la retenue diplomatique face aux menaces au Liban?\n\nJ.L Grasso",
+    "sources": "Franceinfo, Le Monde, Libération",
+    "links": [
+      {
+        "title": "EN DIRECT, guerre au Moyen-Orient : des bombardements israéliens ont touché les alentours de la ville de Tyr, après un avertissement israélien",
+        "url": "https://www.lemonde.fr/international/live/2026/05/27/en-direct-guerre-au-moyen-orient-des-bombardements-israeliens-ont-touche-les-alentours-de-la-ville-de-tyr-apres-un-avertissement-israelien_6691823_3210.html",
+        "source": "Le Monde",
+        "type": "article",
+        "date": "27/05/2026",
+        "checked": true
+      },
+      {
+        "title": "EN DIRECT - Guerre au Moyen-Orient : les Gardiens de la révolution jugent «faible» la probabilité d’une reprise de la guerre",
+        "url": "https://www.liberation.fr/international/moyen-orient/en-direct-guerre-au-moyen-orient-les-cessez-le-feu-en-iran-et-au-liban-menaces-20260527_A5EZDHUNPRHZ5FGYA3CP2KN6LA/",
+        "source": "Libération",
+        "type": "article",
+        "date": "27/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Guerre au Moyen-Orient : Une frappe touche les environs de Tyr, dans le sud du Liban, après un avertissement israélien",
+        "url": "https://www.franceinfo.fr/monde/iran/guerre-entre-les-etats-unis-israel-et-l-iran/direct-guerre-au-moyen-orient-des-attaques-israeliennes-font-31-morts-au-liban-inquietudes-autour-du-respect-des-cessez-le-feu-dans-la-region_8030708.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "type": "article",
+        "date": "27/05/2026",
+        "checked": true
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "01-les-conflits-au-moyen-orient-recomposent-les-equilibres-regionaux",
+      "matchedStoryTitle": "Les conflits au Moyen-Orient recomposent les équilibres régionaux",
+      "previousEpisodeTitle": "La France doit-elle soutenir les frappes israéliennes au Liban malgré le risque d’escalade?",
+      "previousEpisodeUrl": "http://localhost:3001/debate?id=623",
+      "confidence": 0.85,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {
+        "main_actors_match": true,
+        "central_tension_match": true,
+        "temporal_continuity": true,
+        "editorial_theme_match": true,
+        "strong_keywords_match": true
+      },
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "frappe israélienne à Tyr",
+      "guerre au Moyen-Orient",
+      "Sud du Liban",
+      "averti ement i raélien",
+      "Gardien  de la révolution",
+      "ce ez-le-feu",
+      "bombardement  i raélien"
+    ],
+    "sentAt": "2026-05-28T07:29:43.186Z"
+  },
+  {
+    "subject": "Guerre au Moyen-Orient : Une frappe touche les environs de Tyr, dans le sud du Liban, après un avertissement israélien",
+    "sessionLabel": "27/05/2026 à 21:14:59",
+    "question": "Faut-il privilégier les frappes préventives pour contenir les groupes armés au Liban?",
+    "positionA": "Privilégier les frappes préventives",
+    "positionB": "Éviter les frappes pour limiter l’escalade",
+    "theme": "International",
+    "resume": "Israël a frappé les environs de Tyr, dans le sud du Liban, peu après un avertissement adressé aux groupes armés. Ces bombardements, présentés comme des mesures préventives, visent à freiner les capacités de ces groupes, sans que l’on connaisse encore l’ampleur des dégâts ou des victimes. Du côté libanais, aucune escalade majeure n’a été signalée, malgré la forte tension persistante dans la région.\n\nFrapper peut affaiblir les groupes armés en détruisant leurs infrastructures et en perturbant leurs opérations, mais cela risque aussi de provoquer une réaction violente immédiate, avec des représailles qui pourraient déstabiliser davantage la zone frontalière. Ne pas frapper limite le risque d’un embrasement soudain et évite de renforcer les sentiments anti-israéliens, mais cela laisse ces groupes libres de se réarmer et de préparer de nouvelles attaques, ce qui compromet la sécurité à moyen terme. Chaque option engage donc un coût stratégique lourd. La frontière entre action et retenue devient un terrain fragile.\n\nVis et cautela\n\nFaut-il privilégier les frappes préventives pour contenir les groupes armés au Liban?\n\nF. Glorennec",
+    "sources": "Franceinfo, Le Monde, Libération",
+    "links": [
+      {
+        "title": "EN DIRECT, guerre au Moyen-Orient : des bombardements israéliens ont touché les alentours de la ville de Tyr, après un avertissement israélien",
+        "url": "https://www.lemonde.fr/international/live/2026/05/27/en-direct-guerre-au-moyen-orient-des-bombardements-israeliens-ont-touche-les-alentours-de-la-ville-de-tyr-apres-un-avertissement-israelien_6691823_3210.html",
+        "source": "Le Monde",
+        "type": "article",
+        "date": "27/05/2026",
+        "checked": true
+      },
+      {
+        "title": "EN DIRECT - Guerre au Moyen-Orient : les Gardiens de la révolution jugent «faible» la probabilité d’une reprise de la guerre",
+        "url": "https://www.liberation.fr/international/moyen-orient/en-direct-guerre-au-moyen-orient-les-cessez-le-feu-en-iran-et-au-liban-menaces-20260527_A5EZDHUNPRHZ5FGYA3CP2KN6LA/",
+        "source": "Libération",
+        "type": "article",
+        "date": "27/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Guerre au Moyen-Orient : Une frappe touche les environs de Tyr, dans le sud du Liban, après un avertissement israélien",
+        "url": "https://www.franceinfo.fr/monde/iran/guerre-entre-les-etats-unis-israel-et-l-iran/direct-guerre-au-moyen-orient-des-attaques-israeliennes-font-31-morts-au-liban-inquietudes-autour-du-respect-des-cessez-le-feu-dans-la-region_8030708.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "type": "article",
+        "date": "27/05/2026",
+        "checked": true
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "01-les-conflits-au-moyen-orient-recomposent-les-equilibres-regionaux",
+      "matchedStoryTitle": "Les conflits au Moyen-Orient recomposent les équilibres régionaux",
+      "previousEpisodeTitle": "La France doit-elle soutenir les frappes israéliennes au Liban malgré le risque d’escalade?",
+      "previousEpisodeUrl": "http://localhost:3001/debate?id=623",
+      "confidence": 0.85,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {
+        "main_actors_match": true,
+        "central_tension_match": true,
+        "temporal_continuity": true,
+        "editorial_theme_match": true,
+        "strong_keywords_match": true
+      },
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "frappe israélienne à Tyr",
+      "guerre au Moyen-Orient",
+      "Sud du Liban",
+      "averti ement i raélien",
+      "Gardien  de la révolution",
+      "ce ez-le-feu",
+      "bombardement  i raélien"
+    ],
+    "sentAt": "2026-05-28T07:25:56.494Z"
+  },
+  {
+    "subject": "Guerre au Moyen-Orient : Une frappe touche les environs de Tyr, dans le sud du Liban, après un avertissement israélien",
+    "sessionLabel": "27/05/2026 à 21:14:59",
+    "question": "Faut-il privilégier la riposte militaire ou la désescalade face aux tensions au sud du Liban?",
+    "positionA": "Privilégier la riposte militaire",
+    "positionB": "Favoriser la désescalade et la retenue",
+    "theme": "International",
+    "resume": "Une frappe aérienne israélienne a visé les environs de Tyr, dans le sud du Liban, peu après un avertissement d’Israël. Les cibles exactes et l’ampleur des dégâts n’ont pas été confirmées, tandis que les Gardiens de la révolution iraniens estiment peu probable une escalade généralisée. Cette opération s’inscrit dans un contexte de tensions persistantes liées à la guerre au Moyen-Orient, où chaque action militaire peut modifier rapidement l’équilibre fragile.\n\nLe choix est net : renforcer la pression militaire pour dissuader ou freiner les risques d’attaques, au prix d’une possible amplification du conflit, ou opter pour la retenue afin d’éviter une spirale incontrôlable, mais en laissant ouvertes les menaces. Cette tension oppose une stratégie de fermeté, qui peut provoquer une réaction en chaîne, à une prudence qui risque de laisser le terrain libre à des actions hostiles. La décision pèse directement sur la stabilité immédiate de la région et sur la capacité des acteurs à contenir une crise potentiellement dévastatrice.\n\nVis aut pax\n\nFaut-il privilégier la riposte militaire ou la désescalade face aux tensions au sud du Liban?\n\nF. Glorennec",
+    "sources": "Franceinfo, Le Monde, Libération",
+    "links": [
+      {
+        "title": "EN DIRECT, guerre au Moyen-Orient : des bombardements israéliens ont touché les alentours de la ville de Tyr, après un avertissement israélien",
+        "url": "https://www.lemonde.fr/international/live/2026/05/27/en-direct-guerre-au-moyen-orient-des-bombardements-israeliens-ont-touche-les-alentours-de-la-ville-de-tyr-apres-un-avertissement-israelien_6691823_3210.html",
+        "source": "Le Monde",
+        "type": "article",
+        "date": "27/05/2026",
+        "checked": true
+      },
+      {
+        "title": "EN DIRECT - Guerre au Moyen-Orient : les Gardiens de la révolution jugent «faible» la probabilité d’une reprise de la guerre",
+        "url": "https://www.liberation.fr/international/moyen-orient/en-direct-guerre-au-moyen-orient-les-cessez-le-feu-en-iran-et-au-liban-menaces-20260527_A5EZDHUNPRHZ5FGYA3CP2KN6LA/",
+        "source": "Libération",
+        "type": "article",
+        "date": "27/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Guerre au Moyen-Orient : Une frappe touche les environs de Tyr, dans le sud du Liban, après un avertissement israélien",
+        "url": "https://www.franceinfo.fr/monde/iran/guerre-entre-les-etats-unis-israel-et-l-iran/direct-guerre-au-moyen-orient-des-attaques-israeliennes-font-31-morts-au-liban-inquietudes-autour-du-respect-des-cessez-le-feu-dans-la-region_8030708.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "type": "article",
+        "date": "27/05/2026",
+        "checked": true
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "01-les-conflits-au-moyen-orient-recomposent-les-equilibres-regionaux",
+      "matchedStoryTitle": "Les conflits au Moyen-Orient recomposent les équilibres régionaux",
+      "previousEpisodeTitle": "La France doit-elle soutenir les frappes israéliennes au Liban malgré le risque d’escalade?",
+      "previousEpisodeUrl": "http://localhost:3001/debate?id=623",
+      "confidence": 0.85,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {
+        "main_actors_match": true,
+        "central_tension_match": true,
+        "temporal_continuity": true,
+        "editorial_theme_match": true,
+        "strong_keywords_match": true
+      },
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "frappe israélienne à Tyr",
+      "guerre au Moyen-Orient",
+      "Sud du Liban",
+      "averti ement i raélien",
+      "Gardien  de la révolution",
+      "ce ez-le-feu",
+      "bombardement  i raélien"
+    ],
+    "sentAt": "2026-05-28T07:20:51.217Z"
+  },
+  {
+    "subject": "Guerre au Moyen-Orient : Une frappe touche les environs de Tyr, dans le sud du Liban, après un avertissement israélien",
+    "sessionLabel": "27/05/2026 à 21:14:59",
+    "question": "La France doit-elle soutenir les frappes israéliennes au Liban malgré le risque d’escalade?",
+    "positionA": "Soutenir les frappes israéliennes",
+    "positionB": "Appeler à la retenue pour éviter l’escalade",
+    "theme": "International",
+    "resume": "Une frappe israélienne a touché les environs de Tyr, dans le sud du Liban, après un avertissement d’Israël. Les détails sur les cibles visées et les dégâts restent flous, les sources disponibles n’ayant pas confirmé d’informations précises. Cette action s’inscrit dans un contexte de tensions régionales exacerbées par le conflit au Moyen-Orient, où chaque mouvement est scruté avec attention.\n\nLa tension monte dans une région où chaque action peut provoquer une réaction en chaîne. Israël cherche à montrer sa détermination face aux menaces perçues, affirmant ainsi sa volonté de contrôler la situation. En revanche, d’autres acteurs redoutent que cette démonstration de force ne fasse basculer le conflit vers une escalade incontrôlable, menaçant la stabilité fragile de la zone. Le choix collectif entre fermeté et prudence devient crucial, car il conditionne l’évolution des relations et la possibilité d’une paix durable.\n\nLex an pax\n\nLa France doit-elle soutenir les frappes israéliennes au Liban malgré le risque d’escalade?\n\nJ.L Grasso",
+    "sources": "Franceinfo, Le Monde, Libération",
+    "links": [
+      {
+        "title": "EN DIRECT, guerre au Moyen-Orient : des bombardements israéliens ont touché les alentours de la ville de Tyr, après un avertissement israélien",
+        "url": "https://www.lemonde.fr/international/live/2026/05/27/en-direct-guerre-au-moyen-orient-des-bombardements-israeliens-ont-touche-les-alentours-de-la-ville-de-tyr-apres-un-avertissement-israelien_6691823_3210.html",
+        "source": "Le Monde",
+        "type": "article",
+        "date": "27/05/2026",
+        "checked": true
+      },
+      {
+        "title": "EN DIRECT - Guerre au Moyen-Orient : les Gardiens de la révolution jugent «faible» la probabilité d’une reprise de la guerre",
+        "url": "https://www.liberation.fr/international/moyen-orient/en-direct-guerre-au-moyen-orient-les-cessez-le-feu-en-iran-et-au-liban-menaces-20260527_A5EZDHUNPRHZ5FGYA3CP2KN6LA/",
+        "source": "Libération",
+        "type": "article",
+        "date": "27/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Guerre au Moyen-Orient : Une frappe touche les environs de Tyr, dans le sud du Liban, après un avertissement israélien",
+        "url": "https://www.franceinfo.fr/monde/iran/guerre-entre-les-etats-unis-israel-et-l-iran/direct-guerre-au-moyen-orient-des-attaques-israeliennes-font-31-morts-au-liban-inquietudes-autour-du-respect-des-cessez-le-feu-dans-la-region_8030708.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "type": "article",
+        "date": "27/05/2026",
+        "checked": true
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "01-les-conflits-au-moyen-orient-recomposent-les-equilibres-regionaux",
+      "matchedStoryTitle": "Les conflits au Moyen-Orient recomposent les équilibres régionaux",
+      "previousEpisodeTitle": "Faut-il privilégier la dissuasion militaire ou la diplomatie pour stabiliser la frontière israélo?",
+      "previousEpisodeUrl": "http://localhost:3001/debate?id=622",
+      "confidence": 0.85,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {
+        "main_actors_match": true,
+        "central_tension_match": true,
+        "temporal_continuity": true,
+        "editorial_theme_match": true,
+        "strong_keywords_match": true
+      },
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "frappe israélienne à Tyr",
+      "guerre au Moyen-Orient",
+      "Sud du Liban",
+      "averti ement i raélien",
+      "Gardien  de la révolution",
+      "ce ez-le-feu",
+      "bombardement  i raélien"
+    ],
+    "sentAt": "2026-05-28T05:41:01.493Z"
+  },
+  {
+    "subject": "Guerre au Moyen-Orient : Une frappe touche les environs de Tyr, dans le sud du Liban, après un avertissement israélien",
+    "sessionLabel": "27/05/2026 à 21:14:59",
+    "question": "Faut-il privilégier la riposte militaire immédiate ou la retenue pour éviter une escalade au Moye?",
+    "positionA": "Privilégier la riposte militaire immédiate",
+    "positionB": "Favoriser la retenue pour éviter l'escalade",
+    "theme": "International",
+    "resume": "Une frappe aérienne israélienne a visé les environs de Tyr, dans le sud du Liban, après un avertissement d’Israël. Cette opération s’inscrit dans un contexte de tensions persistantes au Moyen-Orient, marqué par des affrontements réguliers et une instabilité chronique. Les autorités israéliennes affirment avoir répondu à des menaces perçues, sans que les cibles précises ni les conséquences soient confirmées de façon indépendante. Par ailleurs, certains acteurs régionaux soulignent que la situation reste volatile et que toute action peut avoir des répercussions imprévues.\n\nLa difficulté tient moins au constat qu’au choix à faire : réagir vite pour dissuader ou freiner pour éviter une escalade incontrôlable. Dans une région où chaque action peut déclencher une réaction en chaîne, la frontière entre défense et provocation reste fragile. Ce dilemme reflète un équilibre précaire entre la nécessité de protéger ses intérêts et le risque d’entraîner une spirale de violence aux conséquences potentiellement dévastatrices pour toute la région.\n\nFaut-il privilégier la riposte militaire immédiate ou la retenue pour éviter une escalade au Moye?\n\nJ.L Grasso",
+    "sources": "Franceinfo, Le Monde, Libération",
+    "links": [
+      {
+        "title": "EN DIRECT, guerre au Moyen-Orient : des bombardements israéliens ont touché les alentours de la ville de Tyr, après un avertissement israélien",
+        "url": "https://www.lemonde.fr/international/live/2026/05/27/en-direct-guerre-au-moyen-orient-des-bombardements-israeliens-ont-touche-les-alentours-de-la-ville-de-tyr-apres-un-avertissement-israelien_6691823_3210.html",
+        "source": "Le Monde",
+        "type": "article",
+        "date": "27/05/2026",
+        "checked": true
+      },
+      {
+        "title": "EN DIRECT - Guerre au Moyen-Orient : les Gardiens de la révolution jugent «faible» la probabilité d’une reprise de la guerre",
+        "url": "https://www.liberation.fr/international/moyen-orient/en-direct-guerre-au-moyen-orient-les-cessez-le-feu-en-iran-et-au-liban-menaces-20260527_A5EZDHUNPRHZ5FGYA3CP2KN6LA/",
+        "source": "Libération",
+        "type": "article",
+        "date": "27/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Guerre au Moyen-Orient : Une frappe touche les environs de Tyr, dans le sud du Liban, après un avertissement israélien",
+        "url": "https://www.franceinfo.fr/monde/iran/guerre-entre-les-etats-unis-israel-et-l-iran/direct-guerre-au-moyen-orient-des-attaques-israeliennes-font-31-morts-au-liban-inquietudes-autour-du-respect-des-cessez-le-feu-dans-la-region_8030708.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "type": "article",
+        "date": "27/05/2026",
+        "checked": true
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "01-les-conflits-au-moyen-orient-recomposent-les-equilibres-regionaux",
+      "matchedStoryTitle": "Les conflits au Moyen-Orient recomposent les équilibres régionaux",
+      "previousEpisodeTitle": "Faut-il privilégier la dissuasion militaire ou la diplomatie pour stabiliser la frontière israélo?",
+      "previousEpisodeUrl": "http://localhost:3001/debate?id=622",
+      "confidence": 0.85,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {
+        "main_actors_match": true,
+        "central_tension_match": true,
+        "temporal_continuity": true,
+        "editorial_theme_match": true,
+        "strong_keywords_match": true
+      },
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "frappe israélienne à Tyr",
+      "guerre au Moyen-Orient",
+      "Sud du Liban",
+      "averti ement i raélien",
+      "Gardien  de la révolution",
+      "ce ez-le-feu",
+      "bombardement  i raélien"
+    ],
+    "sentAt": "2026-05-28T05:38:55.572Z"
+  },
+  {
+    "subject": "Guerre au Moyen-Orient : Une frappe touche les environs de Tyr, dans le sud du Liban, après un avertissement israélien",
+    "sessionLabel": "27/05/2026 à 21:14:59",
+    "question": "Faut-il privilégier la dissuasion militaire ou la diplomatie pour stabiliser la frontière israélo?",
+    "positionA": "Privilégier la dissuasion militaire",
+    "positionB": "Favoriser la diplomatie et le dialogue",
+    "theme": "International",
+    "resume": "Une frappe aérienne israélienne a touché les environs de Tyr, dans le sud du Liban, après un avertissement lancé par Israël. Cette opération intervient dans un contexte de tensions persistantes à la frontière, sans que les dégâts ou victimes soient encore confirmés. Les autorités libanaises n’ont pas encore réagi officiellement, tandis que certains acteurs régionaux estiment peu probable une escalade majeure.\n\nLe problème tient à la ligne fragile entre dissuasion et provocation. Israël cherche à neutraliser des menaces perçues, mais chaque action militaire renforce la méfiance et complique les tentatives de désescalade. La frontière devient un terrain où la fermeté militaire et la diplomatie se disputent la priorité, sans que le risque d’une nouvelle confrontation soit écarté.\n\nLex an pax\n\nFaut-il privilégier la dissuasion militaire ou la diplomatie pour stabiliser la frontière israélo?\n\nJ.L Grasso",
+    "sources": "Franceinfo, Le Monde, Libération",
+    "links": [
+      {
+        "title": "EN DIRECT, guerre au Moyen-Orient : des bombardements israéliens ont touché les alentours de la ville de Tyr, après un avertissement israélien",
+        "url": "https://www.lemonde.fr/international/live/2026/05/27/en-direct-guerre-au-moyen-orient-des-bombardements-israeliens-ont-touche-les-alentours-de-la-ville-de-tyr-apres-un-avertissement-israelien_6691823_3210.html",
+        "source": "Le Monde",
+        "type": "article",
+        "date": "27/05/2026",
+        "checked": true
+      },
+      {
+        "title": "EN DIRECT - Guerre au Moyen-Orient : les Gardiens de la révolution jugent «faible» la probabilité d’une reprise de la guerre",
+        "url": "https://www.liberation.fr/international/moyen-orient/en-direct-guerre-au-moyen-orient-les-cessez-le-feu-en-iran-et-au-liban-menaces-20260527_A5EZDHUNPRHZ5FGYA3CP2KN6LA/",
+        "source": "Libération",
+        "type": "article",
+        "date": "27/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Guerre au Moyen-Orient : Une frappe touche les environs de Tyr, dans le sud du Liban, après un avertissement israélien",
+        "url": "https://www.franceinfo.fr/monde/iran/guerre-entre-les-etats-unis-israel-et-l-iran/direct-guerre-au-moyen-orient-des-attaques-israeliennes-font-31-morts-au-liban-inquietudes-autour-du-respect-des-cessez-le-feu-dans-la-region_8030708.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "type": "article",
+        "date": "27/05/2026",
+        "checked": true
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "01-les-conflits-au-moyen-orient-recomposent-les-equilibres-regionaux",
+      "matchedStoryTitle": "Les conflits au Moyen-Orient recomposent les équilibres régionaux",
+      "previousEpisodeTitle": "Faut-il privilégier les frappes préventives malgré le risque d’escalade au sud du Liban?",
+      "previousEpisodeUrl": "http://localhost:3001/debate?id=621",
+      "confidence": 0.85,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {
+        "main_actors_match": true,
+        "central_tension_match": true,
+        "temporal_continuity": true,
+        "editorial_theme_match": true,
+        "strong_keywords_match": true
+      },
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "frappe israélienne à Tyr",
+      "guerre au Moyen-Orient",
+      "Sud du Liban",
+      "averti ement i raélien",
+      "Gardien  de la révolution",
+      "ce ez-le-feu",
+      "bombardement  i raélien"
+    ],
+    "sentAt": "2026-05-28T05:27:53.825Z"
+  },
+  {
+    "subject": "Guerre au Moyen-Orient : Une frappe touche les environs de Tyr, dans le sud du Liban, après un avertissement israélien",
+    "sessionLabel": "27/05/2026 à 21:14:59",
+    "question": "Faut-il privilégier les frappes préventives malgré le risque d’escalade au sud du Liban?",
+    "positionA": "Privilégier les frappes préventives",
+    "positionB": "Éviter les frappes pour limiter l’escalade",
+    "theme": "International",
+    "resume": "Une frappe aérienne israélienne a touché les environs de Tyr, dans le sud du Liban, après un avertissement préalable. Cette action s’inscrit dans un contexte de tensions persistantes entre Israël et les groupes armés présents dans cette région frontalière. Les autorités israéliennes ont annoncé cette opération sans fournir de détails précis sur les cibles visées ni sur les éventuelles pertes humaines. Du côté libanais, aucune confirmation officielle n’a été donnée concernant les dégâts ou les victimes. Par ailleurs, des responsables iraniens, notamment les Gardiens de la révolution, ont récemment estimé que la probabilité d’une escalade majeure du conflit restait faible.\n\nCette opération illustre la stratégie israélienne visant à maintenir une pression constante pour dissuader toute menace perçue, tout en essayant d’éviter une confrontation ouverte. Ce choix soulève un dilemme important : comment concilier la nécessité de sécurité immédiate avec le risque d’une escalade régionale aux conséquences imprévisibles ? Alors que certains acteurs régionaux jugent encore improbable un conflit majeur, la répétition de ces frappes pourrait modifier cet équilibre fragile et entraîner une réaction plus violente, rendant la situation encore plus instable.\n\nSalus an libertas\n\nFaut-il privilégier les frappes préventives malgré le risque d’escalade au sud du Liban?\n\nT. Guyomarch",
+    "sources": "Franceinfo, Le Monde, Libération",
+    "links": [
+      {
+        "title": "EN DIRECT, guerre au Moyen-Orient : des bombardements israéliens ont touché les alentours de la ville de Tyr, après un avertissement israélien",
+        "url": "https://www.lemonde.fr/international/live/2026/05/27/en-direct-guerre-au-moyen-orient-des-bombardements-israeliens-ont-touche-les-alentours-de-la-ville-de-tyr-apres-un-avertissement-israelien_6691823_3210.html",
+        "source": "Le Monde",
+        "type": "article",
+        "date": "27/05/2026",
+        "checked": true
+      },
+      {
+        "title": "EN DIRECT - Guerre au Moyen-Orient : les Gardiens de la révolution jugent «faible» la probabilité d’une reprise de la guerre",
+        "url": "https://www.liberation.fr/international/moyen-orient/en-direct-guerre-au-moyen-orient-les-cessez-le-feu-en-iran-et-au-liban-menaces-20260527_A5EZDHUNPRHZ5FGYA3CP2KN6LA/",
+        "source": "Libération",
+        "type": "article",
+        "date": "27/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Guerre au Moyen-Orient : Une frappe touche les environs de Tyr, dans le sud du Liban, après un avertissement israélien",
+        "url": "https://www.franceinfo.fr/monde/iran/guerre-entre-les-etats-unis-israel-et-l-iran/direct-guerre-au-moyen-orient-des-attaques-israeliennes-font-31-morts-au-liban-inquietudes-autour-du-respect-des-cessez-le-feu-dans-la-region_8030708.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "type": "article",
+        "date": "27/05/2026",
+        "checked": true
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "01-les-conflits-au-moyen-orient-recomposent-les-equilibres-regionaux",
+      "matchedStoryTitle": "Les conflits au Moyen-Orient recomposent les équilibres régionaux",
+      "previousEpisodeTitle": "Faut-il privilégier la riposte militaire immédiate ou la retenue pour éviter l’escalade au Liban ?",
+      "previousEpisodeUrl": "http://localhost:3001/debate?id=609",
+      "confidence": 0.85,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {
+        "main_actors_match": true,
+        "central_tension_match": true,
+        "temporal_continuity": true,
+        "editorial_theme_match": true,
+        "strong_keywords_match": true
+      },
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "frappe israélienne à Tyr",
+      "guerre au Moyen-Orient",
+      "Sud du Liban",
+      "averti ement i raélien",
+      "Gardien  de la révolution",
+      "ce ez-le-feu",
+      "bombardement  i raélien"
+    ],
+    "sentAt": "2026-05-28T05:21:51.321Z"
+  },
+  {
+    "subject": "Guerre au Moyen-Orient : Une frappe touche les environs de Tyr, dans le sud du Liban, après un avertissement israélien",
+    "sessionLabel": "27/05/2026 à 21:14:59",
+    "question": "Les frappes préventives dans le sud-Liban renforcent-elles ou compromettent-elles la stabilité ré?",
+    "positionA": "Soutenir les frappes préventives",
+    "positionB": "Privilégier la désescalade et la diplomatie",
+    "theme": "International",
+    "resume": "Une frappe aérienne israélienne a touché les environs de Tyr, dans le sud du Liban, après un avertissement lancé par Israël. Cette opération intervient dans un contexte de tensions accrues au Moyen-Orient, sans que la cible exacte ni les dégâts soient encore connus. Israël justifie cette action comme une mesure préventive, tandis que les autorités libanaises n’ont pas communiqué sur les conséquences. Les Gardiens de la révolution iraniens estiment que le risque d’une extension du conflit reste faible.\n\nDans une région aussi instable, chaque frappe préventive soulève un dilemme. Elle peut être perçue comme un acte de défense renforçant la sécurité, ou comme une provocation susceptible d’exacerber les tensions. Le choix entre dissuasion et escalade devient plus délicat, alors que la moindre erreur pourrait déstabiliser un équilibre fragile.\n\nLes frappes préventives dans le sud-Liban renforcent-elles ou compromettent-elles la stabilité ré?\n\nJ.L Grasso",
+    "sources": "Franceinfo, Le Monde, Libération",
+    "links": [
+      {
+        "title": "EN DIRECT, guerre au Moyen-Orient : des bombardements israéliens ont touché les alentours de la ville de Tyr, après un avertissement israélien",
+        "url": "https://www.lemonde.fr/international/live/2026/05/27/en-direct-guerre-au-moyen-orient-des-bombardements-israeliens-ont-touche-les-alentours-de-la-ville-de-tyr-apres-un-avertissement-israelien_6691823_3210.html",
+        "source": "Le Monde",
+        "type": "article",
+        "date": "27/05/2026",
+        "checked": true
+      },
+      {
+        "title": "EN DIRECT - Guerre au Moyen-Orient : les Gardiens de la révolution jugent «faible» la probabilité d’une reprise de la guerre",
+        "url": "https://www.liberation.fr/international/moyen-orient/en-direct-guerre-au-moyen-orient-les-cessez-le-feu-en-iran-et-au-liban-menaces-20260527_A5EZDHUNPRHZ5FGYA3CP2KN6LA/",
+        "source": "Libération",
+        "type": "article",
+        "date": "27/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Guerre au Moyen-Orient : Une frappe touche les environs de Tyr, dans le sud du Liban, après un avertissement israélien",
+        "url": "https://www.franceinfo.fr/monde/iran/guerre-entre-les-etats-unis-israel-et-l-iran/direct-guerre-au-moyen-orient-des-attaques-israeliennes-font-31-morts-au-liban-inquietudes-autour-du-respect-des-cessez-le-feu-dans-la-region_8030708.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "type": "article",
+        "date": "27/05/2026",
+        "checked": true
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "01-les-conflits-au-moyen-orient-recomposent-les-equilibres-regionaux",
+      "matchedStoryTitle": "Les conflits au Moyen-Orient recomposent les équilibres régionaux",
+      "previousEpisodeTitle": "Faut-il privilégier la riposte militaire immédiate ou la retenue pour éviter l’escalade au Liban ?",
+      "previousEpisodeUrl": "http://localhost:3001/debate?id=609",
+      "confidence": 0.85,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {
+        "main_actors_match": true,
+        "central_tension_match": true,
+        "temporal_continuity": true,
+        "editorial_theme_match": true,
+        "strong_keywords_match": true
+      },
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "frappe israélienne à Tyr",
+      "guerre au Moyen-Orient",
+      "Sud du Liban",
+      "averti ement i raélien",
+      "Gardien  de la révolution",
+      "ce ez-le-feu",
+      "bombardement  i raélien"
+    ],
+    "sentAt": "2026-05-28T05:19:33.422Z"
+  },
+  {
+    "subject": "Guerre au Moyen-Orient : Une frappe touche les environs de Tyr, dans le sud du Liban, après un avertissement israélien",
+    "sessionLabel": "27/05/2026 à 21:14:59",
+    "question": "Doit-on privilégier les frappes préventives ou la retenue pour éviter une escalade au Liban?",
+    "positionA": "Privilégier les frappes préventives",
+    "positionB": "Favoriser la retenue pour éviter l’escalade",
+    "theme": "International",
+    "resume": "Une frappe aérienne israélienne a touché les environs de Tyr, dans le sud du Liban, après un avertissement d’Israël. Cette opération s’inscrit dans un contexte de tensions persistantes au Moyen-Orient, où chaque geste est lourd de conséquences. Les autorités israéliennes justifient cette action par la nécessité d’anticiper des menaces potentielles, tandis que le Liban reste silencieux sur les dégâts ou victimes.\n\nLa difficulté est de taille : agir pour prévenir un risque ou freiner pour éviter une escalade. D’un côté, frapper en amont peut sembler indispensable pour contenir les menaces. De l’autre, toute action militaire risque d’enflammer une région déjà fragile, où la moindre étincelle peut dégénérer. Le choix entre vigilance offensive et prudence défensive reste au cœur des débats.\n\nSalus an libertas\n\nDoit-on privilégier les frappes préventives ou la retenue pour éviter une escalade au Liban?\n\nF. Glorennec",
+    "sources": "Franceinfo, Le Monde, Libération",
+    "links": [
+      {
+        "title": "EN DIRECT, guerre au Moyen-Orient : des bombardements israéliens ont touché les alentours de la ville de Tyr, après un avertissement israélien",
+        "url": "https://www.lemonde.fr/international/live/2026/05/27/en-direct-guerre-au-moyen-orient-des-bombardements-israeliens-ont-touche-les-alentours-de-la-ville-de-tyr-apres-un-avertissement-israelien_6691823_3210.html",
+        "source": "Le Monde",
+        "type": "article",
+        "date": "27/05/2026",
+        "checked": true
+      },
+      {
+        "title": "EN DIRECT - Guerre au Moyen-Orient : les Gardiens de la révolution jugent «faible» la probabilité d’une reprise de la guerre",
+        "url": "https://www.liberation.fr/international/moyen-orient/en-direct-guerre-au-moyen-orient-les-cessez-le-feu-en-iran-et-au-liban-menaces-20260527_A5EZDHUNPRHZ5FGYA3CP2KN6LA/",
+        "source": "Libération",
+        "type": "article",
+        "date": "27/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Guerre au Moyen-Orient : Une frappe touche les environs de Tyr, dans le sud du Liban, après un avertissement israélien",
+        "url": "https://www.franceinfo.fr/monde/iran/guerre-entre-les-etats-unis-israel-et-l-iran/direct-guerre-au-moyen-orient-des-attaques-israeliennes-font-31-morts-au-liban-inquietudes-autour-du-respect-des-cessez-le-feu-dans-la-region_8030708.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "type": "article",
+        "date": "27/05/2026",
+        "checked": true
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "01-les-conflits-au-moyen-orient-recomposent-les-equilibres-regionaux",
+      "matchedStoryTitle": "Les conflits au Moyen-Orient recomposent les équilibres régionaux",
+      "previousEpisodeTitle": "Faut-il privilégier la riposte militaire immédiate ou la retenue pour éviter l’escalade au Liban ?",
+      "previousEpisodeUrl": "http://localhost:3001/debate?id=609",
+      "confidence": 0.85,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {
+        "main_actors_match": true,
+        "central_tension_match": true,
+        "temporal_continuity": true,
+        "editorial_theme_match": true,
+        "strong_keywords_match": true
+      },
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "frappe israélienne à Tyr",
+      "guerre au Moyen-Orient",
+      "Sud du Liban",
+      "averti ement i raélien",
+      "Gardien  de la révolution",
+      "ce ez-le-feu",
+      "bombardement  i raélien"
+    ],
+    "sentAt": "2026-05-28T05:16:00.901Z"
+  },
+  {
+    "subject": "Tribune anti-Bolloré : Cyrille Bolloré, fils du milliardaire et PDG du groupe, appelle à l'\"apaisement\"",
+    "sessionLabel": "27/05/2026 à 21:14:59",
+    "question": "Le groupe Bolloré doit-il s'engager davantage dans le débat politique ou rester neutre?",
+    "positionA": "Maintenir la neutralité politique",
+    "positionB": "S'engager dans le débat politique",
+    "theme": "Politique",
+    "resume": "Cyrille Bolloré, PDG du groupe familial et fils de Vincent Bolloré, a appelé à un apaisement après une tribune critique contre son entreprise. Il a insisté sur l’absence de projet politique du groupe, tout en critiquant Emmanuel Macron et en évoquant un appel au « dégagisme ». Ces déclarations interviennent dans un contexte de tensions autour des activités du groupe, marquées par une agitation notable et un climat d’énervement qui pèsent sur la réputation et la gestion de l’entreprise.\n\nLa difficulté tient à concilier une posture de neutralité politique avec la pression croissante des critiques publiques. Rester en retrait limite les risques d’escalade et préserve une certaine stabilité, mais peut aussi affaiblir la capacité du groupe à défendre efficacement ses intérêts face à un débat qui s’intensifie et à une opinion publique de plus en plus mobilisée. Ce choix collectif entre silence stratégique et prise de parole engagée conditionne la manière dont le groupe sera perçu et influencera son avenir dans un contexte tendu.\n\nSalus an libertas\n\nLe groupe Bolloré doit-il s'engager davantage dans le débat politique ou rester neutre?\n\nM. Guillot",
+    "sources": "Franceinfo, Libération, BFMTV",
+    "links": [
+      {
+        "title": "Tribune anti-Bolloré : le fils de Vincent Bolloré évoque un climat d’«agitation» et d’«énervement», appelle à l’«apaisement»",
+        "url": "https://www.liberation.fr/culture/tribune-anti-bollore-le-fils-de-vincent-bollore-evoque-un-climat-dagitation-et-denervement-appelle-a-lapaisement-20260527_4PMU5DNNW5CBRILC46ZELLBIXQ/",
+        "source": "Libération",
+        "type": "article",
+        "date": "27/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Le fils de Vincent Bolloré affirme que son groupe familial n’a \"pas de projet politique\" mais charge Emmanuel Macron et appelle au dégagisme",
+        "url": "https://www.bfmtv.com/economie/economie-social/le-fils-de-vincent-bollore-affirme-que-son-groupe-familial-n-a-pas-de-projet-politique-mais-charge-emmanuel-macron-et-appelle-au-degagisme_AV-202605270730.html",
+        "source": "BFMTV",
+        "type": "article",
+        "date": "27/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Tribune anti-Bolloré : Cyrille Bolloré, fils du milliardaire et PDG du groupe, appelle à l'\"apaisement\"",
+        "url": "https://www.franceinfo.fr/culture/cinema/tribune-anti-bollore-cyrille-bollore-fils-du-milliardaire-et-pdg-du-groupe-appelle-a-l-apaisement_8031089.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "type": "article",
+        "date": "27/05/2026",
+        "checked": true
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "56-les-affaires-de-probite-politique-interrogent-la-responsabilite-des-responsables",
+      "matchedStoryTitle": "Les affaires de probité politique interrogent la responsabilité des responsables publics",
+      "previousEpisodeTitle": "Comment garantir la transparence dans la gestion des dons pour les victimes ?",
+      "previousEpisodeUrl": "http://localhost:3001/debate?id=612",
+      "confidence": 0.85,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {
+        "main_actors_match": true,
+        "central_tension_match": true,
+        "temporal_continuity": true,
+        "editorial_theme_match": true,
+        "strong_keywords_match": true
+      },
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "Cyrille Bolloré",
+      "Vincent Bolloré",
+      "groupe Bolloré",
+      "tribune anti-Bolloré",
+      "apai ement",
+      "Emmanuel Macron",
+      "dégagi me"
+    ],
+    "sentAt": "2026-05-28T05:08:46.822Z"
+  },
+  {
+    "subject": "Europe, « dernier évangéliste » d’un ordre commercial bafoué, selon Benjamin Haddad",
+    "sessionLabel": "27/05/2026 à 21:14:59",
+    "question": "L’Union européenne doit-elle maintenir un ordre commercial fondé sur ses valeurs ou adopter une a?",
+    "positionA": "Maintenir un ordre commercial fondé sur les valeurs",
+    "positionB": "Adopter une approche pragmatique face aux défis",
+    "theme": "International",
+    "resume": "Benjamin Haddad décrit l’Europe comme le « dernier évangéliste » d’un ordre commercial fondé sur des règles partagées, un système que d’autres puissances mondiales remettent en cause.\nLe défi est clair : l’Europe continue de défendre un modèle attaché à des principes et à un cadre réglementaire, mais elle doit aussi composer avec un contexte international qui exige plus de pragmatisme, parfois au prix de concessions. L’Union européenne se trouve face à un choix délicat entre rester fidèle à ses valeurs ou ajuster sa stratégie pour préserver son influence.\nL’Union européenne doit-elle maintenir un ordre commercial fondé sur ses valeurs ou adopter une approche pragmatique face aux défis géopolitiques ?\n\nSalus an libertas\n\nL’Union européenne doit-elle maintenir un ordre commercial fondé sur ses valeurs ou adopter une a?\n\nF. Glorennec",
+    "sources": "Euronews FR, L'Express, Euronews France",
+    "links": [
+      {
+        "title": "Europe, « dernier évangéliste » d’un ordre commercial bafoué, selon Benjamin Haddad",
+        "url": "http://fr.euronews.com/my-europe/2026/05/27/europe-dernier-evangeliste-dun-ordre-commercial-bafoue-selon-benjamin-haddad",
+        "source": "Euronews FR",
+        "type": "article",
+        "date": "27/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Benjamin Haddad : \"Il est temps pour les Européens de se réconcilier avec le risque\"",
+        "url": "https://www.lexpress.fr/economie/politique-economique/benjamin-haddad-il-est-temps-pour-les-europeens-de-se-reconcilier-avec-le-risque-F6E5ZDKF3NGGTHV6A4WGQ6CUWE/",
+        "source": "L'Express",
+        "type": "article",
+        "date": "27/05/2026",
+        "checked": true
+      },
+      {
+        "title": "",
+        "url": "https://www.youtube.com/watch?v=JYg1GhMX6AA",
+        "source": "Euronews France",
+        "type": "youtube",
+        "date": "27/05/2026",
+        "checked": true
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "07-l-union-europeenne-cherche-sa-place-face-aux-crises-internes-et-aux-tensions-int",
+      "matchedStoryTitle": "L’Union européenne cherche sa place face aux crises internes et aux tensions internationales",
+      "previousEpisodeTitle": "",
+      "previousEpisodeUrl": "",
+      "confidence": 0.85,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {},
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "Benjamin Haddad",
+      "Europe",
+      "ordre commercial"
+    ],
+    "sentAt": "2026-05-28T04:55:05.570Z"
+  },
+  {
+    "subject": "Une concertation avec les élus sur l'encadrement des loyers va être lancée, annonce le ministre du Logement",
+    "sessionLabel": "27/05/2026 à 21:14:59",
+    "question": "Faut-il prolonger l’encadrement des loyers malgré ses impacts sur l’investissement immobilier?",
+    "positionA": "Prolonger l’encadrement des loyers",
+    "positionB": "Limiter l’encadrement pour favoriser l’investissement",
+    "theme": "Économie - emploi",
+    "resume": "Le ministre du Logement, Vincent Jeanbrun, a annoncé le lancement prochain d’une concertation avec les élus locaux sur l’encadrement des loyers.\nCe dispositif, qui fixe des plafonds pour contenir les hausses dans certaines zones tendues, arrive à échéance en 2026. La concertation doit définir si et comment le prolonger, mais les détails restent à préciser.\nLe débat se cristallise sur un choix délicat : garantir un accès au logement plus stable en prolongeant l’encadrement, ou préserver l’attractivité du marché pour ne pas décourager les investisseurs. La frontière entre protection des locataires et dynamisme du marché devient plus difficile à tracer.\nLex an metus\nProlonger l’encadrement des loyers\nLimiter l’encadrement pour favoriser l’investissement\n\nFaut-il prolonger l’encadrement des loyers malgré ses impacts sur l’investissement immobilier?\n\nM. Guillot",
+    "sources": "Franceinfo, Public Sénat",
+    "links": [
+      {
+        "title": "Encadrement des loyers : le ministre du Logement Vincent Jeanbrun annonce une concertation avec les élus sur la prolongation du dispositif au-delà de 2026",
+        "url": "https://www.publicsenat.fr/actualites/politique/encadrement-des-loyers-le-ministre-du-logement-vincent-jeanbrun-annonce-une-concertation-avec-les-elus-sur-la-prolongation-du-dispositif-au-dela-de-2026",
+        "source": "Public Sénat",
+        "type": "article",
+        "date": "27/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Une concertation avec les élus sur l'encadrement des loyers va être lancée, annonce le ministre du Logement",
+        "url": "https://www.franceinfo.fr/economie/immobilier/encadrement-des-loyers/une-concertation-avec-les-elus-sur-l-encadrement-des-loyers-va-etre-lancee-annonce-le-ministre-du-logement_8031596.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "type": "article",
+        "date": "27/05/2026",
+        "checked": true
+      },
+      {
+        "title": "",
+        "url": "https://www.youtube.com/watch?v=G2XNUzMcviE",
+        "source": "Public Sénat",
+        "type": "youtube",
+        "date": "27/05/2026",
+        "checked": true
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "19-la-crise-du-logement-transforme-les-parcours-de-vie-et-les-equilibres-territoria",
+      "matchedStoryTitle": "La crise du logement transforme les parcours de vie et les équilibres territoriaux",
+      "previousEpisodeTitle": "Faut-il maintenir l’encadrement des loyers pour protéger les locataires ?",
+      "previousEpisodeUrl": "http://localhost:3001/debate?id=489",
+      "confidence": 0.85,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {},
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "encadrement des loyers",
+      "Vincent Jeanbrun",
+      "mini tre du Logement",
+      "concertation avec le  élu",
+      "prolongation du di po itif",
+      "2026"
+    ],
+    "sentAt": "2026-05-28T04:45:58.937Z"
+  },
+  {
+    "subject": "Canicule : 13 départements toujours en vigilance orange, Paris et la petite couronne concernés à partir de jeudi midi",
+    "sessionLabel": "27/05/2026 à 21:14:59",
+    "question": "Faut-il renforcer les mesures de prévention canicule dans toutes les zones concernées immédiatemen…",
+    "positionA": "Renforcer rapidement la prévention partout",
+    "positionB": "Adapter les mesures selon les spécificités locales",
+    "theme": "Climat - environnement",
+    "resume": "Treize départements restent en vigilance orange canicule, avec une extension prévue à Paris et dans la petite couronne dès jeudi midi. Les températures pourraient atteindre 39 °C, poussant les autorités à élargir les zones surveillées pour mieux anticiper les risques liés à cette vague de chaleur. La liste des départements concernés a été ajustée, passant de 17 à 13, en fonction des dernières prévisions météorologiques.\nLe défi se déplace : faut-il imposer une vigilance uniforme pour ne rien laisser au hasard, ou privilégier une réponse modulée qui respecte les réalités locales et évite les excès ? La tension naît de ce choix entre urgence collective et précision adaptée, où chaque degré compte et chaque décision pèse.\nFaut-il renforcer les mesures de prévention canicule dans toutes les zones concernées immédiatement ou adapter selon les spécificités locales\nSalus an libertas\nFaut-il renforcer les mesures de prévention canicule dans toutes les zones concernées immédiatement ?\n\nFaut-il renforcer les mesures de prévention canicule dans toutes les zones concernées immédiatemen…\n\nJ.L Grasso",
+    "sources": "Franceinfo, L'Obs, Le Figaro, La Croix, HuffPost France",
+    "links": [
+      {
+        "title": "Météo : la vigilance orange canicule s’étend encore pour la journée de jeudi, notamment à Paris",
+        "url": "https://www.huffingtonpost.fr/france/article/meteo-la-vigilance-orange-canicule-s-etend-encore-pour-la-journee-de-jeudi-notamment-a-paris_264170.html",
+        "source": "HuffPost France",
+        "type": "article",
+        "date": "27/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Canicule : 17 départements en vigilance orange jeudi, des pointes à 39 °C… Le point sur une vague de chaleur inédite",
+        "url": "https://www.nouvelobs.com/ecologie/20260527.OBS115283/canicule-17-departements-en-vigilance-orange-jeudi-des-pointes-a-39-c-le-point-sur-une-vague-de-chaleur-inedite.html",
+        "source": "L'Obs",
+        "type": "article",
+        "date": "27/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Canicule : Paris et trois nouveaux départements placés en vigilance orange",
+        "url": "https://www.la-croix.com/planete/canicule-paris-et-trois-nouveaux-departements-desormais-en-vigilance-orange-20260527",
+        "source": "La Croix",
+        "type": "article",
+        "date": "27/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Canicule : 13 départements toujours en vigilance orange, Paris et la petite couronne concernés à partir de jeudi midi",
+        "url": "https://www.franceinfo.fr/environnement/evenements-meteorologiques-extremes/vagues-de-chaleur-canicules/direct-episode-inedit-de-fortes-chaleurs-la-france-continue-de-suffoquer-des-pointes-a-39-c-attendues-ce-mercredi_8030669.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "type": "article",
+        "date": "27/05/2026",
+        "checked": true
+      },
+      {
+        "title": "EN DIRECT - Canicule : la vigilance orange étendue à 17 départements jeudi, dont Paris",
+        "url": "https://www.lefigaro.fr/meteo/en-direct-canicule-la-france-suffoque-sous-le-dome-de-chaleur-13-departements-en-vigilance-orange-et-la-vitesse-abaissee-en-ile-de-france-20260527",
+        "source": "Le Figaro",
+        "type": "article",
+        "date": "27/05/2026",
+        "checked": true
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "40-le-changement-climatique-transforme-les-territoires-et-multiplie-les-enjeux-d-ad",
+      "matchedStoryTitle": "Le changement climatique transforme les territoires et multiplie les enjeux d’adaptation",
+      "previousEpisodeTitle": "La réunion ministérielle de Lecornu peut-elle améliorer la gestion des canicules en France ?",
+      "previousEpisodeUrl": "http://localhost:3001/debate?id=567",
+      "confidence": 0.85,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {},
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "vigilance orange canicule",
+      "Pari",
+      "petite couronne",
+      "13 département",
+      "17 département",
+      "vague de chaleur",
+      "température  à 39 °C"
+    ],
+    "sentAt": "2026-05-28T03:06:23.091Z"
+  },
+  {
+    "subject": "Epidémie d'Ebola : l'Ouganda ferme temporairement ses frontières avec la RDC",
+    "sessionLabel": "27/05/2026 à 21:14:59",
+    "question": "L’Ouganda doit-il maintenir la fermeture de ses frontières avec la RDC malgré les conséquences éco…",
+    "positionA": "Maintenir la fermeture des frontières",
+    "positionB": "Rouvrir les frontières rapidement",
+    "theme": "Santé - bien-être",
+    "resume": "L’Ouganda a fermé temporairement ses frontières avec la République démocratique du Congo face à l’épidémie d’Ebola qui ravage la région. Cette fermeture cible principalement les points de passage officiels, où les contrôles sanitaires étaient déjà renforcés.\n\nLa cité se trouve à la croisée des chemins : d’un côté, la nécessité impérieuse de protéger la population contre un fléau mortel ; de l’autre, le poids des échanges économiques et des liens sociaux qui unissent les deux nations. La tension naît de ce choix ardu, où chaque jour de fermeture creuse un fossé entre sécurité sanitaire et survie économique des communautés frontalières.\n\n\nSalus an libertas\n\nL’Ouganda doit-il maintenir la fermeture de ses frontières avec la RDC malgré les conséquences économiques et sociales\n\nJ.L Grasso",
+    "sources": "Le Monde, RFI, Le Dauphiné Libéré, Franceinfo",
+    "links": [
+      {
+        "title": "Ebola : l’Ouganda ferme temporairement ses frontières avec la République démocratique du Congo",
+        "url": "https://www.lemonde.fr/afrique/article/2026/05/27/ebola-l-ouganda-ferme-temporairement-ses-frontieres-avec-la-republique-democratique-du-congo_6694237_3212.html",
+        "source": "Le Monde",
+        "type": "article",
+        "date": "27/05/2026",
+        "checked": true
+      },
+      {
+        "title": "L'Ouganda ferme la frontière avec la RDC pour tenter de contenir la propagation d'Ebola",
+        "url": "https://www.rfi.fr/fr/afrique/20260527-l-ouganda-ferme-la-fronti%C3%A8re-avec-la-rdc-pour-tenter-de-contenir-la-propagation-d-ebola",
+        "source": "RFI",
+        "type": "article",
+        "date": "27/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Santé. Ebola : face à « l'ampleur » de l'épidémie, l'Ouganda ferme ses frontières avec la RDC",
+        "url": "https://www.ledauphine.com/sante/2026/05/27/ebola-face-a-l-ampleur-de-l-epidemie-l-ouganda-ferme-ses-frontieres-avec-la-rdc",
+        "source": "Le Dauphiné Libéré",
+        "type": "article",
+        "date": "27/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Epidémie d'Ebola : l'Ouganda ferme temporairement ses frontières avec la République démocratique du Congo",
+        "url": "https://www.franceinfo.fr/sante/maladie/ebola/ebola-l-ouganda-ferme-temporairement-ses-frontieres-avec-la-republique-democratique-du-congo_8031548.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "type": "article",
+        "date": "27/05/2026",
+        "checked": true
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "29-le-systeme-de-sante-fait-face-a-des-tensions-d-acces-aux-soins-de-moyens-et-de-c",
+      "matchedStoryTitle": "Le système de santé fait face à des tensions d’accès aux soins, de moyens et de confiance",
+      "previousEpisodeTitle": "Faut-il renforcer les mesures de quarantaine pour contenir le hantavirus à Madrid ?",
+      "previousEpisodeUrl": "http://localhost:3001/debate?id=571",
+      "confidence": 0.85,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {},
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "Epidémie d'Ebola en RDC",
+      "Ouganda",
+      "fermeture de  frontière",
+      "propagation d'Ebola",
+      "anté publique"
+    ],
+    "sentAt": "2026-05-28T02:46:46.812Z"
+  },
+  {
+    "subject": "Présidentielle 2027 : Jean-Luc Mélenchon va porter plainte contre Marine Le Pen après une vidéo sur la « Nouvelle France »",
+    "sessionLabel": "27/05/2026 à 21:14:59",
+    "question": "La justice doit-elle être un outil régulier pour régler les différends entre candidats politiques ?",
+    "positionA": "Encourager le recours judiciaire",
+    "positionB": "Limiter les plaintes en politique",
+    "theme": "Politique",
+    "resume": "Jean-Luc Mélenchon a annoncé qu’il porterait plainte contre Marine Le Pen après la diffusion d’une vidéo où elle parle de la « Nouvelle France ». Cette vidéo, diffusée dans le cadre de la campagne présidentielle de 2027, est jugée par Mélenchon comme une atteinte à son image ou à ses idées. Les détails précis de la plainte et les passages exacts de la vidéo n’ont pas été dévoilés. Cette plainte intervient alors que la campagne s’intensifie, avec un risque de durcissement des relations entre les deux candidats.\n\nLe recours à la justice dans le cadre d’une campagne électorale soulève un dilemme : d’un côté, il peut s’agir d’un moyen de protéger son image et de faire respecter les règles ; de l’autre, cela peut aussi être perçu comme une instrumentalisation judiciaire qui alourdit le climat politique. Dans un contexte tendu, ce choix influence la manière dont les candidats gèrent leurs différends et la perception qu’en ont les électeurs.\n\nLa justice doit-elle être un outil régulier pour régler les différends entre candidats politiques ?\n\nJ.L Grasso",
+    "sources": "Valeurs actuelles, Public Sénat",
+    "links": [
+      {
+        "title": "Présidentielle 2027 : « J’ai toujours considéré que Jean-Luc Mélenchon était le vote inutile à gauche », souligne Patrick Kanner",
+        "url": "https://www.publicsenat.fr/actualites/politique/presidentielle-2027-jai-toujours-considere-que-jean-luc-melenchon-etait-le-vote-inutile-a-gauche-souligne-patrick-kanner",
+        "source": "Public Sénat",
+        "type": "article",
+        "date": "27/05/2026",
+        "checked": false
+      },
+      {
+        "title": "Présidentielle 2027 : Jean-Luc Mélenchon va porter plainte contre Marine Le Pen après une vidéo sur la « Nouvelle France »",
+        "url": "https://www.valeursactuelles.com/politique/presidentielle-2027-jean-luc-melenchon-va-porter-plainte-contre-marine-le-pen-apres-une-video-sur-la-nouvelle-france",
+        "source": "Valeurs actuelles",
+        "type": "article",
+        "date": "27/05/2026",
+        "checked": true
+      },
+      {
+        "title": "",
+        "url": "https://www.youtube.com/watch?v=rkEEppsxX1o",
+        "source": "Public Sénat",
+        "type": "youtube",
+        "date": "27/05/2026",
+        "checked": false
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "05-la-vie-politique-francaise-traverse-une-periode-d-instabilite-et-de-recompositio",
+      "matchedStoryTitle": "La vie politique française traverse une période d’instabilité et de recomposition",
+      "previousEpisodeTitle": "Les élus doivent-ils être sanctionnés pour leurs propos privés en ligne ?",
+      "previousEpisodeUrl": "http://localhost:3001/debate?id=492",
+      "confidence": 0.85,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {},
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "Plainte Mélenchon Le Pen",
+      "Pré identielle 2027",
+      "Nouvelle France",
+      "Jean-Luc Mélenchon",
+      "Marine Le Pen"
+    ],
+    "sentAt": "2026-05-27T17:35:04.844Z"
+  },
+  {
+    "subject": "Matthieu Pigasse décroche un contrat exceptionnel et polémique pour restructurer la dette du Venezuela",
+    "sessionLabel": "27/05/2026 à 21:14:59",
+    "question": "La France doit-elle soutenir une restructuration de la dette vénézuélienne malgré les sanctions amér",
+    "positionA": "Soutenir la restructuration pour alléger la crise",
+    "positionB": "Maintenir la pression économique par les sanctions",
+    "theme": "Économie - emploi",
+    "resume": "Matthieu Pigasse a été mandaté par le gouvernement vénézuélien pour conduire la restructuration de la dette du pays. Ce contrat exceptionnel intervient alors que le Venezuela reste soumis à de fortes sanctions américaines, héritage des mesures prises sous l’administration Trump. La mission vise à renégocier les dettes pour réduire la pression économique qui pèse sur le pays.\n\nD’un côté, cette démarche peut apparaître comme une bouffée d’oxygène nécessaire pour un pays en crise. De l’autre, elle soulève des questions sur la pertinence de contourner ou d’atténuer des sanctions qui ont pour but de faire pression sur le régime en place. La France, par son soutien ou son refus, est placée face à un choix délicat entre pragmatisme économique et posture politique.\n\nLa France doit-elle soutenir une restructuration de la dette vénézuélienne malgré les sanctions américaines ?\n\nJ.L Grasso",
+    "sources": "Le Monde, Libération",
+    "links": [
+      {
+        "title": "Matthieu Pigasse choisi par le Venezuela pour restructurer la dette du pays, toujours sous influence de Trump",
+        "url": "https://www.liberation.fr/international/amerique/matthieu-pigasse-choisi-par-le-venezuela-pour-restructurer-la-dette-du-pays-toujours-sous-influence-de-trump-20260527_4RIHXQYGNRFSXBHJSKL6HMOXVQ/",
+        "source": "Libération",
+        "type": "article",
+        "date": "27/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Matthieu Pigasse décroche un contrat exceptionnel et polémique pour restructurer la dette du Venezuela",
+        "url": "https://www.lemonde.fr/economie/article/2026/05/27/matthieu-pigasse-decroche-un-contrat-exceptionnel-et-polemique-pour-restructurer-la-dette-venezuelienne_6694231_3234.html",
+        "source": "Le Monde",
+        "type": "article",
+        "date": "27/05/2026",
+        "checked": true
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "16-l-endettement-public-contraint-les-choix-economiques-et-sociaux-des-gouvernement",
+      "matchedStoryTitle": "L’endettement public contraint les choix économiques et sociaux des gouvernements",
+      "previousEpisodeTitle": "",
+      "previousEpisodeUrl": "",
+      "confidence": 0.85,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {},
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "Dette du Venezuela",
+      "Matthieu Piga e",
+      "Re tructuration de dette",
+      "Contrat polémique",
+      "Influence de Trump"
+    ],
+    "sentAt": "2026-05-27T17:34:35.557Z"
+  },
+  {
+    "subject": "Le proche de Zemmour Jean Messiha accusé d’avoir encaissé les 42 000 euros destinés aux veuves des victimes de l’évasion de Mohammed Amra",
+    "sessionLabel": "27/05/2026 à 21:14:59",
+    "question": "Comment garantir la transparence dans la gestion des dons pour les victimes ?",
+    "positionA": "Renforcer les contrôles et sanctions",
+    "positionB": "Favoriser la confiance et la bonne foi",
+    "theme": "Politique",
+    "resume": "Jean Messiha, proche d’Éric Zemmour, est accusé d’avoir encaissé 42 000 euros destinés aux veuves des agents tués lors de l’évasion de Mohamed Amra. Il a reconnu avoir perçu cette somme et s’est engagé à la rembourser intégralement d’ici la fin de la semaine. Les raisons précises de cette gestion restent à éclaircir.\n\nLe problème, c’est que cet incident soulève une question plus large sur la manière dont les fonds collectés pour des causes sensibles sont administrés. D’un côté, certains réclament des contrôles stricts et des sanctions pour éviter tout détournement. De l’autre, d’aucuns insistent sur l’importance de préserver la confiance accordée aux responsables, misant sur leur bonne foi.\n\nComment garantir la transparence dans la gestion des dons pour les victimes ?\n\nJ.L Grasso",
+    "sources": "Libération, BFMTV",
+    "links": [
+      {
+        "title": "Le proche de Zemmour Jean Messiha accusé d’avoir encaissé les 42 000 euros destinés aux veuves des victimes de l’évasion de Mohammed Amra",
+        "url": "https://www.liberation.fr/politique/le-proche-de-zemmour-jean-messiha-accuse-davoir-encaisse-les-42-000-euros-destines-aux-veuves-des-victimes-de-levasion-de-mohammed-amra-20260527_E4A76A4BKBE47KWXTL7NYKNGL4/",
+        "source": "Libération",
+        "type": "article",
+        "date": "27/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Jean Messiha assure \"rembourser d'ici la fin de la semaine\" les 42.000 euros destinés aux familles des agents tués lors de l'évasion de Mohamed Amra",
+        "url": "https://www.bfmtv.com/police-justice/video-jean-messiha-assure-rembourser-d-ici-la-fin-de-la-semaine-les-42-000-euros-destines-aux-familles-des-agents-tues-lors-de-l-evasion-de-mohamed-amra_VN-202605270774.html",
+        "source": "BFMTV",
+        "type": "article",
+        "date": "27/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Jean Messiha, accusé d'avoir empoché la cagnotte destinée aux familles des agents tués lors de l'évasion de Mohamed Amra, répond",
+        "url": "https://www.bfmtv.com/police-justice/video-jean-messiha-accuse-d-avoir-empoche-la-cagnotte-destinee-aux-familles-des-agents-tues-lors-de-l-evasion-de-mohamed-amra-repond_VN-202605270752.html",
+        "source": "BFMTV",
+        "type": "article",
+        "date": "27/05/2026",
+        "checked": true
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "56-les-affaires-de-probite-politique-interrogent-la-responsabilite-des-responsables",
+      "matchedStoryTitle": "Les affaires de probité politique interrogent la responsabilité des responsables publics",
+      "previousEpisodeTitle": "",
+      "previousEpisodeUrl": "",
+      "confidence": 0.85,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {},
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "Jean Messiha",
+      "Mohammed Amra",
+      "veuve  de  victime",
+      "famille  de  agent  tué",
+      "encai é 42 000 euro",
+      "rembour ement",
+      "éva ion"
+    ],
+    "sentAt": "2026-05-27T17:34:03.710Z"
+  },
+  {
+    "subject": "Tribune anti-Bolloré : Cyrille Bolloré, fils du milliardaire et PDG du groupe, appelle à l'\"apaisement\"",
+    "sessionLabel": "27/05/2026 à 21:14:59",
+    "question": "Le groupe Bolloré doit-il répondre publiquement aux critiques pour apaiser ou éviter d’alimenter la",
+    "positionA": "Répondre publiquement pour apaiser",
+    "positionB": "Éviter la polémique en restant discret",
+    "theme": "Politique",
+    "resume": "Cyrille Bolloré, PDG du groupe familial, a réagi à une tribune critique en appelant à un climat d’« apaisement » face à ce qu’il qualifie d’« agitation » et d’« énervement ». Il a affirmé que le groupe ne poursuit aucun projet politique, tout en critiquant Emmanuel Macron et en appelant au « dégagisme ». Ces déclarations interviennent alors que la réputation et les activités du groupe sont sous tension.\n\nLe message devient difficile à tenir entre répondre pour calmer le jeu et risquer de nourrir la polémique. D’un côté, une prise de parole peut clarifier et apaiser, de l’autre, elle peut prolonger les critiques et diviser davantage l’opinion. Reste une question sur la stratégie la plus efficace pour gérer une réputation fragile dans un contexte politique et médiatique tendu.\n\nLe groupe Bolloré doit-il répondre publiquement aux critiques pour apaiser ou éviter d’alimenter la polémique ?\n\nJ.L Grasso",
+    "sources": "Franceinfo, Libération, BFMTV",
+    "links": [
+      {
+        "title": "Tribune anti-Bolloré : le fils de Vincent Bolloré évoque un climat d’«agitation» et d’«énervement», appelle à l’«apaisement»",
+        "url": "https://www.liberation.fr/culture/tribune-anti-bollore-le-fils-de-vincent-bollore-evoque-un-climat-dagitation-et-denervement-appelle-a-lapaisement-20260527_4PMU5DNNW5CBRILC46ZELLBIXQ/",
+        "source": "Libération",
+        "type": "article",
+        "date": "27/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Le fils de Vincent Bolloré affirme que son groupe familial n’a \"pas de projet politique\" mais charge Emmanuel Macron et appelle au dégagisme",
+        "url": "https://www.bfmtv.com/economie/economie-social/le-fils-de-vincent-bollore-affirme-que-son-groupe-familial-n-a-pas-de-projet-politique-mais-charge-emmanuel-macron-et-appelle-au-degagisme_AV-202605270730.html",
+        "source": "BFMTV",
+        "type": "article",
+        "date": "27/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Tribune anti-Bolloré : Cyrille Bolloré, fils du milliardaire et PDG du groupe, appelle à l'\"apaisement\"",
+        "url": "https://www.franceinfo.fr/culture/cinema/tribune-anti-bollore-cyrille-bollore-fils-du-milliardaire-et-pdg-du-groupe-appelle-a-l-apaisement_8031089.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "type": "article",
+        "date": "27/05/2026",
+        "checked": true
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "56-les-affaires-de-probite-politique-interrogent-la-responsabilite-des-responsables",
+      "matchedStoryTitle": "Les affaires de probité politique interrogent la responsabilité des responsables publics",
+      "previousEpisodeTitle": "",
+      "previousEpisodeUrl": "",
+      "confidence": 0.85,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {},
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "Cyrille Bolloré",
+      "Vincent Bolloré",
+      "groupe Bolloré",
+      "tribune anti-Bolloré",
+      "apaisement",
+      "Emmanuel Macron",
+      "dégagisme"
+    ],
+    "sentAt": "2026-05-27T17:32:40.456Z"
+  },
+  {
+    "subject": "Guerre au Moyen-Orient : Une frappe touche les environs de Tyr, dans le sud du Liban, après un avertissement israélien",
+    "sessionLabel": "27/05/2026 à 21:14:59",
+    "question": "Faut-il privilégier la riposte militaire immédiate ou la retenue pour éviter l’escalade au Liban ?",
+    "positionA": "Privilégier la riposte militaire immédiate",
+    "positionB": "Favoriser la retenue pour éviter l’escalade",
+    "theme": "International",
+    "resume": "Une frappe israélienne a touché les environs de Tyr, dans le sud du Liban, après un avertissement émis par Israël concernant des activités jugées menaçantes dans cette zone. Cette action s’inscrit dans le cadre du conflit plus large au Moyen-Orient. Les Gardiens de la révolution iranienne ont estimé que le risque d’une escalade majeure ou d’une reprise généralisée des hostilités restait faible, tandis que les conséquences immédiates de la frappe restent à confirmer.\n\nLe message devient difficile à tenir dans une région aussi sensible. D’un côté, une riposte militaire immédiate est vue comme nécessaire pour dissuader toute menace. De l’autre, la retenue est préconisée pour ne pas provoquer une escalade qui pourrait embraser le Liban et au-delà. Dans un équilibre aussi fragile, chaque action pèse lourd sur la stabilité régionale.\n\nFaut-il privilégier la riposte militaire immédiate ou la retenue pour éviter l’escalade au Liban ?\n\nJ.L Grasso",
+    "sources": "Franceinfo, Le Monde, Libération",
+    "links": [
+      {
+        "title": "EN DIRECT, guerre au Moyen-Orient : des bombardements israéliens ont touché les alentours de la ville de Tyr, après un avertissement israélien",
+        "url": "https://www.lemonde.fr/international/live/2026/05/27/en-direct-guerre-au-moyen-orient-des-bombardements-israeliens-ont-touche-les-alentours-de-la-ville-de-tyr-apres-un-avertissement-israelien_6691823_3210.html",
+        "source": "Le Monde",
+        "type": "article",
+        "date": "27/05/2026",
+        "checked": true
+      },
+      {
+        "title": "EN DIRECT - Guerre au Moyen-Orient : les Gardiens de la révolution jugent «faible» la probabilité d’une reprise de la guerre",
+        "url": "https://www.liberation.fr/international/moyen-orient/en-direct-guerre-au-moyen-orient-les-cessez-le-feu-en-iran-et-au-liban-menaces-20260527_A5EZDHUNPRHZ5FGYA3CP2KN6LA/",
+        "source": "Libération",
+        "type": "article",
+        "date": "27/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Guerre au Moyen-Orient : Une frappe touche les environs de Tyr, dans le sud du Liban, après un avertissement israélien",
+        "url": "https://www.franceinfo.fr/monde/iran/guerre-entre-les-etats-unis-israel-et-l-iran/direct-guerre-au-moyen-orient-des-attaques-israeliennes-font-31-morts-au-liban-inquietudes-autour-du-respect-des-cessez-le-feu-dans-la-region_8030708.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "type": "article",
+        "date": "27/05/2026",
+        "checked": true
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "01-les-conflits-au-moyen-orient-recomposent-les-equilibres-regionaux",
+      "matchedStoryTitle": "Les conflits au Moyen-Orient recomposent les équilibres régionaux",
+      "previousEpisodeTitle": "Les États-Unis doivent-ils suspendre leurs frappes pour préserver le cessez-le-feu avec l’Iran ?",
+      "previousEpisodeUrl": "http://localhost:3001/debate?id=588",
+      "confidence": 0.85,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {},
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "frappe israélienne à Tyr",
+      "guerre au Moyen-Orient",
+      "Sud du Liban",
+      "avertissement israélien",
+      "Gardiens de la révolution",
+      "cessez-le-feu",
+      "bombardements israéliens"
+    ],
+    "sentAt": "2026-05-27T17:30:04.814Z"
+  },
+  {
+    "subject": "Jordan Bardella porte plainte contre un rappeur pour menaces de mort",
+    "sessionLabel": "27/05/2026 à 21:14:59",
+    "question": "La justice doit-elle sanctionner plus sévèrement les propos violents dans le rap politique ?",
+    "positionA": "Renforcer les sanctions judiciaires",
+    "positionB": "Protéger la liberté d’expression artistique",
+    "theme": "Politique",
+    "resume": "Jordan Bardella a annoncé son intention de porter plainte contre le rappeur Soli, qu’il accuse de menaces de mort. Cette plainte fait suite à la diffusion d’une vidéo où le rappeur met en scène une agression contre Bardella, accompagnée de paroles évoquant un « coup de pied dans la tête d’un facho ». Bardella considère ces éléments comme des menaces directes, tandis que la réponse officielle du rappeur reste attendue.\n\nD’un côté, certains insistent sur la nécessité de protéger les responsables politiques contre des propos qui franchissent la ligne de la menace. De l’autre, il s’agit de ne pas restreindre la liberté d’expression, particulièrement dans un genre comme le rap, souvent engagé et provocateur. Le message devient difficile à tenir entre la protection contre la violence verbale et la préservation de l’expression artistique.\n\nLa justice doit-elle sanctionner plus sévèrement les propos violents dans le rap politique ?\n\nJ.L Grasso",
+    "sources": "HuffPost France, Libération, BFMTV, Europe 1, Valeurs actuelles",
+    "links": [
+      {
+        "title": "Jordan Bardella annonce une plainte contre le rappeur Soli qui met en scène son passage à tabac",
+        "url": "https://www.huffingtonpost.fr/politique/article/jordan-bardella-annonce-une-plainte-contre-le-rappeur-soli-qui-met-en-scene-son-passage-a-tabac_264172.html",
+        "source": "HuffPost France",
+        "type": "article",
+        "date": "27/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Jordan Bardella veut porter plainte contre un rappeur pour «menaces de mort»",
+        "url": "https://www.liberation.fr/politique/jordan-bardella-veut-porter-plainte-contre-un-rappeur-pour-menaces-de-mort-20260527_3IZL4AIIQRD53KYTA47LOIYXNI/",
+        "source": "Libération",
+        "type": "article",
+        "date": "27/05/2026",
+        "checked": true
+      },
+      {
+        "title": "\"Coup de pied dans la tête d'un facho, quelle bonne saveur\": Jordan Bardella annonce porter plainte contre un rappeur pour \"menaces de mort\"",
+        "url": "https://www.bfmtv.com/police-justice/coup-de-pied-dans-la-tete-d-un-facho-quelle-bonne-saveur-jordan-bardella-annonce-porter-plainte-contre-un-rappeur-pour-menaces-de-mort_AN-202605270798.html",
+        "source": "BFMTV",
+        "type": "article",
+        "date": "27/05/2026",
+        "checked": true
+      },
+      {
+        "title": "« Un bon raciste, c’est un raciste blotti dans son cercueil » : Jordan Bardella porte plainte contre le rappeur Soli, qui a mis en scène son exécution",
+        "url": "https://www.valeursactuelles.com/politique/un-bon-raciste-cest-un-raciste-blotti-dans-son-cercueil-le-rappeur-soli-met-en-scene-lexecution-de-jordan-bardella",
+        "source": "Valeurs actuelles",
+        "type": "article",
+        "date": "27/05/2026",
+        "checked": true
+      },
+      {
+        "title": "",
+        "url": "https://www.youtube.com/watch?v=MVnwpHOBjBY",
+        "source": "Europe 1",
+        "type": "youtube",
+        "date": "27/05/2026",
+        "checked": true
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "06-les-droites-radicales-progressent-dans-plusieurs-democraties-europeennes",
+      "matchedStoryTitle": "Les droites radicales progressent dans plusieurs démocraties européennes",
+      "previousEpisodeTitle": "L’extrême droite doit-elle pouvoir s’exprimer librement dans l’espace public ?",
+      "previousEpisodeUrl": "http://localhost:3001/debate?id=438",
+      "confidence": 0.85,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {},
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "Plainte de Jordan Bardella",
+      "rappeur Soli",
+      "menaces de mort",
+      "passage à tabac",
+      "extrême droite"
+    ],
+    "sentAt": "2026-05-27T17:29:05.209Z"
+  },
+  {
+    "subject": "\"Je n'ai pas reçu un centime d'argent libyen\", répète Nicolas Sarkozy à la fin de son procès en appel, décision rendue le 30 novembre",
+    "sessionLabel": "27/05/2026 à 21:14:59",
+    "question": "La justice doit-elle renforcer les enquêtes sur les financements politiques douteux ?",
+    "positionA": "Renforcer les enquêtes judiciaires",
+    "positionB": "Préserver la présomption d'innocence stricte",
+    "theme": "Justice - faits divers",
+    "resume": "Nicolas Sarkozy a terminé son procès en appel sur les accusations de financement illégal de sa campagne présidentielle de 2007 en réaffirmant qu’il n’a « pas reçu un centime d’argent libyen ». La décision de la cour d’appel, attendue le 30 novembre, doit statuer sur la validité des accusations et la responsabilité de l’ancien président.\n\nLe message devient difficile à tenir entre la nécessité de garantir la présomption d’innocence et la demande croissante de transparence sur les financements politiques. D’un côté, il s’agit de protéger les droits de la défense face à des accusations graves. De l’autre, la confiance dans la vie publique pousse à renforcer les enquêtes pour éviter tout doute sur l’intégrité des responsables.\n\nLa justice doit-elle renforcer les enquêtes sur les financements politiques douteux ?\n\nJ.L Grasso",
+    "sources": "Franceinfo, Libération, Le Figaro, BFMTV, Euronews FR, Le Dauphiné Libéré, France 24",
+    "links": [
+      {
+        "title": "Vigilance orange canicule, enquête ouverte contre la Fifa, fin du procès libyen en appel de Sarkozy… l’actu de ce mercredi 27 mai",
+        "url": "https://www.liberation.fr/international/europe/vigilance-orange-canicule-enquete-ouverte-contre-la-fifa-fin-du-proces-libyen-en-appel-de-sarkozy-lactu-de-ce-mercredi-27-mai-20260527_WCGAJHP6JVEWRJ5ZKPFL43GW3Y/",
+        "source": "Libération",
+        "type": "article",
+        "date": "27/05/2026",
+        "checked": false
+      },
+      {
+        "title": "«Est-ce que je vais y retourner ?» les derniers mots de Nicolas Sarkozy au procès en appel de l’argent libyen",
+        "url": "https://www.liberation.fr/societe/police-justice/au-proces-de-largent-libyen-la-defense-de-sarkozy-jette-ses-dernieres-forces-et-fustige-un-roman-grotesque-20260527_IKMIVVUKCJDANHVPR5BXTZ4N7Q/",
+        "source": "Libération",
+        "type": "article",
+        "date": "27/05/2026",
+        "checked": true
+      },
+      {
+        "title": "\"Je n'ai pas reçu un centime d'argent libyen\", répète Nicolas Sarkozy à la fin de son procès en appel, décision rendue le 30 novembre",
+        "url": "https://www.franceinfo.fr/politique/affaire/financement-de-la-campagne-de-sarkozy/direct-nicolas-sarkozy-est-innocent-et-nous-le-demontrerons-au-proces-en-appel-du-financement-libyen-l-heure-des-plaidoiries-de-la-defense-de-l-ex-president-de-la-republique_8029064.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "type": "article",
+        "date": "27/05/2026",
+        "checked": true
+      },
+      {
+        "title": "\"Je n'ai pas trahi la confiance des Français\": les derniers mots de Nicolas Sarkozy à la clôture du procès en appel de l'affaire libyenne",
+        "url": "https://www.bfmtv.com/police-justice/je-n-ai-pas-trahi-la-confiance-des-francais-les-derniers-mots-de-nicolas-sarkozy-a-la-cloture-du-proces-en-appel-de-l-affaire-libyenne_AD-202605270744.html",
+        "source": "BFMTV",
+        "type": "article",
+        "date": "27/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Fin du procès en appel de Nicolas Sarkozy dans l'affaire libyenne, verdict attendu le 30 novembre",
+        "url": "http://fr.euronews.com/my-europe/2026/05/27/fin-du-proces-en-appel-de-nicolas-sarkozy-dans-laffaire-libyenne-verdict-attendu-le-30-nov",
+        "source": "Euronews FR",
+        "type": "article",
+        "date": "27/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Justice. Au dernier jour de son procès, Nicolas Sarkozy affirme qu'il n'a « pas trahi la confiance des Français »",
+        "url": "https://www.ledauphine.com/faits-divers-justice/2026/05/27/au-dernier-jour-de-son-proces-nicolas-sarkozy-affirme-qu-il-n-a-pas-trahi-la-confiance-des-francais",
+        "source": "Le Dauphiné Libéré",
+        "type": "article",
+        "date": "27/05/2026",
+        "checked": true
+      },
+      {
+        "title": "EN DIRECT - Procès libyen : «Je n’ai pas trahi la confiance des Français», assure Nicolas Sarkozy en conclusion de l’audience",
+        "url": "https://www.lefigaro.fr/actualite-france/en-direct-proces-libyen-la-defense-de-nicolas-sarkozy-fustige-le-roman-grotesque-d-un-financement-libyen-de-sa-campagne-20260527",
+        "source": "Le Figaro",
+        "type": "article",
+        "date": "27/05/2026",
+        "checked": true
+      },
+      {
+        "title": "",
+        "url": "https://www.youtube.com/watch?v=4basp6vSxas",
+        "source": "France 24",
+        "type": "youtube",
+        "date": "27/05/2026",
+        "checked": true
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "54-les-grandes-affaires-judiciaires-et-mediatiques-deviennent-des-debats-de-societe",
+      "matchedStoryTitle": "Les grandes affaires judiciaires et médiatiques deviennent des débats de société",
+      "previousEpisodeTitle": "La mobilisation citoyenne peut-elle vraiment faire avancer les enquêtes ?",
+      "previousEpisodeUrl": "http://localhost:3001/debate?id=547",
+      "confidence": 0.85,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {},
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "procès en appel Sarkozy",
+      "argent libyen",
+      "financement campagne",
+      "Nicolas Sarkozy",
+      "verdict 30 novembre",
+      "affaire libyenne"
+    ],
+    "sentAt": "2026-05-27T17:26:46.860Z"
+  },
+  {
+    "subject": "Deux adolescents en garde à vue, appel à l'aide, enquête pour meurtre... Ce que l'on sait de la mort à Rennes d'un enfant de 11 ans, retrouvé une serviette nouée autour du cou",
+    "sessionLabel": "26/05/2026 à 07:14:04",
+    "question": "Deux adolescents en garde à vue, appel à l'aide, enquête pour meurtre... Ce que l'on sait de la mort",
+    "positionA": "",
+    "positionB": "",
+    "theme": "Justice - faits divers",
+    "resume": "",
+    "sources": "Franceinfo, Libération, L'Obs, Euronews FR, HuffPost France",
+    "links": [
+      {
+        "title": "Enfant retrouvé mort à Rennes : serviette nouée autour du cou, enquête pour meurtre… Ce que l’on sait",
+        "url": "https://www.nouvelobs.com/faits-divers/20260525.OBS115223/enfant-retrouve-mort-a-rennes-serviette-nouee-autour-du-cou-enquete-pour-meurtre-ce-que-l-on-sait.html",
+        "source": "L'Obs",
+        "type": "article",
+        "date": "25/05/2026",
+        "checked": false
+      },
+      {
+        "title": "Adolescents en garde à vue, serviette de bain «très serrée» autour du cou… Ce que l’on sait après la découverte du corps d’un enfant de 11 ans à Rennes",
+        "url": "https://www.liberation.fr/societe/police-justice/adolescents-en-garde-a-vue-serviette-de-bain-tres-serree-autour-du-cou-ce-que-lon-sait-apres-la-decouverte-du-corps-dun-enfant-de-11-ans-a-rennes-20260525_SJGNZMO3N5B4TOCVR2MTINSHCA/",
+        "source": "Libération",
+        "type": "article",
+        "date": "25/05/2026",
+        "checked": false
+      },
+      {
+        "title": "Deux ados en garde à vue, enquête pour meurtre... Ce que l’on sait de la mort d’un enfant de 11 ans à Rennes",
+        "url": "https://www.huffingtonpost.fr/france/article/a-rennes-un-enfant-de-12-ans-retrouve-mort-avec-une-serviette-autour-du-cou-un-mineur-de-16-ans-arrete_264082.html",
+        "source": "HuffPost France",
+        "type": "article",
+        "date": "25/05/2026",
+        "checked": false
+      },
+      {
+        "title": "Découverte d’un enfant mort à Rennes, une serviette «nouée très serrée» autour du cou : deux adolescents placés en garde à vue",
+        "url": "https://www.liberation.fr/societe/police-justice/rennes-un-enfant-retrouve-mort-dans-un-buisson-avec-un-linge-autour-du-cou-20260524_L3SD7FQ32VAVZMXWOJZWZ45BH4/",
+        "source": "Libération",
+        "type": "article",
+        "date": "25/05/2026",
+        "checked": false
+      },
+      {
+        "title": "Mort d'un enfant de 11 ans à Rennes : deux adolescents en garde à vue",
+        "url": "http://fr.euronews.com/my-europe/2026/05/25/mort-dun-enfant-de-12-ans-a-rennes-deux-adolescents-en-garde-a-vue",
+        "source": "Euronews FR",
+        "type": "article",
+        "date": "25/05/2026",
+        "checked": false
+      },
+      {
+        "title": "Deux adolescents en garde à vue, appel à l'aide, enquête pour meurtre... Ce que l'on sait de la mort à Rennes d'un enfant de 11 ans, retrouvé une serviette nouée autour du cou",
+        "url": "https://www.franceinfo.fr/faits-divers/deux-adolescents-en-garde-a-vue-appel-a-l-aide-enquete-pour-meurtre-ce-que-l-on-sait-de-la-mort-a-rennes-d-un-enfant-de-11-ans-retrouve-une-serviette-nouee-autour-du-cou_8027126.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "type": "article",
+        "date": "25/05/2026",
+        "checked": false
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "51-les-faits-divers-et-les-alertes-locales-revelent-des-enjeux-de-risque-et-de-gest",
+      "matchedStoryTitle": "Les faits divers et les alertes locales révèlent des enjeux de risque et de gestion publique",
+      "previousEpisodeTitle": "Faut-il renforcer la sécurité des bennes à vêtements pour prévenir les accidents ?",
+      "previousEpisodeUrl": "http://localhost:3001/debate?id=605",
+      "confidence": 0.85,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {
+        "main_actors_match": true,
+        "central_tension_match": true,
+        "temporal_continuity": true,
+        "editorial_theme_match": true,
+        "strong_keywords_match": true
+      },
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "mort d'un enfant de 11 ans à Rennes",
+      "erviette nouée autour du cou",
+      "enquête pour meurtre",
+      "appel à l'aide",
+      "Renne"
+    ],
+    "sentAt": "2026-05-27T17:19:15.049Z"
+  },
+  {
+    "subject": "Sénégal : Ahmadou Al Aminou Mohamed Lô nommé premier ministre après le limogeage d’Ousmane Sonko",
+    "sessionLabel": "26/05/2026 à 07:14:04",
+    "question": "Sénégal : Ahmadou Al Aminou Mohamed Lô nommé premier ministre après le limogeage d’Ousmane Sonko",
+    "positionA": "",
+    "positionB": "",
+    "theme": "Politique",
+    "resume": "",
+    "sources": "Le Monde, Le Figaro, France 24, RFI",
+    "links": [
+      {
+        "title": "Sénégal : Ahmadou Al Aminou Mohamed Lô nommé premier ministre après le limogeage d’Ousmane Sonko",
+        "url": "https://www.lemonde.fr/afrique/article/2026/05/26/senegal-ahmadou-al-aminou-mohamed-lo-nomme-premier-ministre-apres-le-limogeage-d-ousmane-sonko_6693693_3212.html",
+        "source": "Le Monde",
+        "type": "article",
+        "date": "26/05/2026",
+        "checked": false
+      },
+      {
+        "title": "Sénégal: Ahmadou Al Aminou Mohamed Lo nommé Premier ministre après le limogeage d'Ousmane Sonko",
+        "url": "https://www.rfi.fr/fr/afrique/20260525-s%C3%A9n%C3%A9gal-ahmadou-al-aminou-mohamed-lo-nomm%C3%A9-premier-ministre-apr%C3%A8s-le-limogeage-d-ousmane-sonko",
+        "source": "RFI",
+        "type": "article",
+        "date": "26/05/2026",
+        "checked": false
+      },
+      {
+        "title": "Sénégal : l'économiste Ahmadou ‌Al Aminou Lo nommé Premier ministre après le limogeage de Sonko",
+        "url": "https://www.france24.com/fr/afrique/20260525-senegal-ahmadou-al-aminou-lo-nouveau-premier-ministre-apres-le-limogeage-de-sonko-president-faye",
+        "source": "France 24",
+        "type": "article",
+        "date": "26/05/2026",
+        "checked": false
+      },
+      {
+        "title": "Sénégal : l'économiste Ahmadou ‌Al Aminou Lô nommé Premier ministre",
+        "url": "https://www.france24.com/fr/afrique/20260525-senegal-ahmadou-al-aminou-lo-nouveau-premier-ministre-apres-le-limogeage-de-sonko-president-faye",
+        "source": "France 24",
+        "type": "article",
+        "date": "26/05/2026",
+        "checked": false
+      },
+      {
+        "title": "Sénégal : un ancien de la Banque centrale nommé premier ministre après le limogeage de Sonko",
+        "url": "https://www.lefigaro.fr/flash-actu/senegal-un-ancien-de-la-banque-centrale-nomme-premier-ministre-apres-le-limogeage-de-sonko-20260525",
+        "source": "Le Figaro",
+        "type": "article",
+        "date": "26/05/2026",
+        "checked": false
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "11-les-crises-politiques-militaires-et-sociales-recomposent-plusieurs-regions-d-afr",
+      "matchedStoryTitle": "Les crises politiques, militaires et sociales recomposent plusieurs régions d’Afrique",
+      "previousEpisodeTitle": "La nomination d’Ahmadou Al Aminou Mohamed Lô est-elle une meilleure option que le maintien d’Ousmane",
+      "previousEpisodeUrl": "http://localhost:3001/debate?id=569",
+      "confidence": 0.85,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {
+        "main_actors_match": true,
+        "central_tension_match": true,
+        "temporal_continuity": true,
+        "editorial_theme_match": true,
+        "strong_keywords_match": true
+      },
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "Ahmadou Al Aminou Mohamed Lô",
+      "Sénégal",
+      "Ousmane Sonko",
+      "Premier mini tre",
+      "Banque centrale",
+      "économi te",
+      "limogeage"
+    ],
+    "sentAt": "2026-05-27T17:19:09.556Z"
+  },
+  {
+    "subject": "EN DIRECT - Guerre au Moyen-Orient : Netanyahou affirme qu’Israël va «intensifier» l’offensive au Liban pour «écraser» le Hezbollah",
+    "sessionLabel": "26/05/2026 à 07:14:04",
+    "question": "EN DIRECT - Guerre au Moyen-Orient : Netanyahou affirme qu’Israël va «intensifier» l’offensive au Li",
+    "positionA": "",
+    "positionB": "",
+    "theme": "International",
+    "resume": "",
+    "sources": "Le Figaro, BFMTV, France 24",
+    "links": [
+      {
+        "title": "Israël veut \"intensifier\" son offensive au Liban pour écraser le Hezbollah",
+        "url": "https://www.france24.com/fr/moyen-orient/20260525-liban-israel-veut-intensifier-offensive-hezbollah-frappes-netanyahu",
+        "source": "France 24",
+        "type": "article",
+        "date": "26/05/2026",
+        "checked": false
+      },
+      {
+        "title": "\"J'ai demandé à accélérer\": Benjamin Netanyahu affirme qu'Israël va \"intensifier\" l'offensive au Liban pour \"écraser\" le Hezbollah",
+        "url": "https://www.bfmtv.com/international/moyen-orient/israel/j-ai-demande-a-accelerer-benjamin-netanyahu-affirme-qu-israel-va-intensifier-l-offensive-au-liban-pour-ecraser-le-hezbollah_AD-202605250841.html",
+        "source": "BFMTV",
+        "type": "article",
+        "date": "26/05/2026",
+        "checked": false
+      },
+      {
+        "title": "EN DIRECT - Guerre au Moyen-Orient : Netanyahou affirme qu’Israël va «intensifier» l’offensive au Liban pour «écraser» le Hezbollah",
+        "url": "https://www.lefigaro.fr/international/en-direct-guerre-au-moyen-orient-marco-rubio-affirme-qu-israel-aura-toujours-le-droit-de-se-defendre-20260525",
+        "source": "Le Figaro",
+        "type": "article",
+        "date": "25/05/2026",
+        "checked": false
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "israel-mph1fbfh",
+      "matchedStoryTitle": "Israël",
+      "previousEpisodeTitle": "La France doit-elle soutenir les renforts israéliens malgré les risques d’escalade au Liban ?",
+      "previousEpisodeUrl": "http://localhost:3001/debate?id=592",
+      "confidence": 0.9,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {
+        "main_actors_match": true,
+        "central_tension_match": true,
+        "temporal_continuity": true,
+        "editorial_theme_match": true,
+        "strong_keywords_match": true
+      },
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "offensive israélienne au Liban",
+      "Benjamin Netanyahu",
+      "Hezbollah",
+      "guerre au Moyen-Orient",
+      "Liban",
+      "Israël"
+    ],
+    "sentAt": "2026-05-27T17:18:45.032Z"
+  },
+  {
+    "subject": "Bordeaux : un homme coincé dans une benne à vêtements finit à l'hôpital",
+    "sessionLabel": "26/05/2026 à 17:55:20",
+    "question": "Faut-il renforcer la sécurité des bennes à vêtements pour prévenir les accidents ?",
+    "positionA": "Renforcer la sécurité des bennes",
+    "positionB": "Maintenir l’accès libre aux bennes",
+    "theme": "Justice - faits divers",
+    "resume": "Un homme a été hospitalisé après être resté coincé dans une benne à vêtements à Bordeaux. Les secours sont intervenus pour le dégager, mais les circonstances précises de l’accident et son état de santé n’ont pas été communiqués.\n\nD’un côté, il s’agit de protéger les personnes vulnérables en limitant les risques liés à ces dispositifs. De l’autre, les bennes à vêtements doivent rester accessibles pour permettre la collecte et le don, sans créer de barrières excessives.\n\nFaut-il renforcer la sécurité des bennes à vêtements pour prévenir les accidents ?\n\nP. Ratsky",
+    "sources": "Le Parisien, 20 Minutes",
+    "links": [
+      {
+        "title": "Il tombe dans une benne à vêtements",
+        "url": "https://www.youtube.com/shorts/Q7wCvK3ceCk",
+        "source": "20 Minutes",
+        "type": "youtube",
+        "date": "26/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Bordeaux : un homme coincé dans une benne à vêtements finit à l'hôpital",
+        "url": "https://www.youtube.com/shorts/0OH_NtVlMhM",
+        "source": "Le Parisien",
+        "type": "youtube",
+        "date": "25/05/2026",
+        "checked": true
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "51-les-faits-divers-et-les-alertes-locales-revelent-des-enjeux-de-risque-et-de-gest",
+      "matchedStoryTitle": "Les faits divers et les alertes locales révèlent des enjeux de risque et de gestion publique",
+      "previousEpisodeTitle": "Faut-il renforcer la surveillance et la sécurité autour des bornes de collecte de vêtements ?",
+      "previousEpisodeUrl": "http://localhost:3001/debate?id=604",
+      "confidence": 0.85,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {
+        "main_actors_match": false,
+        "central_tension_match": true,
+        "temporal_continuity": true,
+        "editorial_theme_match": true,
+        "strong_keywords_match": true
+      },
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "homme coincé dans benne",
+      "Bordeaux",
+      "benne à vêtement",
+      "hôpital"
+    ],
+    "sentAt": "2026-05-27T14:18:51.389Z"
+  },
+  {
+    "subject": "Bordeaux : un homme coincé dans une benne à vêtements finit à l'hôpital",
+    "sessionLabel": "26/05/2026 à 17:55:20",
+    "question": "Faut-il renforcer la surveillance et la sécurité autour des bornes de collecte de vêtements en ville",
+    "positionA": "Renforcer la surveillance et la sécurité",
+    "positionB": "Maintenir l’accès libre sans contraintes supplémentaires",
+    "theme": "Justice - faits divers",
+    "resume": "Un homme a été hospitalisé après être resté coincé dans une benne à vêtements à Bordeaux. Les secours sont intervenus pour le dégager, mais les circonstances précises de l’accident et l’état de santé de la victime restent inconnus.\n\nLe problème, c’est que ces espaces de collecte, souvent accessibles librement, peuvent présenter des risques difficiles à anticiper. D’un côté, certains réclament plus de surveillance et de sécurité pour éviter ce type d’accidents. De l’autre, d’autres défendent le maintien d’un accès libre, essentiel pour la collecte solidaire et la simplicité d’usage.\n\nFaut-il renforcer la surveillance et la sécurité autour des bornes de collecte de vêtements en ville ?\n\nJ.L Grasso",
+    "sources": "Le Parisien, 20 Minutes",
+    "links": [
+      {
+        "title": "Il tombe dans une benne à vêtements",
+        "url": "https://www.youtube.com/shorts/Q7wCvK3ceCk",
+        "source": "20 Minutes",
+        "type": "youtube",
+        "date": "26/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Bordeaux : un homme coincé dans une benne à vêtements finit à l'hôpital",
+        "url": "https://www.youtube.com/shorts/0OH_NtVlMhM",
+        "source": "Le Parisien",
+        "type": "youtube",
+        "date": "25/05/2026",
+        "checked": true
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "51-les-faits-divers-et-les-alertes-locales-revelent-des-enjeux-de-risque-et-de-gest",
+      "matchedStoryTitle": "Les faits divers et les alertes locales révèlent des enjeux de risque et de gestion publique",
+      "previousEpisodeTitle": "Faut-il appliquer des sanctions pénales sévères aux adolescents impliqués dans ce meurtre à Rennes…",
+      "previousEpisodeUrl": "http://localhost:3001/debate?id=570",
+      "confidence": 0.85,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {},
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "homme coincé dans benne",
+      "Bordeaux",
+      "benne à vêtement",
+      "hôpital"
+    ],
+    "sentAt": "2026-05-27T13:56:54.241Z"
+  },
+  {
     "subject": "Bombardements israéliens dans l’est du Liban avec plusieurs morts et renforts envoyés",
     "sessionLabel": "26/05/2026 à 17:55:20",
     "question": "La France doit-elle soutenir les renforts israéliens malgré les risques d’escalade au Liban ?",
@@ -64,10 +2776,10 @@
     "keywords": [
       "Machghara",
       "Hezbollah",
-      "Gardien  de la Révolution",
+      "Gardiens de la Révolution",
       "Iran",
       "armée américaine",
-      "renfort  i raélien"
+      "renforts israéliens"
     ],
     "sentAt": "2026-05-27T05:41:57.036Z"
   },
@@ -138,7 +2850,7 @@
       "Serge Duteuil-Graziani",
       "gendarmerie",
       "enquête vidéo",
-      "manife tant"
+      "manifestant"
     ],
     "sentAt": "2026-05-27T05:38:13.506Z"
   },
@@ -236,11 +2948,11 @@
     },
     "keywords": [
       "Frappes USA-Iran au Moyen-Orient",
-      "ce ez-le-feu",
-      "négociation  diplomatique",
+      "cessez-le-feu",
+      "négociations diplomatiques",
       "Iran",
-      "État -Uni",
-      "ite  de mi ile",
+      "États-Unis",
+      "sites de missiles",
       "guerre au Moyen-Orient"
     ],
     "sentAt": "2026-05-27T04:20:48.765Z"
@@ -339,11 +3051,11 @@
     },
     "keywords": [
       "Frappes USA-Iran au Moyen-Orient",
-      "ce ez-le-feu",
-      "négociation  diplomatique",
+      "cessez-le-feu",
+      "négociations diplomatiques",
       "Iran",
-      "État -Uni",
-      "ite  de mi ile",
+      "États-Unis",
+      "sites de missiles",
       "guerre au Moyen-Orient"
     ],
     "sentAt": "2026-05-26T18:31:09.752Z"
@@ -442,11 +3154,11 @@
     },
     "keywords": [
       "Frappes USA-Iran au Moyen-Orient",
-      "ce ez-le-feu",
-      "négociation  diplomatique",
+      "cessez-le-feu",
+      "négociations diplomatiques",
       "Iran",
-      "État -Uni",
-      "ite  de mi ile",
+      "États-Unis",
+      "sites de missiles",
       "guerre au Moyen-Orient"
     ],
     "sentAt": "2026-05-26T18:50:45.601Z"
@@ -524,10 +3236,10 @@
     "keywords": [
       "Gaël Monfils",
       "Roland-Garro",
-      "Hugo Ga ton",
-      "tenni  françai",
+      "Hugo Gaston",
+      "tennis français",
       "premier tour",
-      "défaite en cinq  et"
+      "défaite en cinq sets"
     ],
     "sentAt": "2026-05-26T03:21:46.958Z"
   },
@@ -587,9 +3299,9 @@
     },
     "keywords": [
       "Hantavirus à Madrid",
-      "E pagnol  en quarantaine",
-      "mini tère de la  anté",
-      "croi iéri te  e pagnol",
+      "Espagnols en quarantaine",
+      "ministère de la Santé",
+      "croisiéristes espagnols",
       "Madrid"
     ],
     "sentAt": "2026-05-26T03:21:26.104Z"
@@ -666,7 +3378,7 @@
     },
     "keywords": [
       "mort d'un enfant de 11 ans à Rennes",
-      "deux adole cent  en garde à vue",
+      "deux adolescents en garde à vue",
       "erviette nouée autour du cou",
       "enquête pour meurtre",
       "appel à l'aide",
@@ -730,7 +3442,7 @@
     },
     "keywords": [
       "canicule vigilance orange",
-      "Séba tien Lecornu",
+      "Sébastien Lecornu",
       "réunion intermini térielle",
       "huit département",
       "épi ode de chaleur",
@@ -788,7 +3500,7 @@
       "appel de Moscou à quitter Kiev",
       "étranger",
       "diplomate",
-      "nouvelle  frappe  ru e",
+      "nouvelles frappes russes",
       "Édouard Philippe",
       "guerre en Ukraine"
     ],
@@ -859,7 +3571,7 @@
     "keywords": [
       "Ahmadou Al Aminou Mohamed Lô",
       "Sénégal",
-      "Ou mane Sonko",
+      "Ousmane Sonko",
       "Premier mini tre",
       "Banque centrale",
       "économi te",
@@ -919,7 +3631,7 @@
       "Hezbollah",
       "guerre au Moyen-Orient",
       "Liban",
-      "I raël"
+      "Israël"
     ],
     "sentAt": "2026-05-26T03:19:20.482Z"
   },
@@ -1003,8 +3715,8 @@
     },
     "keywords": [
       "vigilance jaune canicule en mai",
-      "13 département  de l’Oue t",
-      "Fini tère",
+      "13 départements de l’Ouest",
+      "Finistère",
       "canicule"
     ],
     "sentAt": "2026-05-25T12:46:34.156Z"
@@ -1156,7 +3868,7 @@
       "guerre en Ukraine",
       "Kiev",
       "Ru ie",
-      "mi ile  hyper onique",
+      "missile hypersonique",
       "attaque ma ive"
     ],
     "sentAt": "2026-05-25T05:48:45.663Z"
@@ -1311,7 +4023,7 @@
     "keywords": [
       "accord États-Unis - Iran",
       "guerre au Moyen-Orient",
-      "I raël",
+      "Israël",
       "Marco Rubio",
       "Donald Trump",
       "pèlerinage à La Mecque",
@@ -1392,10 +4104,10 @@
     "keywords": [
       "vigilance jaune canicule",
       "dôme de chaleur",
-      "treize département  de l'Oue t",
+      "treize départements de l'Ouest",
       "mai 2026",
-      "record  men uel",
-      "Fini tère",
+      "records mensuels",
+      "Finistère",
       "35°C"
     ],
     "sentAt": "2026-05-24T18:34:35.931Z"
@@ -1473,10 +4185,10 @@
     "keywords": [
       "vigilance jaune canicule",
       "dôme de chaleur",
-      "treize département  de l'Oue t",
+      "treize départements de l'Ouest",
       "mai 2026",
-      "record  men uel",
-      "température  ju qu’à 35°C"
+      "records mensuels",
+      "températures jusqu’à 35°C"
     ],
     "sentAt": "2026-05-24T18:23:39.072Z"
   },
@@ -1555,8 +4267,8 @@
       "Iran",
       "guerre au Moyen-Orient",
       "accord avec l'Iran",
-      "blocu  contre Téhéran",
-      "État -Uni",
+      "blocus contre Téhéran",
+      "États-Unis",
       "négociation"
     ],
     "sentAt": "2026-05-24T18:17:47.213Z"
@@ -1602,9 +4314,9 @@
     "keywords": [
       "Sandrine Rousseau",
       "Patrick Bruel",
-      "annulation de  concert",
-      "mi e en danger de  femme",
-      "violence   exuelle"
+      "annulation des concerts",
+      "mise en danger des femmes",
+      "violences sexuelles"
     ],
     "sentAt": "2026-05-24T14:40:10.800Z"
   },
@@ -1664,11 +4376,11 @@
     },
     "keywords": [
       "Guerre au Moyen-Orient",
-      "accord Iran/État -Uni",
+      "accord Iran/États-Unis",
       "frappe au Liban",
-      "I raël",
+      "Israël",
       "Liban",
-      "élu  i raélien"
+      "élus israéliens"
     ],
     "sentAt": "2026-05-24T14:39:49.085Z"
   },
@@ -1785,9 +4497,9 @@
     "keywords": [
       "missile Orechnik",
       "guerre en Ukraine",
-      "attaque ru e",
+      "attaque russe",
       "Kiev",
-      "condamnation  internationale",
+      "condamnations internationales",
       "Giorgia Meloni",
       "France Allemagne Italie"
     ],
@@ -1947,10 +4659,10 @@
       "Fusillade près de la Maison-Blanche",
       "tireur abattu",
       "Donald Trump",
-      "di po itif policier renforcé",
+      "dispositif policier renforcé",
       "Secret Service",
       "Wa hington",
-      "antécédent  de violence"
+      "antécédents de violence"
     ],
     "sentAt": "2026-05-24T12:56:28.009Z"
   },
@@ -2079,7 +4791,7 @@
       "Ukraine",
       "Emmanuel Macron",
       "Volodymyr Zelen ky",
-      "bombardement  ru e"
+      "bombardements russes"
     ],
     "sentAt": "2026-05-24T12:42:33.814Z"
   },
@@ -2286,7 +4998,7 @@
       "Cri tian Mungiu",
       "Palme d’or",
       "Fjord",
-      "Palmarè  engagé",
+      "Palmarès engagé",
       "Minotaure",
       "Virginie Efira"
     ],
@@ -4337,7 +7049,7 @@
     },
     "keywords": [
       "Nouvelle-Calédonie",
-      "Parlement français",
+      "Parlement françaisss",
       "corps électoral",
       "natifs",
       "scrutin crucial",
@@ -4700,7 +7412,7 @@
     },
     "keywords": [
       "Nouvelle-Calédonie",
-      "Parlement françai",
+      "Parlement françaiss",
       "corps électoral",
       "natif",
       "crutin crucial",
@@ -5310,17 +8022,17 @@
     "sentAt": "2026-05-20T17:59:21.286Z"
   },
   {
-    "subject": "Canal+ : l’emprise de Bolloré sur le cinéma français en chiffres",
+    "subject": "Canal+ : l’emprise de Bolloré sur le cinéma françaisss en chiffres",
     "sessionLabel": "20/05/2026 à 20:13:57",
-    "question": "L’influence de Bolloré sur Canal+ nuit-elle à la diversité du cinéma français ?",
+    "question": "L’influence de Bolloré sur Canal+ nuit-elle à la diversité du cinéma françaisss ?",
     "positionA": "Oui, elle limite la diversité artistique",
     "positionB": "Non, elle assure un financement stable",
     "theme": "Médias - divertissements",
-    "resume": "L’emprise de Vincent Bolloré sur le cinéma français via Canal+ se traduit par une influence chiffrée et tangible, notamment dans le financement et la diffusion des films. Sous sa direction, Canal+ détient une part majeure des investissements dans la production cinématographique nationale, ce qui lui confère un poids déterminant dans les choix artistiques et commerciaux. Ce contrôle financier impacte directement la diversité des œuvres soutenues, modifiant en profondeur le paysage culturel français.Cette concentration de pouvoir a suscité une vive réaction dans le milieu du cinéma, illustrée par une tribune signée par plusieurs professionnels dénonçant cette mainmise. Face à cette contestation, Canal+ a menacé de boycotter les signataires, révélant ainsi les tensions entre la volonté de contrôle exercée par Bolloré et les revendications pour une plus grande indépendance artistique. L’influence de Bolloré ne se limite pas à Canal+ mais s’étend à d’autres acteurs culturels, renforçant son emprise sur l’ensemble de la chaîne cinématographique française.L’influence de Bolloré sur Canal+ nuit-elle à la diversité du cinéma français ?M. Camus",
+    "resume": "L’emprise de Vincent Bolloré sur le cinéma françaisss via Canal+ se traduit par une influence chiffrée et tangible, notamment dans le financement et la diffusion des films. Sous sa direction, Canal+ détient une part majeure des investissements dans la production cinématographique nationale, ce qui lui confère un poids déterminant dans les choix artistiques et commerciaux. Ce contrôle financier impacte directement la diversité des œuvres soutenues, modifiant en profondeur le paysage culturel français.Cette concentration de pouvoir a suscité une vive réaction dans le milieu du cinéma, illustrée par une tribune signée par plusieurs professionnels dénonçant cette mainmise. Face à cette contestation, Canal+ a menacé de boycotter les signataires, révélant ainsi les tensions entre la volonté de contrôle exercée par Bolloré et les revendications pour une plus grande indépendance artistique. L’influence de Bolloré ne se limite pas à Canal+ mais s’étend à d’autres acteurs culturels, renforçant son emprise sur l’ensemble de la chaîne cinématographique française.L’influence de Bolloré sur Canal+ nuit-elle à la diversité du cinéma françaisss ?M. Camus",
     "sources": "L'Obs, France 24, 20 Minutes, Public Sénat, France Culture, Frontières",
     "links": [
       {
-        "title": "Canal+ : l’emprise de Bolloré sur le cinéma français en chiffres",
+        "title": "Canal+ : l’emprise de Bolloré sur le cinéma françaisss en chiffres",
         "url": "https://www.nouvelobs.com/economie/20260519.OBS115080/canal-l-emprise-de-bollore-sur-le-cinema-francais-en-chiffres.html",
         "source": "L'Obs",
         "type": "article",
@@ -5388,7 +8100,7 @@
     "keywords": [
       "Canal+",
       "Vincent Bolloré",
-      "cinéma françai",
+      "cinéma françaiss",
       "boycott",
       "Maxime Saada",
       "tribune anti-Bolloré",

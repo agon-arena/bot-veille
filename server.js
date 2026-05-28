@@ -156,6 +156,208 @@ function limitStoryText(text, maxLength) {
   return value.slice(0, maxLength - 1).trimEnd() + "…";
 }
 
+const AGON_ARTICLE_MIN_LENGTH = 800;
+const AGON_ARTICLE_MAX_LENGTH = 1600;
+
+function limitDebateQuestion(text) {
+  const raw = String(text || "").replace(/\s+/g, " ").trim();
+  if (!raw) return "";
+  const maxLength = 98;
+  const danglingWords = /(?:\s+(?:le|la|les|l|un|une|des|du|de|d|à|au|aux|et|ou|pour|par|avec|sans|malgré|face|contre|sur))$/i;
+
+  function finalizeQuestion(value) {
+    let stem = String(value || "")
+      .replace(/[?？]+$/g, "")
+      .replace(/\s+/g, " ")
+      .trim()
+      .replace(/[,:;.!?…-]+$/g, "")
+      .trim();
+    stem = stem.replace(danglingWords, "").trim();
+    if (!stem) return "";
+    return `${stem}?`;
+  }
+
+  function shortenAtWord(value) {
+    let stem = String(value || "").slice(0, maxLength - 1).trimEnd();
+    const lastSpace = stem.lastIndexOf(" ");
+    if (lastSpace > 48) stem = stem.slice(0, lastSpace);
+    return finalizeQuestion(stem);
+  }
+
+  const base = finalizeQuestion(raw);
+  if (base.length <= maxLength) return base;
+
+  const withoutQuestionMark = raw.replace(/[?？]+$/g, "").trim();
+  const compactAlternative = finalizeQuestion(withoutQuestionMark.replace(/\s+(?:pour|afin de)\s+.+?\s+ou\s+/i, " ou "));
+  if (compactAlternative.length <= maxLength) return compactAlternative;
+
+  return shortenAtWord(withoutQuestionMark);
+}
+
+const AGON_ARTICLE_SIGNATURE_LIST = [
+  "J.L Grasso",
+  "F. Glorennec",
+  "T. Guyomarch",
+  "M. Guillot",
+  "P. Ratsky"
+];
+const AGON_ARTICLE_SIGNATURES = new Set(AGON_ARTICLE_SIGNATURE_LIST);
+let agonArticleSignatureCursor = Math.floor(Math.random() * AGON_ARTICLE_SIGNATURE_LIST.length) - 1;
+
+function getNextAgonArticleSignature() {
+  agonArticleSignatureCursor = (agonArticleSignatureCursor + 1) % AGON_ARTICLE_SIGNATURE_LIST.length;
+  return AGON_ARTICLE_SIGNATURE_LIST[agonArticleSignatureCursor];
+}
+
+function looksLikeLatinQuestionLine(line) {
+  const value = String(line || "").trim();
+  return /^[A-ZÀ-Ÿ][A-Za-zÀ-ÿ]+(?:\s+an\s+[A-Za-zÀ-ÿ]+){1,3}$/.test(value);
+}
+
+function normalizeLatinQuestion(line) {
+  const value = String(line || "")
+    .replace(/[?？]+$/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+  if (!value) return "";
+  if (/\bag[oô]n\b/i.test(value.normalize("NFD").replace(/[\u0300-\u036f]/g, ""))) {
+    return "";
+  }
+  if (!looksLikeLatinQuestionLine(value)) return "";
+  return value;
+}
+
+function buildFallbackLatinQuestion(payload = {}) {
+  const text = [
+    payload.subject,
+    payload.summary,
+    payload.debateQuestion,
+    payload.narrativeTension
+  ]
+    .filter(Boolean)
+    .join(" ")
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
+
+  const candidates = [
+    { pattern: /code noir|esclavag|colon/i, latin: "Memoria an oblivio" },
+    { pattern: /memoire|histoire|passe|commemoration|heritage/i, latin: "Memoria an oblivio" },
+    { pattern: /guerre|frappe|militaire|attaque|ukraine|israel|liban|iran|russie/i, latin: "Pax an vis" },
+    { pattern: /justice|tribunal|prison|peine|condamnation|proces/i, latin: "Lex an iustitia" },
+    { pattern: /securite|police|terror|violence|fusillade|crime/i, latin: "Ordo an libertas" },
+    { pattern: /ecole|eleve|enseign|education|notation|examen/i, latin: "Disciplina an cura" },
+    { pattern: /sante|hopital|medecin|maladie|vaccin|soin/i, latin: "Salus an cura" },
+    { pattern: /climat|canicule|eau|biodiversite|pollution|environnement/i, latin: "Natura an lucrum" },
+    { pattern: /ia|intelligence artificielle|algorithme|numerique|donnee|technologie/i, latin: "Ratio an imperium" },
+    { pattern: /argent|budget|dette|taxe|impot|economie|emploi|salaire/i, latin: "Utilitas an aequitas" },
+    { pattern: /verite|information|media|desinformation|mensonge/i, latin: "Veritas an utilitas" }
+  ];
+
+  const selected = candidates.find((candidate) => candidate.pattern.test(text))?.latin
+    || "Lex an prudentia";
+  return normalizeLatinQuestion(selected);
+}
+
+function normalizeArticleLineForCompare(value) {
+  return String(value || "")
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[?？!.,;:«»"“”'’`´()[\]{}\-]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function splitArticleOpeningSentence(bodyBlocks) {
+  const blocks = Array.isArray(bodyBlocks)
+    ? bodyBlocks.map((block) => String(block || "").trim()).filter(Boolean)
+    : [];
+  if (!blocks.length) return [];
+
+  const firstBlock = blocks[0];
+  const match = firstBlock.match(/^(.+?[.!?…])\s+(\S[\s\S]*)$/);
+  if (!match) return blocks;
+
+  const opening = match[1].trim();
+  const rest = match[2].trim();
+  if (!opening || !rest) return blocks;
+  return [opening, rest, ...blocks.slice(1)];
+}
+
+function ensureArticleOpeningSentenceBreak(article) {
+  const blocks = String(article || "")
+    .split(/\n\s*\n+/)
+    .map((block) => block.trim())
+    .filter(Boolean);
+  if (!blocks.length) return "";
+  return splitArticleOpeningSentence(blocks).join("\n\n").trim();
+}
+
+
+function extractLatinQuestionFromArticle(article) {
+  const lines = String(article || "")
+    .split(/\n+/)
+    .map((line) => line.trim())
+    .filter(Boolean);
+
+  for (let i = lines.length - 1; i >= 0; i -= 1) {
+    const candidate = normalizeLatinQuestion(lines[i]);
+    if (candidate) return candidate;
+  }
+
+  return "";
+}
+
+function enforceFinalArticleQuestion(article, debateQuestion, latinQuestion, forcedSignature = "", options = {}) {
+  const question = limitDebateQuestion(debateQuestion);
+  const latin = normalizeLatinQuestion(latinQuestion) || extractLatinQuestionFromArticle(article);
+  if (!question) return limitStoryText(ensureArticleOpeningSentenceBreak(article), AGON_ARTICLE_MAX_LENGTH);
+
+  const forbiddenLines = [
+    options.positionA,
+    options.positionB
+  ]
+    .map(normalizeArticleLineForCompare)
+    .filter(Boolean);
+  const normalizedQuestion = normalizeArticleLineForCompare(question);
+  const normalizedLatin = normalizeArticleLineForCompare(latin);
+
+  const rawLines = String(article || "")
+    .split(/\n+/)
+    .map((line) => line.trim())
+    .filter(Boolean);
+
+  const signature = AGON_ARTICLE_SIGNATURES.has(forcedSignature)
+    ? forcedSignature
+    : rawLines.length && AGON_ARTICLE_SIGNATURES.has(rawLines[rawLines.length - 1])
+    ? rawLines.pop()
+    : getNextAgonArticleSignature();
+
+  const bodyBlocks = rawLines
+    .filter((line) => {
+      const normalizedLine = normalizeArticleLineForCompare(line);
+      if (!normalizedLine) return false;
+      if (AGON_ARTICLE_SIGNATURES.has(line)) return false;
+      if (forbiddenLines.includes(normalizedLine)) return false;
+      if (normalizedLatin && normalizedLine === normalizedLatin) return false;
+      if (looksLikeLatinQuestionLine(line)) return false;
+      if (/[?？]\s*$/.test(line)) return false;
+      if (normalizedQuestion && normalizedLine === normalizedQuestion) return false;
+      if (normalizedQuestion && normalizedLine.includes(normalizedQuestion)) return false;
+      return true;
+    });
+
+  const body = splitArticleOpeningSentence(bodyBlocks).join("\n\n").trim();
+
+  return limitStoryText([
+    body,
+    latin,
+    question,
+    signature
+  ].filter(Boolean).join("\n\n"), AGON_ARTICLE_MAX_LENGTH);
+}
+
 function decodeLooseJsonString(value) {
   return String(value || "")
     .replace(/\\"/g, "\"")
@@ -622,6 +824,10 @@ Priorité :
 
 Important :
 Le résumé doit rester factuel, neutre et strictement fondé sur les informations présentes dans les sources.
+Même si le résumé reste factuel, évite le ton administratif ou mou.
+La première phrase doit être concrète, directe et située : elle doit faire entrer dans l'événement, pas seulement l'annoncer.
+Fais apparaître sobrement ce qui rend l'événement sensible : lieu, acteurs, incertitude, risque immédiat, décision attendue ou rapport de force.
+Ne commence pas par une formule générique si un fait précis permet une entrée plus vive.
 
 Sortie attendue :
 Texte brut uniquement, sans titre, sans signature, sans liste.
@@ -738,7 +944,14 @@ si hasMediaContrast = false, chaîne vide.
 
 mainIssue :
 l’enjeu principal que cette actualité révèle, en une phrase courte.
-Exemple : “la sécurité des élèves face au coût des infrastructures”, “la diplomatie face au rapport de force militaire”.
+Ce champ ne doit pas être une étiquette abstraite : formule une tension concrète, presque réutilisable dans un article.
+Mauvais exemple : “la diplomatie face au rapport de force militaire”.
+Meilleur exemple : “répondre par la force peut rassurer à court terme, mais ouvrir une escalade que personne ne contrôle vraiment”.
+
+narrativeTension :
+une phrase concrète qui résume pourquoi le sujet devient difficile.
+Elle doit opposer deux risques réels, pas deux idées abstraites.
+Exemple : “Ne pas réagir peut laisser l’adversaire tester la limite ; frapper trop fort peut rallumer un conflit plus large.”
 
 possibleBiases :
 2 à 4 biais de lecture ou cadrages possibles.
@@ -764,6 +977,7 @@ JSON attendu uniquement :
   "hasMediaContrast": true/false,
   "mediaTreatment": "...",
   "mainIssue": "...",
+  "narrativeTension": "...",
   "possibleBiases": ["...", "..."],
   "debatePotential": "fort/moyen/faible",
   "editorialWarning": "..."
@@ -803,6 +1017,7 @@ Réponds uniquement en JSON valide, sans balises markdown.`;
     hasMediaContrast,
     mediaTreatment: hasMediaContrast ? String(parsed.mediaTreatment || "").trim() : "",
     mainIssue: String(parsed.mainIssue || "").trim(),
+    narrativeTension: String(parsed.narrativeTension || "").trim(),
     possibleBiases,
     debatePotential: String(parsed.debatePotential || "").trim(),
     editorialWarning: String(parsed.editorialWarning || "").trim()
@@ -815,6 +1030,7 @@ async function generateProblematique(payload) {
   const hasMediaContrast = payload?.hasMediaContrast === true;
   const mediaTreatment = String(payload?.mediaTreatment || "").trim();
   const mainIssue = String(payload?.mainIssue || "").trim();
+  const narrativeTension = String(payload?.narrativeTension || "").trim();
   const debatePotential = String(payload?.debatePotential || "").trim();
   const editorialWarning = String(payload?.editorialWarning || "").trim();
   const possibleBiases = Array.isArray(payload?.possibleBiases)
@@ -828,7 +1044,7 @@ async function generateProblematique(payload) {
   if (!openai) {
     return {
       debateAngle: limitStoryText(subject, 180),
-      debateQuestion: limitStoryText(subject, 99),
+      debateQuestion: limitDebateQuestion(subject),
       positionA: "Pour",
       positionB: "Contre"
     };
@@ -837,6 +1053,7 @@ async function generateProblematique(payload) {
   const mediaSection = [
     hasMediaContrast && mediaTreatment ? `Traitement médiatique : ${mediaTreatment}` : "",
     mainIssue ? `Enjeu principal : ${mainIssue}` : "",
+    narrativeTension ? `Tension narrative : ${narrativeTension}` : "",
     possibleBiases.length ? `Biais de lecture possibles : ${possibleBiases.join(", ")}` : "",
     debatePotential ? `Potentiel de débat : ${debatePotential}` : "",
     editorialWarning ? `Alerte éditoriale : ${editorialWarning}` : ""
@@ -886,9 +1103,15 @@ une phrase courte qui résume le vrai enjeu du débat.
 Maximum 180 caractères.
 Ne pas poser une question.
 
+narrativeTension :
+une phrase concrète qui résume pourquoi le sujet devient difficile à trancher.
+Elle doit opposer deux risques réels et aider ensuite à écrire un article plus vivant.
+Ne pas poser une question.
+Exemple : “Soutenir la riposte peut affirmer une ligne ferme ; encourager la retenue peut éviter une escalade que personne ne maîtrisera.”
+
 debateQuestion :
 une seule question claire, directe et débattable.
-Maximum 99 caractères, espaces compris.
+Maximum 98 caractères, espaces et tirets compris.
 Elle doit être compréhensible sans lire l’article.
 Elle doit être ancrée dans le sujet précis de l’actualité.
 Elle doit permettre deux positions défendables.
@@ -964,6 +1187,7 @@ Règles :
 JSON attendu uniquement :
 {
   "debateAngle": "...",
+  "narrativeTension": "...",
   "debateQuestion": "...",
   "positionA": "...",
   "positionB": "...",
@@ -1006,7 +1230,8 @@ Réponds uniquement en JSON valide, sans balises markdown.`;
 
   return {
     debateAngle: limitStoryText(parsed.debateAngle || subject, 180),
-    debateQuestion: limitStoryText(parsed.debateQuestion || subject, 99),
+    narrativeTension: limitStoryText(parsed.narrativeTension || narrativeTension, 220),
+    debateQuestion: limitDebateQuestion(parsed.debateQuestion || subject),
     positionA: limitStoryText(parsed.positionA || "Pour", 55),
     positionB: limitStoryText(parsed.positionB || "Contre", 55),
     editorialDecision,
@@ -1250,6 +1475,7 @@ async function generateStyledArticle(payload) {
   const positionA = String(payload?.positionA || "").trim();
   const positionB = String(payload?.positionB || "").trim();
   const mainIssue = String(payload?.mainIssue || "").trim();
+  const narrativeTension = String(payload?.narrativeTension || "").trim();
   const debatePotential = String(payload?.debatePotential || "").trim();
   const editorialWarning = String(payload?.editorialWarning || "").trim();
   const editorialDecision = String(payload?.editorialDecision || "").trim();
@@ -1278,6 +1504,7 @@ async function generateStyledArticle(payload) {
       hasMediaContrast,
       mediaTreatment: hasMediaContrast ? mediaTreatment : "",
       mainIssue,
+      narrativeTension,
       possibleBiases,
       debatePotential,
       editorialWarning
@@ -1376,6 +1603,20 @@ Règles absolues :
 
 - La phrase avant la question doit être affirmative et préparer naturellement la question.
 
+Règle de ton prioritaire :
+Le texte doit ressembler à un court éditorial d’actualité, pas à un résumé de veille.
+Chaque paragraphe doit contenir au moins une phrase qui avance vraiment : un verbe d’action, un risque, une opposition ou une conséquence possible.
+Évite les phrases qui pourraient fonctionner pour n’importe quel sujet.
+
+Interdit sauf nécessité factuelle forte :
+- “dans un contexte de tensions”
+- “chaque mouvement est scruté”
+- “la situation reste volatile”
+- “les détails restent flous”
+- “cette action s’inscrit dans”
+- “la tension monte”
+- “la stabilité fragile de la zone”
+
 Style :
 - Clair.
 - Fluide.
@@ -1403,8 +1644,32 @@ Préférer des formulations plus naturelles et éditoriales :
 - “Dans un équilibre aussi fragile…”
 - “Reste une question…”
 
-Le deuxième paragraphe ne doit pas expliquer mécaniquement “le dilemme”.
-Il doit le faire sentir naturellement, en montrant le contraste entre deux lectures possibles.
+Deuxième paragraphe :
+Ne décris pas le dilemme de façon scolaire.
+Ne commence jamais par :
+- “Le choix est…”
+- “Le dilemme est…”
+- “Cette tension oppose…”
+- “Deux logiques s’opposent…”
+- “La difficulté tient à…”
+
+Le paragraphe doit faire sentir le conflit en montrant ce que chaque option risque de produire.
+
+Méthode obligatoire :
+1. Commencer par une conséquence concrète.
+2. Montrer le risque de la première option.
+3. Montrer le risque inverse de l’autre option.
+4. Finir sur une phrase courte qui resserre la tension.
+
+Exemple de ton :
+“Frapper peut envoyer un signal clair. Mais dans une zone aussi inflammable, un signal peut vite appeler une réponse. À l’inverse, freiner l’escalade protège la région d’un embrasement immédiat, sans répondre à la question qui obsède Israël : que faire si la menace se reconstitue de l’autre côté de la frontière ?”
+
+Attention :
+- Ne pas utiliser exactement cet exemple.
+- Adapter à chaque sujet.
+- Utiliser des verbes concrets : frapper, céder, reculer, tenir, bloquer, exposer, rassurer, provoquer, contenir.
+- Éviter les mots abstraits répétés : enjeu, dilemme, tension, choix collectif, équilibre, stabilité.
+- Le paragraphe doit rester sobre, mais plus nerveux.
 
 Longueur :
 800 à 1400 caractères.
@@ -1413,7 +1678,7 @@ Amélioration possible :
 Tu peux améliorer debateQuestion, positionA et positionB si nécessaire, mais seulement pour les rendre plus clairs, plus concrets et plus adaptés à Agôn.
 
 Règles pour debateQuestion :
-- Maximum 99 caractères, espaces compris.
+- Maximum 98 caractères, espaces et tirets compris.
 - Question claire, concrète et débattable.
 - Ancrée dans le sujet précis.
 - Pas de question molle : “faut-il s’inquiéter ?”, “est-ce une bonne chose ?”, “qui a raison ?”.
@@ -1483,12 +1748,367 @@ Réponds uniquement en JSON valide, sans balises markdown.`;
     };
   }
 
-  return {
+  const baseResult = {
     article: limitStoryText(parsed.article || summary, 1600),
-    debateQuestion: String(parsed.debateQuestion || debateQuestion).trim(),
+    debateQuestion: limitDebateQuestion(parsed.debateQuestion || debateQuestion),
     positionA: String(parsed.positionA || positionA).trim(),
     positionB: String(parsed.positionB || positionB).trim()
   };
+
+  return polishAgonFinalArticle(payload, baseResult);
+}
+
+async function polishAgonFinalArticle(payload, previousJson) {
+  const subject = String(payload?.subject || "").trim();
+  const summary = String(payload?.summary || "").trim();
+  const narrativeTension = String(payload?.narrativeTension || "").trim();
+  const base = {
+    article: String(previousJson?.article || "").trim(),
+    debateQuestion: String(previousJson?.debateQuestion || "").trim(),
+    positionA: String(previousJson?.positionA || "").trim(),
+    positionB: String(previousJson?.positionB || "").trim()
+  };
+
+  if (!openai || !base.article) {
+    return { ...base, latinQuestion: "" };
+  }
+
+  const prompt = `Tu dois retravailler le texte final d’un article Agôn en conservant strictement les contraintes techniques et éditoriales ci-dessous.
+
+Objectif :
+Améliorer la fluidité, la clarté et la force éditoriale du texte, surtout le deuxième paragraphe, qui doit faire apparaître l’enjeu, le contraste ou le choix collectif révélé par l’actualité.
+
+Le texte doit rester journalistique, sobre et crédible.
+La question latine apporte déjà la touche symbolique : il ne faut donc pas rendre tout l’article antique, pompeux ou théâtral.
+
+Contraintes de longueur :
+- article : 800 à 1400 caractères.
+- debateQuestion : maximum 98 caractères, espaces et tirets compris.
+- positionA : maximum 55 caractères, espaces compris.
+- positionB : maximum 55 caractères, espaces compris.
+- Attention : le champ article est ensuite limité par le code à 1600 caractères. Il faut donc rester sous cette limite, signature comprise.
+
+Structure obligatoire du champ article :
+1. Une première phrase courte, claire et mémorable.
+2. Ligne vide obligatoire juste après cette première phrase.
+3. Premier paragraphe court : ce qui s’est passé.
+4. Deuxième paragraphe court : l’enjeu, le contraste ou le choix collectif révélé.
+5. Ligne vide.
+6. Question latine très courte, sans point d’interrogation.
+7. Ligne vide.
+8. Question Agôn définitive seule sur une ligne.
+9. Ligne vide.
+10. Signature seule sur la toute dernière ligne.
+
+Règle de ton prioritaire :
+Le texte final doit ressembler à un court éditorial d’actualité, pas à un résumé de veille.
+Avant de réécrire, supprime mentalement les phrases génériques.
+Une phrase est générique si elle pourrait être utilisée dans un article sur un autre conflit, une autre crise ou une autre polémique.
+Chaque paragraphe doit contenir au moins une phrase qui avance vraiment : un verbe d’action, un risque, une opposition ou une conséquence possible.
+
+Le texte final doit contenir :
+- une accroche courte et concrète ;
+- un premier paragraphe factuel, mais pas administratif ;
+- un deuxième paragraphe construit sur ce que chaque option risque de coûter ;
+- une dernière phrase affirmative qui prépare la question sans répéter “débat”, “enjeu” ou “choix collectif”.
+
+Formulations interdites sauf nécessité factuelle forte :
+- “dans un contexte de tensions”
+- “chaque mouvement est scruté”
+- “la situation reste volatile”
+- “les détails restent flous”
+- “cette action s’inscrit dans”
+- “la tension monte”
+- “la stabilité fragile de la zone”
+- “les relations restent fragiles”
+- “la communauté internationale observe”
+
+Style demandé :
+- Ton éditorial sobre, tendu et vivant.
+- Texte clair, sérieux, accessible et journalistique.
+- Captivant sans être sensationnaliste.
+- Ne pas écrire comme une dépêche froide.
+- Ne pas écrire comme une tribune personnelle.
+- Ne pas forcer les métaphores d’arène, de cité, de combat ou de destin.
+- Éviter les formules trop solennelles sauf si le sujet s’y prête vraiment.
+- La première phrase doit pouvoir fonctionner comme une accroche forte, sans être un titre séparé.
+
+Deuxième paragraphe :
+- Ne décris pas le dilemme de façon scolaire.
+- Ne commence jamais par “Le choix est…”, “Le dilemme est…”, “Cette tension oppose…”, “Deux logiques s’opposent…” ou “La difficulté tient à…”.
+- Commence par une conséquence concrète.
+- Montre le risque de la première option.
+- Montre le risque inverse de l’autre option.
+- Termine par une phrase courte qui resserre la tension.
+- Utilise des verbes concrets : frapper, céder, reculer, tenir, bloquer, exposer, rassurer, provoquer, contenir, protéger, relancer.
+- Évite les mots abstraits répétés : enjeu, dilemme, tension, choix collectif, équilibre, stabilité.
+- Le paragraphe doit rester sobre, mais plus nerveux.
+
+Exemple de ton à adapter sans recopier :
+“Frapper peut envoyer un signal clair. Mais dans une zone aussi inflammable, un signal peut vite appeler une réponse. À l’inverse, freiner l’escalade protège la région d’un embrasement immédiat, sans répondre à la question qui obsède Israël : que faire si la menace se reconstitue de l’autre côté de la frontière ?”
+
+Éviter les formulations scolaires ou trop IA comme :
+- “Cette situation révèle…”
+- “Ce sujet met en lumière…”
+- “Le choix collectif porte sur…”
+- “Cela questionne la capacité de…”
+- “Il s’agit d’équilibrer deux impératifs…”
+- “Cette actualité illustre…”
+- “Deux visions s’opposent…”
+- “Ce débat cristallise…”
+
+Préférer des formulations naturelles, tendues et concrètes, en variant fortement les tournures d’un article à l’autre.
+
+Exemples de ton possible, à adapter sans recopier mécaniquement :
+- “Le problème, c’est que…”
+- “D’un côté…, de l’autre…”
+- “La difficulté tient moins au constat qu’au choix à faire…”
+- “Ce qui semblait évident devient plus délicat à appliquer.”
+- “Reste à savoir jusqu’où aller.”
+- “La question n’est plus seulement ce qu’il faut faire, mais à quel prix.”
+- “Le désaccord se déplace vers la méthode.”
+- “La frontière devient difficile à tracer.”
+- “Le sujet oblige à choisir entre deux prudences concurrentes.”
+
+Important :
+- Ne jamais répéter mécaniquement les mêmes formules d’un article à l’autre.
+- Ces phrases sont des exemples de ton, pas des phrases à recopier systématiquement.
+- Adapter la formulation au sujet réel.
+- Si le sujet est léger ou très concret, rester simple.
+- Si le sujet est tragique, violent ou sensible, rester sobre et éviter tout effet dramatique.
+
+Question latine — règle prioritaire absolue :
+- Tu dois obligatoirement produire le champ latinQuestion.
+- latinQuestion est un élément central de l’article Agôn : il ne doit jamais être vide, absent ou oublié.
+- latinQuestion doit être une formule pseudo-latine courte de 2 à 4 mots.
+- Format recommandé : Mot latin simple + "an" + mot latin simple.
+- Exemple de forme seulement : "Memoria an oblivio".
+- La ligne latine dans article doit être exactement identique au champ latinQuestion.
+- Elle doit être très courte.
+- Elle ne doit jamais avoir de point d’interrogation.
+- Elle doit résumer symboliquement l’enjeu.
+- Elle doit être placée juste avant la question Agôn définitive.
+- Elle doit rester simple, même si le latin est basique.
+- Crée une formule latine nouvelle et adaptée au sujet.
+- Le champ latinQuestion ne doit jamais être vide quand la réponse JSON est valide.
+- Ne jamais utiliser “Agôn”, “Agon” ou le nom de la plateforme dans la question latine.
+- Ne pas utiliser de mot grec, de marque, de nom propre ou de nom de média.
+- Ne réutilise pas mécaniquement les exemples.
+- Évite “Salus an libertas” sauf si le sujet oppose vraiment sécurité, protection ou santé à des libertés publiques.
+- Varie les mots selon l’enjeu réel : justice, force, peur, paix, loi, vérité, prudence, autorité, solidarité.
+- Ne réponds jamais avec une formule générique.
+- Les exemples ci-dessous montrent seulement la forme. Ne les recopie pas.
+- Exemples de forme :
+  “Pax an vis”
+  “Lex an metus”
+  “Veritas an utilitas”
+  “Prudentia an audacia”
+  “Auctoritas an concordia”
+
+Question Agôn :
+- Elle doit être claire, concrète et débattable.
+- Maximum 98 caractères strictement, espaces, apostrophes, accents, tirets et point d’interrogation final compris.
+- Si elle dépasse 98 caractères, la raccourcir avant de répondre.
+- Elle doit toujours se terminer par un point d’interrogation.
+- Elle doit apparaître seule, après la question latine.
+- Elle ne doit apparaître qu’une seule fois dans l’article.
+- Elle doit être compréhensible sans lire tout l’article.
+- Elle doit permettre deux positions défendables.
+- La question finale ne doit pas contenir une justification qui avantage un camp.
+- Éviter les formulations du type :
+  “Faut-il faire X pour protéger / contenir / défendre / empêcher… ?”
+- Préférer :
+  “Faut-il choisir X ou Y ?”
+  “La France doit-elle soutenir X ?”
+  “Faut-il autoriser X malgré Y ?”
+- Éviter les questions molles comme :
+  “Faut-il s’inquiéter ?”
+  “Est-ce une bonne chose ?”
+  “Qui a raison ?”
+- Éviter les questions évidentes comme :
+  “Faut-il protéger les enfants ?”
+  “Faut-il éviter les accidents ?”
+  “Faut-il empêcher les drames ?”
+
+Positions :
+- positionA et positionB doivent être très générales.
+- Ce sont des étiquettes de camp, pas des arguments.
+- Maximum 55 caractères chacune.
+- Elles doivent répondre directement à la question.
+- Elles doivent être symétriques, courtes et défendables.
+- Ne jamais utiliser “car”, “parce que”, “afin de”, “pour que”.
+- Éviter aussi “pour” si cela transforme la position en argument.
+- Exemples corrects :
+  “Suspendre les frappes”
+  “Maintenir la pression militaire”
+  “Priorité à la protection”
+  “Priorité aux garanties”
+  “Renforcer le contrôle”
+  “Limiter les contraintes”
+
+Signature :
+- L’article doit toujours se terminer par une signature.
+- Choisir un seul nom parmi cette liste :
+  J.L Grasso / F. Glorennec / T. Guyomarch / M. Guillot / P. Ratsky
+- La signature doit être seule sur la dernière ligne.
+- Ne jamais inventer d’autre nom.
+- Ne jamais expliquer le choix du nom.
+- Ne pas mettre de tiret avant la signature.
+
+Règles absolues :
+- Ne rien inventer.
+- Ne pas ajouter de fait absent du résumé factuel.
+- Ne pas dramatiser artificiellement.
+- Ne pas transformer l’article en tribune personnelle.
+- Ne pas afficher les positions dans l’article.
+- Ne pas écrire de titre séparé dans le champ article.
+- Ne pas ajouter de rubrique du type “Pourquoi ça fait parler”, “Tension d’opinion”, “Biais” ou “Enjeu”.
+- La question latine, la question Agôn et la signature doivent respecter exactement la structure demandée.
+- Ne pas ajouter d’autre question que la question Agôn finale.
+- La phrase avant la question latine doit être affirmative.
+
+Vérification obligatoire avant de répondre :
+1. Le JSON contient bien le champ latinQuestion.
+2. latinQuestion n’est pas vide.
+3. article contient une ligne latine exactement identique à latinQuestion.
+4. Cette ligne latinQuestion est placée juste avant debateQuestion.
+5. La ligne française dans article est exactement identique au champ debateQuestion.
+6. Si une condition échoue, corrige le JSON avant de répondre.
+
+JSON attendu uniquement :
+{
+  "article": "...",
+  "latinQuestion": "...",
+  "debateQuestion": "...",
+  "positionA": "...",
+  "positionB": "..."
+}
+
+Sujet :
+${subject}
+
+Résumé factuel :
+${summary}
+
+Tension narrative à exploiter si elle est utile :
+${narrativeTension}
+
+JSON à retravailler :
+${JSON.stringify(base, null, 2)}
+
+Réponds uniquement en JSON valide, sans balises markdown.`;
+
+  try {
+    const response = await openai.responses.create({
+      model: "gpt-4.1-mini",
+      input: prompt,
+      temperature: 0.3,
+      max_output_tokens: 2200
+    });
+    const parsed = safeJsonParse(String(response.output_text || "").trim());
+    const finalQuestion = limitDebateQuestion(parsed.debateQuestion || base.debateQuestion);
+    const finalLatinQuestion = normalizeLatinQuestion(parsed.latinQuestion || "")
+      || extractLatinQuestionFromArticle(parsed.article || "")
+      || buildFallbackLatinQuestion({
+        subject,
+        summary,
+        debateQuestion: finalQuestion,
+        narrativeTension
+      });
+    const finalSignature = getNextAgonArticleSignature();
+    let finalArticle = enforceFinalArticleQuestion(parsed.article || base.article, finalQuestion, finalLatinQuestion, finalSignature, {
+      positionA: parsed.positionA || base.positionA,
+      positionB: parsed.positionB || base.positionB
+    });
+    if (finalArticle.length < AGON_ARTICLE_MIN_LENGTH) {
+      finalArticle = await expandShortAgonArticle(payload, {
+        article: finalArticle,
+        latinQuestion: finalLatinQuestion,
+        debateQuestion: finalQuestion,
+        positionA: parsed.positionA || base.positionA,
+        positionB: parsed.positionB || base.positionB
+      });
+      finalArticle = enforceFinalArticleQuestion(finalArticle, finalQuestion, finalLatinQuestion, finalSignature, {
+        positionA: parsed.positionA || base.positionA,
+        positionB: parsed.positionB || base.positionB
+      });
+    }
+    return {
+      article: finalArticle,
+      latinQuestion: finalLatinQuestion,
+      debateQuestion: finalQuestion,
+      positionA: limitStoryText(parsed.positionA || base.positionA, 55),
+      positionB: limitStoryText(parsed.positionB || base.positionB, 55)
+    };
+  } catch (error) {
+    console.error("Erreur finition article Agôn :", error.message);
+    return { ...base, latinQuestion: "" };
+  }
+}
+
+async function expandShortAgonArticle(payload, currentJson) {
+  if (!openai) return currentJson.article;
+  const subject = String(payload?.subject || "").trim();
+  const summary = String(payload?.summary || "").trim();
+  const prompt = `Tu dois allonger légèrement un article Agôn trop court, sans changer sa structure ni ajouter de fait absent.
+
+Objectif :
+- Porter le champ "article" entre 800 et 1400 caractères.
+- Conserver strictement les faits déjà présents et le résumé factuel.
+- Ne rien inventer.
+- Garder un style éditorial sobre, clair et tendu, sans lyrisme forcé ni effet théâtral.
+- Renforcer surtout le deuxième paragraphe en montrant ce que chaque option risque de produire.
+- Ne pas commencer ce paragraphe par “Le choix est…”, “Le dilemme est…”, “Cette tension oppose…”, “Deux logiques s’opposent…” ou “La difficulté tient à…”.
+- Commencer par une conséquence concrète, puis montrer le risque d’une option et le risque inverse de l’autre.
+- Éviter les phrases génériques qui pourraient convenir à n'importe quelle crise.
+- Privilégier des verbes d'action, des risques concrets et une opposition lisible entre deux prudences ou deux coûts.
+- Finir le deuxième paragraphe par une phrase courte qui resserre la tension.
+
+Structure obligatoire à conserver :
+1. Première phrase courte pouvant fonctionner comme un titre.
+2. Ligne vide obligatoire juste après cette première phrase.
+3. Premier paragraphe court : ce qui s’est passé.
+4. Deuxième paragraphe court : l’enjeu ou le contraste.
+5. Ligne vide.
+6. Question latine très courte, sans point d’interrogation.
+7. Ligne vide.
+8. Question Agôn en français, maximum 98 caractères strictement, point d’interrogation final compris.
+9. Ligne vide.
+10. Signature seule.
+
+JSON attendu uniquement :
+{
+  "article": "...",
+  "latinQuestion": "...",
+  "debateQuestion": "...",
+  "positionA": "...",
+  "positionB": "..."
+}
+
+Sujet :
+${subject}
+
+Résumé factuel :
+${summary}
+
+JSON actuel à allonger :
+${JSON.stringify(currentJson, null, 2)}
+
+Réponds uniquement en JSON valide, sans balises markdown.`;
+
+  try {
+    const response = await openai.responses.create({
+      model: "gpt-4.1-mini",
+      input: prompt,
+      temperature: 0.25,
+      max_output_tokens: 2000
+    });
+    const parsed = safeJsonParse(String(response.output_text || "").trim());
+    return limitStoryText(parsed.article || currentJson.article, AGON_ARTICLE_MAX_LENGTH);
+  } catch (error) {
+    console.error("Erreur allongement article Agôn :", error.message);
+    return currentJson.article;
+  }
 }
 
 
@@ -2084,10 +2704,14 @@ app.get("/veille-mixte.json", (req, res) => {
 
 app.post("/refresh", requireMixteAuth, async (req, res) => {
   try {
-    await fetch("http://127.0.0.1:3002/refresh", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(req.body || {}) });
-    res.json({ ok: true });
+    const response = await fetch("http://127.0.0.1:3002/refresh", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(req.body || {}) });
+    const data = await response.json().catch(() => ({ ok: false, error: "Réponse API mixte invalide" }));
+    if (!response.ok || data.ok === false) {
+      return res.status(response.status || 500).json({ ok: false, error: data.error || "Erreur démarrage collecte" });
+    }
+    res.json(data);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ ok: false, error: err.message });
   }
 });
 
@@ -2203,6 +2827,16 @@ app.post("/generate-styled-article", requireMixteAuth, async (req, res) => {
   try {
     const payload = req.body || {};
     const result = await generateStyledArticle(payload);
+    if (result && result.debateQuestion) {
+      result.debateQuestion = limitDebateQuestion(result.debateQuestion);
+    }
+    if (result && result.article) {
+      result.latinQuestion = normalizeLatinQuestion(result.latinQuestion || "") || extractLatinQuestionFromArticle(result.article);
+      result.article = enforceFinalArticleQuestion(result.article, result.debateQuestion, result.latinQuestion, "", {
+        positionA: result.positionA,
+        positionB: result.positionB
+      });
+    }
     res.json({ ok: true, ...result });
   } catch (err) {
     res.status(500).json({ ok: false, error: err.message || "Erreur génération article définitif" });
@@ -3432,10 +4066,78 @@ app.delete("/api/agon-stories/:storyId", requireMixteAuth, async (req, res) => {
   }
 });
 
+function normalizeOutgoingKeywords(keywords) {
+  return [...new Set((Array.isArray(keywords) ? keywords : [])
+    .map((keyword) => String(keyword || "").trim())
+    .filter(Boolean))]
+    .slice(0, 10);
+}
+
+function normalizeOutgoingSources(sources, links) {
+  if (Array.isArray(sources)) {
+    return sources.map((source) => String(source || "").trim()).filter(Boolean);
+  }
+  if (typeof sources === "string") {
+    return sources.split(/[,;\n]+/).map((source) => source.trim()).filter(Boolean);
+  }
+  return [...new Set((Array.isArray(links) ? links : [])
+    .map((link) => String(link?.source || "").trim())
+    .filter(Boolean))];
+}
+
+function buildTagGenerationPayload({ subject, question, sources, links }) {
+  const normalizedLinks = Array.isArray(links) ? links : [];
+  const contents = normalizedLinks.map((link) => ({
+    type: link?.type || "article",
+    source: link?.source || "",
+    orientation: link?.orientation || "",
+    title: link?.title || link?.text || "",
+    link: link?.link || link?.url || "",
+    summary: link?.summary || link?.description || ""
+  }));
+  const normalizedSources = normalizeOutgoingSources(sources, normalizedLinks);
+
+  return {
+    subject: String(subject || question || "").trim(),
+    sources: normalizedSources,
+    contents,
+    articleCount: contents.filter((item) => item.type === "article").length,
+    youtubeCount: contents.filter((item) => item.type === "youtube").length
+  };
+}
+
+async function ensureKeywordsBeforeAgonSend({ subject, question, sources, links, keywords }) {
+  const currentKeywords = normalizeOutgoingKeywords(keywords);
+  if (currentKeywords.length) return currentKeywords;
+
+  const payload = buildTagGenerationPayload({ subject, question, sources, links });
+  if (!payload.subject || !payload.contents.length) return currentKeywords;
+
+  try {
+    const response = await fetch("http://127.0.0.1:3002/generate-tags", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+    if (!response.ok) {
+      const text = await response.text().catch(() => "");
+      throw new Error(text || "Erreur génération tags");
+    }
+    const data = await response.json();
+    return normalizeOutgoingKeywords([data?.mainKeyword, ...(Array.isArray(data?.keywords) ? data.keywords : [])]);
+  } catch (error) {
+    console.error("[send-to-agon] Tags absents et génération impossible:", error.message);
+    return currentKeywords;
+  }
+}
+
 app.post("/send-to-agon", requireMixteAuth, async (req, res) => {
   try {
     const { subject, sessionLabel, question, positionA, positionB, theme, resume, sources, links, storySelection, keywords } = req.body;
     if (!question) return res.status(400).json({ ok: false, error: "question manquante" });
+    const normalizedQuestion = limitDebateQuestion(question);
+    const normalizedResume = ensureArticleOpeningSentenceBreak(resume);
+    const resolvedKeywords = await ensureKeywordsBeforeAgonSend({ subject, question: normalizedQuestion, sources, links, keywords });
     console.log(`[send-to-agon] Envoi vers ${AGON_URL}/api/veille/receive`);
     const agonController = new AbortController();
     const agonTimeout = setTimeout(() => agonController.abort(), 15000);
@@ -3444,7 +4146,7 @@ app.post("/send-to-agon", requireMixteAuth, async (req, res) => {
       r = await fetch(`${AGON_URL}/api/veille/receive`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ question, positionA, positionB, theme, resume, sources, links: links || [], storySelection: storySelection || null, keywords: Array.isArray(keywords) ? keywords : [] }),
+        body: JSON.stringify({ question: normalizedQuestion, positionA, positionB, theme, resume: normalizedResume, sources, links: links || [], storySelection: storySelection || null, keywords: resolvedKeywords }),
         signal: agonController.signal
       });
     } finally {
@@ -3458,15 +4160,15 @@ app.post("/send-to-agon", requireMixteAuth, async (req, res) => {
     upsertSentToAgonItem({
       subject,
       sessionLabel,
-      question,
+      question: normalizedQuestion,
       positionA,
       positionB,
       theme,
-      resume,
+      resume: normalizedResume,
       sources,
       links: Array.isArray(links) ? links : [],
       storySelection: storySelection || null,
-      keywords: Array.isArray(keywords) ? keywords : [],
+      keywords: resolvedKeywords,
       sentAt: new Date().toISOString()
     });
     console.log("[send-to-agon] Succès");

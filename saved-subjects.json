@@ -1,6 +1,1918 @@
 [
   {
     "action": "save",
+    "subject": "L’UE inflige une amende de 200 millions d’euros à Temu, géant chinois du commerce en ligne, pour avoir permis la vente de produits illégaux",
+    "debateScore": 7,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "Le Monde, Libération, La Croix, BFMTV, Euronews FR",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.liberation.fr/international/europe/vente-de-produits-illegaux-lue-inflige-une-amende-de-200-millions-deuros-a-temu-20260528_6RREIMNA3NF7XEZBUZ3JADZ2CM/",
+        "source": "Libération",
+        "title": "Vente de produits illégaux : l’UE inflige une amende de 200 millions d’euros à Temu",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.lemonde.fr/economie/article/2026/05/28/l-ue-inflige-une-amende-de-200-millions-d-euros-a-temu-geant-chinois-du-commerce-en-ligne-pour-avoir-permis-la-vente-de-produits-illegaux_6694456_3234.html",
+        "source": "Le Monde",
+        "title": "L’UE inflige une amende de 200 millions d’euros à Temu, géant chinois du commerce en ligne, pour avoir permis la vente de produits illégaux",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.bfmtv.com/economie/entreprises/jouets-pour-bebes-dangereux-chargeurs-defectueux-bruxelles-inflige-200-millions-d-euros-d-amende-au-geant-chinois-du-commerce-en-ligne-temu-ali-express-et-shein-pourraient-suivre_AD-202605280473.html",
+        "source": "BFMTV",
+        "title": "Jouets pour bébés dangereux, chargeurs défectueux... Bruxelles inflige 200 millions d'euros d'amende à Temu pour la vente de produits illégaux aux consommateurs européens",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.la-croix.com/l-ue-met-temu-a-l-amende-pour-avoir-permis-la-vente-de-produits-illegaux-20260528",
+        "source": "La Croix",
+        "title": "Vente de produits illégaux : l’UE inflige une amende de 200 millions d’euros à Temu",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "http://fr.euronews.com/next/2026/05/28/lue-inflige-200-millions-damende-a-temu-pour-jouets-bebe-et-chargeurs-dangereux",
+        "source": "Euronews FR",
+        "title": "L’UE inflige 200 millions € d’amende à Temu pour jouets bébé et chargeurs dangereux",
+        "thumbnail": ""
+      }
+    ],
+    "sessionLabel": "28/05/2026 à 15:37:18",
+    "controversyLevel": "fort",
+    "ai": {
+      "arenaMode": "positions",
+      "debateScore": 7,
+      "controversyLevel": "fort",
+      "debateQuestion": "",
+      "resume": "",
+      "keywords": [
+        "commerce en ligne",
+        "produits illégaux",
+        "jouets pour bébés",
+        "chargeurs défectueux",
+        "Bruxelles",
+        "géant chinois"
+      ],
+      "selectedLinks": [
+        "https://www.liberation.fr/international/europe/vente-de-produits-illegaux-lue-inflige-une-amende-de-200-millions-deuros-a-temu-20260528_6RREIMNA3NF7XEZBUZ3JADZ2CM/",
+        "https://www.lemonde.fr/economie/article/2026/05/28/l-ue-inflige-une-amende-de-200-millions-d-euros-a-temu-geant-chinois-du-commerce-en-ligne-pour-avoir-permis-la-vente-de-produits-illegaux_6694456_3234.html",
+        "https://www.bfmtv.com/economie/entreprises/jouets-pour-bebes-dangereux-chargeurs-defectueux-bruxelles-inflige-200-millions-d-euros-d-amende-au-geant-chinois-du-commerce-en-ligne-temu-ali-express-et-shein-pourraient-suivre_AD-202605280473.html",
+        "https://www.la-croix.com/l-ue-met-temu-a-l-amende-pour-avoir-permis-la-vente-de-produits-illegaux-20260528",
+        "http://fr.euronews.com/next/2026/05/28/lue-inflige-200-millions-damende-a-temu-pour-jouets-bebe-et-chargeurs-dangereux"
+      ],
+      "agonTheme": "Économie - emploi",
+      "positionA": "",
+      "positionB": "",
+      "sourceSubject": "L’UE inflige une amende de 200 millions d’euros à Temu, géant chinois du commerce en ligne, pour avoir permis la vente de produits illégaux",
+      "fullArticleState": "short",
+      "mainKeyword": "Amende UE à Temu",
+      "storyLink": {
+        "story_decision": "existing_story",
+        "matched_story_id": "07-l-union-europeenne-cherche-sa-place-face-aux-crises-internes-et-aux-tensions-int",
+        "matched_story_title": "L’Union européenne cherche sa place face aux crises internes et aux tensions internationales",
+        "matched_story_summary": "",
+        "previous_episode_id": "619",
+        "previous_episode_title": "L’Union européenne doit-elle maintenir un ordre commercial fondé sur ses valeurs ou adopter une a?",
+        "previous_episode_summary": "",
+        "previous_episode_url": "http://localhost:3001/debate?id=619",
+        "confidence": 0.85,
+        "reason": "L'actualité concerne une sanction économique majeure prise par l'UE contre un géant chinois du commerce en ligne, ce qui relève clairement de la place et des actions de l'Union européenne dans un contexte de régulation et de tensions internationales.",
+        "criteria": {
+          "main_actors_match": true,
+          "central_tension_match": true,
+          "temporal_continuity": true,
+          "editorial_theme_match": true,
+          "strong_keywords_match": true
+        },
+        "new_story": {
+          "story_title": "",
+          "story_summary": "",
+          "main_actors": [
+            "inflige",
+            "amende",
+            "millions"
+          ],
+          "central_tension": "L’UE doit-elle renforcer les contrôles sur les plateformes étrangères au risque de freiner?",
+          "keywords": [
+            "inflige",
+            "amende",
+            "millions",
+            "euros",
+            "temu",
+            "geant",
+            "chinois",
+            "commerce"
+          ],
+          "status": "active"
+        }
+      }
+    }
+  },
+  {
+    "action": "save",
+    "subject": "Le remboursement des médicaments contre l'obésité Wegovy et Mounjaro débutera mi-juin, pour une population cible d'un million de personnes",
+    "debateScore": 7,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "Franceinfo, Libération, Valeurs actuelles, La Croix, L'Express",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.liberation.fr/societe/sante/medicaments-anti-obesite-le-wegovy-et-le-mounjaro-en-passe-detre-rembourses-20260527_OPTBN6TTDVGTPOUURKDMCTCFOM/",
+        "source": "Libération",
+        "title": "Médicaments anti-obésité : le Wegovy et le Mounjaro seront remboursés à compter de la mi-juin",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.franceinfo.fr/sante/medicament/les-medicaments-contre-l-obesite-wegovy-et-mounjaro-seront-officiellement-rembourses-des-la-mi-juin_8032076.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "title": "Le remboursement des médicaments contre l'obésité Wegovy et Mounjaro débutera mi-juin, pour une population cible d'un million de personnes",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.la-croix.com/sante/obesite-les-medicaments-wegovy-et-mounjaro-bientot-rembourses-mais-sous-conditions-20260528",
+        "source": "La Croix",
+        "title": "Obésité : les médicaments Wegovy et Mounjaro bientôt remboursés mais sous conditions",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.lexpress.fr/sciences-sante/sante/medicaments-anti-obesite-le-wegovy-et-le-mounjaro-bientot-rembourses-par-la-securite-sociale-CLBOL4G7XFE4JMMEGXBUU7RWWU/",
+        "source": "L'Express",
+        "title": "Médicaments anti-obésité : le Wegovy et le Mounjaro bientôt remboursés par la Sécurité sociale",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.valeursactuelles.com/societe/medicaments-anti-obesite-le-wegovy-et-le-mounjaro-bientot-rembourses-par-la-securite-sociale",
+        "source": "Valeurs actuelles",
+        "title": "Médicaments anti-obésité : le Wegovy et le Mounjaro bientôt remboursés par la Sécurité sociale",
+        "thumbnail": ""
+      }
+    ],
+    "sessionLabel": "28/05/2026 à 15:37:18",
+    "controversyLevel": "fort",
+    "ai": {
+      "arenaMode": "positions",
+      "debateScore": 7,
+      "controversyLevel": "fort",
+      "debateQuestion": "",
+      "resume": "",
+      "keywords": [
+        "Sécurité sociale",
+        "population cible",
+        "mi-juin"
+      ],
+      "selectedLinks": [
+        "https://www.liberation.fr/societe/sante/medicaments-anti-obesite-le-wegovy-et-le-mounjaro-en-passe-detre-rembourses-20260527_OPTBN6TTDVGTPOUURKDMCTCFOM/",
+        "https://www.franceinfo.fr/sante/medicament/les-medicaments-contre-l-obesite-wegovy-et-mounjaro-seront-officiellement-rembourses-des-la-mi-juin_8032076.html#xtor=RSS-3-[lestitres]",
+        "https://www.la-croix.com/sante/obesite-les-medicaments-wegovy-et-mounjaro-bientot-rembourses-mais-sous-conditions-20260528",
+        "https://www.lexpress.fr/sciences-sante/sante/medicaments-anti-obesite-le-wegovy-et-le-mounjaro-bientot-rembourses-par-la-securite-sociale-CLBOL4G7XFE4JMMEGXBUU7RWWU/",
+        "https://www.valeursactuelles.com/societe/medicaments-anti-obesite-le-wegovy-et-le-mounjaro-bientot-rembourses-par-la-securite-sociale"
+      ],
+      "agonTheme": "Santé - bien-être",
+      "positionA": "",
+      "positionB": "",
+      "sourceSubject": "Le remboursement des médicaments contre l'obésité Wegovy et Mounjaro débutera mi-juin, pour une population cible d'un million de personnes",
+      "fullArticleState": "short",
+      "mainKeyword": "médicaments anti-obésité",
+      "storyLink": {
+        "story_decision": "existing_story",
+        "matched_story_id": "29-le-systeme-de-sante-fait-face-a-des-tensions-d-acces-aux-soins-de-moyens-et-de-c",
+        "matched_story_title": "Le système de santé fait face à des tensions d’accès aux soins, de moyens et de confiance",
+        "matched_story_summary": "",
+        "previous_episode_id": "613",
+        "previous_episode_title": "L’Ouganda doit-il maintenir la fermeture de ses frontières avec la RDC malgré les conséquences éco…",
+        "previous_episode_summary": "Un Espagnol placé en quarantaine à Madrid a été testé positif au hantavirus. Cette découverte a été confirmée par le ministère de la Santé.\n\nCette personne faisait partie d’un groupe de croisiéristes espagnols mis en isolement par précaution, afin de surveiller d’éventuels cas suite à une exposition présumée au virus. La détection d’un cas positif a confirmé la présence du hantavirus parmi ces individus, justifiant la poursuite des mesures sanitaires et le suivi médical des personnes concernées.\n\nLa gestion de cette quarantaine soulève des questions importantes sur la prévention et la réponse sanitaire face au hantavirus. Il est essentiel d’évaluer si les mesures actuelles sont adaptées pour contenir efficacement la propagation du virus.\n\nFaut-il renforcer les mesures de quarantaine pour contenir le hantavirus à Madrid ?",
+        "previous_episode_url": "http://localhost:3001/debate?id=613",
+        "confidence": 0.85,
+        "reason": "L'actualité porte sur le remboursement de médicaments anti-obésité par la Sécurité sociale, ce qui relève clairement des enjeux d'accès aux soins et de moyens dans le système de santé.",
+        "criteria": {
+          "main_actors_match": true,
+          "central_tension_match": true,
+          "temporal_continuity": true,
+          "editorial_theme_match": true,
+          "strong_keywords_match": true
+        },
+        "new_story": {
+          "story_title": "",
+          "story_summary": "",
+          "main_actors": [
+            "remboursement",
+            "medicaments",
+            "obesite"
+          ],
+          "central_tension": "La France doit-elle élargir le remboursement des médicaments anti-obésité malgré leur coût élevé?",
+          "keywords": [
+            "remboursement",
+            "medicaments",
+            "obesite",
+            "wegovy",
+            "mounjaro",
+            "debutera",
+            "juin",
+            "population"
+          ],
+          "status": "active"
+        }
+      }
+    }
+  },
+  {
+    "action": "save",
+    "subject": "Michelin annonce un plan de départs volontaires en France, \"jusqu'à 1 500 postes\" supprimés",
+    "debateScore": 7,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "Franceinfo, Le Monde, Libération, La Croix, RFI",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.lemonde.fr/economie/article/2026/05/28/michelin-annonce-un-plan-de-departs-volontaires-en-france-qui-concernera-jusqu-a-1-500-postes-sur-trois-ans_6694448_3234.html",
+        "source": "Le Monde",
+        "title": "Michelin annonce un plan de départs volontaires en France qui concernera « jusqu’à 1 500 postes sur trois ans »",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.liberation.fr/economie/le-groupe-michelin-annonce-la-suppression-de-1-500-postes-en-france-dici-trois-ans-20260528_YMCPXM4XZVHZHDOJPINZUGHLUU/",
+        "source": "Libération",
+        "title": "Le groupe Michelin annonce la suppression de 1 500 postes en France d’ici trois ans",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.franceinfo.fr/economie/michelin-annonce-un-plan-de-departs-volontaires-en-france-jusqu-a-1-500-postes-supprimes_8033726.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "title": "Michelin annonce un plan de départs volontaires en France, \"jusqu'à 1 500 postes\" supprimés",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.la-croix.com/michelin-annonce-un-plan-de-departs-volontaires-en-france-jusqu-a-1-500-postes-supprimes-20260528",
+        "source": "La Croix",
+        "title": "Michelin : jusqu’à 1 500 postes supprimés en France dans le cadre d’un plan de départs volontaires",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.rfi.fr/fr/france/20260528-en-france-michelin-envisage-de-supprimer-jusqu-%C3%A0-1500-postes-sur-trois-ans",
+        "source": "RFI",
+        "title": "En France, Michelin envisage de supprimer jusqu'à 1500 postes sur trois ans",
+        "thumbnail": ""
+      }
+    ],
+    "sessionLabel": "28/05/2026 à 15:37:18",
+    "controversyLevel": "fort",
+    "ai": {
+      "arenaMode": "positions",
+      "debateScore": 7,
+      "controversyLevel": "fort",
+      "debateQuestion": "",
+      "resume": "",
+      "keywords": [
+        "industrie pneumatique",
+        "plan social"
+      ],
+      "selectedLinks": [
+        "https://www.lemonde.fr/economie/article/2026/05/28/michelin-annonce-un-plan-de-departs-volontaires-en-france-qui-concernera-jusqu-a-1-500-postes-sur-trois-ans_6694448_3234.html",
+        "https://www.liberation.fr/economie/le-groupe-michelin-annonce-la-suppression-de-1-500-postes-en-france-dici-trois-ans-20260528_YMCPXM4XZVHZHDOJPINZUGHLUU/",
+        "https://www.franceinfo.fr/economie/michelin-annonce-un-plan-de-departs-volontaires-en-france-jusqu-a-1-500-postes-supprimes_8033726.html#xtor=RSS-3-[lestitres]",
+        "https://www.la-croix.com/michelin-annonce-un-plan-de-departs-volontaires-en-france-jusqu-a-1-500-postes-supprimes-20260528",
+        "https://www.rfi.fr/fr/france/20260528-en-france-michelin-envisage-de-supprimer-jusqu-%C3%A0-1500-postes-sur-trois-ans"
+      ],
+      "agonTheme": "Économie - emploi",
+      "positionA": "",
+      "positionB": "",
+      "sourceSubject": "Michelin annonce un plan de départs volontaires en France, \"jusqu'à 1 500 postes\" supprimés",
+      "fullArticleState": "short",
+      "mainKeyword": "suppression de postes",
+      "storyLink": {
+        "story_decision": "existing_story",
+        "matched_story_id": "22-le-travail-se-transforme-avec-les-debats-sur-les-salaires-les-retraites-le-telet",
+        "matched_story_title": "Le travail se transforme avec les débats sur les salaires, les retraites, le télétravail et l’automatisation",
+        "matched_story_summary": "",
+        "previous_episode_id": "",
+        "previous_episode_title": "",
+        "previous_episode_summary": "",
+        "previous_episode_url": "",
+        "confidence": 0.85,
+        "reason": "L'actualité porte sur un plan social dans l'industrie pneumatique en France, ce qui correspond bien à la transformation du travail et aux débats sur l'emploi et les conditions de travail en France.",
+        "criteria": {
+          "main_actors_match": true,
+          "central_tension_match": true,
+          "temporal_continuity": true,
+          "editorial_theme_match": true,
+          "strong_keywords_match": true
+        },
+        "new_story": {
+          "story_title": "",
+          "story_summary": "",
+          "main_actors": [],
+          "central_tension": "Michelin doit-il privilégier la réduction des effectifs via des départs volontaires ou protéger?",
+          "keywords": [],
+          "status": "active"
+        }
+      }
+    }
+  },
+  {
+    "action": "save",
+    "subject": "L'Assemblée nationale approuve à l'unanimité l'abrogation du Code noir, près de 180 ans après l'abolition de l'esclavage",
+    "debateScore": 7,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "Franceinfo, Le Monde, Libération, Le Figaro, BFMTV, France 24, HuffPost France, Le Dauphiné Libéré",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.huffingtonpost.fr/politique/video/l-emotion-de-steevy-gustave-avant-l-abrogation-du-code-noir-a-saisi-toute-l-assemblee_264187.html",
+        "source": "HuffPost France",
+        "title": "L’émotion de Steevy Gustave avant l’abrogation du Code noir a saisi toute l’Assemblée",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.liberation.fr/politique/esclavage-lassemblee-nationale-approuve-a-lunanimite-labrogation-du-code-noir-20260528_BKBPW3E2FFGWJED7C37VYR7PVY/",
+        "source": "Libération",
+        "title": "Esclavage : l’Assemblée nationale approuve à l’unanimité l’abrogation du «Code noir»",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.lemonde.fr/societe/article/2026/05/28/esclavage-l-assemblee-nationale-approuve-a-l-unanimite-l-abrogation-du-code-noir_6694459_3224.html",
+        "source": "Le Monde",
+        "title": "Esclavage : l’Assemblée nationale approuve à l’unanimité l’abrogation du Code noir",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.ledauphine.com/politique/2026/05/28/178-ans-apres-l-abolition-de-l-esclavage-l-assemblee-nationale-approuve-a-l-unanimite-l-abrogation-du-code-noir",
+        "source": "Le Dauphiné Libéré",
+        "title": "Politique. 178 ans après l'abolition de l'esclavage, l'Assemblée nationale approuve à l'unanimité l'abrogation du Code noir",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.franceinfo.fr/politique/l-assemblee-nationale-approuve-a-l-unanimite-l-abrogation-du-code-noir-pres-de-180-ans-apres-l-abolition-de-l-esclavage_8033588.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "title": "L'Assemblée nationale approuve à l'unanimité l'abrogation du Code noir, près de 180 ans après l'abolition de l'esclavage",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.bfmtv.com/politique/esclavage-l-assemblee-nationale-approuve-a-l-unanimite-l-abrogation-du-code-noir_AN-202605280468.html",
+        "source": "BFMTV",
+        "title": "Esclavage: l'Assemblée nationale approuve à l'unanimité l'abrogation du Code noir",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.bfmtv.com/politique/video-esclavage-l-assemblee-nationale-approuve-a-l-unanimite-l-abrogation-du-code-noir_VN-202605280466.html",
+        "source": "BFMTV",
+        "title": "Esclavage : l'Assemblée nationale approuve à l'unanimité l'abrogation du Code noir",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.france24.com/fr/france/20260528-assembl%C3%A9e-nationale-abroge-code-noir-178-ans-apr%C3%A8s-abolition-esclavage",
+        "source": "France 24",
+        "title": "Le Code noir abrogé à l'unanimité par les députés français, 178 ans après l'abolition de l'esclavage",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.france24.com/fr/france/20260528-assembl%C3%A9e-nationale-abroge-code-noir-178-ans-apr%C3%A8s-abolition-esclavage",
+        "source": "France 24",
+        "title": "Les députés français abrogent le Code noir, 178 ans après l'abolition de l'esclavage",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.lefigaro.fr/politique/les-deputes-s-appretent-a-voter-ce-jeudi-pour-l-abrogation-du-code-noir-178-ans-apres-l-abolition-de-l-esclavage-20260528",
+        "source": "Le Figaro",
+        "title": "L’Assemblée nationale approuve à l’unanimité l’abrogation du «Code noir», 178 ans après l’abolition de l’esclavage",
+        "thumbnail": ""
+      }
+    ],
+    "sessionLabel": "28/05/2026 à 15:37:18",
+    "controversyLevel": "moyen",
+    "ai": {
+      "arenaMode": "positions",
+      "debateScore": 7,
+      "controversyLevel": "moyen",
+      "debateQuestion": "",
+      "resume": "",
+      "keywords": [
+        "A emblée nationale",
+        "abolition de l'e clavage",
+        "Steevy Gu tave",
+        "député  françai",
+        "178 an  aprè"
+      ],
+      "selectedLinks": [
+        "https://www.huffingtonpost.fr/politique/video/l-emotion-de-steevy-gustave-avant-l-abrogation-du-code-noir-a-saisi-toute-l-assemblee_264187.html",
+        "https://www.liberation.fr/politique/esclavage-lassemblee-nationale-approuve-a-lunanimite-labrogation-du-code-noir-20260528_BKBPW3E2FFGWJED7C37VYR7PVY/",
+        "https://www.lemonde.fr/societe/article/2026/05/28/esclavage-l-assemblee-nationale-approuve-a-l-unanimite-l-abrogation-du-code-noir_6694459_3224.html",
+        "https://www.ledauphine.com/politique/2026/05/28/178-ans-apres-l-abolition-de-l-esclavage-l-assemblee-nationale-approuve-a-l-unanimite-l-abrogation-du-code-noir",
+        "https://www.franceinfo.fr/politique/l-assemblee-nationale-approuve-a-l-unanimite-l-abrogation-du-code-noir-pres-de-180-ans-apres-l-abolition-de-l-esclavage_8033588.html#xtor=RSS-3-[lestitres]",
+        "https://www.bfmtv.com/politique/esclavage-l-assemblee-nationale-approuve-a-l-unanimite-l-abrogation-du-code-noir_AN-202605280468.html",
+        "https://www.bfmtv.com/politique/video-esclavage-l-assemblee-nationale-approuve-a-l-unanimite-l-abrogation-du-code-noir_VN-202605280466.html",
+        "https://www.france24.com/fr/france/20260528-assembl%C3%A9e-nationale-abroge-code-noir-178-ans-apr%C3%A8s-abolition-esclavage",
+        "https://www.france24.com/fr/france/20260528-assembl%C3%A9e-nationale-abroge-code-noir-178-ans-apr%C3%A8s-abolition-esclavage",
+        "https://www.lefigaro.fr/politique/les-deputes-s-appretent-a-voter-ce-jeudi-pour-l-abrogation-du-code-noir-178-ans-apres-l-abolition-de-l-esclavage-20260528"
+      ],
+      "agonTheme": "Société - éducation",
+      "positionA": "",
+      "positionB": "",
+      "sourceSubject": "L'Assemblée nationale approuve à l'unanimité l'abrogation du Code noir, près de 180 ans après l'abolition de l'esclavage",
+      "fullArticleState": "short",
+      "mainKeyword": "abrogation du Code noir",
+      "storyLink": {
+        "story_decision": "existing_story",
+        "matched_story_id": "droits-des-minorites-mphuyzu3",
+        "matched_story_title": "Droits des minorités",
+        "matched_story_summary": "",
+        "previous_episode_id": "",
+        "previous_episode_title": "",
+        "previous_episode_summary": "",
+        "previous_episode_url": "",
+        "confidence": 0.85,
+        "reason": "L'abrogation du Code noir et l'abolition de l'esclavage concernent directement les droits des minorités, ce qui correspond clairement à cette histoire spécifique.",
+        "criteria": {
+          "main_actors_match": true,
+          "central_tension_match": true,
+          "temporal_continuity": true,
+          "editorial_theme_match": true,
+          "strong_keywords_match": true
+        },
+        "new_story": {
+          "story_title": "",
+          "story_summary": "",
+          "main_actors": [],
+          "central_tension": "Faut-il accompagner l'abrogation du Code noir par des mesures concrètes ou se limiter?",
+          "keywords": [],
+          "status": "active"
+        }
+      }
+    }
+  },
+  {
+    "action": "save",
+    "subject": "EN DIRECT - Moyen-Orient : les Etats-Unis frappent l’Iran, qui réplique en visant une base américaine",
+    "debateScore": 9,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "Libération, Le Figaro, La Croix, France 24",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.liberation.fr/international/moyen-orient/en-direct-moyen-orient-les-etats-unis-frappent-liran-qui-replique-en-visant-une-base-americaine-20260528_KV2UPB3G4NBUHJDMFZYC2SRJJY/",
+        "source": "Libération",
+        "title": "EN DIRECT - Moyen-Orient : les Etats-Unis frappent l’Iran, qui réplique en visant une base américaine",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.la-croix.com/international/direct-guerre-iran-israel-usa-jour-90-moyen-orient-bilan-resume-aujourdhui-20260528",
+        "source": "La Croix",
+        "title": "DIRECT. Guerre au Moyen-Orient : frappes meurtrières sur le Liban… Le point à la mi-journée",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.france24.com/fr/vid%C3%A9o/20260528-les-%C3%A9tats-unis-frappent-l-iran-t%C3%A9h%C3%A9ran-cible-une-base-am%C3%A9ricaine",
+        "source": "France 24",
+        "title": "Les États-Unis frappent l'Iran, Téhéran cible une base américaine",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.france24.com/fr/moyen-orient/20260528-%C3%A9tats-unis-frappes-iran-r%C3%A9plique-base-am%C3%A9ricaine-koweit",
+        "source": "France 24",
+        "title": "Les États-Unis frappent l'Iran, Téhéran réplique en ciblant une base américaine",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.lefigaro.fr/international/en-direct-guerre-au-moyen-orient-les-etats-unis-ont-mene-de-nouvelles-frappes-dans-le-sud-de-l-iran-teheran-affirme-avoir-vise-une-base-americaine-20260528",
+        "source": "Le Figaro",
+        "title": "EN DIRECT - Guerre au Moyen-Orient : l’armée américaine dénonce une «violation flagrante du cessez-le-feu» par l’Iran",
+        "thumbnail": ""
+      }
+    ],
+    "sessionLabel": "28/05/2026 à 15:37:18",
+    "controversyLevel": "très fort",
+    "ai": {
+      "arenaMode": "positions",
+      "debateScore": 9,
+      "controversyLevel": "très fort",
+      "debateQuestion": "",
+      "resume": "",
+      "keywords": [
+        "réplique iranienne",
+        "ba e américaine vi ée",
+        "Moyen-Orient",
+        "guerre Iran-USA",
+        "Liban",
+        "ce ez-le-feu"
+      ],
+      "selectedLinks": [
+        "https://www.liberation.fr/international/moyen-orient/en-direct-moyen-orient-les-etats-unis-frappent-liran-qui-replique-en-visant-une-base-americaine-20260528_KV2UPB3G4NBUHJDMFZYC2SRJJY/",
+        "https://www.france24.com/fr/vid%C3%A9o/20260528-les-%C3%A9tats-unis-frappent-l-iran-t%C3%A9h%C3%A9ran-cible-une-base-am%C3%A9ricaine",
+        "https://www.france24.com/fr/moyen-orient/20260528-%C3%A9tats-unis-frappes-iran-r%C3%A9plique-base-am%C3%A9ricaine-koweit",
+        "https://www.lefigaro.fr/international/en-direct-guerre-au-moyen-orient-les-etats-unis-ont-mene-de-nouvelles-frappes-dans-le-sud-de-l-iran-teheran-affirme-avoir-vise-une-base-americaine-20260528"
+      ],
+      "agonTheme": "International",
+      "positionA": "",
+      "positionB": "",
+      "sourceSubject": "EN DIRECT - Moyen-Orient : les Etats-Unis frappent l’Iran, qui réplique en visant une base américaine",
+      "fullArticleState": "short",
+      "mainKeyword": "frappes américaines en Iran",
+      "storyLink": {
+        "story_decision": "existing_story",
+        "matched_story_id": "01-les-conflits-au-moyen-orient-recomposent-les-equilibres-regionaux",
+        "matched_story_title": "Les conflits au Moyen-Orient recomposent les équilibres régionaux",
+        "matched_story_summary": "",
+        "previous_episode_id": "631",
+        "previous_episode_title": "Le État -Uni doivent-il privilégier la ripo te militaire ou la diplomatie face à l’Iran?",
+        "previous_episode_summary": "Les tensions entre les États-Unis et l’Iran ont augmenté récemment malgré un cessez-le-feu au Moyen-Orient. Alors que des négociations cherchaient à stabiliser la région, les États-Unis ont frappé des positions iraniennes. L’Iran a dénoncé ces attaques comme une violation du cessez-le-feu intervenu moins de 48 heures plus tôt.\n\nD’un côté, ces frappes peuvent apparaître comme un frein aux efforts de paix, risquant de raviver les hostilités. De l’autre, elles sont vues comme une mesure nécessaire pour dissuader et protéger des intérêts stratégiques dans un contexte toujours fragile.\n\nLes États-Unis doivent-ils suspendre toute action militaire pour préserver le cessez-le-feu avec l’Iran ?",
+        "previous_episode_url": "http://localhost:3001/debate?id=631",
+        "confidence": 0.9,
+        "reason": "L'actualité porte sur des frappes entre États-Unis et Iran au Moyen-Orient, impliquant des tensions militaires et géopolitiques dans cette région, ce qui correspond précisément au titre de l'histoire.",
+        "criteria": {
+          "main_actors_match": true,
+          "central_tension_match": true,
+          "temporal_continuity": true,
+          "editorial_theme_match": true,
+          "strong_keywords_match": true
+        },
+        "new_story": {
+          "story_title": "",
+          "story_summary": "",
+          "main_actors": [
+            "direct",
+            "moyen",
+            "orient"
+          ],
+          "central_tension": "Les États-Unis doivent-ils poursuivre leurs frappes contre l’Iran malgré le risque d’escalade?",
+          "keywords": [
+            "direct",
+            "moyen",
+            "orient",
+            "etats",
+            "unis",
+            "frappent",
+            "iran",
+            "replique"
+          ],
+          "status": "active"
+        }
+      }
+    }
+  },
+  {
+    "action": "save",
+    "subject": "Une concertation avec les élus sur l'encadrement des loyers va être lancée, annonce le ministre du Logement",
+    "debateScore": 7,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "Franceinfo, Public Sénat",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.publicsenat.fr/actualites/politique/encadrement-des-loyers-le-ministre-du-logement-vincent-jeanbrun-annonce-une-concertation-avec-les-elus-sur-la-prolongation-du-dispositif-au-dela-de-2026",
+        "source": "Public Sénat",
+        "title": "Encadrement des loyers : le ministre du Logement Vincent Jeanbrun annonce une concertation avec les élus sur la prolongation du dispositif au-delà de 2026",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.franceinfo.fr/economie/immobilier/encadrement-des-loyers/une-concertation-avec-les-elus-sur-l-encadrement-des-loyers-va-etre-lancee-annonce-le-ministre-du-logement_8031596.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "title": "Une concertation avec les élus sur l'encadrement des loyers va être lancée, annonce le ministre du Logement",
+        "thumbnail": ""
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/watch?v=G2XNUzMcviE",
+        "source": "Public Sénat",
+        "title": "",
+        "thumbnail": "https://i.ytimg.com/vi/G2XNUzMcviE/hqdefault.jpg"
+      }
+    ],
+    "sessionLabel": "27/05/2026 à 21:14:59",
+    "controversyLevel": "fort",
+    "ai": {
+      "arenaMode": "positions",
+      "debateScore": 7,
+      "controversyLevel": "fort",
+      "debateQuestion": "",
+      "resume": "",
+      "keywords": [
+        "Vincent Jeanbrun",
+        "mini tre du Logement",
+        "concertation avec le  élu",
+        "prolongation du di po itif",
+        "2026"
+      ],
+      "selectedLinks": [
+        "https://www.publicsenat.fr/actualites/politique/encadrement-des-loyers-le-ministre-du-logement-vincent-jeanbrun-annonce-une-concertation-avec-les-elus-sur-la-prolongation-du-dispositif-au-dela-de-2026",
+        "https://www.youtube.com/watch?v=G2XNUzMcviE",
+        "https://www.franceinfo.fr/economie/immobilier/encadrement-des-loyers/une-concertation-avec-les-elus-sur-l-encadrement-des-loyers-va-etre-lancee-annonce-le-ministre-du-logement_8031596.html#xtor=RSS-3-[lestitres]"
+      ],
+      "agonTheme": "Économie - emploi",
+      "positionA": "",
+      "positionB": "",
+      "sourceSubject": "Une concertation avec les élus sur l'encadrement des loyers va être lancée, annonce le ministre du Logement",
+      "fullArticleState": "short",
+      "mainKeyword": "encadrement des loyers",
+      "storyLink": {
+        "story_decision": "existing_story",
+        "matched_story_id": "19-la-crise-du-logement-transforme-les-parcours-de-vie-et-les-equilibres-territoria",
+        "matched_story_title": "La crise du logement transforme les parcours de vie et les équilibres territoriaux",
+        "matched_story_summary": "",
+        "previous_episode_id": "489",
+        "previous_episode_title": "Faut-il maintenir l’encadrement des loyers pour protéger les locataires ?",
+        "previous_episode_summary": "L’encadrement des loyers s’impose aujourd’hui comme le champ de bataille d’un débat brûlant, alors que l’expérimentation en cours arrive à son terme. Face à une envolée des prix qui étrangle le pouvoir d’achat des locataires, la tension monte : peut-on vraiment laisser le marché immobilier évoluer sans aucune barrière ?\n\nLaisser le marché libre, c’est accepter que les loyers s’envolent, surtout là où la demande écrase l’offre. L’encadrement, en posant des plafonds, cherche à contenir ces hausses démesurées, offrant une bouffée d’air à ceux qui peinent à se loger. Le bilan de cette expérimentation est sans appel : elle a ralenti la spirale des loyers dans les zones concernées, évitant une exclusion sociale grandissante. Plus qu’une simple mesure économique, l’encadrement se révèle un outil vital pour protéger les locataires et stabiliser un marché qui, laissé à lui-même, nourrit la spéculation et creuse les fractures sociales. Le combat ne fait que commencer.\n\nFaut-il maintenir l’encadrement des loyers pour protéger les locataires ?\n\nR. Renaudot",
+        "previous_episode_url": "http://localhost:3001/debate?id=489",
+        "confidence": 0.85,
+        "reason": "L'actualité porte sur l'encadrement des loyers, un enjeu central de la crise du logement, avec un acteur institutionnel clé (ministre du Logement) et une concertation politique annoncée, ce qui correspond bien à la thématique logement et ses impacts sociaux et territoriaux.",
+        "criteria": {
+          "main_actors_match": true,
+          "central_tension_match": true,
+          "temporal_continuity": true,
+          "editorial_theme_match": true,
+          "strong_keywords_match": true
+        },
+        "new_story": {
+          "story_title": "",
+          "story_summary": "",
+          "main_actors": [
+            "concertation",
+            "elus",
+            "encadrement"
+          ],
+          "central_tension": "Faut-il prolonger l’encadrement des loyers malgré ses impacts sur l’investissement immobilier?",
+          "keywords": [
+            "concertation",
+            "elus",
+            "encadrement",
+            "loyers",
+            "lancee",
+            "annonce",
+            "ministre",
+            "logement"
+          ],
+          "status": "active"
+        }
+      }
+    }
+  },
+  {
+    "action": "save",
+    "subject": "Europe, « dernier évangéliste » d’un ordre commercial bafoué, selon Benjamin Haddad",
+    "debateScore": 7,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "Euronews FR, L'Express, Euronews France",
+    "contents": [
+      {
+        "type": "article",
+        "link": "http://fr.euronews.com/my-europe/2026/05/27/europe-dernier-evangeliste-dun-ordre-commercial-bafoue-selon-benjamin-haddad",
+        "source": "Euronews FR",
+        "title": "Europe, « dernier évangéliste » d’un ordre commercial bafoué, selon Benjamin Haddad",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.lexpress.fr/economie/politique-economique/benjamin-haddad-il-est-temps-pour-les-europeens-de-se-reconcilier-avec-le-risque-F6E5ZDKF3NGGTHV6A4WGQ6CUWE/",
+        "source": "L'Express",
+        "title": "Benjamin Haddad : \"Il est temps pour les Européens de se réconcilier avec le risque\"",
+        "thumbnail": ""
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/watch?v=JYg1GhMX6AA",
+        "source": "Euronews France",
+        "title": "",
+        "thumbnail": "https://i.ytimg.com/vi/JYg1GhMX6AA/hqdefault.jpg"
+      }
+    ],
+    "sessionLabel": "27/05/2026 à 21:14:59",
+    "controversyLevel": "fort",
+    "ai": {
+      "arenaMode": "positions",
+      "debateScore": 7,
+      "controversyLevel": "fort",
+      "debateQuestion": "",
+      "resume": "",
+      "keywords": [
+        "Europe",
+        "ordre commercial"
+      ],
+      "selectedLinks": [
+        "https://www.youtube.com/watch?v=JYg1GhMX6AA",
+        "http://fr.euronews.com/my-europe/2026/05/27/europe-dernier-evangeliste-dun-ordre-commercial-bafoue-selon-benjamin-haddad",
+        "https://www.lexpress.fr/economie/politique-economique/benjamin-haddad-il-est-temps-pour-les-europeens-de-se-reconcilier-avec-le-risque-F6E5ZDKF3NGGTHV6A4WGQ6CUWE/"
+      ],
+      "agonTheme": "International",
+      "positionA": "",
+      "positionB": "",
+      "sourceSubject": "Europe, « dernier évangéliste » d’un ordre commercial bafoué, selon Benjamin Haddad",
+      "fullArticleState": "short",
+      "mainKeyword": "Benjamin Haddad",
+      "storyLink": {
+        "story_decision": "existing_story",
+        "matched_story_id": "07-l-union-europeenne-cherche-sa-place-face-aux-crises-internes-et-aux-tensions-int",
+        "matched_story_title": "L’Union européenne cherche sa place face aux crises internes et aux tensions internationales",
+        "matched_story_summary": "",
+        "previous_episode_id": "",
+        "previous_episode_title": "",
+        "previous_episode_summary": "",
+        "previous_episode_url": "",
+        "confidence": 0.85,
+        "reason": "L'actualité porte sur l'Europe et un ordre commercial bafoué, ce qui correspond bien à la recherche de position de l'Union européenne face à des tensions internationales et internes.",
+        "criteria": {
+          "main_actors_match": true,
+          "central_tension_match": true,
+          "temporal_continuity": true,
+          "editorial_theme_match": true,
+          "strong_keywords_match": true
+        },
+        "new_story": {
+          "story_title": "",
+          "story_summary": "",
+          "main_actors": [
+            "Europe"
+          ],
+          "central_tension": "ordre commercial bafoué",
+          "keywords": [
+            "Europe",
+            "ordre commercial"
+          ],
+          "status": "active"
+        }
+      }
+    }
+  },
+  {
+    "action": "save",
+    "subject": "Canicule : 13 départements toujours en vigilance orange, Paris et la petite couronne concernés à partir de jeudi midi",
+    "debateScore": 6,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "Franceinfo, L'Obs, Le Figaro, La Croix, HuffPost France",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.huffingtonpost.fr/france/article/meteo-la-vigilance-orange-canicule-s-etend-encore-pour-la-journee-de-jeudi-notamment-a-paris_264170.html",
+        "source": "HuffPost France",
+        "title": "Météo : la vigilance orange canicule s’étend encore pour la journée de jeudi, notamment à Paris",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.nouvelobs.com/ecologie/20260527.OBS115283/canicule-17-departements-en-vigilance-orange-jeudi-des-pointes-a-39-c-le-point-sur-une-vague-de-chaleur-inedite.html",
+        "source": "L'Obs",
+        "title": "Canicule : 17 départements en vigilance orange jeudi, des pointes à 39 °C… Le point sur une vague de chaleur inédite",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.la-croix.com/planete/canicule-paris-et-trois-nouveaux-departements-desormais-en-vigilance-orange-20260527",
+        "source": "La Croix",
+        "title": "Canicule : Paris et trois nouveaux départements placés en vigilance orange",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.franceinfo.fr/environnement/evenements-meteorologiques-extremes/vagues-de-chaleur-canicules/direct-episode-inedit-de-fortes-chaleurs-la-france-continue-de-suffoquer-des-pointes-a-39-c-attendues-ce-mercredi_8030669.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "title": "Canicule : 13 départements toujours en vigilance orange, Paris et la petite couronne concernés à partir de jeudi midi",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.lefigaro.fr/meteo/en-direct-canicule-la-france-suffoque-sous-le-dome-de-chaleur-13-departements-en-vigilance-orange-et-la-vitesse-abaissee-en-ile-de-france-20260527",
+        "source": "Le Figaro",
+        "title": "EN DIRECT - Canicule : la vigilance orange étendue à 17 départements jeudi, dont Paris",
+        "thumbnail": ""
+      }
+    ],
+    "sessionLabel": "27/05/2026 à 21:14:59",
+    "controversyLevel": "moyen",
+    "ai": {
+      "arenaMode": "positions",
+      "debateScore": 6,
+      "controversyLevel": "moyen",
+      "debateQuestion": "",
+      "resume": "",
+      "keywords": [
+        "Pari",
+        "petite couronne",
+        "13 département",
+        "17 département",
+        "vague de chaleur",
+        "température  à 39 °C"
+      ],
+      "selectedLinks": [
+        "https://www.huffingtonpost.fr/france/article/meteo-la-vigilance-orange-canicule-s-etend-encore-pour-la-journee-de-jeudi-notamment-a-paris_264170.html",
+        "https://www.nouvelobs.com/ecologie/20260527.OBS115283/canicule-17-departements-en-vigilance-orange-jeudi-des-pointes-a-39-c-le-point-sur-une-vague-de-chaleur-inedite.html",
+        "https://www.la-croix.com/planete/canicule-paris-et-trois-nouveaux-departements-desormais-en-vigilance-orange-20260527",
+        "https://www.franceinfo.fr/environnement/evenements-meteorologiques-extremes/vagues-de-chaleur-canicules/direct-episode-inedit-de-fortes-chaleurs-la-france-continue-de-suffoquer-des-pointes-a-39-c-attendues-ce-mercredi_8030669.html#xtor=RSS-3-[lestitres]",
+        "https://www.lefigaro.fr/meteo/en-direct-canicule-la-france-suffoque-sous-le-dome-de-chaleur-13-departements-en-vigilance-orange-et-la-vitesse-abaissee-en-ile-de-france-20260527"
+      ],
+      "agonTheme": "Climat - environnement",
+      "positionA": "",
+      "positionB": "",
+      "sourceSubject": "Canicule : 13 départements toujours en vigilance orange, Paris et la petite couronne concernés à partir de jeudi midi",
+      "fullArticleState": "short",
+      "mainKeyword": "vigilance orange canicule",
+      "storyLink": {
+        "story_decision": "existing_story",
+        "matched_story_id": "40-le-changement-climatique-transforme-les-territoires-et-multiplie-les-enjeux-d-ad",
+        "matched_story_title": "Le changement climatique transforme les territoires et multiplie les enjeux d’adaptation",
+        "matched_story_summary": "",
+        "previous_episode_id": "567",
+        "previous_episode_title": "La réunion ministérielle de Lecornu peut-elle améliorer la gestion des canicules en France ?",
+        "previous_episode_summary": "Un épisode de chaleur intense a conduit à la mise en vigilance orange canicule mardi dans huit départements français. Cette alerte concerne directement les habitants et les autorités locales, qui doivent redoubler de vigilance face aux températures élevées.\n\nPour répondre à cette situation, le Premier ministre Sébastien Lecornu a annoncé la tenue d’une réunion interministérielle jeudi. L’objectif est de coordonner les mesures à adopter pour gérer au mieux cet épisode caniculaire et protéger les populations vulnérables.\n\nCette réunion s’inscrit dans un contexte où la gestion des épisodes de canicule devient un enjeu majeur de santé publique et de politique climatique. Elle vise à renforcer la préparation et la réactivité des pouvoirs publics face à ces phénomènes. La réunion ministérielle de Lecornu peut-elle améliorer la gestion des canicules en France ?",
+        "previous_episode_url": "http://localhost:3001/debate?id=567",
+        "confidence": 0.85,
+        "reason": "L'actualité porte sur une canicule et vigilance orange dans plusieurs départements français, ce qui relève clairement des impacts du changement climatique sur les territoires et les enjeux d'adaptation. Le titre de l'histoire est suffisamment précis pour couvrir ce type d'événement climatique extrême.",
+        "criteria": {
+          "main_actors_match": true,
+          "central_tension_match": true,
+          "temporal_continuity": true,
+          "editorial_theme_match": true,
+          "strong_keywords_match": true
+        },
+        "new_story": {
+          "story_title": "",
+          "story_summary": "",
+          "main_actors": [
+            "France",
+            "départements concernés"
+          ],
+          "central_tension": "Gestion des vagues de chaleur et adaptation territoriale",
+          "keywords": [
+            "canicule",
+            "vigilance orange",
+            "Paris",
+            "petite couronne",
+            "vague de chaleur",
+            "température élevée"
+          ],
+          "status": "active"
+        }
+      }
+    }
+  },
+  {
+    "action": "save",
+    "subject": "Epidémie d'Ebola : l'Ouganda ferme temporairement ses frontières avec la RDC",
+    "debateScore": 7,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "Le Monde, RFI, Le Dauphiné Libéré, Franceinfo",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.lemonde.fr/afrique/article/2026/05/27/ebola-l-ouganda-ferme-temporairement-ses-frontieres-avec-la-republique-democratique-du-congo_6694237_3212.html",
+        "source": "Le Monde",
+        "title": "Ebola : l’Ouganda ferme temporairement ses frontières avec la République démocratique du Congo",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.rfi.fr/fr/afrique/20260527-l-ouganda-ferme-la-fronti%C3%A8re-avec-la-rdc-pour-tenter-de-contenir-la-propagation-d-ebola",
+        "source": "RFI",
+        "title": "L'Ouganda ferme la frontière avec la RDC pour tenter de contenir la propagation d'Ebola",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.ledauphine.com/sante/2026/05/27/ebola-face-a-l-ampleur-de-l-epidemie-l-ouganda-ferme-ses-frontieres-avec-la-rdc",
+        "source": "Le Dauphiné Libéré",
+        "title": "Santé. Ebola : face à « l'ampleur » de l'épidémie, l'Ouganda ferme ses frontières avec la RDC",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.franceinfo.fr/sante/maladie/ebola/ebola-l-ouganda-ferme-temporairement-ses-frontieres-avec-la-republique-democratique-du-congo_8031548.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "title": "Epidémie d'Ebola : l'Ouganda ferme temporairement ses frontières avec la République démocratique du Congo",
+        "thumbnail": ""
+      }
+    ],
+    "sessionLabel": "27/05/2026 à 21:14:59",
+    "controversyLevel": "fort",
+    "ai": {
+      "arenaMode": "positions",
+      "debateScore": 7,
+      "controversyLevel": "fort",
+      "debateQuestion": "",
+      "resume": "",
+      "keywords": [
+        "Ouganda",
+        "fermeture de  frontière",
+        "propagation d'Ebola",
+        "anté publique"
+      ],
+      "selectedLinks": [
+        "https://www.lemonde.fr/afrique/article/2026/05/27/ebola-l-ouganda-ferme-temporairement-ses-frontieres-avec-la-republique-democratique-du-congo_6694237_3212.html",
+        "https://www.rfi.fr/fr/afrique/20260527-l-ouganda-ferme-la-fronti%C3%A8re-avec-la-rdc-pour-tenter-de-contenir-la-propagation-d-ebola",
+        "https://www.ledauphine.com/sante/2026/05/27/ebola-face-a-l-ampleur-de-l-epidemie-l-ouganda-ferme-ses-frontieres-avec-la-rdc",
+        "https://www.franceinfo.fr/sante/maladie/ebola/ebola-l-ouganda-ferme-temporairement-ses-frontieres-avec-la-republique-democratique-du-congo_8031548.html#xtor=RSS-3-[lestitres]"
+      ],
+      "agonTheme": "Santé - bien-être",
+      "positionA": "",
+      "positionB": "",
+      "sourceSubject": "Epidémie d'Ebola : l'Ouganda ferme temporairement ses frontières avec la RDC",
+      "fullArticleState": "short",
+      "mainKeyword": "Epidémie d'Ebola en RDC",
+      "storyLink": {
+        "story_decision": "existing_story",
+        "matched_story_id": "29-le-systeme-de-sante-fait-face-a-des-tensions-d-acces-aux-soins-de-moyens-et-de-c",
+        "matched_story_title": "Le système de santé fait face à des tensions d’accès aux soins, de moyens et de confiance",
+        "matched_story_summary": "",
+        "previous_episode_id": "571",
+        "previous_episode_title": "Faut-il renforcer les mesures de quarantaine pour contenir le hantavirus à Madrid ?",
+        "previous_episode_summary": "Un Espagnol placé en quarantaine à Madrid a été testé positif au hantavirus. Cette découverte a été confirmée par le ministère de la Santé.\n\nCette personne faisait partie d’un groupe de croisiéristes espagnols mis en isolement par précaution, afin de surveiller d’éventuels cas suite à une exposition présumée au virus. La détection d’un cas positif a confirmé la présence du hantavirus parmi ces individus, justifiant la poursuite des mesures sanitaires et le suivi médical des personnes concernées.\n\nLa gestion de cette quarantaine soulève des questions importantes sur la prévention et la réponse sanitaire face au hantavirus. Il est essentiel d’évaluer si les mesures actuelles sont adaptées pour contenir efficacement la propagation du virus.\n\nFaut-il renforcer les mesures de quarantaine pour contenir le hantavirus à Madrid ?",
+        "previous_episode_url": "http://localhost:3001/debate?id=571",
+        "confidence": 0.85,
+        "reason": "L'actualité porte sur une mesure sanitaire (fermeture de frontière) liée à une épidémie d'Ebola, ce qui correspond à des tensions dans le système de santé et la gestion des risques sanitaires.",
+        "criteria": {
+          "main_actors_match": true,
+          "central_tension_match": true,
+          "temporal_continuity": true,
+          "editorial_theme_match": true,
+          "strong_keywords_match": true
+        },
+        "new_story": {
+          "story_title": "",
+          "story_summary": "",
+          "main_actors": [
+            "epidemie",
+            "ebola",
+            "ouganda"
+          ],
+          "central_tension": "L’Ouganda doit-il maintenir la fermeture de ses frontières avec la RDC malgré les conséquences éco…",
+          "keywords": [
+            "epidemie",
+            "ebola",
+            "ouganda",
+            "ferme",
+            "temporairement",
+            "frontieres",
+            "doit",
+            "maintenir"
+          ],
+          "status": "active"
+        }
+      }
+    }
+  },
+  {
+    "action": "save",
+    "subject": "Présidentielle 2027 : Jean-Luc Mélenchon va porter plainte contre Marine Le Pen après une vidéo sur la « Nouvelle France »",
+    "debateScore": 7,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "Valeurs actuelles, Public Sénat",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.publicsenat.fr/actualites/politique/presidentielle-2027-jai-toujours-considere-que-jean-luc-melenchon-etait-le-vote-inutile-a-gauche-souligne-patrick-kanner",
+        "source": "Public Sénat",
+        "title": "Présidentielle 2027 : « J’ai toujours considéré que Jean-Luc Mélenchon était le vote inutile à gauche », souligne Patrick Kanner",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.valeursactuelles.com/politique/presidentielle-2027-jean-luc-melenchon-va-porter-plainte-contre-marine-le-pen-apres-une-video-sur-la-nouvelle-france",
+        "source": "Valeurs actuelles",
+        "title": "Présidentielle 2027 : Jean-Luc Mélenchon va porter plainte contre Marine Le Pen après une vidéo sur la « Nouvelle France »",
+        "thumbnail": ""
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/watch?v=rkEEppsxX1o",
+        "source": "Public Sénat",
+        "title": "",
+        "thumbnail": "https://i.ytimg.com/vi/rkEEppsxX1o/hqdefault.jpg"
+      }
+    ],
+    "sessionLabel": "27/05/2026 à 21:14:59",
+    "controversyLevel": "fort",
+    "ai": {
+      "arenaMode": "positions",
+      "debateScore": 7,
+      "controversyLevel": "fort",
+      "debateQuestion": "",
+      "resume": "",
+      "keywords": [
+        "Pré identielle 2027",
+        "Nouvelle France",
+        "Jean-Luc Mélenchon",
+        "Marine Le Pen"
+      ],
+      "selectedLinks": [
+        "https://www.valeursactuelles.com/politique/presidentielle-2027-jean-luc-melenchon-va-porter-plainte-contre-marine-le-pen-apres-une-video-sur-la-nouvelle-france"
+      ],
+      "agonTheme": "Politique",
+      "positionA": "",
+      "positionB": "",
+      "sourceSubject": "Présidentielle 2027 : Jean-Luc Mélenchon va porter plainte contre Marine Le Pen après une vidéo sur la « Nouvelle France »",
+      "fullArticleState": "short",
+      "mainKeyword": "Plainte Mélenchon Le Pen",
+      "storyLink": {
+        "story_decision": "existing_story",
+        "matched_story_id": "05-la-vie-politique-francaise-traverse-une-periode-d-instabilite-et-de-recompositio",
+        "matched_story_title": "La vie politique française traverse une période d’instabilité et de recomposition",
+        "matched_story_summary": "",
+        "previous_episode_id": "492",
+        "previous_episode_title": "Les élus doivent-ils être sanctionnés pour leurs propos privés en ligne ?",
+        "previous_episode_summary": "Un vent de tempête souffle sur Grand Besançon Métropole. Le premier vice-président du Rassemblement National (RN) a brutalement jeté l’éponge, emporté par la révélation explosive d’un compte anonyme qu’il gérait sur les réseaux sociaux. Derrière ce pseudonyme, des propos homophobes, racistes et sexistes ont émergé, déclenchant un véritable séisme dans l’arène politique locale.\n\nL’affaire n’a pas tardé à faire vibrer l’exécutif métropolitain, provoquant une onde de choc difficile à contenir. Sous la pression grandissante, l’élu a choisi la démission, un geste lourd de sens qui illustre la montée des exigences envers les responsables politiques et leur comportement numérique. Ce scandale met en lumière la fragilité des frontières entre vie privée et engagement public, dans un contexte où la société réclame une exemplarité absolue. Les tensions ne sont pas prêtes de retomber, et le débat sur la responsabilité des élus face à leurs paroles en ligne s’annonce plus brûlant que jamais.\n\nLes élus doivent-ils être sanctionnés pour leurs propos privés en ligne ?\n\nR. Renaudot",
+        "previous_episode_url": "http://localhost:3001/debate?id=492",
+        "confidence": 0.85,
+        "reason": "L'actualité porte sur un conflit politique majeur en France autour de la présidentielle 2027 impliquant des figures politiques françaises clés, ce qui correspond bien à une période d'instabilité et recomposition politique en France.",
+        "criteria": {
+          "main_actors_match": true,
+          "central_tension_match": true,
+          "temporal_continuity": true,
+          "editorial_theme_match": true,
+          "strong_keywords_match": true
+        },
+        "new_story": {
+          "story_title": "",
+          "story_summary": "",
+          "main_actors": [
+            "presidentielle",
+            "2027",
+            "jean"
+          ],
+          "central_tension": "La justice doit-elle être un outil régulier pour régler les différends entre candidats politiques ?",
+          "keywords": [
+            "presidentielle",
+            "2027",
+            "jean",
+            "melenchon",
+            "porter",
+            "plainte",
+            "marine",
+            "video"
+          ],
+          "status": "active"
+        }
+      }
+    }
+  },
+  {
+    "action": "save",
+    "subject": "Tribune anti-Bolloré : Cyrille Bolloré, fils du milliardaire et PDG du groupe, appelle à l'\"apaisement\"",
+    "debateScore": 7,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "Franceinfo, Libération, BFMTV",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.liberation.fr/culture/tribune-anti-bollore-le-fils-de-vincent-bollore-evoque-un-climat-dagitation-et-denervement-appelle-a-lapaisement-20260527_4PMU5DNNW5CBRILC46ZELLBIXQ/",
+        "source": "Libération",
+        "title": "Tribune anti-Bolloré : le fils de Vincent Bolloré évoque un climat d’«agitation» et d’«énervement», appelle à l’«apaisement»",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.bfmtv.com/economie/economie-social/le-fils-de-vincent-bollore-affirme-que-son-groupe-familial-n-a-pas-de-projet-politique-mais-charge-emmanuel-macron-et-appelle-au-degagisme_AV-202605270730.html",
+        "source": "BFMTV",
+        "title": "Le fils de Vincent Bolloré affirme que son groupe familial n’a \"pas de projet politique\" mais charge Emmanuel Macron et appelle au dégagisme",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.franceinfo.fr/culture/cinema/tribune-anti-bollore-cyrille-bollore-fils-du-milliardaire-et-pdg-du-groupe-appelle-a-l-apaisement_8031089.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "title": "Tribune anti-Bolloré : Cyrille Bolloré, fils du milliardaire et PDG du groupe, appelle à l'\"apaisement\"",
+        "thumbnail": ""
+      }
+    ],
+    "sessionLabel": "27/05/2026 à 21:14:59",
+    "controversyLevel": "fort",
+    "ai": {
+      "arenaMode": "positions",
+      "debateScore": 7,
+      "controversyLevel": "fort",
+      "debateQuestion": "",
+      "resume": "",
+      "keywords": [
+        "Vincent Bolloré",
+        "groupe Bolloré",
+        "tribune anti-Bolloré",
+        "apaisement",
+        "Emmanuel Macron",
+        "dégagisme"
+      ],
+      "selectedLinks": [
+        "https://www.liberation.fr/culture/tribune-anti-bollore-le-fils-de-vincent-bollore-evoque-un-climat-dagitation-et-denervement-appelle-a-lapaisement-20260527_4PMU5DNNW5CBRILC46ZELLBIXQ/",
+        "https://www.bfmtv.com/economie/economie-social/le-fils-de-vincent-bollore-affirme-que-son-groupe-familial-n-a-pas-de-projet-politique-mais-charge-emmanuel-macron-et-appelle-au-degagisme_AV-202605270730.html",
+        "https://www.franceinfo.fr/culture/cinema/tribune-anti-bollore-cyrille-bollore-fils-du-milliardaire-et-pdg-du-groupe-appelle-a-l-apaisement_8031089.html#xtor=RSS-3-[lestitres]"
+      ],
+      "agonTheme": "Politique",
+      "positionA": "",
+      "positionB": "",
+      "sourceSubject": "Tribune anti-Bolloré : Cyrille Bolloré, fils du milliardaire et PDG du groupe, appelle à l'\"apaisement\"",
+      "fullArticleState": "short",
+      "mainKeyword": "Cyrille Bolloré",
+      "storyLink": {
+        "story_decision": "existing_story",
+        "matched_story_id": "56-les-affaires-de-probite-politique-interrogent-la-responsabilite-des-responsables",
+        "matched_story_title": "Les affaires de probité politique interrogent la responsabilité des responsables publics",
+        "matched_story_summary": "",
+        "previous_episode_id": "612",
+        "previous_episode_title": "Comment garantir la transparence dans la gestion des dons pour les victimes ?",
+        "previous_episode_summary": "",
+        "previous_episode_url": "http://localhost:3001/debate?id=612",
+        "confidence": 0.85,
+        "reason": "L'actualité porte sur une tribune anti-Bolloré impliquant un acteur politique et économique majeur, avec des enjeux de responsabilité et de probité politique, ce qui correspond bien à l'histoire sur les affaires de probité politique.",
+        "criteria": {
+          "main_actors_match": true,
+          "central_tension_match": true,
+          "temporal_continuity": true,
+          "editorial_theme_match": true,
+          "strong_keywords_match": true
+        },
+        "new_story": {
+          "story_title": "",
+          "story_summary": "",
+          "main_actors": [],
+          "central_tension": "Le groupe Bolloré doit-il s'engager davantage dans le débat politique ou rester neutre?",
+          "keywords": [],
+          "status": "active"
+        }
+      }
+    }
+  },
+  {
+    "action": "save",
+    "subject": "\"Je n'ai pas reçu un centime d'argent libyen\", répète Nicolas Sarkozy à la fin de son procès en appel, décision rendue le 30 novembre",
+    "debateScore": 8,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "Franceinfo, Libération, Le Figaro, BFMTV, Euronews FR, Le Dauphiné Libéré, France 24",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.liberation.fr/international/europe/vigilance-orange-canicule-enquete-ouverte-contre-la-fifa-fin-du-proces-libyen-en-appel-de-sarkozy-lactu-de-ce-mercredi-27-mai-20260527_WCGAJHP6JVEWRJ5ZKPFL43GW3Y/",
+        "source": "Libération",
+        "title": "Vigilance orange canicule, enquête ouverte contre la Fifa, fin du procès libyen en appel de Sarkozy… l’actu de ce mercredi 27 mai",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.liberation.fr/societe/police-justice/au-proces-de-largent-libyen-la-defense-de-sarkozy-jette-ses-dernieres-forces-et-fustige-un-roman-grotesque-20260527_IKMIVVUKCJDANHVPR5BXTZ4N7Q/",
+        "source": "Libération",
+        "title": "«Est-ce que je vais y retourner ?» les derniers mots de Nicolas Sarkozy au procès en appel de l’argent libyen",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.franceinfo.fr/politique/affaire/financement-de-la-campagne-de-sarkozy/direct-nicolas-sarkozy-est-innocent-et-nous-le-demontrerons-au-proces-en-appel-du-financement-libyen-l-heure-des-plaidoiries-de-la-defense-de-l-ex-president-de-la-republique_8029064.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "title": "\"Je n'ai pas reçu un centime d'argent libyen\", répète Nicolas Sarkozy à la fin de son procès en appel, décision rendue le 30 novembre",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.bfmtv.com/police-justice/je-n-ai-pas-trahi-la-confiance-des-francais-les-derniers-mots-de-nicolas-sarkozy-a-la-cloture-du-proces-en-appel-de-l-affaire-libyenne_AD-202605270744.html",
+        "source": "BFMTV",
+        "title": "\"Je n'ai pas trahi la confiance des Français\": les derniers mots de Nicolas Sarkozy à la clôture du procès en appel de l'affaire libyenne",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "http://fr.euronews.com/my-europe/2026/05/27/fin-du-proces-en-appel-de-nicolas-sarkozy-dans-laffaire-libyenne-verdict-attendu-le-30-nov",
+        "source": "Euronews FR",
+        "title": "Fin du procès en appel de Nicolas Sarkozy dans l'affaire libyenne, verdict attendu le 30 novembre",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.ledauphine.com/faits-divers-justice/2026/05/27/au-dernier-jour-de-son-proces-nicolas-sarkozy-affirme-qu-il-n-a-pas-trahi-la-confiance-des-francais",
+        "source": "Le Dauphiné Libéré",
+        "title": "Justice. Au dernier jour de son procès, Nicolas Sarkozy affirme qu'il n'a « pas trahi la confiance des Français »",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.lefigaro.fr/actualite-france/en-direct-proces-libyen-la-defense-de-nicolas-sarkozy-fustige-le-roman-grotesque-d-un-financement-libyen-de-sa-campagne-20260527",
+        "source": "Le Figaro",
+        "title": "EN DIRECT - Procès libyen : «Je n’ai pas trahi la confiance des Français», assure Nicolas Sarkozy en conclusion de l’audience",
+        "thumbnail": ""
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/watch?v=4basp6vSxas",
+        "source": "France 24",
+        "title": "",
+        "thumbnail": "https://i.ytimg.com/vi/4basp6vSxas/hqdefault.jpg"
+      }
+    ],
+    "sessionLabel": "27/05/2026 à 21:14:59",
+    "controversyLevel": "fort",
+    "ai": {
+      "arenaMode": "positions",
+      "debateScore": 8,
+      "controversyLevel": "fort",
+      "debateQuestion": "",
+      "resume": "",
+      "keywords": [
+        "argent libyen",
+        "financement campagne",
+        "Nicolas Sarkozy",
+        "verdict 30 novembre",
+        "affaire libyenne"
+      ],
+      "selectedLinks": [
+        "https://www.liberation.fr/societe/police-justice/au-proces-de-largent-libyen-la-defense-de-sarkozy-jette-ses-dernieres-forces-et-fustige-un-roman-grotesque-20260527_IKMIVVUKCJDANHVPR5BXTZ4N7Q/",
+        "https://www.franceinfo.fr/politique/affaire/financement-de-la-campagne-de-sarkozy/direct-nicolas-sarkozy-est-innocent-et-nous-le-demontrerons-au-proces-en-appel-du-financement-libyen-l-heure-des-plaidoiries-de-la-defense-de-l-ex-president-de-la-republique_8029064.html#xtor=RSS-3-[lestitres]",
+        "https://www.bfmtv.com/police-justice/je-n-ai-pas-trahi-la-confiance-des-francais-les-derniers-mots-de-nicolas-sarkozy-a-la-cloture-du-proces-en-appel-de-l-affaire-libyenne_AD-202605270744.html",
+        "http://fr.euronews.com/my-europe/2026/05/27/fin-du-proces-en-appel-de-nicolas-sarkozy-dans-laffaire-libyenne-verdict-attendu-le-30-nov",
+        "https://www.ledauphine.com/faits-divers-justice/2026/05/27/au-dernier-jour-de-son-proces-nicolas-sarkozy-affirme-qu-il-n-a-pas-trahi-la-confiance-des-francais",
+        "https://www.youtube.com/watch?v=4basp6vSxas",
+        "https://www.lefigaro.fr/actualite-france/en-direct-proces-libyen-la-defense-de-nicolas-sarkozy-fustige-le-roman-grotesque-d-un-financement-libyen-de-sa-campagne-20260527"
+      ],
+      "agonTheme": "Justice - faits divers",
+      "positionA": "",
+      "positionB": "",
+      "sourceSubject": "\"Je n'ai pas reçu un centime d'argent libyen\", répète Nicolas Sarkozy à la fin de son procès en appel, décision rendue le 30 novembre",
+      "fullArticleState": "short",
+      "mainKeyword": "procès en appel Sarkozy",
+      "storyLink": {
+        "story_decision": "existing_story",
+        "matched_story_id": "56-les-affaires-de-probite-politique-interrogent-la-responsabilite-des-responsables",
+        "matched_story_title": "Les affaires de probité politique interrogent la responsabilité des responsables publics",
+        "matched_story_summary": "",
+        "previous_episode_id": "628",
+        "previous_episode_title": "Comment garantir la transparence des dons aux victimes sans freiner leur versement?",
+        "previous_episode_summary": "",
+        "previous_episode_url": "http://localhost:3001/debate?id=628",
+        "confidence": 0.9,
+        "reason": "L'actualité porte sur le procès en appel de Nicolas Sarkozy lié à un financement illégal supposé, ce qui correspond clairement à une affaire de probité politique et responsabilité des responsables publics.",
+        "criteria": {
+          "main_actors_match": true,
+          "central_tension_match": true,
+          "temporal_continuity": true,
+          "editorial_theme_match": true,
+          "strong_keywords_match": true
+        },
+        "new_story": {
+          "story_title": "",
+          "story_summary": "",
+          "main_actors": [
+            "recu",
+            "centime",
+            "argent"
+          ],
+          "central_tension": "La justice doit-elle privilégier la présomption d'innocence ou la vigilance anticorruption?",
+          "keywords": [
+            "recu",
+            "centime",
+            "argent",
+            "libyen",
+            "repete",
+            "nicolas",
+            "sarkozy",
+            "proces"
+          ],
+          "status": "active"
+        }
+      }
+    }
+  },
+  {
+    "action": "save",
+    "subject": "Matthieu Pigasse décroche un contrat exceptionnel et polémique pour restructurer la dette du Venezuela",
+    "debateScore": 8,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "Le Monde, Libération",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.liberation.fr/international/amerique/matthieu-pigasse-choisi-par-le-venezuela-pour-restructurer-la-dette-du-pays-toujours-sous-influence-de-trump-20260527_4RIHXQYGNRFSXBHJSKL6HMOXVQ/",
+        "source": "Libération",
+        "title": "Matthieu Pigasse choisi par le Venezuela pour restructurer la dette du pays, toujours sous influence de Trump",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.lemonde.fr/economie/article/2026/05/27/matthieu-pigasse-decroche-un-contrat-exceptionnel-et-polemique-pour-restructurer-la-dette-venezuelienne_6694231_3234.html",
+        "source": "Le Monde",
+        "title": "Matthieu Pigasse décroche un contrat exceptionnel et polémique pour restructurer la dette du Venezuela",
+        "thumbnail": ""
+      }
+    ],
+    "sessionLabel": "27/05/2026 à 21:14:59",
+    "controversyLevel": "fort",
+    "ai": {
+      "arenaMode": "positions",
+      "debateScore": 8,
+      "controversyLevel": "fort",
+      "debateQuestion": "",
+      "resume": "",
+      "keywords": [
+        "Matthieu Piga e",
+        "Re tructuration de dette",
+        "Contrat polémique",
+        "Influence de Trump"
+      ],
+      "selectedLinks": [
+        "https://www.liberation.fr/international/amerique/matthieu-pigasse-choisi-par-le-venezuela-pour-restructurer-la-dette-du-pays-toujours-sous-influence-de-trump-20260527_4RIHXQYGNRFSXBHJSKL6HMOXVQ/",
+        "https://www.lemonde.fr/economie/article/2026/05/27/matthieu-pigasse-decroche-un-contrat-exceptionnel-et-polemique-pour-restructurer-la-dette-venezuelienne_6694231_3234.html"
+      ],
+      "agonTheme": "Économie - emploi",
+      "positionA": "",
+      "positionB": "",
+      "sourceSubject": "Matthieu Pigasse décroche un contrat exceptionnel et polémique pour restructurer la dette du Venezuela",
+      "fullArticleState": "short",
+      "mainKeyword": "Dette du Venezuela",
+      "storyLink": {
+        "story_decision": "existing_story",
+        "matched_story_id": "16-l-endettement-public-contraint-les-choix-economiques-et-sociaux-des-gouvernement",
+        "matched_story_title": "L’endettement public contraint les choix économiques et sociaux des gouvernements",
+        "matched_story_summary": "",
+        "previous_episode_id": "",
+        "previous_episode_title": "",
+        "previous_episode_summary": "",
+        "previous_episode_url": "",
+        "confidence": 0.85,
+        "reason": "L'actualité porte sur la restructuration de la dette du Venezuela, un enjeu d'endettement public et de choix économiques, avec une influence politique américaine (Trump) qui renforce la pertinence de cette histoire.",
+        "criteria": {
+          "main_actors_match": true,
+          "central_tension_match": true,
+          "temporal_continuity": true,
+          "editorial_theme_match": true,
+          "strong_keywords_match": true
+        },
+        "new_story": {
+          "story_title": "",
+          "story_summary": "",
+          "main_actors": [
+            "matthieu",
+            "pigasse",
+            "decroche"
+          ],
+          "central_tension": "La France doit-elle soutenir une restructuration de la dette vénézuélienne malgré les sanctions am…",
+          "keywords": [
+            "matthieu",
+            "pigasse",
+            "decroche",
+            "contrat",
+            "exceptionnel",
+            "polemique",
+            "restructurer",
+            "dette"
+          ],
+          "status": "active"
+        }
+      }
+    }
+  },
+  {
+    "action": "save",
+    "subject": "Le proche de Zemmour Jean Messiha accusé d’avoir encaissé les 42 000 euros destinés aux veuves des victimes de l’évasion de Mohammed Amra",
+    "debateScore": 8,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "Libération, BFMTV",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.liberation.fr/politique/le-proche-de-zemmour-jean-messiha-accuse-davoir-encaisse-les-42-000-euros-destines-aux-veuves-des-victimes-de-levasion-de-mohammed-amra-20260527_E4A76A4BKBE47KWXTL7NYKNGL4/",
+        "source": "Libération",
+        "title": "Le proche de Zemmour Jean Messiha accusé d’avoir encaissé les 42 000 euros destinés aux veuves des victimes de l’évasion de Mohammed Amra",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.bfmtv.com/police-justice/video-jean-messiha-assure-rembourser-d-ici-la-fin-de-la-semaine-les-42-000-euros-destines-aux-familles-des-agents-tues-lors-de-l-evasion-de-mohamed-amra_VN-202605270774.html",
+        "source": "BFMTV",
+        "title": "Jean Messiha assure \"rembourser d'ici la fin de la semaine\" les 42.000 euros destinés aux familles des agents tués lors de l'évasion de Mohamed Amra",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.bfmtv.com/police-justice/video-jean-messiha-accuse-d-avoir-empoche-la-cagnotte-destinee-aux-familles-des-agents-tues-lors-de-l-evasion-de-mohamed-amra-repond_VN-202605270752.html",
+        "source": "BFMTV",
+        "title": "Jean Messiha, accusé d'avoir empoché la cagnotte destinée aux familles des agents tués lors de l'évasion de Mohamed Amra, répond",
+        "thumbnail": ""
+      }
+    ],
+    "sessionLabel": "27/05/2026 à 21:14:59",
+    "controversyLevel": "fort",
+    "ai": {
+      "arenaMode": "positions",
+      "debateScore": 8,
+      "controversyLevel": "fort",
+      "debateQuestion": "",
+      "resume": "",
+      "keywords": [
+        "Mohammed Amra",
+        "veuve  de  victime",
+        "famille  de  agent  tué",
+        "encai é 42 000 euro",
+        "rembour ement",
+        "éva ion"
+      ],
+      "selectedLinks": [
+        "https://www.liberation.fr/politique/le-proche-de-zemmour-jean-messiha-accuse-davoir-encaisse-les-42-000-euros-destines-aux-veuves-des-victimes-de-levasion-de-mohammed-amra-20260527_E4A76A4BKBE47KWXTL7NYKNGL4/",
+        "https://www.bfmtv.com/police-justice/video-jean-messiha-assure-rembourser-d-ici-la-fin-de-la-semaine-les-42-000-euros-destines-aux-familles-des-agents-tues-lors-de-l-evasion-de-mohamed-amra_VN-202605270774.html",
+        "https://www.bfmtv.com/police-justice/video-jean-messiha-accuse-d-avoir-empoche-la-cagnotte-destinee-aux-familles-des-agents-tues-lors-de-l-evasion-de-mohamed-amra-repond_VN-202605270752.html"
+      ],
+      "agonTheme": "Politique",
+      "positionA": "",
+      "positionB": "",
+      "sourceSubject": "Le proche de Zemmour Jean Messiha accusé d’avoir encaissé les 42 000 euros destinés aux veuves des victimes de l’évasion de Mohammed Amra",
+      "fullArticleState": "short",
+      "mainKeyword": "Jean Messiha",
+      "storyLink": {
+        "story_decision": "existing_story",
+        "matched_story_id": "56-les-affaires-de-probite-politique-interrogent-la-responsabilite-des-responsables",
+        "matched_story_title": "Les affaires de probité politique interrogent la responsabilité des responsables publics",
+        "matched_story_summary": "",
+        "previous_episode_id": "620",
+        "previous_episode_title": "Le groupe Bolloré doit-il s'engager davantage dans le débat politique ou rester neutre?",
+        "previous_episode_summary": "",
+        "previous_episode_url": "http://localhost:3001/debate?id=620",
+        "confidence": 0.85,
+        "reason": "L'actualité porte sur une affaire d'usage frauduleux de fonds destinés à des victimes, impliquant un proche d'un homme politique, ce qui correspond clairement à une affaire de probité politique et responsabilité des responsables publics.",
+        "criteria": {
+          "main_actors_match": true,
+          "central_tension_match": true,
+          "temporal_continuity": true,
+          "editorial_theme_match": true,
+          "strong_keywords_match": true
+        },
+        "new_story": {
+          "story_title": "",
+          "story_summary": "",
+          "main_actors": [
+            "proche",
+            "zemmour",
+            "jean"
+          ],
+          "central_tension": "Comment assurer une gestion transparente des dons destinés aux victimes dans un contexte politiqu?",
+          "keywords": [
+            "proche",
+            "zemmour",
+            "jean",
+            "messiha",
+            "accuse",
+            "encaisse",
+            "euros",
+            "destines"
+          ],
+          "status": "active"
+        }
+      }
+    }
+  },
+  {
+    "action": "save",
+    "subject": "Guerre au Moyen-Orient : Une frappe touche les environs de Tyr, dans le sud du Liban, après un avertissement israélien",
+    "debateScore": 8,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "Franceinfo, Le Monde, Libération",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.lemonde.fr/international/live/2026/05/27/en-direct-guerre-au-moyen-orient-des-bombardements-israeliens-ont-touche-les-alentours-de-la-ville-de-tyr-apres-un-avertissement-israelien_6691823_3210.html",
+        "source": "Le Monde",
+        "title": "EN DIRECT, guerre au Moyen-Orient : des bombardements israéliens ont touché les alentours de la ville de Tyr, après un avertissement israélien",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.liberation.fr/international/moyen-orient/en-direct-guerre-au-moyen-orient-les-cessez-le-feu-en-iran-et-au-liban-menaces-20260527_A5EZDHUNPRHZ5FGYA3CP2KN6LA/",
+        "source": "Libération",
+        "title": "EN DIRECT - Guerre au Moyen-Orient : les Gardiens de la révolution jugent «faible» la probabilité d’une reprise de la guerre",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.franceinfo.fr/monde/iran/guerre-entre-les-etats-unis-israel-et-l-iran/direct-guerre-au-moyen-orient-des-attaques-israeliennes-font-31-morts-au-liban-inquietudes-autour-du-respect-des-cessez-le-feu-dans-la-region_8030708.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "title": "Guerre au Moyen-Orient : Une frappe touche les environs de Tyr, dans le sud du Liban, après un avertissement israélien",
+        "thumbnail": ""
+      }
+    ],
+    "sessionLabel": "27/05/2026 à 21:14:59",
+    "controversyLevel": "très fort",
+    "ai": {
+      "arenaMode": "positions",
+      "debateScore": 8,
+      "controversyLevel": "très fort",
+      "debateQuestion": "",
+      "resume": "",
+      "keywords": [
+        "guerre au Moyen-Orient",
+        "Sud du Liban",
+        "avertissement israélien",
+        "Gardiens de la révolution",
+        "cessez-le-feu",
+        "bombardements israéliens"
+      ],
+      "selectedLinks": [
+        "https://www.lemonde.fr/international/live/2026/05/27/en-direct-guerre-au-moyen-orient-des-bombardements-israeliens-ont-touche-les-alentours-de-la-ville-de-tyr-apres-un-avertissement-israelien_6691823_3210.html",
+        "https://www.liberation.fr/international/moyen-orient/en-direct-guerre-au-moyen-orient-les-cessez-le-feu-en-iran-et-au-liban-menaces-20260527_A5EZDHUNPRHZ5FGYA3CP2KN6LA/",
+        "https://www.franceinfo.fr/monde/iran/guerre-entre-les-etats-unis-israel-et-l-iran/direct-guerre-au-moyen-orient-des-attaques-israeliennes-font-31-morts-au-liban-inquietudes-autour-du-respect-des-cessez-le-feu-dans-la-region_8030708.html#xtor=RSS-3-[lestitres]"
+      ],
+      "agonTheme": "International",
+      "positionA": "",
+      "positionB": "",
+      "sourceSubject": "Guerre au Moyen-Orient : Une frappe touche les environs de Tyr, dans le sud du Liban, après un avertissement israélien",
+      "fullArticleState": "short",
+      "mainKeyword": "frappe israélienne à Tyr",
+      "storyLink": {
+        "story_decision": "existing_story",
+        "matched_story_id": "01-les-conflits-au-moyen-orient-recomposent-les-equilibres-regionaux",
+        "matched_story_title": "Les conflits au Moyen-Orient recomposent les équilibres régionaux",
+        "matched_story_summary": "",
+        "previous_episode_id": "623",
+        "previous_episode_title": "La France doit-elle soutenir les frappes israéliennes au Liban malgré le risque d’escalade?",
+        "previous_episode_summary": "Les tensions entre les États-Unis et l’Iran ont augmenté récemment malgré un cessez-le-feu au Moyen-Orient. Alors que des négociations cherchaient à stabiliser la région, les États-Unis ont frappé des positions iraniennes. L’Iran a dénoncé ces attaques comme une violation du cessez-le-feu intervenu moins de 48 heures plus tôt.\n\nD’un côté, ces frappes peuvent apparaître comme un frein aux efforts de paix, risquant de raviver les hostilités. De l’autre, elles sont vues comme une mesure nécessaire pour dissuader et protéger des intérêts stratégiques dans un contexte toujours fragile.\n\nLes États-Unis doivent-ils suspendre toute action militaire pour préserver le cessez-le-feu avec l’Iran ?",
+        "previous_episode_url": "http://localhost:3001/debate?id=623",
+        "confidence": 0.85,
+        "reason": "L'actualité porte sur une frappe israélienne au sud du Liban dans le cadre de la guerre au Moyen-Orient, ce qui correspond précisément à un conflit régional impactant les équilibres au Moyen-Orient.",
+        "criteria": {
+          "main_actors_match": true,
+          "central_tension_match": true,
+          "temporal_continuity": true,
+          "editorial_theme_match": true,
+          "strong_keywords_match": true
+        },
+        "new_story": {
+          "story_title": "",
+          "story_summary": "",
+          "main_actors": [],
+          "central_tension": "Faut-il privilégier la dissuasion militaire ou la retenue diplomatique face aux menaces au Liban?",
+          "keywords": [],
+          "status": "active"
+        }
+      }
+    }
+  },
+  {
+    "action": "save",
+    "subject": "Jordan Bardella porte plainte contre un rappeur pour menaces de mort",
+    "debateScore": 7,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "HuffPost France, Libération, BFMTV, Europe 1, Valeurs actuelles",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.huffingtonpost.fr/politique/article/jordan-bardella-annonce-une-plainte-contre-le-rappeur-soli-qui-met-en-scene-son-passage-a-tabac_264172.html",
+        "source": "HuffPost France",
+        "title": "Jordan Bardella annonce une plainte contre le rappeur Soli qui met en scène son passage à tabac",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.liberation.fr/politique/jordan-bardella-veut-porter-plainte-contre-un-rappeur-pour-menaces-de-mort-20260527_3IZL4AIIQRD53KYTA47LOIYXNI/",
+        "source": "Libération",
+        "title": "Jordan Bardella veut porter plainte contre un rappeur pour «menaces de mort»",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.bfmtv.com/police-justice/coup-de-pied-dans-la-tete-d-un-facho-quelle-bonne-saveur-jordan-bardella-annonce-porter-plainte-contre-un-rappeur-pour-menaces-de-mort_AN-202605270798.html",
+        "source": "BFMTV",
+        "title": "\"Coup de pied dans la tête d'un facho, quelle bonne saveur\": Jordan Bardella annonce porter plainte contre un rappeur pour \"menaces de mort\"",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.valeursactuelles.com/politique/un-bon-raciste-cest-un-raciste-blotti-dans-son-cercueil-le-rappeur-soli-met-en-scene-lexecution-de-jordan-bardella",
+        "source": "Valeurs actuelles",
+        "title": "« Un bon raciste, c’est un raciste blotti dans son cercueil » : Jordan Bardella porte plainte contre le rappeur Soli, qui a mis en scène son exécution",
+        "thumbnail": ""
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/watch?v=MVnwpHOBjBY",
+        "source": "Europe 1",
+        "title": "",
+        "thumbnail": "https://i.ytimg.com/vi/MVnwpHOBjBY/hqdefault.jpg"
+      }
+    ],
+    "sessionLabel": "27/05/2026 à 21:14:59",
+    "controversyLevel": "fort",
+    "ai": {
+      "arenaMode": "positions",
+      "debateScore": 7,
+      "controversyLevel": "fort",
+      "debateQuestion": "",
+      "resume": "",
+      "keywords": [
+        "rappeur Soli",
+        "menaces de mort",
+        "passage à tabac",
+        "extrême droite"
+      ],
+      "selectedLinks": [
+        "https://www.huffingtonpost.fr/politique/article/jordan-bardella-annonce-une-plainte-contre-le-rappeur-soli-qui-met-en-scene-son-passage-a-tabac_264172.html",
+        "https://www.liberation.fr/politique/jordan-bardella-veut-porter-plainte-contre-un-rappeur-pour-menaces-de-mort-20260527_3IZL4AIIQRD53KYTA47LOIYXNI/",
+        "https://www.bfmtv.com/police-justice/coup-de-pied-dans-la-tete-d-un-facho-quelle-bonne-saveur-jordan-bardella-annonce-porter-plainte-contre-un-rappeur-pour-menaces-de-mort_AN-202605270798.html",
+        "https://www.youtube.com/watch?v=MVnwpHOBjBY",
+        "https://www.valeursactuelles.com/politique/un-bon-raciste-cest-un-raciste-blotti-dans-son-cercueil-le-rappeur-soli-met-en-scene-lexecution-de-jordan-bardella"
+      ],
+      "agonTheme": "Politique",
+      "positionA": "",
+      "positionB": "",
+      "sourceSubject": "Jordan Bardella porte plainte contre un rappeur pour menaces de mort",
+      "fullArticleState": "short",
+      "mainKeyword": "Plainte de Jordan Bardella",
+      "storyLink": {
+        "story_decision": "existing_story",
+        "matched_story_id": "06-les-droites-radicales-progressent-dans-plusieurs-democraties-europeennes",
+        "matched_story_title": "Les droites radicales progressent dans plusieurs démocraties européennes",
+        "matched_story_summary": "",
+        "previous_episode_id": "607",
+        "previous_episode_title": "La justice doit-elle sanctionner plus sévèrement les propos violents dans le rap politique ?",
+        "previous_episode_summary": "À Londres, des dizaines de milliers de sympathisants d’extrême droite ont de nouveau investi les rues, marquant un retour notable de ce courant dans l’espace public. Ce rassemblement, d’une ampleur remarquable, s’est fait le vecteur d’un discours radical, incarné par des slogans tels que « repartir en croisade » ou « remigration », qui traduisent une revendication identitaire forte. L’événement met en lumière une mobilisation importante, mais les contours précis de cette manifestation restent flous, notamment en ce qui concerne la composition exacte des participants ou les réactions des autorités. Aucun élément clair ne permet de mesurer les tensions éventuelles suscitées par ce défilé, ni son impact immédiat sur la vie sociale et politique locale. Ce retour massif dans la rue révèle une capacité renouvelée à s’affirmer publiquement, avec une volonté manifeste de porter des positions radicales sur des questions sensibles. Pourtant, les sources ne permettent pas d’éclairer les éventuelles dissensions internes ou débats qui pourraient traverser ce mouvement. Dans ce contexte, l’incertitude demeure quant à la portée réelle de cette démonstration de force.",
+        "previous_episode_url": "http://localhost:3001/debate?id=607",
+        "confidence": 0.85,
+        "reason": "L'actualité concerne Jordan Bardella, figure de l'extrême droite française, et une plainte liée à des menaces de mort par un rappeur, ce qui s'inscrit dans le contexte des tensions autour des droites radicales en Europe.",
+        "criteria": {
+          "main_actors_match": true,
+          "central_tension_match": true,
+          "temporal_continuity": true,
+          "editorial_theme_match": true,
+          "strong_keywords_match": true
+        },
+        "new_story": {
+          "story_title": "",
+          "story_summary": "",
+          "main_actors": [],
+          "central_tension": "Faut-il sanctionner les artistes pour des paroles violentes visant des personnalités publiques?",
+          "keywords": [],
+          "status": "active"
+        }
+      }
+    }
+  },
+  {
+    "action": "save",
+    "subject": "Israël affirme avoir tué le nouveau chef de la branche armée du Hamasss dans une frappe à Gaza",
+    "debateScore": 8,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "Franceinfo, L'Obs, Le Figaro, La Croix, France 24, RFI, Euronews FR",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.nouvelobs.com/monde/20260527.OBS115275/guerre-a-gaza-israel-dit-avoir-tue-le-nouveau-chef-de-la-branche-armee-du-hamas-ce-que-l-on-sait.html",
+        "source": "L'Obs",
+        "title": "Guerre à Gaza : Israël dit avoir tué le nouveau chef de la branche armée du Hamasss… Ce que l’on sait",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.franceinfo.fr/monde/iran/guerre-entre-les-etats-unis-israel-et-l-iran/israel-affirme-avoir-tue-le-nouveau-chef-de-la-branche-armee-du-hamas-dans-une-frappe-a-gaza_8031053.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "title": "Israël affirme avoir tué le nouveau chef de la branche armée du Hamasss dans une frappe à Gaza",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.france24.com/fr/moyen-orient/20260527-isra%C3%ABl-affirme-avoir-tu%C3%A9-le-nouveau-chef-de-la-branche-arm%C3%A9e-du-hamas",
+        "source": "France 24",
+        "title": "Israël affirme avoir tué le nouveau chef de la branche armée du Hamasss",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "http://fr.euronews.com/2026/05/27/gaza-israel-annonce-la-mort-du-nouveau-chef-militaire-du-hamas",
+        "source": "Euronews FR",
+        "title": "Gaza : Israël annonce la mort du nouveau chef militaire du Hamas",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.rfi.fr/fr/moyen-orient/20260527-isra%C3%ABl-affirme-avoir-tu%C3%A9-le-nouveau-chef-de-la-branche-arm%C3%A9e-du-hamas-dans-une-frappe-%C3%A0-gaza",
+        "source": "RFI",
+        "title": "Israël affirme avoir tué le nouveau chef de la branche armée du Hamasss dans une frappe à Gaza",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.la-croix.com/international/direct-guerre-iran-israel-usa-jour-88-moyen-orient-bilan-resume-aujourdhui-20260526",
+        "source": "La Croix",
+        "title": "Guerre au Moyen-Orient, jour 88 : le chef de la branche armée du Hamasss ciblé... Le bilan du mardi 26 mai",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.lefigaro.fr/international/gaza-qui-etait-mohammed-odeh-le-chef-de-la-branche-armee-du-hamas-qu-israel-dit-avoir-elimine-20260527",
+        "source": "Le Figaro",
+        "title": "Gaza : qui était Mohammed Odeh, le chef de la branche armée du Hamasss qu’Israël dit avoir éliminé ?",
+        "thumbnail": ""
+      }
+    ],
+    "sessionLabel": "27/05/2026 à 17:55:40",
+    "controversyLevel": "fort",
+    "ai": {
+      "arenaMode": "positions",
+      "debateScore": 8,
+      "controversyLevel": "fort",
+      "debateQuestion": "",
+      "resume": "",
+      "keywords": [
+        "Israël",
+        "Gaza",
+        "Mohammed Odeh",
+        "branche armée du Hamass",
+        "frappe aérienne",
+        "conflit israélo-palestinien"
+      ],
+      "selectedLinks": [
+        "https://www.nouvelobs.com/monde/20260527.OBS115275/guerre-a-gaza-israel-dit-avoir-tue-le-nouveau-chef-de-la-branche-armee-du-hamas-ce-que-l-on-sait.html",
+        "https://www.franceinfo.fr/monde/iran/guerre-entre-les-etats-unis-israel-et-l-iran/israel-affirme-avoir-tue-le-nouveau-chef-de-la-branche-armee-du-hamas-dans-une-frappe-a-gaza_8031053.html#xtor=RSS-3-[lestitres]",
+        "https://www.france24.com/fr/moyen-orient/20260527-isra%C3%ABl-affirme-avoir-tu%C3%A9-le-nouveau-chef-de-la-branche-arm%C3%A9e-du-hamas",
+        "http://fr.euronews.com/2026/05/27/gaza-israel-annonce-la-mort-du-nouveau-chef-militaire-du-hamas",
+        "https://www.rfi.fr/fr/moyen-orient/20260527-isra%C3%ABl-affirme-avoir-tu%C3%A9-le-nouveau-chef-de-la-branche-arm%C3%A9e-du-hamas-dans-une-frappe-%C3%A0-gaza",
+        "https://www.la-croix.com/international/direct-guerre-iran-israel-usa-jour-88-moyen-orient-bilan-resume-aujourdhui-20260526",
+        "https://www.lefigaro.fr/international/gaza-qui-etait-mohammed-odeh-le-chef-de-la-branche-armee-du-hamas-qu-israel-dit-avoir-elimine-20260527"
+      ],
+      "agonTheme": "International",
+      "positionA": "",
+      "positionB": "",
+      "sourceSubject": "Israël affirme avoir tué le nouveau chef de la branche armée du Hamasss dans une frappe à Gaza",
+      "fullArticleState": "short",
+      "mainKeyword": "chef armé Hamas tué"
+    }
+  },
+  {
+    "action": "save",
+    "subject": "Bordeaux : un homme coincé dans une benne à vêtements finit à l'hôpital",
+    "debateScore": 3,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "Le Parisien, 20 Minutes",
+    "contents": [
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/shorts/Q7wCvK3ceCk",
+        "source": "20 Minutes",
+        "title": "Il tombe dans une benne à vêtements",
+        "thumbnail": ""
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/shorts/0OH_NtVlMhM",
+        "source": "Le Parisien",
+        "title": "Bordeaux : un homme coincé dans une benne à vêtements finit à l'hôpital",
+        "thumbnail": ""
+      }
+    ],
+    "sessionLabel": "26/05/2026 à 17:55:20",
+    "controversyLevel": "faible",
+    "ai": {
+      "arenaMode": "positions",
+      "debateScore": 3,
+      "controversyLevel": "faible",
+      "debateQuestion": "",
+      "resume": "",
+      "keywords": [
+        "Bordeaux",
+        "benne à vêtement",
+        "hôpital"
+      ],
+      "selectedLinks": [
+        "https://www.youtube.com/shorts/Q7wCvK3ceCk",
+        "https://www.youtube.com/shorts/0OH_NtVlMhM"
+      ],
+      "agonTheme": "Justice - faits divers",
+      "positionA": "",
+      "positionB": "",
+      "sourceSubject": "Bordeaux : un homme coincé dans une benne à vêtements finit à l'hôpital",
+      "fullArticleState": "short",
+      "mainKeyword": "homme coincé dans benne",
+      "storyLink": {
+        "story_decision": "existing_story",
+        "matched_story_id": "51-les-faits-divers-et-les-alertes-locales-revelent-des-enjeux-de-risque-et-de-gest",
+        "matched_story_title": "Les faits divers et les alertes locales révèlent des enjeux de risque et de gestion publique",
+        "matched_story_summary": "",
+        "previous_episode_id": "604",
+        "previous_episode_title": "Faut-il renforcer la surveillance et la sécurité autour des bornes de collecte de vêtements ?",
+        "previous_episode_summary": "Un enfant de 11 ans a été retrouvé mort à Rennes, une serviette nouée très serrée autour du cou. Deux adolescents ont été placés en garde à vue dans le cadre de l’enquête ouverte pour meurtre.\n\nLes circonstances exactes du décès restent à éclaircir, mais les autorités ont rapidement déclenché une investigation judiciaire. Ce dossier est suivi de près en raison de la gravité des faits et de l’implication de mineurs dans cette affaire.\n\nLa question de la responsabilité et de la justice face à un meurtre impliquant des adolescents soulève un débat sensible. Il s'agit désormais de déterminer comment la justice doit traiter ces jeunes impliqués dans un crime aussi grave. Faut-il appliquer des sanctions pénales sévères aux adolescents impliqués dans ce meurtre à Rennes…",
+        "previous_episode_url": "http://localhost:3001/debate?id=604",
+        "confidence": 0.85,
+        "reason": "L'actualité concerne un fait divers local avec un enjeu de risque et gestion publique, ce qui correspond précisément au titre de l'histoire.",
+        "criteria": {
+          "main_actors_match": true,
+          "central_tension_match": true,
+          "temporal_continuity": true,
+          "editorial_theme_match": true,
+          "strong_keywords_match": true
+        },
+        "new_story": {
+          "story_title": "",
+          "story_summary": "",
+          "main_actors": [],
+          "central_tension": "Faut-il renforcer la sécurité des bennes à vêtements pour prévenir les accidents ?",
+          "keywords": [],
+          "status": "active"
+        }
+      }
+    }
+  },
+  {
+    "action": "save",
     "subject": "Bombardements israéliens dans l’est du Liban avec plusieurs morts et renforts envoyés",
     "debateScore": 9,
     "debateQuestion": "",
@@ -57,10 +1969,10 @@
       "resume": "",
       "keywords": [
         "Hezbollah",
-        "Gardien  de la Révolution",
+        "Gardiens de la Révolution",
         "Iran",
         "armée américaine",
-        "renfort  i raélien"
+        "renforts israéliens"
       ],
       "selectedLinks": [
         "https://www.lemonde.fr/international/live/2026/05/26/en-direct-guerre-au-moyen-orient-l-armee-israelienne-affirme-avoir-frappe-plus-d-une-centaine-d-infrastructures-du-hezbollah-dans-le-sud-du-liban_6691823_3210.html",
@@ -175,7 +2087,7 @@
         "Serge Duteuil-Graziani",
         "gendarmerie",
         "enquête vidéo",
-        "manife tant"
+        "manifestant"
       ],
       "selectedLinks": [
         "https://reporterre.net/Sainte-Soline-le-gendarme-qui-a-failli-tuer-Serge-Duteuil-Graziani-identifie",
@@ -233,11 +2145,11 @@
     "debateQuestion": "",
     "resume": "",
     "keywords": [
-      "ce ez-le-feu",
-      "négociation  diplomatique",
+      "cessez-le-feu",
+      "négociations diplomatiques",
       "Iran",
-      "État -Uni",
-      "ite  de mi ile",
+      "États-Unis",
+      "sites de missiles",
       "guerre au Moyen-Orient"
     ],
     "agonTheme": "International",
@@ -411,10 +2323,10 @@
       "resume": "",
       "keywords": [
         "Roland-Garro",
-        "Hugo Ga ton",
-        "tenni  françai",
+        "Hugo Gaston",
+        "tennis français",
         "premier tour",
-        "défaite en cinq  et"
+        "défaite en cinq sets"
       ],
       "selectedLinks": [
         "https://www.liberation.fr/sports/tennis/gael-monfils-battu-pour-son-dernier-roland-garros-apres-une-ultime-bataille-en-cinq-sets-20260526_IDBDHYE73RADTL4WVWHFGXRQJQ/",
@@ -509,9 +2421,9 @@
       "debateQuestion": "",
       "resume": "",
       "keywords": [
-        "E pagnol  en quarantaine",
-        "mini tère de la  anté",
-        "croi iéri te  e pagnol",
+        "Espagnols en quarantaine",
+        "ministère de la Santé",
+        "croisiéristes espagnols",
         "Madrid"
       ],
       "selectedLinks": [
@@ -628,7 +2540,7 @@
       "debateQuestion": "",
       "resume": "",
       "keywords": [
-        "deux adole cent  en garde à vue",
+        "deux adolescents en garde à vue",
         "erviette nouée autour du cou",
         "enquête pour meurtre",
         "appel à l'aide",
@@ -727,7 +2639,7 @@
       "debateQuestion": "",
       "resume": "",
       "keywords": [
-        "Séba tien Lecornu",
+        "Sébastien Lecornu",
         "réunion intermini térielle",
         "huit département",
         "épi ode de chaleur",
@@ -819,7 +2731,7 @@
       "keywords": [
         "étranger",
         "diplomate",
-        "nouvelle  frappe  ru e",
+        "nouvelles frappes russes",
         "Édouard Philippe",
         "guerre en Ukraine"
       ],
@@ -934,7 +2846,7 @@
       "resume": "",
       "keywords": [
         "Sénégal",
-        "Ou mane Sonko",
+        "Ousmane Sonko",
         "Premier mini tre",
         "Banque centrale",
         "économi te",
@@ -1042,7 +2954,7 @@
         "Hezbollah",
         "guerre au Moyen-Orient",
         "Liban",
-        "I raël"
+        "Israël"
       ],
       "selectedLinks": [
         "https://www.france24.com/fr/moyen-orient/20260525-liban-israel-veut-intensifier-offensive-hezbollah-frappes-netanyahu",
@@ -1092,7 +3004,7 @@
     "resume": "",
     "keywords": [
       "guerre au Moyen-Orient",
-      "I raël",
+      "Israël",
       "Marco Rubio",
       "Donald Trump",
       "pèlerinage à La Mecque",
@@ -1268,8 +3180,8 @@
       "debateQuestion": "",
       "resume": "",
       "keywords": [
-        "13 département  de l’Oue t",
-        "Fini tère",
+        "13 départements de l’Ouest",
+        "Finistère",
         "canicule"
       ],
       "selectedLinks": [
@@ -1689,9 +3601,9 @@
       "mainKeyword": "missile Orechnik",
       "keywords": [
         "guerre en Ukraine",
-        "attaque ru e",
+        "attaque russe",
         "Kiev",
-        "condamnation  internationale",
+        "condamnations internationales",
         "Giorgia Meloni",
         "France Allemagne Italie"
       ]
@@ -1731,9 +3643,9 @@
       "mainKeyword": "Sandrine Rousseau",
       "keywords": [
         "Patrick Bruel",
-        "annulation de  concert",
-        "mi e en danger de  femme",
-        "violence   exuelle"
+        "annulation des concerts",
+        "mise en danger des femmes",
+        "violences sexuelles"
       ]
     }
   },
@@ -1784,11 +3696,11 @@
     "ai": {
       "mainKeyword": "Guerre au Moyen-Orient",
       "keywords": [
-        "accord Iran/État -Uni",
+        "accord Iran/États-Unis",
         "frappe au Liban",
-        "I raël",
+        "Israël",
         "Liban",
-        "élu  i raélien"
+        "élus israéliens"
       ]
     }
   },
@@ -1925,10 +3837,10 @@
       "keywords": [
         "tireur abattu",
         "Donald Trump",
-        "di po itif policier renforcé",
+        "dispositif policier renforcé",
         "Secret Service",
         "Wa hington",
-        "antécédent  de violence"
+        "antécédents de violence"
       ]
     }
   },
@@ -2105,7 +4017,7 @@
         "Ukraine",
         "Emmanuel Macron",
         "Volodymyr Zelen ky",
-        "bombardement  ru e"
+        "bombardements russes"
       ]
     }
   },
@@ -2285,7 +4197,7 @@
         "Cri tian Mungiu",
         "Palme d’or",
         "Fjord",
-        "Palmarè  engagé",
+        "Palmarès engagé",
         "Minotaure",
         "Virginie Efira"
       ]
@@ -4451,7 +6363,7 @@
     "resume": "",
     "keywords": [
       "Nouvelle-Calédonie",
-      "Parlement français",
+      "Parlement françaisss",
       "corps électoral",
       "natifs",
       "scrutin crucial",
@@ -5898,7 +7810,7 @@
   },
   {
     "action": "save",
-    "subject": "Canal+ : l’emprise de Bolloré sur le cinéma français en chiffres",
+    "subject": "Canal+ : l’emprise de Bolloré sur le cinéma françaisss en chiffres",
     "debateScore": 8,
     "debateQuestion": "",
     "resume": "",
@@ -5912,7 +7824,7 @@
         "type": "article",
         "link": "https://www.nouvelobs.com/economie/20260519.OBS115080/canal-l-emprise-de-bollore-sur-le-cinema-francais-en-chiffres.html",
         "source": "L'Obs",
-        "title": "Canal+ : l’emprise de Bolloré sur le cinéma français en chiffres",
+        "title": "Canal+ : l’emprise de Bolloré sur le cinéma françaisss en chiffres",
         "thumbnail": ""
       },
       {
@@ -5977,7 +7889,7 @@
       "keywords": [
         "Canal+",
         "Vincent Bolloré",
-        "cinéma français",
+        "cinéma françaisss",
         "boycott",
         "Maxime Saada",
         "tribune anti-Bolloré",
@@ -6020,12 +7932,12 @@
           "story_title": "",
           "story_summary": "",
           "main_actors": [],
-          "central_tension": "Canal+ : l’emprise de Bolloré sur le cinéma français en chiffres",
+          "central_tension": "Canal+ : l’emprise de Bolloré sur le cinéma françaisss en chiffres",
           "keywords": [],
           "status": "active"
         }
       },
-      "sourceSubject": "Canal+ : l’emprise de Bolloré sur le cinéma français en chiffres",
+      "sourceSubject": "Canal+ : l’emprise de Bolloré sur le cinéma françaisss en chiffres",
       "fullArticleState": "short"
     }
   },

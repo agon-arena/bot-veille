@@ -777,81 +777,7 @@ function looksLikeBrokenKeyword(keyword) {
   if (!value) return true;
   if (/\S\s{2,}\S/.test(value)) return true;
   if (/[A-Za-zÀ-ÖØ-öø-ÿ]\s{2,}[A-Za-zÀ-ÖØ-öø-ÿ]/.test(value)) return true;
-  if (/\b[A-Za-zÀ-ÖØ-öø-ÿ]\b\s+[A-Za-zÀ-ÖØ-öø-ÿ]{3,}/.test(value)) return true;
   return false;
-}
-
-function normalizeKeywordRepairKey(value) {
-  return String(value || "")
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .toLowerCase()
-    .replace(/[’']/g, " ")
-    .replace(/[^a-z0-9]+/g, "");
-}
-
-function getKeywordRepairCandidates(subject) {
-  const chunks = [
-    subject?.subject || "",
-    ...((Array.isArray(subject?.contents) ? subject.contents : []).slice(0, 10).flatMap((content) => [
-      content?.title || "",
-      content?.summary || ""
-    ]))
-  ].filter(Boolean);
-
-  const candidates = [];
-
-  chunks.forEach((chunk) => {
-    const words = String(chunk || "")
-      .replace(/[“”"«»()[\]{}]/g, " ")
-      .split(/\s+/)
-      .map((word) => word.replace(/^[-–—•,.;:!?]+|[-–—•,.;:!?]+$/g, "").trim())
-      .filter(Boolean);
-
-    for (let start = 0; start < words.length; start += 1) {
-      for (let length = 1; length <= 5 && start + length <= words.length; length += 1) {
-        const phrase = words.slice(start, start + length).join(" ").trim();
-        if (phrase.length >= 2 && phrase.length <= 60) candidates.push(phrase);
-      }
-    }
-  });
-
-  return candidates;
-}
-
-function repairKeywordFromSources(subject, keyword) {
-  const value = String(keyword || "").replace(/\s+/g, " ").trim();
-  if (!value) return value;
-
-  if (!looksLikeBrokenKeyword(value)) {
-    return value;
-  }
-
-  const brokenKey = normalizeKeywordRepairKey(value);
-  if (!brokenKey) return value;
-
-  const candidates = getKeywordRepairCandidates(subject);
-  const match = candidates
-    .map((candidate) => {
-      const candidateValue = String(candidate || "").replace(/\s+/g, " ").trim();
-      if (!candidateValue || looksLikeBrokenKeyword(candidateValue)) return null;
-
-      const candidateKey = normalizeKeywordRepairKey(candidateValue);
-      if (!candidateKey) return null;
-
-      const lengthDelta = Math.abs(candidateKey.length - brokenKey.length);
-      if (lengthDelta > 4) return null;
-
-      const score = stringSimilarity.compareTwoStrings(candidateKey, brokenKey);
-      const strongSubstringMatch = candidateKey.includes(brokenKey) || brokenKey.includes(candidateKey);
-      if (!strongSubstringMatch && score < 0.78) return null;
-
-      return { candidate: candidateValue, score, lengthDelta };
-    })
-    .filter(Boolean)
-    .sort((a, b) => b.score - a.score || a.lengthDelta - b.lengthDelta || a.candidate.length - b.candidate.length)[0];
-
-  return match?.candidate || value;
 }
 
 function filterKeywordNoise(subject, values, max = 8) {
@@ -868,7 +794,7 @@ function filterKeywordNoise(subject, values, max = 8) {
     "francaise"
   ]);
 
-  const repairedValues = (Array.isArray(values) ? values : []).map((keyword) => repairKeywordFromSources(subject, keyword));
+const repairedValues = Array.isArray(values) ? values : [];
 
   return normalizeKeywordList(repairedValues, max).filter((keyword) => {
     const lower = String(keyword || "").trim().toLowerCase();
