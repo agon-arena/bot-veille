@@ -1537,7 +1537,7 @@ Le texte final doit rester naturel :
 ne pas afficher de rubriques comme “Pourquoi ça fait parler”, “Tension d’opinion”, “Biais”, “Le nœud du débat” ou “Enjeu caché”.
 
 Structure obligatoire du champ article :
-1. Une première phrase courte, claire et mémorable.
+1. Une première phrase claire et mémorable.
 2. Ligne vide obligatoire juste après cette première phrase.
 3. Premier paragraphe court : ce qui s’est passé.
 4. Ligne vide obligatoire entre le premier paragraphe et le deuxième paragraphe.
@@ -1796,7 +1796,7 @@ Contraintes de longueur :
 - Attention : le champ article est ensuite limité par le code à 1600 caractères. Il faut donc rester sous cette limite, signature comprise.
 
 Structure obligatoire du champ article :
-1. Une première phrase courte, claire et mémorable.
+1. Une première phrase claire et mémorable.
 2. Ligne vide obligatoire juste après cette première phrase.
 3. Premier paragraphe court : ce qui s’est passé.
 4. Ligne vide obligatoire entre le premier paragraphe et le deuxième paragraphe.
@@ -2010,7 +2010,7 @@ Contraintes strictes :
 - positionB : maximum 55 caractères, espaces compris.
 
 Structure obligatoire du champ article :
-1. Une première phrase courte, claire et mémorable.
+1. Une première phrase claire et mémorable.
 2. Ligne vide obligatoire juste après cette première phrase.
 3. Premier paragraphe court : ce qui s’est passé.
 4. Ligne vide obligatoire entre le premier paragraphe et le deuxième paragraphe.
@@ -2236,7 +2236,7 @@ Objectif :
 - Finir le deuxième paragraphe par une phrase courte qui resserre la tension.
 
 Structure obligatoire à conserver :
-1. Première phrase courte, claire et mémorable.
+1. Première phrase claire et mémorable.
 2. Ligne vide obligatoire juste après cette première phrase.
 3. Premier paragraphe court : ce qui s’est passé.
 4. Ligne vide obligatoire entre le premier paragraphe et le deuxième paragraphe.
