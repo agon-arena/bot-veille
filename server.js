@@ -1537,12 +1537,15 @@ Le texte final doit rester naturel :
 ne pas afficher de rubriques comme “Pourquoi ça fait parler”, “Tension d’opinion”, “Biais”, “Le nœud du débat” ou “Enjeu caché”.
 
 Structure obligatoire du champ article :
-1. Un premier paragraphe court : ce qui s’est passé.
-2. Un deuxième paragraphe court : l’enjeu, le contraste ou le choix collectif que l’actualité révèle.
-3. Une ligne vide.
-4. La question Agôn seule sur la dernière ligne.
-5. Une ligne vide.
-6. La signature seule sur la toute dernière ligne.
+1. Une première phrase courte, claire et mémorable.
+2. Ligne vide obligatoire juste après cette première phrase.
+3. Premier paragraphe court : ce qui s’est passé.
+4. Ligne vide obligatoire entre le premier paragraphe et le deuxième paragraphe.
+5. Deuxième paragraphe court : l’enjeu, le contraste ou le choix collectif que l’actualité révèle.
+6. Une ligne vide.
+7. La question Agôn seule sur une ligne, juste avant la signature.
+8. Une ligne vide.
+9. La signature seule sur la toute dernière ligne.
 
 Signature obligatoire :
 - L’article doit toujours se terminer par une signature.
@@ -1591,13 +1594,17 @@ Règles absolues :
 
 - La question doit apparaître une seule fois dans l’article.
 
-- La question doit être l’avant-dernière ligne du champ article.
+- La question doit être l’avant-dernière ligne non vide du champ article.
 
 - La signature doit être la toute dernière ligne du champ article.
 
 - La question doit être précédée d’une ligne vide.
 
 - La signature doit être précédée d’une ligne vide.
+
+- Une ligne vide doit séparer la première phrase du premier paragraphe.
+
+- Une ligne vide doit séparer le premier paragraphe du deuxième paragraphe.
 
 - Aucune autre question ne doit apparaître dans l’article.
 
@@ -1773,17 +1780,17 @@ async function polishAgonFinalArticle(payload, previousJson) {
     return { ...base, latinQuestion: "" };
   }
 
-  const prompt = `Tu dois retravailler le texte final d’un article Agôn en conservant strictement les contraintes techniques et éditoriales ci-dessous.
+  const promptEditorial = `Tu dois retravailler le texte final d’un article Agôn en conservant strictement les contraintes techniques et éditoriales ci-dessous.
 
 Objectif :
 Améliorer la fluidité, la clarté et la force éditoriale du texte, surtout le deuxième paragraphe, qui doit faire apparaître l’enjeu, le contraste ou le choix collectif révélé par l’actualité.
 
 Le texte doit rester journalistique, sobre et crédible.
-La question latine apporte déjà la touche symbolique : il ne faut donc pas rendre tout l’article antique, pompeux ou théâtral.
+Ne rends pas l’article pompeux, théâtral ou artificiellement solennel.
 
 Contraintes de longueur :
 - article : 800 à 1400 caractères.
-- debateQuestion : maximum 98 caractères, espaces et tirets compris.
+- debateQuestion : maximum 98 caractères, espaces, apostrophes, accents, tirets et point d’interrogation final compris.
 - positionA : maximum 55 caractères, espaces compris.
 - positionB : maximum 55 caractères, espaces compris.
 - Attention : le champ article est ensuite limité par le code à 1600 caractères. Il faut donc rester sous cette limite, signature comprise.
@@ -1792,13 +1799,17 @@ Structure obligatoire du champ article :
 1. Une première phrase courte, claire et mémorable.
 2. Ligne vide obligatoire juste après cette première phrase.
 3. Premier paragraphe court : ce qui s’est passé.
-4. Deuxième paragraphe court : l’enjeu, le contraste ou le choix collectif révélé.
-5. Ligne vide.
-6. Question latine très courte, sans point d’interrogation.
-7. Ligne vide.
-8. Question Agôn définitive seule sur une ligne.
-9. Ligne vide.
-10. Signature seule sur la toute dernière ligne.
+4. Ligne vide obligatoire entre le premier paragraphe et le deuxième paragraphe.
+5. Deuxième paragraphe court : l’enjeu, le contraste ou le choix collectif révélé.
+6. Ligne vide.
+7. Question Agôn définitive seule sur une ligne.
+8. Ligne vide.
+9. Signature seule sur la toute dernière ligne.
+
+Important :
+- À cette étape, ne produis aucune question latine.
+- N’ajoute aucun champ latinQuestion.
+- La question latine sera ajoutée dans une seconde étape.
 
 Règle de ton prioritaire :
 Le texte final doit ressembler à un court éditorial d’actualité, pas à un résumé de veille.
@@ -1877,40 +1888,12 @@ Important :
 - Si le sujet est léger ou très concret, rester simple.
 - Si le sujet est tragique, violent ou sensible, rester sobre et éviter tout effet dramatique.
 
-Question latine — règle prioritaire absolue :
-- Tu dois obligatoirement produire le champ latinQuestion.
-- latinQuestion est un élément central de l’article Agôn : il ne doit jamais être vide, absent ou oublié.
-- latinQuestion doit être une formule pseudo-latine courte de 2 à 4 mots.
-- Format recommandé : Mot latin simple + "an" + mot latin simple.
-- Exemple de forme seulement : "Memoria an oblivio".
-- La ligne latine dans article doit être exactement identique au champ latinQuestion.
-- Elle doit être très courte.
-- Elle ne doit jamais avoir de point d’interrogation.
-- Elle doit résumer symboliquement l’enjeu.
-- Elle doit être placée juste avant la question Agôn définitive.
-- Elle doit rester simple, même si le latin est basique.
-- Crée une formule latine nouvelle et adaptée au sujet.
-- Le champ latinQuestion ne doit jamais être vide quand la réponse JSON est valide.
-- Ne jamais utiliser “Agôn”, “Agon” ou le nom de la plateforme dans la question latine.
-- Ne pas utiliser de mot grec, de marque, de nom propre ou de nom de média.
-- Ne réutilise pas mécaniquement les exemples.
-- Évite “Salus an libertas” sauf si le sujet oppose vraiment sécurité, protection ou santé à des libertés publiques.
-- Varie les mots selon l’enjeu réel : justice, force, peur, paix, loi, vérité, prudence, autorité, solidarité.
-- Ne réponds jamais avec une formule générique.
-- Les exemples ci-dessous montrent seulement la forme. Ne les recopie pas.
-- Exemples de forme :
-  “Pax an vis”
-  “Lex an metus”
-  “Veritas an utilitas”
-  “Prudentia an audacia”
-  “Auctoritas an concordia”
-
 Question Agôn :
 - Elle doit être claire, concrète et débattable.
-- Maximum 98 caractères strictement, espaces, apostrophes, accents, tirets et point d’interrogation final compris.
+- Maximum 98 caractères strictement.
 - Si elle dépasse 98 caractères, la raccourcir avant de répondre.
 - Elle doit toujours se terminer par un point d’interrogation.
-- Elle doit apparaître seule, après la question latine.
+- Elle doit apparaître seule à la fin de l’article, juste avant la signature.
 - Elle ne doit apparaître qu’une seule fois dans l’article.
 - Elle doit être compréhensible sans lire tout l’article.
 - Elle doit permettre deux positions défendables.
@@ -1963,22 +1946,24 @@ Règles absolues :
 - Ne pas afficher les positions dans l’article.
 - Ne pas écrire de titre séparé dans le champ article.
 - Ne pas ajouter de rubrique du type “Pourquoi ça fait parler”, “Tension d’opinion”, “Biais” ou “Enjeu”.
-- La question latine, la question Agôn et la signature doivent respecter exactement la structure demandée.
 - Ne pas ajouter d’autre question que la question Agôn finale.
-- La phrase avant la question latine doit être affirmative.
+- La phrase avant la question Agôn doit être affirmative.
+- Ne pas produire de latin à cette étape.
 
 Vérification obligatoire avant de répondre :
-1. Le JSON contient bien le champ latinQuestion.
-2. latinQuestion n’est pas vide.
-3. article contient une ligne latine exactement identique à latinQuestion.
-4. Cette ligne latinQuestion est placée juste avant debateQuestion.
+1. Le JSON ne contient pas de champ latinQuestion.
+2. article contient une ligne vide juste après la première phrase.
+3. article contient une ligne vide entre le premier paragraphe et le deuxième paragraphe.
+4. debateQuestion apparaît seule dans article, juste avant la signature.
 5. La ligne française dans article est exactement identique au champ debateQuestion.
-6. Si une condition échoue, corrige le JSON avant de répondre.
+6. debateQuestion fait 98 caractères maximum.
+7. positionA et positionB font 55 caractères maximum.
+8. article se termine par une signature autorisée, seule sur la dernière ligne.
+9. Si une condition échoue, corrige le JSON avant de répondre.
 
 JSON attendu uniquement :
 {
   "article": "...",
-  "latinQuestion": "...",
   "debateQuestion": "...",
   "positionA": "...",
   "positionB": "..."
@@ -1999,14 +1984,200 @@ ${JSON.stringify(base, null, 2)}
 Réponds uniquement en JSON valide, sans balises markdown.`;
 
   try {
-    const response = await openai.responses.create({
+    const editorialResponse = await openai.responses.create({
       model: "gpt-4.1-mini",
-      input: prompt,
+      input: promptEditorial,
       temperature: 0.3,
       max_output_tokens: 2200
     });
-    const parsed = safeJsonParse(String(response.output_text || "").trim());
-    const finalQuestion = limitDebateQuestion(parsed.debateQuestion || base.debateQuestion);
+    const editorialJson = safeJsonParse(String(editorialResponse.output_text || "").trim());
+    delete editorialJson.latinQuestion;
+
+    const promptFinalisation = `Tu dois vérifier, corriger et finaliser un JSON d’article Agôn.
+
+Objectif :
+Ajouter une question latine courte et verrouiller la structure finale.
+Corrige uniquement les problèmes de structure, de longueur, de question latine, de question Agôn, de positions ou de signature.
+Ne réécris pas tout si ce n’est pas nécessaire.
+Conserve le fond, le ton et les faits du texte fourni.
+
+Contraintes strictes :
+- article : 800 à 1400 caractères si possible.
+- article : jamais plus de 1600 caractères, signature comprise.
+- latinQuestion : obligatoire, jamais vide.
+- debateQuestion : maximum 98 caractères, espaces, apostrophes, accents, tirets et point d’interrogation final compris.
+- positionA : maximum 55 caractères, espaces compris.
+- positionB : maximum 55 caractères, espaces compris.
+
+Structure obligatoire du champ article :
+1. Une première phrase courte, claire et mémorable.
+2. Ligne vide obligatoire juste après cette première phrase.
+3. Premier paragraphe court : ce qui s’est passé.
+4. Ligne vide obligatoire entre le premier paragraphe et le deuxième paragraphe.
+5. Deuxième paragraphe court : l’enjeu, le contraste ou le choix collectif révélé.
+6. Ligne vide.
+7. Question latine très courte, sans point d’interrogation.
+8. Ligne vide.
+9. Question Agôn définitive seule sur une ligne.
+10. Ligne vide.
+11. Signature seule sur la toute dernière ligne.
+
+Vérification prioritaire des sauts de ligne :
+- Il doit obligatoirement y avoir une ligne vide juste après la première phrase.
+- Il doit obligatoirement y avoir une ligne vide entre le premier paragraphe et le deuxième paragraphe.
+- Il doit obligatoirement y avoir une ligne vide entre la question latine et la question Agôn.
+- Il doit obligatoirement y avoir une ligne vide entre la question Agôn et la signature.
+- Si un de ces sauts de ligne est absent, corrige article.
+- La première phrase ne doit pas être un titre séparé, mais une accroche intégrée.
+
+Question latine — règle prioritaire absolue :
+- Tu dois obligatoirement produire le champ latinQuestion.
+- latinQuestion est un élément central de l’article Agôn : il ne doit jamais être vide, absent ou oublié.
+- latinQuestion doit être une formule pseudo-latine courte de 2 à 4 mots.
+- Format recommandé : Mot latin simple + "an" + mot latin simple.
+- Exemple de forme seulement : "Memoria an oblivio".
+- La ligne latine dans article doit être exactement identique au champ latinQuestion.
+- Elle doit être très courte.
+- Elle ne doit jamais avoir de point d’interrogation.
+- Elle doit résumer symboliquement l’enjeu.
+- Elle doit être placée juste avant la question Agôn définitive.
+- Elle doit rester simple, même si le latin est basique.
+- Crée une formule latine nouvelle et adaptée au sujet.
+- Le champ latinQuestion ne doit jamais être vide quand la réponse JSON est valide.
+- Ne jamais utiliser “Agôn”, “Agon” ou le nom de la plateforme dans la question latine.
+- Ne pas utiliser de mot grec, de marque, de nom propre ou de nom de média.
+- Ne réutilise pas mécaniquement les exemples.
+- Évite “Salus an libertas” sauf si le sujet oppose vraiment sécurité, protection ou santé à des libertés publiques.
+- Varie les mots selon l’enjeu réel : justice, force, peur, paix, loi, vérité, prudence, autorité, solidarité.
+- Ne réponds jamais avec une formule générique.
+- Les exemples ci-dessous montrent seulement la forme. Ne les recopie pas.
+- Exemples de forme :
+  “Pax an vis”
+  “Lex an metus”
+  “Veritas an utilitas”
+  “Prudentia an audacia”
+  “Auctoritas an concordia”
+
+Question Agôn :
+- Elle doit être claire, concrète et débattable.
+- Maximum 98 caractères strictement.
+- Si elle dépasse 98 caractères, la raccourcir avant de répondre.
+- Elle doit toujours se terminer par un point d’interrogation.
+- Elle doit apparaître seule, après la question latine.
+- Elle ne doit apparaître qu’une seule fois dans l’article.
+- Elle doit être compréhensible sans lire tout l’article.
+- Elle doit permettre deux positions défendables.
+- La question finale ne doit pas contenir une justification qui avantage un camp.
+- Éviter les formulations du type :
+  “Faut-il faire X pour protéger / contenir / défendre / empêcher… ?”
+- Préférer :
+  “Faut-il choisir X ou Y ?”
+  “La France doit-elle soutenir X ?”
+  “Faut-il autoriser X malgré Y ?”
+- Éviter les questions molles comme :
+  “Faut-il s’inquiéter ?”
+  “Est-ce une bonne chose ?”
+  “Qui a raison ?”
+- Éviter les questions évidentes comme :
+  “Faut-il protéger les enfants ?”
+  “Faut-il éviter les accidents ?”
+  “Faut-il empêcher les drames ?”
+
+Positions :
+- positionA et positionB doivent être très générales.
+- Ce sont des étiquettes de camp, pas des arguments.
+- Maximum 55 caractères chacune.
+- Elles doivent répondre directement à debateQuestion.
+- Elles doivent être symétriques, courtes et défendables.
+- Ne jamais utiliser “car”, “parce que”, “afin de”, “pour que”.
+- Éviter aussi “pour” si cela transforme la position en argument.
+- Si une position dépasse 55 caractères ou ressemble à un argument, corrige-la.
+
+Signature :
+- article doit toujours se terminer par une signature.
+- La signature doit être seule sur la toute dernière ligne.
+- Choisir un seul nom parmi cette liste :
+  J.L Grasso / F. Glorennec / T. Guyomarch / M. Guillot / P. Ratsky
+- Ne jamais inventer d’autre nom.
+- Ne jamais expliquer le choix du nom.
+- Ne pas mettre de tiret avant la signature.
+
+Style à préserver :
+- Ton éditorial sobre, tendu et vivant.
+- Texte clair, sérieux, accessible et journalistique.
+- Captivant sans être sensationnaliste.
+- Ne pas transformer l’article en tribune personnelle.
+- Ne pas ajouter de fait absent du résumé factuel.
+- Ne pas dramatiser artificiellement.
+- Ne pas ajouter de rubrique ou de titre séparé.
+- La question latine apporte la touche symbolique : il ne faut donc pas rendre tout l’article antique, pompeux ou théâtral.
+
+Formulations interdites sauf nécessité factuelle forte :
+- “dans un contexte de tensions”
+- “chaque mouvement est scruté”
+- “la situation reste volatile”
+- “les détails restent flous”
+- “cette action s’inscrit dans”
+- “la tension monte”
+- “la stabilité fragile de la zone”
+- “les relations restent fragiles”
+- “la communauté internationale observe”
+
+Règles absolues :
+- Ne rien inventer.
+- Ne pas ajouter de fait absent du résumé factuel.
+- Ne pas dramatiser artificiellement.
+- Ne pas transformer l’article en tribune personnelle.
+- Ne pas afficher les positions dans l’article.
+- Ne pas écrire de titre séparé dans le champ article.
+- Ne pas ajouter de rubrique du type “Pourquoi ça fait parler”, “Tension d’opinion”, “Biais” ou “Enjeu”.
+- La question latine, la question Agôn et la signature doivent respecter exactement la structure demandée.
+- Ne pas ajouter d’autre question que la question Agôn finale.
+- La phrase avant la question latine doit être affirmative.
+
+Vérification obligatoire avant de répondre :
+1. Le JSON contient bien le champ latinQuestion.
+2. latinQuestion n’est pas vide.
+3. article contient une ligne latine exactement identique à latinQuestion.
+4. Cette ligne latinQuestion est placée juste avant debateQuestion.
+5. La ligne française dans article est exactement identique au champ debateQuestion.
+6. Il y a une ligne vide juste après la première phrase de article.
+7. Il y a une ligne vide entre le premier paragraphe et le deuxième paragraphe.
+8. Il y a une ligne vide entre latinQuestion et debateQuestion.
+9. Il y a une ligne vide entre debateQuestion et la signature.
+10. debateQuestion fait 98 caractères maximum.
+11. positionA et positionB font 55 caractères maximum.
+12. article se termine par une signature autorisée, seule sur la dernière ligne.
+13. Si une condition échoue, corrige le JSON avant de répondre.
+
+JSON attendu uniquement :
+{
+  "article": "...",
+  "latinQuestion": "...",
+  "debateQuestion": "...",
+  "positionA": "...",
+  "positionB": "..."
+}
+
+Sujet :
+${subject}
+
+Résumé factuel :
+${summary}
+
+JSON à vérifier et finaliser :
+${JSON.stringify(editorialJson, null, 2)}
+
+Réponds uniquement en JSON valide, sans balises markdown.`;
+
+    const finalisationResponse = await openai.responses.create({
+      model: "gpt-4.1-mini",
+      input: promptFinalisation,
+      temperature: 0.2,
+      max_output_tokens: 2200
+    });
+    const parsed = safeJsonParse(String(finalisationResponse.output_text || "").trim());
+    const finalQuestion = limitDebateQuestion(parsed.debateQuestion || editorialJson.debateQuestion || base.debateQuestion);
     const finalLatinQuestion = normalizeLatinQuestion(parsed.latinQuestion || "")
       || extractLatinQuestionFromArticle(parsed.article || "")
       || buildFallbackLatinQuestion({
@@ -2016,29 +2187,29 @@ Réponds uniquement en JSON valide, sans balises markdown.`;
         narrativeTension
       });
     const finalSignature = getNextAgonArticleSignature();
-    let finalArticle = enforceFinalArticleQuestion(parsed.article || base.article, finalQuestion, finalLatinQuestion, finalSignature, {
-      positionA: parsed.positionA || base.positionA,
-      positionB: parsed.positionB || base.positionB
+    let finalArticle = enforceFinalArticleQuestion(parsed.article || editorialJson.article || base.article, finalQuestion, finalLatinQuestion, finalSignature, {
+      positionA: parsed.positionA || editorialJson.positionA || base.positionA,
+      positionB: parsed.positionB || editorialJson.positionB || base.positionB
     });
     if (finalArticle.length < AGON_ARTICLE_MIN_LENGTH) {
       finalArticle = await expandShortAgonArticle(payload, {
         article: finalArticle,
         latinQuestion: finalLatinQuestion,
         debateQuestion: finalQuestion,
-        positionA: parsed.positionA || base.positionA,
-        positionB: parsed.positionB || base.positionB
+        positionA: parsed.positionA || editorialJson.positionA || base.positionA,
+        positionB: parsed.positionB || editorialJson.positionB || base.positionB
       });
       finalArticle = enforceFinalArticleQuestion(finalArticle, finalQuestion, finalLatinQuestion, finalSignature, {
-        positionA: parsed.positionA || base.positionA,
-        positionB: parsed.positionB || base.positionB
+        positionA: parsed.positionA || editorialJson.positionA || base.positionA,
+        positionB: parsed.positionB || editorialJson.positionB || base.positionB
       });
     }
     return {
       article: finalArticle,
       latinQuestion: finalLatinQuestion,
       debateQuestion: finalQuestion,
-      positionA: limitStoryText(parsed.positionA || base.positionA, 55),
-      positionB: limitStoryText(parsed.positionB || base.positionB, 55)
+      positionA: limitStoryText(parsed.positionA || editorialJson.positionA || base.positionA, 55),
+      positionB: limitStoryText(parsed.positionB || editorialJson.positionB || base.positionB, 55)
     };
   } catch (error) {
     console.error("Erreur finition article Agôn :", error.message);
@@ -2065,16 +2236,17 @@ Objectif :
 - Finir le deuxième paragraphe par une phrase courte qui resserre la tension.
 
 Structure obligatoire à conserver :
-1. Première phrase courte pouvant fonctionner comme un titre.
+1. Première phrase courte, claire et mémorable.
 2. Ligne vide obligatoire juste après cette première phrase.
 3. Premier paragraphe court : ce qui s’est passé.
-4. Deuxième paragraphe court : l’enjeu ou le contraste.
-5. Ligne vide.
-6. Question latine très courte, sans point d’interrogation.
-7. Ligne vide.
-8. Question Agôn en français, maximum 98 caractères strictement, point d’interrogation final compris.
-9. Ligne vide.
-10. Signature seule.
+4. Ligne vide obligatoire entre le premier paragraphe et le deuxième paragraphe.
+5. Deuxième paragraphe court : l’enjeu ou le contraste.
+6. Ligne vide.
+7. Question latine très courte, sans point d’interrogation.
+8. Ligne vide.
+9. Question Agôn en français, maximum 98 caractères strictement, point d’interrogation final compris.
+10. Ligne vide.
+11. Signature seule.
 
 JSON attendu uniquement :
 {
@@ -2889,6 +3061,15 @@ app.get("/saved", requireMixteAuth, (req, res) => {
   if (fs.existsSync(savedFile)) {
     try { saved = JSON.parse(fs.readFileSync(savedFile, "utf8")); } catch {}
   }
+  if (Array.isArray(saved)) {
+    saved = saved.slice().sort((a, b) => {
+      const bTime = new Date(b?.savedAt || 0).getTime() || 0;
+      const aTime = new Date(a?.savedAt || 0).getTime() || 0;
+      return bTime - aTime;
+    });
+  } else {
+    saved = [];
+  }
 
   function esc(t) {
     return String(t || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
@@ -2945,14 +3126,20 @@ app.get("/saved", requireMixteAuth, (req, res) => {
       contentsHtml += videos.map(c => `<li style="padding:6px 0;border-bottom:1px solid #f0f0f0;font-size:0.88rem;display:flex;align-items:center;gap:10px;">${c.thumbnail ? `<img src="${esc(c.thumbnail)}" style="width:80px;height:45px;object-fit:cover;border-radius:4px;flex-shrink:0;">` : ""}<span><strong>${esc(c.source)}</strong> — <a href="${esc(c.link)}" target="_blank" rel="noopener noreferrer">${esc(c.title)}</a></span></li>`).join("");
       contentsHtml += `</ul>`;
     }
+    const sourceCount = Array.isArray(s.sources)
+      ? s.sources.length
+      : String(s.sources || "").split(",").map(source => source.trim()).filter(Boolean).length;
     return `
     <section class="subject" data-index="${i}" data-subject-title="${esc(s.subject)}" data-score="${s.debateScore || 0}">
       <button class="arena-select-btn" type="button" aria-pressed="false">Sélectionner</button>
       ${buildAiScoreHtml(s)}
       <h3>${esc(s.subject)}</h3>
       ${buildAiBoxHtml(s)}
-      <p class="sources">${esc(s.sources)}</p>
-      ${contentsHtml}
+      <details class="sources-dropdown">
+        <summary>Voir les sources (${sourceCount})</summary>
+        <p class="sources">${esc(s.sources)}</p>
+        ${contentsHtml}
+      </details>
       <small class="date">Enregistré le ${new Date(s.savedAt).toLocaleString("fr-FR")}</small>
       <button class="unsave-btn" type="button" data-subject-title="${esc(s.subject)}">★ Supprimer</button>
     </section>`;
@@ -3031,6 +3218,12 @@ app.get("/saved", requireMixteAuth, (req, res) => {
     .tags-generate-btn:hover:not(:disabled) { background: #f0f0f0; }
     .tags-generate-btn:disabled { opacity: 0.55; cursor: default; }
     .sources { font-size: 0.8rem; color: #999; margin: 10px 0 6px; }
+    .sources-dropdown { margin: 10px 0 12px; }
+    .sources-dropdown summary { display: inline-flex; align-items: center; gap: 8px; width: fit-content; border: 1px solid #ddd; background: white; border-radius: 999px; padding: 7px 13px; color: #111; font: inherit; font-size: 0.86rem; font-weight: 700; cursor: pointer; user-select: none; }
+    .sources-dropdown summary::-webkit-details-marker { display: none; }
+    .sources-dropdown summary::after { content: "▾"; font-size: 0.78rem; color: #777; transition: transform 0.16s ease; }
+    .sources-dropdown[open] summary::after { transform: rotate(180deg); }
+    .sources-dropdown summary:hover { background: #f0f0f0; }
     .date { font-size: 0.78rem; color: #bbb; }
     .unsave-btn { margin-top: 12px; background: none; border: 1px solid #ddd; border-radius: 999px; padding: 6px 14px; font: inherit; font-size: 0.85rem; cursor: pointer; color: #c0392b; }
     .unsave-btn:hover { background: #fdf0ee; border-color: #c0392b; }
@@ -3346,10 +3539,16 @@ app.get("/sent-to-agon", requireMixteAuth, (req, res) => {
     return String(t || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
   }
 
-  const itemsHtml = sent.map((item) => {
-    const links = Array.isArray(item.links) ? item.links.filter((link) => link && link.url) : [];
-    return `
-      <section class="sent-item">
+	  const itemsHtml = sent.map((item) => {
+	    const links = Array.isArray(item.links) ? item.links.filter((link) => link && link.url) : [];
+	    const sourceNames = Array.isArray(item.sources)
+	      ? item.sources.map(source => String(source || "").trim()).filter(Boolean)
+	      : String(item.sources || "").split(/[,;\n]+/).map(source => source.trim()).filter(Boolean);
+	    const sourceDetailsHtml = (links.length || sourceNames.length)
+	      ? `<details class="sent-links"><summary>Voir les sources (${links.length || sourceNames.length})</summary>${sourceNames.length ? `<p class="sent-source-names">${esc(sourceNames.join(", "))}</p>` : ""}${links.length ? `<ul>${links.map((link) => `<li><a href="${esc(link.url)}" target="_blank" rel="noopener noreferrer">${esc(link.title || link.url)}</a>${link.source ? ` — ${esc(link.source)}` : ""}</li>`).join("")}</ul>` : ""}</details>`
+	      : "";
+	    return `
+	      <section class="sent-item">
         <div class="sent-head">
           <div>
             <p class="sent-subject">${esc(item.subject || "")}</p>
@@ -3357,17 +3556,16 @@ app.get("/sent-to-agon", requireMixteAuth, (req, res) => {
           </div>
           <small class="sent-date">Envoyé le ${new Date(item.sentAt).toLocaleString("fr-FR")}</small>
         </div>
-        ${item.resume ? `<p class="sent-resume">${esc(item.resume)}</p>` : ""}
-        <div class="sent-meta">
-          ${item.theme ? `<span>${esc(normalizeAgonTheme(item.theme))}</span>` : ""}
-          ${item.sources ? `<span>${esc(item.sources)}</span>` : ""}
-          ${item.sessionLabel ? `<span>${esc(item.sessionLabel)}</span>` : ""}
-        </div>
-        ${Array.isArray(item.keywords) && item.keywords.length ? `<div class="sent-keywords">${item.keywords.map((keyword) => `<span class="chip">${esc(keyword)}</span>`).join("")}</div>` : ""}
-        ${links.length ? `<details class="sent-links"><summary>Sources envoyées (${links.length})</summary><ul>${links.map((link) => `<li><a href="${esc(link.url)}" target="_blank" rel="noopener noreferrer">${esc(link.title || link.url)}</a>${link.source ? ` — ${esc(link.source)}` : ""}</li>`).join("")}</ul></details>` : ""}
-      </section>
-    `;
-  }).join("");
+	        ${item.resume ? `<p class="sent-resume">${esc(item.resume)}</p>` : ""}
+	        <div class="sent-meta">
+	          ${item.theme ? `<span>${esc(normalizeAgonTheme(item.theme))}</span>` : ""}
+	          ${item.sessionLabel ? `<span>${esc(item.sessionLabel)}</span>` : ""}
+	        </div>
+	        ${Array.isArray(item.keywords) && item.keywords.length ? `<div class="sent-keywords">${item.keywords.map((keyword) => `<span class="chip">${esc(keyword)}</span>`).join("")}</div>` : ""}
+	        ${sourceDetailsHtml}
+	      </section>
+	    `;
+	  }).join("");
 
   res.send(`<!DOCTYPE html>
 <html lang="fr">
@@ -3390,7 +3588,11 @@ app.get("/sent-to-agon", requireMixteAuth, (req, res) => {
     .sent-meta { display: flex; flex-wrap: wrap; gap: 8px; color: #6b7280; font-size: 0.84rem; margin-bottom: 10px; }
     .sent-meta span, .chip { display: inline-flex; align-items: center; background: #f3f4f6; border: 1px solid #e5e7eb; border-radius: 999px; padding: 4px 9px; }
     .sent-keywords { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
-    .sent-links summary { cursor: pointer; font-weight: 700; color: #1f2937; }
+	    .sent-links summary { display: inline-flex; align-items: center; gap: 8px; border: 1px solid #ddd; background: white; border-radius: 999px; padding: 7px 13px; cursor: pointer; font-weight: 700; color: #1f2937; user-select: none; }
+	    .sent-links summary::-webkit-details-marker { display: none; }
+	    .sent-links summary::after { content: "▾"; font-size: 0.78rem; color: #777; transition: transform 0.16s ease; }
+	    .sent-links[open] summary::after { transform: rotate(180deg); }
+	    .sent-source-names { color: #6b7280; font-size: 0.86rem; margin: 10px 0 0; }
     .sent-links ul { margin: 10px 0 0; padding-left: 18px; }
     .sent-links li { margin-bottom: 6px; }
     .empty { color: #888; margin-top: 40px; }
@@ -3461,8 +3663,15 @@ app.get("/admin", (req, res) => {
     .tab-btn.active { background: #111; color: white; border-color: #111; font-weight: 700; }
     .tab-panel { display: none; }
     .tab-panel.active { display: block; }
-    .source-list { list-style: none; padding: 0; margin: 0 0 32px; }
-    .source-item { background: white; border: 1px solid #e0e0e0; border-radius: 12px; padding: 14px 18px; margin-bottom: 10px; display: flex; align-items: flex-start; gap: 14px; }
+	    .source-list { list-style: none; padding: 0; margin: 0 0 32px; }
+	    .source-list-dropdown { margin: 0 0 18px; }
+	    .source-list-dropdown summary { display: inline-flex; align-items: center; gap: 8px; width: fit-content; border: 1px solid #ddd; background: white; border-radius: 999px; padding: 8px 14px; color: #111; font: inherit; font-size: 0.9rem; font-weight: 700; cursor: pointer; user-select: none; }
+	    .source-list-dropdown summary::-webkit-details-marker { display: none; }
+	    .source-list-dropdown summary::after { content: "▾"; font-size: 0.78rem; color: #777; transition: transform 0.16s ease; }
+	    .source-list-dropdown[open] summary::after { transform: rotate(180deg); }
+	    .source-list-dropdown summary:hover { background: #f0f0f0; }
+	    .source-list-dropdown .source-list { margin-top: 12px; }
+	    .source-item { background: white; border: 1px solid #e0e0e0; border-radius: 12px; padding: 14px 18px; margin-bottom: 10px; display: flex; align-items: flex-start; gap: 14px; }
     .source-info { flex: 1; min-width: 0; }
     .source-nom { font-weight: 700; font-size: 0.98rem; margin-bottom: 2px; }
     .source-orientation { font-size: 0.82rem; color: #666; margin-bottom: 4px; }
@@ -3504,10 +3713,13 @@ app.get("/admin", (req, res) => {
     <button class="tab-btn" onclick="switchTab('youtube')">▶ Chaînes YouTube</button>
   </div>
 
-  <!-- Onglet Presse -->
-  <div id="tab-presse" class="tab-panel active">
-    <ul class="source-list" id="list-presse"></ul>
-    <details id="form-presse-wrap">
+	  <!-- Onglet Presse -->
+	  <div id="tab-presse" class="tab-panel active">
+	    <details class="source-list-dropdown">
+	      <summary>Voir les médias presse</summary>
+	      <ul class="source-list" id="list-presse"></ul>
+	    </details>
+	    <details id="form-presse-wrap">
       <summary style="cursor:pointer;font-weight:600;color:#0645ad;margin-bottom:12px;">+ Ajouter un média presse</summary>
       <div class="add-form">
         <h3 id="form-presse-title">Nouveau média</h3>
@@ -3529,10 +3741,13 @@ app.get("/admin", (req, res) => {
     </details>
   </div>
 
-  <!-- Onglet YouTube -->
-  <div id="tab-youtube" class="tab-panel">
-    <ul class="source-list" id="list-youtube"></ul>
-    <details id="form-youtube-wrap">
+	  <!-- Onglet YouTube -->
+	  <div id="tab-youtube" class="tab-panel">
+	    <details class="source-list-dropdown">
+	      <summary>Voir les chaînes YouTube</summary>
+	      <ul class="source-list" id="list-youtube"></ul>
+	    </details>
+	    <details id="form-youtube-wrap">
       <summary style="cursor:pointer;font-weight:600;color:#c0392b;margin-bottom:12px;">+ Ajouter une chaîne YouTube</summary>
       <div class="add-form">
         <h3 id="form-youtube-title">Nouvelle chaîne</h3>

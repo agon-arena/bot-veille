@@ -52,6 +52,15 @@ h1 { font-size: 1.5rem; margin-bottom: 4px; }
 .prog-bar-bg { background: #eee; border-radius: 99px; height: 6px; overflow: hidden; margin-bottom: 8px; }
 .prog-bar { background: #111; height: 100%; width: 0%; transition: width 0.3s; border-radius: 99px; }
 .prog-info { font-size: 0.82rem; color: #666; }
+
+/* sources-dropdown-current-patch */
+.sources-dropdown, .cs-sources-dropdown { margin: 10px 0 12px; }
+.sources-dropdown summary, .cs-sources-dropdown summary { display: inline-flex; align-items: center; gap: 8px; width: fit-content; border: 1px solid #ddd; background: white; border-radius: 999px; padding: 7px 13px; color: #111; font: inherit; font-size: 0.86rem; font-weight: 700; cursor: pointer; user-select: none; }
+.sources-dropdown summary::-webkit-details-marker, .cs-sources-dropdown summary::-webkit-details-marker { display: none; }
+.sources-dropdown summary::after, .cs-sources-dropdown summary::after { content: "▾"; font-size: 0.78rem; color: #777; transition: transform 0.16s ease; }
+.sources-dropdown[open] summary::after, .cs-sources-dropdown[open] summary::after { transform: rotate(180deg); }
+.sources-dropdown summary:hover, .cs-sources-dropdown summary:hover { background: #f0f0f0; }
+.sources-dropdown .sources, .cs-sources { margin: 10px 0 8px; color: #555; }
 </style>
 </head>
 <body>
@@ -658,6 +667,44 @@ h1 { font-size: 1.5rem; margin-bottom: 4px; }
   }
   var refreshBtn = document.querySelector(".refresh-btn");
   if (refreshBtn) refreshBtn.addEventListener("click", function() { startRefresh(); });
+</script>
+
+<script>
+(function wrapExistingSourcesDropdowns(){
+  function directChildren(el, selector){ return Array.prototype.filter.call(el.children || [], function(child){ return child.matches(selector); }); }
+  document.querySelectorAll(".subject").forEach(function(subject){
+    var sources = directChildren(subject, ".sources")[0];
+    if (!sources || sources.closest(".sources-dropdown")) return;
+    var details = document.createElement("details");
+    details.className = "sources-dropdown";
+    var summary = document.createElement("summary");
+    var count = subject.dataset.sources || String(sources.textContent || "").split(",").filter(function(s){ return s.trim(); }).length || "";
+    summary.textContent = "Voir les sources" + (count ? " (" + count + ")" : "");
+    subject.insertBefore(details, sources);
+    details.appendChild(summary);
+    details.appendChild(sources);
+    Array.prototype.slice.call(subject.children).forEach(function(child){
+      if (child.tagName === "H4" && /^(Presse|YouTube)$/i.test((child.textContent || "").trim())) {
+        var list = child.nextElementSibling;
+        details.appendChild(child);
+        if (list && list.tagName === "UL") details.appendChild(list);
+      }
+    });
+  });
+  document.querySelectorAll(".certamen-subject").forEach(function(subject){
+    var source = subject.querySelector(":scope .cs-sources");
+    if (!source || source.closest(".cs-sources-dropdown")) return;
+    var details = document.createElement("details");
+    details.className = "cs-sources-dropdown";
+    var summary = document.createElement("summary");
+    var match = (source.textContent || "").match(/^(\d+)\s+source/);
+    summary.textContent = "Voir les sources" + (match ? " (" + match[1] + ")" : "");
+    source.parentNode.insertBefore(details, source);
+    details.appendChild(summary);
+    details.appendChild(source);
+    Array.prototype.slice.call(subject.querySelectorAll(":scope > .cs-article")).forEach(function(article){ details.appendChild(article); });
+  });
+})();
 </script>
 </body>
 </html>

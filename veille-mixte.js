@@ -2024,27 +2024,29 @@ function generateHtml(sessions) {
             <span>${subject.youtubeCount} vidéo(s)</span>
           </div>
 
-          <p class="sources">${escapeHtml(subject.sources.join(", "))}</p>
+	          <details class="sources-dropdown">
+	            <summary>Voir les sources (${subject.sourceCount})</summary>
+	            <p class="sources">${escapeHtml(subject.sources.join(", "))}</p>
+	            ${
+	              articles.length
+	                ? `<h4>Presse</h4><ul>${articleItems}</ul>`
+	                : ""
+	            }
 
-          <button class="arena-select-btn" type="button" aria-pressed="false">Sélectionner</button>
-          <button class="save-btn${isSaved ? " saved" : ""}" type="button" data-subject-title="${escapeHtml(subject.subject)}">${isSaved ? "★ Enregistré" : "☆ Enregistrer"}</button>
-          <button class="agon-btn${isSent ? " sent" : ""}" type="button" data-subject-title="${escapeHtml(subject.subject)}" data-question="${escapeHtml(ai ? (ai.debateQuestion || subject.subject) : subject.subject)}" data-position-a="${escapeHtml(ai ? (ai.positionA || "") : "")}" data-position-b="${escapeHtml(ai ? (ai.positionB || "") : "")}" data-theme="${escapeHtml(ai ? normalizeAgonTheme(ai.agonTheme) : "")}" data-sources="${escapeHtml(subject.sources.join(", "))}">${isSent ? "✓ Envoyé" : "→ Agôn"}</button>
-          <button class="republish-btn${isSent ? "" : " hidden"}" type="button" data-subject-title="${escapeHtml(subject.subject)}" data-question="${escapeHtml(ai ? (ai.debateQuestion || subject.subject) : subject.subject)}" data-position-a="${escapeHtml(ai ? (ai.positionA || "") : "")}" data-position-b="${escapeHtml(ai ? (ai.positionB || "") : "")}" data-theme="${escapeHtml(ai ? normalizeAgonTheme(ai.agonTheme) : "")}" data-sources="${escapeHtml(subject.sources.join(", "))}">↺ Republier</button>
-          <button class="verify-sources-btn" type="button" data-subject="${subjectDataForBtn}">Vérifier sources</button>
+	            ${
+	              videos.length
+	                ? `<h4>YouTube</h4><ul>${videoItems}</ul>`
+	                : ""
+	            }
+	          </details>
 
-          ${
-            articles.length
-              ? `<h4>Presse</h4><ul>${articleItems}</ul>`
-              : ""
-          }
-
-          ${
-            videos.length
-              ? `<h4>YouTube</h4><ul>${videoItems}</ul>`
-              : ""
-          }
-        </section>
-      `;
+	          <button class="arena-select-btn" type="button" aria-pressed="false">Sélectionner</button>
+	          <button class="save-btn${isSaved ? " saved" : ""}" type="button" data-subject-title="${escapeHtml(subject.subject)}">${isSaved ? "★ Enregistré" : "☆ Enregistrer"}</button>
+	          <button class="agon-btn${isSent ? " sent" : ""}" type="button" data-subject-title="${escapeHtml(subject.subject)}" data-question="${escapeHtml(ai ? (ai.debateQuestion || subject.subject) : subject.subject)}" data-position-a="${escapeHtml(ai ? (ai.positionA || "") : "")}" data-position-b="${escapeHtml(ai ? (ai.positionB || "") : "")}" data-theme="${escapeHtml(ai ? normalizeAgonTheme(ai.agonTheme) : "")}" data-sources="${escapeHtml(subject.sources.join(", "))}">${isSent ? "✓ Envoyé" : "→ Agôn"}</button>
+	          <button class="republish-btn${isSent ? "" : " hidden"}" type="button" data-subject-title="${escapeHtml(subject.subject)}" data-question="${escapeHtml(ai ? (ai.debateQuestion || subject.subject) : subject.subject)}" data-position-a="${escapeHtml(ai ? (ai.positionA || "") : "")}" data-position-b="${escapeHtml(ai ? (ai.positionB || "") : "")}" data-theme="${escapeHtml(ai ? normalizeAgonTheme(ai.agonTheme) : "")}" data-sources="${escapeHtml(subject.sources.join(", "))}">↺ Republier</button>
+	          <button class="verify-sources-btn" type="button" data-subject="${subjectDataForBtn}">Vérifier sources</button>
+	        </section>
+	      `;
     }).join("");
 
     const isLatest = index === 0;
@@ -3582,14 +3584,58 @@ function generateHtml(sessions) {
       font-size: 0.9rem;
     }
 
-    .sources {
-      color: #555;
-      font-size: 0.95rem;
-    }
+	    .sources {
+	      color: #555;
+	      font-size: 0.95rem;
+	    }
 
-    ul {
-      padding-left: 0;
-    }
+	    .sources-dropdown {
+	      margin: 10px 0 12px;
+	    }
+
+	    .sources-dropdown summary {
+	      display: inline-flex;
+	      align-items: center;
+	      gap: 8px;
+	      width: fit-content;
+	      border: 1px solid #ddd;
+	      background: white;
+	      border-radius: 999px;
+	      padding: 7px 13px;
+	      color: #111;
+	      font: inherit;
+	      font-size: 0.86rem;
+	      font-weight: 700;
+	      cursor: pointer;
+	      user-select: none;
+	    }
+
+	    .sources-dropdown summary::-webkit-details-marker {
+	      display: none;
+	    }
+
+	    .sources-dropdown summary::after {
+	      content: "▾";
+	      font-size: 0.78rem;
+	      color: #777;
+	      transition: transform 0.16s ease;
+	    }
+
+	    .sources-dropdown[open] summary::after {
+	      transform: rotate(180deg);
+	    }
+
+	    .sources-dropdown summary:hover {
+	      background: #f0f0f0;
+	    }
+
+	    .sources-dropdown .sources {
+	      margin: 10px 0 8px;
+	    }
+
+	    ul {
+	      padding-left: 0;
+	    }
 
     .content-item {
       list-style: none;
@@ -4969,6 +5015,11 @@ function generateHtml(sessions) {
 
           subjectEl.dataset.hasMediaContrast = data.hasMediaContrast ? "true" : "false";
           subjectEl.dataset.mediaTreatment = String(data.mediaTreatment || "");
+          subjectEl.dataset.mainIssue = String(data.mainIssue || "");
+          subjectEl.dataset.narrativeTension = String(data.narrativeTension || "");
+          subjectEl.dataset.debatePotential = String(data.debatePotential || "");
+          subjectEl.dataset.editorialWarning = String(data.editorialWarning || "");
+          subjectEl.dataset.possibleBiases = JSON.stringify(Array.isArray(data.possibleBiases) ? data.possibleBiases : []);
           const fullArticleState = subjectEl.querySelector(".full-article-state");
           if (fullArticleState) fullArticleState.value = "media";
           subjectEl.querySelector(".problematique-btn")?.classList.remove("hidden");
@@ -5004,7 +5055,12 @@ function generateHtml(sessions) {
               subject: subjectTitle,
               summary,
               hasMediaContrast: subjectEl.dataset.hasMediaContrast === "true",
-              mediaTreatment: subjectEl.dataset.mediaTreatment || ""
+              mediaTreatment: subjectEl.dataset.mediaTreatment || "",
+              mainIssue: subjectEl.dataset.mainIssue || "",
+              narrativeTension: subjectEl.dataset.narrativeTension || "",
+              possibleBiases: JSON.parse(subjectEl.dataset.possibleBiases || "[]"),
+              debatePotential: subjectEl.dataset.debatePotential || "",
+              editorialWarning: subjectEl.dataset.editorialWarning || ""
             })
           });
           const data = await response.json().catch(function() { return { ok: false, error: "Erreur génération problématique" }; });
@@ -5075,7 +5131,12 @@ function generateHtml(sessions) {
               positionA,
               positionB,
               hasMediaContrast: subjectEl.dataset.hasMediaContrast === "true",
-              mediaTreatment: subjectEl.dataset.mediaTreatment || ""
+              mediaTreatment: subjectEl.dataset.mediaTreatment || "",
+              mainIssue: subjectEl.dataset.mainIssue || "",
+              narrativeTension: subjectEl.dataset.narrativeTension || "",
+              possibleBiases: JSON.parse(subjectEl.dataset.possibleBiases || "[]"),
+              debatePotential: subjectEl.dataset.debatePotential || "",
+              editorialWarning: subjectEl.dataset.editorialWarning || ""
             })
           });
           const data = await response.json().catch(function() { return { ok: false, error: "Erreur génération article définitif" }; });
@@ -5638,6 +5699,11 @@ function generateHtml(sessions) {
           if (!mediaRes.ok || mediaData.ok === false) throw new Error(mediaData.error || "Erreur analyse médias");
           subjectEl.dataset.hasMediaContrast = mediaData.hasMediaContrast ? "true" : "false";
           subjectEl.dataset.mediaTreatment = String(mediaData.mediaTreatment || "");
+          subjectEl.dataset.mainIssue = String(mediaData.mainIssue || "");
+          subjectEl.dataset.narrativeTension = String(mediaData.narrativeTension || "");
+          subjectEl.dataset.debatePotential = String(mediaData.debatePotential || "");
+          subjectEl.dataset.editorialWarning = String(mediaData.editorialWarning || "");
+          subjectEl.dataset.possibleBiases = JSON.stringify(Array.isArray(mediaData.possibleBiases) ? mediaData.possibleBiases : []);
           if (fullArticleState) fullArticleState.value = "media";
           subjectEl.querySelector(".problematique-btn")?.classList.remove("hidden");
           const finalBtn = subjectEl.querySelector(".final-article-btn");
@@ -5645,7 +5711,7 @@ function generateHtml(sessions) {
 
           // Étape 4 : Problématique
           setStatus("Problématique…");
-          const probRes = await fetch("/generate-problematique", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ subject: subjectTitle, summary: summaryText, hasMediaContrast: mediaData.hasMediaContrast === true, mediaTreatment: mediaData.mediaTreatment || "" }) });
+          const probRes = await fetch("/generate-problematique", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ subject: subjectTitle, summary: summaryText, hasMediaContrast: mediaData.hasMediaContrast === true, mediaTreatment: mediaData.mediaTreatment || "", mainIssue: mediaData.mainIssue || "", narrativeTension: mediaData.narrativeTension || "", possibleBiases: Array.isArray(mediaData.possibleBiases) ? mediaData.possibleBiases : [], debatePotential: mediaData.debatePotential || "", editorialWarning: mediaData.editorialWarning || "" }) });
           const probData = await probRes.json().catch(() => ({}));
           if (!probRes.ok || probData.ok === false) throw new Error(probData.error || "Erreur problématique");
           subjectEl.dataset.debateAngle = String(probData.debateAngle || "");
@@ -5670,7 +5736,7 @@ function generateHtml(sessions) {
           const editables = subjectEl.querySelectorAll(".positions-box .editable");
           const posA = editables[0]?.textContent.trim() || "";
           const posB = editables[1]?.textContent.trim() || "";
-          const styledRes = await fetch("/generate-styled-article", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ subject: subjectTitle, summary: summaryText, debateAngle: probData.debateAngle || "", debateQuestion, positionA: posA, positionB: posB, hasMediaContrast: mediaData.hasMediaContrast === true, mediaTreatment: mediaData.mediaTreatment || "" }) });
+          const styledRes = await fetch("/generate-styled-article", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ subject: subjectTitle, summary: summaryText, debateAngle: probData.debateAngle || "", debateQuestion, positionA: posA, positionB: posB, hasMediaContrast: mediaData.hasMediaContrast === true, mediaTreatment: mediaData.mediaTreatment || "", mainIssue: mediaData.mainIssue || "", narrativeTension: probData.narrativeTension || mediaData.narrativeTension || "", possibleBiases: Array.isArray(mediaData.possibleBiases) ? mediaData.possibleBiases : [], debatePotential: mediaData.debatePotential || "", editorialWarning: mediaData.editorialWarning || "", editorialDecision: probData.editorialDecision || "", questionQuality: probData.questionQuality || "" }) });
           const styledData = await styledRes.json().catch(() => ({}));
           if (!styledRes.ok || styledData.ok === false) throw new Error(styledData.error || "Erreur article définitif");
           const styledArticle = String(styledData.article || "").trim();
@@ -6394,12 +6460,15 @@ function generateCertamenHtml(sessions) {
   ${ai.suggestedQuestion ? `<div class="cs-question">${esc(ai.suggestedQuestion)}</div>` : ""}
   ${(ai.positionA || ai.positionB) ? `<div class="cs-positions"><span class="cs-pos">A : ${esc(ai.positionA)}</span><span class="cs-pos">B : ${esc(ai.positionB)}</span></div>` : ""}
   ${ai.reason ? `<div class="cs-reason">${esc(ai.reason)}</div>` : ""}
-  <div class="cs-meta">
-    <span class="cs-theme">${esc(ai.theme || "—")}</span>
-    <span class="cs-sources">${esc(String(subject.sourceCount || 1))} source(s) : ${sourceList}</span>
-  </div>
-  ${articleLinks}
-</div>`;
+	  <div class="cs-meta">
+	    <span class="cs-theme">${esc(ai.theme || "—")}</span>
+	  </div>
+	  <details class="cs-sources-dropdown">
+	    <summary>Voir les sources (${esc(String(subject.sourceCount || 1))})</summary>
+	    <div class="cs-sources">${sourceList}</div>
+	    ${articleLinks}
+	  </details>
+	</div>`;
     }).join("");
 
     const nbArena = subjects.filter(function(s) { return s.certamen && s.certamen.editorialDecision === "arena"; }).length;
@@ -6469,6 +6538,12 @@ h1 { font-size: 1.5rem; margin-bottom: 4px; }
 .cs-reason { color: #555; font-size: 0.83rem; margin-bottom: 8px; font-style: italic; }
 .cs-meta { display: flex; gap: 12px; font-size: 0.78rem; color: #888; margin-bottom: 6px; flex-wrap: wrap; }
 .cs-theme { background: #eff6ff; color: #2563eb; border-radius: 4px; padding: 1px 7px; }
+.cs-sources-dropdown { margin-top: 8px; }
+.cs-sources-dropdown summary { display: inline-flex; align-items: center; gap: 8px; border: 1px solid #ddd; background: white; border-radius: 999px; padding: 6px 11px; color: #111; font-size: 0.8rem; font-weight: 700; cursor: pointer; user-select: none; }
+.cs-sources-dropdown summary::-webkit-details-marker { display: none; }
+.cs-sources-dropdown summary::after { content: "▾"; font-size: 0.75rem; color: #777; transition: transform 0.16s ease; }
+.cs-sources-dropdown[open] summary::after { transform: rotate(180deg); }
+.cs-sources { color: #777; font-size: 0.8rem; margin-top: 8px; }
 .cs-article { font-size: 0.8rem; color: #555; margin-top: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .cs-article a { color: #2563eb; text-decoration: none; }
 .cs-article a:hover { text-decoration: underline; }
