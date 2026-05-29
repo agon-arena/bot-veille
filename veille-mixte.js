@@ -2305,12 +2305,42 @@ function generateHtml(sessions) {
       background: #eee;
     }
 
-    .filter-btn.active {
-      background: #111;
-      color: white;
-      border-color: #111;
-      font-weight: 700;
-    }
+	    .filter-btn.active {
+	      background: #111;
+	      color: white;
+	      border-color: #111;
+	      font-weight: 700;
+	    }
+
+	    .filter-btn[data-sort="saved"] {
+	      background: #fff7ed;
+	      color: #9a3412;
+	      border: 1.5px solid #f59e0b;
+	      box-shadow: 0 2px 8px rgba(245, 158, 11, 0.18);
+	      font-weight: 800;
+	    }
+
+	    .filter-btn[data-sort="saved"]::before {
+	      content: "★";
+	      margin-right: 7px;
+	      color: #d97706;
+	    }
+
+	    .filter-btn[data-sort="saved"]:hover {
+	      background: #ffedd5;
+	      border-color: #d97706;
+	    }
+
+	    .filter-btn[data-sort="saved"].active {
+	      background: #9a3412;
+	      color: #fff;
+	      border-color: #9a3412;
+	      box-shadow: 0 3px 12px rgba(154, 52, 18, 0.28);
+	    }
+
+	    .filter-btn[data-sort="saved"].active::before {
+	      color: #fff;
+	    }
 
     .theme-header {
       font-size: 1rem;

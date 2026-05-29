@@ -2749,6 +2749,124 @@ app.post("/mixte-login", (req, res) => {
 const VEILLE_MIXTE_HTML = path.join(__dirname, "veille-mixte.html");
 const VEILLE_YOUTUBE_HTML = path.join(__dirname, "veille-youtube.html");
 
+function sendEmptyMixtePage(res) {
+  return res.send(`<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Veille mixte presse + YouTube</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body { font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; max-width: 980px; margin: 40px auto; padding: 0 16px; background: #f7f7f7; color: #111; line-height: 1.5; }
+    .nav { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 24px; }
+    .nav a, .nav-refresh-btn, .refresh-btn { display: inline-flex; align-items: center; justify-content: center; border: 1px solid #ddd; background: white; border-radius: 999px; padding: 9px 14px; color: #111; text-decoration: none; font: inherit; font-size: 0.9rem; font-weight: 700; cursor: pointer; }
+    .nav a:hover, .nav-refresh-btn:hover, .refresh-btn:hover { background: #eee; }
+    h1 { margin: 0 0 8px; font-size: 1.35rem; }
+    .intro { color: #555; margin: 0 0 20px; }
+    .status { display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; background: white; border: 1px solid #e5e7eb; border-radius: 16px; padding: 16px 18px; margin-bottom: 18px; }
+    .refresh-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .min-sources-select { padding: 8px 10px; border: 1px solid #ddd; border-radius: 999px; background: white; font: inherit; font-size: 0.9rem; }
+    .refresh-btn { background: #111; color: white; border-color: #111; }
+    .refresh-btn:disabled { opacity: 0.6; cursor: wait; }
+    #progress-panel { display: none; background: white; border: 1px solid #e5e7eb; border-radius: 16px; padding: 16px 18px; margin-bottom: 18px; }
+    .progress-bar-track { height: 7px; background: #eee; border-radius: 999px; overflow: hidden; margin: 10px 0; }
+    .progress-bar-fill { height: 100%; width: 0%; background: #111; transition: width 0.25s ease; }
+    .empty-state { background: white; border: 1px dashed #d1d5db; border-radius: 16px; padding: 24px 20px; color: #555; }
+  </style>
+</head>
+<body>
+  <div class="nav">
+    <a href="/mixte">Veille mixte</a>
+    <a href="/saved">Sujets enregistrés</a>
+    <a href="/sent-to-agon">Articles envoyés vers Agôn</a>
+    <a href="/admin">Admin</a>
+  </div>
+
+  <h1>Veille mixte presse + YouTube</h1>
+  <p class="intro">La page est prête. Aucune collecte n'a encore été générée sur cette instance.</p>
+
+  <div class="status">
+    <div>
+      Dernière génération du fichier :
+      <strong>Aucune pour le moment</strong>
+    </div>
+    <div class="refresh-row">
+      <select class="min-sources-select" id="min-sources-select" title="Sources minimum par sujet">
+        <option value="2">2 sources min.</option>
+        <option value="3">3 sources min.</option>
+        <option value="4" selected>4 sources min.</option>
+        <option value="5">5 sources min.</option>
+        <option value="6">6 sources min.</option>
+      </select>
+      <button class="refresh-btn" type="button" onclick="startRefresh()">Mettre à jour</button>
+    </div>
+  </div>
+
+  <div id="progress-panel">
+    <div>Étape <span id="prog-step">...</span> / 6 — <span id="prog-name">Démarrage...</span></div>
+    <div class="progress-bar-track"><div class="progress-bar-fill" id="prog-bar"></div></div>
+    <div id="prog-detail"></div>
+  </div>
+
+  <div class="empty-state">Les sujets apparaîtront ici après une collecte. Tu peux aussi ouvrir les sujets enregistrés ou les articles déjà envoyés depuis la navigation.</div>
+
+  <script>
+    async function pollProgress() {
+      const panel = document.getElementById('progress-panel');
+      const step = document.getElementById('prog-step');
+      const name = document.getElementById('prog-name');
+      const detail = document.getElementById('prog-detail');
+      const bar = document.getElementById('prog-bar');
+      const r = await fetch('/progress?t=' + Date.now());
+      const p = await r.json();
+      if (p.running || p.done) panel.style.display = 'block';
+      if (p.stepIndex) step.textContent = p.stepIndex;
+      if (p.step) name.textContent = p.step;
+      if (detail) detail.textContent = p.detail || '';
+      if (bar) bar.style.width = Math.max(0, Math.min(100, Number(p.percent || 0))) + '%';
+      return p;
+    }
+
+    async function startRefresh() {
+      const btn = document.querySelector('.refresh-btn');
+      const minSources = Number(document.getElementById('min-sources-select')?.value) || 4;
+      btn.disabled = true;
+      btn.textContent = 'Collecte en cours...';
+      await fetch('/refresh', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ minSources }) });
+      const timer = setInterval(async function() {
+        try {
+          const p = await pollProgress();
+          if (!p.running && p.done) {
+            clearInterval(timer);
+            window.location.reload();
+          }
+        } catch(e) {}
+      }, 2000);
+    }
+
+    (async function watchRunningCollect() {
+      try {
+        const p = await pollProgress();
+        if (!p.running) return;
+        const btn = document.querySelector('.refresh-btn');
+        if (btn) { btn.disabled = true; btn.textContent = 'Collecte en cours...'; }
+        const timer = setInterval(async function() {
+          try {
+            const next = await pollProgress();
+            if (!next.running && next.done) {
+              clearInterval(timer);
+              window.location.reload();
+            }
+          } catch(e) {}
+        }, 2000);
+      } catch(e) {}
+    })();
+  </script>
+</body>
+</html>`);
+}
+
 function sendMissingPage(res, title, message) {
   return res.send(`
     <!DOCTYPE html>
@@ -2840,12 +2958,12 @@ function sendMissingPage(res, title, message) {
 }
 
 app.get("/", (req, res) => {
-  res.redirect("/veille-mixte.html");
+  res.redirect("/mixte");
 });
 
 app.get("/veille-mixte.html", requireMixteAuth, (req, res) => {
   if (!fs.existsSync(VEILLE_MIXTE_HTML)) {
-    return sendMissingPage(res, "Veille mixte", "La veille mixte n'a pas encore été générée. Sources minimum : lancer la collecte...");
+    return sendEmptyMixtePage(res);
   }
   res.sendFile(VEILLE_MIXTE_HTML);
 });
@@ -2859,7 +2977,7 @@ app.get("/youtube", (req, res) => {
 
 app.get("/mixte", requireMixteAuth, (req, res) => {
   if (!fs.existsSync(VEILLE_MIXTE_HTML)) {
-    return sendMissingPage(res, "Veille mixte", "La veille mixte n'a pas encore été générée.");
+    return sendEmptyMixtePage(res);
   }
   res.sendFile(VEILLE_MIXTE_HTML);
 });
