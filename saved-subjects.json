@@ -1,6 +1,492 @@
 [
   {
     "action": "save",
+    "subject": "L'intellectuel français Edgar Morin, éminent sociologue et philosophe, est mort à l'âge de 104 ans",
+    "debateScore": 4,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "Franceinfo, Reporterre, La Croix, Euronews FR, L'Express",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://reporterre.net/Edgar-Morin-eclaireur-de-la-pensee-ecologiste-est-mort-a-l-age-de-104-ans",
+        "source": "Reporterre",
+        "title": "Edgar Morin, éclaireur de la pensée écologiste, est mort à l'âge de 104 ans",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "http://fr.euronews.com/culture/2026/05/30/edgar-morin-le-grand-pere-intellectuel-de-la-france-seteint-a-lage-de-104-ans",
+        "source": "Euronews FR",
+        "title": "Edgar Morin, le « grand-père » intellectuel de la France, s'éteint à l'âge de 104 ans",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.la-croix.com/culture/edgar-morin-eternel-resistant-est-mort-a-l-age-de-104-ans-20260530",
+        "source": "La Croix",
+        "title": "Edgar Morin, éternel résistant, est mort à l’âge de 104 ans",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.franceinfo.fr/culture/livres/edgar-morin/l-intellectuel-francais-edgar-morin-eminent-sociologue-et-philosophe-est-mort-a-l-age-de-104-ans_3411413.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "title": "L'intellectuel français Edgar Morin, éminent sociologue et philosophe, est mort à l'âge de 104 ans",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.lexpress.fr/idees-et-debats/le-philosophe-et-sociologue-edgar-morin-est-mort-a-lage-de-104-ans-RLXD5S7QKRADNAEGJ24Y2IRVUI/",
+        "source": "L'Express",
+        "title": "Le philosophe et sociologue Edgar Morin est mort à l'âge de 104 ans",
+        "thumbnail": ""
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/shorts/78k5uWjerxs",
+        "source": "Franceinfo",
+        "title": "Le philosophe et sociologue Edgar Morin est mort",
+        "thumbnail": ""
+      }
+    ],
+    "sessionLabel": "31/05/2026 à 09:00:46"
+  },
+  {
+    "action": "save",
+    "subject": "Le Paris Saint-Germain remporte sa 2e Ligue des champions, célébrations et incidents en France",
+    "debateScore": 7,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "Le Monde, Libération, HuffPost France, BFMTV, France 24, Le Dauphiné Libéré, Franceinfo, Le Parisien, Euronews France, Euronews FR, RTL, HugoDécrypte, Le Figaro",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.liberation.fr/sports/football/finale-de-la-ligue-des-champions-tensions-aux-abords-du-parc-des-princes-premieres-gardes-a-vue-20260530_TVAKCFLNFNC7XLBOUHG6SRYHBA/",
+        "source": "Libération",
+        "title": "Finale de la Ligue des champions : plusieurs dizaines de gardes à vue",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.huffingtonpost.fr/france/video/le-deuxieme-sacre-du-psg-en-ligue-des-champions-plonge-paris-dans-la-joie-malgre-des-tensions_264273.html",
+        "source": "HuffPost France",
+        "title": "Le deuxième sacre du PSG en Ligue des champions plonge Paris dans la joie, malgré des tensions",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.huffingtonpost.fr/sport/article/psg-arsenal-en-finale-de-ligue-des-champions-au-bout-du-suspense-les-parisiens-conservent-leur-titre-aux-tirs-au-but_264269.html",
+        "source": "HuffPost France",
+        "title": "PSG-Arsenal en finale de Ligue des champions : au bout du suspense, les Parisiens conservent leur titre aux tirs au but",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.lemonde.fr/societe/article/2026/05/30/psg-arsenal-pres-de-1-600-controles-et-une-dizaine-d-interpellations-a-paris-en-debut-de-soiree_6695276_3225.html",
+        "source": "Le Monde",
+        "title": "PSG-Arsenal : 426 interpellations en France après la victoire du Paris Saint-Germain en Ligue des champions, sept policiers ont été blessés",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.liberation.fr/sports/football/psg-arsenal-derriere-son-virevoltant-georgien-kvaratskhelia-les-parisiens-en-quete-dun-double-en-ligue-des-champions-20260530_6XIJVQ3YFZELVD34FQDORMUKRI/",
+        "source": "Libération",
+        "title": "PSG-Arsenal : derrière son virevoltant Géorgien Kvaratskhelia, les Parisiens en quête d’un doublé en Ligue des champions",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.bfmtv.com/societe/video-champ-de-mars-elysee-le-programme-des-celebrations-a-paris-apres-le-sacre-en-ligue-des-champions_VN-202605310043.html",
+        "source": "BFMTV",
+        "title": "Champ de Mars, Élysée... Le programme des célébrations à Paris après le sacre en Ligue des champions",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://rmcsport.bfmtv.com/football/ligue-des-champions/psg-vainqueur-de-la-ligue-des-champions-scenes-de-liesse-a-paris-mais-des-debordements-au-moins-283-interpellations_AV-202605310032.html",
+        "source": "BFMTV",
+        "title": "PSG vainqueur de la Ligue des champions: scènes de liesse à Paris mais des débordements, au moins 283 interpellations",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.france24.com/fr/vid%C3%A9o/20260530-ligue-des-champions-les-joueurs-d-arsenal-reviendront-plus-forts",
+        "source": "France 24",
+        "title": "Ligue des champions : les joueurs d'Arsenal \"reviendront plus forts\"",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.ledauphine.com/faits-divers-justice/2026/05/30/ligue-des-champions-des-scenes-de-liesse-et-des-tensions-a-paris-apres-la-victoire-du-psg",
+        "source": "Le Dauphiné Libéré",
+        "title": "Paris. Ligue des champions  : 326 interpellations en France, dont 235 à Paris, après des heurts en marge de la victoire du PSG",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.franceinfo.fr/sports/foot/ligue-des-champions/finale/la-joie-immense-des-parisiens-apres-leur-2e-ligue-des-champions_8037677.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "title": "La joie immense des Parisiens après leur 2e Ligue des champions",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.france24.com/fr/vid%C3%A9o/20260530-ligue-des-champions-les-supporters-du-psg-exultent-%F0%9F%94%A5",
+        "source": "France 24",
+        "title": "Ligue des champions : les supporters du PSG exultent ! 🔥",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.bfmtv.com/societe/video-la-tour-eiffel-s-illumine-aux-couleurs-du-psg-apres-sa-victoire-face-a-arsenal_VN-202605300378.html",
+        "source": "BFMTV",
+        "title": "La Tour Eiffel s'illumine aux couleurs du PSG après sa victoire face à Arsenal",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.franceinfo.fr/sports/foot/ligue-des-champions/finale/ligue-des-champions-le-collectif-parisien-l-arme-fatale-du-paris-saint-germain-pour-son-incroyable-double_8037611.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "title": "Ligue des champions : le collectif parisien, l'arme fatale du Paris Saint-Germain pour son incroyable doublé",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.bfmtv.com/societe/video-victoire-du-psg-en-ligue-des-champions-la-situation-se-tend-sur-les-champs-elysees_VN-202605300368.html",
+        "source": "BFMTV",
+        "title": "Victoire du PSG en Ligue des champions: la situation se tend sur les Champs-Élysées",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "http://fr.euronews.com/video/2026/05/30/les-fans-du-psg-exultent-apres-le-triomphe-en-ligue-des-champions",
+        "source": "Euronews FR",
+        "title": "Les fans du PSG exultent après le triomphe en Ligue des champions",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.ledauphine.com/sport/2026/05/30/ligue-des-champions-le-paris-saint-germain-entre-dans-la-legende-europeenne-apres-sa-victoire-contre-arsenal",
+        "source": "Le Dauphiné Libéré",
+        "title": "Football - Ligue des champions. Un but encaissé rapidement, une séance de tirs au but irrespirable... Comment le Paris  Saint-Germain est entré dans la légende après sa victoire contre Arsenal",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "http://fr.euronews.com/my-europe/2026/05/30/paris-saint-germain-remporte-la-ligue-des-champions-aux-tirs-au-but-contre-arsenal",
+        "source": "Euronews FR",
+        "title": "Paris Saint-Germain remporte la Ligue des champions aux tirs au but contre Arsenal",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.franceinfo.fr/sports/foot/ligue-des-champions/finale/le-paris-saint-germain-remporte-une-deuxieme-de-suite-ligue-des-champions-a-l-issue-de-la-seance-des-tirs-au-but-contre-arsenal_8037395.html#xtor=RSS-3-[lestitres]",
+        "source": "Franceinfo",
+        "title": "Le Paris Saint-Germain remporte une deuxième Ligue des champions consécutive en battant Arsenal aux tirs au but (1-1, 4-3 tab)",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.france24.com/fr/vid%C3%A9o/20260530-les-supporters-du-psg-venus-du-monde-entier-pour-la-finale-de-la-ligue-des-champions-en-hongrie",
+        "source": "France 24",
+        "title": "Les supporters du PSG venus du monde entier pour la finale de la Ligue des champions en Hongrie",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.lefigaro.fr/faits-divers/en-direct-psg-arsenal-des-centaines-de-milliers-de-personnes-attendues-dans-les-rues-de-paris-pour-la-finale-de-la-ligue-des-champions-20260530",
+        "source": "Le Figaro",
+        "title": "EN DIRECT - PSG-Arsenal : 416 interpellations en France, les festivités prévues dimanche sur le Champ-de-Mars maintenues",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.lefigaro.fr/politique/victoire-du-psg-en-ligue-des-champions-le-rn-s-indigne-des-violences-et-degradations-pendant-la-liesse-20260531",
+        "source": "Le Figaro",
+        "title": "Incidents après la victoire du PSG en Ligue des champions : le RN s'indigne des «violences» et «dégradations» pendant la liesse",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.lefigaro.fr/faits-divers/incidents-apres-la-victoire-du-psg-en-ligue-des-champions-au-moins-326-interpellations-en-france-dont-235-dans-l-agglomeration-parisienne-20260531",
+        "source": "Le Figaro",
+        "title": "Incidents après la victoire du PSG en Ligue des champions : au moins 416 interpellations en France, dont 283 dans l’agglomération parisienne",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.lefigaro.fr/sports/football/ligue-des-champions/ligue-des-champions-je-suis-dans-un-reve-savoure-luis-enrique-apres-le-sacre-du-psg-20260530",
+        "source": "Le Figaro",
+        "title": "Luis Enrique après le sacre du PSG en Ligue des champions : «Je suis dans un rêve»",
+        "thumbnail": ""
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/shorts/6uOCvqqfKIo",
+        "source": "Le Monde",
+        "title": "L'émotion des supporteurs du PSG après la victoire en Ligue des champions",
+        "thumbnail": ""
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/shorts/d1mwG6yPS2k",
+        "source": "Franceinfo",
+        "title": "La joie immense des Parisiens après leur 2e Ligue des champions",
+        "thumbnail": ""
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/shorts/B_qrJemcc9w",
+        "source": "France 24",
+        "title": "Ligue des champions : les supporters du PSG exultent ! 🔥 • FRANCE 24",
+        "thumbnail": ""
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/shorts/1IJ-3n7rY1w",
+        "source": "Le Parisien",
+        "title": "La tour Eiffel s'illumine aux couleurs du PSG",
+        "thumbnail": ""
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/watch?v=yC6Y6lfhfaQ",
+        "source": "Euronews France",
+        "title": "",
+        "thumbnail": "https://i.ytimg.com/vi/yC6Y6lfhfaQ/hqdefault.jpg"
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/shorts/31ZbZ0Q5pUo",
+        "source": "RTL",
+        "title": "\"Ils sont champions d'Europe\" : Le PSG remporte sa deuxième ligue des champions en battant Arsenal.",
+        "thumbnail": ""
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/shorts/40TMpARfxSY",
+        "source": "RTL",
+        "title": "« Je pense que, dans l'histoire de la Ligue des champions, c'est unique. »",
+        "thumbnail": ""
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/shorts/hAcRg7FtpJI",
+        "source": "HugoDécrypte",
+        "title": "La Tour Eiffel aux couleurs du PSG",
+        "thumbnail": ""
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/shorts/TBZJ2xDu7jI",
+        "source": "Le Figaro",
+        "title": "La tour Eiffel s'est illuminée aux couleurs du PSG vendredi, à 24 heures de la finale de Ligue des",
+        "thumbnail": ""
+      }
+    ],
+    "sessionLabel": "31/05/2026 à 09:00:46",
+    "controversyLevel": "fort",
+    "ai": {
+      "arenaMode": "positions",
+      "debateScore": 7,
+      "controversyLevel": "fort",
+      "debateQuestion": "",
+      "resume": "",
+      "keywords": [
+        "Arsenal",
+        "interpellations",
+        "célébrations",
+        "tensions",
+        "Kvaratskhelia"
+      ],
+      "selectedLinks": [
+        "https://www.youtube.com/shorts/6uOCvqqfKIo",
+        "https://www.liberation.fr/sports/football/finale-de-la-ligue-des-champions-tensions-aux-abords-du-parc-des-princes-premieres-gardes-a-vue-20260530_TVAKCFLNFNC7XLBOUHG6SRYHBA/",
+        "https://www.huffingtonpost.fr/france/video/le-deuxieme-sacre-du-psg-en-ligue-des-champions-plonge-paris-dans-la-joie-malgre-des-tensions_264273.html",
+        "https://www.huffingtonpost.fr/sport/article/psg-arsenal-en-finale-de-ligue-des-champions-au-bout-du-suspense-les-parisiens-conservent-leur-titre-aux-tirs-au-but_264269.html",
+        "https://www.lemonde.fr/societe/article/2026/05/30/psg-arsenal-pres-de-1-600-controles-et-une-dizaine-d-interpellations-a-paris-en-debut-de-soiree_6695276_3225.html",
+        "https://www.liberation.fr/sports/football/psg-arsenal-derriere-son-virevoltant-georgien-kvaratskhelia-les-parisiens-en-quete-dun-double-en-ligue-des-champions-20260530_6XIJVQ3YFZELVD34FQDORMUKRI/",
+        "https://www.bfmtv.com/societe/video-champ-de-mars-elysee-le-programme-des-celebrations-a-paris-apres-le-sacre-en-ligue-des-champions_VN-202605310043.html",
+        "https://rmcsport.bfmtv.com/football/ligue-des-champions/psg-vainqueur-de-la-ligue-des-champions-scenes-de-liesse-a-paris-mais-des-debordements-au-moins-283-interpellations_AV-202605310032.html",
+        "https://www.ledauphine.com/faits-divers-justice/2026/05/30/ligue-des-champions-des-scenes-de-liesse-et-des-tensions-a-paris-apres-la-victoire-du-psg"
+      ],
+      "agonTheme": "Justice - faits divers",
+      "positionA": "",
+      "positionB": "",
+      "sourceSubject": "Le Paris Saint-Germain remporte sa 2e Ligue des champions, célébrations et incidents en France",
+      "fullArticleState": "short",
+      "mainKeyword": "Paris",
+      "storyLink": {
+        "story_decision": "existing_story",
+        "matched_story_id": "51-les-faits-divers-et-les-alertes-locales-revelent-des-enjeux-de-risque-et-de-gest",
+        "matched_story_title": "Les faits divers et les alertes locales révèlent des enjeux de risque et de gestion publique",
+        "matched_story_summary": "",
+        "previous_episode_id": "605",
+        "previous_episode_title": "Faut-il renforcer la sécurité des bennes à vêtements pour prévenir les accidents ?",
+        "previous_episode_summary": "Un enfant de 11 ans a été retrouvé mort à Rennes, une serviette nouée très serrée autour du cou. Deux adolescents ont été placés en garde à vue dans le cadre de l’enquête ouverte pour meurtre.\n\nLes circonstances exactes du décès restent à éclaircir, mais les autorités ont rapidement déclenché une investigation judiciaire. Ce dossier est suivi de près en raison de la gravité des faits et de l’implication de mineurs dans cette affaire.\n\nLa question de la responsabilité et de la justice face à un meurtre impliquant des adolescents soulève un débat sensible. Il s'agit désormais de déterminer comment la justice doit traiter ces jeunes impliqués dans un crime aussi grave. Faut-il appliquer des sanctions pénales sévères aux adolescents impliqués dans ce meurtre à Rennes…",
+        "previous_episode_url": "http://localhost:3001/debate?id=605",
+        "confidence": 0.85,
+        "reason": "L'actualité porte sur des interpellations et incidents liés à des célébrations en France, ce qui correspond bien aux faits divers et enjeux de gestion locale.",
+        "criteria": {
+          "main_actors_match": true,
+          "central_tension_match": true,
+          "temporal_continuity": true,
+          "editorial_theme_match": true,
+          "strong_keywords_match": true
+        },
+        "new_story": {
+          "story_title": "",
+          "story_summary": "",
+          "main_actors": [
+            "..."
+          ],
+          "central_tension": "...",
+          "keywords": [
+            "..."
+          ],
+          "status": "active"
+        }
+      }
+    }
+  },
+  {
+    "action": "save",
+    "subject": "EN DIRECT, guerre au Moyen-Orient : Israël annonce étendre ses opérations au Liban « à d’autres zones »",
+    "debateScore": 9,
+    "debateQuestion": "",
+    "resume": "",
+    "keywords": [],
+    "agonTheme": "",
+    "positionA": "",
+    "positionB": "",
+    "sources": "Le Monde, Libération, France 24, RFI, LCI",
+    "contents": [
+      {
+        "type": "article",
+        "link": "https://www.lemonde.fr/international/live/2026/05/31/en-direct-guerre-au-moyen-orient-israel-annonce-etendre-ses-operations-au-liban-a-d-autres-zones_6694380_3210.html",
+        "source": "Le Monde",
+        "title": "EN DIRECT, guerre au Moyen-Orient : Israël annonce étendre ses opérations au Liban « à d’autres zones »",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.liberation.fr/international/moyen-orient/en-direct-guerre-au-moyen-orient-trump-ne-signera-avec-liran-que-si-ses-lignes-rouges-sont-satisfaites-20260530_XX3FN3DHGJAQ3CYGPXN7XQONO4/",
+        "source": "Libération",
+        "title": "EN DIRECT - Guerre au Moyen-Orient : deux soldats libanais gravement blessés dans une attaque israélienne «ciblée»",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.rfi.fr/fr/moyen-orient/20260531-en-direct-moyen-orient-isra%C3%ABl-annonce-%C3%A9tendre-%C3%A0-d-autres-zones-son-op%C3%A9ration-terrestre-au-liban",
+        "source": "RFI",
+        "title": "EN DIRECT - Moyen-Orient: Israël annonce «étendre à d'autres zones» son opération terrestre au Liban",
+        "thumbnail": ""
+      },
+      {
+        "type": "article",
+        "link": "https://www.france24.com/fr/vid%C3%A9o/20260530-nouvelles-frappes-isra%C3%A9liennes-au-liban-deux-soldats-libanais-gri%C3%A8vement-bless%C3%A9s",
+        "source": "France 24",
+        "title": "Nouvelles frappes israéliennes au Liban : deux soldats libanais grièvement blessés",
+        "thumbnail": ""
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/watch?v=gJ7lC7DU52A",
+        "source": "LCI",
+        "title": "",
+        "thumbnail": "https://i.ytimg.com/vi/gJ7lC7DU52A/hqdefault.jpg"
+      },
+      {
+        "type": "youtube",
+        "link": "https://www.youtube.com/watch?v=qJWSwtX_m5k",
+        "source": "France 24",
+        "title": "",
+        "thumbnail": "https://i.ytimg.com/vi/qJWSwtX_m5k/hqdefault.jpg"
+      }
+    ],
+    "sessionLabel": "31/05/2026 à 09:00:46",
+    "controversyLevel": "très fort",
+    "ai": {
+      "arenaMode": "positions",
+      "debateScore": 9,
+      "controversyLevel": "très fort",
+      "debateQuestion": "",
+      "resume": "",
+      "keywords": [
+        "Israël",
+        "Liban",
+        "soldats libanais",
+        "frappes israéliennes",
+        "opération terrestre",
+        "zones d'opérations"
+      ],
+      "selectedLinks": [
+        "https://www.lemonde.fr/international/live/2026/05/31/en-direct-guerre-au-moyen-orient-israel-annonce-etendre-ses-operations-au-liban-a-d-autres-zones_6694380_3210.html",
+        "https://www.liberation.fr/international/moyen-orient/en-direct-guerre-au-moyen-orient-trump-ne-signera-avec-liran-que-si-ses-lignes-rouges-sont-satisfaites-20260530_XX3FN3DHGJAQ3CYGPXN7XQONO4/",
+        "https://www.rfi.fr/fr/moyen-orient/20260531-en-direct-moyen-orient-isra%C3%ABl-annonce-%C3%A9tendre-%C3%A0-d-autres-zones-son-op%C3%A9ration-terrestre-au-liban",
+        "https://www.youtube.com/watch?v=gJ7lC7DU52A",
+        "https://www.france24.com/fr/vid%C3%A9o/20260530-nouvelles-frappes-isra%C3%A9liennes-au-liban-deux-soldats-libanais-gri%C3%A8vement-bless%C3%A9s",
+        "https://www.youtube.com/watch?v=qJWSwtX_m5k"
+      ],
+      "agonTheme": "International",
+      "positionA": "",
+      "positionB": "",
+      "sourceSubject": "EN DIRECT, guerre au Moyen-Orient : Israël annonce étendre ses opérations au Liban « à d’autres zones »",
+      "fullArticleState": "short",
+      "mainKeyword": "guerre au Moyen-Orient",
+      "storyLink": {
+        "story_decision": "existing_story",
+        "matched_story_id": "israel-mph1fbfh",
+        "matched_story_title": "Israël",
+        "matched_story_summary": "",
+        "previous_episode_id": "592",
+        "previous_episode_title": "La France doit-elle soutenir les renforts israéliens malgré les risques d’escalade au Liban ?",
+        "previous_episode_summary": "Le Premier ministre israélien Benjamin Netanyahou a annoncé une intensification de l'offensive militaire d'Israël au Liban. Cette décision vise à écraser le groupe armé Hezbollah, considéré comme une menace sécuritaire majeure.\n\nDans le contexte du conflit au Moyen-Orient, Israël cherche à affaiblir la capacité militaire du Hezbollah par une accélération des actions ciblées sur ses positions au Liban. Cette montée en intensité traduit une volonté claire de modifier le rapport de force dans la région.\n\nCette évolution soulève des enjeux importants, notamment en termes de conséquences régionales et humanitaires. La question de la légitimité et des effets de cette intensification est désormais au cœur du débat public. Faut-il soutenir l'intensification de l'offensive israélienne au Liban contre le Hezbollah ?",
+        "previous_episode_url": "http://localhost:3001/debate?id=592",
+        "confidence": 0.9,
+        "reason": "L'actualité porte sur des opérations militaires israéliennes au Liban, Israël étant l'acteur central et le lieu principal impliqué, ce qui correspond précisément à l'histoire 'Israël'.",
+        "criteria": {
+          "main_actors_match": true,
+          "central_tension_match": true,
+          "temporal_continuity": true,
+          "editorial_theme_match": true,
+          "strong_keywords_match": true
+        },
+        "new_story": {
+          "story_title": "",
+          "story_summary": "",
+          "main_actors": [
+            "direct",
+            "guerre",
+            "moyen"
+          ],
+          "central_tension": "Faut-il étendre les opérations militaires israéliennes au Liban malgré le risque d’escalade?",
+          "keywords": [
+            "direct",
+            "guerre",
+            "moyen",
+            "orient",
+            "israel",
+            "annonce",
+            "etendre",
+            "operations"
+          ],
+          "status": "active"
+        }
+      }
+    }
+  },
+  {
+    "action": "save",
     "subject": "Patrick Bruel interrompu par #NousToutes sur la scène du théâtre Edouard VII",
     "debateScore": 8,
     "debateQuestion": "",

@@ -1,5 +1,86 @@
 [
   {
+    "subject": "EN DIRECT, guerre au Moyen-Orient : Israël annonce étendre ses opérations au Liban « à d’autres zones »",
+    "sessionLabel": "31/05/2026 à 09:00:46",
+    "question": "Faut-il étendre les opérations militaires israéliennes au Liban malgré le risque d’escalade?",
+    "positionA": "Étendre les opérations militaires",
+    "positionB": "Limiter les opérations pour éviter l’escalade",
+    "theme": "International",
+    "resume": "Israël a annoncé l’extension de ses opérations militaires au Liban à plusieurs nouvelles zones.\n\nCette décision fait suite à une attaque israélienne qui a grièvement blessé deux soldats libanais, poussant Israël à déployer des forces terrestres au-delà du sud du Liban. Les autorités n’ont pas précisé l’ampleur ni la durée de cette extension, ce qui alimente l’incertitude sur l’évolution du conflit.\n\nL’élargissement des opérations peut permettre de neutraliser des positions jugées stratégiques et de renforcer la sécurité des frontières israéliennes. Cependant, cette démarche augmente le risque d’une escalade rapide, susceptible de provoquer une réaction militaire plus large du Hezbollah ou d’autres acteurs libanais, ce qui compliquerait le contrôle du conflit. À l’inverse, limiter les opérations pour éviter d’étendre le champ de bataille pourrait laisser des menaces actives et affaiblir la posture défensive d’Israël. Chaque option porte un coût important.\n\nVis an pax\n\nFaut-il étendre les opérations militaires israéliennes au Liban malgré le risque d’escalade?\n\nT. Guyomarch",
+    "sources": "Le Monde, Libération, France 24, RFI, LCI",
+    "links": [
+      {
+        "title": "EN DIRECT, guerre au Moyen-Orient : Israël annonce étendre ses opérations au Liban « à d’autres zones »",
+        "url": "https://www.lemonde.fr/international/live/2026/05/31/en-direct-guerre-au-moyen-orient-israel-annonce-etendre-ses-operations-au-liban-a-d-autres-zones_6694380_3210.html",
+        "source": "Le Monde",
+        "type": "article",
+        "date": "31/05/2026",
+        "checked": true
+      },
+      {
+        "title": "EN DIRECT - Guerre au Moyen-Orient : deux soldats libanais gravement blessés dans une attaque israélienne «ciblée»",
+        "url": "https://www.liberation.fr/international/moyen-orient/en-direct-guerre-au-moyen-orient-trump-ne-signera-avec-liran-que-si-ses-lignes-rouges-sont-satisfaites-20260530_XX3FN3DHGJAQ3CYGPXN7XQONO4/",
+        "source": "Libération",
+        "type": "article",
+        "date": "30/05/2026",
+        "checked": true
+      },
+      {
+        "title": "EN DIRECT - Moyen-Orient: Israël annonce «étendre à d'autres zones» son opération terrestre au Liban",
+        "url": "https://www.rfi.fr/fr/moyen-orient/20260531-en-direct-moyen-orient-isra%C3%ABl-annonce-%C3%A9tendre-%C3%A0-d-autres-zones-son-op%C3%A9ration-terrestre-au-liban",
+        "source": "RFI",
+        "type": "article",
+        "date": "31/05/2026",
+        "checked": true
+      },
+      {
+        "title": "Nouvelles frappes israéliennes au Liban : deux soldats libanais grièvement blessés",
+        "url": "https://www.france24.com/fr/vid%C3%A9o/20260530-nouvelles-frappes-isra%C3%A9liennes-au-liban-deux-soldats-libanais-gri%C3%A8vement-bless%C3%A9s",
+        "source": "France 24",
+        "type": "article",
+        "date": "30/05/2026",
+        "checked": true
+      },
+      {
+        "title": "",
+        "url": "https://www.youtube.com/watch?v=gJ7lC7DU52A",
+        "source": "LCI",
+        "type": "youtube",
+        "date": "30/05/2026",
+        "checked": true
+      },
+      {
+        "title": "",
+        "url": "https://www.youtube.com/watch?v=qJWSwtX_m5k",
+        "source": "France 24",
+        "type": "youtube",
+        "date": "30/05/2026",
+        "checked": true
+      }
+    ],
+    "storySelection": {
+      "storyDecision": "existing_story",
+      "matchedStoryId": "israel-mph1fbfh",
+      "matchedStoryTitle": "Israël",
+      "previousEpisodeTitle": "La France doit-elle soutenir les renforts israéliens malgré les risques d’escalade au Liban ?",
+      "previousEpisodeUrl": "http://localhost:3001/debate?id=592",
+      "confidence": 0.9,
+      "reason": "Histoire choisie manuellement.",
+      "criteria": {},
+      "selectionMode": "existing"
+    },
+    "keywords": [
+      "guerre au Moyen-Orient",
+      "Israël",
+      "Liban",
+      "soldats libanais",
+      "frappes israéliennes",
+      "opération terrestre",
+      "zones d'opérations"
+    ],
+    "sentAt": "2026-05-31T06:48:56.602Z"
+  },
+  {
     "subject": "Patrick Bruel interrompu par #NousToutes sur la scène du théâtre Edouard VII",
     "sessionLabel": "28/05/2026 à 15:37:18",
     "question": "Faut-il autoriser les interruptions militantes lors de spectacles pour dénoncer des accusations?",
