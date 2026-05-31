@@ -7,6 +7,12 @@ veille-youtube.html
 veille-youtube.json
 sessions-youtube.json
 seen-items.json
+medias.json
+youtube-chaines.json
+saved-subjects.json
+sent-to-agon.json
+certamen-sessions.json
+.bot-veille-runtime.json
 veille-mixte.html
 veille-mixte.json
 sessions-mixte.json
