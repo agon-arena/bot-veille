@@ -17,16 +17,14 @@ const parser = new Parser({
   headers: { "User-Agent": BOT_USER_AGENT }
 });
 
-const DATA_DIR = process.env.DATA_DIR ? path.resolve(process.env.DATA_DIR) : __dirname;
+const MEDIA_FILE = "medias.json";
+const CHANNELS_FILE = "youtube-chaines.json";
 
-const MEDIA_FILE = path.join(DATA_DIR, "medias.json");
-const CHANNELS_FILE = path.join(DATA_DIR, "youtube-chaines.json");
-
-const OUTPUT_JSON = path.join(DATA_DIR, "veille-mixte.json");
-const OUTPUT_HTML = path.join(DATA_DIR, "veille-mixte.html");
-const HISTORY_FILE = path.join(DATA_DIR, "sessions-mixte.json");
-const SAVED_FILE = path.join(DATA_DIR, "saved-subjects.json");
-const SENT_TO_AGON_FILE = path.join(DATA_DIR, "sent-to-agon.json");
+const OUTPUT_JSON = "veille-mixte.json";
+const OUTPUT_HTML = "veille-mixte.html";
+const HISTORY_FILE = "sessions-mixte.json";
+const SAVED_FILE = "saved-subjects.json";
+const SENT_TO_AGON_FILE = "sent-to-agon.json";
 const API_PORT = 3002;
 
 const HOURS_BACK_ARTICLES = 24;
@@ -6248,7 +6246,7 @@ async function main(minSources = MIN_DISTINCT_SOURCES) {
     await runWatchSession(minSources);
   } finally {
     isRunning = false;
-    const historyPath = HISTORY_FILE;
+    const historyPath = path.join(__dirname, HISTORY_FILE);
     let lastReport = null;
     try {
       const sessions = JSON.parse(fs.readFileSync(historyPath, "utf8"));
@@ -6260,8 +6258,8 @@ async function main(minSources = MIN_DISTINCT_SOURCES) {
 
 // ==================== MODE CERTAMEN ====================
 
-const CERTAMEN_OUTPUT_HTML = path.join(DATA_DIR, "certamen.html");
-const CERTAMEN_HISTORY_FILE = path.join(DATA_DIR, "certamen-sessions.json");
+const CERTAMEN_OUTPUT_HTML = "certamen.html";
+const CERTAMEN_HISTORY_FILE = "certamen-sessions.json";
 const CERTAMEN_MAX_SESSIONS = 6;
 const MAX_CERTAMEN_SUBJECTS_FOR_AI = (() => {
   const env = Number(process.env.CERTAMEN_AI_LIMIT);
@@ -6769,18 +6767,6 @@ apiApp.post("/certamen/refresh", async function(req, res) {
 });
 
 // ==================== FIN MODE CERTAMEN ====================
-
-// Copie les fichiers de config depuis le repo vers DATA_DIR au premier démarrage
-if (DATA_DIR !== __dirname) {
-  for (const file of ["medias.json", "youtube-chaines.json"]) {
-    const dest = path.join(DATA_DIR, file);
-    const src = path.join(__dirname, file);
-    if (!fs.existsSync(dest) && fs.existsSync(src)) {
-      fs.copyFileSync(src, dest);
-      console.log(`[init] ${file} copié vers ${DATA_DIR}`);
-    }
-  }
-}
 
 const localApiServer = apiApp.listen(API_PORT, "127.0.0.1", () => {
   console.log(`API mixte lancée sur 127.0.0.1:${API_PORT}`);

@@ -12,9 +12,8 @@ app.use(express.json());
 const PORT = process.env.PORT || 3000;
 const MIXTE_PASSWORD = process.env.MIXTE_PASSWORD || "";
 const AGON_URL = (process.env.AGON_URL || "http://localhost:3001").trim();
-const DATA_DIR = process.env.DATA_DIR ? path.resolve(process.env.DATA_DIR) : __dirname;
-const SENT_TO_AGON_FILE = path.join(DATA_DIR, "sent-to-agon.json");
-const AUTO_COLLECT_FILE = path.join(DATA_DIR, "auto-collect-config.json");
+const SENT_TO_AGON_FILE = path.join(__dirname, "sent-to-agon.json");
+const AUTO_COLLECT_FILE = path.join(__dirname, "auto-collect-config.json");
 let autoCollectTimers = [];
 
 function loadAutoCollectConfig() {
@@ -2791,7 +2790,7 @@ app.post("/mixte-login", (req, res) => {
   res.redirect("/mixte?err=1");
 });
 
-const VEILLE_MIXTE_HTML = path.join(DATA_DIR, "veille-mixte.html");
+const VEILLE_MIXTE_HTML = path.join(__dirname, "veille-mixte.html");
 const VEILLE_YOUTUBE_HTML = path.join(__dirname, "veille-youtube.html");
 
 function sendEmptyMixtePage(res) {
@@ -3028,7 +3027,7 @@ app.get("/mixte", requireMixteAuth, (req, res) => {
 });
 
 app.get("/veille-mixte.json", (req, res) => {
-  const filePath = path.join(DATA_DIR, "veille-mixte.json");
+  const filePath = path.join(__dirname, "veille-mixte.json");
 
   if (!fs.existsSync(filePath)) {
     return res.status(404).json({ error: "veille-mixte.json non généré" });
@@ -3179,7 +3178,7 @@ app.post("/generate-styled-article", requireMixteAuth, async (req, res) => {
 });
 
 app.get("/sessions-mixte.json", requireMixteAuth, (req, res) => {
-  const filePath = path.join(DATA_DIR, "sessions-mixte.json");
+  const filePath = path.join(__dirname, "sessions-mixte.json");
 
   if (!fs.existsSync(filePath)) {
     return res.status(404).json({ error: "sessions-mixte.json non généré" });
@@ -3190,7 +3189,7 @@ app.get("/sessions-mixte.json", requireMixteAuth, (req, res) => {
 
 app.get("/api/saved-subjects", requireMixteAuth, (req, res) => {
   try {
-    const filePath = path.join(DATA_DIR, "saved-subjects.json");
+    const filePath = path.join(__dirname, "saved-subjects.json");
     let items = [];
     if (fs.existsSync(filePath)) {
       items = JSON.parse(fs.readFileSync(filePath, "utf8") || "[]");
@@ -3219,7 +3218,7 @@ app.get("/api/sent-to-agon-items", requireMixteAuth, (req, res) => {
 });
 
 app.get("/saved", requireMixteAuth, (req, res) => {
-  const savedFile = path.join(DATA_DIR, "saved-subjects.json");
+  const savedFile = path.join(__dirname, "saved-subjects.json");
   let saved = [];
   if (fs.existsSync(savedFile)) {
     try { saved = JSON.parse(fs.readFileSync(savedFile, "utf8")); } catch {}
@@ -3776,7 +3775,7 @@ app.get("/sent-to-agon", requireMixteAuth, (req, res) => {
 });
 
 app.post("/save-update", requireMixteAuth, async (req, res) => {
-  const savedFile = path.join(DATA_DIR, "saved-subjects.json");
+  const savedFile = path.join(__dirname, "saved-subjects.json");
   try {
     try {
       await fetch("http://127.0.0.1:3002/save-update", {
@@ -4399,7 +4398,7 @@ init();
 });
 
 app.get("/api/medias", (req, res) => {
-  const filePath = path.join(DATA_DIR, "medias.json");
+  const filePath = path.join(__dirname, "medias.json");
   try {
     const data = JSON.parse(fs.readFileSync(filePath, "utf8"));
     res.json(data);
@@ -4409,7 +4408,7 @@ app.get("/api/medias", (req, res) => {
 });
 
 app.post("/api/medias", (req, res) => {
-  const filePath = path.join(DATA_DIR, "medias.json");
+  const filePath = path.join(__dirname, "medias.json");
   if (!Array.isArray(req.body)) {
     console.error("[admin] POST /api/medias : corps invalide :", req.body);
     return res.status(400).json({ ok: false, error: "Corps de requête invalide (tableau attendu). Rechargez la page et réessayez." });
@@ -4427,7 +4426,7 @@ app.post("/api/medias", (req, res) => {
 });
 
 app.get("/api/youtube-chaines", (req, res) => {
-  const filePath = path.join(DATA_DIR, "youtube-chaines.json");
+  const filePath = path.join(__dirname, "youtube-chaines.json");
   try {
     const data = JSON.parse(fs.readFileSync(filePath, "utf8"));
     res.json(data);
@@ -4437,7 +4436,7 @@ app.get("/api/youtube-chaines", (req, res) => {
 });
 
 app.post("/api/youtube-chaines", (req, res) => {
-  const filePath = path.join(DATA_DIR, "youtube-chaines.json");
+  const filePath = path.join(__dirname, "youtube-chaines.json");
   if (!Array.isArray(req.body)) {
     console.error("[admin] POST /api/youtube-chaines : corps invalide :", req.body);
     return res.status(400).json({ ok: false, error: "Corps de requête invalide (tableau attendu). Rechargez la page et réessayez." });
