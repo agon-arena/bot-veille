@@ -370,5 +370,11 @@
     "orientation": "européen / libéral",
     "url": "https://www.youtube.com/@POLITICO",
     "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCgjtvMmHXbutALaw9XzRkAg"
+  },
+  {
+    "nom": "Le Monde Diplomatique",
+    "orientation": "gauche",
+    "url": "https://www.youtube.com/feeds/videos.xml?channel_id=UCJZ-hXrLYUFHBnkM0Vb2mqw",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCJZ-hXrLYUFHBnkM0Vb2mqw"
   }
 ]

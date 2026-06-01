@@ -140,18 +140,13 @@
     "rss": "https://www.lexpress.fr/arc/outboundfeeds/rss/alaune.xml"
   },
   {
-    "nom": "TEST",
-    "orientation": "TEST",
-    "rss": "www.test.fr"
-  },
-  {
-    "nom": "Orange actu",
-    "orientation": "généraliste",
-    "rss": "https://actu.orange.fr/rss.xml"
-  },
-  {
     "nom": "AFP",
     "orientation": "généraliste",
     "rss": "https://www.afp.com/fr/actus/afp_actualite/792,31,9,7,33/feed"
+  },
+  {
+    "nom": "Nice Matin",
+    "orientation": "généraliste",
+    "rss": "https://www.nicematin.com/rss"
   }
 ]

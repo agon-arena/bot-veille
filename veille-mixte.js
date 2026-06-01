@@ -717,21 +717,12 @@ function limitDebateQuestionText(text) {
     return `${stem}?`;
   }
 
-  function shortenAtWord(value) {
-    let stem = String(value || "").slice(0, maxLength - 1).trimEnd();
-    const lastSpace = stem.lastIndexOf(" ");
-    if (lastSpace > 48) stem = stem.slice(0, lastSpace);
-    return finalizeQuestion(stem);
-  }
-
   const base = finalizeQuestion(raw);
   if (base.length <= maxLength) return base;
 
   const withoutQuestionMark = raw.replace(/[?？]+$/g, "").trim();
   const compactAlternative = finalizeQuestion(withoutQuestionMark.replace(/\s+(?:pour|afin de)\s+.+?\s+ou\s+/i, " ou "));
-  if (compactAlternative.length <= maxLength) return compactAlternative;
-
-  return shortenAtWord(withoutQuestionMark);
+  return compactAlternative.length <= maxLength ? compactAlternative : base;
 }
 
 function makeSubjectId(index) {
@@ -1193,6 +1184,7 @@ async function analyzeOneScoreWithAI(subject) {
     source: content.source,
     orientation: content.orientation,
     title: content.title,
+    summary: content.summary || "",
     link: content.link || ""
   }));
 
@@ -1225,10 +1217,10 @@ Pénalise les simples faits divers non politiques, résultats sportifs, annonces
 
 Pour "selectedLinks" :
 - renvoie les URLs exactes des contenus qui parlent bien du sujet principal ;
-- si une source ne parle pas vraiment de ce sujet, ne la renvoie pas ;
+- si une source ne parle clairement pas de ce sujet, ne la renvoie pas ;
 - une source qui mentionne seulement une même personnalité, un même pays ou une même institution ne suffit pas : elle doit parler du même événement, de la même décision, de la même déclaration ou du même conflit précis ;
 - ignore les sources qui traitent d'un autre épisode, d'un autre angle ou d'une information parallèle, même si elles concernent les mêmes acteurs ;
-- en cas de doute, exclue la source plutôt que de la garder ;
+- en cas de doute, garde la source plutôt que de l'exclure ;
 - n'invente jamais d'URL ; utilise uniquement les valeurs exactes du champ "link" dans les contenus.
 `;
 
@@ -3598,6 +3590,10 @@ function generateHtml(sessions) {
 
     .positions-box p {
       margin: 6px 0;
+    }
+
+    .positions-box p + p {
+      margin-top: 14px;
     }
 
     .subject-stats {
