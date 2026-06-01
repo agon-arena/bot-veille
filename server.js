@@ -3808,6 +3808,7 @@ app.post("/save-update", requireMixteAuth, async (req, res) => {
 // --- Admin : gestion des sources ---
 
 app.get("/admin", (req, res) => {
+  const isOnline = !!process.env.RENDER;
   res.send(`<!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -3900,7 +3901,11 @@ app.get("/admin", (req, res) => {
 	      <summary>Voir les médias presse</summary>
 	      <ul class="source-list" id="list-presse"></ul>
 	    </details>
-	    <details id="form-presse-wrap">
+	    ${isOnline
+      ? `<p style="background:#fff3cd;border:1px solid #ffc107;border-radius:8px;padding:12px 16px;color:#856404;font-size:0.9rem;margin-top:12px;">
+          Pour ajouter ou modifier un média, passez en mode local.
+        </p>`
+      : `<details id="form-presse-wrap">
       <summary style="cursor:pointer;font-weight:600;color:#0645ad;margin-bottom:12px;">+ Ajouter un média presse</summary>
       <div class="add-form">
         <h3 id="form-presse-title">Nouveau média</h3>
@@ -3919,7 +3924,7 @@ app.get("/admin", (req, res) => {
           <button class="btn btn-secondary" onclick="cancelPresse()">Annuler</button>
         </div>
       </div>
-    </details>
+    </details>`}
   </div>
 
 	  <!-- Onglet YouTube -->
@@ -3928,7 +3933,9 @@ app.get("/admin", (req, res) => {
 	      <summary>Voir les chaînes YouTube</summary>
 	      <ul class="source-list" id="list-youtube"></ul>
 	    </details>
-	    <details id="form-youtube-wrap">
+	    ${isOnline
+      ? ''
+      : `<details id="form-youtube-wrap">
       <summary style="cursor:pointer;font-weight:600;color:#c0392b;margin-bottom:12px;">+ Ajouter une chaîne YouTube</summary>
       <div class="add-form">
         <h3 id="form-youtube-title">Nouvelle chaîne</h3>
@@ -3950,7 +3957,7 @@ app.get("/admin", (req, res) => {
           <button class="btn btn-secondary" onclick="cancelYoutube()">Annuler</button>
         </div>
       </div>
-    </details>
+    </details>`}
   </div>
 
   <!-- Onglet Collecte automatique -->
@@ -3988,6 +3995,7 @@ app.get("/admin", (req, res) => {
   <div class="toast" id="toast"></div>
 
 <script>
+const IS_ONLINE = ${isOnline};
 let medias = [];
 let chaines = [];
 let editingPresse = null;
@@ -4169,10 +4177,7 @@ function renderPresse() {
         <div class="source-orientation" style="color:#666;font-size:0.82rem">\${esc(m.orientation)}</div>
         <div class="source-url">\${esc(m.rss)}</div>
       </div>
-      <div class="source-actions">
-        <button class="btn btn-edit" onclick="editPresse(\${i})">Modifier</button>
-        <button class="btn btn-del" onclick="deletePresse(\${i})">Supprimer</button>
-      </div>
+      \${IS_ONLINE ? '' : '<div class="source-actions"><button class="btn btn-edit" onclick="editPresse('+i+')">Modifier</button><button class="btn btn-del" onclick="deletePresse('+i+')">Supprimer</button></div>'}
     </li>\`;
   });
   ul.innerHTML = html;
@@ -4197,10 +4202,7 @@ function renderYoutube() {
         <div class="source-orientation" style="color:#666;font-size:0.82rem">\${esc(c.orientation)}</div>
         <div class="source-url">\${esc(c.url)}</div>
       </div>
-      <div class="source-actions">
-        <button class="btn btn-edit" onclick="editYoutube(\${i})">Modifier</button>
-        <button class="btn btn-del" onclick="deleteYoutube(\${i})">Supprimer</button>
-      </div>
+      \${IS_ONLINE ? '' : '<div class="source-actions"><button class="btn btn-edit" onclick="editYoutube('+i+')">Modifier</button><button class="btn btn-del" onclick="deleteYoutube('+i+')">Supprimer</button></div>'}
     </li>\`;
   });
   ul.innerHTML = html;
