@@ -148,5 +148,10 @@
     "nom": "Orange actu",
     "orientation": "généraliste",
     "rss": "https://actu.orange.fr/rss.xml"
+  },
+  {
+    "nom": "AFP",
+    "orientation": "généraliste",
+    "rss": "https://www.afp.com/fr/actus/afp_actualite/792,31,9,7,33/feed"
   }
 ]
