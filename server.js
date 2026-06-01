@@ -206,7 +206,7 @@ const AGON_ARTICLE_MAX_LENGTH = 1600;
 function limitDebateQuestion(text) {
   const raw = String(text || "").replace(/\s+/g, " ").trim();
   if (!raw) return "";
-  const maxLength = 98;
+  const maxLength = 110;
   const danglingWords = /(?:\s+(?:le|la|les|l|un|une|des|du|de|d|à|au|aux|et|ou|pour|par|avec|sans|malgré|face|contre|sur))$/i;
 
   function finalizeQuestion(value) {

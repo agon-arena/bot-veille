@@ -702,7 +702,7 @@ function limitText(text, maxLength) {
 function limitDebateQuestionText(text) {
   const raw = String(text || "").replace(/\s+/g, " ").trim();
   if (!raw) return "";
-  const maxLength = 98;
+  const maxLength = 110;
   const danglingWords = /(?:\s+(?:le|la|les|l|un|une|des|du|de|d|à|au|aux|et|ou|pour|par|avec|sans|malgré|face|contre|sur))$/i;
 
   function finalizeQuestion(value) {
@@ -714,7 +714,7 @@ function limitDebateQuestionText(text) {
       .trim();
     stem = stem.replace(danglingWords, "").trim();
     if (!stem) return "";
-    return `${stem}?`;
+    return `${stem} ?`;
   }
 
   function shortenAtWord(value) {
@@ -1899,7 +1899,7 @@ function generateHtml(sessions) {
             <input type="hidden" class="full-article-state" value="${escapeHtml(ai.fullArticleState || "short")}">
             <p class="generated-title-label">Titre généré par IA</p>
             <p class="debate-question" contenteditable="true" spellcheck="false">${escapeHtml(ai.debateQuestion || "")}</p>
-            <div class="field-counter question-counter">0 / 98</div>
+            <div class="field-counter question-counter">0 / 110</div>
             ${
               debateScore >= 7 && (ai.positionA || ai.positionB) && ai.arenaMode !== "libre"
                 ? `<div class="positions-box">
@@ -4420,7 +4420,7 @@ function generateHtml(sessions) {
       }
     }
 
-    const AI_TITLE_MAX = 98;
+    const AI_TITLE_MAX = 110;
     const AI_RESUME_MAX = 1800;
 
     function limitClientDebateQuestion(text) {
@@ -4451,8 +4451,7 @@ function generateHtml(sessions) {
       if (base.length <= AI_TITLE_MAX) return base;
       const withoutQuestionMark = raw.replace(/[?？]+$/g, "").trim();
       const compactAlternative = finalizeQuestion(withoutQuestionMark.replace(/\\s+(?:pour|afin de)\\s+.+?\\s+ou\\s+/i, " ou "));
-      if (compactAlternative.length <= AI_TITLE_MAX) return compactAlternative;
-      return shortenAtWord(withoutQuestionMark);
+      return compactAlternative.length <= AI_TITLE_MAX ? compactAlternative : base;
     }
 
     function splitArticleOpeningSentenceParts(parts) {
@@ -4557,7 +4556,7 @@ function generateHtml(sessions) {
         '<input type="hidden" class="full-article-state" value="short">' +
         '<p class="generated-title-label">Titre généré par IA</p>' +
         '<p class="debate-question" contenteditable="true" spellcheck="false">' + (ai.debateQuestion || "") + "</p>" +
-        '<div class="field-counter question-counter">0 / 98</div>' +
+        '<div class="field-counter question-counter">0 / 110</div>' +
         positionsHtml +
         '<p class="resume" contenteditable="true" spellcheck="false">' + (ai.resume || "") + "</p>" +
         '<div class="field-counter resume-counter">0 / 1500</div>' +
