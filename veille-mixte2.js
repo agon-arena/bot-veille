@@ -1007,7 +1007,7 @@ async function analyzeOneSubjectWithAI(subject) {
     };
   }
 
-  const compactContents = subject.contents.map(content => ({
+  const compactContents = subject.contents.slice(0, 20).map(content => ({
     type: content.type,
     source: content.source,
     orientation: content.orientation,
@@ -1076,7 +1076,7 @@ Ne génère pas de tags, pas de question de débat, pas de positions A/B et pas 
       model: "gpt-4.1-mini",
       input: prompt,
       temperature: 0.2,
-      max_output_tokens: 600
+      max_output_tokens: 1500
     });
 
     const text = response.output_text;
@@ -3416,7 +3416,6 @@ function generateHtml(sessions) {
       margin-left: -10px;
       outline: none;
       transition: background 0.15s;
-      white-space: pre-wrap;
     }
 
     .resume[contenteditable="true"]:hover,

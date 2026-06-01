@@ -873,7 +873,7 @@ Structure du texte :
 3. Une phrase finale qui indique l’enjeu immédiat ou ce qui reste à clarifier.
 
 Longueur :
-600 à 1000 caractères.
+1000 à 1500 caractères.
 
 Sujet :
 ${payload.subject || ""}
@@ -895,11 +895,11 @@ Réponds uniquement en texte brut.`;
       model: "gpt-4.1-mini",
       input: prompt,
       temperature: 0.35,
-      max_output_tokens: 900
+      max_output_tokens: 1500
     });
     const text = String(response.output_text || "").trim();
     if (!text) throw new Error("Réponse vide de l'IA pour le résumé.");
-    return limitStoryText(text, 1500);
+    return limitStoryText(text, 1800);
   } catch (error) {
     throw new Error(error.message || "Erreur génération résumé");
   }
