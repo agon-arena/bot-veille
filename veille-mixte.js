@@ -3824,7 +3824,6 @@ function generateHtml(sessions) {
         <option value="5">5 sources min.</option>
         <option value="6">6 sources min.</option>
       </select>
-      <button class="sort-sources-btn" type="button">Classer par sources</button>
       <button class="refresh-btn" type="button">Mettre à jour</button>
     </div>
     <div class="ptr-indicator" id="ptr-indicator"></div>

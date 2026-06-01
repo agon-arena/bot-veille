@@ -13,6 +13,50 @@ const PORT = process.env.PORT || 3000;
 const MIXTE_PASSWORD = process.env.MIXTE_PASSWORD || "";
 const AGON_URL = (process.env.AGON_URL || "http://localhost:3001").trim();
 const SENT_TO_AGON_FILE = path.join(__dirname, "sent-to-agon.json");
+const AUTO_COLLECT_FILE = path.join(__dirname, "auto-collect-config.json");
+let autoCollectTimers = [];
+
+function loadAutoCollectConfig() {
+  try { return JSON.parse(fs.readFileSync(AUTO_COLLECT_FILE, "utf8")); }
+  catch { return { enabled: false, times: ["08:00"] }; }
+}
+
+function scheduleOneAutoCollect(timeStr) {
+  const [h, m] = timeStr.split(":").map(Number);
+  const now = new Date();
+  const next = new Date();
+  next.setHours(h, m, 0, 0);
+  if (next <= now) next.setDate(next.getDate() + 1);
+  const delay = next - now;
+  const timer = setTimeout(async () => {
+    autoCollectTimers = autoCollectTimers.filter(t => t !== timer);
+    console.log(`[auto-collect] Déclenchement à ${timeStr}`);
+    const cfg = loadAutoCollectConfig();
+    if (cfg.enabled) {
+      try {
+        await fetch("http://127.0.0.1:3002/refresh", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ minSources: cfg.minSources || 4 })
+        });
+      } catch (err) {
+        console.error(`[auto-collect] Erreur: ${err.message}`);
+      }
+      scheduleOneAutoCollect(timeStr);
+    }
+  }, delay);
+  autoCollectTimers.push(timer);
+  const nextDate = new Date(Date.now() + delay);
+  console.log(`[auto-collect] Prochaine collecte ${timeStr} → ${nextDate.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}`);
+}
+
+function scheduleAutoCollect(config) {
+  autoCollectTimers.forEach(t => clearTimeout(t));
+  autoCollectTimers = [];
+  if (!config.enabled || !Array.isArray(config.times) || !config.times.length) return;
+  config.times.forEach(t => scheduleOneAutoCollect(t));
+}
+
 const AGON_STORIES_FILE = process.env.AGON_STORIES_FILE
   || path.join(__dirname, "..", "SUPABASE copie 3", "data", "stories.json");
 const openai = process.env.OPENAI_API_KEY
@@ -3815,6 +3859,24 @@ app.get("/admin", (req, res) => {
     .toast.show { opacity: 1; }
     .group-header { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 6px 12px; border-radius: 999px; display: inline-block; margin: 18px 0 10px; }
     .orient-badge { display: inline-block; font-size: 0.72rem; font-weight: 600; padding: 2px 9px; border-radius: 999px; margin-left: 6px; vertical-align: middle; }
+    .ac-panel { background: white; border: 1px solid #e0e0e0; border-radius: 14px; padding: 24px; margin-top: 8px; max-width: 560px; }
+    .ac-toggle-row { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; }
+    .ac-toggle { position: relative; display: inline-block; width: 44px; height: 24px; flex-shrink: 0; }
+    .ac-toggle input { opacity: 0; width: 0; height: 0; }
+    .ac-slider { position: absolute; inset: 0; background: #ccc; border-radius: 999px; cursor: pointer; transition: background 0.2s; }
+    .ac-slider::before { content: ''; position: absolute; width: 18px; height: 18px; left: 3px; top: 3px; background: white; border-radius: 50%; transition: transform 0.2s; box-shadow: 0 1px 3px rgba(0,0,0,.2); }
+    .ac-toggle input:checked + .ac-slider { background: #111; }
+    .ac-toggle input:checked + .ac-slider::before { transform: translateX(20px); }
+    .ac-toggle-label { font-weight: 700; font-size: 1rem; }
+    .ac-fields { display: flex; flex-direction: column; gap: 18px; }
+    .ac-fields.hidden { display: none; }
+    .ac-field { display: flex; flex-direction: column; gap: 5px; }
+    .ac-field label { font-size: 0.82rem; font-weight: 600; color: #555; }
+    .ac-field select, .ac-field input[type=time] { padding: 9px 12px; border: 1px solid #ddd; border-radius: 8px; font: inherit; font-size: 0.9rem; max-width: 220px; }
+    .ac-times-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .ac-status { margin-top: 20px; padding: 12px 16px; border-radius: 10px; font-size: 0.88rem; background: #f7f7f7; color: #666; }
+    .ac-status.active { background: #f0faf0; border: 1px solid #b0d8b0; color: #2d5a2d; }
+    .ac-status ul { margin: 6px 0 0; padding-left: 18px; }
   </style>
 </head>
 <body>
@@ -3829,6 +3891,7 @@ app.get("/admin", (req, res) => {
   <div class="tabs">
     <button class="tab-btn active" onclick="switchTab('presse')">📰 Médias presse</button>
     <button class="tab-btn" onclick="switchTab('youtube')">▶ Chaînes YouTube</button>
+    <button class="tab-btn" onclick="switchTab('auto')">⏰ Collecte auto</button>
   </div>
 
 	  <!-- Onglet Presse -->
@@ -3888,6 +3951,38 @@ app.get("/admin", (req, res) => {
         </div>
       </div>
     </details>
+  </div>
+
+  <!-- Onglet Collecte automatique -->
+  <div id="tab-auto" class="tab-panel">
+    <div class="ac-panel">
+      <div class="ac-toggle-row">
+        <label class="ac-toggle">
+          <input type="checkbox" id="ac-enabled" onchange="onAcToggle()">
+          <span class="ac-slider"></span>
+        </label>
+        <span class="ac-toggle-label">Collecte automatique</span>
+      </div>
+      <div class="ac-fields" id="ac-fields">
+        <div class="ac-field">
+          <label>Fréquence par jour</label>
+          <select id="ac-freq" onchange="renderAcTimes()">
+            <option value="1">1 fois par jour</option>
+            <option value="2">2 fois par jour</option>
+            <option value="3">3 fois par jour</option>
+            <option value="4">4 fois par jour</option>
+          </select>
+        </div>
+        <div class="ac-field">
+          <label>Heure(s) de collecte</label>
+          <div class="ac-times-grid" id="ac-times"></div>
+        </div>
+        <div>
+          <button class="btn btn-primary" onclick="saveAutoCollect()">Enregistrer</button>
+        </div>
+      </div>
+      <div class="ac-status" id="ac-status"></div>
+    </div>
   </div>
 
   <div class="toast" id="toast"></div>
@@ -3952,14 +4047,72 @@ async function init() {
   renderPresse();
   renderYoutube();
   bindUnsavedFormWarning();
+  await initAutoCollect();
 }
 
 function switchTab(name) {
   document.querySelectorAll('.tab-btn').forEach((b, i) => {
-    b.classList.toggle('active', (i === 0 && name === 'presse') || (i === 1 && name === 'youtube'));
+    b.classList.toggle('active', (i === 0 && name === 'presse') || (i === 1 && name === 'youtube') || (i === 2 && name === 'auto'));
   });
   document.getElementById('tab-presse').classList.toggle('active', name === 'presse');
   document.getElementById('tab-youtube').classList.toggle('active', name === 'youtube');
+  document.getElementById('tab-auto').classList.toggle('active', name === 'auto');
+}
+
+let acConfig = { enabled: false, times: ['08:00'] };
+
+async function initAutoCollect() {
+  acConfig = await fetch('/api/auto-collect').then(r => r.json());
+  document.getElementById('ac-enabled').checked = acConfig.enabled;
+  document.getElementById('ac-freq').value = String(acConfig.times.length || 1);
+  renderAcTimes();
+  renderAcStatus();
+}
+
+function onAcToggle() {
+  renderAcStatus();
+}
+
+function renderAcTimes() {
+  const count = parseInt(document.getElementById('ac-freq').value);
+  const existing = Array.from(document.querySelectorAll('.ac-time-input')).map(i => i.value);
+  const times = acConfig.times.slice();
+  while (times.length < count) times.push('08:00');
+  const grid = document.getElementById('ac-times');
+  grid.innerHTML = '';
+  for (let i = 0; i < count; i++) {
+    const val = existing[i] || times[i] || '08:00';
+    const inp = document.createElement('input');
+    inp.type = 'time';
+    inp.className = 'ac-time-input';
+    inp.value = val;
+    grid.appendChild(inp);
+  }
+}
+
+function renderAcStatus() {
+  const div = document.getElementById('ac-status');
+  const enabled = document.getElementById('ac-enabled').checked;
+  if (!enabled) { div.textContent = 'Collecte automatique désactivée.'; div.className = 'ac-status'; return; }
+  const times = Array.from(document.querySelectorAll('.ac-time-input')).map(i => i.value);
+  if (!times.length) { div.textContent = 'Aucune heure configurée.'; div.className = 'ac-status'; return; }
+  div.className = 'ac-status active';
+  div.innerHTML = \`<strong>Actif</strong> — \${times.length} collecte(s)/jour :<ul>\${times.map(t => \`<li>à \${t}</li>\`).join('')}</ul>\`;
+}
+
+async function saveAutoCollect() {
+  const enabled = document.getElementById('ac-enabled').checked;
+  const times = Array.from(document.querySelectorAll('.ac-time-input')).map(i => i.value);
+  if (!times.length) { alert('Ajoutez au moins une heure.'); return; }
+  acConfig = { enabled, times };
+  try {
+    const r = await fetch('/api/auto-collect', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(acConfig) });
+    const d = await r.json();
+    if (d.ok) { showToast('Planification enregistrée ✓'); renderAcStatus(); }
+    else showError('Erreur : ' + d.error);
+  } catch (err) {
+    showError('Erreur réseau : ' + err.message);
+  }
 }
 
 function esc(s) {
@@ -4616,10 +4769,36 @@ app.get("/certamen/progress", requireMixteAuth, async (req, res) => {
   }
 });
 
+// ==================== COLLECTE AUTOMATIQUE ====================
+
+app.get("/api/auto-collect", (req, res) => {
+  res.json(loadAutoCollectConfig());
+});
+
+app.post("/api/auto-collect", (req, res) => {
+  const { enabled, times } = req.body || {};
+  if (typeof enabled !== "boolean" || !Array.isArray(times) || times.length < 1 || times.length > 4) {
+    return res.status(400).json({ ok: false, error: "Paramètres invalides" });
+  }
+  const validTime = /^([01]\d|2[0-3]):[0-5]\d$/;
+  if (times.some(t => !validTime.test(t))) {
+    return res.status(400).json({ ok: false, error: "Format d'heure invalide (HH:MM attendu)" });
+  }
+  const config = { enabled, times };
+  try {
+    fs.writeFileSync(AUTO_COLLECT_FILE, JSON.stringify(config, null, 2), "utf8");
+    scheduleAutoCollect(config);
+    res.json({ ok: true });
+  } catch (err) {
+    res.status(500).json({ ok: false, error: err.message });
+  }
+});
+
 // ==================== FIN ROUTES CERTAMEN ====================
 
 const httpServer = app.listen(PORT, () => {
   console.log(`Serveur lancé sur le port ${PORT}`);
+  scheduleAutoCollect(loadAutoCollectConfig());
 });
 
 httpServer.on("error", (error) => {
