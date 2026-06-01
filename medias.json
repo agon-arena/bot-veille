@@ -1,0 +1,152 @@
+[
+  {
+    "nom": "Franceinfo",
+    "orientation": "centre / service public",
+    "rss": "https://www.francetvinfo.fr/titres.rss"
+  },
+  {
+    "nom": "Le Monde",
+    "orientation": "centre-gauche / généraliste",
+    "rss": "https://www.lemonde.fr/rss/une.xml"
+  },
+  {
+    "nom": "Libération",
+    "orientation": "gauche",
+    "rss": "https://www.liberation.fr/arc/outboundfeeds/rss-all/"
+  },
+  {
+    "nom": "L'Humanité",
+    "orientation": "gauche",
+    "rss": "https://www.humanite.fr/rss/actu.rss"
+  },
+  {
+    "nom": "Mediapart",
+    "orientation": "gauche / investigation",
+    "rss": "https://www.mediapart.fr/articles/feed"
+  },
+  {
+    "nom": "L'Obs",
+    "orientation": "centre-gauche",
+    "rss": "https://www.nouvelobs.com/rss.xml"
+  },
+  {
+    "nom": "Politis",
+    "orientation": "gauche",
+    "rss": "https://www.politis.fr/feed/"
+  },
+  {
+    "nom": "Basta!",
+    "orientation": "gauche / écologie sociale",
+    "rss": "https://basta.media/spip.php?page=backend"
+  },
+  {
+    "nom": "Reporterre",
+    "orientation": "écologie / gauche",
+    "rss": "https://reporterre.net/spip.php?page=backend"
+  },
+  {
+    "nom": "Le Figaro",
+    "orientation": "droite",
+    "rss": "https://www.lefigaro.fr/rss/figaro_actualites.xml"
+  },
+  {
+    "nom": "Valeurs actuelles",
+    "orientation": "droite / conservateur",
+    "rss": "https://www.valeursactuelles.com/feed"
+  },
+  {
+    "nom": "Le Point",
+    "orientation": "centre-droit",
+    "rss": "https://www.lepoint.fr/rss.xml"
+  },
+  {
+    "nom": "L'Express",
+    "orientation": "centre / centre-droit",
+    "rss": "https://www.lexpress.fr/arc/outboundfeeds/rss/"
+  },
+  {
+    "nom": "Marianne",
+    "orientation": "souverainiste / républicain",
+    "rss": "https://www.marianne.net/rss.xml"
+  },
+  {
+    "nom": "La Croix",
+    "orientation": "centre / chrétien-social",
+    "rss": "https://www.la-croix.com/RSS/UNIVERS"
+  },
+  {
+    "nom": "Public Sénat",
+    "orientation": "institutionnel / politique",
+    "rss": "https://www.publicsenat.fr/rss"
+  },
+  {
+    "nom": "BFMTV",
+    "orientation": "généraliste / info continue",
+    "rss": "https://www.bfmtv.com/rss/news-24-7/"
+  },
+  {
+    "nom": "CNews",
+    "orientation": "droite / info continue",
+    "rss": "https://www.cnews.fr/rss.xml"
+  },
+  {
+    "nom": "France 24",
+    "orientation": "international / service public",
+    "rss": "https://www.france24.com/fr/rss"
+  },
+  {
+    "nom": "RFI",
+    "orientation": "international / service public",
+    "rss": "https://www.rfi.fr/fr/rss"
+  },
+  {
+    "nom": "Euronews FR",
+    "orientation": "international / européen",
+    "rss": "https://fr.euronews.com/rss"
+  },
+  {
+    "nom": "20 Minutes",
+    "orientation": "généraliste populaire",
+    "rss": "https://www.20minutes.fr/feeds/rss-une.xml"
+  },
+  {
+    "nom": "HuffPost France",
+    "orientation": "centre-gauche / société",
+    "rss": "https://www.huffingtonpost.fr/feeds/index.xml"
+  },
+  {
+    "nom": "Slate France",
+    "orientation": "centre-gauche / analyse",
+    "rss": "https://www.slate.fr/rss.xml"
+  },
+  {
+    "nom": "Alternatives économiques",
+    "orientation": "gauche",
+    "rss": "https://www.alternatives-economiques.fr/rss.xml"
+  },
+  {
+    "nom": "Les Echos",
+    "orientation": "centre-droit / économie",
+    "rss": "https://www.lesechos.fr/rss/rss_une.xml"
+  },
+  {
+    "nom": "Le Dauphiné Libéré",
+    "orientation": "généraliste / régional",
+    "rss": "https://www.ledauphine.com/rss"
+  },
+  {
+    "nom": "L'Express",
+    "orientation": "droite",
+    "rss": "https://www.lexpress.fr/arc/outboundfeeds/rss/alaune.xml"
+  },
+  {
+    "nom": "TEST",
+    "orientation": "TEST",
+    "rss": "www.test.fr"
+  },
+  {
+    "nom": "Orange actu",
+    "orientation": "généraliste",
+    "rss": "https://actu.orange.fr/rss.xml"
+  }
+]
