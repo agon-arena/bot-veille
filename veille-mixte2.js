@@ -956,6 +956,7 @@ Règle centrale :
 - il doit être immédiatement compréhensible seul, sans lire le titre ;
 - il doit nommer l'objet central de l'actualité : acteur, pays, institution, lieu, événement, loi, conflit, affaire ou phénomène précis ;
 - il ne doit pas être trop générique ;
+- il ne doit pas être un nom de pays connu seul (France, Chine, États-Unis, Russie, Allemagne, etc.) ni une grande ville seule (Paris, New York, Pékin, Londres, etc.) : dans ces cas, privilégie l'événement, l'acteur ou l'institution concerné ;
 - il doit faire 30 caractères maximum, espaces compris.
 
 Pour "keywords" :

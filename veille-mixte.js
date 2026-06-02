@@ -930,7 +930,7 @@ function selectRelevantLinksForSubject(subject, aiSelectedLinks) {
       cleanText(candidateText)
     );
 
-    const strongMatch = strongShared >= 2 || sharedKeywords >= 3 || similarity >= 0.62;
+    const strongMatch = strongShared >= 1 || sharedKeywords >= 2 || similarity >= 0.5;
 
     if (strongMatch) {
       scored.push({ link, similarity, strongShared, sharedKeywords });
@@ -957,7 +957,7 @@ function selectRelevantLinksForSubject(subject, aiSelectedLinks) {
         return b.similarity - a.similarity;
       })[0];
 
-    if (best && (best.strongShared >= 2 || best.sharedKeywords >= 3 || best.similarity >= 0.62)) {
+    if (best && (best.strongShared >= 1 || best.sharedKeywords >= 2 || best.similarity >= 0.5)) {
       return [best.link];
     }
     return [];
@@ -1021,6 +1021,7 @@ Règle centrale :
 - il doit être immédiatement compréhensible seul, sans lire le titre ;
 - il doit nommer l'objet central de l'actualité : acteur, pays, institution, lieu, événement, loi, conflit, affaire ou phénomène précis ;
 - il ne doit pas être trop générique ;
+- il ne doit pas être un nom de pays connu seul (France, Chine, États-Unis, Russie, Allemagne, etc.) ni une grande ville seule (Paris, New York, Pékin, Londres, etc.) : dans ces cas, privilégie l'événement, l'acteur ou l'institution concerné ;
 - il doit faire 30 caractères maximum, espaces compris.
 
 Pour "keywords" :
@@ -1107,10 +1108,10 @@ Tu dois répondre uniquement en JSON valide avec ces champs :
 }
 
 Critères pour debateScore :
-- 0 à 3 : sujet informatif, peu clivant ;
-- 4 à 6 : sujet débattable mais peu explosif ;
-- 7 à 8 : sujet controversé, bon potentiel de débat ;
-- 9 à 10 : sujet très clivant, fort potentiel de réactions.
+- 0 à 3 : sujet informatif, peu clivant, aucune tension visible ;
+- 4 à 6 : sujet débattable mais sans fracture claire — positions opposées possibles mais peu tranchées ;
+- 7 à 8 : sujet qui divise — au moins un de ces signaux est présent : élu ou parti nommément impliqué, réforme ou budget contesté, conflit social actif (grève, manifestation, blocage), décision judiciaire ou policière contestée, tension diplomatique ou militaire nommée, scandale ou mise en cause publique ;
+- 9 à 10 : sujet hautement polarisant — plusieurs de ces signaux sont présents, ou le sujet touche directement à des valeurs opposées (liberté vs sécurité, identité, religion, droits sociaux), ou il génère déjà une polémique visible dans les sources.
 
 Favorise les sujets politiques, sociaux, économiques, éducatifs, écologiques, internationaux ou liés aux libertés publiques.
 Pénalise les faits divers non politiques, résultats sportifs, annonces culturelles neutres ou sujets purement descriptifs.
@@ -1125,7 +1126,7 @@ Pour "selectedLinks" :
 - si une source ne parle pas vraiment de ce sujet, ne la renvoie pas ;
 - une source qui mentionne seulement une même personnalité, un même pays ou une même institution ne suffit pas : elle doit parler du même événement, de la même décision, de la même déclaration ou du même conflit précis ;
 - ignore les sources qui traitent d'un autre épisode, d'un autre angle ou d'une information parallèle, même si elles concernent les mêmes acteurs ;
-- en cas de doute, exclue la source plutôt que de la garder ;
+- en cas de doute, garde la source plutôt que de l'exclure ;
 - si plusieurs sources évoquent clairement le sujet, garde-les toutes ;
 - si toutes les sources parlent bien du sujet, tu peux toutes les renvoyer ;
 - n'invente jamais d'URL ;
@@ -1208,10 +1209,10 @@ Tu dois répondre uniquement en JSON valide avec ces champs :
 }
 
 Critères pour debateScore :
-- 0 à 3 : sujet informatif, peu clivant
-- 4 à 6 : sujet débattable mais pas explosif
-- 7 à 8 : sujet controversé, bon potentiel de débat
-- 9 à 10 : sujet très clivant, fort potentiel de réactions
+- 0 à 3 : sujet informatif, peu clivant, aucune tension visible
+- 4 à 6 : sujet débattable mais sans fracture claire — positions opposées possibles mais peu tranchées
+- 7 à 8 : sujet qui divise — au moins un de ces signaux est présent : élu ou parti nommément impliqué, réforme ou budget contesté, conflit social actif (grève, manifestation, blocage), décision judiciaire ou policière contestée, tension diplomatique ou militaire nommée, scandale ou mise en cause publique
+- 9 à 10 : sujet hautement polarisant — plusieurs de ces signaux sont présents, ou le sujet touche directement à des valeurs opposées (liberté vs sécurité, identité, religion, droits sociaux), ou il génère déjà une polémique visible dans les sources
 Favorise les sujets politiques, sociaux, économiques, éducatifs, écologiques, internationaux ou liés aux libertés publiques.
 Pénalise les simples faits divers non politiques, résultats sportifs, annonces culturelles ou sujets purement descriptifs.
 
@@ -1269,7 +1270,7 @@ Règles :
 - renvoie les URLs exactes des contenus qui parlent bien du sujet principal ;
 - une source qui mentionne seulement une même personnalité, un même pays ou une même institution ne suffit pas : elle doit parler du même événement, de la même décision, de la même déclaration ou du même conflit précis ;
 - ignore les sources qui traitent d'un autre épisode ou d'un angle parallèle, même si elles concernent les mêmes acteurs ;
-- en cas de doute, exclue la source plutôt que de la garder ;
+- en cas de doute, garde la source plutôt que de l'exclure ;
 - n'invente jamais d'URL ; utilise uniquement les valeurs exactes du champ "link" dans les contenus.`;
 
   try {
@@ -3592,7 +3593,7 @@ function generateHtml(sessions) {
     }
 
     .positions-box p + p {
-      margin-top: 14px;
+      margin-top: 0;
     }
 
     .subject-stats {
@@ -5203,10 +5204,13 @@ function generateHtml(sessions) {
       const questionEl = subjectEl.querySelector(".debate-question");
       const resumeEl = subjectEl.querySelector(".resume");
       updateAiEditorCounters(subjectEl);
+      const mainKeyword = getMainKeywordFromEditor(subjectEl);
       const keywords = getKeywordsFromEditor(subjectEl);
       const agonEl = subjectEl.querySelector(".agon-select");
       const editables = subjectEl.querySelectorAll(".editable");
       const sourcesEl = subjectEl.querySelector(".sources");
+      let storySelection = null;
+      try { storySelection = collectStorySelection(subjectEl); } catch (storyErr) { console.warn("Story selection ignorée :", storyErr.message); }
 
       const contentItems = [...subjectEl.querySelectorAll(".content-item[data-link]")].map(item => ({
         type: item.dataset.type || "article",
@@ -5222,13 +5226,15 @@ function generateHtml(sessions) {
         debateScore: score,
         debateQuestion: questionEl ? limitClientDebateQuestion(questionEl.textContent) : "",
         resume: resumeEl ? (resumeEl.dataset.rawText || resumeEl.textContent.trim()).slice(0, AI_RESUME_MAX) : "",
+        mainKeyword,
         keywords,
         agonTheme: agonEl ? agonEl.value : "",
         positionA: editables[0] ? editables[0].textContent.trim() : "",
         positionB: editables[1] ? editables[1].textContent.trim() : "",
         sources: sourcesEl ? sourcesEl.textContent.trim() : "",
         contents: contentItems,
-        sessionLabel
+        sessionLabel,
+        storySelection
       };
 
       try {
@@ -5771,6 +5777,20 @@ function generateHtml(sessions) {
           updateAiEditorCounters(subjectEl);
           if (fullArticleState) fullArticleState.value = "full";
           setDefinitiveArticleButtons(subjectEl, { hidden: false, disabled: false, state: "done" });
+
+          // Étape 6 : Polissage éditorial gpt-4o
+          setStatus("Polissage éditorial…");
+          try {
+            const currentArticle = resumeEl?.dataset.rawText || resumeEl?.textContent.trim() || styledArticle;
+            const polishRes = await fetch("/generate-polished-article", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ article: currentArticle }) });
+            const polishData = await polishRes.json().catch(() => ({}));
+            if (polishRes.ok && polishData.ok && polishData.article) {
+              resumeEl = subjectEl.querySelector(".resume");
+              if (resumeEl) { resumeEl.dataset.rawText = polishData.article; resumeEl.innerHTML = renderArticleHtml(polishData.article); }
+            }
+          } catch (polishErr) {
+            console.warn("Polissage ignoré :", polishErr.message);
+          }
         } catch (genErr) {
           console.error("Erreur génération :", genErr.message);
         }

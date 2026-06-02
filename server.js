@@ -2255,6 +2255,82 @@ Réponds uniquement en JSON valide, sans balises markdown.`;
   }
 }
 
+async function polishArticleGpt4o(articleText) {
+  if (!openai || !articleText) return articleText;
+
+  const prompt = `Tu dois réécrire un texte Agôn déjà rédigé pour le rendre nettement meilleur sur le plan éditorial, tout en conservant strictement sa structure.
+
+Objectif :
+Produire une version plus forte, plus fluide, plus tendue et plus mémorable du texte initial.
+Il ne s'agit pas d'une simple correction : tu dois améliorer la qualité journalistique, la force de l'accroche, la clarté de l'enjeu et la tension entre les deux positions.
+
+Structure obligatoire à conserver exactement :
+
+1. Une phrase d'accroche courte.
+2. Une ligne vide.
+3. Un paragraphe factuel.
+4. Une ligne vide.
+5. Un paragraphe défendant une première orientation du débat.
+6. Une ligne vide.
+7. Un paragraphe défendant l'orientation inverse.
+8. Une ligne vide.
+9. Une formule latine courte.
+10. Une ligne vide.
+11. Une question de débat.
+12. Une ligne vide.
+13. La signature inchangée.
+
+Ce que tu dois améliorer fortement :
+
+* Remplacer l'accroche si elle est trop plate.
+* Rendre le paragraphe factuel plus nerveux, plus clair et plus éditorial.
+* Faire ressortir ce que l'actualité révèle comme tension collective.
+* Transformer les deux paragraphes de débat en deux positions réellement opposées, mais toutes les deux défendables.
+* Éviter les formulations scolaires, mécaniques ou répétitives.
+* Éviter les transitions trop visibles comme "à l'inverse" si une formulation plus élégante est possible.
+* Améliorer la question finale pour qu'elle soit plus directe, plus débattable et plus mémorable.
+* Garder un ton sobre, journalistique et crédible.
+
+Contraintes absolues :
+
+* Ne pas inventer de faits.
+* Ne pas ajouter de chiffres.
+* Ne pas modifier les chiffres, dates ou noms propres.
+* Ne pas changer le sens général.
+* Ne pas transformer le texte en opinion personnelle.
+* Ne pas rendre le texte dramatique, pompeux ou artificiel.
+* Ne pas faire de style antique : seule la formule latine apporte la touche symbolique.
+* Conserver les lignes vides entre les blocs.
+* Conserver la signature exactement.
+
+Contraintes de longueur :
+
+* Texte final entre 800 et 1400 caractères espaces compris.
+* Maximum absolu : 1600 caractères.
+* Question finale : maximum 98 caractères espaces compris.
+* Paragraphes courts, lisibles sur mobile.
+
+Sortie attendue :
+Réponds uniquement avec le texte final amélioré, sans commentaire, sans liste, sans guillemets.
+
+Texte à améliorer :
+${articleText}`;
+
+  try {
+    const response = await openai.responses.create({
+      model: "gpt-4o",
+      input: prompt,
+      temperature: 0.3,
+      max_output_tokens: 2000
+    });
+    const polished = String(response.output_text || "").trim();
+    return polished || articleText;
+  } catch (error) {
+    console.error("Erreur polissage gpt-4o :", error.message);
+    return articleText;
+  }
+}
+
 async function expandShortAgonArticle(payload, currentJson) {
   if (!openai) return currentJson.article;
   const subject = String(payload?.subject || "").trim();
@@ -3171,6 +3247,17 @@ app.post("/generate-styled-article", requireMixteAuth, async (req, res) => {
   }
 });
 
+app.post("/generate-polished-article", requireMixteAuth, async (req, res) => {
+  try {
+    const article = String(req.body?.article || "").trim();
+    if (!article) return res.status(400).json({ ok: false, error: "Article manquant" });
+    const polished = await polishArticleGpt4o(article);
+    res.json({ ok: true, article: polished });
+  } catch (err) {
+    res.status(500).json({ ok: false, error: err.message || "Erreur polissage article" });
+  }
+});
+
 app.get("/sessions-mixte.json", requireMixteAuth, (req, res) => {
   const filePath = path.join(__dirname, "sessions-mixte.json");
 
@@ -3238,7 +3325,7 @@ app.get("/saved", requireMixteAuth, (req, res) => {
 
   function buildKeywordsHtml(s) {
     const rawKeywords = Array.isArray(s.keywords) ? s.keywords.filter(Boolean) : [];
-    const mainKeyword = String(s.mainKeyword || rawKeywords[0] || "").trim();
+    const mainKeyword = String(s.mainKeyword || s.ai?.mainKeyword || rawKeywords[0] || "").trim();
     const keywords = rawKeywords.filter(keyword => keyword && keyword !== mainKeyword);
     return `<div class="news-keywords"><div class="news-keywords-label">Mots-clés relevés</div>${mainKeyword ? `<span class="news-keyword-chip main-keyword-chip">${esc(mainKeyword)}</span>` : ""}${keywords.map((keyword) => `<span class="news-keyword-chip">${esc(keyword)}</span>`).join("")}</div>`;
   }
@@ -3296,6 +3383,7 @@ app.get("/saved", requireMixteAuth, (req, res) => {
         <p class="sources">${esc(s.sources)}</p>
         ${contentsHtml}
       </details>
+      ${s.storySelection?.matchedStoryTitle ? `<div class="story-badge">📖 Histoire : ${esc(s.storySelection.matchedStoryTitle)}</div>` : ""}
       <small class="date">Enregistré le ${new Date(s.savedAt).toLocaleString("fr-FR")}</small>
       <button class="unsave-btn" type="button" data-subject-title="${esc(s.subject)}">★ Supprimer</button>
     </section>`;
