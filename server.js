@@ -144,7 +144,7 @@ function upsertSentToAgonItem(payload) {
   const subject = String(payload?.subject || "").trim();
   const question = String(payload?.question || "").trim();
   if (!subject && !question) {
-    throw new Error("Sujet ou question manquants pour l’historique Agôn.");
+    throw new Error("Sujet ou question manquants pour l'historique Agôn.");
   }
 
   const items = loadSentToAgonItems();
@@ -204,29 +204,7 @@ const AGON_ARTICLE_MIN_LENGTH = 800;
 const AGON_ARTICLE_MAX_LENGTH = 1600;
 
 function limitDebateQuestion(text) {
-  const raw = String(text || "").replace(/\s+/g, " ").trim();
-  if (!raw) return "";
-  const maxLength = 80;
-  const danglingWords = /(?:\s+(?:le|la|les|l|un|une|des|du|de|d|à|au|aux|et|ou|pour|par|avec|sans|malgré|face|contre|sur))$/i;
-
-  function finalizeQuestion(value) {
-    let stem = String(value || "")
-      .replace(/[?？]+$/g, "")
-      .replace(/\s+/g, " ")
-      .trim()
-      .replace(/[,:;.!?…-]+$/g, "")
-      .trim();
-    stem = stem.replace(danglingWords, "").trim();
-    if (!stem) return "";
-    return `${stem} ?`;
-  }
-
-  const base = finalizeQuestion(raw);
-  if (base.length <= maxLength) return base;
-
-  const withoutQuestionMark = raw.replace(/[?？]+$/g, "").trim();
-  const compactAlternative = finalizeQuestion(withoutQuestionMark.replace(/\s+(?:pour|afin de)\s+.+?\s+ou\s+/i, " ou "));
-  return compactAlternative.length <= maxLength ? compactAlternative : base;
+  return String(text || "").trim();
 }
 
 const AGON_ARTICLE_SIGNATURE_LIST = [
@@ -299,7 +277,7 @@ function normalizeArticleLineForCompare(value) {
     .toLowerCase()
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
-    .replace(/[?？!.,;:«»"“”'’`´()[\]{}\-]/g, " ")
+    .replace(/[?？!.,;:«»"""''`´()[\]{}\-]/g, " ")
     .replace(/\s+/g, " ")
     .trim();
 }
@@ -576,7 +554,7 @@ Reponds uniquement en texte brut, sans puces, sous cette structure exacte :
 ${String(payload?.ai?.arenaMode || "").trim() === "positions" ? "[puis, sur sa propre ligne, le titre genere par IA exactement, mot pour mot]" : ""}
 
 Consignes de redaction :
-- N'ecris jamais "L’histoire jusqu’ici", "Épisode précédent", "Nouvel épisode" ni aucune autre etiquette equivalente.
+- N'ecris jamais "L'histoire jusqu'ici", "Épisode précédent", "Nouvel épisode" ni aucune autre etiquette equivalente.
 - N'utilise jamais dans les paragraphes des formulations meta comme "aucune continuite narrative", "aucun episode rattache", "pas d'episode precedent confirme" ou tout autre commentaire de systeme.
 - N'introduis aucun rappel d'histoire precedente.
 - Tu dois d'abord comparer les sources entre elles, repérer ce qu'elles confirment en commun, puis faire ressortir la contradiction, la nuance ou la tension principale.
@@ -605,7 +583,7 @@ Contraintes :
 - si une information manque, rester vague plutot que completer ;
 - fais sentir le sujet et son enjeu, mais sans gonfler artificiellement le ton ;
 - la phrase finale doit etre plus memorisable que generique ;
-- n'ecris jamais les mots "Ouverture", "Épisode précédent", "Nouvel épisode" ou "L’histoire jusqu’ici" dans le texte final.
+- n'ecris jamais les mots "Ouverture", "Épisode précédent", "Nouvel épisode" ou "L'histoire jusqu'ici" dans le texte final.
 - si le mode est "arene a positions", la penultieme ligne ne doit jamais etre une vraie question ;
 - si le mode est "arene a positions", termine toujours par le titre-question, exactement ;
 `;
@@ -686,7 +664,7 @@ function sanitizeNarrativeText(text, options = {}) {
   const allowHistoryLine = Boolean(options.allowHistoryLine);
   const injectedHistoryLine = String(options.historyLine || "").trim();
   const normalizedInjectedHistory = injectedHistoryLine
-    ? `L’histoire jusqu’ici : ${injectedHistoryLine}`
+    ? `L'histoire jusqu'ici : ${injectedHistoryLine}`
     : "";
   const payload = options.payload || null;
 
@@ -704,18 +682,18 @@ function sanitizeNarrativeText(text, options = {}) {
 
     if (
       lower.startsWith("jusqu'ici, aucun") ||
-      lower.startsWith("jusqu’ici, aucun") ||
+      lower.startsWith("jusqu'ici, aucun") ||
       lower.startsWith("aucune histoire associee") ||
       lower.startsWith("aucune histoire associée") ||
       lower.startsWith("aucun article precedent") ||
       lower.startsWith("aucun article précédent") ||
       lower.startsWith("pas d'episode precedent") ||
-      lower.startsWith("pas d’épisode précédent")
+      lower.startsWith("pas d'épisode précédent")
     ) {
       return;
     }
 
-    if (lower.startsWith("l’histoire jusqu’ici :") || lower.startsWith("l'histoire jusqu'ici :")) {
+    if (lower.startsWith("l'histoire jusqu'ici :") || lower.startsWith("l'histoire jusqu'ici :")) {
       if (!allowHistoryLine || historyLineAlreadyKept) {
         return;
       }
@@ -730,7 +708,7 @@ function sanitizeNarrativeText(text, options = {}) {
   if (allowHistoryLine && normalizedInjectedHistory) {
     const existingIndex = cleanedLines.findIndex((line) => {
       const lower = line.toLowerCase();
-      return lower.startsWith("l’histoire jusqu’ici :") || lower.startsWith("l'histoire jusqu'ici :");
+      return lower.startsWith("l'histoire jusqu'ici :") || lower.startsWith("l'histoire jusqu'ici :");
     });
     if (existingIndex === -1) {
       cleanedLines.unshift(normalizedInjectedHistory);
@@ -767,7 +745,7 @@ function buildFullArticleFallback(payload, story) {
   const opening = buildFallbackClosingLine(payload, story ? { story_decision: "existing_story" } : null);
 
   if (historyLine) {
-    parts.push(`L’histoire jusqu’ici : ${historyLine}`);
+    parts.push(`L'histoire jusqu'ici : ${historyLine}`);
   }
   if (previousEpisode) {
     parts.push(limitStoryText(previousEpisode, 320));
@@ -788,7 +766,7 @@ function buildFullArticleFallback(payload, story) {
 async function generateCompleteNarrativeContext(payload, storySelection) {
   function cleanSummarySourceTitle(title) {
     return String(title || "")
-      .replace(/\s*[•|-]\s*[A-Z0-9À-Ÿ'’ ]{2,}$/g, "")
+      .replace(/\s*[•|-]\s*[A-Z0-9À-Ÿ'' ]{2,}$/g, "")
       .replace(/\s+/g, " ")
       .trim();
   }
@@ -829,7 +807,7 @@ async function generateCompleteNarrativeContext(payload, storySelection) {
 
 Ta mission : produire un résumé factuel clair à partir des sources fournies.
 
-Agôn ne veut pas republier une revue de presse. Cette étape sert uniquement à comprendre ce qui s’est passé, de façon neutre et fiable.
+Agôn ne veut pas republier une revue de presse. Cette étape sert uniquement à comprendre ce qui s'est passé, de façon neutre et fiable.
 
 Objectif :
 - établir les faits principaux ;
@@ -845,15 +823,15 @@ Règles absolues :
 - Ne pas analyser les différences de traitement médiatique.
 - Ne pas écrire comme une dépêche froide.
 - Ne pas copier les formulations des sources.
-- Ne pas mentionner “les médias” en général si les sources ne permettent pas de le dire.
-- Si une information est absente, incertaine ou contradictoire, ne pas l’ajouter.
+- Ne pas mentionner "les médias" en général si les sources ne permettent pas de le dire.
+- Si une information est absente, incertaine ou contradictoire, ne pas l'ajouter.
 
 Utilise au maximum 5 sources.
 
 Priorité :
 1. Privilégie les sources généralistes fiables pour établir les faits.
 2. Si possible, sélectionne des sources qui se recoupent sur les informations principales.
-3. Évite les sources trop éditorialisées pour cette étape : elles pourront être utilisées dans l’analyse médiatique.
+3. Évite les sources trop éditorialisées pour cette étape : elles pourront être utilisées dans l'analyse médiatique.
 4. Ne sélectionne pas les vidéos YouTube pour cette étape.
 
 Important :
@@ -869,7 +847,7 @@ Texte brut uniquement, sans titre, sans signature, sans liste.
 Structure du texte :
 1. Une première phrase qui résume clairement le sujet.
 2. Quelques phrases qui expliquent les faits principaux.
-3. Une phrase finale qui indique l’enjeu immédiat ou la décision qui se pose.
+3. Une phrase finale qui indique l'enjeu immédiat ou la décision qui se pose.
 
 Longueur :
 1000 à 1500 caractères.
@@ -879,7 +857,7 @@ ${payload.subject || ""}
 
 Sources sélectionnées :
 ${JSON.stringify({
-  contents: selectedContents.slice(0, 3).map((item) => ({
+  contents: selectedContents.slice(0, 5).map((item) => ({
     title: item.title,
     type: item.type,
     date: item.date,
@@ -905,23 +883,31 @@ Réponds uniquement en texte brut.`;
 }
 
 async function generateMediaAnalysis(payload) {
-  const summary = String(payload?.summary || “”).trim();
-  const subject = String(payload?.subject || “”).trim();
+  const summary = String(payload?.summary || "").trim();
+  const subject = String(payload?.subject || "").trim();
+  const sourceTitles = Array.isArray(payload?.contents)
+    ? payload.contents.map(c => String(c?.title || "").trim()).filter(Boolean).slice(0, 8)
+    : [];
 
   if (!summary) {
-    throw new Error(“Résumé manquant pour l’analyse médiatique.”);
+    throw new Error("Résumé manquant pour l'analyse médiatique.");
   }
 
   if (!openai) {
-    return { hasMediaContrast: false, mediaTreatment: “” };
+    return { hasMediaContrast: false, mediaTreatment: "" };
   }
+
+  const sourcesTitlesSection = sourceTitles.length
+    ? `\nTitres des sources disponibles :\n${sourceTitles.map(t => `- "${t}"`).join("\n")}`
+    : "";
 
   const prompt = `Tu es un stratège éditorial pour Agôn.
 
-Tu reçois un résumé factuel d’une actualité.
+Tu reçois un résumé factuel d'une actualité, ainsi que les titres des sources qui ont traité le sujet.
+Les titres peuvent révéler des angles éditoriaux, des tensions ou des cadrages différents — utilise-les pour identifier l'angle de débat le plus clivant.
 
 Ta mission en deux temps :
-1. Identifier l’angle de débat le plus clivant et pertinent que cette actualité révèle.
+1. Identifier l'angle de débat le plus clivant et pertinent que cette actualité révèle.
 2. En déduire la question Agôn et les deux positions opposées.
 
 Un bon angle de débat Agôn :
@@ -934,12 +920,12 @@ Règle centrale :
 évite les questions trop évidentes.
 
 Exemples de questions faibles :
-- “Faut-il éviter les accidents ?”
-- “Faut-il protéger les enfants ?”
-- “Faut-il renforcer la sécurité ?”
-- “Faut-il empêcher la guerre ?”
+- "Faut-il éviter les accidents ?"
+- "Faut-il protéger les enfants ?"
+- "Faut-il renforcer la sécurité ?"
+- "Faut-il empêcher la guerre ?"
 
-Ces questions sont mauvaises parce qu’un camp paraît évident.
+Ces questions sont mauvaises parce qu'un camp paraît évident.
 
 Si la question naturelle est trop évidente, cherche le vrai débat derrière :
 - sécurité maximale vs coût / faisabilité ;
@@ -951,21 +937,21 @@ Si la question naturelle est trop évidente, cherche le vrai débat derrière :
 - urgence vs prudence ;
 - intérêt national vs coopération internationale.
 
-Tu ne dois pas rédiger l’article final.
+Tu ne dois pas rédiger l'article final.
 Tu ne dois pas ajouter de faits absents du résumé.
 
 Champs attendus :
 
 mainIssue :
-l’enjeu principal que cette actualité révèle, en une phrase courte et concrète.
+l'enjeu principal que cette actualité révèle, en une phrase courte et concrète.
 Ce doit être une tension, pas une étiquette abstraite.
-Mauvais exemple : “la diplomatie face au rapport de force militaire”.
-Bon exemple : “répondre par la force peut rassurer à court terme, mais ouvrir une escalade que personne ne contrôle vraiment”.
+Mauvais exemple : "la diplomatie face au rapport de force militaire".
+Bon exemple : "répondre par la force peut rassurer à court terme, mais ouvrir une escalade que personne ne contrôle vraiment".
 
 narrativeTension :
 une phrase qui résume pourquoi le sujet est difficile à trancher.
 Elle doit opposer deux risques réels, pas deux idées abstraites.
-Exemple : “Ne pas réagir peut laisser l’adversaire tester la limite ; frapper trop fort peut rallumer un conflit plus large.”
+Exemple : "Ne pas réagir peut laisser l'adversaire tester la limite ; frapper trop fort peut rallumer un conflit plus large."
 
 possibleBiases :
 2 à 4 angles de lecture clivants possibles sur ce sujet.
@@ -985,25 +971,25 @@ Ne pas poser une question.
 
 debateQuestion :
 une seule question claire, directe et débattable.
-Maximum 80 caractères, espaces et tirets compris.
-Elle doit être compréhensible sans lire l’article.
-Elle doit être ancrée dans le sujet précis de l’actualité.
+LIMITE ABSOLUE : 80 caractères maximum, espaces, tirets et point d'interrogation compris. Ne dépasse jamais cette limite. Si ta question dépasse 80 caractères, raccourcis-la avant de répondre.
+Elle doit être compréhensible sans lire l'article.
+Elle doit être ancrée dans le sujet précis de l'actualité.
 Elle doit permettre deux positions défendables.
 Elle ne doit pas être trop générale.
 Elle ne doit pas être une évidence morale.
-Préférer une formulation concrète : “Faut-il…”, “Doit-on…”, “La France doit-elle…”, “Peut-on…”, “Les États doivent-ils…”.
+Préférer une formulation concrète : "Faut-il…", "Doit-on…", "La France doit-elle…", "Peut-on…", "Les États doivent-ils…".
 
 positionA :
 un camp général, court et neutre.
 Maximum 55 caractères.
-Ne doit contenir aucun argument, aucune justification, aucun “pour”, aucun “car”.
-La position doit seulement nommer l’orientation générale du camp.
+Ne doit contenir aucun argument, aucune justification, aucun "pour", aucun "car".
+La position doit seulement nommer l'orientation générale du camp.
 
 positionB :
 le camp opposé, général, court et neutre.
 Maximum 55 caractères.
-Ne doit contenir aucun argument, aucune justification, aucun “pour”, aucun “car”.
-La position doit seulement nommer l’orientation générale du camp.
+Ne doit contenir aucun argument, aucune justification, aucun "pour", aucun "car".
+La position doit seulement nommer l'orientation générale du camp.
 
 Exemples corrects de positions :
 - Suspendre les frappes
@@ -1013,31 +999,31 @@ Exemples corrects de positions :
 
 Exemples interdits de positions :
 - Suspendre les frappes pour préserver la paix
-- Renforcer la sécurité afin d’éviter un nouveau drame
+- Renforcer la sécurité afin d'éviter un nouveau drame
 
 editorialDecision :
 choisir exactement une valeur :
-- “arena” si la question permet un vrai débat public.
-- “understand” si le sujet est important mais pas vraiment clivant.
-- “reformulate” si le sujet est intéressant mais la question reste trop évidente ou fragile.
-- “avoid” si le sujet est trop tragique, trop sensible, trop incertain ou trop risqué à transformer en débat.
+- "arena" si la question permet un vrai débat public.
+- "understand" si le sujet est important mais pas vraiment clivant.
+- "reformulate" si le sujet est intéressant mais la question reste trop évidente ou fragile.
+- "avoid" si le sujet est trop tragique, trop sensible, trop incertain ou trop risqué à transformer en débat.
 
 questionQuality :
 note de 1 à 10 sur la qualité de la question pour Agôn.
 
 JSON attendu uniquement :
 {
-  “mainIssue”: “...”,
-  “narrativeTension”: “...”,
-  “possibleBiases”: [“...”, “...”],
-  “debatePotential”: “fort/moyen/faible”,
-  “editorialWarning”: “...”,
-  “debateAngle”: “...”,
-  “debateQuestion”: “...”,
-  “positionA”: “...”,
-  “positionB”: “...”,
-  “editorialDecision”: “arena/understand/reformulate/avoid”,
-  “questionQuality”: 0
+  "mainIssue": "...",
+  "narrativeTension": "...",
+  "possibleBiases": ["...", "..."],
+  "debatePotential": "fort/moyen/faible",
+  "editorialWarning": "...",
+  "debateAngle": "...",
+  "debateQuestion": "...",
+  "positionA": "...",
+  "positionB": "...",
+  "editorialDecision": "arena/understand/reformulate/avoid",
+  "questionQuality": 0
 }
 
 Sujet :
@@ -1045,11 +1031,12 @@ ${subject}
 
 Résumé factuel :
 ${summary}
+${sourcesTitlesSection}
 
 Réponds uniquement en JSON valide, sans balises markdown.`;
 
   const response = await openai.responses.create({
-    model: “gpt-4o”,
+    model: "gpt-4o-mini",
     input: prompt,
     temperature: 0.5,
     max_output_tokens: 900
@@ -1057,33 +1044,92 @@ Réponds uniquement en JSON valide, sans balises markdown.`;
 
   let parsed = {};
   try {
-    parsed = safeJsonParse(response.output_text || “”);
+    parsed = safeJsonParse(response.output_text || "");
   } catch (error) {
     parsed = {};
   }
 
-  const allowedEditorialDecisions = new Set([“arena”, “understand”, “reformulate”, “avoid”]);
+  const allowedEditorialDecisions = new Set(["arena", "understand", "reformulate", "avoid"]);
   const possibleBiases = Array.isArray(parsed.possibleBiases)
-    ? parsed.possibleBiases.map((item) => String(item || “”).trim()).filter(Boolean).slice(0, 4)
+    ? parsed.possibleBiases.map((item) => String(item || "").trim()).filter(Boolean).slice(0, 4)
     : [];
+
+  const debateQuestion = limitDebateQuestion(String(parsed.debateQuestion || "").trim());
+  let positionA = String(parsed.positionA || "").trim().slice(0, 55);
+  let positionB = String(parsed.positionB || "").trim().slice(0, 55);
+
+  const aligned = await alignPositionsByPolitics({ debateQuestion, positionA, positionB });
+  positionA = aligned.positionA;
+  positionB = aligned.positionB;
 
   return {
     hasMediaContrast: false,
-    mediaTreatment: “”,
-    mainIssue: String(parsed.mainIssue || “”).trim(),
-    narrativeTension: String(parsed.narrativeTension || “”).trim(),
+    mediaTreatment: "",
+    mainIssue: String(parsed.mainIssue || "").trim(),
+    narrativeTension: String(parsed.narrativeTension || "").trim(),
     possibleBiases,
-    debatePotential: String(parsed.debatePotential || “”).trim(),
-    editorialWarning: String(parsed.editorialWarning || “”).trim(),
-    debateAngle: String(parsed.debateAngle || “”).trim().slice(0, 180),
-    debateQuestion: limitDebateQuestion(String(parsed.debateQuestion || “”).trim()),
-    positionA: String(parsed.positionA || “”).trim().slice(0, 55),
-    positionB: String(parsed.positionB || “”).trim().slice(0, 55),
-    editorialDecision: allowedEditorialDecisions.has(String(parsed.editorialDecision || “”).trim())
-      ? String(parsed.editorialDecision || “”).trim()
-      : “avoid”,
+    debatePotential: String(parsed.debatePotential || "").trim(),
+    editorialWarning: String(parsed.editorialWarning || "").trim(),
+    debateAngle: String(parsed.debateAngle || "").trim().slice(0, 180),
+    debateQuestion,
+    positionA,
+    positionB,
+    politicalOrientation: aligned.politicalOrientation || { isPolitical: false, positionA: null, positionB: null },
+    editorialDecision: allowedEditorialDecisions.has(String(parsed.editorialDecision || "").trim())
+      ? String(parsed.editorialDecision || "").trim()
+      : "avoid",
     questionQuality: Number(parsed.questionQuality) || 0
   };
+}
+
+async function alignPositionsByPolitics({ debateQuestion, positionA, positionB }) {
+  if (!openai || !debateQuestion || !positionA || !positionB) {
+    return { positionA, positionB };
+  }
+
+  const prompt = `Tu analyses une question de débat et ses deux positions.
+
+Question : "${debateQuestion}"
+Position A : "${positionA}"
+Position B : "${positionB}"
+
+Ta mission :
+Déterminer si cette question révèle un clivage politique gauche/droite clair et reconnaissable.
+
+Un clivage gauche/droite est clair quand une des positions correspond typiquement à des valeurs de gauche (solidarité, régulation, services publics, égalité, collectif) et l'autre à des valeurs de droite (liberté individuelle, marché, sécurité, mérite, souveraineté nationale).
+
+Si le débat est technique, éthique, stratégique, ou si les deux camps ne se distinguent pas clairement selon cet axe : réponds false.
+
+JSON attendu uniquement :
+{
+  "hasPoliticalOrientation": true/false,
+  "leftPosition": "...",
+  "rightPosition": "..."
+}
+
+Si hasPoliticalOrientation est false, leftPosition et rightPosition sont des chaînes vides.
+
+Réponds uniquement en JSON valide, sans balises markdown.`;
+
+  try {
+    const response = await openai.responses.create({
+      model: "gpt-4.1-mini",
+      input: prompt,
+      temperature: 0.2,
+      max_output_tokens: 200
+    });
+    const parsed = safeJsonParse(response.output_text || "");
+    if (parsed.hasPoliticalOrientation && parsed.leftPosition && parsed.rightPosition) {
+      return {
+        positionA: String(parsed.leftPosition).trim().slice(0, 55),
+        positionB: String(parsed.rightPosition).trim().slice(0, 55),
+        politicalOrientation: { isPolitical: true, positionA: "left", positionB: "right" }
+      };
+    }
+  } catch (e) {
+    // fall through
+  }
+  return { positionA, positionB, politicalOrientation: { isPolitical: false, positionA: null, positionB: null } };
 }
 
 async function generateProblematique(payload) {
@@ -1125,28 +1171,28 @@ async function generateProblematique(payload) {
 
 Tu reçois :
 1. un résumé factuel neutre ;
-2. une analyse des angles médiatiques et de l’enjeu du sujet.
+2. une analyse des angles médiatiques et de l'enjeu du sujet.
 
 Ta mission :
-transformer l’actualité en question Agôn claire, concrète et débattable.
+transformer l'actualité en question Agôn claire, concrète et débattable.
 
-Tu ne dois pas rédiger l’article final.
+Tu ne dois pas rédiger l'article final.
 Tu ne dois pas refaire le résumé.
 Tu ne dois pas ajouter de faits nouveaux.
 
-Agôn ne cherche pas une question artificielle. Agôn cherche le vrai choix collectif, le vrai désaccord ou le vrai enjeu que l’actualité révèle.
+Agôn ne cherche pas une question artificielle. Agôn cherche le vrai choix collectif, le vrai désaccord ou le vrai enjeu que l'actualité révèle.
 
 Règle centrale :
 évite les questions trop évidentes.
 
 Exemples de questions faibles :
-- “Faut-il éviter les accidents ?”
-- “Faut-il protéger les enfants ?”
-- “Faut-il renforcer la sécurité ?”
-- “Faut-il empêcher la guerre ?”
-- “Faut-il s’inquiéter ?”
+- "Faut-il éviter les accidents ?"
+- "Faut-il protéger les enfants ?"
+- "Faut-il renforcer la sécurité ?"
+- "Faut-il empêcher la guerre ?"
+- "Faut-il s'inquiéter ?"
 
-Ces questions sont mauvaises parce qu’un camp paraît évident.
+Ces questions sont mauvaises parce qu'un camp paraît évident.
 
 Si la question naturelle est trop évidente, cherche le vrai débat derrière :
 - sécurité maximale vs coût / faisabilité ;
@@ -1169,13 +1215,13 @@ narrativeTension :
 une phrase concrète qui résume pourquoi le sujet devient difficile à trancher.
 Elle doit opposer deux risques réels et aider ensuite à écrire un article plus vivant.
 Ne pas poser une question.
-Exemple : “Soutenir la riposte peut affirmer une ligne ferme ; encourager la retenue peut éviter une escalade que personne ne maîtrisera.”
+Exemple : "Soutenir la riposte peut affirmer une ligne ferme ; encourager la retenue peut éviter une escalade que personne ne maîtrisera."
 
 debateQuestion :
 une seule question claire, directe et débattable.
-Maximum 80 caractères, espaces et tirets compris.
-Elle doit être compréhensible sans lire l’article.
-Elle doit être ancrée dans le sujet précis de l’actualité.
+LIMITE ABSOLUE : 80 caractères maximum, espaces, tirets et point d'interrogation compris. Ne dépasse jamais cette limite. Si ta question dépasse 80 caractères, raccourcis-la avant de répondre.
+Elle doit être compréhensible sans lire l'article.
+Elle doit être ancrée dans le sujet précis de l'actualité.
 Elle doit permettre deux positions défendables.
 Elle ne doit pas être trop générale.
 Elle ne doit pas être une évidence morale.
@@ -1186,9 +1232,9 @@ un camp général, court et neutre.
 
 Maximum 55 caractères.
 
-Ne doit contenir aucun argument, aucune justification, aucun “pour”, aucun “car”.
+Ne doit contenir aucun argument, aucune justification, aucun "pour", aucun "car".
 
-La position doit seulement nommer l’orientation générale du camp.
+La position doit seulement nommer l'orientation générale du camp.
 
 positionB :
 
@@ -1196,9 +1242,9 @@ le camp opposé, général, court et neutre.
 
 Maximum 55 caractères.
 
-Ne doit contenir aucun argument, aucune justification, aucun “pour”, aucun “car”.
+Ne doit contenir aucun argument, aucune justification, aucun "pour", aucun "car".
 
-La position doit seulement nommer l’orientation générale du camp.
+La position doit seulement nommer l'orientation générale du camp.
 
 Les positions ne doivent pas être des arguments.
 Elles doivent être des étiquettes de camp, très générales.
@@ -1209,14 +1255,14 @@ Exemples corrects :
 - Renforcer la sécurité
 - Limiter les nouvelles contraintes
 - Assouplir la notation
-- Maintenir l’exigence
+- Maintenir l'exigence
 - Évacuer par prudence
 - Maintenir la présence diplomatique
 
 Exemples interdits :
 - Suspendre les frappes pour préserver la paix
-- Maintenir la pression car l’Iran menace la région
-- Renforcer la sécurité afin d’éviter un nouveau drame
+- Maintenir la pression car l'Iran menace la région
+- Renforcer la sécurité afin d'éviter un nouveau drame
 - Assouplir la notation pour aider les élèves en difficulté
 
 editorialDecision :
@@ -1242,9 +1288,9 @@ Règles :
 - Les deux camps doivent sembler défendables.
 - Aucun camp ne doit être ridicule.
 - Ne transforme pas une tragédie récente en duel émotionnel.
-- Si le sujet est tragique, privilégie une question d’action publique ou classe en “understand”.
-- La question doit révéler l’enjeu derrière l’actualité, pas seulement réagir au fait brut.
-- Préférer une formulation concrète : “Faut-il…”, “Doit-on…”, “La France doit-elle…”, “Peut-on…”, “Les États doivent-ils…”.
+- Si le sujet est tragique, privilégie une question d'action publique ou classe en "understand".
+- La question doit révéler l'enjeu derrière l'actualité, pas seulement réagir au fait brut.
+- Préférer une formulation concrète : "Faut-il…", "Doit-on…", "La France doit-elle…", "Peut-on…", "Les États doivent-ils…".
 
 JSON attendu uniquement :
 {
@@ -1590,32 +1636,32 @@ Tu reçois :
 4. deux positions opposées.
 
 Ta mission :
-rédiger l’article final visible dans Agôn.
+rédiger l'article final visible dans Agôn.
 
 Agôn ne publie pas une revue de presse classique.
-Agôn questionne l’actualité pour faire ressortir les enjeux et les désaccords possibles.
+Agôn questionne l'actualité pour faire ressortir les enjeux et les désaccords possibles.
 
 Le texte final doit rester naturel :
-ne pas afficher de rubriques comme “Pourquoi ça fait parler”, “Tension d’opinion”, “Biais”, “Le nœud du débat” ou “Enjeu caché”.
+ne pas afficher de rubriques comme "Pourquoi ça fait parler", "Tension d'opinion", "Biais", "Le nœud du débat" ou "Enjeu caché".
 
 Utilisation des données reçues :
-- Premier paragraphe : s’appuie sur `resumeFactuel` pour restituer les faits.
-- Deuxième paragraphe : s’appuie sur `debateAngle` pour cadrer l’enjeu, et sur `narrativeTension` pour montrer pourquoi le choix est difficile. Ces deux champs sont la matière première du deuxième paragraphe — ne pas les ignorer.
-- Question finale : reprendre `debateQuestion` (peut être légèrement améliorée si nécessaire).
+- Premier paragraphe : s'appuie sur "resumeFactuel" pour restituer les faits.
+- Deuxième paragraphe : s'appuie sur "debateAngle" pour cadrer l'enjeu, et sur "narrativeTension" pour montrer pourquoi le choix est difficile. Ces deux champs sont la matière première du deuxième paragraphe — ne pas les ignorer.
+- Question finale : reprendre "debateQuestion" (peut être légèrement améliorée si nécessaire).
 
 Structure obligatoire du champ article :
 1. Une première phrase claire et mémorable.
 2. Ligne vide obligatoire juste après cette première phrase.
-3. Premier paragraphe : ce qui s’est passé.
+3. Premier paragraphe : ce qui s'est passé.
 4. Ligne vide obligatoire entre le premier paragraphe et le deuxième paragraphe.
-5. Deuxième paragraphe : l’enjeu et la tension entre les deux options.
+5. Deuxième paragraphe : l'enjeu et la tension entre les deux options.
 6. Une ligne vide.
 7. La question Agôn seule sur une ligne, juste avant la signature.
 8. Une ligne vide.
 9. La signature seule sur la toute dernière ligne.
 
 Signature obligatoire :
-- L’article doit toujours se terminer par une signature.
+- L'article doit toujours se terminer par une signature.
 - La signature doit être placée après la question finale.
 - Choisir un seul nom parmi cette liste :
   J.L Grasso / F. Glorennec / T. Guyomarch / M. Guillot / P. Ratsky
@@ -1630,7 +1676,7 @@ Signature obligatoire :
   M. Guillot
   ou
   P. Ratsky
-- Ne jamais inventer d’autre nom.
+- Ne jamais inventer d'autre nom.
 - Ne jamais expliquer le choix du nom.
 
 Règles absolues :
@@ -1645,51 +1691,51 @@ Règles absolues :
 
 - Ne pas écrire de titre dans le champ article.
 
-- Ajouter obligatoirement une signature en toute fin d’article, après la question.
+- Ajouter obligatoirement une signature en toute fin d'article, après la question.
 
-- Ne pas transformer l’article en revue de presse.
+- Ne pas transformer l'article en revue de presse.
 
-- Ne pas multiplier les formules “selon les sources” ou “les médias”.
+- Ne pas multiplier les formules "selon les sources" ou "les médias".
 
 - Si hasMediaContrast = false, ne pas évoquer le traitement médiatique.
 
-- Si hasMediaContrast = true, intégrer la différence de traitement uniquement si elle aide vraiment à comprendre l’enjeu.
+- Si hasMediaContrast = true, intégrer la différence de traitement uniquement si elle aide vraiment à comprendre l'enjeu.
 
-- Même si hasMediaContrast = true, ne pas créer un paragraphe scolaire sur “les médias”.
+- Même si hasMediaContrast = true, ne pas créer un paragraphe scolaire sur "les médias".
 
-- Ne pas afficher les positions dans l’article.
+- Ne pas afficher les positions dans l'article.
 
-- La question doit apparaître une seule fois dans l’article.
+- La question doit apparaître une seule fois dans l'article.
 
-- La question doit être l’avant-dernière ligne non vide du champ article.
+- La question doit être l'avant-dernière ligne non vide du champ article.
 
 - La signature doit être la toute dernière ligne du champ article.
 
-- La question doit être précédée d’une ligne vide.
+- La question doit être précédée d'une ligne vide.
 
-- La signature doit être précédée d’une ligne vide.
+- La signature doit être précédée d'une ligne vide.
 
 - Une ligne vide doit séparer la première phrase du premier paragraphe.
 
 - Une ligne vide doit séparer le premier paragraphe du deuxième paragraphe.
 
-- Aucune autre question ne doit apparaître dans l’article.
+- Aucune autre question ne doit apparaître dans l'article.
 
 - La phrase avant la question doit être affirmative et préparer naturellement la question.
 
 Règle de ton prioritaire :
-Le texte doit ressembler à un court éditorial d’actualité, pas à un résumé de veille.
-Chaque paragraphe doit contenir au moins une phrase qui avance vraiment : un verbe d’action, un risque, une opposition ou une conséquence possible.
-Évite les phrases qui pourraient fonctionner pour n’importe quel sujet.
+Le texte doit ressembler à un court éditorial d'actualité, pas à un résumé de veille.
+Chaque paragraphe doit contenir au moins une phrase qui avance vraiment : un verbe d'action, un risque, une opposition ou une conséquence possible.
+Évite les phrases qui pourraient fonctionner pour n'importe quel sujet.
 
 Interdit sauf nécessité factuelle forte :
-- “dans un contexte de tensions”
-- “chaque mouvement est scruté”
-- “la situation reste volatile”
-- “les détails restent flous”
-- “cette action s’inscrit dans”
-- “la tension monte”
-- “la stabilité fragile de la zone”
+- "dans un contexte de tensions"
+- "chaque mouvement est scruté"
+- "la situation reste volatile"
+- "les détails restent flous"
+- "cette action s'inscrit dans"
+- "la tension monte"
+- "la stabilité fragile de la zone"
 
 Style :
 - Clair.
@@ -1700,47 +1746,47 @@ Style :
 - Captivant sans être sensationnaliste.
 - Ton éditorial, mais neutre.
 - Phrases assez courtes.
-- Pas de formule plate comme “ce sujet fait débat” ou “cette affaire suscite des réactions”.
+- Pas de formule plate comme "ce sujet fait débat" ou "cette affaire suscite des réactions".
 - Aucun humour sur les drames, accidents, violences, décès, maladies ou situations de détresse.
 Évite les formulations scolaires ou trop analytiques comme :
-- “Cette situation révèle…”
-- “Ce sujet met en lumière…”
-- “Le choix collectif porte sur…”
-- “Cela questionne la capacité de…”
-- “Il s’agit d’équilibrer deux impératifs…”
-- “Cette actualité illustre…”
+- "Cette situation révèle…"
+- "Ce sujet met en lumière…"
+- "Le choix collectif porte sur…"
+- "Cela questionne la capacité de…"
+- "Il s'agit d'équilibrer deux impératifs…"
+- "Cette actualité illustre…"
 
 Préférer des formulations plus naturelles et éditoriales :
-- “Le message devient difficile à tenir…”
-- “Le problème, c’est que…”
-- “D’un côté…, de l’autre…”
-- “Pour les uns…, pour les autres…”
-- “Dans un équilibre aussi fragile…”
-- “Reste une question…”
+- "Le message devient difficile à tenir…"
+- "Le problème, c'est que…"
+- "D'un côté…, de l'autre…"
+- "Pour les uns…, pour les autres…"
+- "Dans un équilibre aussi fragile…"
+- "Reste une question…"
 
 Deuxième paragraphe :
 Ne décris pas le dilemme de façon scolaire.
 Ne commence jamais par :
-- “Le choix est…”
-- “Le dilemme est…”
-- “Cette tension oppose…”
-- “Deux logiques s’opposent…”
-- “La difficulté tient à…”
+- "Le choix est…"
+- "Le dilemme est…"
+- "Cette tension oppose…"
+- "Deux logiques s'opposent…"
+- "La difficulté tient à…"
 
 Le paragraphe doit faire sentir le conflit sans jamais alterner option/inconvénient/option/inconvénient.
 
 Méthode obligatoire :
 1. Énoncer les deux options face à face en une ou deux phrases courtes.
 2. Retour à la ligne obligatoire.
-3. Montrer ce qui rend le choix difficile : l’enjeu commun, le prix à payer quelle que soit l’option choisie.
+3. Montrer ce qui rend le choix difficile : l'enjeu commun, le prix à payer quelle que soit l'option choisie.
 4. Finir sur une phrase courte qui resserre la tension.
 
 Interdit absolument :
-- Ne jamais construire le paragraphe comme : “Option A → inconvénient A. À l’inverse, Option B → inconvénient B.”
-- Ce pattern est lourd et répétitif. Il donne l’impression d’un catalogue, pas d’un enjeu.
+- Ne jamais construire le paragraphe comme : "Option A → inconvénient A. À l'inverse, Option B → inconvénient B."
+- Ce pattern est lourd et répétitif. Il donne l'impression d'un catalogue, pas d'un enjeu.
 
 Exemple de ton :
-“Frapper ou ne pas frapper : les deux camps ont leurs arguments. [retour à la ligne] Le problème, c’est qu’aucune option ne répond à ce qu’Israël redoute vraiment — une menace qui se reconstitue de l’autre côté de la frontière, quoi qu’il arrive.”
+"Frapper ou ne pas frapper : les deux camps ont leurs arguments. [retour à la ligne] Le problème, c'est qu'aucune option ne répond à ce qu'Israël redoute vraiment — une menace qui se reconstitue de l'autre côté de la frontière, quoi qu'il arrive."
 
 Attention :
 - Ne pas utiliser exactement cet exemple.
@@ -1759,8 +1805,8 @@ Règles pour debateQuestion :
 - Maximum 80 caractères, espaces et tirets compris.
 - Question claire, concrète et débattable.
 - Ancrée dans le sujet précis.
-- Pas de question molle : “faut-il s’inquiéter ?”, “est-ce une bonne chose ?”, “qui a raison ?”.
-- Pas de question évidente : “faut-il éviter un drame ?”, “faut-il protéger les enfants ?”.
+- Pas de question molle : "faut-il s'inquiéter ?", "est-ce une bonne chose ?", "qui a raison ?".
+- Pas de question évidente : "faut-il éviter un drame ?", "faut-il protéger les enfants ?".
 - Si la question reçue est déjà bonne, conserve-la.
 
 Règles pour positionA et positionB :
@@ -1769,8 +1815,8 @@ Règles pour positionA et positionB :
 - Elles doivent être très générales, courtes et neutres.
 - Elles doivent répondre directement à la question.
 - Elles ne doivent contenir aucune justification.
-- Ne jamais utiliser “car”, “parce que”, “afin de”, “pour que”.
-- Éviter aussi “pour” si cela transforme la position en argument.
+- Ne jamais utiliser "car", "parce que", "afin de", "pour que".
+- Éviter aussi "pour" si cela transforme la position en argument.
 - Les deux positions doivent être symétriques et défendables.
 - Si les positions reçues contiennent des arguments, les raccourcir en simples étiquettes.
 
@@ -1780,14 +1826,14 @@ Exemples corrects :
 - Renforcer la sécurité
 - Limiter les nouvelles contraintes
 - Assouplir la notation
-- Maintenir l’exigence
+- Maintenir l'exigence
 - Évacuer par prudence
 - Maintenir la présence diplomatique
 
 Exemples interdits :
 - Suspendre les frappes pour préserver la paix
-- Maintenir la pression car l’Iran menace la région
-- Renforcer la sécurité afin d’éviter un nouveau drame
+- Maintenir la pression car l'Iran menace la région
+- Renforcer la sécurité afin d'éviter un nouveau drame
 - Assouplir la notation pour aider les élèves en difficulté
 
 JSON attendu uniquement :
@@ -1851,13 +1897,13 @@ async function polishAgonFinalArticle(payload, previousJson) {
     return { ...base, latinQuestion: "" };
   }
 
-  const promptEditorial = `Tu dois retravailler le texte final d’un article Agôn en conservant strictement les contraintes techniques et éditoriales ci-dessous.
+  const promptEditorial = `Tu dois retravailler le texte final d'un article Agôn en conservant strictement les contraintes techniques et éditoriales ci-dessous.
 
 Objectif :
-Améliorer la fluidité, la clarté et la force éditoriale du texte, surtout le deuxième paragraphe, qui doit faire apparaître l’enjeu, le contraste ou le choix collectif révélé par l’actualité.
+Améliorer la fluidité, la clarté et la force éditoriale du texte, surtout le deuxième paragraphe, qui doit faire apparaître l'enjeu, le contraste ou le choix collectif révélé par l'actualité.
 
 Le texte doit rester journalistique, sobre et crédible.
-Ne rends pas l’article pompeux, théâtral ou artificiellement solennel.
+Ne rends pas l'article pompeux, théâtral ou artificiellement solennel.
 
 Contraintes de longueur :
 - article : 800 à 1400 caractères.
@@ -1869,9 +1915,9 @@ Contraintes de longueur :
 Structure obligatoire du champ article :
 1. Une première phrase claire et mémorable.
 2. Ligne vide obligatoire juste après cette première phrase.
-3. Premier paragraphe court : ce qui s’est passé.
+3. Premier paragraphe court : ce qui s'est passé.
 4. Ligne vide obligatoire entre le premier paragraphe et le deuxième paragraphe.
-5. Deuxième paragraphe : l’enjeu, avec un retour à la ligne obligatoire entre la description de la première option et la description de la deuxième option.
+5. Deuxième paragraphe : l'enjeu, avec un retour à la ligne obligatoire entre la description de la première option et la description de la deuxième option.
 6. Ligne vide.
 7. Question Agôn définitive seule sur une ligne.
 8. Ligne vide.
@@ -1879,31 +1925,31 @@ Structure obligatoire du champ article :
 
 Important :
 - À cette étape, ne produis aucune question latine.
-- N’ajoute aucun champ latinQuestion.
+- N'ajoute aucun champ latinQuestion.
 - La question latine sera ajoutée dans une seconde étape.
 
 Règle de ton prioritaire :
-Le texte final doit ressembler à un court éditorial d’actualité, pas à un résumé de veille.
+Le texte final doit ressembler à un court éditorial d'actualité, pas à un résumé de veille.
 Avant de réécrire, supprime mentalement les phrases génériques.
 Une phrase est générique si elle pourrait être utilisée dans un article sur un autre conflit, une autre crise ou une autre polémique.
-Chaque paragraphe doit contenir au moins une phrase qui avance vraiment : un verbe d’action, un risque, une opposition ou une conséquence possible.
+Chaque paragraphe doit contenir au moins une phrase qui avance vraiment : un verbe d'action, un risque, une opposition ou une conséquence possible.
 
 Le texte final doit contenir :
 - une accroche courte et concrète ;
 - un premier paragraphe factuel, mais pas administratif ;
 - un deuxième paragraphe construit sur ce que chaque option risque de coûter ;
-- une dernière phrase affirmative qui prépare la question sans répéter “débat”, “enjeu” ou “choix collectif”.
+- une dernière phrase affirmative qui prépare la question sans répéter "débat", "enjeu" ou "choix collectif".
 
 Formulations interdites sauf nécessité factuelle forte :
-- “dans un contexte de tensions”
-- “chaque mouvement est scruté”
-- “la situation reste volatile”
-- “les détails restent flous”
-- “cette action s’inscrit dans”
-- “la tension monte”
-- “la stabilité fragile de la zone”
-- “les relations restent fragiles”
-- “la communauté internationale observe”
+- "dans un contexte de tensions"
+- "chaque mouvement est scruté"
+- "la situation reste volatile"
+- "les détails restent flous"
+- "cette action s'inscrit dans"
+- "la tension monte"
+- "la stabilité fragile de la zone"
+- "les relations restent fragiles"
+- "la communauté internationale observe"
 
 Style demandé :
 - Ton éditorial sobre, tendu et vivant.
@@ -1911,53 +1957,53 @@ Style demandé :
 - Captivant sans être sensationnaliste.
 - Ne pas écrire comme une dépêche froide.
 - Ne pas écrire comme une tribune personnelle.
-- Ne pas forcer les métaphores d’arène, de cité, de combat ou de destin.
-- Éviter les formules trop solennelles sauf si le sujet s’y prête vraiment.
+- Ne pas forcer les métaphores d'arène, de cité, de combat ou de destin.
+- Éviter les formules trop solennelles sauf si le sujet s'y prête vraiment.
 - La première phrase doit pouvoir fonctionner comme une accroche forte, sans être un titre séparé.
 
 Deuxième paragraphe :
 - Ne décris pas le dilemme de façon scolaire.
-- Ne commence jamais par “Le choix est…”, “Le dilemme est…”, “Cette tension oppose…”, “Deux logiques s’opposent…” ou “La difficulté tient à…”.
+- Ne commence jamais par "Le choix est…", "Le dilemme est…", "Cette tension oppose…", "Deux logiques s'opposent…" ou "La difficulté tient à…".
 - Énoncer les deux options face à face en une ou deux phrases courtes.
 - Retour à la ligne obligatoire.
-- Montrer ce qui rend le choix difficile : l’enjeu commun, le prix à payer quelle que soit l’option choisie.
+- Montrer ce qui rend le choix difficile : l'enjeu commun, le prix à payer quelle que soit l'option choisie.
 - Terminer par une phrase courte qui resserre la tension.
 - Utilise des verbes concrets : frapper, céder, reculer, tenir, bloquer, exposer, rassurer, provoquer, contenir, protéger, relancer.
 - Évite les mots abstraits répétés : enjeu, dilemme, tension, choix collectif, équilibre, stabilité.
 - Le paragraphe doit rester sobre, mais plus nerveux.
 
 Interdit absolument :
-- Ne jamais construire le paragraphe comme : “Option A → inconvénient A. À l’inverse, Option B → inconvénient B.”
-- Ce pattern alterne option/inconvénient/option/inconvénient. Il est lourd et donne l’impression d’un catalogue, pas d’un enjeu.
+- Ne jamais construire le paragraphe comme : "Option A → inconvénient A. À l'inverse, Option B → inconvénient B."
+- Ce pattern alterne option/inconvénient/option/inconvénient. Il est lourd et donne l'impression d'un catalogue, pas d'un enjeu.
 
 Exemple de ton à adapter sans recopier :
-“Frapper ou ne pas frapper : les deux camps ont leurs arguments. [retour à la ligne] Le problème, c’est qu’aucune option ne répond à ce qu’Israël redoute vraiment — une menace qui se reconstitue de l’autre côté de la frontière, quoi qu’il arrive.”
+"Frapper ou ne pas frapper : les deux camps ont leurs arguments. [retour à la ligne] Le problème, c'est qu'aucune option ne répond à ce qu'Israël redoute vraiment — une menace qui se reconstitue de l'autre côté de la frontière, quoi qu'il arrive."
 
 Éviter les formulations scolaires ou trop IA comme :
-- “Cette situation révèle…”
-- “Ce sujet met en lumière…”
-- “Le choix collectif porte sur…”
-- “Cela questionne la capacité de…”
-- “Il s’agit d’équilibrer deux impératifs…”
-- “Cette actualité illustre…”
-- “Deux visions s’opposent…”
-- “Ce débat cristallise…”
+- "Cette situation révèle…"
+- "Ce sujet met en lumière…"
+- "Le choix collectif porte sur…"
+- "Cela questionne la capacité de…"
+- "Il s'agit d'équilibrer deux impératifs…"
+- "Cette actualité illustre…"
+- "Deux visions s'opposent…"
+- "Ce débat cristallise…"
 
-Préférer des formulations naturelles, tendues et concrètes, en variant fortement les tournures d’un article à l’autre.
+Préférer des formulations naturelles, tendues et concrètes, en variant fortement les tournures d'un article à l'autre.
 
 Exemples de ton possible, à adapter sans recopier mécaniquement :
-- “Le problème, c’est que…”
-- “D’un côté…, de l’autre…”
-- “La difficulté tient moins au constat qu’au choix à faire…”
-- “Ce qui semblait évident devient plus délicat à appliquer.”
-- “Reste à savoir jusqu’où aller.”
-- “La question n’est plus seulement ce qu’il faut faire, mais à quel prix.”
-- “Le désaccord se déplace vers la méthode.”
-- “La frontière devient difficile à tracer.”
-- “Le sujet oblige à choisir entre deux prudences concurrentes.”
+- "Le problème, c'est que…"
+- "D'un côté…, de l'autre…"
+- "La difficulté tient moins au constat qu'au choix à faire…"
+- "Ce qui semblait évident devient plus délicat à appliquer."
+- "Reste à savoir jusqu'où aller."
+- "La question n'est plus seulement ce qu'il faut faire, mais à quel prix."
+- "Le désaccord se déplace vers la méthode."
+- "La frontière devient difficile à tracer."
+- "Le sujet oblige à choisir entre deux prudences concurrentes."
 
 Important :
-- Ne jamais répéter mécaniquement les mêmes formules d’un article à l’autre.
+- Ne jamais répéter mécaniquement les mêmes formules d'un article à l'autre.
 - Ces phrases sont des exemples de ton, pas des phrases à recopier systématiquement.
 - Adapter la formulation au sujet réel.
 - Si le sujet est léger ou très concret, rester simple.
@@ -1967,26 +2013,26 @@ Question Agôn :
 - Elle doit être claire, concrète et débattable.
 - Maximum 80 caractères strictement.
 - Si elle dépasse 80 caractères, la raccourcir avant de répondre.
-- Elle doit toujours se terminer par un point d’interrogation.
-- Elle doit apparaître seule à la fin de l’article, juste avant la signature.
-- Elle ne doit apparaître qu’une seule fois dans l’article.
-- Elle doit être compréhensible sans lire tout l’article.
+- Elle doit toujours se terminer par un point d'interrogation.
+- Elle doit apparaître seule à la fin de l'article, juste avant la signature.
+- Elle ne doit apparaître qu'une seule fois dans l'article.
+- Elle doit être compréhensible sans lire tout l'article.
 - Elle doit permettre deux positions défendables.
 - La question finale ne doit pas contenir une justification qui avantage un camp.
 - Éviter les formulations du type :
-  “Faut-il faire X pour protéger / contenir / défendre / empêcher… ?”
+  "Faut-il faire X pour protéger / contenir / défendre / empêcher… ?"
 - Préférer :
-  “Faut-il choisir X ou Y ?”
-  “La France doit-elle soutenir X ?”
-  “Faut-il autoriser X malgré Y ?”
+  "Faut-il choisir X ou Y ?"
+  "La France doit-elle soutenir X ?"
+  "Faut-il autoriser X malgré Y ?"
 - Éviter les questions molles comme :
-  “Faut-il s’inquiéter ?”
-  “Est-ce une bonne chose ?”
-  “Qui a raison ?”
+  "Faut-il s'inquiéter ?"
+  "Est-ce une bonne chose ?"
+  "Qui a raison ?"
 - Éviter les questions évidentes comme :
-  “Faut-il protéger les enfants ?”
-  “Faut-il éviter les accidents ?”
-  “Faut-il empêcher les drames ?”
+  "Faut-il protéger les enfants ?"
+  "Faut-il éviter les accidents ?"
+  "Faut-il empêcher les drames ?"
 
 Positions :
 - positionA et positionB doivent être très générales.
@@ -1994,22 +2040,22 @@ Positions :
 - Maximum 55 caractères chacune.
 - Elles doivent répondre directement à la question.
 - Elles doivent être symétriques, courtes et défendables.
-- Ne jamais utiliser “car”, “parce que”, “afin de”, “pour que”.
-- Éviter aussi “pour” si cela transforme la position en argument.
+- Ne jamais utiliser "car", "parce que", "afin de", "pour que".
+- Éviter aussi "pour" si cela transforme la position en argument.
 - Exemples corrects :
-  “Suspendre les frappes”
-  “Maintenir la pression militaire”
-  “Priorité à la protection”
-  “Priorité aux garanties”
-  “Renforcer le contrôle”
-  “Limiter les contraintes”
+  "Suspendre les frappes"
+  "Maintenir la pression militaire"
+  "Priorité à la protection"
+  "Priorité aux garanties"
+  "Renforcer le contrôle"
+  "Limiter les contraintes"
 
 Signature :
-- L’article doit toujours se terminer par une signature.
+- L'article doit toujours se terminer par une signature.
 - Choisir un seul nom parmi cette liste :
   J.L Grasso / F. Glorennec / T. Guyomarch / M. Guillot / P. Ratsky
 - La signature doit être seule sur la dernière ligne.
-- Ne jamais inventer d’autre nom.
+- Ne jamais inventer d'autre nom.
 - Ne jamais expliquer le choix du nom.
 - Ne pas mettre de tiret avant la signature.
 
@@ -2017,11 +2063,11 @@ Règles absolues :
 - Ne rien inventer.
 - Ne pas ajouter de fait absent du résumé factuel.
 - Ne pas dramatiser artificiellement.
-- Ne pas transformer l’article en tribune personnelle.
-- Ne pas afficher les positions dans l’article.
+- Ne pas transformer l'article en tribune personnelle.
+- Ne pas afficher les positions dans l'article.
 - Ne pas écrire de titre séparé dans le champ article.
-- Ne pas ajouter de rubrique du type “Pourquoi ça fait parler”, “Tension d’opinion”, “Biais” ou “Enjeu”.
-- Ne pas ajouter d’autre question que la question Agôn finale.
+- Ne pas ajouter de rubrique du type "Pourquoi ça fait parler", "Tension d'opinion", "Biais" ou "Enjeu".
+- Ne pas ajouter d'autre question que la question Agôn finale.
 - La phrase avant la question Agôn doit être affirmative.
 - Ne pas produire de latin à cette étape.
 
@@ -2069,12 +2115,12 @@ Réponds uniquement en JSON valide, sans balises markdown.`;
     const editorialJson = safeJsonParse(String(editorialResponse.output_text || "").trim());
     delete editorialJson.latinQuestion;
 
-    const promptFinalisation = `Tu dois vérifier, corriger et finaliser un JSON d’article Agôn.
+    const promptFinalisation = `Tu dois vérifier, corriger et finaliser un JSON d'article Agôn.
 
 Objectif :
 Ajouter une question latine courte et verrouiller la structure finale.
 Corrige uniquement les problèmes de structure, de longueur, de question latine, de question Agôn, de positions ou de signature.
-Ne réécris pas tout si ce n’est pas nécessaire.
+Ne réécris pas tout si ce n'est pas nécessaire.
 Conserve le fond, le ton et les faits du texte fourni.
 
 Contraintes strictes :
@@ -2088,11 +2134,11 @@ Contraintes strictes :
 Structure obligatoire du champ article :
 1. Une première phrase claire et mémorable.
 2. Ligne vide obligatoire juste après cette première phrase.
-3. Premier paragraphe court : ce qui s’est passé.
+3. Premier paragraphe court : ce qui s'est passé.
 4. Ligne vide obligatoire entre le premier paragraphe et le deuxième paragraphe.
-5. Deuxième paragraphe court : l’enjeu, le contraste ou le choix collectif révélé.
+5. Deuxième paragraphe court : l'enjeu, le contraste ou le choix collectif révélé.
 6. Ligne vide.
-7. Question latine très courte, sans point d’interrogation.
+7. Question latine très courte, sans point d'interrogation.
 8. Ligne vide.
 9. Question Agôn définitive seule sur une ligne.
 10. Ligne vide.
@@ -2108,56 +2154,56 @@ Vérification prioritaire des sauts de ligne :
 
 Question latine — règle prioritaire absolue :
 - Tu dois obligatoirement produire le champ latinQuestion.
-- latinQuestion est un élément central de l’article Agôn : il ne doit jamais être vide, absent ou oublié.
+- latinQuestion est un élément central de l'article Agôn : il ne doit jamais être vide, absent ou oublié.
 - latinQuestion doit être une formule pseudo-latine courte de 2 à 4 mots.
 - Format recommandé : Mot latin simple + "an" + mot latin simple.
 - Exemple de forme seulement : "Memoria an oblivio".
 - La ligne latine dans article doit être exactement identique au champ latinQuestion.
 - Elle doit être très courte.
-- Elle ne doit jamais avoir de point d’interrogation.
-- Elle doit résumer symboliquement l’enjeu.
+- Elle ne doit jamais avoir de point d'interrogation.
+- Elle doit résumer symboliquement l'enjeu.
 - Elle doit être placée juste avant la question Agôn définitive.
 - Elle doit rester simple, même si le latin est basique.
 - Crée une formule latine nouvelle et adaptée au sujet.
 - Le champ latinQuestion ne doit jamais être vide quand la réponse JSON est valide.
-- Ne jamais utiliser “Agôn”, “Agon” ou le nom de la plateforme dans la question latine.
+- Ne jamais utiliser "Agôn", "Agon" ou le nom de la plateforme dans la question latine.
 - Ne pas utiliser de mot grec, de marque, de nom propre ou de nom de média.
 - Ne réutilise pas mécaniquement les exemples.
-- Évite “Salus an libertas” sauf si le sujet oppose vraiment sécurité, protection ou santé à des libertés publiques.
-- Varie les mots selon l’enjeu réel : justice, force, peur, paix, loi, vérité, prudence, autorité, solidarité.
+- Évite "Salus an libertas" sauf si le sujet oppose vraiment sécurité, protection ou santé à des libertés publiques.
+- Varie les mots selon l'enjeu réel : justice, force, peur, paix, loi, vérité, prudence, autorité, solidarité.
 - Ne réponds jamais avec une formule générique.
 - Les exemples ci-dessous montrent seulement la forme. Ne les recopie pas.
 - Exemples de forme :
-  “Pax an vis”
-  “Lex an metus”
-  “Veritas an utilitas”
-  “Prudentia an audacia”
-  “Auctoritas an concordia”
+  "Pax an vis"
+  "Lex an metus"
+  "Veritas an utilitas"
+  "Prudentia an audacia"
+  "Auctoritas an concordia"
 
 Question Agôn :
 - Elle doit être claire, concrète et débattable.
 - Maximum 80 caractères strictement.
 - Si elle dépasse 80 caractères, la raccourcir avant de répondre.
-- Elle doit toujours se terminer par un point d’interrogation.
+- Elle doit toujours se terminer par un point d'interrogation.
 - Elle doit apparaître seule, après la question latine.
-- Elle ne doit apparaître qu’une seule fois dans l’article.
-- Elle doit être compréhensible sans lire tout l’article.
+- Elle ne doit apparaître qu'une seule fois dans l'article.
+- Elle doit être compréhensible sans lire tout l'article.
 - Elle doit permettre deux positions défendables.
 - La question finale ne doit pas contenir une justification qui avantage un camp.
 - Éviter les formulations du type :
-  “Faut-il faire X pour protéger / contenir / défendre / empêcher… ?”
+  "Faut-il faire X pour protéger / contenir / défendre / empêcher… ?"
 - Préférer :
-  “Faut-il choisir X ou Y ?”
-  “La France doit-elle soutenir X ?”
-  “Faut-il autoriser X malgré Y ?”
+  "Faut-il choisir X ou Y ?"
+  "La France doit-elle soutenir X ?"
+  "Faut-il autoriser X malgré Y ?"
 - Éviter les questions molles comme :
-  “Faut-il s’inquiéter ?”
-  “Est-ce une bonne chose ?”
-  “Qui a raison ?”
+  "Faut-il s'inquiéter ?"
+  "Est-ce une bonne chose ?"
+  "Qui a raison ?"
 - Éviter les questions évidentes comme :
-  “Faut-il protéger les enfants ?”
-  “Faut-il éviter les accidents ?”
-  “Faut-il empêcher les drames ?”
+  "Faut-il protéger les enfants ?"
+  "Faut-il éviter les accidents ?"
+  "Faut-il empêcher les drames ?"
 
 Positions :
 - positionA et positionB doivent être très générales.
@@ -2165,8 +2211,8 @@ Positions :
 - Maximum 55 caractères chacune.
 - Elles doivent répondre directement à debateQuestion.
 - Elles doivent être symétriques, courtes et défendables.
-- Ne jamais utiliser “car”, “parce que”, “afin de”, “pour que”.
-- Éviter aussi “pour” si cela transforme la position en argument.
+- Ne jamais utiliser "car", "parce que", "afin de", "pour que".
+- Éviter aussi "pour" si cela transforme la position en argument.
 - Si une position dépasse 55 caractères ou ressemble à un argument, corrige-la.
 
 Signature :
@@ -2174,7 +2220,7 @@ Signature :
 - La signature doit être seule sur la toute dernière ligne.
 - Choisir un seul nom parmi cette liste :
   J.L Grasso / F. Glorennec / T. Guyomarch / M. Guillot / P. Ratsky
-- Ne jamais inventer d’autre nom.
+- Ne jamais inventer d'autre nom.
 - Ne jamais expliquer le choix du nom.
 - Ne pas mettre de tiret avant la signature.
 
@@ -2182,38 +2228,38 @@ Style à préserver :
 - Ton éditorial sobre, tendu et vivant.
 - Texte clair, sérieux, accessible et journalistique.
 - Captivant sans être sensationnaliste.
-- Ne pas transformer l’article en tribune personnelle.
+- Ne pas transformer l'article en tribune personnelle.
 - Ne pas ajouter de fait absent du résumé factuel.
 - Ne pas dramatiser artificiellement.
 - Ne pas ajouter de rubrique ou de titre séparé.
-- La question latine apporte la touche symbolique : il ne faut donc pas rendre tout l’article antique, pompeux ou théâtral.
+- La question latine apporte la touche symbolique : il ne faut donc pas rendre tout l'article antique, pompeux ou théâtral.
 
 Formulations interdites sauf nécessité factuelle forte :
-- “dans un contexte de tensions”
-- “chaque mouvement est scruté”
-- “la situation reste volatile”
-- “les détails restent flous”
-- “cette action s’inscrit dans”
-- “la tension monte”
-- “la stabilité fragile de la zone”
-- “les relations restent fragiles”
-- “la communauté internationale observe”
+- "dans un contexte de tensions"
+- "chaque mouvement est scruté"
+- "la situation reste volatile"
+- "les détails restent flous"
+- "cette action s'inscrit dans"
+- "la tension monte"
+- "la stabilité fragile de la zone"
+- "les relations restent fragiles"
+- "la communauté internationale observe"
 
 Règles absolues :
 - Ne rien inventer.
 - Ne pas ajouter de fait absent du résumé factuel.
 - Ne pas dramatiser artificiellement.
-- Ne pas transformer l’article en tribune personnelle.
-- Ne pas afficher les positions dans l’article.
+- Ne pas transformer l'article en tribune personnelle.
+- Ne pas afficher les positions dans l'article.
 - Ne pas écrire de titre séparé dans le champ article.
-- Ne pas ajouter de rubrique du type “Pourquoi ça fait parler”, “Tension d’opinion”, “Biais” ou “Enjeu”.
+- Ne pas ajouter de rubrique du type "Pourquoi ça fait parler", "Tension d'opinion", "Biais" ou "Enjeu".
 - La question latine, la question Agôn et la signature doivent respecter exactement la structure demandée.
-- Ne pas ajouter d’autre question que la question Agôn finale.
+- Ne pas ajouter d'autre question que la question Agôn finale.
 - La phrase avant la question latine doit être affirmative.
 
 Vérification obligatoire avant de répondre :
 1. Le JSON contient bien le champ latinQuestion.
-2. latinQuestion n’est pas vide.
+2. latinQuestion n'est pas vide.
 3. article contient une ligne latine exactement identique à latinQuestion.
 4. Cette ligne latinQuestion est placée juste avant debateQuestion.
 5. La ligne française dans article est exactement identique au champ debateQuestion.
@@ -2377,8 +2423,8 @@ Objectif :
 - Ne rien inventer.
 - Garder un style éditorial sobre, clair et tendu, sans lyrisme forcé ni effet théâtral.
 - Renforcer surtout le deuxième paragraphe en montrant ce que chaque option risque de produire.
-- Ne pas commencer ce paragraphe par “Le choix est…”, “Le dilemme est…”, “Cette tension oppose…”, “Deux logiques s’opposent…” ou “La difficulté tient à…”.
-- Commencer par une conséquence concrète, puis montrer le risque d’une option et le risque inverse de l’autre.
+- Ne pas commencer ce paragraphe par "Le choix est…", "Le dilemme est…", "Cette tension oppose…", "Deux logiques s'opposent…" ou "La difficulté tient à…".
+- Commencer par une conséquence concrète, puis montrer le risque d'une option et le risque inverse de l'autre.
 - Éviter les phrases génériques qui pourraient convenir à n'importe quelle crise.
 - Privilégier des verbes d'action, des risques concrets et une opposition lisible entre deux prudences ou deux coûts.
 - Finir le deuxième paragraphe par une phrase courte qui resserre la tension.
@@ -2386,11 +2432,11 @@ Objectif :
 Structure obligatoire à conserver :
 1. Première phrase claire et mémorable.
 2. Ligne vide obligatoire juste après cette première phrase.
-3. Premier paragraphe court : ce qui s’est passé.
+3. Premier paragraphe court : ce qui s'est passé.
 4. Ligne vide obligatoire entre le premier paragraphe et le deuxième paragraphe.
-5. Deuxième paragraphe court : l’enjeu ou le contraste.
+5. Deuxième paragraphe court : l'enjeu ou le contraste.
 6. Ligne vide.
-7. Question latine très courte, sans point d’interrogation.
+7. Question latine très courte, sans point d'interrogation.
 8. Ligne vide.
 9. Question Agôn en français, maximum 80 caractères strictement, point d'interrogation final compris.
 10. Ligne vide.
@@ -4599,7 +4645,7 @@ app.get("/api/agon-stories/:storyId/debates", requireMixteAuth, async (req, res)
       return res.status(r.status || 500).json({
         ok: false,
         debates: Array.isArray(data?.debates) ? data.debates : [],
-        error: data.error || "Erreur chargement articles de l’histoire"
+        error: data.error || "Erreur chargement articles de l'histoire"
       });
     }
     res.json({
@@ -4608,7 +4654,7 @@ app.get("/api/agon-stories/:storyId/debates", requireMixteAuth, async (req, res)
       debates: Array.isArray(data.debates) ? data.debates : []
     });
   } catch (err) {
-    res.status(500).json({ ok: false, debates: [], error: err.message || "Erreur chargement articles de l’histoire" });
+    res.status(500).json({ ok: false, debates: [], error: err.message || "Erreur chargement articles de l'histoire" });
   }
 });
 
@@ -4736,7 +4782,7 @@ async function ensureKeywordsBeforeAgonSend({ subject, question, sources, links,
 
 app.post("/send-to-agon", requireMixteAuth, async (req, res) => {
   try {
-    const { subject, sessionLabel, question, positionA, positionB, theme, resume, sources, links, storySelection, keywords } = req.body;
+    const { subject, sessionLabel, question, positionA, positionB, theme, resume, sources, links, storySelection, keywords, politicalOrientation } = req.body;
     if (!question) return res.status(400).json({ ok: false, error: "question manquante" });
     const normalizedQuestion = limitDebateQuestion(question);
     const normalizedResume = ensureArticleOpeningSentenceBreak(resume);
@@ -4749,7 +4795,7 @@ app.post("/send-to-agon", requireMixteAuth, async (req, res) => {
       r = await fetch(`${AGON_URL}/api/veille/receive`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ question: normalizedQuestion, positionA, positionB, theme, resume: normalizedResume, sources, links: links || [], storySelection: storySelection || null, keywords: resolvedKeywords }),
+        body: JSON.stringify({ question: normalizedQuestion, positionA, positionB, theme, resume: normalizedResume, sources, links: links || [], storySelection: storySelection || null, keywords: resolvedKeywords, politicalOrientation: politicalOrientation || null }),
         signal: agonController.signal
       });
     } finally {
@@ -4772,6 +4818,7 @@ app.post("/send-to-agon", requireMixteAuth, async (req, res) => {
       links: Array.isArray(links) ? links : [],
       storySelection: storySelection || null,
       keywords: resolvedKeywords,
+      politicalOrientation: politicalOrientation || null,
       sentAt: new Date().toISOString()
     });
     console.log("[send-to-agon] Succès");

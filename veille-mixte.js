@@ -5053,8 +5053,8 @@ function generateHtml(sessions) {
           updateAiEditorCounters(subjectEl);
           const agonBtn = subjectEl.querySelector(".agon-btn");
           const republishBtn = subjectEl.querySelector(".republish-btn");
-          if (agonBtn) { agonBtn.dataset.question = limitedQuestion; agonBtn.dataset.positionA = String(data.positionA || "").trim(); agonBtn.dataset.positionB = String(data.positionB || "").trim(); }
-          if (republishBtn) { republishBtn.dataset.question = limitedQuestion; republishBtn.dataset.positionA = String(data.positionA || "").trim(); republishBtn.dataset.positionB = String(data.positionB || "").trim(); }
+          if (agonBtn) { agonBtn.dataset.question = limitedQuestion; agonBtn.dataset.positionA = String(data.positionA || "").trim(); agonBtn.dataset.positionB = String(data.positionB || "").trim(); agonBtn.dataset.politicalOrientation = data.politicalOrientation ? JSON.stringify(data.politicalOrientation) : ""; }
+          if (republishBtn) { republishBtn.dataset.question = limitedQuestion; republishBtn.dataset.positionA = String(data.positionA || "").trim(); republishBtn.dataset.positionB = String(data.positionB || "").trim(); republishBtn.dataset.politicalOrientation = data.politicalOrientation ? JSON.stringify(data.politicalOrientation) : ""; }
           const fullArticleState = subjectEl.querySelector(".full-article-state");
           if (fullArticleState) fullArticleState.value = "problematique";
           setDefinitiveArticleButtons(subjectEl, { hidden: false, disabled: false, state: "idle" });
@@ -5244,7 +5244,7 @@ function generateHtml(sessions) {
         const res = await fetch("/send-to-agon", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ subject, sessionLabel, question, positionA, positionB, theme, resume, sources, links, storySelection, keywords })
+          body: JSON.stringify({ subject, sessionLabel, question, positionA, positionB, theme, resume, sources, links, storySelection, keywords, politicalOrientation: btn.dataset.politicalOrientation ? JSON.parse(btn.dataset.politicalOrientation) : null })
         });
         if (!res.ok) throw new Error();
         const subjectElBtn = btn.closest(".subject");
@@ -5666,7 +5666,7 @@ function generateHtml(sessions) {
 
           // Étape 3 : Angle de débat + question
           setStatus("Angle & question…");
-          const mediaRes = await fetch("/generate-final-article", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ subject: subjectTitle, summary: summaryText }) });
+          const mediaRes = await fetch("/generate-final-article", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ subject: subjectTitle, summary: summaryText, contents: pipelineContents }) });
           const mediaData = await mediaRes.json().catch(() => ({}));
           if (!mediaRes.ok || mediaData.ok === false) throw new Error(mediaData.error || "Erreur angle & question");
           subjectEl.dataset.hasMediaContrast = "false";
@@ -5743,7 +5743,7 @@ function generateHtml(sessions) {
         const dateMatch = (item.querySelector("small")?.textContent || "").match(/(\\d{2}\\/\\d{2}\\/\\d{4})/);
         return { title: item.querySelector("a")?.textContent.trim() || "", url: item.dataset.link || "", source: item.querySelector("strong")?.textContent.trim() || "", type: item.dataset.type || "article", date: dateMatch ? dateMatch[1] : "", checked: item.querySelector('input[type="checkbox"]')?.checked ?? true };
       }).filter(l => l.url);
-      const sendRes = await fetch("/send-to-agon", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ subject: subjectTitle, sessionLabel, question: finalQuestion, positionA: finalPosA, positionB: finalPosB, theme, resume: resumeForSend, sources: agonBtnFinal.dataset.sources, links, storySelection, keywords }) });
+      const sendRes = await fetch("/send-to-agon", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ subject: subjectTitle, sessionLabel, question: finalQuestion, positionA: finalPosA, positionB: finalPosB, theme, resume: resumeForSend, sources: agonBtnFinal.dataset.sources, links, storySelection, keywords, politicalOrientation: agonBtnFinal.dataset.politicalOrientation ? JSON.parse(agonBtnFinal.dataset.politicalOrientation) : null }) });
       if (!sendRes.ok) throw new Error("Erreur envoi Agôn");
       agonBtnFinal.classList.add("sent");
       agonBtnFinal.textContent = "✓ Envoyé";
