@@ -905,90 +905,70 @@ Réponds uniquement en texte brut.`;
 }
 
 async function generateMediaAnalysis(payload) {
-  const summary = String(payload?.summary || "").trim();
-  const subject = String(payload?.subject || "").trim();
-  const contents = Array.isArray(payload?.contents) ? payload.contents : [];
+  const summary = String(payload?.summary || “”).trim();
+  const subject = String(payload?.subject || “”).trim();
 
   if (!summary) {
-    throw new Error("Résumé manquant pour l'analyse médiatique.");
+    throw new Error(“Résumé manquant pour l’analyse médiatique.”);
   }
 
   if (!openai) {
-    return { hasMediaContrast: false, mediaTreatment: "" };
+    return { hasMediaContrast: false, mediaTreatment: “” };
   }
 
-  const allSourcesList = contents.map(c => ({
-    source: c.source,
-    orientation: c.orientation || "généraliste",
-    title: c.title,
-    type: c.type,
-    summary: c.summary || ""
-  }));
+  const prompt = `Tu es un stratège éditorial pour Agôn.
 
-  const prompt = `Tu es un assistant d’analyse médiatique pour Agôn.
+Tu reçois un résumé factuel d’une actualité.
 
-Tu reçois :
-1. un résumé factuel neutre ;
-2. plusieurs sources ayant traité le sujet.
+Ta mission en deux temps :
+1. Identifier l’angle de débat le plus clivant et pertinent que cette actualité révèle.
+2. En déduire la question Agôn et les deux positions opposées.
 
-Ta mission :
-repérer si les sources cadrent le sujet différemment et identifier l’enjeu principal que cette actualité fait apparaître.
+Un bon angle de débat Agôn :
+- oppose deux positions défendables par des gens raisonnables ;
+- révèle un vrai choix collectif, pas une évidence morale ;
+- est ancré dans les faits du résumé, pas dans une abstraction générale ;
+- crée une tension réelle entre deux valeurs, deux risques ou deux stratégies.
+
+Règle centrale :
+évite les questions trop évidentes.
+
+Exemples de questions faibles :
+- “Faut-il éviter les accidents ?”
+- “Faut-il protéger les enfants ?”
+- “Faut-il renforcer la sécurité ?”
+- “Faut-il empêcher la guerre ?”
+
+Ces questions sont mauvaises parce qu’un camp paraît évident.
+
+Si la question naturelle est trop évidente, cherche le vrai débat derrière :
+- sécurité maximale vs coût / faisabilité ;
+- diplomatie vs rapport de force ;
+- liberté vs sécurité ;
+- exigence vs accompagnement ;
+- innovation vs protection ;
+- responsabilité individuelle vs action publique ;
+- urgence vs prudence ;
+- intérêt national vs coopération internationale.
 
 Tu ne dois pas rédiger l’article final.
-Tu ne dois pas créer de question de débat.
-Tu ne dois pas créer de positions.
-Tu ne dois pas répéter tout le résumé factuel.
-Tu ne dois pas ajouter de faits nouveaux.
-
-Objectif :
-aider Agôn à comprendre les angles, les biais de lecture possibles et l’enjeu éditorial du sujet.
-
-Règle prioritaire :
-ne signale une différence de traitement médiatique que si elle est réelle, significative et visible dans les sources.
-
-Attention :
-ne confonds jamais :
-- les divergences entre acteurs de l’actualité ;
-- et les différences de traitement entre médias.
-
-Pour analyser les angles médiatiques, compare toutes les sources disponibles.
-
-Si des sources éditorialement marquées ou de presse d’opinion sont disponibles, utilise-les pour repérer les différences de cadrage, de vocabulaire, d’insistance ou de hiérarchisation.
-
-Si elles ne sont pas disponibles, compare les sources généralistes.
-
-Il y a contraste médiatique seulement si les sources cadrent réellement le sujet différemment :
-- angle principal différent ;
-- vocabulaire nettement différent ;
-- hiérarchisation différente ;
-- insistance différente ;
-- lecture éditoriale différente.
-
-Si les sources racontent globalement la même chose, indique qu’il n’y a pas de contraste médiatique significatif.
+Tu ne dois pas ajouter de faits absents du résumé.
 
 Champs attendus :
 
-hasMediaContrast :
-true uniquement s’il existe une vraie différence significative de cadrage, d’angle, d’insistance, de vocabulaire ou de hiérarchisation entre les sources.
-false dans tous les autres cas.
-
-mediaTreatment :
-si hasMediaContrast = true, explique brièvement et concrètement la différence observée.
-si hasMediaContrast = false, chaîne vide.
-
 mainIssue :
-l’enjeu principal que cette actualité révèle, en une phrase courte.
-Ce champ ne doit pas être une étiquette abstraite : formule une tension concrète, presque réutilisable dans un article.
+l’enjeu principal que cette actualité révèle, en une phrase courte et concrète.
+Ce doit être une tension, pas une étiquette abstraite.
 Mauvais exemple : “la diplomatie face au rapport de force militaire”.
-Meilleur exemple : “répondre par la force peut rassurer à court terme, mais ouvrir une escalade que personne ne contrôle vraiment”.
+Bon exemple : “répondre par la force peut rassurer à court terme, mais ouvrir une escalade que personne ne contrôle vraiment”.
 
 narrativeTension :
-une phrase concrète qui résume pourquoi le sujet devient difficile.
+une phrase qui résume pourquoi le sujet est difficile à trancher.
 Elle doit opposer deux risques réels, pas deux idées abstraites.
 Exemple : “Ne pas réagir peut laisser l’adversaire tester la limite ; frapper trop fort peut rallumer un conflit plus large.”
 
 possibleBiases :
-2 à 4 biais de lecture ou cadrages possibles.
+2 à 4 angles de lecture clivants possibles sur ce sujet.
 Exemples : sécuritaire, humanitaire, économique, diplomatique, politique, social, judiciaire, écologique, éducatif, technologique.
 
 debatePotential :
@@ -998,23 +978,66 @@ editorialWarning :
 alerte courte si le sujet est tragique, trop sensible, peu débattable ou risque de produire une question évidente.
 Sinon chaîne vide.
 
-Règles :
-- Ne juge pas les médias.
-- Ne dis jamais qu’un média ment ou manipule.
-- Ne suppose pas une orientation politique si elle n’est pas explicitement visible.
-- Ne jamais écrire “médias de gauche” ou “médias de droite” sauf si les sources fournies permettent clairement de l’établir.
-- Si seulement une source est exploitable, considère qu’il n’y a pas de contraste médiatique significatif.
-- Reste court, précis et exploitable.
+debateAngle :
+une phrase courte qui résume le vrai enjeu du débat.
+Maximum 180 caractères.
+Ne pas poser une question.
+
+debateQuestion :
+une seule question claire, directe et débattable.
+Maximum 80 caractères, espaces et tirets compris.
+Elle doit être compréhensible sans lire l’article.
+Elle doit être ancrée dans le sujet précis de l’actualité.
+Elle doit permettre deux positions défendables.
+Elle ne doit pas être trop générale.
+Elle ne doit pas être une évidence morale.
+Préférer une formulation concrète : “Faut-il…”, “Doit-on…”, “La France doit-elle…”, “Peut-on…”, “Les États doivent-ils…”.
+
+positionA :
+un camp général, court et neutre.
+Maximum 55 caractères.
+Ne doit contenir aucun argument, aucune justification, aucun “pour”, aucun “car”.
+La position doit seulement nommer l’orientation générale du camp.
+
+positionB :
+le camp opposé, général, court et neutre.
+Maximum 55 caractères.
+Ne doit contenir aucun argument, aucune justification, aucun “pour”, aucun “car”.
+La position doit seulement nommer l’orientation générale du camp.
+
+Exemples corrects de positions :
+- Suspendre les frappes
+- Maintenir la pression militaire
+- Renforcer la sécurité
+- Limiter les nouvelles contraintes
+
+Exemples interdits de positions :
+- Suspendre les frappes pour préserver la paix
+- Renforcer la sécurité afin d’éviter un nouveau drame
+
+editorialDecision :
+choisir exactement une valeur :
+- “arena” si la question permet un vrai débat public.
+- “understand” si le sujet est important mais pas vraiment clivant.
+- “reformulate” si le sujet est intéressant mais la question reste trop évidente ou fragile.
+- “avoid” si le sujet est trop tragique, trop sensible, trop incertain ou trop risqué à transformer en débat.
+
+questionQuality :
+note de 1 à 10 sur la qualité de la question pour Agôn.
 
 JSON attendu uniquement :
 {
-  "hasMediaContrast": true/false,
-  "mediaTreatment": "...",
-  "mainIssue": "...",
-  "narrativeTension": "...",
-  "possibleBiases": ["...", "..."],
-  "debatePotential": "fort/moyen/faible",
-  "editorialWarning": "..."
+  “mainIssue”: “...”,
+  “narrativeTension”: “...”,
+  “possibleBiases”: [“...”, “...”],
+  “debatePotential”: “fort/moyen/faible”,
+  “editorialWarning”: “...”,
+  “debateAngle”: “...”,
+  “debateQuestion”: “...”,
+  “positionA”: “...”,
+  “positionB”: “...”,
+  “editorialDecision”: “arena/understand/reformulate/avoid”,
+  “questionQuality”: 0
 }
 
 Sujet :
@@ -1023,38 +1046,43 @@ ${subject}
 Résumé factuel :
 ${summary}
 
-Sources disponibles :
-${JSON.stringify(allSourcesList, null, 2)}
-
 Réponds uniquement en JSON valide, sans balises markdown.`;
 
   const response = await openai.responses.create({
-    model: "gpt-4.1-mini",
+    model: “gpt-4o”,
     input: prompt,
-    temperature: 0.2,
-    max_output_tokens: 600
+    temperature: 0.5,
+    max_output_tokens: 900
   });
 
   let parsed = {};
   try {
-    parsed = safeJsonParse(response.output_text || "");
+    parsed = safeJsonParse(response.output_text || “”);
   } catch (error) {
-    parsed = { hasMediaContrast: false, mediaTreatment: "" };
+    parsed = {};
   }
 
-  const hasMediaContrast = parsed.hasMediaContrast === true;
+  const allowedEditorialDecisions = new Set([“arena”, “understand”, “reformulate”, “avoid”]);
   const possibleBiases = Array.isArray(parsed.possibleBiases)
-    ? parsed.possibleBiases.map((item) => String(item || "").trim()).filter(Boolean).slice(0, 4)
+    ? parsed.possibleBiases.map((item) => String(item || “”).trim()).filter(Boolean).slice(0, 4)
     : [];
 
   return {
-    hasMediaContrast,
-    mediaTreatment: hasMediaContrast ? String(parsed.mediaTreatment || "").trim() : "",
-    mainIssue: String(parsed.mainIssue || "").trim(),
-    narrativeTension: String(parsed.narrativeTension || "").trim(),
+    hasMediaContrast: false,
+    mediaTreatment: “”,
+    mainIssue: String(parsed.mainIssue || “”).trim(),
+    narrativeTension: String(parsed.narrativeTension || “”).trim(),
     possibleBiases,
-    debatePotential: String(parsed.debatePotential || "").trim(),
-    editorialWarning: String(parsed.editorialWarning || "").trim()
+    debatePotential: String(parsed.debatePotential || “”).trim(),
+    editorialWarning: String(parsed.editorialWarning || “”).trim(),
+    debateAngle: String(parsed.debateAngle || “”).trim().slice(0, 180),
+    debateQuestion: limitDebateQuestion(String(parsed.debateQuestion || “”).trim()),
+    positionA: String(parsed.positionA || “”).trim().slice(0, 55),
+    positionB: String(parsed.positionB || “”).trim().slice(0, 55),
+    editorialDecision: allowedEditorialDecisions.has(String(parsed.editorialDecision || “”).trim())
+      ? String(parsed.editorialDecision || “”).trim()
+      : “avoid”,
+    questionQuality: Number(parsed.questionQuality) || 0
   };
 }
 
@@ -1557,7 +1585,7 @@ async function generateStyledArticle(payload) {
 
 Tu reçois :
 1. un résumé factuel neutre ;
-2. une analyse des angles médiatiques ;
+2. un angle de débat et les enjeux du sujet ;
 3. une question Agôn ;
 4. deux positions opposées.
 
@@ -1565,17 +1593,22 @@ Ta mission :
 rédiger l’article final visible dans Agôn.
 
 Agôn ne publie pas une revue de presse classique.
-Agôn questionne l’actualité pour faire ressortir les enjeux, les biais de lecture et les désaccords possibles.
+Agôn questionne l’actualité pour faire ressortir les enjeux et les désaccords possibles.
 
 Le texte final doit rester naturel :
 ne pas afficher de rubriques comme “Pourquoi ça fait parler”, “Tension d’opinion”, “Biais”, “Le nœud du débat” ou “Enjeu caché”.
+
+Utilisation des données reçues :
+- Premier paragraphe : s’appuie sur `resumeFactuel` pour restituer les faits.
+- Deuxième paragraphe : s’appuie sur `debateAngle` pour cadrer l’enjeu, et sur `narrativeTension` pour montrer pourquoi le choix est difficile. Ces deux champs sont la matière première du deuxième paragraphe — ne pas les ignorer.
+- Question finale : reprendre `debateQuestion` (peut être légèrement améliorée si nécessaire).
 
 Structure obligatoire du champ article :
 1. Une première phrase claire et mémorable.
 2. Ligne vide obligatoire juste après cette première phrase.
 3. Premier paragraphe : ce qui s’est passé.
 4. Ligne vide obligatoire entre le premier paragraphe et le deuxième paragraphe.
-5. Deuxième paragraphe : l’enjeu, le contraste ou le choix collectif que l’actualité révèle.
+5. Deuxième paragraphe : l’enjeu et la tension entre les deux options.
 6. Une ligne vide.
 7. La question Agôn seule sur une ligne, juste avant la signature.
 8. Une ligne vide.
@@ -1771,7 +1804,7 @@ ${inputJson}
 Réponds uniquement en JSON valide, sans balises markdown.`;
 
   const response = await openai.responses.create({
-    model: "gpt-4.1-mini",
+    model: "gpt-4o",
     input: prompt,
     temperature: 0.35,
     max_output_tokens: 2000
@@ -2276,22 +2309,18 @@ Structure obligatoire à conserver exactement :
 2. Une ligne vide.
 3. Un paragraphe factuel.
 4. Une ligne vide.
-5. Un paragraphe défendant une première orientation du débat.
+5. Un paragraphe sur l'enjeu et la tension entre les deux options (avec un retour à la ligne entre les deux options).
 6. Une ligne vide.
-7. Un paragraphe défendant l'orientation inverse.
+7. Une question de débat.
 8. Une ligne vide.
-9. Une formule latine courte.
-10. Une ligne vide.
-11. Une question de débat.
-12. Une ligne vide.
-13. La signature inchangée.
+9. La signature inchangée.
 
 Ce que tu dois améliorer fortement :
 
 * Remplacer l'accroche si elle est trop plate.
 * Rendre le paragraphe factuel plus nerveux, plus clair et plus éditorial.
 * Faire ressortir ce que l'actualité révèle comme tension collective.
-* Transformer les deux paragraphes de débat en deux positions réellement opposées, mais toutes les deux défendables.
+* Renforcer le paragraphe enjeu pour qu'il fasse sentir la tension entre les deux options sans catalogue.
 * Éviter les formulations scolaires, mécaniques ou répétitives.
 * Éviter les transitions trop visibles comme "à l'inverse" si une formulation plus élégante est possible.
 * Améliorer la question finale pour qu'elle soit plus directe, plus débattable et plus mémorable.
@@ -2305,7 +2334,6 @@ Contraintes absolues :
 * Ne pas changer le sens général.
 * Ne pas transformer le texte en opinion personnelle.
 * Ne pas rendre le texte dramatique, pompeux ou artificiel.
-* Ne pas faire de style antique : seule la formule latine apporte la touche symbolique.
 * Conserver les lignes vides entre les blocs.
 * Conserver la signature exactement.
 

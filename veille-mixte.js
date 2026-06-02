@@ -1989,7 +1989,7 @@ function generateHtml(sessions) {
             <button type="button" class="tags-generate-btn">Générer tags</button>
             <button type="button" class="full-article-btn">${["summary", "media", "problematique", "full"].includes(String(ai.fullArticleState || "")) ? "✓ Résumé généré" : "Générer résumé de l'article"}</button>
             <button type="button" class="final-article-btn${["summary", "media", "problematique", "full"].includes(String(ai.fullArticleState || "")) ? "" : " hidden"}">${["media", "problematique", "full"].includes(String(ai.fullArticleState || "")) ? "✓ Médias analysés" : "Analyser les médias"}</button>
-            <button type="button" class="problematique-btn${["media", "problematique", "full"].includes(String(ai.fullArticleState || "")) ? "" : " hidden"}">${["problematique", "full"].includes(String(ai.fullArticleState || "")) ? "✓ Problématique générée" : "Générer problématique"}</button>
+            <button type="button" class="problematique-btn hidden">Générer problématique</button>
             <button type="button" class="definitive-article-btn${["problematique", "full"].includes(String(ai.fullArticleState || "")) ? "" : " hidden"}"${String(ai.fullArticleState || "") === "full" ? "" : " disabled"}>Article définitif</button>
             <button type="button" class="definitive-article-btn latin-article-btn"${["problematique", "full"].includes(String(ai.fullArticleState || "")) ? "" : " disabled"}>Générer article + question latine</button>
           </div>`
@@ -5038,90 +5038,32 @@ function generateHtml(sessions) {
             throw new Error(data.error || "Erreur analyse médiatique");
           }
 
-          subjectEl.dataset.hasMediaContrast = data.hasMediaContrast ? "true" : "false";
-          subjectEl.dataset.mediaTreatment = String(data.mediaTreatment || "");
+          subjectEl.dataset.hasMediaContrast = "false";
+          subjectEl.dataset.mediaTreatment = "";
           subjectEl.dataset.mainIssue = String(data.mainIssue || "");
           subjectEl.dataset.narrativeTension = String(data.narrativeTension || "");
           subjectEl.dataset.debatePotential = String(data.debatePotential || "");
           subjectEl.dataset.editorialWarning = String(data.editorialWarning || "");
           subjectEl.dataset.possibleBiases = JSON.stringify(Array.isArray(data.possibleBiases) ? data.possibleBiases : []);
+          subjectEl.dataset.debateAngle = String(data.debateAngle || "");
+          const limitedQuestion = limitClientDebateQuestion(data.debateQuestion || "");
+          const questionEl = subjectEl.querySelector(".debate-question");
+          if (questionEl) questionEl.textContent = limitedQuestion;
+          ensurePositionsBox(subjectEl, data.positionA || "", data.positionB || "");
+          updateAiEditorCounters(subjectEl);
+          const agonBtn = subjectEl.querySelector(".agon-btn");
+          const republishBtn = subjectEl.querySelector(".republish-btn");
+          if (agonBtn) { agonBtn.dataset.question = limitedQuestion; agonBtn.dataset.positionA = String(data.positionA || "").trim(); agonBtn.dataset.positionB = String(data.positionB || "").trim(); }
+          if (republishBtn) { republishBtn.dataset.question = limitedQuestion; republishBtn.dataset.positionA = String(data.positionA || "").trim(); republishBtn.dataset.positionB = String(data.positionB || "").trim(); }
           const fullArticleState = subjectEl.querySelector(".full-article-state");
-          if (fullArticleState) fullArticleState.value = "media";
-          subjectEl.querySelector(".problematique-btn")?.classList.remove("hidden");
-          finalArticleBtn.textContent = "✓ Médias analysés";
+          if (fullArticleState) fullArticleState.value = "problematique";
+          setDefinitiveArticleButtons(subjectEl, { hidden: false, disabled: false, state: "idle" });
+          finalArticleBtn.textContent = "✓ Angle & question générés";
         } catch (error) {
           alert(error.message || "Erreur analyse médiatique");
           finalArticleBtn.textContent = "Analyser les médias";
         } finally {
           finalArticleBtn.disabled = false;
-        }
-        return;
-      }
-
-      const problematiqueBtn = e.target.closest(".problematique-btn");
-      if (problematiqueBtn) {
-        const subjectEl = problematiqueBtn.closest(".subject");
-        const basePayload = decodeStoryData(subjectEl?.dataset.subjectPayload || "") || {};
-        const resumeEl = subjectEl.querySelector(".resume");
-        const summary = (subjectEl.dataset.rawSummary || resumeEl?.textContent.trim() || "").slice(0, AI_RESUME_MAX);
-        if (!summary) {
-          alert("Génère d'abord le résumé de l'article.");
-          return;
-        }
-        const subjectTitle = basePayload.subject || subjectEl.querySelector("h3")?.textContent.trim() || "";
-
-        problematiqueBtn.disabled = true;
-        problematiqueBtn.textContent = "Problématique en cours…";
-        try {
-          const response = await fetch("/generate-problematique", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              subject: subjectTitle,
-              summary,
-              hasMediaContrast: subjectEl.dataset.hasMediaContrast === "true",
-              mediaTreatment: subjectEl.dataset.mediaTreatment || "",
-              mainIssue: subjectEl.dataset.mainIssue || "",
-              narrativeTension: subjectEl.dataset.narrativeTension || "",
-              possibleBiases: JSON.parse(subjectEl.dataset.possibleBiases || "[]"),
-              debatePotential: subjectEl.dataset.debatePotential || "",
-              editorialWarning: subjectEl.dataset.editorialWarning || ""
-            })
-          });
-          const data = await response.json().catch(function() { return { ok: false, error: "Erreur génération problématique" }; });
-          if (!response.ok || data.ok === false) {
-            throw new Error(data.error || "Erreur génération problématique");
-          }
-
-          subjectEl.dataset.debateAngle = String(data.debateAngle || "");
-          const questionEl = subjectEl.querySelector(".debate-question");
-          const limitedQuestion = limitClientDebateQuestion(data.debateQuestion || "");
-          if (questionEl) questionEl.textContent = limitedQuestion;
-          ensurePositionsBox(subjectEl, data.positionA || "", data.positionB || "");
-          updateAiEditorCounters(subjectEl);
-
-          const agonBtn = subjectEl.querySelector(".agon-btn");
-          const republishBtn = subjectEl.querySelector(".republish-btn");
-          if (agonBtn) {
-            agonBtn.dataset.question = limitedQuestion;
-            agonBtn.dataset.positionA = String(data.positionA || "").trim();
-            agonBtn.dataset.positionB = String(data.positionB || "").trim();
-          }
-          if (republishBtn) {
-            republishBtn.dataset.question = limitedQuestion;
-            republishBtn.dataset.positionA = String(data.positionA || "").trim();
-            republishBtn.dataset.positionB = String(data.positionB || "").trim();
-          }
-
-          const fullArticleState = subjectEl.querySelector(".full-article-state");
-          if (fullArticleState) fullArticleState.value = "problematique";
-          setDefinitiveArticleButtons(subjectEl, { hidden: false, disabled: false, state: "idle" });
-          problematiqueBtn.textContent = "✓ Problématique générée";
-        } catch (error) {
-          alert(error.message || "Erreur génération problématique");
-          problematiqueBtn.textContent = "Générer problématique";
-        } finally {
-          problematiqueBtn.disabled = false;
         }
         return;
       }
@@ -5722,39 +5664,29 @@ function generateHtml(sessions) {
           const fullBtn = subjectEl.querySelector(".full-article-btn");
           if (fullBtn) fullBtn.textContent = "✓ Résumé généré";
 
-          // Étape 3 : Analyse médiatique
-          setStatus("Analyse médias…");
-          const mediaRes = await fetch("/generate-final-article", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ subject: subjectTitle, summary: summaryText, contents: pipelineContents }) });
+          // Étape 3 : Angle de débat + question
+          setStatus("Angle & question…");
+          const mediaRes = await fetch("/generate-final-article", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ subject: subjectTitle, summary: summaryText }) });
           const mediaData = await mediaRes.json().catch(() => ({}));
-          if (!mediaRes.ok || mediaData.ok === false) throw new Error(mediaData.error || "Erreur analyse médias");
-          subjectEl.dataset.hasMediaContrast = mediaData.hasMediaContrast ? "true" : "false";
-          subjectEl.dataset.mediaTreatment = String(mediaData.mediaTreatment || "");
+          if (!mediaRes.ok || mediaData.ok === false) throw new Error(mediaData.error || "Erreur angle & question");
+          subjectEl.dataset.hasMediaContrast = "false";
+          subjectEl.dataset.mediaTreatment = "";
           subjectEl.dataset.mainIssue = String(mediaData.mainIssue || "");
           subjectEl.dataset.narrativeTension = String(mediaData.narrativeTension || "");
           subjectEl.dataset.debatePotential = String(mediaData.debatePotential || "");
           subjectEl.dataset.editorialWarning = String(mediaData.editorialWarning || "");
           subjectEl.dataset.possibleBiases = JSON.stringify(Array.isArray(mediaData.possibleBiases) ? mediaData.possibleBiases : []);
-          if (fullArticleState) fullArticleState.value = "media";
-          subjectEl.querySelector(".problematique-btn")?.classList.remove("hidden");
-          const finalBtn = subjectEl.querySelector(".final-article-btn");
-          if (finalBtn) finalBtn.textContent = "✓ Médias analysés";
-
-          // Étape 4 : Problématique
-          setStatus("Problématique…");
-          const probRes = await fetch("/generate-problematique", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ subject: subjectTitle, summary: summaryText, hasMediaContrast: mediaData.hasMediaContrast === true, mediaTreatment: mediaData.mediaTreatment || "", mainIssue: mediaData.mainIssue || "", narrativeTension: mediaData.narrativeTension || "", possibleBiases: Array.isArray(mediaData.possibleBiases) ? mediaData.possibleBiases : [], debatePotential: mediaData.debatePotential || "", editorialWarning: mediaData.editorialWarning || "" }) });
-          const probData = await probRes.json().catch(() => ({}));
-          if (!probRes.ok || probData.ok === false) throw new Error(probData.error || "Erreur problématique");
-          subjectEl.dataset.debateAngle = String(probData.debateAngle || "");
+          subjectEl.dataset.debateAngle = String(mediaData.debateAngle || "");
           questionEl = subjectEl.querySelector(".debate-question");
-          const limitedQuestion = limitClientDebateQuestion(probData.debateQuestion || "");
+          const limitedQuestion = limitClientDebateQuestion(mediaData.debateQuestion || "");
           if (questionEl) questionEl.textContent = limitedQuestion;
-          ensurePositionsBox(subjectEl, probData.positionA || "", probData.positionB || "");
+          ensurePositionsBox(subjectEl, mediaData.positionA || "", mediaData.positionB || "");
           updateAiEditorCounters(subjectEl);
-          const agonBtnStep4 = subjectEl.querySelector(".agon-btn");
-          if (agonBtnStep4) { agonBtnStep4.dataset.question = limitedQuestion; agonBtnStep4.dataset.positionA = String(probData.positionA || "").trim(); agonBtnStep4.dataset.positionB = String(probData.positionB || "").trim(); }
+          const agonBtnStep3 = subjectEl.querySelector(".agon-btn");
+          if (agonBtnStep3) { agonBtnStep3.dataset.question = limitedQuestion; agonBtnStep3.dataset.positionA = String(mediaData.positionA || "").trim(); agonBtnStep3.dataset.positionB = String(mediaData.positionB || "").trim(); }
           if (fullArticleState) fullArticleState.value = "problematique";
-          const probBtn = subjectEl.querySelector(".problematique-btn");
-          if (probBtn) probBtn.textContent = "✓ Problématique générée";
+          const finalBtn = subjectEl.querySelector(".final-article-btn");
+          if (finalBtn) finalBtn.textContent = "✓ Angle & question générés";
           setDefinitiveArticleButtons(subjectEl, { hidden: false, disabled: false, state: "idle" });
 
           // Suggestion d'histoire
@@ -5766,7 +5698,7 @@ function generateHtml(sessions) {
           const editables = subjectEl.querySelectorAll(".positions-box .editable");
           const posA = editables[0]?.textContent.trim() || "";
           const posB = editables[1]?.textContent.trim() || "";
-          const styledRes = await fetch("/generate-styled-article", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ subject: subjectTitle, summary: summaryText, debateAngle: probData.debateAngle || "", debateQuestion, positionA: posA, positionB: posB, hasMediaContrast: mediaData.hasMediaContrast === true, mediaTreatment: mediaData.mediaTreatment || "", mainIssue: mediaData.mainIssue || "", narrativeTension: probData.narrativeTension || mediaData.narrativeTension || "", possibleBiases: Array.isArray(mediaData.possibleBiases) ? mediaData.possibleBiases : [], debatePotential: mediaData.debatePotential || "", editorialWarning: mediaData.editorialWarning || "", editorialDecision: probData.editorialDecision || "", questionQuality: probData.questionQuality || "" }) });
+          const styledRes = await fetch("/generate-styled-article", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ subject: subjectTitle, summary: summaryText, debateAngle: mediaData.debateAngle || "", debateQuestion, positionA: posA, positionB: posB, hasMediaContrast: false, mediaTreatment: "", mainIssue: mediaData.mainIssue || "", narrativeTension: mediaData.narrativeTension || "", possibleBiases: Array.isArray(mediaData.possibleBiases) ? mediaData.possibleBiases : [], debatePotential: mediaData.debatePotential || "", editorialWarning: mediaData.editorialWarning || "", editorialDecision: mediaData.editorialDecision || "", questionQuality: mediaData.questionQuality || "" }) });
           const styledData = await styledRes.json().catch(() => ({}));
           if (!styledRes.ok || styledData.ok === false) throw new Error(styledData.error || "Erreur article définitif");
           const styledArticle = String(styledData.article || "").trim();
@@ -5779,19 +5711,6 @@ function generateHtml(sessions) {
           if (fullArticleState) fullArticleState.value = "full";
           setDefinitiveArticleButtons(subjectEl, { hidden: false, disabled: false, state: "done" });
 
-          // Étape 6 : Polissage éditorial gpt-4o
-          setStatus("Polissage éditorial…");
-          try {
-            const currentArticle = resumeEl?.dataset.rawText || resumeEl?.textContent.trim() || styledArticle;
-            const polishRes = await fetch("/generate-polished-article", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ article: currentArticle }) });
-            const polishData = await polishRes.json().catch(() => ({}));
-            if (polishRes.ok && polishData.ok && polishData.article) {
-              resumeEl = subjectEl.querySelector(".resume");
-              if (resumeEl) { resumeEl.dataset.rawText = polishData.article; resumeEl.innerHTML = renderArticleHtml(polishData.article); }
-            }
-          } catch (polishErr) {
-            console.warn("Polissage ignoré :", polishErr.message);
-          }
         } catch (genErr) {
           console.error("Erreur génération :", genErr.message);
         }
