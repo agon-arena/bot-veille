@@ -3597,6 +3597,17 @@ function generateHtml(sessions) {
       margin-top: 0;
     }
 
+    .political-tag {
+      display: inline-block;
+      margin-top: 8px;
+      font-size: 0.72rem;
+      color: #7a5c9e;
+      background: #f0eaf8;
+      border: 1px solid #d0bfea;
+      border-radius: 10px;
+      padding: 2px 9px;
+    }
+
     .subject-stats {
       display: flex;
       flex-wrap: wrap;
@@ -4828,6 +4839,18 @@ function generateHtml(sessions) {
       };
     }
 
+    function updatePoliticalTag(subjectEl, isPolitical) {
+      const box = subjectEl && subjectEl.querySelector(".positions-box");
+      if (!box) return;
+      let tag = box.querySelector(".political-tag");
+      if (isPolitical) {
+        if (!tag) { tag = document.createElement("span"); tag.className = "political-tag"; box.appendChild(tag); }
+        tag.textContent = "Débat politique détecté";
+      } else if (tag) {
+        tag.remove();
+      }
+    }
+
     function ensurePositionsBox(subjectEl, positionA, positionB) {
       if (!subjectEl) return;
       let box = subjectEl.querySelector(".positions-box");
@@ -5050,6 +5073,7 @@ function generateHtml(sessions) {
           const questionEl = subjectEl.querySelector(".debate-question");
           if (questionEl) questionEl.textContent = limitedQuestion;
           ensurePositionsBox(subjectEl, data.positionA || "", data.positionB || "");
+          updatePoliticalTag(subjectEl, !!(data.politicalOrientation && data.politicalOrientation.isPolitical));
           updateAiEditorCounters(subjectEl);
           const agonBtn = subjectEl.querySelector(".agon-btn");
           const republishBtn = subjectEl.querySelector(".republish-btn");
@@ -5681,9 +5705,10 @@ function generateHtml(sessions) {
           const limitedQuestion = limitClientDebateQuestion(mediaData.debateQuestion || "");
           if (questionEl) questionEl.textContent = limitedQuestion;
           ensurePositionsBox(subjectEl, mediaData.positionA || "", mediaData.positionB || "");
+          updatePoliticalTag(subjectEl, !!(mediaData.politicalOrientation && mediaData.politicalOrientation.isPolitical));
           updateAiEditorCounters(subjectEl);
           const agonBtnStep3 = subjectEl.querySelector(".agon-btn");
-          if (agonBtnStep3) { agonBtnStep3.dataset.question = limitedQuestion; agonBtnStep3.dataset.positionA = String(mediaData.positionA || "").trim(); agonBtnStep3.dataset.positionB = String(mediaData.positionB || "").trim(); }
+          if (agonBtnStep3) { agonBtnStep3.dataset.question = limitedQuestion; agonBtnStep3.dataset.positionA = String(mediaData.positionA || "").trim(); agonBtnStep3.dataset.positionB = String(mediaData.positionB || "").trim(); agonBtnStep3.dataset.politicalOrientation = mediaData.politicalOrientation ? JSON.stringify(mediaData.politicalOrientation) : ""; }
           if (fullArticleState) fullArticleState.value = "problematique";
           const finalBtn = subjectEl.querySelector(".final-article-btn");
           if (finalBtn) finalBtn.textContent = "✓ Angle & question générés";

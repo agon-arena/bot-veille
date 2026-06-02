@@ -1642,7 +1642,75 @@
         "contentCount": 6,
         "articleCount": 6,
         "youtubeCount": 0,
-        "ai": null,
+        "ai": {
+          "arenaMode": "positions",
+          "debateScore": 9,
+          "controversyLevel": "très fort",
+          "debateQuestion": "",
+          "resume": "",
+          "keywords": [
+            "Ivan Cepeda",
+            "Abelardo de la Espriella",
+            "gauche",
+            "extrême droite",
+            "second tour",
+            "droite dure",
+            "élection présidentielle"
+          ],
+          "selectedLinks": [
+            "https://www.lemonde.fr/international/article/2026/06/01/presidentielle-en-colombie-abelardo-de-la-espriella-un-millionnaire-admirateur-de-donald-trump-et-ivan-cepeda-le-candidat-de-la-gauche-s-affronteront-au-second-tour_6695677_3210.html",
+            "https://www.humanite.fr/monde/colombie/presidentielle-en-colombie-tout-comprendre-au-scrutin-historique-qui-oppose-la-gauche-nouvellement-au-pouvoir-et-une-droite-dure-et-securitaire-ce-dimanche",
+            "http://fr.euronews.com/2026/06/01/presidentielle-en-colombie-admirateur-de-trump-abelardo-de-la-espriella-est-au-second-tour",
+            "https://www.rfi.fr/fr/am%C3%A9riques/20260601-pr%C3%A9sidentielle-en-colombie-le-second-tour-opposera-un-candidat-de-gauche-%C3%A0-un-repr%C3%A9sentant-de-la-droite-dure",
+            "https://www.france24.com/fr/am%C3%A9riques/20260531-pr%C3%A9sidentielle-en-colombie-suivez-en-direct-le-premier-tour"
+          ],
+          "agonTheme": "International",
+          "positionA": "",
+          "positionB": "",
+          "sourceSubject": "Présidentielle en Colombie : le second tour opposera Ivan Cepeda, candidat de la gauche, à Abelardo de la Espriella, un avocat d’extrême droite",
+          "fullArticleState": "short",
+          "mainKeyword": "Présidentielle en Colombie",
+          "storyLink": {
+            "story_decision": "existing_story",
+            "matched_story_id": "13-l-amerique-latine-connait-de-nouvelles-tensions-politiques-sociales-et-securitai",
+            "matched_story_title": "L’Amérique latine connaît de nouvelles tensions politiques, sociales et sécuritaires",
+            "matched_story_summary": "",
+            "previous_episode_id": "",
+            "previous_episode_title": "",
+            "previous_episode_summary": "",
+            "previous_episode_url": "",
+            "confidence": 0.85,
+            "reason": "L'actualité porte sur une élection présidentielle en Colombie, un pays d'Amérique latine, avec un enjeu politique clair entre gauche et droite dure, ce qui correspond bien à l'histoire sur les tensions politiques en Amérique latine.",
+            "criteria": {
+              "main_actors_match": true,
+              "central_tension_match": true,
+              "temporal_continuity": true,
+              "editorial_theme_match": true,
+              "strong_keywords_match": true
+            },
+            "new_story": {
+              "story_title": "",
+              "story_summary": "",
+              "main_actors": [
+                "presidentielle",
+                "colombie",
+                "second"
+              ],
+              "central_tension": "La Colombie doit-elle choisir la sécurité ou le progrès social?",
+              "keywords": [
+                "presidentielle",
+                "colombie",
+                "second",
+                "tour",
+                "opposera",
+                "ivan",
+                "cepeda",
+                "candidat"
+              ],
+              "status": "active"
+            }
+          }
+        },
         "contents": [
           {
             "type": "article",
@@ -1712,8 +1780,8 @@
           }
         ],
         "subjectId": "subject_004",
-        "debateScore": 8,
-        "controversyLevel": "fort",
+        "debateScore": 9,
+        "controversyLevel": "très fort",
         "selectedLinks": [
           "https://www.lemonde.fr/international/article/2026/06/01/presidentielle-en-colombie-abelardo-de-la-espriella-un-millionnaire-admirateur-de-donald-trump-et-ivan-cepeda-le-candidat-de-la-gauche-s-affronteront-au-second-tour_6695677_3210.html",
           "https://www.humanite.fr/monde/colombie/presidentielle-en-colombie-tout-comprendre-au-scrutin-historique-qui-oppose-la-gauche-nouvellement-au-pouvoir-et-une-droite-dure-et-securitaire-ce-dimanche",
@@ -1722,7 +1790,7 @@
           "https://www.france24.com/fr/am%C3%A9riques/20260531-pr%C3%A9sidentielle-en-colombie-suivez-en-direct-le-premier-tour"
         ],
         "scoreAnalyzed": true,
-        "aiAnalyzed": false
+        "aiAnalyzed": true
       },
       {
         "subject": "La marine française a arraisonné un pétrolier russe sous sanctions internationales dans l'océan Atlantique, annonce Emmanuel Macron",
@@ -2127,7 +2195,74 @@
         "contentCount": 5,
         "articleCount": 5,
         "youtubeCount": 0,
-        "ai": null,
+        "ai": {
+          "arenaMode": "positions",
+          "debateScore": 6,
+          "controversyLevel": "moyen",
+          "debateQuestion": "",
+          "resume": "",
+          "keywords": [
+            "Choose France",
+            "investissements étrangers",
+            "Emmanuel Macron",
+            "sommet Choose France",
+            "75 milliards d’euros",
+            "intelligence artificielle"
+          ],
+          "selectedLinks": [
+            "https://www.la-croix.com/de-nouveaux-investissements-historiques-attendus-pour-le-sommet-choose-france-20260601",
+            "https://www.bfmtv.com/economie/une-edition-de-tous-les-records-top-depart-du-dernier-sommet-choose-france-d-emmanuel-macron-des-dizaines-de-milliards-d-euros-d-investissements-sont-attendus-dans-l-ia-et-les-data-centers_AD-202606010168.html",
+            "https://www.bfmtv.com/economie/economie-social/direct-vers-un-nouveau-record-d-investissements-etrangers-annonces-dans-l-hexagone-suivez-la-neuvieme-edition-du-sommet-choose-france-au-chateau-de-versailles_LN-202606010062.html",
+            "https://www.lefigaro.fr/economie/softbank-promet-jusqu-a-75-milliards-d-euros-d-investissement-dans-les-data-centers-20260531",
+            "https://www.valeursactuelles.com/economie/sommet-choose-france-deja-plus-de-70-milliards-deuros-dinvestissements-etrangers-annonces-en-france"
+          ],
+          "agonTheme": "Économie - emploi",
+          "positionA": "",
+          "positionB": "",
+          "sourceSubject": "Softbank promet jusqu’à 75 milliards d’euros d’investissement dans les data centers",
+          "fullArticleState": "short",
+          "mainKeyword": "Softbank data centers",
+          "storyLink": {
+            "story_decision": "existing_story",
+            "matched_story_id": "14-la-mondialisation-se-transforme-sous-l-effet-des-rivalites-economiques-et-geopol",
+            "matched_story_title": "La mondialisation se transforme sous l’effet des rivalités économiques et géopolitiques",
+            "matched_story_summary": "",
+            "previous_episode_id": "518",
+            "previous_episode_title": "L'accord UE-Mexique profitera-t-il vraiment aux économies locales ?",
+            "previous_episode_summary": "L’Union européenne et le Mexique viennent de franchir un cap majeur en signant un accord commercial ambitieux, prêt à bouleverser leurs échanges économiques. Ce pacte promet de réduire progressivement les droits de douane, ouvrant un nouveau terrain de jeu pour leurs relations commerciales.\n\nEn levant les barrières tarifaires sur une large palette de produits, des terres rares au sirop d’agave, cet accord pourrait bien redessiner la carte des flux commerciaux entre les deux continents. Plus qu’un simple traité, il s’inscrit dans une stratégie européenne claire : renforcer son ancrage en Amérique latine par des liens économiques solides et durables. Pour les entreprises, c’est une opportunité de croissance et d’innovation, mais aussi un défi pour s’adapter à un marché en pleine mutation.\n\nCe partenariat marque une étape cruciale dans la coopération transatlantique, avec des enjeux lourds de conséquences pour les économies locales. Le chemin s’annonce semé d’incertitudes, et l’avenir de ce rapprochement reste à écrire.\n\nL'accord UE-Mexique profitera-t-il vraiment aux économies locales ?\n\nJ.L Grasso",
+            "previous_episode_url": "http://localhost:3001/debate?id=518",
+            "confidence": 0.85,
+            "reason": "L'investissement massif de SoftBank dans les data centers en France lors du sommet Choose France illustre un enjeu économique et géopolitique majeur lié à la mondialisation et aux rivalités économiques internationales.",
+            "criteria": {
+              "main_actors_match": true,
+              "central_tension_match": true,
+              "temporal_continuity": true,
+              "editorial_theme_match": true,
+              "strong_keywords_match": true
+            },
+            "new_story": {
+              "story_title": "",
+              "story_summary": "",
+              "main_actors": [
+                "softbank",
+                "promet",
+                "jusqu"
+              ],
+              "central_tension": "Faut-il privilégier l'investissement étranger massif ou la souveraineté numérique locale?",
+              "keywords": [
+                "softbank",
+                "promet",
+                "jusqu",
+                "milliards",
+                "euros",
+                "investissement",
+                "data",
+                "centers"
+              ],
+              "status": "active"
+            }
+          }
+        },
         "contents": [
           {
             "type": "article",
@@ -2186,7 +2321,7 @@
           }
         ],
         "subjectId": "subject_007",
-        "debateScore": 5,
+        "debateScore": 6,
         "controversyLevel": "moyen",
         "selectedLinks": [
           "https://www.la-croix.com/de-nouveaux-investissements-historiques-attendus-pour-le-sommet-choose-france-20260601",
@@ -2194,7 +2329,7 @@
           "https://www.lefigaro.fr/economie/softbank-promet-jusqu-a-75-milliards-d-euros-d-investissement-dans-les-data-centers-20260531"
         ],
         "scoreAnalyzed": true,
-        "aiAnalyzed": false
+        "aiAnalyzed": true
       }
     ]
   },

@@ -2155,30 +2155,28 @@ Vérification prioritaire des sauts de ligne :
 Question latine — règle prioritaire absolue :
 - Tu dois obligatoirement produire le champ latinQuestion.
 - latinQuestion est un élément central de l'article Agôn : il ne doit jamais être vide, absent ou oublié.
-- latinQuestion doit être une formule pseudo-latine courte de 2 à 4 mots.
-- Format recommandé : Mot latin simple + "an" + mot latin simple.
-- Exemple de forme seulement : "Memoria an oblivio".
+- latinQuestion doit être une formule pseudo-latine courte : exactement 3 mots, format "Mot an Mot".
 - La ligne latine dans article doit être exactement identique au champ latinQuestion.
-- Elle doit être très courte.
 - Elle ne doit jamais avoir de point d'interrogation.
-- Elle doit résumer symboliquement l'enjeu.
 - Elle doit être placée juste avant la question Agôn définitive.
-- Elle doit rester simple, même si le latin est basique.
-- Crée une formule latine nouvelle et adaptée au sujet.
 - Le champ latinQuestion ne doit jamais être vide quand la réponse JSON est valide.
 - Ne jamais utiliser "Agôn", "Agon" ou le nom de la plateforme dans la question latine.
-- Ne pas utiliser de mot grec, de marque, de nom propre ou de nom de média.
-- Ne réutilise pas mécaniquement les exemples.
-- Évite "Salus an libertas" sauf si le sujet oppose vraiment sécurité, protection ou santé à des libertés publiques.
-- Varie les mots selon l'enjeu réel : justice, force, peur, paix, loi, vérité, prudence, autorité, solidarité.
-- Ne réponds jamais avec une formule générique.
-- Les exemples ci-dessous montrent seulement la forme. Ne les recopie pas.
-- Exemples de forme :
-  "Pax an vis"
-  "Lex an metus"
-  "Veritas an utilitas"
-  "Prudentia an audacia"
-  "Auctoritas an concordia"
+- Ne pas utiliser de mot grec, de marque, de nom propre ou de nom de pays.
+
+Méthode obligatoire pour créer la question latine :
+1. Identifie les deux forces, valeurs ou positions qui s'affrontent dans CE débat précis — pas dans un débat abstrait.
+2. Exprime cette tension en deux mots latins séparés par "an".
+3. Le résultat doit être spécifique à CE sujet : quelqu'un qui lit la formule doit pouvoir deviner l'enjeu du débat.
+
+Exemples de raisonnement (ne pas recopier) :
+- Débat sur la riposte militaire → tension : frapper vs négocier → "Vis an pax"
+- Débat sur la notation scolaire → tension : exigence vs accompagnement → "Disciplina an cura"
+- Débat sur une élection à risque → tension : stabilité vs rupture → "Ordo an mutatio"
+- Débat sur la surveillance numérique → tension : sécurité vs liberté individuelle → "Securitas an libertas"
+
+Ne jamais produire une formule générique comme "Lex an prudentia" ou "Veritas an utilitas" si elle ne correspond pas précisément à la tension identifiée.
+Ne pas choisir les mots latins les plus simples ou les plus courants par défaut. Choisis les mots les plus précis pour CE débat, même s'ils sont moins fréquents.
+Interdits sauf si parfaitement justifiés : "vis", "pax", "lex", "probitas", "veritas", "auctoritas" — ces mots sont trop souvent utilisés comme raccourci générique.
 
 Question Agôn :
 - Elle doit être claire, concrète et débattable.
@@ -2296,7 +2294,7 @@ Réponds uniquement en JSON valide, sans balises markdown.`;
     const finalisationResponse = await openai.responses.create({
       model: "gpt-4.1-mini",
       input: promptFinalisation,
-      temperature: 0.2,
+      temperature: 0.45,
       max_output_tokens: 2200
     });
     const parsed = safeJsonParse(String(finalisationResponse.output_text || "").trim());
