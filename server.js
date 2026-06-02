@@ -1695,17 +1695,20 @@ Ne commence jamais par :
 - “Deux logiques s’opposent…”
 - “La difficulté tient à…”
 
-Le paragraphe doit faire sentir le conflit en montrant ce que chaque option risque de produire.
+Le paragraphe doit faire sentir le conflit sans jamais alterner option/inconvénient/option/inconvénient.
 
 Méthode obligatoire :
-1. Commencer par une conséquence concrète.
-2. Montrer le risque de la première option.
-3. Retour à la ligne obligatoire entre les deux options.
-4. Montrer le risque inverse de l’autre option.
-5. Finir sur une phrase courte qui resserre la tension.
+1. Énoncer les deux options face à face en une ou deux phrases courtes.
+2. Retour à la ligne obligatoire.
+3. Montrer ce qui rend le choix difficile : l’enjeu commun, le prix à payer quelle que soit l’option choisie.
+4. Finir sur une phrase courte qui resserre la tension.
+
+Interdit absolument :
+- Ne jamais construire le paragraphe comme : “Option A → inconvénient A. À l’inverse, Option B → inconvénient B.”
+- Ce pattern est lourd et répétitif. Il donne l’impression d’un catalogue, pas d’un enjeu.
 
 Exemple de ton :
-“Frapper peut envoyer un signal clair. Mais dans une zone aussi inflammable, un signal peut vite appeler une réponse. À l’inverse, freiner l’escalade protège la région d’un embrasement immédiat, sans répondre à la question qui obsède Israël : que faire si la menace se reconstitue de l’autre côté de la frontière ?”
+“Frapper ou ne pas frapper : les deux camps ont leurs arguments. [retour à la ligne] Le problème, c’est qu’aucune option ne répond à ce qu’Israël redoute vraiment — une menace qui se reconstitue de l’autre côté de la frontière, quoi qu’il arrive.”
 
 Attention :
 - Ne pas utiliser exactement cet exemple.
@@ -1883,16 +1886,20 @@ Style demandé :
 Deuxième paragraphe :
 - Ne décris pas le dilemme de façon scolaire.
 - Ne commence jamais par “Le choix est…”, “Le dilemme est…”, “Cette tension oppose…”, “Deux logiques s’opposent…” ou “La difficulté tient à…”.
-- Commence par une conséquence concrète.
-- Montre le risque de la première option.
-- Montre le risque inverse de l’autre option.
-- Termine par une phrase courte qui resserre la tension.
+- Énoncer les deux options face à face en une ou deux phrases courtes.
+- Retour à la ligne obligatoire.
+- Montrer ce qui rend le choix difficile : l’enjeu commun, le prix à payer quelle que soit l’option choisie.
+- Terminer par une phrase courte qui resserre la tension.
 - Utilise des verbes concrets : frapper, céder, reculer, tenir, bloquer, exposer, rassurer, provoquer, contenir, protéger, relancer.
 - Évite les mots abstraits répétés : enjeu, dilemme, tension, choix collectif, équilibre, stabilité.
 - Le paragraphe doit rester sobre, mais plus nerveux.
 
+Interdit absolument :
+- Ne jamais construire le paragraphe comme : “Option A → inconvénient A. À l’inverse, Option B → inconvénient B.”
+- Ce pattern alterne option/inconvénient/option/inconvénient. Il est lourd et donne l’impression d’un catalogue, pas d’un enjeu.
+
 Exemple de ton à adapter sans recopier :
-“Frapper peut envoyer un signal clair. Mais dans une zone aussi inflammable, un signal peut vite appeler une réponse. À l’inverse, freiner l’escalade protège la région d’un embrasement immédiat, sans répondre à la question qui obsède Israël : que faire si la menace se reconstitue de l’autre côté de la frontière ?”
+“Frapper ou ne pas frapper : les deux camps ont leurs arguments. [retour à la ligne] Le problème, c’est qu’aucune option ne répond à ce qu’Israël redoute vraiment — une menace qui se reconstitue de l’autre côté de la frontière, quoi qu’il arrive.”
 
 Éviter les formulations scolaires ou trop IA comme :
 - “Cette situation révèle…”
@@ -1990,7 +1997,7 @@ Vérification obligatoire avant de répondre :
 1. Le JSON ne contient pas de champ latinQuestion.
 2. article contient une ligne vide juste après la première phrase.
 3. article contient une ligne vide entre le premier paragraphe et le deuxième paragraphe.
-4. Le deuxième paragraphe contient un retour à la ligne entre la première option et la deuxième option.
+4. Le deuxième paragraphe contient un retour à la ligne entre l'énoncé des options et l'explication de l'enjeu commun.
 5. debateQuestion apparaît seule dans article, juste avant la signature.
 6. La ligne française dans article est exactement identique au champ debateQuestion.
 7. debateQuestion fait 80 caractères maximum.
@@ -2180,7 +2187,7 @@ Vérification obligatoire avant de répondre :
 5. La ligne française dans article est exactement identique au champ debateQuestion.
 6. Il y a une ligne vide juste après la première phrase de article.
 7. Il y a une ligne vide entre le premier paragraphe et le deuxième paragraphe.
-8. Le deuxième paragraphe contient un retour à la ligne entre la première option et la deuxième option.
+8. Le deuxième paragraphe contient un retour à la ligne entre l'énoncé des options et l'explication de l'enjeu commun.
 9. Il y a une ligne vide entre latinQuestion et debateQuestion.
 10. Il y a une ligne vide entre debateQuestion et la signature.
 11. debateQuestion fait 80 caractères maximum.
