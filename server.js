@@ -4880,6 +4880,10 @@ app.post("/api/auto-collect", (req, res) => {
 
 // ==================== FIN ROUTES CERTAMEN ====================
 
+app.get("/ping", (req, res) => {
+  res.json({ ok: true, ts: Date.now() });
+});
+
 const httpServer = app.listen(PORT, () => {
   console.log(`Serveur lancé sur le port ${PORT}`);
   scheduleAutoCollect(loadAutoCollectConfig());
