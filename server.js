@@ -2816,8 +2816,7 @@ function requireMixteAuth(req, res, next) {
   if (getMixteCookie(req) === MIXTE_PASSWORD) return next();
   if (req.query.token === MIXTE_PASSWORD) {
     res.setHeader("Set-Cookie", `mixte_auth=${MIXTE_PASSWORD}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${60 * 60 * 24 * 30}`);
-    const clean = req.path;
-    return res.redirect(clean);
+    return next();
   }
   res.status(401).send(`<!DOCTYPE html>
 <html lang="fr">

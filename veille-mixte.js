@@ -2077,6 +2077,7 @@ function generateHtml(sessions) {
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
+  <script>if (window.location.search.includes('token')) history.replaceState({}, '', window.location.pathname);</script>
   <title>Veille mixte presse + YouTube</title>
   <style>
     body {
@@ -6540,6 +6541,7 @@ function generateCertamenHtml(sessions) {
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
+<script>if (window.location.search.includes('token')) history.replaceState({}, '', window.location.pathname);</script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Certamen — Sujets débattables</title>
 <style>
