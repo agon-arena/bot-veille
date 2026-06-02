@@ -148,5 +148,20 @@
     "nom": "Nice Matin",
     "orientation": "généraliste",
     "rss": "https://www.nicematin.com/rss"
+  },
+  {
+    "nom": "Actu.fr",
+    "orientation": "généraliste",
+    "rss": "https://feeds.feedburner.com/actu/dDcd"
+  },
+  {
+    "nom": "Le Progrès",
+    "orientation": "généraliste",
+    "rss": "https://www.leprogres.fr/fil-info/rss"
+  },
+  {
+    "nom": "Le Courrier International",
+    "orientation": "gauche",
+    "rss": "https://www.courrierinternational.com/feed/all/rss.xml"
   }
 ]
