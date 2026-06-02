@@ -834,7 +834,6 @@ Agôn ne veut pas republier une revue de presse. Cette étape sert uniquement à
 Objectif :
 - établir les faits principaux ;
 - identifier les acteurs concernés ;
-- distinguer ce qui est confirmé de ce qui reste incertain ;
 - rester strictement dans les informations présentes dans les sources.
 
 Règles absolues :
@@ -847,7 +846,7 @@ Règles absolues :
 - Ne pas écrire comme une dépêche froide.
 - Ne pas copier les formulations des sources.
 - Ne pas mentionner “les médias” en général si les sources ne permettent pas de le dire.
-- Si une information est absente, incertaine ou contradictoire, le signaler sobrement ou ne pas l’ajouter.
+- Si une information est absente, incertaine ou contradictoire, ne pas l’ajouter.
 
 Utilise au maximum 5 sources.
 
@@ -870,7 +869,7 @@ Texte brut uniquement, sans titre, sans signature, sans liste.
 Structure du texte :
 1. Une première phrase qui résume clairement le sujet.
 2. Quelques phrases qui expliquent les faits principaux.
-3. Une phrase finale qui indique l’enjeu immédiat ou ce qui reste à clarifier.
+3. Une phrase finale qui indique l’enjeu immédiat ou la décision qui se pose.
 
 Longueur :
 1000 à 1500 caractères.
