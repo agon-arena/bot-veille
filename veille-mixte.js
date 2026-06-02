@@ -6784,6 +6784,14 @@ apiApp.post("/certamen/refresh", async function(req, res) {
 
 // ==================== FIN MODE CERTAMEN ====================
 
+if (!fs.existsSync(OUTPUT_HTML)) {
+  const existingSessions = loadSessions();
+  if (existingSessions.length > 0) {
+    fs.writeFileSync(OUTPUT_HTML, generateHtml(existingSessions), "utf8");
+    console.log(`veille-mixte.html régénéré au démarrage (${existingSessions.length} session(s)).`);
+  }
+}
+
 const localApiServer = apiApp.listen(API_PORT, "127.0.0.1", () => {
   console.log(`API mixte lancée sur 127.0.0.1:${API_PORT}`);
 });

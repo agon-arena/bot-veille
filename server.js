@@ -206,7 +206,7 @@ const AGON_ARTICLE_MAX_LENGTH = 1600;
 function limitDebateQuestion(text) {
   const raw = String(text || "").replace(/\s+/g, " ").trim();
   if (!raw) return "";
-  const maxLength = 110;
+  const maxLength = 80;
   const danglingWords = /(?:\s+(?:le|la|les|l|un|une|des|du|de|d|à|au|aux|et|ou|pour|par|avec|sans|malgré|face|contre|sur))$/i;
 
   function finalizeQuestion(value) {
@@ -1267,8 +1267,8 @@ Réponds uniquement en JSON valide, sans balises markdown.`;
     debateAngle: limitStoryText(parsed.debateAngle || subject, 180),
     narrativeTension: limitStoryText(parsed.narrativeTension || narrativeTension, 220),
     debateQuestion: limitDebateQuestion(parsed.debateQuestion || subject),
-    positionA: limitStoryText(parsed.positionA || "Pour", 55),
-    positionB: limitStoryText(parsed.positionB || "Contre", 55),
+    positionA: String(parsed.positionA || "Pour").replace(/\s+/g, " ").trim(),
+    positionB: String(parsed.positionB || "Contre").replace(/\s+/g, " ").trim(),
     editorialDecision,
     questionQuality
   };
@@ -1794,8 +1794,8 @@ Réponds uniquement en JSON valide, sans balises markdown.`;
   const baseResult = {
     article: limitStoryText(parsed.article || summary, 1600),
     debateQuestion: limitDebateQuestion(parsed.debateQuestion || debateQuestion),
-    positionA: String(parsed.positionA || positionA).trim(),
-    positionB: String(parsed.positionB || positionB).trim()
+    positionA: String(parsed.positionA || positionA).replace(/\s+/g, " ").trim(),
+    positionB: String(parsed.positionB || positionB).replace(/\s+/g, " ").trim()
   };
 
   return polishAgonFinalArticle(payload, baseResult);
@@ -1808,8 +1808,8 @@ async function polishAgonFinalArticle(payload, previousJson) {
   const base = {
     article: String(previousJson?.article || "").trim(),
     debateQuestion: String(previousJson?.debateQuestion || "").trim(),
-    positionA: String(previousJson?.positionA || "").trim(),
-    positionB: String(previousJson?.positionB || "").trim()
+    positionA: String(previousJson?.positionA || "").replace(/\s+/g, " ").trim(),
+    positionB: String(previousJson?.positionB || "").replace(/\s+/g, " ").trim()
   };
 
   if (!openai || !base.article) {
@@ -2246,8 +2246,8 @@ Réponds uniquement en JSON valide, sans balises markdown.`;
       article: finalArticle,
       latinQuestion: finalLatinQuestion,
       debateQuestion: finalQuestion,
-      positionA: limitStoryText(parsed.positionA || editorialJson.positionA || base.positionA, 55),
-      positionB: limitStoryText(parsed.positionB || editorialJson.positionB || base.positionB, 55)
+      positionA: String(parsed.positionA || editorialJson.positionA || base.positionA || "Pour").replace(/\s+/g, " ").trim(),
+      positionB: String(parsed.positionB || editorialJson.positionB || base.positionB || "Contre").replace(/\s+/g, " ").trim()
     };
   } catch (error) {
     console.error("Erreur finition article Agôn :", error.message);
