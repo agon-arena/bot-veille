@@ -204,7 +204,7 @@ const AGON_ARTICLE_MIN_LENGTH = 800;
 const AGON_ARTICLE_MAX_LENGTH = 1600;
 
 function limitDebateQuestion(text) {
-  return String(text || "").trim();
+  return String(text || "").trim().replace(/\s*\?$/, " ?");
 }
 
 const AGON_ARTICLE_SIGNATURE_LIST = [

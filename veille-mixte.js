@@ -4596,7 +4596,7 @@ function generateHtml(sessions) {
           .trim();
         stem = stem.replace(danglingWords, "").trim();
         if (!stem) return "";
-        return stem + "?";
+        return stem + " ?";
       }
 
       function shortenAtWord(value) {
