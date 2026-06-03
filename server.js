@@ -224,7 +224,7 @@ function getNextAgonArticleSignature() {
 
 function looksLikeLatinQuestionLine(line) {
   const value = String(line || "").trim();
-  return /^[A-ZÀ-Ÿ][A-Za-zÀ-ÿ]+(?:\s+an\s+[A-Za-zÀ-ÿ]+){1,3}$/.test(value);
+  return /^[A-ZÀ-Ÿ][A-Za-zÀ-ÿ]+(?:\s+[A-Za-zÀ-ÿ]+){1,4}$/.test(value);
 }
 
 function normalizeLatinQuestion(line) {
@@ -253,22 +253,7 @@ function buildFallbackLatinQuestion(payload = {}) {
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "");
 
-  const candidates = [
-    { pattern: /code noir|esclavag|colon/i, latin: "Memoria an oblivio" },
-    { pattern: /memoire|histoire|passe|commemoration|heritage/i, latin: "Memoria an oblivio" },
-    { pattern: /guerre|frappe|militaire|attaque|ukraine|israel|liban|iran|russie/i, latin: "Pax an vis" },
-    { pattern: /justice|tribunal|prison|peine|condamnation|proces/i, latin: "Lex an iustitia" },
-    { pattern: /securite|police|terror|violence|fusillade|crime/i, latin: "Ordo an libertas" },
-    { pattern: /ecole|eleve|enseign|education|notation|examen/i, latin: "Disciplina an cura" },
-    { pattern: /sante|hopital|medecin|maladie|vaccin|soin/i, latin: "Salus an cura" },
-    { pattern: /climat|canicule|eau|biodiversite|pollution|environnement/i, latin: "Natura an lucrum" },
-    { pattern: /ia|intelligence artificielle|algorithme|numerique|donnee|technologie/i, latin: "Ratio an imperium" },
-    { pattern: /argent|budget|dette|taxe|impot|economie|emploi|salaire/i, latin: "Utilitas an aequitas" },
-    { pattern: /verite|information|media|desinformation|mensonge/i, latin: "Veritas an utilitas" }
-  ];
-
-  const selected = candidates.find((candidate) => candidate.pattern.test(text))?.latin
-    || "Lex an prudentia";
+  const selected = "Res ipsa loquitur";
   return normalizeLatinQuestion(selected);
 }
 
@@ -1036,7 +1021,7 @@ ${sourcesTitlesSection}
 Réponds uniquement en JSON valide, sans balises markdown.`;
 
   const response = await openai.responses.create({
-    model: "gpt-4o-mini",
+    model: "gpt-4o",
     input: prompt,
     temperature: 0.5,
     max_output_tokens: 900
@@ -1094,11 +1079,11 @@ Position A : "${positionA}"
 Position B : "${positionB}"
 
 Ta mission :
-Déterminer si cette question révèle un clivage politique gauche/droite clair et reconnaissable.
+Déterminer si cette question révèle un clivage politique gauche/droite, même tendanciel ou probable.
 
-Un clivage gauche/droite est clair quand une des positions correspond typiquement à des valeurs de gauche (solidarité, régulation, services publics, égalité, collectif) et l'autre à des valeurs de droite (liberté individuelle, marché, sécurité, mérite, souveraineté nationale).
+Un clivage gauche/droite existe quand une des positions s'aligne tendanciellement avec des valeurs de gauche (solidarité, régulation, services publics, égalité, collectif) et l'autre avec des valeurs de droite (liberté individuelle, marché, sécurité, mérite, souveraineté nationale).
 
-Si le débat est technique, éthique, stratégique, ou si les deux camps ne se distinguent pas clairement selon cet axe : réponds false.
+Même si le clivage n'est pas parfaitement symétrique ou évident, réponds true dès qu'une orientation probable se dégage. Ne réponds false que si le débat est vraiment neutre politiquement (purement technique, scientifique ou factuel).
 
 JSON attendu uniquement :
 {
@@ -1115,7 +1100,7 @@ Réponds uniquement en JSON valide, sans balises markdown.`;
     const response = await openai.responses.create({
       model: "gpt-4.1-mini",
       input: prompt,
-      temperature: 0.2,
+      temperature: 0.4,
       max_output_tokens: 200
     });
     const parsed = safeJsonParse(response.output_text || "");
@@ -1132,220 +1117,7 @@ Réponds uniquement en JSON valide, sans balises markdown.`;
   return { positionA, positionB, politicalOrientation: { isPolitical: false, positionA: null, positionB: null } };
 }
 
-async function generateProblematique(payload) {
-  const summary = String(payload?.summary || "").trim();
-  const subject = String(payload?.subject || "").trim();
-  const hasMediaContrast = payload?.hasMediaContrast === true;
-  const mediaTreatment = String(payload?.mediaTreatment || "").trim();
-  const mainIssue = String(payload?.mainIssue || "").trim();
-  const narrativeTension = String(payload?.narrativeTension || "").trim();
-  const debatePotential = String(payload?.debatePotential || "").trim();
-  const editorialWarning = String(payload?.editorialWarning || "").trim();
-  const possibleBiases = Array.isArray(payload?.possibleBiases)
-    ? payload.possibleBiases.map((item) => String(item || "").trim()).filter(Boolean).slice(0, 4)
-    : [];
 
-  if (!summary) {
-    throw new Error("Résumé manquant pour générer la problématique.");
-  }
-
-  if (!openai) {
-    return {
-      debateAngle: limitStoryText(subject, 180),
-      debateQuestion: limitDebateQuestion(subject),
-      positionA: "Pour",
-      positionB: "Contre"
-    };
-  }
-
-  const mediaSection = [
-    hasMediaContrast && mediaTreatment ? `Traitement médiatique : ${mediaTreatment}` : "",
-    mainIssue ? `Enjeu principal : ${mainIssue}` : "",
-    narrativeTension ? `Tension narrative : ${narrativeTension}` : "",
-    possibleBiases.length ? `Biais de lecture possibles : ${possibleBiases.join(", ")}` : "",
-    debatePotential ? `Potentiel de débat : ${debatePotential}` : "",
-    editorialWarning ? `Alerte éditoriale : ${editorialWarning}` : ""
-  ].filter(Boolean).join("\n");
-
-  const prompt = `Tu es un assistant éditorial pour Agôn.
-
-Tu reçois :
-1. un résumé factuel neutre ;
-2. une analyse des angles médiatiques et de l'enjeu du sujet.
-
-Ta mission :
-transformer l'actualité en question Agôn claire, concrète et débattable.
-
-Tu ne dois pas rédiger l'article final.
-Tu ne dois pas refaire le résumé.
-Tu ne dois pas ajouter de faits nouveaux.
-
-Agôn ne cherche pas une question artificielle. Agôn cherche le vrai choix collectif, le vrai désaccord ou le vrai enjeu que l'actualité révèle.
-
-Règle centrale :
-évite les questions trop évidentes.
-
-Exemples de questions faibles :
-- "Faut-il éviter les accidents ?"
-- "Faut-il protéger les enfants ?"
-- "Faut-il renforcer la sécurité ?"
-- "Faut-il empêcher la guerre ?"
-- "Faut-il s'inquiéter ?"
-
-Ces questions sont mauvaises parce qu'un camp paraît évident.
-
-Si la question naturelle est trop évidente, cherche le vrai débat derrière :
-- sécurité maximale vs coût / faisabilité ;
-- diplomatie vs rapport de force ;
-- liberté vs sécurité ;
-- exigence vs accompagnement ;
-- innovation vs protection ;
-- responsabilité individuelle vs action publique ;
-- urgence vs prudence ;
-- intérêt national vs coopération internationale.
-
-Champs attendus :
-
-debateAngle :
-une phrase courte qui résume le vrai enjeu du débat.
-Maximum 180 caractères.
-Ne pas poser une question.
-
-narrativeTension :
-une phrase concrète qui résume pourquoi le sujet devient difficile à trancher.
-Elle doit opposer deux risques réels et aider ensuite à écrire un article plus vivant.
-Ne pas poser une question.
-Exemple : "Soutenir la riposte peut affirmer une ligne ferme ; encourager la retenue peut éviter une escalade que personne ne maîtrisera."
-
-debateQuestion :
-une seule question claire, directe et débattable.
-LIMITE ABSOLUE : 80 caractères maximum, espaces, tirets et point d'interrogation compris. Ne dépasse jamais cette limite. Si ta question dépasse 80 caractères, raccourcis-la avant de répondre.
-Elle doit être compréhensible sans lire l'article.
-Elle doit être ancrée dans le sujet précis de l'actualité.
-Elle doit permettre deux positions défendables.
-Elle ne doit pas être trop générale.
-Elle ne doit pas être une évidence morale.
-
-positionA :
-
-un camp général, court et neutre.
-
-Maximum 55 caractères.
-
-Ne doit contenir aucun argument, aucune justification, aucun "pour", aucun "car".
-
-La position doit seulement nommer l'orientation générale du camp.
-
-positionB :
-
-le camp opposé, général, court et neutre.
-
-Maximum 55 caractères.
-
-Ne doit contenir aucun argument, aucune justification, aucun "pour", aucun "car".
-
-La position doit seulement nommer l'orientation générale du camp.
-
-Les positions ne doivent pas être des arguments.
-Elles doivent être des étiquettes de camp, très générales.
-
-Exemples corrects :
-- Suspendre les frappes
-- Maintenir la pression militaire
-- Renforcer la sécurité
-- Limiter les nouvelles contraintes
-- Assouplir la notation
-- Maintenir l'exigence
-- Évacuer par prudence
-- Maintenir la présence diplomatique
-
-Exemples interdits :
-- Suspendre les frappes pour préserver la paix
-- Maintenir la pression car l'Iran menace la région
-- Renforcer la sécurité afin d'éviter un nouveau drame
-- Assouplir la notation pour aider les élèves en difficulté
-
-editorialDecision :
-choisir exactement une valeur :
-- "arena"
-- "understand"
-- "reformulate"
-- "avoid"
-
-Règles pour editorialDecision :
-- "arena" si la question permet un vrai débat public.
-- "understand" si le sujet est important mais pas vraiment clivant.
-- "reformulate" si le sujet est intéressant mais la question reste trop évidente ou fragile.
-- "avoid" si le sujet est trop tragique, trop sensible, trop incertain ou trop risqué à transformer en débat.
-
-
-
-questionQuality :
-note de 1 à 10 sur la qualité de la question pour Agôn.
-
-Règles :
-- Ne force jamais un débat.
-- Les deux camps doivent sembler défendables.
-- Aucun camp ne doit être ridicule.
-- Ne transforme pas une tragédie récente en duel émotionnel.
-- Si le sujet est tragique, privilégie une question d'action publique ou classe en "understand".
-- La question doit révéler l'enjeu derrière l'actualité, pas seulement réagir au fait brut.
-- Préférer une formulation concrète : "Faut-il…", "Doit-on…", "La France doit-elle…", "Peut-on…", "Les États doivent-ils…".
-
-JSON attendu uniquement :
-{
-  "debateAngle": "...",
-  "narrativeTension": "...",
-  "debateQuestion": "...",
-  "positionA": "...",
-  "positionB": "...",
-  "editorialDecision": "arena/understand/reformulate/avoid",
-  "questionQuality": 0
-}
-
-Sujet :
-${subject}
-
-Résumé factuel :
-${summary}
-
-Analyse médiatique et enjeu :
-${mediaSection}
-
-Réponds uniquement en JSON valide, sans balises markdown.`;
-
-  const response = await openai.responses.create({
-    model: "gpt-4.1-mini",
-    input: prompt,
-    temperature: 0.3,
-    max_output_tokens: 600
-  });
-
-  let parsed = {};
-  try {
-    parsed = safeJsonParse(response.output_text || "");
-  } catch (error) {
-    parsed = {};
-  }
-
-  const allowedEditorialDecisions = new Set(["arena", "understand", "reformulate", "avoid"]);
-  const editorialDecision = allowedEditorialDecisions.has(String(parsed.editorialDecision || "").trim())
-    ? String(parsed.editorialDecision || "").trim()
-    : "reformulate";
-  const questionQuality = Number.isFinite(Number(parsed.questionQuality))
-    ? Math.max(1, Math.min(10, Number(parsed.questionQuality)))
-    : 0;
-
-  return {
-    debateAngle: limitStoryText(parsed.debateAngle || subject, 180),
-    narrativeTension: limitStoryText(parsed.narrativeTension || narrativeTension, 220),
-    debateQuestion: limitDebateQuestion(parsed.debateQuestion || subject),
-    positionA: String(parsed.positionA || "Pour").replace(/\s+/g, " ").trim(),
-    positionB: String(parsed.positionB || "Contre").replace(/\s+/g, " ").trim(),
-    editorialDecision,
-    questionQuality
-  };
-}
 
 
 function buildFallbackStorySuggestion(payload, stories = []) {
@@ -1897,224 +1669,7 @@ async function polishAgonFinalArticle(payload, previousJson) {
     return { ...base, latinQuestion: "" };
   }
 
-  const promptEditorial = `Tu dois retravailler le texte final d'un article Agôn en conservant strictement les contraintes techniques et éditoriales ci-dessous.
-
-Objectif :
-Améliorer la fluidité, la clarté et la force éditoriale du texte, surtout le deuxième paragraphe, qui doit faire apparaître l'enjeu, le contraste ou le choix collectif révélé par l'actualité.
-
-Le texte doit rester journalistique, sobre et crédible.
-Ne rends pas l'article pompeux, théâtral ou artificiellement solennel.
-
-Contraintes de longueur :
-- article : 800 à 1400 caractères.
-- debateQuestion : maximum 80 caractères, espaces, apostrophes, accents, tirets et point d'interrogation final compris.
-- positionA : maximum 55 caractères, espaces compris.
-- positionB : maximum 55 caractères, espaces compris.
-- Attention : le champ article est ensuite limité par le code à 1600 caractères. Il faut donc rester sous cette limite, signature comprise.
-
-Structure obligatoire du champ article :
-1. Une première phrase claire et mémorable.
-2. Ligne vide obligatoire juste après cette première phrase.
-3. Premier paragraphe court : ce qui s'est passé.
-4. Ligne vide obligatoire entre le premier paragraphe et le deuxième paragraphe.
-5. Deuxième paragraphe : l'enjeu, avec un retour à la ligne obligatoire entre la description de la première option et la description de la deuxième option.
-6. Ligne vide.
-7. Question Agôn définitive seule sur une ligne.
-8. Ligne vide.
-9. Signature seule sur la toute dernière ligne.
-
-Important :
-- À cette étape, ne produis aucune question latine.
-- N'ajoute aucun champ latinQuestion.
-- La question latine sera ajoutée dans une seconde étape.
-
-Règle de ton prioritaire :
-Le texte final doit ressembler à un court éditorial d'actualité, pas à un résumé de veille.
-Avant de réécrire, supprime mentalement les phrases génériques.
-Une phrase est générique si elle pourrait être utilisée dans un article sur un autre conflit, une autre crise ou une autre polémique.
-Chaque paragraphe doit contenir au moins une phrase qui avance vraiment : un verbe d'action, un risque, une opposition ou une conséquence possible.
-
-Le texte final doit contenir :
-- une accroche courte et concrète ;
-- un premier paragraphe factuel, mais pas administratif ;
-- un deuxième paragraphe construit sur ce que chaque option risque de coûter ;
-- une dernière phrase affirmative qui prépare la question sans répéter "débat", "enjeu" ou "choix collectif".
-
-Formulations interdites sauf nécessité factuelle forte :
-- "dans un contexte de tensions"
-- "chaque mouvement est scruté"
-- "la situation reste volatile"
-- "les détails restent flous"
-- "cette action s'inscrit dans"
-- "la tension monte"
-- "la stabilité fragile de la zone"
-- "les relations restent fragiles"
-- "la communauté internationale observe"
-
-Style demandé :
-- Ton éditorial sobre, tendu et vivant.
-- Texte clair, sérieux, accessible et journalistique.
-- Captivant sans être sensationnaliste.
-- Ne pas écrire comme une dépêche froide.
-- Ne pas écrire comme une tribune personnelle.
-- Ne pas forcer les métaphores d'arène, de cité, de combat ou de destin.
-- Éviter les formules trop solennelles sauf si le sujet s'y prête vraiment.
-- La première phrase doit pouvoir fonctionner comme une accroche forte, sans être un titre séparé.
-
-Deuxième paragraphe :
-- Ne décris pas le dilemme de façon scolaire.
-- Ne commence jamais par "Le choix est…", "Le dilemme est…", "Cette tension oppose…", "Deux logiques s'opposent…" ou "La difficulté tient à…".
-- Énoncer les deux options face à face en une ou deux phrases courtes.
-- Retour à la ligne obligatoire.
-- Montrer ce qui rend le choix difficile : l'enjeu commun, le prix à payer quelle que soit l'option choisie.
-- Terminer par une phrase courte qui resserre la tension.
-- Utilise des verbes concrets : frapper, céder, reculer, tenir, bloquer, exposer, rassurer, provoquer, contenir, protéger, relancer.
-- Évite les mots abstraits répétés : enjeu, dilemme, tension, choix collectif, équilibre, stabilité.
-- Le paragraphe doit rester sobre, mais plus nerveux.
-
-Interdit absolument :
-- Ne jamais construire le paragraphe comme : "Option A → inconvénient A. À l'inverse, Option B → inconvénient B."
-- Ce pattern alterne option/inconvénient/option/inconvénient. Il est lourd et donne l'impression d'un catalogue, pas d'un enjeu.
-
-Exemple de ton à adapter sans recopier :
-"Frapper ou ne pas frapper : les deux camps ont leurs arguments. [retour à la ligne] Le problème, c'est qu'aucune option ne répond à ce qu'Israël redoute vraiment — une menace qui se reconstitue de l'autre côté de la frontière, quoi qu'il arrive."
-
-Éviter les formulations scolaires ou trop IA comme :
-- "Cette situation révèle…"
-- "Ce sujet met en lumière…"
-- "Le choix collectif porte sur…"
-- "Cela questionne la capacité de…"
-- "Il s'agit d'équilibrer deux impératifs…"
-- "Cette actualité illustre…"
-- "Deux visions s'opposent…"
-- "Ce débat cristallise…"
-
-Préférer des formulations naturelles, tendues et concrètes, en variant fortement les tournures d'un article à l'autre.
-
-Exemples de ton possible, à adapter sans recopier mécaniquement :
-- "Le problème, c'est que…"
-- "D'un côté…, de l'autre…"
-- "La difficulté tient moins au constat qu'au choix à faire…"
-- "Ce qui semblait évident devient plus délicat à appliquer."
-- "Reste à savoir jusqu'où aller."
-- "La question n'est plus seulement ce qu'il faut faire, mais à quel prix."
-- "Le désaccord se déplace vers la méthode."
-- "La frontière devient difficile à tracer."
-- "Le sujet oblige à choisir entre deux prudences concurrentes."
-
-Important :
-- Ne jamais répéter mécaniquement les mêmes formules d'un article à l'autre.
-- Ces phrases sont des exemples de ton, pas des phrases à recopier systématiquement.
-- Adapter la formulation au sujet réel.
-- Si le sujet est léger ou très concret, rester simple.
-- Si le sujet est tragique, violent ou sensible, rester sobre et éviter tout effet dramatique.
-
-Question Agôn :
-- Elle doit être claire, concrète et débattable.
-- Maximum 80 caractères strictement.
-- Si elle dépasse 80 caractères, la raccourcir avant de répondre.
-- Elle doit toujours se terminer par un point d'interrogation.
-- Elle doit apparaître seule à la fin de l'article, juste avant la signature.
-- Elle ne doit apparaître qu'une seule fois dans l'article.
-- Elle doit être compréhensible sans lire tout l'article.
-- Elle doit permettre deux positions défendables.
-- La question finale ne doit pas contenir une justification qui avantage un camp.
-- Éviter les formulations du type :
-  "Faut-il faire X pour protéger / contenir / défendre / empêcher… ?"
-- Préférer :
-  "Faut-il choisir X ou Y ?"
-  "La France doit-elle soutenir X ?"
-  "Faut-il autoriser X malgré Y ?"
-- Éviter les questions molles comme :
-  "Faut-il s'inquiéter ?"
-  "Est-ce une bonne chose ?"
-  "Qui a raison ?"
-- Éviter les questions évidentes comme :
-  "Faut-il protéger les enfants ?"
-  "Faut-il éviter les accidents ?"
-  "Faut-il empêcher les drames ?"
-
-Positions :
-- positionA et positionB doivent être très générales.
-- Ce sont des étiquettes de camp, pas des arguments.
-- Maximum 55 caractères chacune.
-- Elles doivent répondre directement à la question.
-- Elles doivent être symétriques, courtes et défendables.
-- Ne jamais utiliser "car", "parce que", "afin de", "pour que".
-- Éviter aussi "pour" si cela transforme la position en argument.
-- Exemples corrects :
-  "Suspendre les frappes"
-  "Maintenir la pression militaire"
-  "Priorité à la protection"
-  "Priorité aux garanties"
-  "Renforcer le contrôle"
-  "Limiter les contraintes"
-
-Signature :
-- L'article doit toujours se terminer par une signature.
-- Choisir un seul nom parmi cette liste :
-  J.L Grasso / F. Glorennec / T. Guyomarch / M. Guillot / P. Ratsky
-- La signature doit être seule sur la dernière ligne.
-- Ne jamais inventer d'autre nom.
-- Ne jamais expliquer le choix du nom.
-- Ne pas mettre de tiret avant la signature.
-
-Règles absolues :
-- Ne rien inventer.
-- Ne pas ajouter de fait absent du résumé factuel.
-- Ne pas dramatiser artificiellement.
-- Ne pas transformer l'article en tribune personnelle.
-- Ne pas afficher les positions dans l'article.
-- Ne pas écrire de titre séparé dans le champ article.
-- Ne pas ajouter de rubrique du type "Pourquoi ça fait parler", "Tension d'opinion", "Biais" ou "Enjeu".
-- Ne pas ajouter d'autre question que la question Agôn finale.
-- La phrase avant la question Agôn doit être affirmative.
-- Ne pas produire de latin à cette étape.
-
-Vérification obligatoire avant de répondre :
-1. Le JSON ne contient pas de champ latinQuestion.
-2. article contient une ligne vide juste après la première phrase.
-3. article contient une ligne vide entre le premier paragraphe et le deuxième paragraphe.
-4. Le deuxième paragraphe contient un retour à la ligne entre l'énoncé des options et l'explication de l'enjeu commun.
-5. debateQuestion apparaît seule dans article, juste avant la signature.
-6. La ligne française dans article est exactement identique au champ debateQuestion.
-7. debateQuestion fait 80 caractères maximum.
-8. positionA et positionB font 55 caractères maximum.
-9. article se termine par une signature autorisée, seule sur la dernière ligne.
-10. Si une condition échoue, corrige le JSON avant de répondre.
-
-JSON attendu uniquement :
-{
-  "article": "...",
-  "debateQuestion": "...",
-  "positionA": "...",
-  "positionB": "..."
-}
-
-Sujet :
-${subject}
-
-Résumé factuel :
-${summary}
-
-Tension narrative à exploiter si elle est utile :
-${narrativeTension}
-
-JSON à retravailler :
-${JSON.stringify(base, null, 2)}
-
-Réponds uniquement en JSON valide, sans balises markdown.`;
-
   try {
-    const editorialResponse = await openai.responses.create({
-      model: "gpt-4.1-mini",
-      input: promptEditorial,
-      temperature: 0.3,
-      max_output_tokens: 2200
-    });
-    const editorialJson = safeJsonParse(String(editorialResponse.output_text || "").trim());
-    delete editorialJson.latinQuestion;
-
     const promptFinalisation = `Tu dois vérifier, corriger et finaliser un JSON d'article Agôn.
 
 Objectif :
@@ -2152,31 +1707,38 @@ Vérification prioritaire des sauts de ligne :
 - Si un de ces sauts de ligne est absent, corrige article.
 - La première phrase ne doit pas être un titre séparé, mais une accroche intégrée.
 
-Question latine — règle prioritaire absolue :
+Devise latine — règle prioritaire absolue :
 - Tu dois obligatoirement produire le champ latinQuestion.
 - latinQuestion est un élément central de l'article Agôn : il ne doit jamais être vide, absent ou oublié.
-- latinQuestion doit être une formule pseudo-latine courte : exactement 3 mots, format "Mot an Mot".
-- La ligne latine dans article doit être exactement identique au champ latinQuestion.
+- latinQuestion est une devise latine courte, directement liée au sujet précis de l'article.
 - Elle ne doit jamais avoir de point d'interrogation.
 - Elle doit être placée juste avant la question Agôn définitive.
 - Le champ latinQuestion ne doit jamais être vide quand la réponse JSON est valide.
-- Ne jamais utiliser "Agôn", "Agon" ou le nom de la plateforme dans la question latine.
+- Ne jamais utiliser "Agôn", "Agon" ou le nom de la plateforme.
 - Ne pas utiliser de mot grec, de marque, de nom propre ou de nom de pays.
 
-Méthode obligatoire pour créer la question latine :
-1. Identifie les deux forces, valeurs ou positions qui s'affrontent dans CE débat précis — pas dans un débat abstrait.
-2. Exprime cette tension en deux mots latins séparés par "an".
-3. Le résultat doit être spécifique à CE sujet : quelqu'un qui lit la formule doit pouvoir deviner l'enjeu du débat.
+Méthode obligatoire pour créer la devise :
+1. Identifie l'enjeu central, la tension ou la valeur en jeu dans CE sujet précis.
+2. Formule une devise latine courte (2 à 5 mots maximum) qui capture cet enjeu.
+3. La devise doit fonctionner comme une maxime ou une sentence : sobre, forte, mémorable.
+4. Quelqu'un qui lit la devise doit pouvoir deviner de quoi parle l'article.
 
-Exemples de raisonnement (ne pas recopier) :
-- Débat sur la riposte militaire → tension : frapper vs négocier → "Vis an pax"
-- Débat sur la notation scolaire → tension : exigence vs accompagnement → "Disciplina an cura"
-- Débat sur une élection à risque → tension : stabilité vs rupture → "Ordo an mutatio"
-- Débat sur la surveillance numérique → tension : sécurité vs liberté individuelle → "Securitas an libertas"
+Méthode de raisonnement — applique-la à chaque sujet :
+1. Quel est l'enjeu CONCRET de CE débat ? (pas "la guerre en général", mais "faut-il frapper les dépôts de missiles iraniens")
+2. Quelle tension précise cela crée-t-il ? (pas "sécurité vs liberté", mais "frapper maintenant vs risquer l'escalade")
+3. Traduis cette tension précise en latin court.
 
-Ne jamais produire une formule générique comme "Lex an prudentia" ou "Veritas an utilitas" si elle ne correspond pas précisément à la tension identifiée.
-Ne pas choisir les mots latins les plus simples ou les plus courants par défaut. Choisis les mots les plus précis pour CE débat, même s'ils sont moins fréquents.
-Interdits sauf si parfaitement justifiés : "vis", "pax", "lex", "probitas", "veritas", "auctoritas" — ces mots sont trop souvent utilisés comme raccourci générique.
+Exemples de raisonnement (ne pas recopier — illustrent la méthode, pas le résultat) :
+- Débat sur l'âge de départ à la retraite à 64 ans → tension précise : travailler plus longtemps vs épuisement → "Labor ultra vires"
+- Débat sur la garde à vue sans avocat → tension précise : efficacité policière vs droits fondamentaux → "Captus sine defensore"
+- Débat sur les frais de scolarité des étudiants étrangers → tension précise : financement public vs accès universel → "Scientia an pretium"
+- Débat sur l'interdiction des téléphones à l'école → tension précise : concentration vs liberté numérique → "Schola sine machina"
+- Débat sur le vote des étrangers aux municipales → tension précise : appartenance vs nationalité → "Civis an peregrinus"
+
+Interdits absolus :
+- Ne jamais utiliser "Securitas", "Libertas", "Bellum", "Pax" sauf si parfaitement justifiés par CE sujet précis.
+- Ne jamais produire une devise qui fonctionnerait pour un autre sujet.
+- Ne jamais recopier un exemple ci-dessus.
 
 Question Agôn :
 - Elle doit être claire, concrète et débattable.
@@ -2287,7 +1849,7 @@ Résumé factuel :
 ${summary}
 
 JSON à vérifier et finaliser :
-${JSON.stringify(editorialJson, null, 2)}
+${JSON.stringify(base, null, 2)}
 
 Réponds uniquement en JSON valide, sans balises markdown.`;
 
@@ -2298,7 +1860,7 @@ Réponds uniquement en JSON valide, sans balises markdown.`;
       max_output_tokens: 2200
     });
     const parsed = safeJsonParse(String(finalisationResponse.output_text || "").trim());
-    const finalQuestion = limitDebateQuestion(parsed.debateQuestion || editorialJson.debateQuestion || base.debateQuestion);
+    const finalQuestion = limitDebateQuestion(parsed.debateQuestion || base.debateQuestion);
     const finalLatinQuestion = normalizeLatinQuestion(parsed.latinQuestion || "")
       || extractLatinQuestionFromArticle(parsed.article || "")
       || buildFallbackLatinQuestion({
@@ -2308,29 +1870,29 @@ Réponds uniquement en JSON valide, sans balises markdown.`;
         narrativeTension
       });
     const finalSignature = getNextAgonArticleSignature();
-    let finalArticle = enforceFinalArticleQuestion(parsed.article || editorialJson.article || base.article, finalQuestion, finalLatinQuestion, finalSignature, {
-      positionA: parsed.positionA || editorialJson.positionA || base.positionA,
-      positionB: parsed.positionB || editorialJson.positionB || base.positionB
+    let finalArticle = enforceFinalArticleQuestion(parsed.article || base.article, finalQuestion, finalLatinQuestion, finalSignature, {
+      positionA: parsed.positionA || base.positionA,
+      positionB: parsed.positionB || base.positionB
     });
     if (finalArticle.length < AGON_ARTICLE_MIN_LENGTH) {
       finalArticle = await expandShortAgonArticle(payload, {
         article: finalArticle,
         latinQuestion: finalLatinQuestion,
         debateQuestion: finalQuestion,
-        positionA: parsed.positionA || editorialJson.positionA || base.positionA,
-        positionB: parsed.positionB || editorialJson.positionB || base.positionB
+        positionA: parsed.positionA || base.positionA,
+        positionB: parsed.positionB || base.positionB
       });
       finalArticle = enforceFinalArticleQuestion(finalArticle, finalQuestion, finalLatinQuestion, finalSignature, {
-        positionA: parsed.positionA || editorialJson.positionA || base.positionA,
-        positionB: parsed.positionB || editorialJson.positionB || base.positionB
+        positionA: parsed.positionA || base.positionA,
+        positionB: parsed.positionB || base.positionB
       });
     }
     return {
       article: finalArticle,
       latinQuestion: finalLatinQuestion,
       debateQuestion: finalQuestion,
-      positionA: String(parsed.positionA || editorialJson.positionA || base.positionA || "Pour").replace(/\s+/g, " ").trim(),
-      positionB: String(parsed.positionB || editorialJson.positionB || base.positionB || "Contre").replace(/\s+/g, " ").trim()
+      positionA: String(parsed.positionA || base.positionA || "Pour").replace(/\s+/g, " ").trim(),
+      positionB: String(parsed.positionB || base.positionB || "Contre").replace(/\s+/g, " ").trim()
     };
   } catch (error) {
     console.error("Erreur finition article Agôn :", error.message);
@@ -3037,9 +2599,14 @@ function sendEmptyMixtePage(res) {
     }
 
     (async function watchRunningCollect() {
+      const panel = document.getElementById('progress-panel');
+      if (panel) panel.style.display = 'block';
       try {
         const p = await pollProgress();
-        if (!p.running) return;
+        if (!p.running && !p.done) {
+          if (panel) panel.style.display = 'none';
+          return;
+        }
         const btn = document.querySelector('.refresh-btn');
         if (btn) { btn.disabled = true; btn.textContent = 'Collecte en cours...'; }
         const timer = setInterval(async function() {
@@ -3051,7 +2618,9 @@ function sendEmptyMixtePage(res) {
             }
           } catch(e) {}
         }, 2000);
-      } catch(e) {}
+      } catch(e) {
+        if (panel) panel.style.display = 'none';
+      }
     })();
   </script>
 </body>
@@ -3294,15 +2863,6 @@ app.post("/generate-final-article", requireMixteAuth, async (req, res) => {
   }
 });
 
-app.post("/generate-problematique", requireMixteAuth, async (req, res) => {
-  try {
-    const payload = req.body || {};
-    const result = await generateProblematique(payload);
-    res.json({ ok: true, ...result });
-  } catch (err) {
-    res.status(500).json({ ok: false, error: err.message || "Erreur génération problématique" });
-  }
-});
 
 app.post("/generate-styled-article", requireMixteAuth, async (req, res) => {
   try {

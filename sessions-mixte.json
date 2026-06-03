@@ -1381,12 +1381,12 @@
             "matched_story_id": "01-les-conflits-au-moyen-orient-recomposent-les-equilibres-regionaux",
             "matched_story_title": "Les conflits au Moyen-Orient recomposent les équilibres régionaux",
             "matched_story_summary": "",
-            "previous_episode_id": "633",
-            "previous_episode_title": "Doit-on privilégier les frappes préventives ou la retenue pour éviter une escalade au Liban?",
-            "previous_episode_summary": "Les tensions entre les États-Unis et l’Iran ont augmenté récemment malgré un cessez-le-feu au Moyen-Orient. Alors que des négociations cherchaient à stabiliser la région, les États-Unis ont frappé des positions iraniennes. L’Iran a dénoncé ces attaques comme une violation du cessez-le-feu intervenu moins de 48 heures plus tôt.\n\nD’un côté, ces frappes peuvent apparaître comme un frein aux efforts de paix, risquant de raviver les hostilités. De l’autre, elles sont vues comme une mesure nécessaire pour dissuader et protéger des intérêts stratégiques dans un contexte toujours fragile.\n\nLes États-Unis doivent-ils suspendre toute action militaire pour préserver le cessez-le-feu avec l’Iran ?",
-            "previous_episode_url": "http://localhost:3001/debate?id=633",
+            "previous_episode_id": "693",
+            "previous_episode_title": "Les États-Unis doivent-ils poursuivre les frappes en Iran malgré le risque d’escalade ?",
+            "previous_episode_summary": "",
+            "previous_episode_url": "http://localhost:3001/debate?id=693",
             "confidence": 0.85,
-            "reason": "L'actualité porte sur des frappes militaires entre États-Unis et Iran dans le cadre d'une guerre au Moyen-Orient, ce qui correspond précisément à une recomposition des équilibres régionaux dans cette zone.",
+            "reason": "L'actualité porte sur des frappes militaires entre États-Unis et Iran dans le cadre de la guerre au Moyen-Orient, ce qui correspond précisément aux conflits au Moyen-Orient et leurs impacts régionaux.",
             "criteria": {
               "main_actors_match": true,
               "central_tension_match": true,
@@ -1397,9 +1397,22 @@
             "new_story": {
               "story_title": "",
               "story_summary": "",
-              "main_actors": [],
-              "central_tension": "Les États-Unis doivent-ils poursuivre les frappes en Iran malgré le risque d’escalade?",
-              "keywords": [],
+              "main_actors": [
+                "guerre",
+                "moyen",
+                "orient"
+              ],
+              "central_tension": "Faut-il privilégier la diplomatie avec l'Iran?",
+              "keywords": [
+                "guerre",
+                "moyen",
+                "orient",
+                "etats",
+                "unis",
+                "annoncent",
+                "frappe",
+                "iran"
+              ],
               "status": "active"
             }
           }
@@ -1675,12 +1688,12 @@
             "matched_story_id": "13-l-amerique-latine-connait-de-nouvelles-tensions-politiques-sociales-et-securitai",
             "matched_story_title": "L’Amérique latine connaît de nouvelles tensions politiques, sociales et sécuritaires",
             "matched_story_summary": "",
-            "previous_episode_id": "",
-            "previous_episode_title": "",
+            "previous_episode_id": "718",
+            "previous_episode_title": "La Colombie doit-elle choisir la sécurité ou le progrès social?",
             "previous_episode_summary": "",
-            "previous_episode_url": "",
+            "previous_episode_url": "http://localhost:3001/debate?id=718",
             "confidence": 0.85,
-            "reason": "L'actualité porte sur une élection présidentielle en Colombie, un pays d'Amérique latine, avec un enjeu politique clair entre gauche et droite dure, ce qui correspond bien à l'histoire sur les tensions politiques en Amérique latine.",
+            "reason": "L'actualité porte sur l'élection présidentielle en Colombie, un pays d'Amérique latine, avec un enjeu politique clair entre gauche et droite dure, ce qui correspond bien aux tensions politiques dans la région.",
             "criteria": {
               "main_actors_match": true,
               "central_tension_match": true,
@@ -1691,22 +1704,9 @@
             "new_story": {
               "story_title": "",
               "story_summary": "",
-              "main_actors": [
-                "presidentielle",
-                "colombie",
-                "second"
-              ],
-              "central_tension": "La Colombie doit-elle choisir la sécurité ou le progrès social?",
-              "keywords": [
-                "presidentielle",
-                "colombie",
-                "second",
-                "tour",
-                "opposera",
-                "ivan",
-                "cepeda",
-                "candidat"
-              ],
+              "main_actors": [],
+              "central_tension": "Faut-il choisir la sécurité ou les réformes sociales en Colombie ?",
+              "keywords": [],
               "status": "active"
             }
           }
@@ -2224,15 +2224,15 @@
           "mainKeyword": "Softbank data centers",
           "storyLink": {
             "story_decision": "existing_story",
-            "matched_story_id": "14-la-mondialisation-se-transforme-sous-l-effet-des-rivalites-economiques-et-geopol",
-            "matched_story_title": "La mondialisation se transforme sous l’effet des rivalités économiques et géopolitiques",
+            "matched_story_id": "15-la-souverainete-industrielle-redevient-un-enjeu-strategique-pour-les-etats",
+            "matched_story_title": "La souveraineté industrielle redevient un enjeu stratégique pour les États",
             "matched_story_summary": "",
-            "previous_episode_id": "518",
-            "previous_episode_title": "L'accord UE-Mexique profitera-t-il vraiment aux économies locales ?",
-            "previous_episode_summary": "L’Union européenne et le Mexique viennent de franchir un cap majeur en signant un accord commercial ambitieux, prêt à bouleverser leurs échanges économiques. Ce pacte promet de réduire progressivement les droits de douane, ouvrant un nouveau terrain de jeu pour leurs relations commerciales.\n\nEn levant les barrières tarifaires sur une large palette de produits, des terres rares au sirop d’agave, cet accord pourrait bien redessiner la carte des flux commerciaux entre les deux continents. Plus qu’un simple traité, il s’inscrit dans une stratégie européenne claire : renforcer son ancrage en Amérique latine par des liens économiques solides et durables. Pour les entreprises, c’est une opportunité de croissance et d’innovation, mais aussi un défi pour s’adapter à un marché en pleine mutation.\n\nCe partenariat marque une étape cruciale dans la coopération transatlantique, avec des enjeux lourds de conséquences pour les économies locales. Le chemin s’annonce semé d’incertitudes, et l’avenir de ce rapprochement reste à écrire.\n\nL'accord UE-Mexique profitera-t-il vraiment aux économies locales ?\n\nJ.L Grasso",
-            "previous_episode_url": "http://localhost:3001/debate?id=518",
+            "previous_episode_id": "",
+            "previous_episode_title": "",
+            "previous_episode_summary": "",
+            "previous_episode_url": "",
             "confidence": 0.85,
-            "reason": "L'investissement massif de SoftBank dans les data centers en France lors du sommet Choose France illustre un enjeu économique et géopolitique majeur lié à la mondialisation et aux rivalités économiques internationales.",
+            "reason": "L'investissement massif de SoftBank dans les data centers en France s'inscrit dans un enjeu de souveraineté industrielle et économique, avec un focus sur les technologies clés comme l'intelligence artificielle, ce qui correspond bien au titre de l'histoire.",
             "criteria": {
               "main_actors_match": true,
               "central_tension_match": true,
@@ -2248,7 +2248,7 @@
                 "promet",
                 "jusqu"
               ],
-              "central_tension": "Faut-il privilégier l'investissement étranger massif ou la souveraineté numérique locale?",
+              "central_tension": "La France doit-elle accepter cet investissement de SoftBank?",
               "keywords": [
                 "softbank",
                 "promet",
