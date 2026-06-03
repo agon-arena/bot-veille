@@ -714,7 +714,7 @@ function limitDebateQuestionText(text) {
       .trim();
     stem = stem.replace(danglingWords, "").trim();
     if (!stem) return "";
-    return `${stem}?`;
+    return `${stem} ?`;
   }
 
   const base = finalizeQuestion(raw);
