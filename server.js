@@ -1567,6 +1567,14 @@ Attention :
 - Éviter les mots abstraits répétés : enjeu, dilemme, tension, choix collectif, équilibre, stabilité.
 - Le paragraphe doit rester sobre, mais plus nerveux.
 
+Dernière phrase avant la question :
+Évite les phrases de conclusion vagues ou génériques du type :
+"La tension reste palpable", "Le compromis reste fragile", "La situation reste délicate", "L'avenir dira…", "Le débat ne fait que commencer", ou toute formule interchangeable.
+
+La dernière phrase informative avant la question Agôn doit apporter une idée précise liée au sujet : un choix politique concret, un risque identifiable, un rapport de force, une contradiction, ou une conséquence directement liée aux faits.
+
+Ne termine jamais par une phrase abstraite qui pourrait convenir à n'importe quelle actualité.
+
 Longueur :
 1000 à 1600 caractères.
 
