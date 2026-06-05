@@ -227,6 +227,22 @@ function looksLikeLatinQuestionLine(line) {
   return /^[A-ZÀ-Ÿ][A-Za-zÀ-ÿ]+(?:\s+[A-Za-zÀ-ÿ]+){1,4}$/.test(value);
 }
 
+const FRENCH_FUNCTION_WORDS = new Set([
+  "le","la","les","un","une","des","du","de","en","au","aux",
+  "et","est","sont","avec","pour","sur","sous","par","dans","vers",
+  "qui","que","dont","mais","car","ni","ou","donc","ce","se",
+  "il","elle","ils","elles","on","nous","vous","leur","leurs"
+]);
+
+function looksLikeLatinPhrase(line) {
+  const cleaned = String(line || "").replace(/[.,;:!?'"«»]+/g, " ").replace(/\s+/g, " ").trim();
+  if (!/^[A-ZÀ-Ÿ]/.test(cleaned)) return false;
+  const words = cleaned.split(" ").filter(Boolean);
+  if (words.length < 2 || words.length > 12) return false;
+  if (!words.every(w => /^[A-Za-zÀ-ÿ]+$/.test(w))) return false;
+  return !words.map(w => w.toLowerCase()).some(w => FRENCH_FUNCTION_WORDS.has(w));
+}
+
 function normalizeLatinQuestion(line) {
   const value = String(line || "")
     .replace(/[?？]+$/g, "")
@@ -339,7 +355,7 @@ function enforceFinalArticleQuestion(article, debateQuestion, latinQuestion, for
       if (AGON_ARTICLE_SIGNATURES.has(line)) return false;
       if (forbiddenLines.includes(normalizedLine)) return false;
       if (normalizedLatin && normalizedLine === normalizedLatin) return false;
-      if (looksLikeLatinQuestionLine(line)) return false;
+      if (looksLikeLatinPhrase(line)) return false;
       if (/[?？]\s*$/.test(line)) return false;
       if (normalizedQuestion && normalizedLine === normalizedQuestion) return false;
       if (normalizedQuestion && normalizedLine.includes(normalizedQuestion)) return false;
@@ -775,6 +791,8 @@ Le débat doit :
 
 Si la question est trop évidente, cherche le dilemme réel :
 sécurité/liberté, fermeté/accompagnement, urgence/prudence, diplomatie/rapport de force, innovation/protection, responsabilité individuelle/action publique.
+
+Pour les sujets sans décision collective directe (fait divers, accident, catastrophe, affaire judiciaire, violence, décès) : ne cherche pas le débat dans l'événement lui-même. Cherche-le dans la réponse collective — médiatisation, fonctionnement des institutions, traitement sociétal. Exemple : une disparition médiatisée → "La médiatisation d'une disparition aide-t-elle l'enquête ou menace-t-elle la présomption d'innocence ?". Si aucun angle pertinent n'émerge, choisis "avoid".
 
 RÈGLE DE SÉCURITÉ FACTUELLE :
 N'ajoute jamais un fait absent du résumé factuel ou des titres fournis.
@@ -1431,6 +1449,15 @@ Devise latine — règle prioritaire absolue :
 - Le champ latinQuestion ne doit jamais être vide quand la réponse JSON est valide.
 - Ne jamais utiliser "Agôn", "Agon" ou le nom de la plateforme.
 - Ne pas utiliser de mot grec, de marque, de nom propre ou de nom de pays.
+
+FORMAT STRICT — latinQuestion :
+- 2 à 5 mots MAXIMUM. Jamais plus.
+- Aucune virgule, aucun point, aucune ponctuation.
+- Aucune conjonction latine (sed, etiam, autem, enim, vel, aut, quod, quia).
+- Pas une phrase avec sujet + verbe conjugué + complément.
+- Une devise, un fragment, une maxime — pas une sentence complète.
+- Exemples valides : "Labor ultra vires" / "Captus sine defensore" / "Res ipsa loquitur"
+- Exemples INTERDITS : "Promovere controversias potest disputationem, sed etiam societatem dividere" / "Salus publica suprema lex esse debet"
 
 Méthode obligatoire pour créer la devise :
 1. Identifie l'enjeu central, la tension ou la valeur en jeu dans CE sujet précis.
