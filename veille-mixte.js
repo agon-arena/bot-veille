@@ -896,14 +896,28 @@ function extractNewsKeywords(subject) {
   return filterKeywordNoise(subject, cleaned, 8);
 }
 
+function normalizeUrl(url) {
+  return String(url || "").trim().replace(/\/+$/, "").split("?")[0].split("#")[0];
+}
+
 function selectRelevantLinksForSubject(subject, aiSelectedLinks) {
   const contents = Array.isArray(subject?.contents) ? subject.contents : [];
   const validLinks = contents.map((content) => String(content.link || "").trim()).filter(Boolean);
-  const aiSelected = new Set(
-    (Array.isArray(aiSelectedLinks) ? aiSelectedLinks : [])
-      .map((item) => String(item || "").trim())
-      .filter((link) => validLinks.includes(link))
-  );
+
+  const resolvedAiLinks = (Array.isArray(aiSelectedLinks) ? aiSelectedLinks : [])
+    .map((item) => String(item || "").trim())
+    .filter(Boolean)
+    .map((aiLink) => {
+      if (validLinks.includes(aiLink)) return aiLink;
+      const normAi = normalizeUrl(aiLink);
+      return validLinks.find((vl) => normalizeUrl(vl) === normAi
+        || vl.startsWith(aiLink)
+        || aiLink.startsWith(vl)
+      ) || null;
+    })
+    .filter(Boolean);
+
+  const aiSelected = new Set(resolvedAiLinks);
 
   if (aiSelected.size > 0) {
     return validLinks.filter((link) => aiSelected.has(link));
