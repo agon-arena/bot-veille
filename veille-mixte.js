@@ -997,8 +997,7 @@ function safeJsonParse(text) {
 async function generateSubjectTagsWithAI(subject, compactContents = null) {
   const fallback = extractNewsKeywords(subject);
   const fallbackMainKeyword = fallback[0] || "";
-  const fallbackSecondaryKeywords = fallback.slice(1);
-  if (!openai) return { mainKeyword: fallbackMainKeyword, keywords: fallbackSecondaryKeywords };
+  if (!openai) return { mainKeyword: fallbackMainKeyword };
 
   const contents = Array.isArray(compactContents)
     ? compactContents
@@ -1012,7 +1011,7 @@ async function generateSubjectTagsWithAI(subject, compactContents = null) {
       }));
 
   const prompt = `
-Tu es chargé d'extraire les tags éditoriaux d'une actualité pour une plateforme de débat.
+Tu es chargé d'extraire le tag éditorial principal d'une actualité pour une plateforme de débat.
 
 Sujet principal :
 ${subject.subject}
@@ -1025,8 +1024,7 @@ ${JSON.stringify(contents, null, 2)}
 
 Réponds uniquement en JSON valide avec cette structure :
 {
-  "mainKeyword": "le tag principal",
-  "keywords": ["tags secondaires"]
+  "mainKeyword": "le tag principal"
 }
 
 Règle centrale :
@@ -1037,20 +1035,6 @@ Règle centrale :
 - il ne doit pas être trop générique ;
 - il ne doit pas être un nom de pays connu seul (France, Chine, États-Unis, Russie, Allemagne, etc.) ni une grande ville seule (Paris, New York, Pékin, Londres, etc.) : dans ces cas, privilégie l'événement, l'acteur ou l'institution concerné ;
 - il doit faire 30 caractères maximum, espaces compris.
-
-Pour "keywords" :
-- donne 3 à 7 tags secondaires ;
-- avec "mainKeyword", l'ensemble doit faire 4 à 8 tags maximum ;
-- privilégie les noms propres et repères concrets ;
-- relève surtout les acteurs, lieux, institutions, pays, organisations, objets de crise ou enjeux précis ;
-- évite les mots trop génériques comme "politique", "débat", "actualité", "France" seuls s'ils n'apportent rien ;
-- n'écris ni phrase complète, ni explication ;
-- chaque tag doit tenir sur quelques mots maximum ;
-- tu peux utiliser des traits d'union et des apostrophes si nécessaire ("États-Unis", "Secours d'urgence") ;
-- ne répète pas le mainKeyword dans keywords ;
-- n'invente aucun acteur, lieu ou fait absent des contenus ;
-- conserve la forme exacte des mots telle qu'elle apparaît dans les contenus : si le mot est au pluriel dans les sources, écris-le au pluriel (ex : "droits", "femmes", "victimes", "manifestants") ; ne singularise jamais ;
-- vérifie l'orthographe de chaque tag avant de répondre : aucun mot ne doit avoir de lettre manquante, aucun tag ne doit contenir de double espace, et tu dois écrire les "s" présents dans les sources.
 `;
 
   try {
@@ -1058,20 +1042,15 @@ Pour "keywords" :
       model: "gpt-4.1-mini",
       input: prompt,
       temperature: 0.15,
-      max_output_tokens: 350
+      max_output_tokens: 120
     });
 
     const parsed = safeJsonParse(response.output_text);
     const mainKeyword = filterKeywordNoise(subject, [parsed.mainKeyword], 1)[0] || "";
-    const secondaryKeywords = filterKeywordNoise(subject, parsed.keywords, 7).filter(keyword => keyword !== mainKeyword);
-    const merged = normalizeKeywordList([mainKeyword, ...secondaryKeywords].filter(Boolean), 8);
-    return {
-      mainKeyword: merged[0] || fallbackMainKeyword,
-      keywords: merged.slice(1).length ? merged.slice(1) : fallbackSecondaryKeywords
-    };
+    return { mainKeyword: mainKeyword || fallbackMainKeyword };
   } catch (error) {
     console.error(`Erreur IA tags pour le sujet "${subject.subject}" :`, error.message);
-    return { mainKeyword: fallbackMainKeyword, keywords: fallbackSecondaryKeywords };
+    return { mainKeyword: fallbackMainKeyword };
   }
 }
 
@@ -1364,7 +1343,7 @@ apiApp.post("/generate-tags", async (req, res) => {
     }
 
     const tags = await generateSubjectTagsWithAI(payload);
-    res.json({ ok: true, mainKeyword: tags.mainKeyword || "", keywords: Array.isArray(tags.keywords) ? tags.keywords : [] });
+    res.json({ ok: true, mainKeyword: tags.mainKeyword || "" });
   } catch (error) {
     res.status(500).json({ ok: false, error: error.message || "Erreur génération tags" });
   }
@@ -1840,12 +1819,9 @@ function generateHtml(sessions) {
   function buildKeywordsStaticHtml(ai) {
     const rawKeywords = Array.isArray(ai?.keywords) ? ai.keywords.filter(Boolean) : [];
     const mainKeyword = String(ai?.mainKeyword || rawKeywords[0] || "").trim();
-    const keywords = rawKeywords.filter(keyword => keyword && keyword !== mainKeyword);
     return '<div class="news-keywords">' +
-      '<div class="news-keywords-label">Mots-clés relevés</div>' +
+      '<div class="news-keywords-label">Tag principal</div>' +
       (mainKeyword ? '<span class="news-keyword-chip main-keyword-chip" data-main-keyword="' + escapeHtml(mainKeyword) + '">' + escapeHtml(mainKeyword) + '<button type="button" class="news-keyword-remove-btn" aria-label="Supprimer le tag principal">×</button></span>' : '') +
-      keywords.map((keyword) => '<span class="news-keyword-chip" data-keyword="' + escapeHtml(keyword) + '">' + escapeHtml(keyword) + '<button type="button" class="news-keyword-remove-btn" aria-label="Supprimer le mot-clé">×</button></span>').join('') +
-      '<div class="news-keyword-add-row"><input type="text" class="news-keyword-input" placeholder="Ajouter un mot-clé"><button type="button" class="news-keyword-add-btn">Ajouter</button></div>' +
     '</div>';
   }
 
@@ -3079,33 +3055,6 @@ function generateHtml(sessions) {
       padding: 0;
     }
     .main-keyword-chip button { color: #fff; opacity: 0.75; }
-    .news-keyword-add-row {
-      display: flex;
-      gap: 8px;
-      width: 100%;
-    }
-    .news-keyword-input {
-      flex: 1;
-      min-width: 0;
-      border: 1px solid #d7dbe2;
-      border-radius: 10px;
-      padding: 8px 10px;
-      font: inherit;
-      font-size: 0.84rem;
-      background: #fff;
-    }
-    .news-keyword-add-btn {
-      border: 1px solid #d7dbe2;
-      background: #fff;
-      color: #223;
-      border-radius: 10px;
-      padding: 8px 12px;
-      font: inherit;
-      font-size: 0.84rem;
-      font-weight: 700;
-      cursor: pointer;
-      flex-shrink: 0;
-    }
 
     .debate-question {
       font-size: 1.1rem;
@@ -3841,8 +3790,8 @@ function generateHtml(sessions) {
     <div class="refresh-row">
       <select class="min-sources-select" id="min-sources-select" title="Sources minimum par sujet">
         <option value="2">2 sources min.</option>
-        <option value="3">3 sources min.</option>
-        <option value="4" selected>4 sources min.</option>
+        <option value="3" selected>3 sources min.</option>
+        <option value="4">4 sources min.</option>
         <option value="5">5 sources min.</option>
         <option value="6">6 sources min.</option>
       </select>
@@ -4042,86 +3991,32 @@ function generateHtml(sessions) {
       modal.classList.remove("hidden");
     }
 
-    function normalizeKeywordListClient(values, max = 10) {
-      const seen = new Set();
-      const list = [];
-      (Array.isArray(values) ? values : []).forEach(function(value) {
-        const keyword = String(value || "")
-          .replace(/^[-–—•\\s]+/, "")
-          .replace(/[?!.;,:\\s]+$/g, "")
-          .replace(/\\s+/g, " ")
-          .trim();
-        if (!keyword || keyword.length < 2 || keyword.length > 28) return;
-        const lower = keyword.toLowerCase();
-        if (seen.has(lower)) return;
-        seen.add(lower);
-        list.push(keyword);
-      });
-      return list.slice(0, max);
-    }
-
     function buildKeywordsHtml(ai) {
       const rawKeywords = Array.isArray(ai?.keywords) ? ai.keywords.filter(Boolean) : [];
       const mainKeyword = String((ai && ai.mainKeyword) || rawKeywords[0] || "").trim();
-      const keywords = rawKeywords.filter(function(keyword) { return keyword && keyword !== mainKeyword; });
       return '<div class="news-keywords">' +
-        '<div class="news-keywords-label">Mots-clés relevés</div>' +
+        '<div class="news-keywords-label">Tag principal</div>' +
         (mainKeyword ? '<span class="news-keyword-chip main-keyword-chip" data-main-keyword="' + escapeHtmlClient(mainKeyword) + '">' + escapeHtmlClient(mainKeyword) + '<button type="button" class="news-keyword-remove-btn" aria-label="Supprimer le tag principal">×</button></span>' : '') +
-        keywords.map(function(keyword) {
-          return '<span class="news-keyword-chip" data-keyword="' + escapeHtmlClient(keyword) + '">' + escapeHtmlClient(keyword) + '<button type="button" class="news-keyword-remove-btn" aria-label="Supprimer le mot-clé">×</button></span>';
-        }).join("") +
-        '<div class="news-keyword-add-row">' +
-          '<input type="text" class="news-keyword-input" placeholder="Ajouter un mot-clé">' +
-          '<button type="button" class="news-keyword-add-btn">Ajouter</button>' +
-        '</div>' +
       '</div>';
-    }
-
-    function getKeywordsFromEditor(subjectEl) {
-      return normalizeKeywordListClient(
-        [...subjectEl.querySelectorAll(".news-keyword-chip[data-keyword]")].map(function(el) {
-          return el.dataset.keyword || "";
-        }),
-        10
-      );
     }
 
     function getMainKeywordFromEditor(subjectEl) {
       return String(subjectEl?.querySelector(".news-keyword-chip[data-main-keyword]")?.dataset.mainKeyword || "").trim();
     }
 
-    function renderKeywordsInEditor(subjectEl, keywords, mainKeyword) {
+    function renderKeywordsInEditor(subjectEl, mainKeyword) {
       const keywordsWrap = subjectEl?.querySelector(".news-keywords");
       if (!keywordsWrap) return;
-      const normalized = normalizeKeywordListClient(keywords, 10);
       const rawMain = String(mainKeyword || "").trim();
-      const normalizedMainKeyword = (rawMain && rawMain.length <= 28 ? rawMain : (normalized[0] || "")).trim();
-      const secondaryKeywords = normalized.filter(function(keyword) { return keyword && keyword !== normalizedMainKeyword; });
-      const addRow = keywordsWrap.querySelector(".news-keyword-add-row");
+      const normalizedMainKeyword = rawMain.slice(0, 28);
       keywordsWrap.querySelectorAll(".news-keyword-chip").forEach(function(chip) { chip.remove(); });
       if (normalizedMainKeyword) {
         const chip = document.createElement("span");
         chip.className = "news-keyword-chip main-keyword-chip";
         chip.dataset.mainKeyword = normalizedMainKeyword;
         chip.innerHTML = escapeHtmlClient(normalizedMainKeyword) + '<button type="button" class="news-keyword-remove-btn" aria-label="Supprimer le tag principal">×</button>';
-        keywordsWrap.insertBefore(chip, addRow);
+        keywordsWrap.appendChild(chip);
       }
-      secondaryKeywords.forEach(function(keyword) {
-        const chip = document.createElement("span");
-        chip.className = "news-keyword-chip";
-        chip.dataset.keyword = keyword;
-        chip.innerHTML = escapeHtmlClient(keyword) + '<button type="button" class="news-keyword-remove-btn" aria-label="Supprimer le mot-clé">×</button>';
-        keywordsWrap.insertBefore(chip, addRow);
-      });
-    }
-
-    function addKeywordToEditor(subjectEl, value) {
-      const keywordsWrap = subjectEl.querySelector(".news-keywords");
-      if (!keywordsWrap) return;
-      const keywords = getKeywordsFromEditor(subjectEl);
-      renderKeywordsInEditor(subjectEl, keywords.concat([value]), getMainKeywordFromEditor(subjectEl));
-      const input = keywordsWrap.querySelector(".news-keyword-input");
-      if (input) input.value = "";
     }
 
     function buildStoryLinkHtml(storyLink) {
@@ -4559,7 +4454,7 @@ function generateHtml(sessions) {
       const subjectTitle = subjectEl.querySelector("h3")?.textContent.trim() || "";
       const agonTheme = subjectEl.querySelector(".agon-select")?.value || "";
       const debateQuestion = subjectEl.querySelector(".debate-question")?.textContent.trim() || "";
-      const keywords = getKeywordsFromEditor(subjectEl);
+      const keywords = [getMainKeywordFromEditor(subjectEl)].filter(Boolean);
       const contents = [...subjectEl.querySelectorAll(".content-item[data-link]")].map(function(item) {
         return {
           type: item.dataset.type || "article",
@@ -4985,11 +4880,11 @@ function generateHtml(sessions) {
           if (!response.ok || data.ok === false) {
             throw new Error(data.error || "Erreur génération tags");
           }
-          renderKeywordsInEditor(subjectEl, Array.isArray(data.keywords) ? data.keywords : [], data.mainKeyword || "");
+          renderKeywordsInEditor(subjectEl, data.mainKeyword || "");
           await fetch("/save-update", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ subject: payload.subject, ai: { mainKeyword: getMainKeywordFromEditor(subjectEl), keywords: getKeywordsFromEditor(subjectEl) } })
+            body: JSON.stringify({ subject: payload.subject, ai: { mainKeyword: getMainKeywordFromEditor(subjectEl) } })
           });
           tagsGenerateBtn.textContent = "✓ Tags générés";
         } catch (error) {
@@ -5186,7 +5081,6 @@ function generateHtml(sessions) {
       const resumeEl = subjectEl.querySelector(".resume");
       updateAiEditorCounters(subjectEl);
       const mainKeyword = getMainKeywordFromEditor(subjectEl);
-      const keywords = getKeywordsFromEditor(subjectEl);
       const agonEl = subjectEl.querySelector(".agon-select");
       const editables = subjectEl.querySelectorAll(".editable");
       const sourcesEl = subjectEl.querySelector(".sources");
@@ -5208,7 +5102,6 @@ function generateHtml(sessions) {
         debateQuestion: questionEl ? limitClientDebateQuestion(questionEl.textContent) : "",
         resume: resumeEl ? (resumeEl.dataset.rawText || resumeEl.textContent.trim()).slice(0, AI_RESUME_MAX) : "",
         mainKeyword,
-        keywords,
         agonTheme: agonEl ? agonEl.value : "",
         positionA: editables[0] ? editables[0].textContent.trim() : "",
         positionB: editables[1] ? editables[1].textContent.trim() : "",
@@ -5264,7 +5157,7 @@ function generateHtml(sessions) {
         const theme = subjectEl.querySelector(".agon-select")?.value || btn.dataset.theme;
         const resumeEl3 = subjectEl.querySelector(".resume");
         const resume = (resumeEl3?.dataset.rawText || resumeEl3?.textContent.trim() || "").slice(0, AI_RESUME_MAX);
-        const keywords = [getMainKeywordFromEditor(subjectEl), ...getKeywordsFromEditor(subjectEl)].filter(Boolean);
+        const keywords = [getMainKeywordFromEditor(subjectEl)].filter(Boolean);
         const sources = btn.dataset.sources;
         const links = [...subjectEl.querySelectorAll(".content-item[data-link]")].map(item => {
           const dateText = item.querySelector("small")?.textContent || "";
@@ -5311,11 +5204,6 @@ function generateHtml(sessions) {
       if (e.target.classList.contains("story-manual-select")) {
         updateManualStorySelection(e.target.closest(".story-link-box"));
         return;
-      }
-      if (e.target.classList.contains("news-keyword-add-btn")) {
-        const subjectEl = e.target.closest(".subject");
-        const input = subjectEl?.querySelector(".news-keyword-input");
-        addKeywordToEditor(subjectEl, input?.value || "");
       }
     });
 
@@ -5425,10 +5313,6 @@ function generateHtml(sessions) {
         closeStoryArticlesModal();
         return;
       }
-      if (!e.target.classList.contains("news-keyword-input")) return;
-      if (e.key !== "Enter") return;
-      e.preventDefault();
-      addKeywordToEditor(e.target.closest(".subject"), e.target.value || "");
     });
 
     async function rehydratePersistentStates() {
@@ -5655,16 +5539,16 @@ function generateHtml(sessions) {
         await fetch("/save-update", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ subject: subjectData.subject, debateScore: ai.debateScore, controversyLevel: ai.controversyLevel, ai: { ...ai, fullArticleState: "short" } }) });
       }
 
-      if (!getMainKeywordFromEditor(subjectEl) && !getKeywordsFromEditor(subjectEl).length) {
+      if (!getMainKeywordFromEditor(subjectEl)) {
         setStatus("Tags…");
         const tagsPayload = getSubjectAnalyzePayloadFromEditor(subjectEl);
         const tagsRes = await fetch("/generate-tags", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(tagsPayload) });
         const tagsData = await tagsRes.json().catch(() => ({}));
         if (!tagsRes.ok || tagsData.ok === false) throw new Error(tagsData.error || "Erreur tags");
-        renderKeywordsInEditor(subjectEl, Array.isArray(tagsData.keywords) ? tagsData.keywords : [], tagsData.mainKeyword || "");
+        renderKeywordsInEditor(subjectEl, tagsData.mainKeyword || "");
         const tagsBtn = subjectEl.querySelector(".tags-generate-btn");
         if (tagsBtn) tagsBtn.textContent = "✓ Tags générés";
-        await fetch("/save-update", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ subject: tagsPayload.subject, ai: { mainKeyword: getMainKeywordFromEditor(subjectEl), keywords: getKeywordsFromEditor(subjectEl) } }) });
+        await fetch("/save-update", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ subject: tagsPayload.subject, ai: { mainKeyword: getMainKeywordFromEditor(subjectEl) } }) });
       }
 
       const basePayload = decodeStoryData(subjectEl.dataset.subjectPayload || "") || {};
@@ -5777,7 +5661,7 @@ function generateHtml(sessions) {
       const finalPosB = finalEditables[1]?.textContent.trim() || agonBtnFinal.dataset.positionB;
       const theme = subjectEl.querySelector(".agon-select")?.value || agonBtnFinal.dataset.theme;
       const resumeForSend = resumeText.slice(0, AI_RESUME_MAX);
-      const keywords = [getMainKeywordFromEditor(subjectEl), ...getKeywordsFromEditor(subjectEl)].filter(Boolean);
+      const keywords = [getMainKeywordFromEditor(subjectEl)].filter(Boolean);
       const links = [...subjectEl.querySelectorAll(".content-item[data-link]")].map(item => {
         const dateMatch = (item.querySelector("small")?.textContent || "").match(/(\\d{2}\\/\\d{2}\\/\\d{4})/);
         return { title: item.querySelector("a")?.textContent.trim() || "", url: item.dataset.link || "", source: item.querySelector("strong")?.textContent.trim() || "", type: item.dataset.type || "article", date: dateMatch ? dateMatch[1] : "", checked: item.querySelector('input[type="checkbox"]')?.checked ?? true };
@@ -6000,7 +5884,7 @@ function generateHtml(sessions) {
         if (s0.length > 0) ptrBaseTimestamp = s0[0].generatedAt;
       } catch (e) {}
 
-      var minSourcesVal = Number(document.getElementById("min-sources-select")?.value) || 4;
+      var minSourcesVal = Number(document.getElementById("min-sources-select")?.value) || MIN_DISTINCT_SOURCES;
 
       async function finishRefresh() {
         clearInterval(progressPoll);

@@ -2548,8 +2548,7 @@ app.get("/saved", requireMixteAuth, (req, res) => {
   function buildKeywordsHtml(s) {
     const rawKeywords = Array.isArray(s.keywords) ? s.keywords.filter(Boolean) : [];
     const mainKeyword = String(s.mainKeyword || s.ai?.mainKeyword || rawKeywords[0] || "").trim();
-    const keywords = rawKeywords.filter(keyword => keyword && keyword !== mainKeyword);
-    return `<div class="news-keywords"><div class="news-keywords-label">Mots-clés relevés</div>${mainKeyword ? `<span class="news-keyword-chip main-keyword-chip">${esc(mainKeyword)}</span>` : ""}${keywords.map((keyword) => `<span class="news-keyword-chip">${esc(keyword)}</span>`).join("")}</div>`;
+    return `<div class="news-keywords"><div class="news-keywords-label">Tag principal</div>${mainKeyword ? `<span class="news-keyword-chip main-keyword-chip">${esc(mainKeyword)}</span>` : ""}</div>`;
   }
 
   function buildAiBoxHtml(s) {
@@ -2822,22 +2821,18 @@ app.get("/saved", requireMixteAuth, (req, res) => {
   function buildKeywordsHtml(ai) {
     const rawKeywords = Array.isArray(ai && ai.keywords) ? ai.keywords.filter(Boolean) : [];
     const mainKeyword = String((ai && ai.mainKeyword) || rawKeywords[0] || '').trim();
-    const keywords = rawKeywords.filter(function(keyword) { return keyword && keyword !== mainKeyword; });
-    return '<div class="news-keywords"><div class="news-keywords-label">Mots-clés relevés</div>' +
+    return '<div class="news-keywords"><div class="news-keywords-label">Tag principal</div>' +
       (mainKeyword ? '<span class="news-keyword-chip main-keyword-chip">' + escapeHtmlClient(mainKeyword) + '</span>' : '') +
-      keywords.map(function(keyword) {
-        return '<span class="news-keyword-chip">' + escapeHtmlClient(keyword) + '</span>';
-      }).join('') +
       '</div>';
   }
 
-  function renderKeywordsInEditor(subjectEl, keywords, mainKeyword) {
+  function renderKeywordsInEditor(subjectEl, mainKeyword) {
     const keywordsWrap = subjectEl && subjectEl.querySelector('.news-keywords');
     if (!keywordsWrap) return;
     const label = keywordsWrap.querySelector('.news-keywords-label');
     keywordsWrap.innerHTML = '';
     if (label) keywordsWrap.appendChild(label);
-    const normalizedMainKeyword = String(mainKeyword || (Array.isArray(keywords) ? keywords[0] : '') || '').trim();
+    const normalizedMainKeyword = String(mainKeyword || '').trim();
     if (normalizedMainKeyword) {
       const chip = document.createElement('span');
       chip.className = 'news-keyword-chip main-keyword-chip';
@@ -2845,19 +2840,6 @@ app.get("/saved", requireMixteAuth, (req, res) => {
       chip.textContent = normalizedMainKeyword;
       keywordsWrap.appendChild(chip);
     }
-    (Array.isArray(keywords) ? keywords : []).filter(Boolean).filter(function(keyword) { return keyword !== normalizedMainKeyword; }).slice(0, 10).forEach(function(keyword) {
-      const chip = document.createElement('span');
-      chip.className = 'news-keyword-chip';
-      chip.textContent = keyword;
-      keywordsWrap.appendChild(chip);
-    });
-  }
-
-  function getKeywordsFromEditor(subjectEl) {
-    return Array.from((subjectEl && subjectEl.querySelectorAll('.news-keyword-chip')) || [])
-      .map(function(chip) { return chip.textContent.trim(); })
-      .filter(function(keyword) { return keyword && keyword !== getMainKeywordFromEditor(subjectEl); })
-      .filter(Boolean);
   }
 
   function getMainKeywordFromEditor(subjectEl) {
@@ -2917,12 +2899,11 @@ app.get("/saved", requireMixteAuth, (req, res) => {
       });
       if (!response.ok) throw new Error('Erreur génération tags');
       const data = await response.json();
-      const keywords = Array.isArray(data.keywords) ? data.keywords : [];
-      renderKeywordsInEditor(subjectEl, keywords, data.mainKeyword || '');
+      renderKeywordsInEditor(subjectEl, data.mainKeyword || '');
       await fetch('/save-update', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ subject: payload.subject, mainKeyword: getMainKeywordFromEditor(subjectEl), keywords: getKeywordsFromEditor(subjectEl) })
+        body: JSON.stringify({ subject: payload.subject, mainKeyword: getMainKeywordFromEditor(subjectEl) })
       });
       btn.textContent = 'Tags générés';
       setTimeout(function() { btn.textContent = originalText; btn.disabled = false; }, 900);
@@ -3916,7 +3897,7 @@ async function ensureKeywordsBeforeAgonSend({ subject, question, sources, links,
       throw new Error(text || "Erreur génération tags");
     }
     const data = await response.json();
-    return normalizeOutgoingKeywords([data?.mainKeyword, ...(Array.isArray(data?.keywords) ? data.keywords : [])]);
+    return normalizeOutgoingKeywords([data?.mainKeyword]);
   } catch (error) {
     console.error("[send-to-agon] Tags absents et génération impossible:", error.message);
     return currentKeywords;
