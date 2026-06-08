@@ -876,7 +876,7 @@ function extractNewsKeywords(subject) {
     subject.subject || "",
     ...((subject.contents || []).slice(0, 10).map((content) => content.title || ""))
   ].join(" ");
-  const rawMatches = String(text).match(/\b(?:[A-ZÀ-ÖØ-Ý][\p{L}''\-]+(?:\s+[A-ZÀ-ÖØ-Ý][\p{L}''\-]+){0,2}|[A-Z]{2,}(?:\s+[A-Z]{2,})*)\b/gu) || [];
+  const rawMatches = String(text).match(/(?<![\p{L}\p{N}])(?:[A-ZÀ-ÖØ-Ý][\p{L}''\-]+(?:\s+[A-ZÀ-ÖØ-Ý][\p{L}''\-]+){0,2}|[A-Z]{2,}(?:\s+[A-Z]{2,})*)(?![\p{L}\p{N}])/gu) || [];
   const blacklist = new Set([
     "EN DIRECT",
     "DIRECT",
@@ -1041,7 +1041,7 @@ Règle centrale :
 - il doit nommer l'objet central de l'actualité : acteur, pays, institution, lieu, événement, loi, conflit, affaire ou phénomène précis ;
 - il ne doit pas être trop générique : proscris les mots vagues seuls comme "Tensions", "Crise", "Conflit", "Polémique", "Scandale", "Tensions diplomatiques" — ils ne nomment rien de précis ; s'ils apparaissent, associe-les obligatoirement à l'acteur, le pays, le lieu ou l'événement concerné (ex. "Tensions Chine-Taïwan" plutôt que "Tensions") ;
 - il ne doit pas se limiter à un nom de pays seul (France, Chine, États-Unis, Russie, Allemagne, etc.) ni à une grande ville seule (Paris, New York, Pékin, Londres, etc.) ; en revanche, un pays ou une ville peut apparaître associé à l'événement, l'acteur ou l'institution concerné (ex. "Émeutes Paris", "Élections Allemagne") ;
-- il doit faire 30 caractères maximum, espaces compris.
+- il doit faire 28 caractères maximum, espaces compris.
 `;
 
   try {
