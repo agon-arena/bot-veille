@@ -1536,7 +1536,64 @@
         "contentCount": 8,
         "articleCount": 6,
         "youtubeCount": 2,
-        "ai": null,
+        "ai": {
+          "arenaMode": "libre",
+          "debateScore": 8,
+          "controversyLevel": "fort",
+          "debateQuestion": "Dans le sud du Liban, Israël plante son drapeau sur la stratégique forteresse médiévale de Beaufort, \"un tournant décisif\" selon Benyamin Nétanyahou",
+          "resume": "",
+          "keywords": [],
+          "selectedLinks": [
+            "https://www.lemonde.fr/international/article/2026/06/01/la-prise-du-chateau-de-beaufort-au-sud-du-liban-un-atout-strategique-mais-un-fardeau-historique-pour-l-armee-israelienne_6695811_3210.html",
+            "https://www.humanite.fr/monde/guerre-au-liban/au-liban-larmee-israelienne-capture-la-forteresse-de-beaufort-et-savance-toujours-plus-au-nord",
+            "https://www.rfi.fr/fr/moyen-orient/20260531-guerre-au-moyen-orient-isra%C3%ABl-s-empare-du-ch%C3%A2teau-de-beaufort-au-liban-un-tournant-d%C3%A9cisif-selon-netanyahuisra%C3%ABl",
+            "https://www.france24.com/fr/vid%C3%A9o/20260531-au-liban-isra%C3%ABl-s-empare-du-ch%C3%A2teau-de-beaufort-un-tournant-d%C3%A9cisif-pour-benjamin-netanyahu",
+            "https://www.franceinfo.fr/monde/iran/guerre-entre-les-etats-unis-israel-et-l-iran/israel-plante-son-drapeau-sur-la-strategique-forteresse-medievale-de-beaufort-dans-le-sud-du-liban_8038013.html#xtor=RSS-3-[lestitres]",
+            "https://www.lexpress.fr/monde/proche-moyen-orient/guerre-au-moyen-orient-israel-etend-ses-operations-dans-le-sud-du-liban-GKVF2Q3ANVBZ3P4422FX4XTS7I/"
+          ],
+          "agonTheme": "International",
+          "positionA": "",
+          "positionB": "",
+          "sourceSubject": "Dans le sud du Liban, Israël plante son drapeau sur la stratégique forteresse médiévale de Beaufort, \"un tournant décisif\" selon Benyamin Nétanyahou",
+          "fullArticleState": "short",
+          "storyLink": {
+            "story_decision": "existing_story",
+            "matched_story_id": "israel-mph1fbfh",
+            "matched_story_title": "Israël",
+            "matched_story_summary": "",
+            "previous_episode_id": "761",
+            "previous_episode_title": "Diplomatie ou riposte militaire au Moyen-Orient ?",
+            "previous_episode_summary": "",
+            "previous_episode_url": "http://localhost:3001/debate?id=761",
+            "confidence": 0.85,
+            "reason": "L'histoire \"Israël\" nomme plus précisément l'acteur ou le lieu dominant de cette actualité.",
+            "criteria": {
+              "main_actors_match": true,
+              "central_tension_match": true,
+              "temporal_continuity": true,
+              "editorial_theme_match": true,
+              "strong_keywords_match": true
+            },
+            "new_story": {
+              "story_title": "",
+              "story_summary": "",
+              "main_actors": [
+                "Israël",
+                "Liban"
+              ],
+              "central_tension": "Prise de contrôle stratégique dans le sud du Liban",
+              "keywords": [
+                "Israël",
+                "Liban",
+                "Beaufort",
+                "forteresse",
+                "conflit",
+                "Moyen-Orient"
+              ],
+              "status": "active"
+            }
+          }
+        },
         "contents": [
           {
             "type": "article",
@@ -1639,7 +1696,7 @@
           "https://www.lexpress.fr/monde/proche-moyen-orient/guerre-au-moyen-orient-israel-etend-ses-operations-dans-le-sud-du-liban-GKVF2Q3ANVBZ3P4422FX4XTS7I/"
         ],
         "scoreAnalyzed": true,
-        "aiAnalyzed": false
+        "aiAnalyzed": true
       },
       {
         "subject": "Présidentielle en Colombie : le second tour opposera Ivan Cepeda, candidat de la gauche, à Abelardo de la Espriella, un avocat d’extrême droite",
@@ -1806,7 +1863,54 @@
         "contentCount": 6,
         "articleCount": 6,
         "youtubeCount": 0,
-        "ai": null,
+        "ai": {
+          "arenaMode": "libre",
+          "debateScore": 8,
+          "controversyLevel": "fort",
+          "debateQuestion": "La marine française a arraisonné un pétrolier russe sous sanctions internationales dans l'océan Atlantique, annonce Emmanuel Macron",
+          "resume": "",
+          "keywords": [],
+          "selectedLinks": [
+            "https://www.huffingtonpost.fr/international/video/un-nouveau-petrolier-russe-le-tagor-arraisonne-dans-l-atlantique-par-la-france_264299.html",
+            "https://www.lemonde.fr/international/live/2026/06/01/en-direct-guerre-en-ukraine-un-petrolier-sous-sanctions-internationales-en-provenance-de-russie-a-ete-arraisonne-dimanche-annonce-emmanuel-macron_6695365_3210.html",
+            "https://www.france24.com/fr/france/20260601-france-nouveau-p%C3%A9trolier-russe-arraisonn%C3%A9-atlantique-emmanuel-macron",
+            "https://www.franceinfo.fr/monde/russie/la-marine-francaise-a-arraisonne-un-petrolier-russe-sous-sanctions-internationales-dans-l-ocean-atlantique-annonce-emmanuel-macron_8038976.html#xtor=RSS-3-[lestitres]",
+            "https://www.bfmtv.com/politique/elysee/emmanuel-macron-annonce-que-l-armee-francaise-a-arraisonne-un-nouveau-petrolier-en-provenance-de-russie_AN-202606010122.html",
+            "https://www.lefigaro.fr/international/un-petrolier-russe-arraisonne-dimanche-dans-l-atlantique-par-la-france-annonce-emmanuel-macron-20260601"
+          ],
+          "agonTheme": "International",
+          "positionA": "",
+          "positionB": "",
+          "sourceSubject": "La marine française a arraisonné un pétrolier russe sous sanctions internationales dans l'océan Atlantique, annonce Emmanuel Macron",
+          "fullArticleState": "short",
+          "storyLink": {
+            "story_decision": "existing_story",
+            "matched_story_id": "02-la-guerre-en-ukraine-transforme-les-rapports-entre-la-russie-l-europe-et-les-eta",
+            "matched_story_title": "La guerre en Ukraine transforme les rapports entre la Russie, l’Europe et les États-Unis",
+            "matched_story_summary": "",
+            "previous_episode_id": "751",
+            "previous_episode_title": "Dialogue direct : pacification ou faiblesse stratégique ?",
+            "previous_episode_summary": "",
+            "previous_episode_url": "http://localhost:3001/debate?id=751",
+            "confidence": 0.85,
+            "reason": "L'arraisonnement d'un pétrolier russe sous sanctions internationales par la France dans l'Atlantique est un épisode lié aux tensions internationales provoquées par la guerre en Ukraine, impliquant la Russie et les pays occidentaux, ce qui correspond précisément à cette histoire.",
+            "criteria": {
+              "main_actors_match": true,
+              "central_tension_match": true,
+              "temporal_continuity": true,
+              "editorial_theme_match": true,
+              "strong_keywords_match": true
+            },
+            "new_story": {
+              "story_title": "",
+              "story_summary": "",
+              "main_actors": [],
+              "central_tension": "La marine française a arraisonné un pétrolier russe sous sanctions internationales dans l'océan Atlantique, an",
+              "keywords": [],
+              "status": "active"
+            }
+          }
+        },
         "contents": [
           {
             "type": "article",
@@ -1876,7 +1980,7 @@
           }
         ],
         "subjectId": "subject_003",
-        "debateScore": 7,
+        "debateScore": 8,
         "controversyLevel": "fort",
         "selectedLinks": [
           "https://www.huffingtonpost.fr/international/video/un-nouveau-petrolier-russe-le-tagor-arraisonne-dans-l-atlantique-par-la-france_264299.html",
@@ -1887,7 +1991,7 @@
           "https://www.lefigaro.fr/international/un-petrolier-russe-arraisonne-dimanche-dans-l-atlantique-par-la-france-annonce-emmanuel-macron-20260601"
         ],
         "scoreAnalyzed": true,
-        "aiAnalyzed": false
+        "aiAnalyzed": true
       },
       {
         "subject": "Indemnité carburant, montant du smic, prix du gaz... Ce qui change au 1er juin",
@@ -1902,7 +2006,67 @@
         "contentCount": 5,
         "articleCount": 5,
         "youtubeCount": 0,
-        "ai": null,
+        "ai": {
+          "arenaMode": "libre",
+          "debateScore": 6,
+          "controversyLevel": "moyen",
+          "debateQuestion": "Indemnité carburant, montant du smic, prix du gaz... Ce qui change au 1er juin",
+          "resume": "",
+          "keywords": [],
+          "selectedLinks": [
+            "https://www.huffingtonpost.fr/france/article/augmentation-du-smic-prix-de-certains-loyers-tout-ce-qui-change-pour-vous-a-partir-du-1er-juin-2026-clx1_264226.html",
+            "https://www.liberation.fr/economie/conso/revalorisation-du-smic-aides-au-carburant-hausse-du-prix-du-tabac-ce-qui-change-au-1er-juin-20260531_2JODDWQWSBA4PLSOW7ZCECHRPY/",
+            "https://www.ledauphine.com/magazine-lifestyle/2026/05/26/smic-revalorise-indemnite-carburant-prix-du-gaz-tout-ce-qui-change-au-1-sup-er-sup-juin",
+            "https://www.franceinfo.fr/economie/indemnite-carburant-montant-du-smic-prix-du-gaz-ce-qui-change-au-1er-juin_8038223.html#xtor=RSS-3-[lestitres]",
+            "https://www.la-croix.com/economie/smic-prime-carburant-rsa-tout-ce-qui-change-au-1er-juin-2026-20260529"
+          ],
+          "agonTheme": "Économie - emploi",
+          "positionA": "",
+          "positionB": "",
+          "sourceSubject": "Indemnité carburant, montant du smic, prix du gaz... Ce qui change au 1er juin",
+          "fullArticleState": "short",
+          "storyLink": {
+            "story_decision": "existing_story",
+            "matched_story_id": "17-le-pouvoir-d-achat-reste-au-centre-des-preoccupations-sociales",
+            "matched_story_title": "Le pouvoir d’achat reste au centre des préoccupations sociales",
+            "matched_story_summary": "",
+            "previous_episode_id": "514",
+            "previous_episode_title": "Les critères d’aide aux carburants sont-ils injustement exclusifs ?",
+            "previous_episode_summary": "",
+            "previous_episode_url": "http://localhost:3001/debate?id=514",
+            "confidence": 0.85,
+            "reason": "L’actualité porte sur des changements impactant le pouvoir d’achat (smic, indemnité carburant, prix du gaz) qui correspond précisément au thème du pouvoir d’achat au centre des préoccupations sociales.",
+            "criteria": {
+              "main_actors_match": true,
+              "central_tension_match": true,
+              "temporal_continuity": true,
+              "editorial_theme_match": true,
+              "strong_keywords_match": true
+            },
+            "new_story": {
+              "story_title": "",
+              "story_summary": "",
+              "main_actors": [
+                "indemnite",
+                "carburant",
+                "montant"
+              ],
+              "central_tension": "Changements économiques au 1er juin : Smic, carburant et gaz",
+              "keywords": [
+                "indemnite",
+                "carburant",
+                "montant",
+                "smic",
+                "prix",
+                "change",
+                "juin",
+                "changements"
+              ],
+              "status": "active"
+            }
+          },
+          "mainKeyword": "Indemnit"
+        },
         "contents": [
           {
             "type": "article",
@@ -1971,7 +2135,7 @@
           "https://www.la-croix.com/economie/smic-prime-carburant-rsa-tout-ce-qui-change-au-1er-juin-2026-20260529"
         ],
         "scoreAnalyzed": true,
-        "aiAnalyzed": false
+        "aiAnalyzed": true
       },
       {
         "subject": "\"Pacho m'a touché la main, je te jure !\" : au cœur de la parade du PSG, après sa nouvelle victoire en Ligue des champions",
@@ -1990,7 +2154,55 @@
         "contentCount": 16,
         "articleCount": 14,
         "youtubeCount": 2,
-        "ai": null,
+        "ai": {
+          "arenaMode": "libre",
+          "debateScore": 7,
+          "controversyLevel": "fort",
+          "debateQuestion": "\"Pacho m'a touché la main, je te jure !\" : au cœur de la parade du PSG, après sa nouvelle victoire en Ligue des champions",
+          "resume": "",
+          "keywords": [],
+          "selectedLinks": [
+            "https://www.liberation.fr/sports/football/en-direct-sacre-du-psg-en-ligue-des-champions-apres-780-interpellations-partout-en-france-paris-attend-le-retour-ses-joueurs-20260531_72KZHUU7LZGBPHXEDJAMK4PHOM/",
+            "https://www.nouvelobs.com/sport/20260531.OBS115380/le-psg-remporte-la-ligue-des-champions-scenes-de-liesse-a-paris-pres-de-300-interpellations-apres-des-debordements.html",
+            "https://www.humanite.fr/sports/football/victoire-du-psg-en-voulant-faire-de-la-recuperation-sur-les-incidents-cest-lextreme-droite-qui-gache-la-fete",
+            "https://www.liberation.fr/sports/football/en-images-a-paris-la-fete-apres-la-victoire-du-psg-en-ligue-des-champions-20260531_JKX24BM4DVEX5OHKHJHF5HOH6E/",
+            "https://www.liberation.fr/sports/football/finale-de-la-ligue-des-champions-tensions-aux-abords-du-parc-des-princes-premieres-gardes-a-vue-20260530_TVAKCFLNFNC7XLBOUHG6SRYHBA/",
+            "https://www.liberation.fr/sports/football/apres-la-victoire-du-psg-en-ligue-des-champions-des-celebrations-au-champ-de-mars-et-au-parc-des-princes-prevues-dimanche-20260530_BFIUTDKHRBHSXFQUXK73M2APPI/",
+            "https://www.youtube.com/watch?v=dODDNhzMVHs"
+          ],
+          "agonTheme": "Sports - loisirs",
+          "positionA": "",
+          "positionB": "",
+          "sourceSubject": "\"Pacho m'a touché la main, je te jure !\" : au cœur de la parade du PSG, après sa nouvelle victoire en Ligue des champions",
+          "fullArticleState": "short",
+          "storyLink": {
+            "story_decision": "existing_story",
+            "matched_story_id": "47-le-sport-devient-un-espace-de-pouvoir-d-argent-d-identite-et-de-soft-power",
+            "matched_story_title": "Le sport devient un espace de pouvoir, d’argent, d’identité et de soft power",
+            "matched_story_summary": "",
+            "previous_episode_id": "763",
+            "previous_episode_title": "Médiatisation des victoires : bénéfice ou pression ?",
+            "previous_episode_summary": "",
+            "previous_episode_url": "http://localhost:3001/debate?id=763",
+            "confidence": 0.85,
+            "reason": "L'actualité porte sur la victoire du PSG en Ligue des champions et les célébrations, ce qui correspond clairement à une histoire sur le sport comme espace de pouvoir et d'identité.",
+            "criteria": {
+              "main_actors_match": true,
+              "central_tension_match": true,
+              "temporal_continuity": true,
+              "editorial_theme_match": true,
+              "strong_keywords_match": true
+            },
+            "new_story": {
+              "story_title": "",
+              "story_summary": "",
+              "main_actors": [],
+              "central_tension": "\"Pacho m'a touché la main, je te jure !\" : au cœur de la parade du PSG, après sa nouvelle victoire en Ligue de",
+              "keywords": [],
+              "status": "active"
+            }
+          }
+        },
         "contents": [
           {
             "type": "article",
@@ -2170,8 +2382,8 @@
           }
         ],
         "subjectId": "subject_001",
-        "debateScore": 5,
-        "controversyLevel": "moyen",
+        "debateScore": 7,
+        "controversyLevel": "fort",
         "selectedLinks": [
           "https://www.liberation.fr/sports/football/en-direct-sacre-du-psg-en-ligue-des-champions-apres-780-interpellations-partout-en-france-paris-attend-le-retour-ses-joueurs-20260531_72KZHUU7LZGBPHXEDJAMK4PHOM/",
           "https://www.nouvelobs.com/sport/20260531.OBS115380/le-psg-remporte-la-ligue-des-champions-scenes-de-liesse-a-paris-pres-de-300-interpellations-apres-des-debordements.html",
@@ -2181,7 +2393,7 @@
           "https://www.franceinfo.fr/sports/foot/ligue-des-champions/reportage-pacho-m-a-touche-la-main-je-te-jure-au-c-ur-de-la-parade-du-psg-apres-sa-nouvelle-victoire-en-ligue-des-champions_8038346.html#xtor=RSS-3-[lestitres]"
         ],
         "scoreAnalyzed": true,
-        "aiAnalyzed": false
+        "aiAnalyzed": true
       },
       {
         "subject": "Softbank promet jusqu’à 75 milliards d’euros d’investissement dans les data centers",
@@ -7655,7 +7867,56 @@
         "contentCount": 2,
         "articleCount": 1,
         "youtubeCount": 1,
-        "ai": null,
+        "ai": {
+          "arenaMode": "libre",
+          "debateScore": 6,
+          "controversyLevel": "moyen",
+          "debateQuestion": "«Assemblée nationale des enfants» : la dernière proposition présidentielle de Marine Tondelier",
+          "resume": "",
+          "keywords": [],
+          "selectedLinks": [
+            "https://www.valeursactuelles.com/politique/assemblee-nationale-des-enfants-la-derniere-proposition-presidentielle-de-marine-tondelier"
+          ],
+          "agonTheme": "Société - éducation",
+          "positionA": "",
+          "positionB": "",
+          "sourceSubject": "«Assemblée nationale des enfants» : la dernière proposition présidentielle de Marine Tondelier",
+          "fullArticleState": "short",
+          "mainKeyword": "Assemblée",
+          "storyLink": {
+            "story_decision": "existing_story",
+            "matched_story_id": "28-l-ecole-fait-face-a-des-tensions-autour-du-niveau-de-l-autorite-des-inegalites-e",
+            "matched_story_title": "L’école fait face à des tensions autour du niveau, de l’autorité, des inégalités et du métier enseignant",
+            "matched_story_summary": "",
+            "previous_episode_id": "",
+            "previous_episode_title": "",
+            "previous_episode_summary": "",
+            "previous_episode_url": "",
+            "confidence": 0.75,
+            "reason": "L'actualité porte sur une proposition liée à une assemblée nationale des enfants, ce qui concerne directement le domaine de l'éducation et les enjeux autour de l'école, de l'autorité et des structures éducatives.",
+            "criteria": {
+              "main_actors_match": false,
+              "central_tension_match": true,
+              "temporal_continuity": true,
+              "editorial_theme_match": true,
+              "strong_keywords_match": true
+            },
+            "new_story": {
+              "story_title": "",
+              "story_summary": "",
+              "main_actors": [
+                "Marine Tondelier"
+              ],
+              "central_tension": "Proposition politique pour une assemblée d'enfants",
+              "keywords": [
+                "Assemblée",
+                "enfants",
+                "éducation"
+              ],
+              "status": "active"
+            }
+          }
+        },
         "contents": [
           {
             "type": "article",
@@ -7681,13 +7942,13 @@
           }
         ],
         "subjectId": "subject_006",
-        "debateScore": 5,
+        "debateScore": 6,
         "controversyLevel": "moyen",
         "selectedLinks": [
           "https://www.valeursactuelles.com/politique/assemblee-nationale-des-enfants-la-derniere-proposition-presidentielle-de-marine-tondelier"
         ],
         "scoreAnalyzed": true,
-        "aiAnalyzed": false
+        "aiAnalyzed": true
       },
       {
         "subject": "\"Merci beaucoup de m'avoir sauvé\" : dans le Vaucluse, la fin du calvaire d'un enfant de 9 ans enfermé dans un placard",

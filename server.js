@@ -792,7 +792,13 @@ Le débat doit :
 Si la question est trop évidente, cherche le dilemme réel :
 sécurité/liberté, fermeté/accompagnement, urgence/prudence, diplomatie/rapport de force, innovation/protection, responsabilité individuelle/action publique.
 
-Pour les sujets sans décision collective directe (fait divers, accident, catastrophe, affaire judiciaire, violence, décès) : ne cherche pas le débat dans l'événement lui-même. Cherche-le dans la réponse collective — médiatisation, fonctionnement des institutions, traitement sociétal. Exemple : une disparition médiatisée → "La médiatisation d'une disparition aide-t-elle l'enquête ou menace-t-elle la présomption d'innocence ?". Si aucun angle pertinent n'émerge, choisis "avoid".
+Pour les sujets sans décision collective directe (fait divers, accident, catastrophe, affaire judiciaire, violence, décès) : ne cherche pas le débat dans l'événement lui-même. Cherche-le dans la réponse collective — médiatisation, fonctionnement des institutions, traitement sociétal. N'utilise cet angle "réponse collective" que si le résumé factuel mentionne déjà, explicitement, un élément concret de cette réponse (réaction citée, mesure évoquée, polémique engagée, dispositif existant). Si le résumé ne contient aucun élément de ce type, ne fabrique pas un tel angle : choisis "understand" ou "avoid". Exemple valable seulement si le résumé évoque déjà la médiatisation : une disparition médiatisée → "La médiatisation d'une disparition aide-t-elle l'enquête ou menace-t-elle la présomption d'innocence ?". Si aucun angle pertinent n'émerge, choisis "avoid".
+
+RÈGLE D'ANCRAGE FACTUEL DE LA QUESTION :
+debateAngle, narrativeTension et debateQuestion ne doivent désigner aucune mesure, chiffre, dispositif, proposition ou acteur qui n'apparaît pas explicitement dans le résumé factuel.
+Les titres de sources peuvent t'aider à repérer un angle, mais tout élément concret cité dans la question finale (mesure, chiffre, dispositif, proposition, acteur) doit être traçable mot pour mot dans le résumé factuel — pas seulement dans un titre.
+Si un titre évoque un élément que le résumé factuel ne reprend pas, ignore cet élément pour construire la question : reste au niveau de généralité que permet le résumé.
+La question doit pouvoir se déduire de ce qui est écrit dans le résumé factuel, sans information supplémentaire.
 
 RÈGLE DE SÉCURITÉ FACTUELLE :
 N'ajoute jamais un fait absent du résumé factuel ou des titres fournis.
@@ -939,231 +945,6 @@ Réponds uniquement en JSON valide, sans balises markdown.`;
 
 
 
-function buildFallbackStorySuggestion(payload, stories = []) {
-  const text = [
-    payload.subject,
-    payload.ai?.debateQuestion,
-    payload.ai?.resume,
-    ...(payload.sources || []),
-    ...((payload.contents || []).map((item) => item.title))
-  ].filter(Boolean).join(" ");
-  const keywords = [...new Set(getStoryKeywords(text))].slice(0, 8);
-  const newStory = {
-    story_title: "",
-    story_summary: "",
-    main_actors: keywords.slice(0, 3),
-    central_tension: limitStoryText(payload.ai?.debateQuestion || payload.subject || "Tension politique à suivre.", 140),
-    keywords,
-    status: "active"
-  };
-
-  if (!stories.length) {
-    return {
-      story_decision: "new_story",
-      matched_story_id: null,
-      matched_story_title: null,
-      confidence: 0.2,
-      reason: "Aucune histoire existante n'est disponible pour ce sujet.",
-      criteria: {
-        main_actors_match: false,
-        central_tension_match: false,
-        temporal_continuity: false,
-        editorial_theme_match: false,
-        strong_keywords_match: false
-      },
-      new_story: newStory
-    };
-  }
-
-  const referenceText = [payload.subject, payload.ai?.debateQuestion, payload.ai?.resume].filter(Boolean).join(" ");
-  const referenceKeywords = new Set(getStoryKeywords(referenceText));
-  let bestStory = null;
-  let bestScore = 0;
-
-  for (const story of stories) {
-    const titleText = String(story.story_title || "").trim();
-    const titleKeywords = new Set(getStoryKeywords(titleText));
-    const storyKeywords = new Set(getStoryKeywords([
-      story.story_title
-    ].filter(Boolean).join(" ")));
-
-    const sharedTitleKeywords = [...referenceKeywords].filter((word) => titleKeywords.has(word)).length;
-    const sharedStoryKeywords = [...referenceKeywords].filter((word) => storyKeywords.has(word)).length;
-    const titleSimilarity = stringSimilarity.compareTwoStrings(normalizeStoryText(referenceText), normalizeStoryText(titleText));
-
-    const score = (sharedTitleKeywords * 0.28) + (sharedStoryKeywords * 0.12) + (titleSimilarity * 0.9);
-
-    if (score > bestScore) {
-      bestScore = score;
-      bestStory = {
-        ...story,
-        _sharedTitleKeywords: sharedTitleKeywords,
-        _sharedStoryKeywords: sharedStoryKeywords,
-        _titleSimilarity: titleSimilarity
-      };
-    }
-  }
-
-  if (bestStory) {
-    const strongTitleMatch = bestStory._sharedTitleKeywords >= 2 || bestStory._titleSimilarity >= 0.62;
-    const mediumTitleMatch = bestStory._sharedTitleKeywords >= 1 || bestStory._titleSimilarity >= 0.46;
-
-    if (strongTitleMatch) {
-      return {
-        story_decision: "existing_story",
-        matched_story_id: bestStory.story_id,
-        matched_story_title: bestStory.story_title,
-        matched_story_summary: bestStory.story_summary || "",
-        previous_episode_id: bestStory.latest_episode_id || "",
-        previous_episode_title: bestStory.latest_episode_title || "",
-        previous_episode_summary: bestStory.latest_episode_summary || "",
-        previous_episode_url: buildAgonDebateUrl(bestStory.latest_episode_id || ""),
-        confidence: Number(Math.min(0.96, 0.72 + bestStory._titleSimilarity * 0.2).toFixed(2)),
-        reason: "Le sujet recoupe directement le titre d'une histoire existante, plus precise que les autres options.",
-        criteria: {
-          main_actors_match: bestStory._sharedTitleKeywords >= 1,
-          central_tension_match: true,
-          temporal_continuity: bestStory._sharedStoryKeywords >= 1,
-          editorial_theme_match: true,
-          strong_keywords_match: bestStory._sharedTitleKeywords >= 1
-        },
-        new_story: newStory
-      };
-    }
-
-    if (mediumTitleMatch && bestStory._sharedStoryKeywords >= 1) {
-      return {
-        story_decision: "uncertain",
-        matched_story_id: bestStory.story_id,
-        matched_story_title: bestStory.story_title,
-        matched_story_summary: bestStory.story_summary || "",
-        previous_episode_id: bestStory.latest_episode_id || "",
-        previous_episode_title: bestStory.latest_episode_title || "",
-        previous_episode_summary: bestStory.latest_episode_summary || "",
-        previous_episode_url: buildAgonDebateUrl(bestStory.latest_episode_id || ""),
-        confidence: Number(Math.min(0.79, 0.58 + bestStory._titleSimilarity * 0.18).toFixed(2)),
-        reason: "Le sujet semble correspondre a une histoire existante, mais une verification editoriale reste utile.",
-        criteria: {
-          main_actors_match: bestStory._sharedTitleKeywords >= 1,
-          central_tension_match: true,
-          temporal_continuity: bestStory._sharedStoryKeywords >= 1,
-          editorial_theme_match: true,
-          strong_keywords_match: bestStory._sharedTitleKeywords >= 1
-        },
-        new_story: newStory
-      };
-    }
-  }
-
-  return {
-    story_decision: "new_story",
-    matched_story_id: null,
-    matched_story_title: null,
-    confidence: Number(bestScore.toFixed(2)),
-    reason: "Aucune continuite narrative nette n'a ete detectee avec les histoires existantes.",
-    criteria: {
-      main_actors_match: false,
-      central_tension_match: false,
-      temporal_continuity: false,
-      editorial_theme_match: false,
-      strong_keywords_match: false
-    },
-    new_story: newStory
-  };
-}
-
-function findSpecificStoryTitleMatch(payload, stories = []) {
-  const referenceText = [
-    payload.subject,
-    payload.ai?.debateQuestion,
-    payload.ai?.resume,
-    ...(Array.isArray(payload.ai?.keywords) ? payload.ai.keywords : []),
-    ...((payload.contents || []).map((item) => item.title))
-  ].filter(Boolean).join(" ");
-  const normalizedReference = normalizeStoryText(referenceText);
-  const referenceKeywords = new Set(getStoryKeywords(referenceText));
-  let best = null;
-
-  for (const story of stories) {
-    const title = String(story.story_title || "").trim();
-    const normalizedTitle = normalizeStoryText(title);
-    const titleKeywords = getStoryKeywords(title);
-    if (!title || !titleKeywords.length || titleKeywords.length > 4) continue;
-    const allTitleWordsMatch = titleKeywords.every((word) => referenceKeywords.has(word));
-    if (!allTitleWordsMatch) continue;
-
-    const exactPhraseMatch = normalizedTitle && normalizedReference.includes(normalizedTitle);
-    const specificityBonus = 3 / titleKeywords.length;
-    const score = (exactPhraseMatch ? 4 : 2) + specificityBonus;
-
-    if (!best || score > best.score) {
-      best = { story, score };
-    }
-  }
-
-  return best?.story || null;
-}
-
-async function loadAgonStories() {
-  function readLocalAgonStories() {
-    try {
-      if (!AGON_STORIES_FILE || !fs.existsSync(AGON_STORIES_FILE)) return [];
-      const parsed = JSON.parse(fs.readFileSync(AGON_STORIES_FILE, "utf8") || "[]");
-      return Array.isArray(parsed)
-        ? parsed.filter((story) => String(story?.status || "active").trim().toLowerCase() !== "archived")
-        : [];
-    } catch (error) {
-      console.warn("[stories] Impossible de lire le fichier local Agôn :", error.message);
-      return [];
-    }
-  }
-
-  try {
-    const response = await fetch(`${AGON_URL}/api/veille/stories`);
-    if (!response.ok) return readLocalAgonStories();
-    const data = await response.json();
-    const apiStories = Array.isArray(data?.stories) ? data.stories : [];
-    return apiStories.length ? apiStories : readLocalAgonStories();
-  } catch (error) {
-    return readLocalAgonStories();
-  }
-}
-
-async function suggestStoryLink(payload) {
-  const stories = await loadAgonStories();
-  const compactStories = stories.slice(0, 200).map((story) => ({
-    story_id: story.story_id,
-    story_title: story.story_title,
-    story_summary: story.story_summary,
-    main_actors: Array.isArray(story.main_actors) ? story.main_actors.slice(0, 5) : [],
-    central_tension: story.central_tension || "",
-    keywords: Array.isArray(story.keywords) ? story.keywords.slice(0, 8) : [],
-    latest_episode_id: story.latest_episode_id || "",
-    latest_episode_title: story.latest_episode_title || "",
-    latest_episode_summary: story.latest_episode_summary || "",
-    updated_at: story.updated_at || ""
-  }));
-  const titleOnlyStories = compactStories.map((story) => ({
-    story_id: story.story_id,
-    story_title: story.story_title
-  }));
-
-  const fallback = buildFallbackStorySuggestion(payload, compactStories);
-  const specificTitleMatch = findSpecificStoryTitleMatch(payload, compactStories);
-  const storiesHaveSparseMetadata = compactStories.every((story) => {
-    return !String(story.story_summary || "").trim()
-      && !String(story.central_tension || "").trim()
-      && !(Array.isArray(story.main_actors) && story.main_actors.length)
-      && !(Array.isArray(story.keywords) && story.keywords.length)
-      && !String(story.latest_episode_summary || "").trim();
-  });
-
-  if (!openai) {
-    return fallback;
-  }
-
-}
-
 async function generateStyledArticle(payload) {
   const subject = String(payload?.subject || "").trim();
   const summary = String(payload?.summary || "").trim();
@@ -1287,6 +1068,11 @@ RÈGLES ABSOLUES :
 * Ne pas transformer l'article en revue de presse.
 * Ne pas afficher les positions dans l'article.
 * La phrase avant la question doit être affirmative.
+
+PONT FACTUEL ENTRE LE CORPS ET LA QUESTION :
+* Si debateQuestion fait référence à une mesure, un chiffre, un dispositif, une proposition ou un acteur précis, le corps de l'article doit l'avoir nommé et expliqué avant la question.
+* La question finale ne doit jamais introduire une information, un chiffre, une mesure ou un acteur absent du corps de l'article.
+* Le lecteur doit comprendre, en lisant uniquement les deux paragraphes, pourquoi cette question se pose précisément ainsi.
 
 DEUXIÈME PARAGRAPHE — MÉTHODE :
 1. Présenter les deux options face à face, sans les nommer mécaniquement.
@@ -1573,7 +1359,10 @@ Vérification obligatoire avant de répondre :
 11. debateQuestion fait 80 caractères maximum.
 12. positionA et positionB font 55 caractères maximum.
 13. article se termine par une signature autorisée, seule sur la dernière ligne.
-14. Si une condition échoue, corrige le JSON avant de répondre.
+14. Tout chiffre, mesure, dispositif, proposition ou acteur cité dans debateQuestion apparaît et est expliqué dans le corps de l'article avant la question.
+15. debateQuestion ne contient aucune information, chiffre, mesure ou acteur absent du corps de l'article — la question ne doit jamais sembler tomber du ciel.
+16. Si la condition 14 ou 15 échoue : reformule debateQuestion pour qu'elle découle directement de ce qui est expliqué dans le corps, OU ajoute une phrase de transition factuelle dans le deuxième paragraphe expliquant la mesure ou le chiffre concerné (sans inventer de fait nouveau), OU si rien de tout cela n'est possible, ramène la question au niveau de généralité que couvre réellement le corps de l'article.
+17. Si une condition échoue, corrige le JSON avant de répondre.
 
 JSON attendu uniquement :
 {
@@ -1627,6 +1416,223 @@ Réponds uniquement en JSON valide, sans balises markdown.`;
   } catch (error) {
     console.error("Erreur finition article Agôn :", error.message);
     return { ...base, latinQuestion: "" };
+  }
+}
+
+async function generateFreeArenaArticle(payload) {
+  const subject = String(payload?.subject || "").trim();
+  const summary = String(payload?.summary || "").trim();
+
+  if (!summary) {
+    throw new Error("Résumé manquant pour générer l'article factuel.");
+  }
+
+  if (!openai) {
+    return {
+      article: limitStoryText(summary, 1600),
+      debateQuestion: limitStoryText(subject, 100)
+    };
+  }
+
+  const prompt = `Tu es éditeur pour Agôn.
+
+Tu reçois un résumé factuel neutre d'un événement. Cette arène est une "arène libre" : un espace de discussion ouverte, sans question de débat imposée et sans opposition entre deux camps.
+
+Ta mission : rédiger un titre factuel et un article factuel et sobre, qui exposent les faits avec clarté sans orienter le lecteur vers une prise de position.
+
+RÈGLE DE SÉCURITÉ FACTUELLE :
+Tu dois rédiger sans jamais enrichir les faits.
+N'ajoute jamais par mémoire, déduction ou vraisemblance :
+* une fonction politique ou institutionnelle ;
+* un chiffre ;
+* un statut judiciaire ;
+* une réaction politique, syndicale ou associative ;
+* une causalité ;
+* une décision officielle ;
+* une responsabilité.
+Si une information n'est pas explicitement présente dans le résumé factuel, tu l'enlèves ou tu formules prudemment.
+Principe central : tu peux améliorer le style et la clarté, mais tu ne dois jamais compléter les faits.
+
+TITRE FACTUEL (champ "title") :
+* Une phrase courte, sobre et factuelle qui résume le sujet.
+* Jamais une question.
+* Jamais une formulation binaire ou orientée débat.
+* Maximum 90 caractères.
+Exemples valables :
+- "Violences après la finale du PSG : les réparations publiques au cœur des tensions"
+- "Une affaire relance les inquiétudes autour de la sécurité des mineurs"
+- "L'intelligence artificielle s'installe progressivement dans les pratiques scolaires"
+- "Le logement reste un facteur majeur de tension sociale"
+Formulations interdites :
+- "Faut-il durcir les sanctions contre les violences urbaines ?"
+- "Sécurité ou justice sociale ?"
+- "L'État doit-il sanctionner davantage ?"
+- toute formulation binaire ou orientée débat.
+
+ARTICLE FACTUEL (champ "article") — structure obligatoire :
+1. Une accroche factuelle courte et concrète.
+2. Ligne vide.
+3. Un paragraphe qui résume clairement les faits.
+4. Ligne vide.
+5. Un paragraphe de mise en contexte présentant les enjeux ou conséquences générales, sans les présenter comme un choix entre deux camps.
+6. Ligne vide.
+7. Une conclusion sobre qui ouvre la réflexion sans poser de question ni orienter vers une position.
+8. Ligne vide.
+9. Une signature seule sur la dernière ligne, choisie parmi : J.L Grasso / F. Glorennec / T. Guyomarch / M. Guillot / P. Ratsky.
+
+INTERDICTIONS STRICTES POUR L'ARTICLE :
+* Aucune phrase interrogative, nulle part dans le texte.
+* Pas de formulations du type : "La question est donc de savoir si…", "Faut-il…", "Deux visions s'opposent…", "D'un côté… de l'autre…".
+* Pas d'opposition artificielle entre deux camps ou deux positions.
+* Pas de devise ni de formule latine.
+* Pas de conclusion en forme de débat.
+* Le texte doit ouvrir une discussion libre, pas enfermer le lecteur dans deux positions.
+
+LONGUEUR :
+Article : 1000 à 1600 caractères, signature comprise.
+
+SORTIE :
+Réponds uniquement en JSON valide :
+{
+  "title": "",
+  "article": ""
+}
+
+Sujet :
+${subject}
+
+Résumé factuel :
+${summary}
+
+Réponds uniquement en JSON valide, sans balises markdown.`;
+
+  const response = await openai.responses.create({
+    model: "gpt-4o",
+    input: prompt,
+    temperature: 0.35,
+    max_output_tokens: 2000
+  });
+
+  const rawText = String(response.output_text || "").trim();
+  if (!rawText) throw new Error("Réponse vide de l'IA pour l'article factuel.");
+
+  let parsed = {};
+  try {
+    parsed = safeJsonParse(rawText);
+  } catch (error) {
+    parsed = { title: subject, article: rawText };
+  }
+
+  return {
+    article: limitStoryText(parsed.article || summary, 1600),
+    debateQuestion: limitStoryText(parsed.title || subject, 100)
+  };
+}
+
+function insertLatinMottoBeforeSignature(article, latinMotto, forcedSignature = "") {
+  const motto = normalizeLatinQuestion(latinMotto);
+  const rawLines = String(article || "")
+    .split(/\n+/)
+    .map((line) => line.trim())
+    .filter(Boolean);
+  if (!rawLines.length) return String(article || "").trim();
+
+  const normalizedMotto = normalizeArticleLineForCompare(motto);
+  const signature = AGON_ARTICLE_SIGNATURES.has(forcedSignature)
+    ? forcedSignature
+    : AGON_ARTICLE_SIGNATURES.has(rawLines[rawLines.length - 1])
+    ? rawLines.pop()
+    : getNextAgonArticleSignature();
+
+  const bodyBlocks = rawLines.filter((line) => {
+    const normalizedLine = normalizeArticleLineForCompare(line);
+    if (!normalizedLine) return false;
+    if (AGON_ARTICLE_SIGNATURES.has(line)) return false;
+    if (normalizedMotto && normalizedLine === normalizedMotto) return false;
+    if (looksLikeLatinPhrase(line)) return false;
+    return true;
+  });
+
+  const body = splitArticleOpeningSentence(bodyBlocks).join("\n\n").trim();
+
+  return limitStoryText([
+    body,
+    motto,
+    signature
+  ].filter(Boolean).join("\n\n"), AGON_ARTICLE_MAX_LENGTH);
+}
+
+async function generateFreeArenaLatinMotto(payload) {
+  const subject = String(payload?.subject || "").trim();
+  const summary = String(payload?.summary || "").trim();
+  const article = String(payload?.article || "").trim();
+  const sources = Array.isArray(payload?.sources) ? payload.sources.filter(Boolean) : [];
+  const agonTheme = String(payload?.agonTheme || "").trim();
+  const fallbackMotto = "Res ipsa loquitur";
+
+  if (!article) {
+    throw new Error("Article manquant pour générer la devise latine.");
+  }
+
+  if (!openai) {
+    return { latinMotto: fallbackMotto, article: insertLatinMottoBeforeSignature(article, fallbackMotto) };
+  }
+
+  const prompt = `Tu es éditeur pour Agôn.
+
+Tu dois produire une devise latine courte de synthèse pour un article d'arène libre.
+
+Cette arène libre n'oppose pas deux camps : il n'y a ni question de débat, ni position A, ni position B.
+La devise ne doit donc jamais prendre la forme d'une opposition (par exemple "X an Y"), et ne doit jamais reprendre mécaniquement deux positions puisqu'elles n'existent pas ici.
+
+Sujet :
+${subject}
+
+Thématique Agôn :
+${agonTheme || "non précisée"}
+
+Sources :
+${sources.length ? sources.join(", ") : "non précisées"}
+
+Article factuel :
+${article || summary}
+
+Ta mission :
+Résume l'idée centrale de cet article en une devise latine courte qui :
+- résume l'idée principale du sujet ;
+- est courte, sobre, avec un ton sérieux, presque sentencieux ;
+- est compréhensible et mémorisable ;
+- tient en 2 à 5 mots maximum ;
+- ne crée aucune opposition artificielle ;
+- n'est jamais une question (aucun point d'interrogation) ;
+- n'utilise jamais le format "X an Y" ;
+- évite les phrases longues, le latin trop complexe, douteux ou les conjonctions (sed, etiam, autem, enim, vel, aut, quod, quia) ;
+- ne mentionne jamais "Agôn", "Agon" ni le nom de la plateforme.
+
+Exemples d'esprit attendu (ne jamais recopier, ils illustrent seulement le style) :
+"Ordo post tumultum" / "Veritas sub iudicio" / "Civitas in discrimine" / "Memoria et iustitia" / "Ratio inter metum"
+
+Réponds uniquement en JSON valide avec cette structure :
+{
+  "latinMotto": "..."
+}
+
+Réponds uniquement en JSON valide, sans balises markdown.`;
+
+  try {
+    const response = await openai.responses.create({
+      model: "gpt-4.1-mini",
+      input: prompt,
+      temperature: 0.4,
+      max_output_tokens: 120
+    });
+
+    const parsed = safeJsonParse(String(response.output_text || "").trim());
+    const latinMotto = normalizeLatinQuestion(parsed.latinMotto || "") || fallbackMotto;
+    return { latinMotto, article: insertLatinMottoBeforeSignature(article, latinMotto) };
+  } catch (error) {
+    console.error("Erreur IA devise latine (arène libre) :", error.message);
+    return { latinMotto: fallbackMotto, article: insertLatinMottoBeforeSignature(article, fallbackMotto) };
   }
 }
 
@@ -2476,6 +2482,26 @@ app.post("/generate-styled-article", requireMixteAuth, async (req, res) => {
     res.json({ ok: true, ...result });
   } catch (err) {
     res.status(500).json({ ok: false, error: err.message || "Erreur génération article définitif" });
+  }
+});
+
+app.post("/generate-free-article", requireMixteAuth, async (req, res) => {
+  try {
+    const payload = req.body || {};
+    const result = await generateFreeArenaArticle(payload);
+    res.json({ ok: true, ...result, positionA: "", positionB: "" });
+  } catch (err) {
+    res.status(500).json({ ok: false, error: err.message || "Erreur génération article factuel (arène libre)" });
+  }
+});
+
+app.post("/generate-latin-motto", requireMixteAuth, async (req, res) => {
+  try {
+    const payload = req.body || {};
+    const result = await generateFreeArenaLatinMotto(payload);
+    res.json({ ok: true, ...result });
+  } catch (err) {
+    res.status(500).json({ ok: false, error: err.message || "Erreur génération devise latine (arène libre)" });
   }
 });
 
@@ -3907,6 +3933,7 @@ async function ensureKeywordsBeforeAgonSend({ subject, question, sources, links,
 app.post("/send-to-agon", requireMixteAuth, async (req, res) => {
   try {
     const { subject, sessionLabel, question, positionA, positionB, theme, resume, sources, links, storySelection, keywords, politicalOrientation } = req.body;
+    const arenaMode = String(req.body?.arenaMode || "").trim() === "libre" ? "libre" : "positions";
     if (!question) return res.status(400).json({ ok: false, error: "question manquante" });
     const normalizedQuestion = limitDebateQuestion(question);
     const normalizedResume = ensureArticleOpeningSentenceBreak(resume);
@@ -3919,7 +3946,7 @@ app.post("/send-to-agon", requireMixteAuth, async (req, res) => {
       r = await fetch(`${AGON_URL}/api/veille/receive`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ question: normalizedQuestion, positionA, positionB, theme, resume: normalizedResume, sources, links: links || [], storySelection: storySelection || null, keywords: resolvedKeywords, politicalOrientation: politicalOrientation || null }),
+        body: JSON.stringify({ question: normalizedQuestion, positionA, positionB, theme, resume: normalizedResume, sources, links: links || [], storySelection: storySelection || null, keywords: resolvedKeywords, politicalOrientation: politicalOrientation || null, arenaMode }),
         signal: agonController.signal
       });
     } finally {
@@ -3943,6 +3970,7 @@ app.post("/send-to-agon", requireMixteAuth, async (req, res) => {
       storySelection: storySelection || null,
       keywords: resolvedKeywords,
       politicalOrientation: politicalOrientation || null,
+      arenaMode,
       sentAt: new Date().toISOString()
     });
     console.log("[send-to-agon] Succès");

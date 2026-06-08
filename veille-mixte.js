@@ -999,16 +999,24 @@ async function generateSubjectTagsWithAI(subject, compactContents = null) {
   const fallbackMainKeyword = fallback[0] || "";
   if (!openai) return { mainKeyword: fallbackMainKeyword };
 
-  const contents = Array.isArray(compactContents)
-    ? compactContents
-    : subject.contents.slice(0, 10).map(content => ({
-        type: content.type,
-        source: content.source,
-        orientation: content.orientation,
-        title: content.title,
-        summary: content.summary || "",
-        link: content.link || ""
-      }));
+  const articleText = String(subject.articleText || "").trim();
+
+  let sourceSection;
+  if (articleText) {
+    sourceSection = `Article généré :\n${articleText.slice(0, 4000)}`;
+  } else {
+    const contents = Array.isArray(compactContents)
+      ? compactContents
+      : subject.contents.slice(0, 10).map(content => ({
+          type: content.type,
+          source: content.source,
+          orientation: content.orientation,
+          title: content.title,
+          summary: content.summary || "",
+          link: content.link || ""
+        }));
+    sourceSection = `Contenus :\n${JSON.stringify(contents, null, 2)}`;
+  }
 
   const prompt = `
 Tu es chargé d'extraire le tag éditorial principal d'une actualité pour une plateforme de débat.
@@ -1019,8 +1027,7 @@ ${subject.subject}
 Sources :
 ${subject.sources.join(", ")}
 
-Contenus :
-${JSON.stringify(contents, null, 2)}
+${sourceSection}
 
 Réponds uniquement en JSON valide avec cette structure :
 {
@@ -1032,8 +1039,8 @@ Règle centrale :
 - il doit définir le mieux l'actualité ;
 - il doit être immédiatement compréhensible seul, sans lire le titre ;
 - il doit nommer l'objet central de l'actualité : acteur, pays, institution, lieu, événement, loi, conflit, affaire ou phénomène précis ;
-- il ne doit pas être trop générique ;
-- il ne doit pas être un nom de pays connu seul (France, Chine, États-Unis, Russie, Allemagne, etc.) ni une grande ville seule (Paris, New York, Pékin, Londres, etc.) : dans ces cas, privilégie l'événement, l'acteur ou l'institution concerné ;
+- il ne doit pas être trop générique : proscris les mots vagues seuls comme "Tensions", "Crise", "Conflit", "Polémique", "Scandale", "Tensions diplomatiques" — ils ne nomment rien de précis ; s'ils apparaissent, associe-les obligatoirement à l'acteur, le pays, le lieu ou l'événement concerné (ex. "Tensions Chine-Taïwan" plutôt que "Tensions") ;
+- il ne doit pas se limiter à un nom de pays seul (France, Chine, États-Unis, Russie, Allemagne, etc.) ni à une grande ville seule (Paris, New York, Pékin, Londres, etc.) ; en revanche, un pays ou une ville peut apparaître associé à l'événement, l'acteur ou l'institution concerné (ex. "Émeutes Paris", "Élections Allemagne") ;
 - il doit faire 30 caractères maximum, espaces compris.
 `;
 
@@ -1306,6 +1313,7 @@ function buildAnalyzePayload(body) {
       link: item.link || "",
       summary: item.summary || ""
     })),
+    articleText: String(body?.articleText || "").trim(),
     arenaMode: body?.arenaMode === "libre" ? "libre" : "positions"
   };
 }
@@ -2460,6 +2468,16 @@ function buildSubjectInteractionScriptHtml() {
       return compactAlternative.length <= AI_TITLE_MAX ? compactAlternative : base;
     }
 
+    // Variante pour l'arène libre : nettoie et tronque un titre factuel SANS jamais le transformer en question.
+    function limitClientFactualTitle(text) {
+      const raw = String(text || "").replace(/\\s+/g, " ").trim().replace(/[?？]+$/g, "").replace(/[,:;.!…-]+$/g, "").trim();
+      if (raw.length <= AI_TITLE_MAX) return raw;
+      let stem = raw.slice(0, AI_TITLE_MAX - 1).trimEnd();
+      const lastSpace = stem.lastIndexOf(" ");
+      if (lastSpace > 48) stem = stem.slice(0, lastSpace);
+      return stem.replace(/[,:;.!…-]+$/g, "").trim();
+    }
+
     function splitArticleOpeningSentenceParts(parts) {
       const cleanParts = Array.isArray(parts)
         ? parts.map(function(part) { return String(part || "").trim(); }).filter(Boolean)
@@ -2473,10 +2491,33 @@ function buildSubjectInteractionScriptHtml() {
       return [opening, rest].concat(cleanParts.slice(1));
     }
 
-    function renderArticleHtml(articleText) {
+    function renderArticleHtml(articleText, options) {
+      const opts = options || {};
       const parts = String(articleText || "").split(/\\n\\n/)
         .map(function(p) { return p.trim(); })
         .filter(Boolean);
+
+      if (opts.arenaMode === "libre") {
+        // Arène libre : pas de question de débat dans le corps — structure [...corps, devise latine ?, signature]
+        if (parts.length < 2) {
+          return parts.map(function(p) { return "<p>" + escapeHtmlClient(p) + "</p>"; }).join("");
+        }
+        const signature = parts[parts.length - 1];
+        const hasMotto = !!opts.hasMotto && parts.length >= 3;
+        const motto = hasMotto ? parts[parts.length - 2] : "";
+        const bodyParts = parts.slice(0, parts.length - (hasMotto ? 2 : 1));
+        const formattedBodyParts = splitArticleOpeningSentenceParts(bodyParts);
+        const lastBodyIndex = formattedBodyParts.length - 1;
+        const bodyHtml = formattedBodyParts.map(function(p, idx) {
+          // Le dernier paragraphe du corps est la conclusion qui "ouvre la réflexion" : italique, non centrée
+          const cssClass = (idx === lastBodyIndex) ? "article-reflection-line" : "";
+          return cssClass ? '<p class="' + cssClass + '">' + escapeHtmlClient(p) + "</p>" : "<p>" + escapeHtmlClient(p) + "</p>";
+        }).join("");
+        return bodyHtml
+          + (motto ? '<p class="article-latin-question">' + escapeHtmlClient(motto) + "</p>" : "")
+          + '<p class="article-signature">' + escapeHtmlClient(signature) + "</p>";
+      }
+
       if (parts.length < 3) {
         return parts.map(function(p) { return "<p>" + escapeHtmlClient(p) + "</p>"; }).join("");
       }
@@ -2512,6 +2553,11 @@ function buildSubjectInteractionScriptHtml() {
     }
 
     function syncDefinitiveArticleButtonsFromState(subjectEl) {
+      // En arène libre, l'article définitif (avec question de débat / formule latine) ne s'applique pas : ces boutons restent masqués.
+      if (subjectEl.dataset.arenaMode === "libre") {
+        setDefinitiveArticleButtons(subjectEl, { hidden: true });
+        return;
+      }
       const state = String(subjectEl.querySelector(".full-article-state")?.value || "").trim();
       if (state === "full") {
         setDefinitiveArticleButtons(subjectEl, { hidden: false, disabled: false, state: "done" });
@@ -2678,10 +2724,13 @@ function buildSubjectInteractionScriptHtml() {
         };
       }).filter(function(item) { return item.link || item.title; });
       const sources = [...new Set(contents.map(function(item) { return item.source; }).filter(Boolean))];
+      const resumeElForTags = subjectEl.querySelector(".resume");
+      const articleText = (resumeElForTags?.dataset.rawText || resumeElForTags?.textContent || "").trim();
       return {
         subject: basePayload.subject || subjectEl.querySelector("h3")?.textContent.trim() || "",
         sources,
         contents,
+        articleText,
         arenaMode: basePayload.arenaMode || "positions"
       };
     }
@@ -2717,6 +2766,23 @@ function buildSubjectInteractionScriptHtml() {
         '<p><strong>B —</strong> <span class="editable" contenteditable="true" spellcheck="false">' + escapeHtmlClient(positionB || "") + "</span></p>";
     }
 
+    function removePositionsBox(subjectEl) {
+      const box = subjectEl && subjectEl.querySelector(".positions-box");
+      if (box) box.remove();
+    }
+
+    document.addEventListener("click", (e) => {
+      const modeBtn = e.target.closest(".arena-mode-btn");
+      if (!modeBtn) return;
+      const subjectEl = modeBtn.closest(".subject");
+      if (!subjectEl) return;
+      const mode = modeBtn.dataset.mode === "libre" ? "libre" : "positions";
+      subjectEl.dataset.arenaMode = mode;
+      subjectEl.querySelectorAll(".arena-mode-btn").forEach(function(b) { b.classList.toggle("active", b.dataset.mode === mode); });
+      const modeLabelPicker = subjectEl.querySelector(".arena-mode-label");
+      if (modeLabelPicker) modeLabelPicker.textContent = mode === "libre" ? "Arène libre" : "Arène à positions";
+    });
+
     document.addEventListener("click", async (e) => {
       const btn = e.target.closest(".analyze-btn");
       if (!btn) return;
@@ -2726,6 +2792,10 @@ function buildSubjectInteractionScriptHtml() {
       const subjectEl = btn.closest(".subject");
       const aiBox = btn.closest(".ai-box");
       const aiScore = subjectEl.querySelector(".ai-score.pending");
+
+      subjectEl.dataset.arenaMode = subjectData.arenaMode;
+      const modeLabel = subjectEl.querySelector(".arena-mode-label");
+      if (modeLabel) modeLabel.textContent = subjectData.arenaMode === "libre" ? "Arène libre" : "Arène à positions";
 
       aiBox.querySelectorAll(".analyze-btn").forEach(function(button) {
         button.disabled = true;
@@ -3452,19 +3522,32 @@ function buildSubjectInteractionScriptHtml() {
     });
 
     async function generateSubjectPipeline(subjectEl, setStatus) {
-      // Étape 1 : Analyse positions IA (si pas encore fait)
-      const analyzeBtn = subjectEl.querySelector(".analyze-btn[data-mode='positions']");
+      // Mode d'arène choisi pour ce sujet (source de vérité = subjectEl.dataset.arenaMode, "positions" par défaut)
+      const arenaMode = subjectEl.dataset.arenaMode === "libre" ? "libre" : "positions";
+
+      // Étape 1 : Analyse IA (si pas encore fait), dans le mode choisi
+      const analyzeBtn = subjectEl.querySelector(".analyze-btn[data-mode='positions']") || subjectEl.querySelector(".analyze-btn");
       if (analyzeBtn) {
         setStatus("Analyse IA…");
         const subjectData = JSON.parse(analyzeBtn.dataset.subject);
-        subjectData.arenaMode = "positions";
+        subjectData.arenaMode = arenaMode;
         const aiBox = analyzeBtn.closest(".ai-box");
         const aiScore = subjectEl.querySelector(".ai-score.pending");
         const res = await fetch("/analyze", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(subjectData) });
         if (!res.ok) throw new Error("Erreur analyse");
         const ai = await res.json();
         ai.sourceSubject = subjectData.subject || "";
+        if (subjectData.arenaMode === "libre") {
+          // Même normalisation que le clic manuel sur "Générer arène libre IA" : pas de question de débat ni de positions à ce stade.
+          ai.arenaMode = "libre";
+          ai.debateQuestion = subjectData.subject || ai.debateQuestion || "";
+          ai.positionA = "";
+          ai.positionB = "";
+        }
         subjectEl.dataset.subjectPayload = encodeStoryData(subjectData);
+        subjectEl.dataset.arenaMode = ai.arenaMode === "libre" ? "libre" : "positions";
+        const modeLabelStep1 = subjectEl.querySelector(".arena-mode-label");
+        if (modeLabelStep1) modeLabelStep1.textContent = subjectEl.dataset.arenaMode === "libre" ? "Arène libre" : "Arène à positions";
         if (aiScore) aiScore.outerHTML = buildAiScoreHtml(ai);
         if (aiBox) aiBox.outerHTML = buildAiBoxHtml(ai);
         ensureArticleGenerationPanel(subjectEl);
@@ -3475,18 +3558,6 @@ function buildSubjectInteractionScriptHtml() {
         const preselectedLinks = new Set(Array.isArray(ai.selectedLinks) ? ai.selectedLinks.map(l => String(l || "").trim()).filter(Boolean) : []);
         subjectEl.querySelectorAll(".content-item[data-link]").forEach(item => { const cb = item.querySelector('input[type="checkbox"]'); const sel = preselectedLinks.has(item.dataset.link); if (cb) cb.checked = sel; item.classList.toggle("preselected", sel); });
         await fetch("/save-update", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ subject: subjectData.subject, debateScore: ai.debateScore, controversyLevel: ai.controversyLevel, ai: { ...ai, fullArticleState: "short" } }) });
-      }
-
-      if (!getMainKeywordFromEditor(subjectEl)) {
-        setStatus("Tags…");
-        const tagsPayload = getSubjectAnalyzePayloadFromEditor(subjectEl);
-        const tagsRes = await fetch("/generate-tags", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(tagsPayload) });
-        const tagsData = await tagsRes.json().catch(() => ({}));
-        if (!tagsRes.ok || tagsData.ok === false) throw new Error(tagsData.error || "Erreur tags");
-        renderKeywordsInEditor(subjectEl, tagsData.mainKeyword || "");
-        const tagsBtn = subjectEl.querySelector(".tags-generate-btn");
-        if (tagsBtn) tagsBtn.textContent = "✓ Tags générés";
-        await fetch("/save-update", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ subject: tagsPayload.subject, ai: { mainKeyword: getMainKeywordFromEditor(subjectEl) } }) });
       }
 
       const basePayload = decodeStoryData(subjectEl.dataset.subjectPayload || "") || {};
@@ -3512,7 +3583,7 @@ function buildSubjectInteractionScriptHtml() {
           if (!anyChecked && allContentItems.length > 0) {
             allContentItems.forEach(item => { const cb = item.querySelector('input[type="checkbox"]'); if (cb) cb.checked = true; });
           }
-          const fullRes = await fetch("/generate-full-article", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ subject: subjectTitle, contents: getSelectedContents(subjectEl) }) });
+          const fullRes = await fetch("/generate-full-article", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ subject: subjectTitle, contents: getSelectedContents(subjectEl), arenaMode }) });
           const fullData = await fullRes.json().catch(() => ({}));
           if (!fullRes.ok || fullData.ok === false) throw new Error(fullData.error || "Erreur résumé");
           const summaryText = String(fullData.article || "").trim();
@@ -3524,53 +3595,109 @@ function buildSubjectInteractionScriptHtml() {
           const fullBtn = subjectEl.querySelector(".full-article-btn");
           if (fullBtn) fullBtn.textContent = "✓ Résumé généré";
 
-          // Étape 3 : Angle de débat + question
-          setStatus("Angle & question…");
-          const mediaRes = await fetch("/generate-final-article", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ subject: subjectTitle, summary: summaryText, contents: pipelineContents }) });
-          const mediaData = await mediaRes.json().catch(() => ({}));
-          if (!mediaRes.ok || mediaData.ok === false) throw new Error(mediaData.error || "Erreur angle & question");
-          subjectEl.dataset.hasMediaContrast = "false";
-          subjectEl.dataset.mediaTreatment = "";
-          subjectEl.dataset.mainIssue = String(mediaData.mainIssue || "");
-          subjectEl.dataset.narrativeTension = String(mediaData.narrativeTension || "");
-          subjectEl.dataset.debatePotential = String(mediaData.debatePotential || "");
-          subjectEl.dataset.editorialWarning = String(mediaData.editorialWarning || "");
-          subjectEl.dataset.possibleBiases = JSON.stringify(Array.isArray(mediaData.possibleBiases) ? mediaData.possibleBiases : []);
-          subjectEl.dataset.debateAngle = String(mediaData.debateAngle || "");
-          questionEl = subjectEl.querySelector(".debate-question");
-          const limitedQuestion = limitClientDebateQuestion(mediaData.debateQuestion || "");
-          if (questionEl) questionEl.textContent = limitedQuestion;
-          ensurePositionsBox(subjectEl, mediaData.positionA || "", mediaData.positionB || "");
-          updatePoliticalTag(subjectEl, !!(mediaData.politicalOrientation && mediaData.politicalOrientation.isPolitical));
-          updateAiEditorCounters(subjectEl);
-          const agonBtnStep3 = subjectEl.querySelector(".agon-btn");
-          if (agonBtnStep3) { agonBtnStep3.dataset.question = limitedQuestion; agonBtnStep3.dataset.positionA = String(mediaData.positionA || "").trim(); agonBtnStep3.dataset.positionB = String(mediaData.positionB || "").trim(); agonBtnStep3.dataset.politicalOrientation = mediaData.politicalOrientation ? JSON.stringify(mediaData.politicalOrientation) : ""; }
-          if (fullArticleState) fullArticleState.value = "problematique";
-          const finalBtn = subjectEl.querySelector(".final-article-btn");
-          if (finalBtn) finalBtn.textContent = "✓ Angle & question générés";
-          setDefinitiveArticleButtons(subjectEl, { hidden: false, disabled: false, state: "idle" });
+          if (arenaMode === "libre") {
+            // ---- Pipeline ARÈNE LIBRE : titre factuel + article factuel, sans question ni positions ----
+            setStatus("Titre & article factuels…");
+            subjectEl.dataset.hasMediaContrast = "false";
+            subjectEl.dataset.mediaTreatment = "";
+            subjectEl.dataset.mainIssue = "";
+            subjectEl.dataset.narrativeTension = "";
+            subjectEl.dataset.debatePotential = "";
+            subjectEl.dataset.editorialWarning = "";
+            subjectEl.dataset.possibleBiases = "[]";
+            subjectEl.dataset.debateAngle = "";
 
-          // Suggestion d'histoire
-          await suggestStoryForSubject(subjectEl, setStatus);
+            const freeRes = await fetch("/generate-free-article", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ subject: subjectTitle, summary: summaryText, arenaMode }) });
+            const freeData = await freeRes.json().catch(() => ({}));
+            if (!freeRes.ok || freeData.ok === false) throw new Error(freeData.error || "Erreur article factuel");
 
-          // Étape 5 : Article définitif
-          setStatus("Article définitif…");
-          const debateQuestion = questionEl?.textContent.trim() || "";
-          const editables = subjectEl.querySelectorAll(".positions-box .editable");
-          const posA = editables[0]?.textContent.trim() || "";
-          const posB = editables[1]?.textContent.trim() || "";
-          const styledRes = await fetch("/generate-styled-article", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ subject: subjectTitle, summary: summaryText, debateAngle: mediaData.debateAngle || "", debateQuestion, positionA: posA, positionB: posB, hasMediaContrast: false, mediaTreatment: "", mainIssue: mediaData.mainIssue || "", narrativeTension: mediaData.narrativeTension || "", possibleBiases: Array.isArray(mediaData.possibleBiases) ? mediaData.possibleBiases : [], debatePotential: mediaData.debatePotential || "", editorialWarning: mediaData.editorialWarning || "", editorialDecision: mediaData.editorialDecision || "", questionQuality: mediaData.questionQuality || "" }) });
-          const styledData = await styledRes.json().catch(() => ({}));
-          if (!styledRes.ok || styledData.ok === false) throw new Error(styledData.error || "Erreur article définitif");
-          const styledArticle = String(styledData.article || "").trim();
-          resumeEl = subjectEl.querySelector(".resume");
-          if (resumeEl && styledArticle) { resumeEl.dataset.rawText = styledArticle; resumeEl.innerHTML = renderArticleHtml(styledArticle); }
-          questionEl = subjectEl.querySelector(".debate-question");
-          if (questionEl && styledData.debateQuestion) questionEl.textContent = limitClientDebateQuestion(styledData.debateQuestion);
-          if (styledData.positionA || styledData.positionB) ensurePositionsBox(subjectEl, styledData.positionA || posA, styledData.positionB || posB);
-          updateAiEditorCounters(subjectEl);
-          if (fullArticleState) fullArticleState.value = "full";
-          setDefinitiveArticleButtons(subjectEl, { hidden: false, disabled: false, state: "done" });
+            const factualTitle = limitClientFactualTitle(freeData.debateQuestion || subjectTitle);
+            questionEl = subjectEl.querySelector(".debate-question");
+            if (questionEl) questionEl.textContent = factualTitle;
+            removePositionsBox(subjectEl);
+
+            const freeArticle = String(freeData.article || "").trim();
+            resumeEl = subjectEl.querySelector(".resume");
+            if (resumeEl && freeArticle) { resumeEl.dataset.rawText = freeArticle; resumeEl.innerHTML = renderArticleHtml(freeArticle, { arenaMode: "libre", hasMotto: false }); }
+            updateAiEditorCounters(subjectEl);
+
+            const agonBtnLibre = subjectEl.querySelector(".agon-btn");
+            if (agonBtnLibre) { agonBtnLibre.dataset.question = factualTitle; agonBtnLibre.dataset.positionA = ""; agonBtnLibre.dataset.positionB = ""; agonBtnLibre.dataset.politicalOrientation = ""; }
+            if (fullArticleState) fullArticleState.value = "full";
+            const finalBtnLibre = subjectEl.querySelector(".final-article-btn");
+            if (finalBtnLibre) finalBtnLibre.textContent = "✓ Titre & article générés";
+
+            // Suggestion d'histoire
+            await suggestStoryForSubject(subjectEl, setStatus);
+
+            // Devise latine de synthèse — prompt dédié à l'arène libre, exécuté en dernier sur l'article final
+            setStatus("Devise latine…");
+            const mottoArticleText = (resumeEl?.dataset.rawText || resumeEl?.textContent || "").trim();
+            if (mottoArticleText) {
+              try {
+                const mottoSources = [...new Set(pipelineContents.map(c => c.source).filter(Boolean))];
+                const mottoRes = await fetch("/generate-latin-motto", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ subject: factualTitle || subjectTitle, summary: summaryText, article: mottoArticleText, sources: mottoSources, agonTheme: agonBtnLibre?.dataset.theme || "" }) });
+                const mottoData = await mottoRes.json().catch(() => ({}));
+                if (mottoRes.ok && mottoData.ok !== false && mottoData.article) {
+                  const articleWithMotto = String(mottoData.article).trim();
+                  resumeEl = subjectEl.querySelector(".resume");
+                  if (resumeEl && articleWithMotto) { resumeEl.dataset.rawText = articleWithMotto; resumeEl.innerHTML = renderArticleHtml(articleWithMotto, { arenaMode: "libre", hasMotto: true }); }
+                  updateAiEditorCounters(subjectEl);
+                }
+              } catch (mottoErr) {
+                console.error("Erreur devise latine (arène libre) :", mottoErr.message);
+              }
+            }
+          } else {
+            // ---- Pipeline ARÈNE À POSITIONS (comportement actuel, inchangé) ----
+            // Étape 3 : Angle de débat + question
+            setStatus("Angle & question…");
+            const mediaRes = await fetch("/generate-final-article", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ subject: subjectTitle, summary: summaryText, contents: pipelineContents, arenaMode }) });
+            const mediaData = await mediaRes.json().catch(() => ({}));
+            if (!mediaRes.ok || mediaData.ok === false) throw new Error(mediaData.error || "Erreur angle & question");
+            subjectEl.dataset.hasMediaContrast = "false";
+            subjectEl.dataset.mediaTreatment = "";
+            subjectEl.dataset.mainIssue = String(mediaData.mainIssue || "");
+            subjectEl.dataset.narrativeTension = String(mediaData.narrativeTension || "");
+            subjectEl.dataset.debatePotential = String(mediaData.debatePotential || "");
+            subjectEl.dataset.editorialWarning = String(mediaData.editorialWarning || "");
+            subjectEl.dataset.possibleBiases = JSON.stringify(Array.isArray(mediaData.possibleBiases) ? mediaData.possibleBiases : []);
+            subjectEl.dataset.debateAngle = String(mediaData.debateAngle || "");
+            questionEl = subjectEl.querySelector(".debate-question");
+            const limitedQuestion = limitClientDebateQuestion(mediaData.debateQuestion || "");
+            if (questionEl) questionEl.textContent = limitedQuestion;
+            ensurePositionsBox(subjectEl, mediaData.positionA || "", mediaData.positionB || "");
+            updatePoliticalTag(subjectEl, !!(mediaData.politicalOrientation && mediaData.politicalOrientation.isPolitical));
+            updateAiEditorCounters(subjectEl);
+            const agonBtnStep3 = subjectEl.querySelector(".agon-btn");
+            if (agonBtnStep3) { agonBtnStep3.dataset.question = limitedQuestion; agonBtnStep3.dataset.positionA = String(mediaData.positionA || "").trim(); agonBtnStep3.dataset.positionB = String(mediaData.positionB || "").trim(); agonBtnStep3.dataset.politicalOrientation = mediaData.politicalOrientation ? JSON.stringify(mediaData.politicalOrientation) : ""; }
+            if (fullArticleState) fullArticleState.value = "problematique";
+            const finalBtn = subjectEl.querySelector(".final-article-btn");
+            if (finalBtn) finalBtn.textContent = "✓ Angle & question générés";
+            setDefinitiveArticleButtons(subjectEl, { hidden: false, disabled: false, state: "idle" });
+
+            // Suggestion d'histoire
+            await suggestStoryForSubject(subjectEl, setStatus);
+
+            // Étape 5 : Article définitif
+            setStatus("Article définitif…");
+            const debateQuestion = questionEl?.textContent.trim() || "";
+            const editables = subjectEl.querySelectorAll(".positions-box .editable");
+            const posA = editables[0]?.textContent.trim() || "";
+            const posB = editables[1]?.textContent.trim() || "";
+            const styledRes = await fetch("/generate-styled-article", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ subject: subjectTitle, summary: summaryText, debateAngle: mediaData.debateAngle || "", debateQuestion, positionA: posA, positionB: posB, hasMediaContrast: false, mediaTreatment: "", mainIssue: mediaData.mainIssue || "", narrativeTension: mediaData.narrativeTension || "", possibleBiases: Array.isArray(mediaData.possibleBiases) ? mediaData.possibleBiases : [], debatePotential: mediaData.debatePotential || "", editorialWarning: mediaData.editorialWarning || "", editorialDecision: mediaData.editorialDecision || "", questionQuality: mediaData.questionQuality || "", arenaMode }) });
+            const styledData = await styledRes.json().catch(() => ({}));
+            if (!styledRes.ok || styledData.ok === false) throw new Error(styledData.error || "Erreur article définitif");
+            const styledArticle = String(styledData.article || "").trim();
+            resumeEl = subjectEl.querySelector(".resume");
+            if (resumeEl && styledArticle) { resumeEl.dataset.rawText = styledArticle; resumeEl.innerHTML = renderArticleHtml(styledArticle); }
+            questionEl = subjectEl.querySelector(".debate-question");
+            if (questionEl && styledData.debateQuestion) questionEl.textContent = limitClientDebateQuestion(styledData.debateQuestion);
+            if (styledData.positionA || styledData.positionB) ensurePositionsBox(subjectEl, styledData.positionA || posA, styledData.positionB || posB);
+            updateAiEditorCounters(subjectEl);
+            if (fullArticleState) fullArticleState.value = "full";
+            setDefinitiveArticleButtons(subjectEl, { hidden: false, disabled: false, state: "done" });
+          }
 
         } catch (genErr) {
           console.error("Erreur génération :", genErr.message);
@@ -3578,6 +3705,18 @@ function buildSubjectInteractionScriptHtml() {
       } else {
         // Article déjà complet — suggestion histoire seulement
         await suggestStoryForSubject(subjectEl, setStatus);
+      }
+
+      if (!getMainKeywordFromEditor(subjectEl)) {
+        setStatus("Tags…");
+        const tagsPayload = getSubjectAnalyzePayloadFromEditor(subjectEl);
+        const tagsRes = await fetch("/generate-tags", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(tagsPayload) });
+        const tagsData = await tagsRes.json().catch(() => ({}));
+        if (!tagsRes.ok || tagsData.ok === false) throw new Error(tagsData.error || "Erreur tags");
+        renderKeywordsInEditor(subjectEl, tagsData.mainKeyword || "");
+        const tagsBtn = subjectEl.querySelector(".tags-generate-btn");
+        if (tagsBtn) tagsBtn.textContent = "✓ Tags générés";
+        await fetch("/save-update", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ subject: tagsPayload.subject, ai: { mainKeyword: getMainKeywordFromEditor(subjectEl) } }) });
       }
 
       // Étape 5 : Envoi vers Agôn (toujours tenté)
@@ -3593,7 +3732,8 @@ function buildSubjectInteractionScriptHtml() {
       updateAiEditorCounters(subjectEl);
       const sessionEl = subjectEl.closest(".session");
       const sessionLabel = sessionEl ? (sessionEl.querySelector(".session-header strong") || {}).textContent?.trim() || "" : "";
-      const finalQuestion = limitClientDebateQuestion(subjectEl.querySelector(".debate-question")?.textContent.trim() || agonBtnFinal.dataset.question || "");
+      const rawFinalTitle = subjectEl.querySelector(".debate-question")?.textContent.trim() || agonBtnFinal.dataset.question || "";
+      const finalQuestion = arenaMode === "libre" ? limitClientFactualTitle(rawFinalTitle) : limitClientDebateQuestion(rawFinalTitle);
       const finalEditables = subjectEl.querySelectorAll(".editable");
       const finalPosA = finalEditables[0]?.textContent.trim() || agonBtnFinal.dataset.positionA;
       const finalPosB = finalEditables[1]?.textContent.trim() || agonBtnFinal.dataset.positionB;
@@ -3604,7 +3744,7 @@ function buildSubjectInteractionScriptHtml() {
         const dateMatch = (item.querySelector("small")?.textContent || "").match(/(\\d{2}\\/\\d{2}\\/\\d{4})/);
         return { title: item.querySelector("a")?.textContent.trim() || "", url: item.dataset.link || "", source: item.querySelector("strong")?.textContent.trim() || "", type: item.dataset.type || "article", date: dateMatch ? dateMatch[1] : "", checked: item.querySelector('input[type="checkbox"]')?.checked ?? true };
       }).filter(l => l.url);
-      const sendRes = await fetch("/send-to-agon", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ subject: subjectTitle, sessionLabel, question: finalQuestion, positionA: finalPosA, positionB: finalPosB, theme, resume: resumeForSend, sources: agonBtnFinal.dataset.sources, links, storySelection, keywords, politicalOrientation: agonBtnFinal.dataset.politicalOrientation ? JSON.parse(agonBtnFinal.dataset.politicalOrientation) : null }) });
+      const sendRes = await fetch("/send-to-agon", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ subject: subjectTitle, sessionLabel, question: finalQuestion, positionA: finalPosA, positionB: finalPosB, theme, resume: resumeForSend, sources: agonBtnFinal.dataset.sources, links, storySelection, keywords, politicalOrientation: agonBtnFinal.dataset.politicalOrientation ? JSON.parse(agonBtnFinal.dataset.politicalOrientation) : null, arenaMode }) });
       if (!sendRes.ok) throw new Error("Erreur envoi Agôn");
       agonBtnFinal.classList.add("sent");
       agonBtnFinal.textContent = "✓ Envoyé";
@@ -5169,6 +5309,10 @@ function buildVeilleStylesHtml() {
       background: #e8e8e8;
     }
 
+    .article-reflection-line {
+      font-style: italic;
+    }
+
     .article-latin-question {
       text-align: center;
       font-weight: 700;
@@ -5252,6 +5396,46 @@ function buildVeilleStylesHtml() {
       border: 1px solid #d0bfea;
       border-radius: 10px;
       padding: 2px 9px;
+    }
+
+    .arena-mode-tag {
+      display: inline-block;
+      margin: 0 0 8px 0;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: #475569;
+      background: #eef2f7;
+      border: 1px solid #d7dee8;
+      border-radius: 10px;
+      padding: 2px 9px;
+    }
+
+    .arena-mode-picker {
+      display: flex;
+      gap: 6px;
+      margin: 0 0 8px 0;
+    }
+
+    .arena-mode-btn {
+      background: white;
+      color: #475569;
+      border: 1px solid #d7dee8;
+      border-radius: 999px;
+      padding: 4px 12px;
+      font: inherit;
+      font-size: 0.72rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .arena-mode-btn:hover {
+      background: #f3f6fa;
+    }
+
+    .arena-mode-btn.active {
+      background: #111;
+      color: white;
+      border-color: #111;
     }
 
     .merge-notice {
@@ -5511,6 +5695,8 @@ function buildSubjectCardHtml(subject, ctx) {
       const ai = subject.ai || {};
       const isAnalyzed = subject.aiAnalyzed === true;
       const scoreAnalyzed = subject.scoreAnalyzed === true;
+      const arenaModeValue = ai.arenaMode === "libre" ? "libre" : "positions";
+      const arenaModeLabel = arenaModeValue === "libre" ? "Arène libre" : "Arène à positions";
 
       const debateScore = scoreAnalyzed ? (Number(subject.debateScore) || 0) : 0;
       const isSaved = savedTitles.has(subject.subject);
@@ -5632,26 +5818,39 @@ function buildSubjectCardHtml(subject, ctx) {
             ${buildStoryLinkStaticHtml(ai.storyLink || null)}
             <button type="button" class="tags-generate-btn">Générer tags</button>
             <button type="button" class="full-article-btn">${["summary", "media", "problematique", "full"].includes(String(ai.fullArticleState || "")) ? "✓ Résumé généré" : "Générer résumé de l'article"}</button>
-            <button type="button" class="final-article-btn${["summary", "media", "problematique", "full"].includes(String(ai.fullArticleState || "")) ? "" : " hidden"}">${["media", "problematique", "full"].includes(String(ai.fullArticleState || "")) ? "✓ Médias analysés" : "Analyser les médias"}</button>
+            <button type="button" class="final-article-btn${ai.arenaMode !== "libre" && ["summary", "media", "problematique", "full"].includes(String(ai.fullArticleState || "")) ? "" : " hidden"}">${["media", "problematique", "full"].includes(String(ai.fullArticleState || "")) ? "✓ Médias analysés" : "Analyser les médias"}</button>
             <button type="button" class="problematique-btn hidden">Générer problématique</button>
-            <button type="button" class="definitive-article-btn${["problematique", "full"].includes(String(ai.fullArticleState || "")) ? "" : " hidden"}"${String(ai.fullArticleState || "") === "full" ? "" : " disabled"}>Article définitif</button>
-            <button type="button" class="definitive-article-btn latin-article-btn"${["problematique", "full"].includes(String(ai.fullArticleState || "")) ? "" : " disabled"}>Générer article + question latine</button>
+            <button type="button" class="definitive-article-btn${ai.arenaMode !== "libre" && ["problematique", "full"].includes(String(ai.fullArticleState || "")) ? "" : " hidden"}"${String(ai.fullArticleState || "") === "full" ? "" : " disabled"}>Article définitif</button>
+            <button type="button" class="definitive-article-btn latin-article-btn"${ai.arenaMode !== "libre" && ["problematique", "full"].includes(String(ai.fullArticleState || "")) ? "" : " disabled"}>Générer article + question latine</button>
           </div>`
         : `<div class="ai-box pending-analysis">
-            <button class="analyze-btn" type="button" data-mode="positions" data-subject="${subjectDataForBtn}">
-              Générer arène à positions IA
-            </button>
-            <button class="analyze-btn analyze-btn-secondary" type="button" data-mode="libre" data-subject="${subjectDataForBtn}">
-              Générer arène libre IA
-            </button>
+            <details class="article-generation-panel">
+              <summary>Génération article</summary>
+              <div class="article-generation-actions">
+                <button class="analyze-btn" type="button" data-mode="positions" data-subject="${subjectDataForBtn}">
+                  Générer arène à positions IA
+                </button>
+                <button class="analyze-btn analyze-btn-secondary" type="button" data-mode="libre" data-subject="${subjectDataForBtn}">
+                  Générer arène libre IA
+                </button>
+              </div>
+            </details>
           </div>`;
 
       return `
-        <section class="subject" data-score="${debateScore}" data-sources="${subject.sourceCount}" data-theme="${escapeHtml(isAnalyzed ? normalizeAgonTheme(ai.agonTheme) : "Non analysé")}">
+        <section class="subject" data-score="${debateScore}" data-sources="${subject.sourceCount}" data-theme="${escapeHtml(isAnalyzed ? normalizeAgonTheme(ai.agonTheme) : "Non analysé")}" data-arena-mode="${arenaModeValue}">
           <div class="subject-number"></div>
           ${aiScoreHtml}
 
           <h3>${escapeHtml(subject.subject)}</h3>
+          ${isAnalyzed
+            ? `<p class="arena-mode-tag">Mode sélectionné : <span class="arena-mode-label">${arenaModeLabel}</span></p>`
+            : `<div class="arena-mode-picker" role="group" aria-label="Choisir le mode d'arène">
+                <button type="button" class="arena-mode-btn${arenaModeValue === "positions" ? " active" : ""}" data-mode="positions">Arène à positions</button>
+                <button type="button" class="arena-mode-btn${arenaModeValue === "libre" ? " active" : ""}" data-mode="libre">Arène libre</button>
+                <span class="arena-mode-label hidden">${arenaModeLabel}</span>
+              </div>`
+          }
 
           ${mergeNoticeHtml}
 
