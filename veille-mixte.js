@@ -1382,26 +1382,31 @@ apiApp.post("/save-update", (req, res) => {
       return res.status(400).json({ ok: false, error: "Sujet manquant" });
     }
 
+    const nextAi = body.ai && typeof body.ai === "object" ? body.ai : null;
+
+    function applySubjectUpdate(subject) {
+      const nextScore = Number.isFinite(Number(body.debateScore)) ? Number(body.debateScore) : Number(subject.debateScore || nextAi?.debateScore || 0);
+      const nextControversy = String(body.controversyLevel || subject.controversyLevel || nextAi?.controversyLevel || "").trim();
+      subject.debateScore = nextScore;
+      subject.controversyLevel = nextControversy;
+      subject.scoreAnalyzed = true;
+      subject.aiAnalyzed = true;
+      subject.ai = {
+        ...(subject.ai || {}),
+        ...(nextAi || {}),
+        debateScore: nextScore,
+        controversyLevel: nextControversy
+      };
+    }
+
     const sessions = loadSessions();
     let updated = false;
-    const nextAi = body.ai && typeof body.ai === "object" ? body.ai : null;
 
     sessions.forEach((session) => {
       const subjects = Array.isArray(session?.subjects) ? session.subjects : [];
       subjects.forEach((subject) => {
         if (String(subject?.subject || "").trim() !== subjectTitle) return;
-        const nextScore = Number.isFinite(Number(body.debateScore)) ? Number(body.debateScore) : Number(subject.debateScore || nextAi?.debateScore || 0);
-        const nextControversy = String(body.controversyLevel || subject.controversyLevel || nextAi?.controversyLevel || "").trim();
-        subject.debateScore = nextScore;
-        subject.controversyLevel = nextControversy;
-        subject.scoreAnalyzed = true;
-        subject.aiAnalyzed = true;
-        subject.ai = {
-          ...(subject.ai || {}),
-          ...(nextAi || {}),
-          debateScore: nextScore,
-          controversyLevel: nextControversy
-        };
+        applySubjectUpdate(subject);
         updated = true;
       });
     });
@@ -1409,9 +1414,29 @@ apiApp.post("/save-update", (req, res) => {
     if (updated) {
       saveSessions(sessions);
       fs.writeFileSync(OUTPUT_HTML, generateHtml(sessions.slice(0, MAX_SESSIONS_TO_KEEP)), "utf8");
+      return res.json({ ok: true, updated });
     }
 
-    res.json({ ok: true, updated });
+    // Sujet introuvable dans la veille mixte : peut venir de Certamen, dont les
+    // arènes générées par IA sont persistées dans certamen-sessions.json.
+    const certamenSessions = loadCertamenSessions();
+    let certamenUpdated = false;
+
+    certamenSessions.forEach((session) => {
+      const subjects = Array.isArray(session?.subjects) ? session.subjects : [];
+      subjects.forEach((subject) => {
+        if (String(subject?.subject || "").trim() !== subjectTitle) return;
+        applySubjectUpdate(subject);
+        certamenUpdated = true;
+      });
+    });
+
+    if (certamenUpdated) {
+      saveCertamenSessions(certamenSessions);
+      fs.writeFileSync(CERTAMEN_OUTPUT_HTML, generateCertamenHtml(certamenSessions.slice(0, CERTAMEN_MAX_SESSIONS)), "utf8");
+    }
+
+    res.json({ ok: true, updated: certamenUpdated });
   } catch (error) {
     res.status(500).json({ ok: false, error: error.message || "Erreur mise à jour session" });
   }
@@ -1757,2095 +1782,8 @@ function escapeHtml(text) {
     .replaceAll("'", "&#039;");
 }
 
-function generateHtml(sessions) {
-  const generatedAt = dayjs().format("DD/MM/YYYY HH:mm:ss");
-
-  const savedTitles = new Set(loadSavedSubjects().map(s => s.subject));
-  const sentKeys = new Set(loadSentToAgonItems().map((item) => String(item?.question || item?.subject || "").trim()).filter(Boolean));
-
-  const visibleTabCount = 6;
-
-  const sessionTabs = sessions.map((session, index) => {
-    const label = session.generatedAtLabel || `Session ${index + 1}`;
-    const shortLabel = label
-      .replace(" à ", " ")
-      .replace(/:\d{2}$/, "");
-
-    return `
-      <button
-        class="session-tab ${index === 0 ? "active" : ""} ${index >= visibleTabCount ? "older-tab hidden-tab" : ""}"
-        type="button"
-        data-session-index="${index}"
-      >
-        ${index === 0 ? "Dernière · " : ""}${escapeHtml(shortLabel)}
-      </button>
-    `;
-  }).join("");
-
-  function encodeStoryDataServer(value) {
-    return encodeURIComponent(JSON.stringify(value || {}));
-  }
-
-  function buildCollectReportHtml(collectReport) {
-    if (!collectReport) return "";
-    const sections = [
-      { label: "Presse", sources: (collectReport.articles || {}).sources || [] },
-      { label: "YouTube", sources: (collectReport.youtube || {}).sources || [] }
-    ].filter(s => s.sources.length > 0);
-    if (!sections.length) return "";
-
-    const renderRow = (s) => {
-      const isOk = s.statut === "ok";
-      const isPause = s.statut === "pause";
-      const icon = isOk ? "✓" : isPause ? "⏸" : "✗";
-      const cls = isOk ? "cr-ok" : isPause ? "cr-pause" : "cr-err";
-      const detail = isOk ? `${s.kept} retenu(s), ${s.skipped} ignoré(s)` : (s.message ? `${s.statut} — ${s.message}` : s.statut);
-      return `<tr class="${cls}"><td class="cr-icon">${icon}</td><td class="cr-name">${escapeHtml(s.nom)}</td><td class="cr-detail">${escapeHtml(detail)}</td></tr>`;
-    };
-
-    const body = sections.map(sec => {
-      const totalKept = sec.sources.reduce((acc, s) => acc + (s.kept || 0), 0);
-      const errors = sec.sources.filter(s => s.statut.startsWith("erreur") || s.statut === "pause").length;
-      const errNote = errors ? ` · <span class="cr-err">${errors} en erreur/pause</span>` : "";
-      return `<div class="cr-section">
-        <div class="cr-section-label">${escapeHtml(sec.label)} <span class="cr-summary">— ${totalKept} collecté(s)${errNote}</span></div>
-        <table class="cr-table"><tbody>${sec.sources.map(renderRow).join("")}</tbody></table>
-      </div>`;
-    }).join("");
-
-    return `<details class="collect-report"><summary>Rapport de collecte</summary><div class="cr-body">${body}</div></details>`;
-  }
-
-  function buildKeywordsStaticHtml(ai) {
-    const rawKeywords = Array.isArray(ai?.keywords) ? ai.keywords.filter(Boolean) : [];
-    const mainKeyword = String(ai?.mainKeyword || rawKeywords[0] || "").trim();
-    return '<div class="news-keywords">' +
-      '<div class="news-keywords-label">Tag principal</div>' +
-      (mainKeyword ? '<span class="news-keyword-chip main-keyword-chip" data-main-keyword="' + escapeHtml(mainKeyword) + '">' + escapeHtml(mainKeyword) + '<button type="button" class="news-keyword-remove-btn" aria-label="Supprimer le tag principal">×</button></span>' : '') +
-    '</div>';
-  }
-
-  function buildStoryLinkStaticHtml(storyLink) {
-    if (storyLink === undefined) storyLink = null;
-    storyLink = storyLink || {};
-    const storyDecision = storyLink.story_decision || "new_story";
-    const confidence = Number(storyLink.confidence || 0);
-    const matchedTitle = escapeHtml(storyLink.matched_story_title || "");
-    const previousEpisodeTitle = escapeHtml(storyLink.previous_episode_title || "");
-    const previousEpisodeUrl = escapeHtml(storyLink.previous_episode_url || "");
-    const reason = escapeHtml(storyLink.reason || "");
-    const newStory = storyLink.new_story || {};
-    const encodedCriteria = escapeHtml(encodeStoryDataServer(storyLink.criteria || {}));
-    const encodedNewStory = escapeHtml(encodeStoryDataServer(newStory));
-    const hasMatchedStory = Boolean(storyLink.matched_story_id && matchedTitle);
-    const selectedMode = hasMatchedStory ? "existing" : "";
-    const currentStoryId = escapeHtml(storyLink.matched_story_id || "");
-    const currentStoryTitle = matchedTitle;
-    const statusReason = reason ? '<div class="story-link-header">' + reason + '</div>' : '';
-    return '<div class="story-link-box" data-story-decision="' + escapeHtml(storyDecision) + '" data-selected-mode="' + selectedMode + '" data-default-mode="' + selectedMode + '" data-matched-story-id="' + currentStoryId + '" data-matched-story-title="' + matchedTitle + '" data-current-story-id="' + currentStoryId + '" data-current-story-title="' + currentStoryTitle + '" data-current-story-summary="" data-previous-episode-title="' + previousEpisodeTitle + '" data-previous-episode-url="' + previousEpisodeUrl + '" data-confidence="' + confidence + '" data-reason="' + reason + '" data-criteria="' + encodedCriteria + '" data-new-story="' + encodedNewStory + '">' +
-      statusReason +
-      '<div class="story-manual-picker"><label>Histoire associée</label><div class="story-picker-row"><select class="story-manual-select" hidden><option value="">Sans histoire associée</option><option value="__new__">Créer une nouvelle histoire</option></select><button type="button" class="story-picker-trigger" aria-expanded="false"><span class="story-picker-trigger-label">' + (hasMatchedStory ? matchedTitle : 'Sans histoire associée') + '</span><span class="story-picker-trigger-caret">▾</span></button><div class="story-dropdown hidden"><div class="story-dropdown-create-row"><button type="button" class="story-create-inline-btn">+ Créer une nouvelle histoire</button></div><div class="story-dropdown-search-row"><input type="text" class="story-search-input" placeholder="Rechercher une histoire"></div><div class="story-dropdown-list"></div></div></div><small class="story-manual-meta">' + (hasMatchedStory && previousEpisodeTitle ? 'Dernier épisode : ' + previousEpisodeTitle : '') + '</small></div>' +
-      '<div class="story-existing-fields"><div class="story-draft-fields story-existing-fields-empty"><p class="story-existing-note">Cette histoire sera seulement associée à l\'actualité. Aucun résumé d\'histoire n\'est généré à cette étape.</p></div></div>' +
-      '<div class="story-draft-fields story-new-fields hidden"><label>Titre de la nouvelle histoire</label><input type="text" class="story-title-input" value="" placeholder="Titre court et général de l\'histoire"><div class="story-save-actions"><button type="button" class="story-save-btn">Enregistrer les modifications</button><span class="story-save-feedback hidden">Modifications enregistrées</span></div></div>' +
-    '</div>';
-  }
-
-  const olderTabsButton = sessions.length > visibleTabCount
-    ? `
-      <button class="show-older-tabs" type="button">
-        Voir les anciennes mises à jour
-      </button>
-    `
-    : "";
-
-  const sessionBlocks = sessions.map((session, index) => {
-    const subjects = session.subjects || [];
-
-    const subjectBlocks = subjects.map(subject => {
-      const articles = subject.contents.filter(content => content.type === "article");
-      const videos = subject.contents.filter(content => content.type === "youtube");
-      const ai = subject.ai || {};
-      const isAnalyzed = subject.aiAnalyzed === true;
-      const scoreAnalyzed = subject.scoreAnalyzed === true;
-
-      const debateScore = scoreAnalyzed ? (Number(subject.debateScore) || 0) : 0;
-      const isSaved = savedTitles.has(subject.subject);
-      const sentKey = String(ai ? (ai.debateQuestion || subject.subject) : subject.subject).trim() || String(subject.subject || "").trim();
-      const isSent = sentKeys.has(sentKey) || sentKeys.has(String(subject.subject || "").trim());
-
-      const articleItems = articles.map(article => {
-        const date = dayjs(article.date).format("DD/MM/YYYY HH:mm");
-        const orientationGroup = getOrientationGroup(article.orientation);
-        const orientationTag = article.orientation
-          ? `<span class="source-tag ${orientationGroup}">${escapeHtml(article.orientation)}</span>`
-          : "";
-
-        return `
-          <li class="content-item" data-link="${escapeHtml(article.link)}" data-orientation="${escapeHtml(article.orientation)}" data-type="article">
-            <label class="article-label">
-              <input type="checkbox">
-              <div>
-                <strong>${escapeHtml(article.source)}</strong> ${orientationTag}
-                <br>
-                <a href="${escapeHtml(article.link)}" target="_blank" rel="noopener noreferrer">
-                  ${escapeHtml(article.title)}
-                </a>
-                <br>
-                <small>Publié le ${escapeHtml(date)}</small>
-              </div>
-            </label>
-          </li>
-        `;
-      }).join("");
-
-      const videoItems = videos.map(video => {
-        const date = dayjs(video.date).format("DD/MM/YYYY HH:mm");
-
-        return `
-          <li class="content-item video-item" data-link="${escapeHtml(video.link)}" data-type="youtube">
-            <label class="article-label">
-              <input type="checkbox">
-              <div>
-                ${
-                  video.thumbnail
-                    ? `<a href="${escapeHtml(video.link)}" target="_blank" rel="noopener noreferrer"><img src="${escapeHtml(video.thumbnail)}" alt="" class="thumb"></a>`
-                    : ""
-                }
-                <strong>${escapeHtml(video.source)}</strong>
-                <span class="source-tag youtube">YouTube</span>
-                <br>
-                <a href="${escapeHtml(video.link)}" target="_blank" rel="noopener noreferrer">
-                  ${escapeHtml(video.title)}
-                </a>
-                <br>
-                <small>Publié le ${escapeHtml(date)}</small>
-              </div>
-            </label>
-          </li>
-        `;
-      }).join("");
-
-      const subjectDataForBtn = escapeHtml(JSON.stringify({
-        subject: subject.subject,
-        sources: subject.sources,
-        articleCount: subject.articleCount,
-        youtubeCount: subject.youtubeCount,
-        contents: subject.contents.slice(0, 10).map(c => ({
-          type: c.type,
-          source: c.source,
-          orientation: c.orientation,
-          title: c.title,
-          link: c.link
-        }))
-      }));
-
-      const aiScoreHtml = scoreAnalyzed
-        ? `<div class="ai-score">
-            <div>
-              <span class="score-label">Potentiel débat</span>
-              <strong>${escapeHtml(String(subject.debateScore))}/10</strong>
-            </div>
-            <span class="controversy">${escapeHtml(subject.controversyLevel)}</span>
-          </div>`
-        : `<div class="ai-score pending">
-            <span class="score-label">Analyse IA non effectuée</span>
-          </div>`;
-
-      const aiBoxHtml = isAnalyzed
-        ? `<div class="ai-box">
-            <input type="hidden" class="full-article-state" value="${escapeHtml(ai.fullArticleState || "short")}">
-            <p class="generated-title-label">Titre généré par IA</p>
-            <p class="debate-question" contenteditable="true" spellcheck="false">${escapeHtml(ai.debateQuestion || "")}</p>
-            <div class="field-counter question-counter">0 / 110</div>
-            ${
-              debateScore >= 7 && (ai.positionA || ai.positionB) && ai.arenaMode !== "libre"
-                ? `<div class="positions-box">
-                    <p><strong>Positions proposées pour une arène à positions :</strong></p>
-                    ${ai.positionA ? `<p><strong>A —</strong> <span class="editable" contenteditable="true" spellcheck="false">${escapeHtml(ai.positionA)}</span></p>` : ""}
-                    ${ai.positionB ? `<p><strong>B —</strong> <span class="editable" contenteditable="true" spellcheck="false">${escapeHtml(ai.positionB)}</span></p>` : ""}
-                  </div>`
-                : ""
-            }
-            <p class="resume" contenteditable="true" spellcheck="false">${escapeHtml(ai.resume || "")}</p>
-            <div class="field-counter resume-counter">0 / 1500</div>
-            <div class="story-save-actions"><button type="button" class="story-save-btn context-save-btn">Enregistrer les modifications</button><span class="story-save-feedback context-save-feedback hidden">Modifications enregistrées</span></div>
-            ${buildKeywordsStaticHtml(ai)}
-            <p class="agon-theme"><strong>Thématique Agôn proposée :</strong>
-              <select class="agon-select">
-                ${AGON_THEMES.map(theme => `<option value="${escapeHtml(theme)}"${theme === normalizeAgonTheme(ai.agonTheme) ? " selected" : ""}>${escapeHtml(theme)}</option>`).join("")}
-              </select>
-            </p>
-            ${buildStoryLinkStaticHtml(ai.storyLink || null)}
-            <button type="button" class="tags-generate-btn">Générer tags</button>
-            <button type="button" class="full-article-btn">${["summary", "media", "problematique", "full"].includes(String(ai.fullArticleState || "")) ? "✓ Résumé généré" : "Générer résumé de l'article"}</button>
-            <button type="button" class="final-article-btn${["summary", "media", "problematique", "full"].includes(String(ai.fullArticleState || "")) ? "" : " hidden"}">${["media", "problematique", "full"].includes(String(ai.fullArticleState || "")) ? "✓ Médias analysés" : "Analyser les médias"}</button>
-            <button type="button" class="problematique-btn hidden">Générer problématique</button>
-            <button type="button" class="definitive-article-btn${["problematique", "full"].includes(String(ai.fullArticleState || "")) ? "" : " hidden"}"${String(ai.fullArticleState || "") === "full" ? "" : " disabled"}>Article définitif</button>
-            <button type="button" class="definitive-article-btn latin-article-btn"${["problematique", "full"].includes(String(ai.fullArticleState || "")) ? "" : " disabled"}>Générer article + question latine</button>
-          </div>`
-        : `<div class="ai-box pending-analysis">
-            <button class="analyze-btn" type="button" data-mode="positions" data-subject="${subjectDataForBtn}">
-              Générer arène à positions IA
-            </button>
-            <button class="analyze-btn analyze-btn-secondary" type="button" data-mode="libre" data-subject="${subjectDataForBtn}">
-              Générer arène libre IA
-            </button>
-          </div>`;
-
-      return `
-        <section class="subject" data-score="${debateScore}" data-sources="${subject.sourceCount}" data-theme="${escapeHtml(isAnalyzed ? normalizeAgonTheme(ai.agonTheme) : "Non analysé")}">
-          <div class="subject-number"></div>
-          ${aiScoreHtml}
-
-          <h3>${escapeHtml(subject.subject)}</h3>
-
-          ${aiBoxHtml}
-
-          <div class="subject-stats">
-            <span>${subject.sourceCount} sources</span>
-            <span>${subject.articleCount} article(s)</span>
-            <span>${subject.youtubeCount} vidéo(s)</span>
-          </div>
-
-	          <details class="sources-dropdown">
-	            <summary>Voir les sources (${subject.sourceCount})</summary>
-	            <p class="sources">${escapeHtml(subject.sources.join(", "))}</p>
-	            ${
-	              articles.length
-	                ? `<h4>Presse</h4><ul>${articleItems}</ul>`
-	                : ""
-	            }
-
-	            ${
-	              videos.length
-	                ? `<h4>YouTube</h4><ul>${videoItems}</ul>`
-	                : ""
-	            }
-	          </details>
-
-	          <button class="arena-select-btn" type="button" aria-pressed="false">Sélectionner</button>
-	          <button class="save-btn${isSaved ? " saved" : ""}" type="button" data-subject-title="${escapeHtml(subject.subject)}">${isSaved ? "★ Enregistré" : "☆ Enregistrer"}</button>
-	          <button class="agon-btn${isSent ? " sent" : ""}" type="button" data-subject-title="${escapeHtml(subject.subject)}" data-question="${escapeHtml(ai ? (ai.debateQuestion || subject.subject) : subject.subject)}" data-position-a="${escapeHtml(ai ? (ai.positionA || "") : "")}" data-position-b="${escapeHtml(ai ? (ai.positionB || "") : "")}" data-theme="${escapeHtml(ai ? normalizeAgonTheme(ai.agonTheme) : "")}" data-sources="${escapeHtml(subject.sources.join(", "))}">${isSent ? "✓ Envoyé" : "→ Agôn"}</button>
-	          <button class="republish-btn${isSent ? "" : " hidden"}" type="button" data-subject-title="${escapeHtml(subject.subject)}" data-question="${escapeHtml(ai ? (ai.debateQuestion || subject.subject) : subject.subject)}" data-position-a="${escapeHtml(ai ? (ai.positionA || "") : "")}" data-position-b="${escapeHtml(ai ? (ai.positionB || "") : "")}" data-theme="${escapeHtml(ai ? normalizeAgonTheme(ai.agonTheme) : "")}" data-sources="${escapeHtml(subject.sources.join(", "))}">↺ Republier</button>
-	          <button class="verify-sources-btn" type="button" data-subject="${subjectDataForBtn}">Vérifier sources</button>
-	        </section>
-	      `;
-    }).join("");
-
-    const isLatest = index === 0;
-
-    return `
-      <section
-        class="session ${isLatest ? "latest active-session" : "hidden-session"}"
-        data-session-index="${index}"
-      >
-        <div class="session-header">
-          <div>
-            <h2>${isLatest ? "Dernière mise à jour mixte" : "Mise à jour mixte précédente"}</h2>
-            <p>Session du <strong>${escapeHtml(session.generatedAtLabel)}</strong></p>
-          </div>
-          <div class="session-stats">
-            <strong>${subjects.length}</strong>
-            <span>sujet(s) commun(s)</span>
-          </div>
-        </div>
-        ${buildCollectReportHtml(session.collectReport)}
-
-        ${
-          subjects.length
-            ? subjectBlocks
-            : `<div class="empty">Aucun sujet commun détecté pendant cette session.</div>`
-        }
-      </section>
-    `;
-  }).join("");
-
-  const rankedListHtml = "";
-
+function buildSubjectInteractionScriptHtml() {
   return `
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="UTF-8">
-  <script>if (window.location.search.includes('token')) history.replaceState({}, '', window.location.pathname);</script>
-  <title>Veille mixte presse + YouTube</title>
-  <style>
-    body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      max-width: 980px;
-      margin: 40px auto;
-      padding: 0 16px;
-      line-height: 1.5;
-      background: #f7f7f7;
-      color: #111;
-    }
-
-    h1 {
-      margin-bottom: 4px;
-    }
-
-    .intro {
-      color: #555;
-      margin-bottom: 24px;
-    }
-
-    .nav {
-      margin-bottom: 20px;
-      display: flex;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .nav a {
-      display: inline-block;
-      padding: 8px 12px;
-      background: white;
-      border: 1px solid #ddd;
-      border-radius: 999px;
-      text-decoration: none;
-      color: #111;
-    }
-
-    .nav-refresh-btn {
-      margin-left: auto;
-      background: #111;
-      color: white;
-      border: none;
-      border-radius: 999px;
-      padding: 8px 14px;
-      font: inherit;
-      font-size: 0.9rem;
-      cursor: pointer;
-      display: none;
-    }
-
-    @media (max-width: 600px) {
-      .nav-refresh-btn { display: inline-block; }
-    }
-
-    .status {
-      background: #111;
-      color: white;
-      border-radius: 14px;
-      padding: 14px 18px;
-      margin-bottom: 24px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 16px;
-    }
-
-    .refresh-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .min-sources-select {
-      padding: 8px 10px;
-      border: 1px solid #ddd;
-      border-radius: 999px;
-      font: inherit;
-      font-size: 0.85rem;
-      background: white;
-      color: #111;
-      cursor: pointer;
-    }
-
-    .refresh-btn,
-    .sort-sources-btn {
-      flex-shrink: 0;
-      background: white;
-      color: #111;
-      border: none;
-      border-radius: 999px;
-      padding: 10px 18px;
-      font: inherit;
-      font-size: 0.95rem;
-      font-weight: 700;
-      cursor: pointer;
-      white-space: nowrap;
-    }
-
-    .refresh-btn:hover:not(:disabled),
-    .sort-sources-btn:hover {
-      background: #e8e8e8;
-    }
-
-    .refresh-btn:disabled {
-      opacity: 0.6;
-      cursor: default;
-    }
-
-    .ptr-indicator {
-      position: fixed; top: -60px; left: 50%; transform: translateX(-50%);
-      background: #333; color: white; padding: 10px 20px; border-radius: 999px;
-      font-size: 0.85rem; transition: top 0.25s ease; z-index: 200; white-space: nowrap;
-      pointer-events: none;
-    }
-    .ptr-indicator.visible { top: 16px; }
-
-    .update-banner {
-      position: fixed; top: 16px; left: 50%; transform: translateX(-50%);
-      background: #2563eb; color: white; padding: 13px 26px; border-radius: 999px;
-      font-size: 0.9rem; font-weight: 700; cursor: pointer; z-index: 200;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.22); display: none; white-space: nowrap;
-      border: none; font-family: inherit;
-    }
-    .update-banner:hover { background: #1d4ed8; }
-
-    #progress-panel {
-      display: none;
-      background: #1e293b;
-      border-radius: 14px;
-      padding: 14px 18px;
-      margin-bottom: 16px;
-      color: white;
-    }
-    .progress-step-label {
-      font-size: 0.88rem;
-      font-weight: 600;
-      margin-bottom: 8px;
-    }
-    .progress-bar-track {
-      background: rgba(255,255,255,0.15);
-      border-radius: 999px;
-      height: 6px;
-      margin-bottom: 8px;
-      overflow: hidden;
-    }
-    .progress-bar-fill {
-      background: #60a5fa;
-      height: 100%;
-      border-radius: 999px;
-      transition: width 0.5s ease;
-      width: 0%;
-    }
-    .progress-detail-text {
-      font-size: 0.78rem;
-      color: rgba(255,255,255,0.55);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    #collect-report-panel { display: none; margin-bottom: 16px; }
-    #collect-report-panel .collect-report { margin: 0; }
-    .collect-report { margin: 12px 0 16px; border: 1px solid #e5e7eb; border-radius: 8px; background: #f8fafc; font-size: 0.82rem; }
-    .collect-report summary { padding: 8px 14px; cursor: pointer; font-weight: 600; color: #374151; user-select: none; }
-    .collect-report summary:hover { color: #111; }
-    .cr-body { padding: 0 14px 12px; display: flex; gap: 24px; flex-wrap: wrap; }
-    .cr-section { flex: 1; min-width: 220px; }
-    .cr-section-label { font-weight: 700; font-size: 0.8rem; color: #374151; margin-bottom: 6px; padding-top: 8px; }
-    .cr-summary { font-weight: 400; color: #6b7280; }
-    .cr-table { width: 100%; border-collapse: collapse; }
-    .cr-table td { padding: 3px 6px; vertical-align: top; font-size: 0.78rem; }
-    .cr-icon { width: 18px; font-size: 0.72rem; }
-    .cr-ok { color: #16a34a; }
-    .cr-pause { color: #d97706; }
-    .cr-err { color: #dc2626; }
-    .cr-name { color: #111; font-weight: 500; white-space: nowrap; padding-right: 8px; }
-    .cr-detail { color: #6b7280; }
-
-    .filter-bar {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-bottom: 24px;
-    }
-
-    .filter-link {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 9px 16px;
-      border: 1px solid #ddd;
-      border-radius: 999px;
-      background: white;
-      color: #555;
-      text-decoration: none;
-      font: inherit;
-      font-size: 0.88rem;
-      font-weight: 700;
-    }
-
-    .filter-link:hover {
-      background: #f3f4f6;
-    }
-
-    .filter-btn {
-      border: 1px solid #ddd;
-      background: white;
-      color: #111;
-      border-radius: 999px;
-      padding: 9px 16px;
-      font: inherit;
-      font-size: 0.95rem;
-      cursor: pointer;
-    }
-
-    .filter-btn:hover {
-      background: #eee;
-    }
-
-	    .filter-btn.active {
-	      background: #111;
-	      color: white;
-	      border-color: #111;
-	      font-weight: 700;
-	    }
-
-	    .filter-btn[data-sort="saved"] {
-	      background: #fff7ed;
-	      color: #9a3412;
-	      border: 1.5px solid #f59e0b;
-	      box-shadow: 0 2px 8px rgba(245, 158, 11, 0.18);
-	      font-weight: 800;
-	    }
-
-	    .filter-btn[data-sort="saved"]::before {
-	      content: "★";
-	      margin-right: 7px;
-	      color: #d97706;
-	    }
-
-	    .filter-btn[data-sort="saved"]:hover {
-	      background: #ffedd5;
-	      border-color: #d97706;
-	    }
-
-	    .filter-btn[data-sort="saved"].active {
-	      background: #9a3412;
-	      color: #fff;
-	      border-color: #9a3412;
-	      box-shadow: 0 3px 12px rgba(154, 52, 18, 0.28);
-	    }
-
-	    .filter-btn[data-sort="saved"].active::before {
-	      color: #fff;
-	    }
-
-    .theme-header {
-      font-size: 1rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: #555;
-      border-top: 2px solid #ddd;
-      padding: 18px 0 6px;
-      margin-top: 8px;
-    }
-
-    .session-tabs-wrapper {
-      background: white;
-      border: 1px solid #ddd;
-      border-radius: 14px;
-      padding: 18px;
-      margin-bottom: 24px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-    }
-
-    .session-tabs-wrapper h2 {
-      margin: 0 0 4px;
-      font-size: 1.2rem;
-    }
-
-    .session-tabs-wrapper p {
-      margin: 0 0 14px;
-      color: #555;
-    }
-
-    .session-tabs {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-
-    .session-tab {
-      border: 1px solid #ddd;
-      background: #f7f7f7;
-      color: #111;
-      border-radius: 999px;
-      padding: 9px 13px;
-      font: inherit;
-      font-size: 0.95rem;
-      cursor: pointer;
-    }
-
-    .session-tab:hover {
-      background: #eee;
-    }
-
-    .session-tab.active {
-      background: #111;
-      color: white;
-      border-color: #111;
-      font-weight: 700;
-    }
-
-    .hidden-tab {
-      display: none;
-    }
-
-    .show-older-tabs {
-      margin-top: 12px;
-      border: 1px solid #ddd;
-      background: white;
-      color: #111;
-      border-radius: 999px;
-      padding: 9px 13px;
-      font: inherit;
-      font-size: 0.95rem;
-      cursor: pointer;
-    }
-
-    .show-older-tabs:hover {
-      background: #eee;
-    }
-
-    .show-older-tabs.hidden {
-      display: none;
-    }
-
-    .hidden-session {
-      display: none;
-    }
-
-    .active-session {
-      display: block;
-    }
-
-    .session {
-      border-top: 4px solid #ccc;
-      padding-top: 20px;
-      margin-bottom: 44px;
-    }
-
-    .session.latest {
-      border-top-color: #111;
-    }
-
-    .session-header {
-      display: flex;
-      justify-content: space-between;
-      gap: 16px;
-      align-items: center;
-      background: white;
-      border: 1px solid #ddd;
-      border-radius: 14px;
-      padding: 18px;
-      margin-bottom: 18px;
-    }
-
-    .session-header h2 {
-      margin: 0 0 4px;
-    }
-
-    .session-header p {
-      margin: 0;
-      color: #555;
-    }
-
-    .session-stats {
-      min-width: 130px;
-      text-align: center;
-      border-left: 1px solid #ddd;
-      padding-left: 16px;
-    }
-
-    .session-stats strong {
-      display: block;
-      font-size: 2rem;
-    }
-
-    .session-stats span {
-      color: #555;
-      font-size: 0.9rem;
-    }
-
-    .subject {
-      background: white;
-      border: 1px solid #ddd;
-      border-radius: 14px;
-      padding: 20px;
-      margin-bottom: 16px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-      position: relative;
-    }
-
-    .subject.selected {
-      border-color: #111;
-      box-shadow: 0 0 0 2px rgba(17,17,17,0.08), 0 2px 8px rgba(0,0,0,0.04);
-    }
-
-    .subject h3 {
-      margin-top: 14px;
-      font-size: 1.25rem;
-    }
-
-    .subject h4 {
-      margin-bottom: 8px;
-      border-top: 1px solid #eee;
-      padding-top: 14px;
-    }
-
-    .ai-score {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      background: #111;
-      color: white;
-      border-radius: 12px;
-      padding: 12px 14px;
-    }
-
-    .ai-score strong {
-      display: block;
-      font-size: 1.8rem;
-    }
-
-    .score-label {
-      font-size: 0.85rem;
-      color: #ddd;
-    }
-
-    .controversy {
-      background: white;
-      color: #111;
-      border-radius: 999px;
-      padding: 6px 10px;
-      font-weight: 700;
-      font-size: 0.9rem;
-    }
-
-    .ai-score.pending {
-      background: #888;
-      justify-content: flex-start;
-    }
-
-    .ai-box.pending-analysis {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      flex-wrap: wrap;
-      min-height: 56px;
-    }
-
-    .analyze-btn {
-      background: #111;
-      color: white;
-      border: none;
-      border-radius: 999px;
-      padding: 10px 20px;
-      font: inherit;
-      font-size: 0.95rem;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    .analyze-btn:hover:not(:disabled) {
-      background: #333;
-    }
-
-    .analyze-btn:disabled {
-      opacity: 0.6;
-      cursor: default;
-    }
-
-    .analyze-btn-secondary {
-      background: white;
-      color: #111;
-      border: 1px solid #ddd;
-    }
-
-    .analyze-btn-secondary:hover:not(:disabled) {
-      background: #f0f0f0;
-    }
-
-    .story-link-box {
-      margin-top: 12px;
-      background: white;
-      border: 1px solid #d8dee8;
-      border-radius: 12px;
-      padding: 12px;
-    }
-
-    .story-link-header {
-      font-size: 0.82rem;
-      font-weight: 700;
-      color: #555;
-      margin-bottom: 8px;
-    }
-
-    .story-link-status {
-      display: inline-flex;
-      align-items: center;
-      min-height: 34px;
-      padding: 7px 12px;
-      border-radius: 999px;
-      font-size: 0.84rem;
-      font-weight: 700;
-      margin-bottom: 10px;
-    }
-
-    .story-link-status.is-existing {
-      background: #e8f7ee;
-      color: #196a42;
-    }
-
-    .story-link-status.is-uncertain {
-      background: #fff4e5;
-      color: #9a5b00;
-    }
-
-    .story-link-status.is-new {
-      background: #eef4ff;
-      color: #2157a5;
-    }
-
-    .story-link-card {
-      border: 1px solid #e6eaf0;
-      border-radius: 10px;
-      padding: 10px 12px;
-      background: #fafbfd;
-    }
-
-    .story-link-card.selected {
-      border-color: #b8cae8;
-      background: #eef4ff;
-    }
-
-    .story-link-card p,
-    .story-link-card small {
-      display: block;
-      margin: 6px 0 0;
-      color: #555;
-    }
-
-    .story-choice-row {
-      margin-top: 10px;
-      font-size: 0.92rem;
-    }
-
-    .story-choice-row input {
-      margin-right: 6px;
-    }
-
-    .story-draft-fields {
-      margin-top: 10px;
-      display: grid;
-      gap: 8px;
-    }
-
-    .story-draft-fields label {
-      font-size: 0.82rem;
-      font-weight: 700;
-      color: #555;
-    }
-
-    .story-draft-fields input,
-    .story-draft-fields textarea {
-      width: 100%;
-      border: 1px solid #d7dbe2;
-      border-radius: 10px;
-      padding: 9px 10px;
-      font: inherit;
-      background: white;
-    }
-
-    .story-link-toggle {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin: 8px 0 12px;
-      font-size: 0.9rem;
-      font-weight: 600;
-      color: #333;
-    }
-
-    .story-link-toggle input {
-      width: 16px;
-      height: 16px;
-      margin: 0;
-    }
-
-    .story-link-disabled {
-      opacity: 0.55;
-    }
-
-    .story-selected-row {
-      margin-bottom: 10px;
-    }
-
-    .story-selected-tag {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      min-height: 36px;
-      padding: 7px 12px;
-      border-radius: 999px;
-      background: #eef4ff;
-      border: 1px solid #b8cae8;
-      color: #2157a5;
-      font-size: 0.84rem;
-      font-weight: 700;
-    }
-
-    .story-selected-remove-btn,
-    .story-create-btn {
-      border: 1px solid #d7dbe2;
-      background: white;
-      color: #223;
-      border-radius: 999px;
-      padding: 7px 12px;
-      font: inherit;
-      font-size: 0.82rem;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    .story-selected-remove-btn {
-      border: none;
-      background: transparent;
-      color: #2157a5;
-      padding: 0;
-      font-size: 1rem;
-      line-height: 1;
-    }
-
-    .story-manual-picker {
-      margin-top: 12px;
-      border-top: 1px solid #e7ebf2;
-      padding-top: 12px;
-    }
-
-    .story-manual-picker label {
-      display: block;
-      font-size: 0.82rem;
-      font-weight: 700;
-      color: #555;
-      margin-bottom: 6px;
-    }
-
-    .story-manual-picker select,
-    .story-manual-picker textarea {
-      width: 100%;
-      border: 1px solid #d7dbe2;
-      border-radius: 10px;
-      padding: 9px 10px;
-      font: inherit;
-      background: white;
-    }
-
-    .story-manual-summary {
-      margin-top: 10px;
-    }
-
-    .story-manual-picker small {
-      display: block;
-      margin-top: 6px;
-      color: #666;
-    }
-
-    .story-save-actions {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-top: 8px;
-      flex-wrap: wrap;
-    }
-
-    .story-save-btn {
-      border: 1px solid #d7dbe2;
-      background: #f7f9fc;
-      color: #223;
-      border-radius: 999px;
-      padding: 8px 12px;
-      font: inherit;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    .story-save-btn:hover {
-      background: #eef3fb;
-    }
-
-    .story-save-feedback {
-      font-size: 0.82rem;
-      color: #196a42;
-      font-weight: 600;
-    }
-
-    .episode-nav-link {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      margin-top: 10px;
-      padding: 9px 12px;
-      border-radius: 999px;
-      border: 1px solid #d7dbe2;
-      background: #fff;
-      color: #223;
-      font-size: 0.84rem;
-      font-weight: 700;
-      text-decoration: none;
-    }
-
-    .episode-nav-link:hover {
-      background: #f5f8fd;
-    }
-
-    .hidden {
-      display: none !important;
-      color: #111;
-    }
-
-    .story-draft-fields textarea {
-      resize: vertical;
-      min-height: 84px;
-    }
-
-    .hidden {
-      display: none !important;
-    }
-
-    .subject-number {
-      font-size: 0.75rem;
-      color: #aaa;
-      font-weight: 600;
-      margin-bottom: 6px;
-    }
-
-    .save-btn {
-      background: none;
-      border: 1px solid #ccc;
-      border-radius: 999px;
-      padding: 4px 12px;
-      font: inherit;
-      font-size: 0.82rem;
-      cursor: pointer;
-      color: #555;
-      margin-top: 10px;
-    }
-
-    .save-btn:hover {
-      border-color: #888;
-      color: #111;
-    }
-
-    .save-btn.saved {
-      background: #111;
-      color: white;
-      border-color: #111;
-    }
-
-    .saved-selection-bar {
-      display: none;
-      flex-direction: column;
-      gap: 10px;
-      background: white;
-      border: 1px solid #ddd;
-      border-radius: 14px;
-      padding: 12px 14px;
-      margin: 0 0 18px;
-      position: sticky;
-      top: 10px;
-      z-index: 5;
-    }
-
-    .saved-selection-bar.visible {
-      display: flex;
-    }
-
-    .saved-selection-top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-    }
-
-    .generate-all-btn {
-      width: 100%;
-      padding: 13px 20px;
-      background: #111;
-      color: white;
-      border: none;
-      border-radius: 999px;
-      font: inherit;
-      font-size: 1rem;
-      font-weight: 700;
-      cursor: pointer;
-      letter-spacing: 0.02em;
-    }
-
-    .generate-all-btn:hover:not(:disabled) {
-      background: #333;
-    }
-
-    .generate-all-btn:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
-
-    .saved-selection-actions {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .select-all-arenas-btn,
-    .clear-selection-btn,
-    .arena-select-btn {
-      border: 1px solid #ddd;
-      background: white;
-      border-radius: 999px;
-      padding: 8px 14px;
-      font: inherit;
-      font-size: 0.86rem;
-      font-weight: 700;
-      cursor: pointer;
-      color: #111;
-    }
-
-    .select-all-arenas-btn:hover,
-    .clear-selection-btn:hover {
-      opacity: 0.85;
-    }
-
-    .arena-select-btn:hover {
-      background: #f0f0f0;
-    }
-
-    .arena-select-btn {
-      display: none;
-      position: absolute;
-      top: 16px;
-      left: 18px;
-    }
-
-    body.saved-selection-mode .subject .arena-select-btn {
-      display: inline-flex;
-    }
-
-    body.saved-selection-mode .subject {
-      padding-top: 62px;
-    }
-
-    .subject.selected .arena-select-btn {
-      background: #111;
-      border-color: #111;
-      color: white;
-    }
-
-    .selection-count {
-      color: #555;
-      font-size: 0.9rem;
-      font-weight: 700;
-    }
-
-    .agon-btn {
-      background: none;
-      border: 1px solid #c0392b;
-      border-radius: 999px;
-      padding: 4px 12px;
-      font: inherit;
-      font-size: 0.82rem;
-      cursor: pointer;
-      color: #c0392b;
-      margin-top: 10px;
-      margin-left: 6px;
-    }
-
-    .agon-btn:hover { background: #fdf0ee; }
-    .agon-btn.sent { background: #c0392b; color: white; }
-
-    .republish-btn {
-      background: #fff;
-      border: 1px solid #1d4ed8;
-      border-radius: 999px;
-      padding: 4px 12px;
-      font: inherit;
-      font-size: 0.82rem;
-      cursor: pointer;
-      color: #1d4ed8;
-      margin-top: 10px;
-      margin-left: 6px;
-    }
-
-    .republish-btn:hover { background: #eff6ff; }
-
-    .verify-sources-btn {
-      background: #fff;
-      border: 1px solid #059669;
-      border-radius: 999px;
-      padding: 4px 12px;
-      font: inherit;
-      font-size: 0.82rem;
-      cursor: pointer;
-      color: #059669;
-      margin-top: 10px;
-      margin-left: 6px;
-    }
-    .verify-sources-btn:hover { background: #ecfdf5; }
-    .verify-sources-btn:disabled { opacity: 0.5; cursor: wait; }
-
-    .ai-box {
-      background: #f5f5f5;
-      border: 1px solid #e1e1e1;
-      border-radius: 12px;
-      padding: 14px;
-      margin-bottom: 14px;
-    }
-
-    .news-keywords {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin: 10px 0 4px;
-    }
-
-    .news-keywords-label {
-      width: 100%;
-      font-size: 0.82rem;
-      font-weight: 700;
-      color: #555;
-    }
-
-    .news-keyword-chip {
-      display: inline-flex;
-      align-items: center;
-      min-height: 30px;
-      padding: 0 10px;
-      border-radius: 999px;
-      background: #f3f4f7;
-      border: 1px solid #e2e4ea;
-      color: #2b2e38;
-      font-size: 0.82rem;
-      font-weight: 600;
-      line-height: 1.2;
-    }
-    .main-keyword-chip {
-      background: #111;
-      border-color: #111;
-      color: #fff;
-      font-weight: 800;
-      box-shadow: 0 6px 16px rgba(0,0,0,0.12);
-    }
-    .main-keyword-chip::before {
-      content: "Tag principal";
-      margin-right: 8px;
-      font-size: 0.68rem;
-      font-weight: 800;
-      text-transform: uppercase;
-      opacity: 0.72;
-    }
-    .news-keyword-chip button {
-      margin-left: 8px;
-      border: none;
-      background: transparent;
-      color: #666;
-      cursor: pointer;
-      font: inherit;
-      font-size: 0.9rem;
-      line-height: 1;
-      padding: 0;
-    }
-    .main-keyword-chip button { color: #fff; opacity: 0.75; }
-
-    .debate-question {
-      font-size: 1.1rem;
-      font-weight: 800;
-      margin-top: 0;
-      border-radius: 6px;
-      padding: 4px 6px;
-      margin-left: -6px;
-      outline: none;
-      transition: background 0.15s;
-    }
-
-    .debate-question:hover,
-    .debate-question:focus {
-      background: #e8e8e8;
-    }
-
-    .source-subject-title {
-      margin: 0 0 8px 0;
-      font-size: 1rem;
-      font-weight: 800;
-      line-height: 1.3;
-      color: #1f2937;
-    }
-
-    .generated-title-label {
-      margin: 0 0 4px 0;
-      font-size: 0.78rem;
-      font-weight: 700;
-      letter-spacing: 0.02em;
-      text-transform: uppercase;
-      color: #6b7280;
-    }
-
-    .story-picker-row {
-      position: relative;
-      margin-top: 6px;
-    }
-
-    .story-picker-trigger {
-      width: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      border: 1px solid #d1d5db;
-      background: #fff;
-      color: #111827;
-      border-radius: 12px;
-      padding: 10px 12px;
-      font: inherit;
-      font-size: 0.88rem;
-      font-weight: 600;
-      cursor: pointer;
-      text-align: left;
-    }
-
-    .story-picker-trigger-label {
-      min-width: 0;
-      flex: 1;
-    }
-
-    .story-picker-trigger-caret {
-      flex-shrink: 0;
-      color: #6b7280;
-      font-size: 0.8rem;
-    }
-
-    .story-dropdown.hidden {
-      display: none;
-    }
-
-    .story-dropdown {
-      position: absolute;
-      top: calc(100% + 8px);
-      left: 0;
-      width: min(860px, calc(100vw - 48px));
-      max-width: 100%;
-      background: #ffffff !important;
-      background-color: #ffffff !important;
-      opacity: 1 !important;
-      border: 1px solid #e5e7eb;
-      border-radius: 14px;
-      box-shadow: 0 20px 50px rgba(15, 23, 42, 0.16);
-      z-index: 40;
-      padding: 10px;
-      backdrop-filter: none;
-      -webkit-backdrop-filter: none;
-    }
-
-    .story-dropdown-create-row {
-      display: flex;
-      justify-content: flex-end;
-      margin-bottom: 8px;
-    }
-
-    .story-create-inline-btn {
-      border: 1px solid #d1d5db;
-      background: #fff;
-      color: #111827;
-      border-radius: 999px;
-      padding: 6px 10px;
-      font: inherit;
-      font-size: 0.82rem;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    .story-dropdown-search-row {
-      padding: 0 4px 10px;
-      background: #ffffff !important;
-      opacity: 1 !important;
-    }
-
-    .story-search-input {
-      width: 100%;
-      padding: 9px 12px;
-      border: 1px solid #d6dae2;
-      border-radius: 8px;
-      font: inherit;
-      font-size: 0.9rem;
-      background: #ffffff;
-      color: #111827;
-    }
-
-    .story-dropdown-list {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      max-height: 320px;
-      overflow: auto;
-      background: #ffffff !important;
-      opacity: 1 !important;
-    }
-
-    .story-library-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      padding: 8px 10px;
-      border: 1px solid #e5e7eb;
-      border-radius: 10px;
-      background: #ffffff !important;
-      background-color: #ffffff !important;
-      opacity: 1 !important;
-    }
-
-    .story-library-title {
-      font-size: 0.84rem;
-      font-weight: 600;
-      color: #1f2937;
-      min-width: 0;
-      flex: 1;
-    }
-
-    .story-library-actions {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      flex-shrink: 0;
-    }
-
-    .story-library-btn {
-      border: 1px solid #d1d5db;
-      background: #fff;
-      color: #111827;
-      border-radius: 999px;
-      padding: 5px 9px;
-      font: inherit;
-      font-size: 0.76rem;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    .story-library-select-btn {
-      border: 0;
-      background: transparent;
-      padding: 0;
-      color: inherit;
-      font: inherit;
-      font-weight: inherit;
-      text-align: left;
-      cursor: pointer;
-      width: 100%;
-    }
-
-    .story-library-row.is-selected {
-      border-color: #93c5fd;
-      background: #eff6ff;
-    }
-
-    .story-row-simple {
-      justify-content: flex-start;
-    }
-
-    .story-library-view-btn {
-      background: #eff6ff;
-      border-color: rgba(37, 99, 235, 0.18);
-      color: #1d4ed8;
-    }
-
-    .story-articles-modal.hidden {
-      display: none;
-    }
-
-    .story-articles-modal {
-      position: fixed;
-      inset: 0;
-      background: rgba(15, 23, 42, 0.52);
-      z-index: 1000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    }
-
-    .story-articles-dialog {
-      width: min(720px, 100%);
-      max-height: min(80vh, 760px);
-      overflow: auto;
-      background: #fff;
-      border-radius: 16px;
-      box-shadow: 0 24px 60px rgba(15, 23, 42, 0.26);
-      padding: 18px 18px 16px;
-    }
-
-    .story-articles-header {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 12px;
-    }
-
-    .story-articles-title {
-      font-size: 16px;
-      font-weight: 700;
-      color: #111827;
-      margin: 0;
-    }
-
-    .story-articles-close {
-      border: 0;
-      background: #f3f4f6;
-      color: #374151;
-      border-radius: 999px;
-      width: 32px;
-      height: 32px;
-      cursor: pointer;
-      font-size: 18px;
-      line-height: 1;
-    }
-
-    .story-articles-list {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      margin-top: 10px;
-    }
-
-    .story-article-item {
-      border: 1px solid rgba(15, 23, 42, 0.08);
-      border-radius: 12px;
-      padding: 12px;
-      background: #f8fafc;
-    }
-
-    .story-article-title {
-      margin: 0 0 6px;
-      font-size: 14px;
-      font-weight: 700;
-      color: #111827;
-    }
-
-    .story-article-meta {
-      font-size: 12px;
-      color: #6b7280;
-      margin-bottom: 6px;
-    }
-
-    .story-article-content {
-      font-size: 13px;
-      line-height: 1.45;
-      color: #374151;
-      margin: 0 0 8px;
-    }
-
-    .story-article-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 13px;
-      font-weight: 600;
-      color: #1d4ed8;
-      text-decoration: none;
-    }
-
-    .tags-generate-btn,
-    .full-article-btn {
-      margin-top: 14px;
-      border: 1px solid rgba(37, 99, 235, 0.22);
-      background: #eff6ff;
-      color: #1d4ed8;
-      border-radius: 10px;
-      padding: 10px 12px;
-      font: inherit;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    .tags-generate-btn {
-      margin-top: 10px;
-      border-color: rgba(17, 24, 39, 0.18);
-      background: #f8fafc;
-      color: #111827;
-    }
-
-    .final-article-btn {
-      margin-top: 10px;
-      border: 1px solid rgba(17, 24, 39, 0.2);
-      background: #111827;
-      color: white;
-      border-radius: 999px;
-      padding: 8px 14px;
-      font: inherit;
-      font-size: 0.84rem;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    .problematique-btn {
-      margin-top: 10px;
-      border: 1px solid rgba(109, 40, 217, 0.25);
-      background: #f5f3ff;
-      color: #5b21b6;
-      border-radius: 999px;
-      padding: 8px 14px;
-      font: inherit;
-      font-size: 0.84rem;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    .definitive-article-btn {
-      margin-top: 10px;
-      margin-left: 8px;
-      border: 1px solid rgba(17, 24, 39, 0.16);
-      background: #ffffff;
-      color: #111827;
-      border-radius: 999px;
-      padding: 8px 14px;
-      font: inherit;
-      font-size: 0.84rem;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    .latin-article-btn {
-      border-color: #111827;
-      background: #111827;
-      color: #ffffff;
-      box-shadow: 0 8px 20px rgba(17, 24, 39, 0.16);
-    }
-
-    .article-generation-panel {
-      margin-top: 14px;
-      border: 1px solid #e5e7eb;
-      border-radius: 12px;
-      background: #ffffff;
-      overflow: hidden;
-    }
-
-    .article-generation-panel summary {
-      list-style: none;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      padding: 11px 14px;
-      color: #111827;
-      font-size: 0.88rem;
-      font-weight: 800;
-      cursor: pointer;
-      user-select: none;
-    }
-
-    .article-generation-panel summary::-webkit-details-marker {
-      display: none;
-    }
-
-    .article-generation-panel summary::after {
-      content: "▾";
-      font-size: 0.8rem;
-      transition: transform 0.16s ease;
-    }
-
-    .article-generation-panel:not([open]) summary::after {
-      transform: rotate(-90deg);
-    }
-
-    .article-generation-actions {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-      padding: 0 14px 14px;
-    }
-
-    .article-generation-actions .tags-generate-btn,
-    .article-generation-actions .full-article-btn,
-    .article-generation-actions .final-article-btn,
-    .article-generation-actions .problematique-btn,
-    .article-generation-actions .definitive-article-btn {
-      margin-top: 0;
-      margin-left: 0;
-    }
-
-    .resume[contenteditable="true"] {
-      border-radius: 8px;
-      padding: 8px 10px;
-      margin-left: -10px;
-      outline: none;
-      transition: background 0.15s;
-    }
-
-    .resume[contenteditable="true"]:hover,
-    .resume[contenteditable="true"]:focus {
-      background: #e8e8e8;
-    }
-
-    .article-latin-question {
-      text-align: center;
-      font-weight: 700;
-      margin-top: 1em;
-    }
-
-    .article-debate-question {
-      text-align: center;
-      font-style: italic;
-      margin-top: 1em;
-    }
-
-    .article-signature {
-      text-align: left;
-      font-weight: 400;
-    }
-
-    .field-counter {
-      margin-top: 4px;
-      font-size: 0.78rem;
-      color: #6b7280;
-      text-align: right;
-    }
-
-    .editable {
-      border-radius: 4px;
-      padding: 2px 4px;
-      margin-left: -4px;
-      outline: none;
-      transition: background 0.15s;
-    }
-
-    .editable:hover,
-    .editable:focus {
-      background: #e8e8e8;
-    }
-
-    .agon-theme {
-      margin: 4px 0 0;
-      font-size: 0.95rem;
-    }
-
-    .agon-select {
-      background: white;
-      border: 1px solid #ddd;
-      border-radius: 999px;
-      padding: 5px 10px;
-      color: #111;
-      font-size: 0.95rem;
-      cursor: pointer;
-      outline: none;
-    }
-
-    .agon-select:hover,
-    .agon-select:focus {
-      border-color: #999;
-    }
-
-    .positions-box {
-      margin-top: 12px;
-      background: white;
-      border: 1px solid #ddd;
-      border-radius: 12px;
-      padding: 12px;
-    }
-
-    .positions-box p {
-      margin: 6px 0;
-    }
-
-    .positions-box p + p {
-      margin-top: 0;
-    }
-
-    .political-tag {
-      display: inline-block;
-      margin-top: 8px;
-      font-size: 0.72rem;
-      color: #7a5c9e;
-      background: #f0eaf8;
-      border: 1px solid #d0bfea;
-      border-radius: 10px;
-      padding: 2px 9px;
-    }
-
-    .subject-stats {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-bottom: 10px;
-    }
-
-    .subject-stats span {
-      background: #f1f1f1;
-      border-radius: 999px;
-      padding: 5px 10px;
-      font-size: 0.9rem;
-    }
-
-	    .sources {
-	      color: #555;
-	      font-size: 0.95rem;
-	    }
-
-	    .sources-dropdown {
-	      margin: 10px 0 12px;
-	    }
-
-	    .sources-dropdown summary {
-	      display: inline-flex;
-	      align-items: center;
-	      gap: 8px;
-	      width: fit-content;
-	      border: 1px solid #ddd;
-	      background: white;
-	      border-radius: 999px;
-	      padding: 7px 13px;
-	      color: #111;
-	      font: inherit;
-	      font-size: 0.86rem;
-	      font-weight: 700;
-	      cursor: pointer;
-	      user-select: none;
-	    }
-
-	    .sources-dropdown summary::-webkit-details-marker {
-	      display: none;
-	    }
-
-	    .sources-dropdown summary::after {
-	      content: "▾";
-	      font-size: 0.78rem;
-	      color: #777;
-	      transition: transform 0.16s ease;
-	    }
-
-	    .sources-dropdown[open] summary::after {
-	      transform: rotate(180deg);
-	    }
-
-	    .sources-dropdown summary:hover {
-	      background: #f0f0f0;
-	    }
-
-	    .sources-dropdown .sources {
-	      margin: 10px 0 8px;
-	    }
-
-	    ul {
-	      padding-left: 0;
-	    }
-
-    .content-item {
-      list-style: none;
-      margin-bottom: 16px;
-    }
-
-    .content-item.preselected {
-      background: #f0f7ff;
-      border-left: 3px solid #0645ad;
-      border-radius: 6px;
-      padding: 6px 10px;
-      margin-left: -13px;
-    }
-
-    .article-label {
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
-      cursor: pointer;
-    }
-
-    .article-label input[type="checkbox"] {
-      margin-top: 3px;
-      flex-shrink: 0;
-      width: 16px;
-      height: 16px;
-      cursor: pointer;
-    }
-
-    .source-tag {
-      display: inline-block;
-      background: #f1f1f1;
-      border-radius: 999px;
-      padding: 1px 7px;
-      font-size: 0.78rem;
-      color: #555;
-      vertical-align: middle;
-    }
-
-    .source-tag.youtube {
-      background: #ff0000;
-      color: white;
-    }
-
-    .source-tag.left {
-      background: #ffe8e8;
-      color: #b30000;
-    }
-
-    .source-tag.center {
-      background: #f1f1f1;
-      color: #555;
-    }
-
-    .source-tag.right {
-      background: #e8eeff;
-      color: #003399;
-    }
-
-    .thumb {
-      display: block;
-      width: 160px;
-      max-width: 35vw;
-      border-radius: 6px;
-      margin-bottom: 6px;
-    }
-
-    a {
-      color: #0645ad;
-      text-decoration: none;
-    }
-
-    a:hover {
-      text-decoration: underline;
-    }
-
-    .empty {
-      background: white;
-      border: 1px solid #ddd;
-      border-radius: 14px;
-      padding: 20px;
-      color: #555;
-    }
-
-    @media (max-width: 700px) {
-      body {
-        margin: 20px auto;
-      }
-
-      .session-tabs {
-        display: grid;
-        grid-template-columns: 1fr;
-      }
-
-      .session-tab {
-        width: 100%;
-        text-align: left;
-      }
-
-      .session-header {
-        display: block;
-      }
-
-      .session-stats {
-        border-left: none;
-        border-top: 1px solid #ddd;
-        margin-top: 14px;
-        padding-left: 0;
-        padding-top: 14px;
-      }
-
-      .content-item {
-        display: block;
-      }
-
-      .thumb {
-        width: 100%;
-        max-width: 100%;
-        margin-bottom: 8px;
-      }
-
-      .badge {
-        margin-bottom: 8px;
-      }
-    }
-  </style>
-</head>
-<body>
-  <h1>Veille mixte presse + YouTube</h1>
-
-  <div class="nav">
-    <a href="/mixte">Veille mixte</a>
-    <a href="/certamen">Certamen</a>
-    <a href="/admin">⚙ Admin</a>
-    <button class="nav-refresh-btn" onclick="startRefresh()">↻ Actualiser</button>
-  </div>
-
-  <p class="intro">
-    Les nouveaux articles de presse et les nouvelles vidéos YouTube sont regroupés dans les mêmes sujets.
-    L'IA analyse uniquement les nouveautés jamais vues auparavant et classe les sujets selon leur potentiel de controverse et de débat.
-  </p>
-
-  <div class="status">
-    <div>
-      Dernière génération du fichier :
-      <strong>${escapeHtml(generatedAt)}</strong>
-      <br>
-      Presse : dernières <strong>${HOURS_BACK_ARTICLES} h</strong> —
-      YouTube : dernières <strong>${HOURS_BACK_YOUTUBE} h</strong>
-    </div>
-    <div class="refresh-row">
-      <select class="min-sources-select" id="min-sources-select" title="Sources minimum par sujet">
-        <option value="2">2 sources min.</option>
-        <option value="3" selected>3 sources min.</option>
-        <option value="4">4 sources min.</option>
-        <option value="5">5 sources min.</option>
-        <option value="6">6 sources min.</option>
-      </select>
-      <button class="refresh-btn" type="button">Mettre à jour</button>
-    </div>
-    <div class="ptr-indicator" id="ptr-indicator"></div>
-    <button class="update-banner" id="update-banner" onclick="window.location.reload()">Nouvelle session disponible — Charger</button>
-  </div>
-
-  <div id="progress-panel">
-    <div class="progress-step-label">Étape <span id="prog-step">…</span> / 6 — <span id="prog-name">Démarrage…</span></div>
-    <div class="progress-bar-track"><div class="progress-bar-fill" id="prog-bar"></div></div>
-    <div class="progress-detail-text" id="prog-detail"></div>
-  </div>
-
-  <div id="collect-report-panel"></div>
-
-  <div class="filter-bar">
-    <button class="filter-btn active" data-sort="score">Sujets clivants</button>
-    <button class="filter-btn" data-sort="sources">Sujets majeurs</button>
-    <button class="filter-btn" data-sort="ranked">Classement mixte</button>
-    <button class="filter-btn" data-sort="saved">Sujets enregistrés</button>
-    <a class="filter-link" href="/sent-to-agon">Articles envoyés vers Agôn</a>
-  </div>
-
-  <div class="saved-selection-bar" id="saved-selection-bar">
-    <div class="saved-selection-top">
-      <div class="selection-count"><span id="selected-count">0</span> arène(s) sélectionnée(s)</div>
-      <div class="saved-selection-actions">
-        <button class="select-all-arenas-btn" type="button">Tout sélectionner</button>
-        <button class="clear-selection-btn" type="button">Annuler la sélection</button>
-      </div>
-    </div>
-    <button class="generate-all-btn" type="button">Tout générer</button>
-  </div>
-
-
-  ${
-    sessions.length
-      ? `
-        <div class="session-tabs-wrapper">
-          <h2>Historique des mises à jour</h2>
-          <p>Choisis une session pour voir uniquement les nouveautés détectées à cette heure-là.</p>
-          <div class="session-tabs">
-            ${sessionTabs}
-          </div>
-          ${olderTabsButton}
-        </div>
-
-        ${sessionBlocks}
-      `
-      : `<div class="empty">Aucune session mixte pour le moment.</div>`
-  }
-
   <script>
     const AGON_THEMES = ${JSON.stringify(AGON_THEMES)};
     const AGON_THEME_ALIASES = ${JSON.stringify(AGON_THEME_ALIASES)};
@@ -5809,6 +3747,2141 @@ function generateHtml(sessions) {
       });
     }
 
+  </script>
+  `;
+}
+
+function buildVeilleStylesHtml() {
+  return `<style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      max-width: 980px;
+      margin: 40px auto;
+      padding: 0 16px;
+      line-height: 1.5;
+      background: #f7f7f7;
+      color: #111;
+    }
+
+    h1 {
+      margin-bottom: 4px;
+    }
+
+    .intro {
+      color: #555;
+      margin-bottom: 24px;
+    }
+
+    .nav {
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .nav a {
+      display: inline-block;
+      padding: 8px 12px;
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 999px;
+      text-decoration: none;
+      color: #111;
+    }
+
+    .nav-refresh-btn {
+      margin-left: auto;
+      background: #111;
+      color: white;
+      border: none;
+      border-radius: 999px;
+      padding: 8px 14px;
+      font: inherit;
+      font-size: 0.9rem;
+      cursor: pointer;
+      display: none;
+    }
+
+    @media (max-width: 600px) {
+      .nav-refresh-btn { display: inline-block; }
+    }
+
+    .status {
+      background: #111;
+      color: white;
+      border-radius: 14px;
+      padding: 14px 18px;
+      margin-bottom: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .refresh-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .min-sources-select {
+      padding: 8px 10px;
+      border: 1px solid #ddd;
+      border-radius: 999px;
+      font: inherit;
+      font-size: 0.85rem;
+      background: white;
+      color: #111;
+      cursor: pointer;
+    }
+
+    .refresh-btn,
+    .sort-sources-btn {
+      flex-shrink: 0;
+      background: white;
+      color: #111;
+      border: none;
+      border-radius: 999px;
+      padding: 10px 18px;
+      font: inherit;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .refresh-btn:hover:not(:disabled),
+    .sort-sources-btn:hover {
+      background: #e8e8e8;
+    }
+
+    .refresh-btn:disabled {
+      opacity: 0.6;
+      cursor: default;
+    }
+
+    .ptr-indicator {
+      position: fixed; top: -60px; left: 50%; transform: translateX(-50%);
+      background: #333; color: white; padding: 10px 20px; border-radius: 999px;
+      font-size: 0.85rem; transition: top 0.25s ease; z-index: 200; white-space: nowrap;
+      pointer-events: none;
+    }
+    .ptr-indicator.visible { top: 16px; }
+
+    .update-banner {
+      position: fixed; top: 16px; left: 50%; transform: translateX(-50%);
+      background: #2563eb; color: white; padding: 13px 26px; border-radius: 999px;
+      font-size: 0.9rem; font-weight: 700; cursor: pointer; z-index: 200;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.22); display: none; white-space: nowrap;
+      border: none; font-family: inherit;
+    }
+    .update-banner:hover { background: #1d4ed8; }
+
+    #progress-panel {
+      display: none;
+      background: #1e293b;
+      border-radius: 14px;
+      padding: 14px 18px;
+      margin-bottom: 16px;
+      color: white;
+    }
+    .progress-step-label {
+      font-size: 0.88rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .progress-bar-track {
+      background: rgba(255,255,255,0.15);
+      border-radius: 999px;
+      height: 6px;
+      margin-bottom: 8px;
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      background: #60a5fa;
+      height: 100%;
+      border-radius: 999px;
+      transition: width 0.5s ease;
+      width: 0%;
+    }
+    .progress-detail-text {
+      font-size: 0.78rem;
+      color: rgba(255,255,255,0.55);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    #collect-report-panel { display: none; margin-bottom: 16px; }
+    #collect-report-panel .collect-report { margin: 0; }
+    .collect-report { margin: 12px 0 16px; border: 1px solid #e5e7eb; border-radius: 8px; background: #f8fafc; font-size: 0.82rem; }
+    .collect-report summary { padding: 8px 14px; cursor: pointer; font-weight: 600; color: #374151; user-select: none; }
+    .collect-report summary:hover { color: #111; }
+    .cr-body { padding: 0 14px 12px; display: flex; gap: 24px; flex-wrap: wrap; }
+    .cr-section { flex: 1; min-width: 220px; }
+    .cr-section-label { font-weight: 700; font-size: 0.8rem; color: #374151; margin-bottom: 6px; padding-top: 8px; }
+    .cr-summary { font-weight: 400; color: #6b7280; }
+    .cr-table { width: 100%; border-collapse: collapse; }
+    .cr-table td { padding: 3px 6px; vertical-align: top; font-size: 0.78rem; }
+    .cr-icon { width: 18px; font-size: 0.72rem; }
+    .cr-ok { color: #16a34a; }
+    .cr-pause { color: #d97706; }
+    .cr-err { color: #dc2626; }
+    .cr-name { color: #111; font-weight: 500; white-space: nowrap; padding-right: 8px; }
+    .cr-detail { color: #6b7280; }
+
+    .filter-bar {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+
+    .filter-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 9px 16px;
+      border: 1px solid #ddd;
+      border-radius: 999px;
+      background: white;
+      color: #555;
+      text-decoration: none;
+      font: inherit;
+      font-size: 0.88rem;
+      font-weight: 700;
+    }
+
+    .filter-link:hover {
+      background: #f3f4f6;
+    }
+
+    .filter-btn {
+      border: 1px solid #ddd;
+      background: white;
+      color: #111;
+      border-radius: 999px;
+      padding: 9px 16px;
+      font: inherit;
+      font-size: 0.95rem;
+      cursor: pointer;
+    }
+
+    .filter-btn:hover {
+      background: #eee;
+    }
+
+	    .filter-btn.active {
+	      background: #111;
+	      color: white;
+	      border-color: #111;
+	      font-weight: 700;
+	    }
+
+	    .filter-btn[data-sort="saved"] {
+	      background: #fff7ed;
+	      color: #9a3412;
+	      border: 1.5px solid #f59e0b;
+	      box-shadow: 0 2px 8px rgba(245, 158, 11, 0.18);
+	      font-weight: 800;
+	    }
+
+	    .filter-btn[data-sort="saved"]::before {
+	      content: "★";
+	      margin-right: 7px;
+	      color: #d97706;
+	    }
+
+	    .filter-btn[data-sort="saved"]:hover {
+	      background: #ffedd5;
+	      border-color: #d97706;
+	    }
+
+	    .filter-btn[data-sort="saved"].active {
+	      background: #9a3412;
+	      color: #fff;
+	      border-color: #9a3412;
+	      box-shadow: 0 3px 12px rgba(154, 52, 18, 0.28);
+	    }
+
+	    .filter-btn[data-sort="saved"].active::before {
+	      color: #fff;
+	    }
+
+    .theme-header {
+      font-size: 1rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #555;
+      border-top: 2px solid #ddd;
+      padding: 18px 0 6px;
+      margin-top: 8px;
+    }
+
+    .session-tabs-wrapper {
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 14px;
+      padding: 18px;
+      margin-bottom: 24px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+
+    .session-tabs-wrapper h2 {
+      margin: 0 0 4px;
+      font-size: 1.2rem;
+    }
+
+    .session-tabs-wrapper p {
+      margin: 0 0 14px;
+      color: #555;
+    }
+
+    .session-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .session-tab {
+      border: 1px solid #ddd;
+      background: #f7f7f7;
+      color: #111;
+      border-radius: 999px;
+      padding: 9px 13px;
+      font: inherit;
+      font-size: 0.95rem;
+      cursor: pointer;
+    }
+
+    .session-tab:hover {
+      background: #eee;
+    }
+
+    .session-tab.active {
+      background: #111;
+      color: white;
+      border-color: #111;
+      font-weight: 700;
+    }
+
+    .hidden-tab {
+      display: none;
+    }
+
+    .show-older-tabs {
+      margin-top: 12px;
+      border: 1px solid #ddd;
+      background: white;
+      color: #111;
+      border-radius: 999px;
+      padding: 9px 13px;
+      font: inherit;
+      font-size: 0.95rem;
+      cursor: pointer;
+    }
+
+    .show-older-tabs:hover {
+      background: #eee;
+    }
+
+    .show-older-tabs.hidden {
+      display: none;
+    }
+
+    .hidden-session {
+      display: none;
+    }
+
+    .active-session {
+      display: block;
+    }
+
+    .session {
+      border-top: 4px solid #ccc;
+      padding-top: 20px;
+      margin-bottom: 44px;
+    }
+
+    .session.latest {
+      border-top-color: #111;
+    }
+
+    .session-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: center;
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 14px;
+      padding: 18px;
+      margin-bottom: 18px;
+    }
+
+    .session-header h2 {
+      margin: 0 0 4px;
+    }
+
+    .session-header p {
+      margin: 0;
+      color: #555;
+    }
+
+    .session-stats {
+      min-width: 130px;
+      text-align: center;
+      border-left: 1px solid #ddd;
+      padding-left: 16px;
+    }
+
+    .session-stats strong {
+      display: block;
+      font-size: 2rem;
+    }
+
+    .session-stats span {
+      color: #555;
+      font-size: 0.9rem;
+    }
+
+    .subject {
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 14px;
+      padding: 20px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      position: relative;
+    }
+
+    .subject.selected {
+      border-color: #111;
+      box-shadow: 0 0 0 2px rgba(17,17,17,0.08), 0 2px 8px rgba(0,0,0,0.04);
+    }
+
+    .subject h3 {
+      margin-top: 14px;
+      font-size: 1.25rem;
+    }
+
+    .subject h4 {
+      margin-bottom: 8px;
+      border-top: 1px solid #eee;
+      padding-top: 14px;
+    }
+
+    .ai-score {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      background: #111;
+      color: white;
+      border-radius: 12px;
+      padding: 12px 14px;
+    }
+
+    .ai-score strong {
+      display: block;
+      font-size: 1.8rem;
+    }
+
+    .score-label {
+      font-size: 0.85rem;
+      color: #ddd;
+    }
+
+    .controversy {
+      background: white;
+      color: #111;
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+
+    .ai-score.pending {
+      background: #888;
+      justify-content: flex-start;
+    }
+
+    .ai-box.pending-analysis {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      min-height: 56px;
+    }
+
+    .analyze-btn {
+      background: #111;
+      color: white;
+      border: none;
+      border-radius: 999px;
+      padding: 10px 20px;
+      font: inherit;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .analyze-btn:hover:not(:disabled) {
+      background: #333;
+    }
+
+    .analyze-btn:disabled {
+      opacity: 0.6;
+      cursor: default;
+    }
+
+    .analyze-btn-secondary {
+      background: white;
+      color: #111;
+      border: 1px solid #ddd;
+    }
+
+    .analyze-btn-secondary:hover:not(:disabled) {
+      background: #f0f0f0;
+    }
+
+    .story-link-box {
+      margin-top: 12px;
+      background: white;
+      border: 1px solid #d8dee8;
+      border-radius: 12px;
+      padding: 12px;
+    }
+
+    .story-link-header {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #555;
+      margin-bottom: 8px;
+    }
+
+    .story-link-status {
+      display: inline-flex;
+      align-items: center;
+      min-height: 34px;
+      padding: 7px 12px;
+      border-radius: 999px;
+      font-size: 0.84rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .story-link-status.is-existing {
+      background: #e8f7ee;
+      color: #196a42;
+    }
+
+    .story-link-status.is-uncertain {
+      background: #fff4e5;
+      color: #9a5b00;
+    }
+
+    .story-link-status.is-new {
+      background: #eef4ff;
+      color: #2157a5;
+    }
+
+    .story-link-card {
+      border: 1px solid #e6eaf0;
+      border-radius: 10px;
+      padding: 10px 12px;
+      background: #fafbfd;
+    }
+
+    .story-link-card.selected {
+      border-color: #b8cae8;
+      background: #eef4ff;
+    }
+
+    .story-link-card p,
+    .story-link-card small {
+      display: block;
+      margin: 6px 0 0;
+      color: #555;
+    }
+
+    .story-choice-row {
+      margin-top: 10px;
+      font-size: 0.92rem;
+    }
+
+    .story-choice-row input {
+      margin-right: 6px;
+    }
+
+    .story-draft-fields {
+      margin-top: 10px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .story-draft-fields label {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #555;
+    }
+
+    .story-draft-fields input,
+    .story-draft-fields textarea {
+      width: 100%;
+      border: 1px solid #d7dbe2;
+      border-radius: 10px;
+      padding: 9px 10px;
+      font: inherit;
+      background: white;
+    }
+
+    .story-link-toggle {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 8px 0 12px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .story-link-toggle input {
+      width: 16px;
+      height: 16px;
+      margin: 0;
+    }
+
+    .story-link-disabled {
+      opacity: 0.55;
+    }
+
+    .story-selected-row {
+      margin-bottom: 10px;
+    }
+
+    .story-selected-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 36px;
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: #eef4ff;
+      border: 1px solid #b8cae8;
+      color: #2157a5;
+      font-size: 0.84rem;
+      font-weight: 700;
+    }
+
+    .story-selected-remove-btn,
+    .story-create-btn {
+      border: 1px solid #d7dbe2;
+      background: white;
+      color: #223;
+      border-radius: 999px;
+      padding: 7px 12px;
+      font: inherit;
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .story-selected-remove-btn {
+      border: none;
+      background: transparent;
+      color: #2157a5;
+      padding: 0;
+      font-size: 1rem;
+      line-height: 1;
+    }
+
+    .story-manual-picker {
+      margin-top: 12px;
+      border-top: 1px solid #e7ebf2;
+      padding-top: 12px;
+    }
+
+    .story-manual-picker label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #555;
+      margin-bottom: 6px;
+    }
+
+    .story-manual-picker select,
+    .story-manual-picker textarea {
+      width: 100%;
+      border: 1px solid #d7dbe2;
+      border-radius: 10px;
+      padding: 9px 10px;
+      font: inherit;
+      background: white;
+    }
+
+    .story-manual-summary {
+      margin-top: 10px;
+    }
+
+    .story-manual-picker small {
+      display: block;
+      margin-top: 6px;
+      color: #666;
+    }
+
+    .story-save-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 8px;
+      flex-wrap: wrap;
+    }
+
+    .story-save-btn {
+      border: 1px solid #d7dbe2;
+      background: #f7f9fc;
+      color: #223;
+      border-radius: 999px;
+      padding: 8px 12px;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .story-save-btn:hover {
+      background: #eef3fb;
+    }
+
+    .story-save-feedback {
+      font-size: 0.82rem;
+      color: #196a42;
+      font-weight: 600;
+    }
+
+    .episode-nav-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 10px;
+      padding: 9px 12px;
+      border-radius: 999px;
+      border: 1px solid #d7dbe2;
+      background: #fff;
+      color: #223;
+      font-size: 0.84rem;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .episode-nav-link:hover {
+      background: #f5f8fd;
+    }
+
+    .hidden {
+      display: none !important;
+      color: #111;
+    }
+
+    .story-draft-fields textarea {
+      resize: vertical;
+      min-height: 84px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .subject-number {
+      font-size: 0.75rem;
+      color: #aaa;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .save-btn {
+      background: none;
+      border: 1px solid #ccc;
+      border-radius: 999px;
+      padding: 4px 12px;
+      font: inherit;
+      font-size: 0.82rem;
+      cursor: pointer;
+      color: #555;
+      margin-top: 10px;
+    }
+
+    .save-btn:hover {
+      border-color: #888;
+      color: #111;
+    }
+
+    .save-btn.saved {
+      background: #111;
+      color: white;
+      border-color: #111;
+    }
+
+    .saved-selection-bar {
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 14px;
+      padding: 12px 14px;
+      margin: 0 0 18px;
+      position: sticky;
+      top: 10px;
+      z-index: 5;
+    }
+
+    .saved-selection-bar.visible {
+      display: flex;
+    }
+
+    .saved-selection-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .generate-all-btn {
+      width: 100%;
+      padding: 13px 20px;
+      background: #111;
+      color: white;
+      border: none;
+      border-radius: 999px;
+      font: inherit;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      letter-spacing: 0.02em;
+    }
+
+    .generate-all-btn:hover:not(:disabled) {
+      background: #333;
+    }
+
+    .generate-all-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .saved-selection-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .select-all-arenas-btn,
+    .clear-selection-btn,
+    .arena-select-btn {
+      border: 1px solid #ddd;
+      background: white;
+      border-radius: 999px;
+      padding: 8px 14px;
+      font: inherit;
+      font-size: 0.86rem;
+      font-weight: 700;
+      cursor: pointer;
+      color: #111;
+    }
+
+    .select-all-arenas-btn:hover,
+    .clear-selection-btn:hover {
+      opacity: 0.85;
+    }
+
+    .arena-select-btn:hover {
+      background: #f0f0f0;
+    }
+
+    .arena-select-btn {
+      display: none;
+      position: absolute;
+      top: 16px;
+      left: 18px;
+    }
+
+    body.saved-selection-mode .subject .arena-select-btn {
+      display: inline-flex;
+    }
+
+    body.saved-selection-mode .subject {
+      padding-top: 62px;
+    }
+
+    .subject.selected .arena-select-btn {
+      background: #111;
+      border-color: #111;
+      color: white;
+    }
+
+    .selection-count {
+      color: #555;
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+
+    .agon-btn {
+      background: none;
+      border: 1px solid #c0392b;
+      border-radius: 999px;
+      padding: 4px 12px;
+      font: inherit;
+      font-size: 0.82rem;
+      cursor: pointer;
+      color: #c0392b;
+      margin-top: 10px;
+      margin-left: 6px;
+    }
+
+    .agon-btn:hover { background: #fdf0ee; }
+    .agon-btn.sent { background: #c0392b; color: white; }
+
+    .republish-btn {
+      background: #fff;
+      border: 1px solid #1d4ed8;
+      border-radius: 999px;
+      padding: 4px 12px;
+      font: inherit;
+      font-size: 0.82rem;
+      cursor: pointer;
+      color: #1d4ed8;
+      margin-top: 10px;
+      margin-left: 6px;
+    }
+
+    .republish-btn:hover { background: #eff6ff; }
+
+    .verify-sources-btn {
+      background: #fff;
+      border: 1px solid #059669;
+      border-radius: 999px;
+      padding: 4px 12px;
+      font: inherit;
+      font-size: 0.82rem;
+      cursor: pointer;
+      color: #059669;
+      margin-top: 10px;
+      margin-left: 6px;
+    }
+    .verify-sources-btn:hover { background: #ecfdf5; }
+    .verify-sources-btn:disabled { opacity: 0.5; cursor: wait; }
+
+    .ai-box {
+      background: #f5f5f5;
+      border: 1px solid #e1e1e1;
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 14px;
+    }
+
+    .news-keywords {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 10px 0 4px;
+    }
+
+    .news-keywords-label {
+      width: 100%;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #555;
+    }
+
+    .news-keyword-chip {
+      display: inline-flex;
+      align-items: center;
+      min-height: 30px;
+      padding: 0 10px;
+      border-radius: 999px;
+      background: #f3f4f7;
+      border: 1px solid #e2e4ea;
+      color: #2b2e38;
+      font-size: 0.82rem;
+      font-weight: 600;
+      line-height: 1.2;
+    }
+    .main-keyword-chip {
+      background: #111;
+      border-color: #111;
+      color: #fff;
+      font-weight: 800;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+    }
+    .main-keyword-chip::before {
+      content: "Tag principal";
+      margin-right: 8px;
+      font-size: 0.68rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      opacity: 0.72;
+    }
+    .news-keyword-chip button {
+      margin-left: 8px;
+      border: none;
+      background: transparent;
+      color: #666;
+      cursor: pointer;
+      font: inherit;
+      font-size: 0.9rem;
+      line-height: 1;
+      padding: 0;
+    }
+    .main-keyword-chip button { color: #fff; opacity: 0.75; }
+
+    .debate-question {
+      font-size: 1.1rem;
+      font-weight: 800;
+      margin-top: 0;
+      border-radius: 6px;
+      padding: 4px 6px;
+      margin-left: -6px;
+      outline: none;
+      transition: background 0.15s;
+    }
+
+    .debate-question:hover,
+    .debate-question:focus {
+      background: #e8e8e8;
+    }
+
+    .source-subject-title {
+      margin: 0 0 8px 0;
+      font-size: 1rem;
+      font-weight: 800;
+      line-height: 1.3;
+      color: #1f2937;
+    }
+
+    .generated-title-label {
+      margin: 0 0 4px 0;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      color: #6b7280;
+    }
+
+    .story-picker-row {
+      position: relative;
+      margin-top: 6px;
+    }
+
+    .story-picker-trigger {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      border: 1px solid #d1d5db;
+      background: #fff;
+      color: #111827;
+      border-radius: 12px;
+      padding: 10px 12px;
+      font: inherit;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: left;
+    }
+
+    .story-picker-trigger-label {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .story-picker-trigger-caret {
+      flex-shrink: 0;
+      color: #6b7280;
+      font-size: 0.8rem;
+    }
+
+    .story-dropdown.hidden {
+      display: none;
+    }
+
+    .story-dropdown {
+      position: absolute;
+      top: calc(100% + 8px);
+      left: 0;
+      width: min(860px, calc(100vw - 48px));
+      max-width: 100%;
+      background: #ffffff !important;
+      background-color: #ffffff !important;
+      opacity: 1 !important;
+      border: 1px solid #e5e7eb;
+      border-radius: 14px;
+      box-shadow: 0 20px 50px rgba(15, 23, 42, 0.16);
+      z-index: 40;
+      padding: 10px;
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
+    }
+
+    .story-dropdown-create-row {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 8px;
+    }
+
+    .story-create-inline-btn {
+      border: 1px solid #d1d5db;
+      background: #fff;
+      color: #111827;
+      border-radius: 999px;
+      padding: 6px 10px;
+      font: inherit;
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .story-dropdown-search-row {
+      padding: 0 4px 10px;
+      background: #ffffff !important;
+      opacity: 1 !important;
+    }
+
+    .story-search-input {
+      width: 100%;
+      padding: 9px 12px;
+      border: 1px solid #d6dae2;
+      border-radius: 8px;
+      font: inherit;
+      font-size: 0.9rem;
+      background: #ffffff;
+      color: #111827;
+    }
+
+    .story-dropdown-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      max-height: 320px;
+      overflow: auto;
+      background: #ffffff !important;
+      opacity: 1 !important;
+    }
+
+    .story-library-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 8px 10px;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      background: #ffffff !important;
+      background-color: #ffffff !important;
+      opacity: 1 !important;
+    }
+
+    .story-library-title {
+      font-size: 0.84rem;
+      font-weight: 600;
+      color: #1f2937;
+      min-width: 0;
+      flex: 1;
+    }
+
+    .story-library-actions {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .story-library-btn {
+      border: 1px solid #d1d5db;
+      background: #fff;
+      color: #111827;
+      border-radius: 999px;
+      padding: 5px 9px;
+      font: inherit;
+      font-size: 0.76rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .story-library-select-btn {
+      border: 0;
+      background: transparent;
+      padding: 0;
+      color: inherit;
+      font: inherit;
+      font-weight: inherit;
+      text-align: left;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    .story-library-row.is-selected {
+      border-color: #93c5fd;
+      background: #eff6ff;
+    }
+
+    .story-row-simple {
+      justify-content: flex-start;
+    }
+
+    .story-library-view-btn {
+      background: #eff6ff;
+      border-color: rgba(37, 99, 235, 0.18);
+      color: #1d4ed8;
+    }
+
+    .story-articles-modal.hidden {
+      display: none;
+    }
+
+    .story-articles-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.52);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .story-articles-dialog {
+      width: min(720px, 100%);
+      max-height: min(80vh, 760px);
+      overflow: auto;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 24px 60px rgba(15, 23, 42, 0.26);
+      padding: 18px 18px 16px;
+    }
+
+    .story-articles-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .story-articles-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #111827;
+      margin: 0;
+    }
+
+    .story-articles-close {
+      border: 0;
+      background: #f3f4f6;
+      color: #374151;
+      border-radius: 999px;
+      width: 32px;
+      height: 32px;
+      cursor: pointer;
+      font-size: 18px;
+      line-height: 1;
+    }
+
+    .story-articles-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .story-article-item {
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      border-radius: 12px;
+      padding: 12px;
+      background: #f8fafc;
+    }
+
+    .story-article-title {
+      margin: 0 0 6px;
+      font-size: 14px;
+      font-weight: 700;
+      color: #111827;
+    }
+
+    .story-article-meta {
+      font-size: 12px;
+      color: #6b7280;
+      margin-bottom: 6px;
+    }
+
+    .story-article-content {
+      font-size: 13px;
+      line-height: 1.45;
+      color: #374151;
+      margin: 0 0 8px;
+    }
+
+    .story-article-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #1d4ed8;
+      text-decoration: none;
+    }
+
+    .tags-generate-btn,
+    .full-article-btn {
+      margin-top: 14px;
+      border: 1px solid rgba(37, 99, 235, 0.22);
+      background: #eff6ff;
+      color: #1d4ed8;
+      border-radius: 10px;
+      padding: 10px 12px;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .tags-generate-btn {
+      margin-top: 10px;
+      border-color: rgba(17, 24, 39, 0.18);
+      background: #f8fafc;
+      color: #111827;
+    }
+
+    .final-article-btn {
+      margin-top: 10px;
+      border: 1px solid rgba(17, 24, 39, 0.2);
+      background: #111827;
+      color: white;
+      border-radius: 999px;
+      padding: 8px 14px;
+      font: inherit;
+      font-size: 0.84rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .problematique-btn {
+      margin-top: 10px;
+      border: 1px solid rgba(109, 40, 217, 0.25);
+      background: #f5f3ff;
+      color: #5b21b6;
+      border-radius: 999px;
+      padding: 8px 14px;
+      font: inherit;
+      font-size: 0.84rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .definitive-article-btn {
+      margin-top: 10px;
+      margin-left: 8px;
+      border: 1px solid rgba(17, 24, 39, 0.16);
+      background: #ffffff;
+      color: #111827;
+      border-radius: 999px;
+      padding: 8px 14px;
+      font: inherit;
+      font-size: 0.84rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .latin-article-btn {
+      border-color: #111827;
+      background: #111827;
+      color: #ffffff;
+      box-shadow: 0 8px 20px rgba(17, 24, 39, 0.16);
+    }
+
+    .article-generation-panel {
+      margin-top: 14px;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      background: #ffffff;
+      overflow: hidden;
+    }
+
+    .article-generation-panel summary {
+      list-style: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 11px 14px;
+      color: #111827;
+      font-size: 0.88rem;
+      font-weight: 800;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .article-generation-panel summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .article-generation-panel summary::after {
+      content: "▾";
+      font-size: 0.8rem;
+      transition: transform 0.16s ease;
+    }
+
+    .article-generation-panel:not([open]) summary::after {
+      transform: rotate(-90deg);
+    }
+
+    .article-generation-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      padding: 0 14px 14px;
+    }
+
+    .article-generation-actions .tags-generate-btn,
+    .article-generation-actions .full-article-btn,
+    .article-generation-actions .final-article-btn,
+    .article-generation-actions .problematique-btn,
+    .article-generation-actions .definitive-article-btn {
+      margin-top: 0;
+      margin-left: 0;
+    }
+
+    .resume[contenteditable="true"] {
+      border-radius: 8px;
+      padding: 8px 10px;
+      margin-left: -10px;
+      outline: none;
+      transition: background 0.15s;
+    }
+
+    .resume[contenteditable="true"]:hover,
+    .resume[contenteditable="true"]:focus {
+      background: #e8e8e8;
+    }
+
+    .article-latin-question {
+      text-align: center;
+      font-weight: 700;
+      margin-top: 1em;
+    }
+
+    .article-debate-question {
+      text-align: center;
+      font-style: italic;
+      margin-top: 1em;
+    }
+
+    .article-signature {
+      text-align: left;
+      font-weight: 400;
+    }
+
+    .field-counter {
+      margin-top: 4px;
+      font-size: 0.78rem;
+      color: #6b7280;
+      text-align: right;
+    }
+
+    .editable {
+      border-radius: 4px;
+      padding: 2px 4px;
+      margin-left: -4px;
+      outline: none;
+      transition: background 0.15s;
+    }
+
+    .editable:hover,
+    .editable:focus {
+      background: #e8e8e8;
+    }
+
+    .agon-theme {
+      margin: 4px 0 0;
+      font-size: 0.95rem;
+    }
+
+    .agon-select {
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 999px;
+      padding: 5px 10px;
+      color: #111;
+      font-size: 0.95rem;
+      cursor: pointer;
+      outline: none;
+    }
+
+    .agon-select:hover,
+    .agon-select:focus {
+      border-color: #999;
+    }
+
+    .positions-box {
+      margin-top: 12px;
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 12px;
+      padding: 12px;
+    }
+
+    .positions-box p {
+      margin: 6px 0;
+    }
+
+    .positions-box p + p {
+      margin-top: 0;
+    }
+
+    .political-tag {
+      display: inline-block;
+      margin-top: 8px;
+      font-size: 0.72rem;
+      color: #7a5c9e;
+      background: #f0eaf8;
+      border: 1px solid #d0bfea;
+      border-radius: 10px;
+      padding: 2px 9px;
+    }
+
+    .merge-notice {
+      background: #fff7ed;
+      border: 1px solid #fdba74;
+      border-radius: 10px;
+      padding: 10px 14px;
+      margin: 6px 0 12px;
+      font-size: 0.85rem;
+      color: #7c2d12;
+    }
+    .merge-notice strong { display: block; margin-bottom: 4px; }
+    .merge-notice ul { margin: 0; padding-left: 20px; }
+    .merge-notice .merge-reason { margin: 6px 0 0; font-style: italic; opacity: 0.85; }
+
+    .subject-stats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .subject-stats span {
+      background: #f1f1f1;
+      border-radius: 999px;
+      padding: 5px 10px;
+      font-size: 0.9rem;
+    }
+
+	    .sources {
+	      color: #555;
+	      font-size: 0.95rem;
+	    }
+
+	    .sources-dropdown {
+	      margin: 10px 0 12px;
+	    }
+
+	    .sources-dropdown summary {
+	      display: inline-flex;
+	      align-items: center;
+	      gap: 8px;
+	      width: fit-content;
+	      border: 1px solid #ddd;
+	      background: white;
+	      border-radius: 999px;
+	      padding: 7px 13px;
+	      color: #111;
+	      font: inherit;
+	      font-size: 0.86rem;
+	      font-weight: 700;
+	      cursor: pointer;
+	      user-select: none;
+	    }
+
+	    .sources-dropdown summary::-webkit-details-marker {
+	      display: none;
+	    }
+
+	    .sources-dropdown summary::after {
+	      content: "▾";
+	      font-size: 0.78rem;
+	      color: #777;
+	      transition: transform 0.16s ease;
+	    }
+
+	    .sources-dropdown[open] summary::after {
+	      transform: rotate(180deg);
+	    }
+
+	    .sources-dropdown summary:hover {
+	      background: #f0f0f0;
+	    }
+
+	    .sources-dropdown .sources {
+	      margin: 10px 0 8px;
+	    }
+
+	    ul {
+	      padding-left: 0;
+	    }
+
+    .content-item {
+      list-style: none;
+      margin-bottom: 16px;
+    }
+
+    .content-item.preselected {
+      background: #f0f7ff;
+      border-left: 3px solid #0645ad;
+      border-radius: 6px;
+      padding: 6px 10px;
+      margin-left: -13px;
+    }
+
+    .article-label {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      cursor: pointer;
+    }
+
+    .article-label input[type="checkbox"] {
+      margin-top: 3px;
+      flex-shrink: 0;
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+    }
+
+    .source-tag {
+      display: inline-block;
+      background: #f1f1f1;
+      border-radius: 999px;
+      padding: 1px 7px;
+      font-size: 0.78rem;
+      color: #555;
+      vertical-align: middle;
+    }
+
+    .source-tag.youtube {
+      background: #ff0000;
+      color: white;
+    }
+
+    .source-tag.left {
+      background: #ffe8e8;
+      color: #b30000;
+    }
+
+    .source-tag.center {
+      background: #f1f1f1;
+      color: #555;
+    }
+
+    .source-tag.right {
+      background: #e8eeff;
+      color: #003399;
+    }
+
+    .thumb {
+      display: block;
+      width: 160px;
+      max-width: 35vw;
+      border-radius: 6px;
+      margin-bottom: 6px;
+    }
+
+    a {
+      color: #0645ad;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .empty {
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 14px;
+      padding: 20px;
+      color: #555;
+    }
+
+    @media (max-width: 700px) {
+      body {
+        margin: 20px auto;
+      }
+
+      .session-tabs {
+        display: grid;
+        grid-template-columns: 1fr;
+      }
+
+      .session-tab {
+        width: 100%;
+        text-align: left;
+      }
+
+      .session-header {
+        display: block;
+      }
+
+      .session-stats {
+        border-left: none;
+        border-top: 1px solid #ddd;
+        margin-top: 14px;
+        padding-left: 0;
+        padding-top: 14px;
+      }
+
+      .content-item {
+        display: block;
+      }
+
+      .thumb {
+        width: 100%;
+        max-width: 100%;
+        margin-bottom: 8px;
+      }
+
+      .badge {
+        margin-bottom: 8px;
+      }
+    }
+  </style>`;
+}
+
+  function encodeStoryDataServer(value) {
+    return encodeURIComponent(JSON.stringify(value || {}));
+  }
+
+
+  function buildKeywordsStaticHtml(ai) {
+    const rawKeywords = Array.isArray(ai?.keywords) ? ai.keywords.filter(Boolean) : [];
+    const mainKeyword = String(ai?.mainKeyword || rawKeywords[0] || "").trim();
+    return '<div class="news-keywords">' +
+      '<div class="news-keywords-label">Tag principal</div>' +
+      (mainKeyword ? '<span class="news-keyword-chip main-keyword-chip" data-main-keyword="' + escapeHtml(mainKeyword) + '">' + escapeHtml(mainKeyword) + '<button type="button" class="news-keyword-remove-btn" aria-label="Supprimer le tag principal">×</button></span>' : '') +
+    '</div>';
+  }
+
+  function buildStoryLinkStaticHtml(storyLink) {
+    if (storyLink === undefined) storyLink = null;
+    storyLink = storyLink || {};
+    const storyDecision = storyLink.story_decision || "new_story";
+    const confidence = Number(storyLink.confidence || 0);
+    const matchedTitle = escapeHtml(storyLink.matched_story_title || "");
+    const previousEpisodeTitle = escapeHtml(storyLink.previous_episode_title || "");
+    const previousEpisodeUrl = escapeHtml(storyLink.previous_episode_url || "");
+    const reason = escapeHtml(storyLink.reason || "");
+    const newStory = storyLink.new_story || {};
+    const encodedCriteria = escapeHtml(encodeStoryDataServer(storyLink.criteria || {}));
+    const encodedNewStory = escapeHtml(encodeStoryDataServer(newStory));
+    const hasMatchedStory = Boolean(storyLink.matched_story_id && matchedTitle);
+    const selectedMode = hasMatchedStory ? "existing" : "";
+    const currentStoryId = escapeHtml(storyLink.matched_story_id || "");
+    const currentStoryTitle = matchedTitle;
+    const statusReason = reason ? '<div class="story-link-header">' + reason + '</div>' : '';
+    return '<div class="story-link-box" data-story-decision="' + escapeHtml(storyDecision) + '" data-selected-mode="' + selectedMode + '" data-default-mode="' + selectedMode + '" data-matched-story-id="' + currentStoryId + '" data-matched-story-title="' + matchedTitle + '" data-current-story-id="' + currentStoryId + '" data-current-story-title="' + currentStoryTitle + '" data-current-story-summary="" data-previous-episode-title="' + previousEpisodeTitle + '" data-previous-episode-url="' + previousEpisodeUrl + '" data-confidence="' + confidence + '" data-reason="' + reason + '" data-criteria="' + encodedCriteria + '" data-new-story="' + encodedNewStory + '">' +
+      statusReason +
+      '<div class="story-manual-picker"><label>Histoire associée</label><div class="story-picker-row"><select class="story-manual-select" hidden><option value="">Sans histoire associée</option><option value="__new__">Créer une nouvelle histoire</option></select><button type="button" class="story-picker-trigger" aria-expanded="false"><span class="story-picker-trigger-label">' + (hasMatchedStory ? matchedTitle : 'Sans histoire associée') + '</span><span class="story-picker-trigger-caret">▾</span></button><div class="story-dropdown hidden"><div class="story-dropdown-create-row"><button type="button" class="story-create-inline-btn">+ Créer une nouvelle histoire</button></div><div class="story-dropdown-search-row"><input type="text" class="story-search-input" placeholder="Rechercher une histoire"></div><div class="story-dropdown-list"></div></div></div><small class="story-manual-meta">' + (hasMatchedStory && previousEpisodeTitle ? 'Dernier épisode : ' + previousEpisodeTitle : '') + '</small></div>' +
+      '<div class="story-existing-fields"><div class="story-draft-fields story-existing-fields-empty"><p class="story-existing-note">Cette histoire sera seulement associée à l\'actualité. Aucun résumé d\'histoire n\'est généré à cette étape.</p></div></div>' +
+      '<div class="story-draft-fields story-new-fields hidden"><label>Titre de la nouvelle histoire</label><input type="text" class="story-title-input" value="" placeholder="Titre court et général de l\'histoire"><div class="story-save-actions"><button type="button" class="story-save-btn">Enregistrer les modifications</button><span class="story-save-feedback hidden">Modifications enregistrées</span></div></div>' +
+    '</div>';
+  }
+
+
+function buildSubjectCardHtml(subject, ctx) {
+  const savedTitles = (ctx && ctx.savedTitles) || new Set();
+  const sentKeys = (ctx && ctx.sentKeys) || new Set();
+  const mergeGroupByKeepId = (ctx && ctx.mergeGroupByKeepId) || new Map();
+
+      const articles = subject.contents.filter(content => content.type === "article");
+      const videos = subject.contents.filter(content => content.type === "youtube");
+      const ai = subject.ai || {};
+      const isAnalyzed = subject.aiAnalyzed === true;
+      const scoreAnalyzed = subject.scoreAnalyzed === true;
+
+      const debateScore = scoreAnalyzed ? (Number(subject.debateScore) || 0) : 0;
+      const isSaved = savedTitles.has(subject.subject);
+      const sentKey = String(ai ? (ai.debateQuestion || subject.subject) : subject.subject).trim() || String(subject.subject || "").trim();
+      const isSent = sentKeys.has(sentKey) || sentKeys.has(String(subject.subject || "").trim());
+
+      const mergedTitles = Array.isArray(subject.mergedSubjectTitles) ? subject.mergedSubjectTitles.filter(Boolean) : [];
+      const mergeGroupInfo = mergeGroupByKeepId.get(String(subject.subjectId || ""));
+      const mergeNoticeHtml = mergedTitles.length > 1
+        ? `<div class="merge-notice">
+            <strong>Sujets fusionnés ici par l'IA :</strong>
+            <ul>${mergedTitles.map((title) => `<li>${escapeHtml(title)}</li>`).join("")}</ul>
+            ${mergeGroupInfo?.reason ? `<p class="merge-reason">${escapeHtml(mergeGroupInfo.reason)}</p>` : ""}
+          </div>`
+        : "";
+
+      const articleItems = articles.map(article => {
+        const date = dayjs(article.date).format("DD/MM/YYYY HH:mm");
+        const orientationGroup = getOrientationGroup(article.orientation);
+        const orientationTag = article.orientation
+          ? `<span class="source-tag ${orientationGroup}">${escapeHtml(article.orientation)}</span>`
+          : "";
+
+        return `
+          <li class="content-item" data-link="${escapeHtml(article.link)}" data-orientation="${escapeHtml(article.orientation)}" data-type="article">
+            <label class="article-label">
+              <input type="checkbox">
+              <div>
+                <strong>${escapeHtml(article.source)}</strong> ${orientationTag}
+                <br>
+                <a href="${escapeHtml(article.link)}" target="_blank" rel="noopener noreferrer">
+                  ${escapeHtml(article.title)}
+                </a>
+                <br>
+                <small>Publié le ${escapeHtml(date)}</small>
+              </div>
+            </label>
+          </li>
+        `;
+      }).join("");
+
+      const videoItems = videos.map(video => {
+        const date = dayjs(video.date).format("DD/MM/YYYY HH:mm");
+
+        return `
+          <li class="content-item video-item" data-link="${escapeHtml(video.link)}" data-type="youtube">
+            <label class="article-label">
+              <input type="checkbox">
+              <div>
+                ${
+                  video.thumbnail
+                    ? `<a href="${escapeHtml(video.link)}" target="_blank" rel="noopener noreferrer"><img src="${escapeHtml(video.thumbnail)}" alt="" class="thumb"></a>`
+                    : ""
+                }
+                <strong>${escapeHtml(video.source)}</strong>
+                <span class="source-tag youtube">YouTube</span>
+                <br>
+                <a href="${escapeHtml(video.link)}" target="_blank" rel="noopener noreferrer">
+                  ${escapeHtml(video.title)}
+                </a>
+                <br>
+                <small>Publié le ${escapeHtml(date)}</small>
+              </div>
+            </label>
+          </li>
+        `;
+      }).join("");
+
+      const subjectDataForBtn = escapeHtml(JSON.stringify({
+        subject: subject.subject,
+        sources: subject.sources,
+        articleCount: subject.articleCount,
+        youtubeCount: subject.youtubeCount,
+        contents: subject.contents.slice(0, 10).map(c => ({
+          type: c.type,
+          source: c.source,
+          orientation: c.orientation,
+          title: c.title,
+          link: c.link
+        }))
+      }));
+
+      const aiScoreHtml = scoreAnalyzed
+        ? `<div class="ai-score">
+            <div>
+              <span class="score-label">Potentiel débat</span>
+              <strong>${escapeHtml(String(subject.debateScore))}/10</strong>
+            </div>
+            <span class="controversy">${escapeHtml(subject.controversyLevel)}</span>
+          </div>`
+        : `<div class="ai-score pending">
+            <span class="score-label">Analyse IA non effectuée</span>
+          </div>`;
+
+      const aiBoxHtml = isAnalyzed
+        ? `<div class="ai-box">
+            <input type="hidden" class="full-article-state" value="${escapeHtml(ai.fullArticleState || "short")}">
+            <p class="generated-title-label">Titre généré par IA</p>
+            <p class="debate-question" contenteditable="true" spellcheck="false">${escapeHtml(ai.debateQuestion || "")}</p>
+            <div class="field-counter question-counter">0 / 110</div>
+            ${
+              debateScore >= 7 && (ai.positionA || ai.positionB) && ai.arenaMode !== "libre"
+                ? `<div class="positions-box">
+                    <p><strong>Positions proposées pour une arène à positions :</strong></p>
+                    ${ai.positionA ? `<p><strong>A —</strong> <span class="editable" contenteditable="true" spellcheck="false">${escapeHtml(ai.positionA)}</span></p>` : ""}
+                    ${ai.positionB ? `<p><strong>B —</strong> <span class="editable" contenteditable="true" spellcheck="false">${escapeHtml(ai.positionB)}</span></p>` : ""}
+                  </div>`
+                : ""
+            }
+            <p class="resume" contenteditable="true" spellcheck="false">${escapeHtml(ai.resume || "")}</p>
+            <div class="field-counter resume-counter">0 / 1500</div>
+            <div class="story-save-actions"><button type="button" class="story-save-btn context-save-btn">Enregistrer les modifications</button><span class="story-save-feedback context-save-feedback hidden">Modifications enregistrées</span></div>
+            ${buildKeywordsStaticHtml(ai)}
+            <p class="agon-theme"><strong>Thématique Agôn proposée :</strong>
+              <select class="agon-select">
+                ${AGON_THEMES.map(theme => `<option value="${escapeHtml(theme)}"${theme === normalizeAgonTheme(ai.agonTheme) ? " selected" : ""}>${escapeHtml(theme)}</option>`).join("")}
+              </select>
+            </p>
+            ${buildStoryLinkStaticHtml(ai.storyLink || null)}
+            <button type="button" class="tags-generate-btn">Générer tags</button>
+            <button type="button" class="full-article-btn">${["summary", "media", "problematique", "full"].includes(String(ai.fullArticleState || "")) ? "✓ Résumé généré" : "Générer résumé de l'article"}</button>
+            <button type="button" class="final-article-btn${["summary", "media", "problematique", "full"].includes(String(ai.fullArticleState || "")) ? "" : " hidden"}">${["media", "problematique", "full"].includes(String(ai.fullArticleState || "")) ? "✓ Médias analysés" : "Analyser les médias"}</button>
+            <button type="button" class="problematique-btn hidden">Générer problématique</button>
+            <button type="button" class="definitive-article-btn${["problematique", "full"].includes(String(ai.fullArticleState || "")) ? "" : " hidden"}"${String(ai.fullArticleState || "") === "full" ? "" : " disabled"}>Article définitif</button>
+            <button type="button" class="definitive-article-btn latin-article-btn"${["problematique", "full"].includes(String(ai.fullArticleState || "")) ? "" : " disabled"}>Générer article + question latine</button>
+          </div>`
+        : `<div class="ai-box pending-analysis">
+            <button class="analyze-btn" type="button" data-mode="positions" data-subject="${subjectDataForBtn}">
+              Générer arène à positions IA
+            </button>
+            <button class="analyze-btn analyze-btn-secondary" type="button" data-mode="libre" data-subject="${subjectDataForBtn}">
+              Générer arène libre IA
+            </button>
+          </div>`;
+
+      return `
+        <section class="subject" data-score="${debateScore}" data-sources="${subject.sourceCount}" data-theme="${escapeHtml(isAnalyzed ? normalizeAgonTheme(ai.agonTheme) : "Non analysé")}">
+          <div class="subject-number"></div>
+          ${aiScoreHtml}
+
+          <h3>${escapeHtml(subject.subject)}</h3>
+
+          ${mergeNoticeHtml}
+
+          ${aiBoxHtml}
+
+          <div class="subject-stats">
+            <span>${subject.sourceCount} sources</span>
+            <span>${subject.articleCount} article(s)</span>
+            <span>${subject.youtubeCount} vidéo(s)</span>
+          </div>
+
+	          <details class="sources-dropdown">
+	            <summary>Voir les sources (${subject.sourceCount})</summary>
+	            <p class="sources">${escapeHtml(subject.sources.join(", "))}</p>
+	            ${
+	              articles.length
+	                ? `<h4>Presse</h4><ul>${articleItems}</ul>`
+	                : ""
+	            }
+
+	            ${
+	              videos.length
+	                ? `<h4>YouTube</h4><ul>${videoItems}</ul>`
+	                : ""
+	            }
+	          </details>
+
+	          <button class="arena-select-btn" type="button" aria-pressed="false">Sélectionner</button>
+	          <button class="save-btn${isSaved ? " saved" : ""}" type="button" data-subject-title="${escapeHtml(subject.subject)}">${isSaved ? "★ Enregistré" : "☆ Enregistrer"}</button>
+	          <button class="agon-btn${isSent ? " sent" : ""}" type="button" data-subject-title="${escapeHtml(subject.subject)}" data-question="${escapeHtml(ai ? (ai.debateQuestion || subject.subject) : subject.subject)}" data-position-a="${escapeHtml(ai ? (ai.positionA || "") : "")}" data-position-b="${escapeHtml(ai ? (ai.positionB || "") : "")}" data-theme="${escapeHtml(ai ? normalizeAgonTheme(ai.agonTheme) : "")}" data-sources="${escapeHtml(subject.sources.join(", "))}">${isSent ? "✓ Envoyé" : "→ Agôn"}</button>
+	          <button class="republish-btn${isSent ? "" : " hidden"}" type="button" data-subject-title="${escapeHtml(subject.subject)}" data-question="${escapeHtml(ai ? (ai.debateQuestion || subject.subject) : subject.subject)}" data-position-a="${escapeHtml(ai ? (ai.positionA || "") : "")}" data-position-b="${escapeHtml(ai ? (ai.positionB || "") : "")}" data-theme="${escapeHtml(ai ? normalizeAgonTheme(ai.agonTheme) : "")}" data-sources="${escapeHtml(subject.sources.join(", "))}">↺ Republier</button>
+	          <button class="verify-sources-btn" type="button" data-subject="${subjectDataForBtn}">Vérifier sources</button>
+	        </section>
+	      `;
+}
+
+function generateHtml(sessions) {
+  const generatedAt = dayjs().format("DD/MM/YYYY HH:mm:ss");
+
+  const savedTitles = new Set(loadSavedSubjects().map(s => s.subject));
+  const sentKeys = new Set(loadSentToAgonItems().map((item) => String(item?.question || item?.subject || "").trim()).filter(Boolean));
+
+  const visibleTabCount = 6;
+
+  const sessionTabs = sessions.map((session, index) => {
+    const label = session.generatedAtLabel || `Session ${index + 1}`;
+    const shortLabel = label
+      .replace(" à ", " ")
+      .replace(/:\d{2}$/, "");
+
+    return `
+      <button
+        class="session-tab ${index === 0 ? "active" : ""} ${index >= visibleTabCount ? "older-tab hidden-tab" : ""}"
+        type="button"
+        data-session-index="${index}"
+      >
+        ${index === 0 ? "Dernière · " : ""}${escapeHtml(shortLabel)}
+      </button>
+    `;
+  }).join("");
+
+  function buildCollectReportHtml(collectReport) {
+    if (!collectReport) return "";
+    const sections = [
+      { label: "Presse", sources: (collectReport.articles || {}).sources || [] },
+      { label: "YouTube", sources: (collectReport.youtube || {}).sources || [] }
+    ].filter(s => s.sources.length > 0);
+    if (!sections.length) return "";
+
+    const renderRow = (s) => {
+      const isOk = s.statut === "ok";
+      const isPause = s.statut === "pause";
+      const icon = isOk ? "✓" : isPause ? "⏸" : "✗";
+      const cls = isOk ? "cr-ok" : isPause ? "cr-pause" : "cr-err";
+      const detail = isOk ? `${s.kept} retenu(s), ${s.skipped} ignoré(s)` : (s.message ? `${s.statut} — ${s.message}` : s.statut);
+      return `<tr class="${cls}"><td class="cr-icon">${icon}</td><td class="cr-name">${escapeHtml(s.nom)}</td><td class="cr-detail">${escapeHtml(detail)}</td></tr>`;
+    };
+
+    const body = sections.map(sec => {
+      const totalKept = sec.sources.reduce((acc, s) => acc + (s.kept || 0), 0);
+      const errors = sec.sources.filter(s => s.statut.startsWith("erreur") || s.statut === "pause").length;
+      const errNote = errors ? ` · <span class="cr-err">${errors} en erreur/pause</span>` : "";
+      return `<div class="cr-section">
+        <div class="cr-section-label">${escapeHtml(sec.label)} <span class="cr-summary">— ${totalKept} collecté(s)${errNote}</span></div>
+        <table class="cr-table"><tbody>${sec.sources.map(renderRow).join("")}</tbody></table>
+      </div>`;
+    }).join("");
+
+    return `<details class="collect-report"><summary>Rapport de collecte</summary><div class="cr-body">${body}</div></details>`;
+  }
+
+  const olderTabsButton = sessions.length > visibleTabCount
+    ? `
+      <button class="show-older-tabs" type="button">
+        Voir les anciennes mises à jour
+      </button>
+    `
+    : "";
+
+  const sessionBlocks = sessions.map((session, index) => {
+    const subjects = session.subjects || [];
+    const mergeGroupByKeepId = new Map(
+      (session.deduplication?.mergeGroups || []).map((group) => [String(group?.keepSubjectId || ""), group])
+    );
+
+    const subjectBlocks = subjects.map(subject => buildSubjectCardHtml(subject, { savedTitles, sentKeys, mergeGroupByKeepId })).join("");
+
+    const isLatest = index === 0;
+
+    return `
+      <section
+        class="session ${isLatest ? "latest active-session" : "hidden-session"}"
+        data-session-index="${index}"
+      >
+        <div class="session-header">
+          <div>
+            <h2>${isLatest ? "Dernière mise à jour mixte" : "Mise à jour mixte précédente"}</h2>
+            <p>Session du <strong>${escapeHtml(session.generatedAtLabel)}</strong></p>
+          </div>
+          <div class="session-stats">
+            <strong>${subjects.length}</strong>
+            <span>sujet(s) commun(s)</span>
+          </div>
+        </div>
+        ${buildCollectReportHtml(session.collectReport)}
+
+        ${
+          subjects.length
+            ? subjectBlocks
+            : `<div class="empty">Aucun sujet commun détecté pendant cette session.</div>`
+        }
+      </section>
+    `;
+  }).join("");
+
+  const rankedListHtml = "";
+
+  return `
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <script>if (window.location.search.includes('token')) history.replaceState({}, '', window.location.pathname);</script>
+  <title>Veille mixte presse + YouTube</title>
+  ${buildVeilleStylesHtml()}
+</head>
+<body>
+  <h1>Veille mixte presse + YouTube</h1>
+
+  <div class="nav">
+    <a href="/mixte">Veille mixte</a>
+    <a href="/certamen">Certamen</a>
+    <a href="/admin">⚙ Admin</a>
+    <button class="nav-refresh-btn" onclick="startRefresh()">↻ Actualiser</button>
+  </div>
+
+  <p class="intro">
+    Les nouveaux articles de presse et les nouvelles vidéos YouTube sont regroupés dans les mêmes sujets.
+    L'IA analyse uniquement les nouveautés jamais vues auparavant et classe les sujets selon leur potentiel de controverse et de débat.
+  </p>
+
+  <div class="status">
+    <div>
+      Dernière génération du fichier :
+      <strong>${escapeHtml(generatedAt)}</strong>
+      <br>
+      Presse : dernières <strong>${HOURS_BACK_ARTICLES} h</strong> —
+      YouTube : dernières <strong>${HOURS_BACK_YOUTUBE} h</strong>
+    </div>
+    <div class="refresh-row">
+      <select class="min-sources-select" id="min-sources-select" title="Sources minimum par sujet">
+        <option value="2">2 sources min.</option>
+        <option value="3" selected>3 sources min.</option>
+        <option value="4">4 sources min.</option>
+        <option value="5">5 sources min.</option>
+        <option value="6">6 sources min.</option>
+      </select>
+      <button class="refresh-btn" type="button">Mettre à jour</button>
+    </div>
+    <div class="ptr-indicator" id="ptr-indicator"></div>
+    <button class="update-banner" id="update-banner" onclick="window.location.reload()">Nouvelle session disponible — Charger</button>
+  </div>
+
+  <div id="progress-panel">
+    <div class="progress-step-label">Étape <span id="prog-step">…</span> / 6 — <span id="prog-name">Démarrage…</span></div>
+    <div class="progress-bar-track"><div class="progress-bar-fill" id="prog-bar"></div></div>
+    <div class="progress-detail-text" id="prog-detail"></div>
+  </div>
+
+  <div id="collect-report-panel"></div>
+
+  <div class="filter-bar">
+    <button class="filter-btn active" data-sort="score">Sujets clivants</button>
+    <button class="filter-btn" data-sort="sources">Sujets majeurs</button>
+    <button class="filter-btn" data-sort="ranked">Classement mixte</button>
+    <button class="filter-btn" data-sort="saved">Sujets enregistrés</button>
+    <a class="filter-link" href="/sent-to-agon">Articles envoyés vers Agôn</a>
+  </div>
+
+  <div class="saved-selection-bar" id="saved-selection-bar">
+    <div class="saved-selection-top">
+      <div class="selection-count"><span id="selected-count">0</span> arène(s) sélectionnée(s)</div>
+      <div class="saved-selection-actions">
+        <button class="select-all-arenas-btn" type="button">Tout sélectionner</button>
+        <button class="clear-selection-btn" type="button">Annuler la sélection</button>
+      </div>
+    </div>
+    <button class="generate-all-btn" type="button">Tout générer</button>
+  </div>
+
+
+  ${
+    sessions.length
+      ? `
+        <div class="session-tabs-wrapper">
+          <h2>Historique des mises à jour</h2>
+          <p>Choisis une session pour voir uniquement les nouveautés détectées à cette heure-là.</p>
+          <div class="session-tabs">
+            ${sessionTabs}
+          </div>
+          ${olderTabsButton}
+        </div>
+
+        ${sessionBlocks}
+      `
+      : `<div class="empty">Aucune session mixte pour le moment.</div>`
+  }
+
+  ${buildSubjectInteractionScriptHtml()}
+  <script>
     var ptrIsRefreshing = false;
     var ptrBaseTimestamp = null;
 
@@ -5884,7 +5957,7 @@ function generateHtml(sessions) {
         if (s0.length > 0) ptrBaseTimestamp = s0[0].generatedAt;
       } catch (e) {}
 
-      var minSourcesVal = Number(document.getElementById("min-sources-select")?.value) || MIN_DISTINCT_SOURCES;
+      var minSourcesVal = Number(document.getElementById("min-sources-select")?.value) || 3;
 
       async function finishRefresh() {
         clearInterval(progressPoll);
@@ -6298,6 +6371,12 @@ Ne force jamais un débat. Si le sujet ne s'y prête pas, réponds "avoid".`;
   }
 }
 
+function certamenRiskToControversyLevel(risk) {
+  if (risk === "low") return "faible";
+  if (risk === "high") return "fort";
+  return "moyen";
+}
+
 function loadCertamenSessions() {
   if (!fs.existsSync(CERTAMEN_HISTORY_FILE)) return [];
   try {
@@ -6312,223 +6391,276 @@ function saveCertamenSessions(sessions) {
 function generateCertamenHtml(sessions) {
   const generatedAt = dayjs().format("DD/MM/YYYY HH:mm:ss");
 
-  function esc(text) {
-    return String(text || "")
-      .replaceAll("&", "&amp;").replaceAll("<", "&lt;")
-      .replaceAll(">", "&gt;").replaceAll('"', "&quot;");
-  }
+  const savedTitles = new Set(loadSavedSubjects().map(s => s.subject));
+  const sentKeys = new Set(loadSentToAgonItems().map((item) => String(item?.question || item?.subject || "").trim()).filter(Boolean));
 
-  const decisionColors = {
-    arena: "#16a34a",
-    understand: "#2563eb",
-    reformulate: "#d97706",
-    avoid: "#dc2626"
-  };
-  const riskLabels = { low: "Faible", medium: "Moyen", high: "Élevé" };
+  const visibleTabCount = 6;
 
-  const sessionBlocks = sessions.map(function(session, si) {
-    const subjects = session.subjects || [];
-    const subjectBlocks = subjects.map(function(subject) {
-      const ai = subject.certamen || {};
-      const color = decisionColors[ai.editorialDecision] || "#888";
-      const sourceList = esc((subject.sources || []).join(", "));
-      const articleLinks = (subject.contents || []).slice(0, 3).map(function(c) {
-        return `<div class="cs-article"><a href="${esc(c.link || "")}" target="_blank" rel="noopener noreferrer">${esc(c.title)}</a> <span class="cs-article-source">(${esc(c.source)})</span></div>`;
-      }).join("");
+  const sessionTabs = sessions.map((session, index) => {
+    const label = session.generatedAtLabel || `Session ${index + 1}`;
+    const shortLabel = label
+      .replace(" à ", " ")
+      .replace(/:\d{2}$/, "");
 
-      return `<div class="certamen-subject" data-score="${ai.debatePotentialScore || 0}" data-decision="${esc(ai.editorialDecision || "")}">
-  <div class="cs-header">
-    <span class="cs-score">${ai.debatePotentialScore || 0}/10</span>
-    <span class="cs-decision" style="color:${color}">${esc(ai.editorialDecision || "—")}</span>
-    <span class="cs-risk">Risque : ${esc(riskLabels[ai.risk] || ai.risk || "—")}</span>
-  </div>
-  <h3 class="cs-title">${esc(subject.subject)}</h3>
-  ${ai.suggestedQuestion ? `<div class="cs-question">${esc(ai.suggestedQuestion)}</div>` : ""}
-  ${(ai.positionA || ai.positionB) ? `<div class="cs-positions"><span class="cs-pos">A : ${esc(ai.positionA)}</span><span class="cs-pos">B : ${esc(ai.positionB)}</span></div>` : ""}
-  ${ai.reason ? `<div class="cs-reason">${esc(ai.reason)}</div>` : ""}
-	  <div class="cs-meta">
-	    <span class="cs-theme">${esc(ai.theme || "—")}</span>
-	  </div>
-	  <details class="cs-sources-dropdown">
-	    <summary>Voir les sources (${esc(String(subject.sourceCount || 1))})</summary>
-	    <div class="cs-sources">${sourceList}</div>
-	    ${articleLinks}
-	  </details>
-	</div>`;
-    }).join("");
-
-    const nbArena = subjects.filter(function(s) { return s.certamen && s.certamen.editorialDecision === "arena"; }).length;
-    const nbReform = subjects.filter(function(s) { return s.certamen && s.certamen.editorialDecision === "reformulate"; }).length;
-    const isFirst = si === 0;
-
-    return `<div class="certamen-session ${isFirst ? "active-session" : "hidden-session"}" data-session-index="${si}">
-  <div class="cs-session-header">
-    <h2>${esc(session.generatedAtLabel || `Session ${si + 1}`)}</h2>
-    <div class="cs-session-stats">
-      <span>${subjects.length} sujet(s)</span>
-      <span>${nbArena} arène(s) prête(s)</span>
-      ${nbReform ? `<span>${nbReform} à reformuler</span>` : ""}
-    </div>
-  </div>
-  ${subjectBlocks || '<p class="cs-empty">Aucun sujet débattable trouvé.</p>'}
-</div>`;
+    return `
+      <button
+        class="session-tab ${index === 0 ? "active" : ""} ${index >= visibleTabCount ? "older-tab hidden-tab" : ""}"
+        type="button"
+        data-session-index="${index}"
+      >
+        ${index === 0 ? "Dernière · " : ""}${escapeHtml(shortLabel)}
+      </button>
+    `;
   }).join("");
 
-  const sessionTabs = sessions.length > 1 ? sessions.map(function(session, si) {
-    const label = (session.generatedAtLabel || `Session ${si + 1}`).replace(" à ", " ").replace(/:\d{2}$/, "");
-    return `<button class="cs-tab ${si === 0 ? "active" : ""}" data-si="${si}">${si === 0 ? "Dernière · " : ""}${esc(label)}</button>`;
-  }).join("") : "";
+  const olderTabsButton = sessions.length > visibleTabCount
+    ? `
+      <button class="show-older-tabs" type="button">
+        Voir les anciennes analyses
+      </button>
+    `
+    : "";
 
-  return `<!DOCTYPE html>
+  const sessionBlocks = sessions.map((session, index) => {
+    const subjects = session.subjects || [];
+    const subjectBlocks = subjects.map(subject => buildSubjectCardHtml(subject, { savedTitles, sentKeys, mergeGroupByKeepId: new Map() })).join("");
+
+    const isLatest = index === 0;
+
+    return `
+      <section
+        class="session ${isLatest ? "latest active-session" : "hidden-session"}"
+        data-session-index="${index}"
+      >
+        <div class="session-header">
+          <div>
+            <h2>${isLatest ? "Dernière analyse Certamen" : "Analyse Certamen précédente"}</h2>
+            <p>Session du <strong>${escapeHtml(session.generatedAtLabel)}</strong></p>
+          </div>
+          <div class="session-stats">
+            <strong>${subjects.length}</strong>
+            <span>sujet(s) débattable(s)</span>
+          </div>
+        </div>
+
+        ${
+          subjects.length
+            ? subjectBlocks
+            : `<div class="empty">Aucun sujet débattable détecté pendant cette session.</div>`
+        }
+      </section>
+    `;
+  }).join("");
+
+  return `
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<script>if (window.location.search.includes('token')) history.replaceState({}, '', window.location.pathname);</script>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Certamen — Sujets débattables</title>
-<style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: system-ui, sans-serif; background: #f5f5f5; color: #111; }
-.nav { background: #111; color: white; padding: 12px 20px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
-.nav a { color: #ccc; text-decoration: none; font-size: 0.9rem; }
-.nav a:hover { color: white; }
-.nav-title { font-weight: 700; font-size: 1rem; color: white; margin-right: auto; }
-.refresh-btn { background: white; color: #111; border: none; border-radius: 999px; padding: 7px 18px; font: inherit; font-size: 0.88rem; font-weight: 600; cursor: pointer; }
-.refresh-btn:disabled { opacity: 0.5; cursor: wait; }
-.main { max-width: 860px; margin: 0 auto; padding: 24px 16px; }
-h1 { font-size: 1.5rem; margin-bottom: 4px; }
-.subtitle { color: #666; font-size: 0.9rem; margin-bottom: 20px; }
-.filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
-.filter-btn { background: #f0f0f0; border: 1.5px solid #ddd; border-radius: 999px; padding: 5px 14px; font: inherit; font-size: 0.84rem; cursor: pointer; }
-.filter-btn.active { background: #111; color: white; border-color: #111; }
-.tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 20px; }
-.cs-tab { background: #e8e8e8; border: none; border-radius: 999px; padding: 5px 14px; font: inherit; font-size: 0.82rem; cursor: pointer; }
-.cs-tab.active { background: #111; color: white; }
-.certamen-session.hidden-session { display: none; }
-.cs-session-header { background: #111; color: white; border-radius: 12px; padding: 14px 18px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
-.cs-session-header h2 { font-size: 1rem; }
-.cs-session-stats { display: flex; gap: 12px; font-size: 0.82rem; color: #ccc; }
-.certamen-subject { background: white; border-radius: 12px; padding: 16px 20px; margin-bottom: 12px; border-left: 4px solid #ddd; }
-.certamen-subject[data-decision="arena"] { border-left-color: #16a34a; }
-.certamen-subject[data-decision="understand"] { border-left-color: #2563eb; }
-.certamen-subject[data-decision="reformulate"] { border-left-color: #d97706; }
-.certamen-subject[data-decision="avoid"] { border-left-color: #dc2626; opacity: 0.65; }
-.certamen-subject.cs-hidden { display: none; }
-.cs-header { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; font-size: 0.82rem; }
-.cs-score { font-weight: 700; font-size: 1.1rem; background: #f0f0f0; border-radius: 8px; padding: 2px 8px; }
-.cs-decision { font-weight: 600; text-transform: uppercase; font-size: 0.78rem; }
-.cs-risk { color: #888; }
-.cs-title { font-size: 1rem; font-weight: 600; margin-bottom: 8px; }
-.cs-question { background: #f8f8f8; border-radius: 8px; padding: 8px 12px; font-size: 0.9rem; font-weight: 500; margin-bottom: 8px; }
-.cs-positions { display: flex; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }
-.cs-pos { background: #f0f0f0; border-radius: 6px; padding: 3px 10px; font-size: 0.82rem; }
-.cs-reason { color: #555; font-size: 0.83rem; margin-bottom: 8px; font-style: italic; }
-.cs-meta { display: flex; gap: 12px; font-size: 0.78rem; color: #888; margin-bottom: 6px; flex-wrap: wrap; }
-.cs-theme { background: #eff6ff; color: #2563eb; border-radius: 4px; padding: 1px 7px; }
-.cs-sources-dropdown { margin-top: 8px; }
-.cs-sources-dropdown summary { display: inline-flex; align-items: center; gap: 8px; border: 1px solid #ddd; background: white; border-radius: 999px; padding: 6px 11px; color: #111; font-size: 0.8rem; font-weight: 700; cursor: pointer; user-select: none; }
-.cs-sources-dropdown summary::-webkit-details-marker { display: none; }
-.cs-sources-dropdown summary::after { content: "▾"; font-size: 0.75rem; color: #777; transition: transform 0.16s ease; }
-.cs-sources-dropdown[open] summary::after { transform: rotate(180deg); }
-.cs-sources { color: #777; font-size: 0.8rem; margin-top: 8px; }
-.cs-article { font-size: 0.8rem; color: #555; margin-top: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.cs-article a { color: #2563eb; text-decoration: none; }
-.cs-article a:hover { text-decoration: underline; }
-.cs-article-source { color: #999; }
-.cs-empty { color: #888; font-style: italic; padding: 20px 0; }
-.progress-panel { background: white; border-radius: 12px; padding: 16px; margin-bottom: 16px; display: none; }
-.prog-bar-bg { background: #eee; border-radius: 99px; height: 6px; overflow: hidden; margin-bottom: 8px; }
-.prog-bar { background: #111; height: 100%; width: 0%; transition: width 0.3s; border-radius: 99px; }
-.prog-info { font-size: 0.82rem; color: #666; }
-</style>
+  <meta charset="UTF-8">
+  <script>if (window.location.search.includes('token')) history.replaceState({}, '', window.location.pathname);</script>
+  <title>Certamen — Sujets débattables</title>
+  ${buildVeilleStylesHtml()}
 </head>
 <body>
-<nav class="nav">
-  <span class="nav-title">Certamen</span>
-  <a href="/mixte">Veille mixte</a>
-  <a href="/admin">Admin</a>
-  <button class="refresh-btn">Mettre à jour</button>
-</nav>
-<div class="main">
-  <h1>Sujets débattables</h1>
-  <p class="subtitle">Générée le ${generatedAt}</p>
-  <div id="progress-panel" class="progress-panel">
-    <div class="prog-bar-bg"><div class="prog-bar" id="prog-bar"></div></div>
-    <div class="prog-info">Étape <span id="prog-step">…</span> / <span id="prog-total">…</span> — <span id="prog-name"></span> <span id="prog-detail"></span></div>
+  <h1>Certamen — Sujets débattables</h1>
+
+  <div class="nav">
+    <a href="/mixte">Veille mixte</a>
+    <a href="/certamen">Certamen</a>
+    <a href="/admin">⚙ Admin</a>
+    <button class="nav-refresh-btn" onclick="startRefresh()">↻ Actualiser</button>
   </div>
-  <div class="filters">
-    <button class="filter-btn active" data-filter="all">Tous</button>
-    <button class="filter-btn" data-filter="arena">Arène prête</button>
-    <button class="filter-btn" data-filter="reformulate">À reformuler</button>
-    <button class="filter-btn" data-filter="understand">À comprendre</button>
+
+  <p class="intro">
+    L'IA explore les actualités collectées et repère celles qui présentent un fort potentiel de débat pour Agôn.
+    Chaque sujet retenu peut ensuite être transformé en arène (question, positions, résumé) puis envoyé vers Agôn — exactement comme en veille mixte.
+  </p>
+
+  <div class="status">
+    <div>
+      Dernière génération du fichier :
+      <strong>${escapeHtml(generatedAt)}</strong>
+    </div>
+    <div class="refresh-row">
+      <button class="refresh-btn" type="button">Mettre à jour</button>
+    </div>
+    <div class="ptr-indicator" id="ptr-indicator"></div>
+    <button class="update-banner" id="update-banner" onclick="window.location.reload()">Nouvelle analyse disponible — Charger</button>
   </div>
-  ${sessionTabs ? `<div class="tabs">${sessionTabs}</div>` : ""}
-  <div id="sessions-container">
-    ${sessionBlocks || '<p class="cs-empty">Aucune session Certamen générée pour le moment.</p>'}
+
+  <div id="progress-panel">
+    <div class="progress-step-label">Étape <span id="prog-step">…</span> / 4 — <span id="prog-name">Démarrage…</span></div>
+    <div class="progress-bar-track"><div class="progress-bar-fill" id="prog-bar"></div></div>
+    <div class="progress-detail-text" id="prog-detail"></div>
   </div>
-</div>
-<script>
-  var currentFilter = "all";
-  function applyFilter() {
-    document.querySelectorAll(".certamen-subject").forEach(function(el) {
-      var decision = el.dataset.decision || "";
-      el.classList.toggle("cs-hidden", currentFilter !== "all" && decision !== currentFilter);
-    });
+
+  <div class="filter-bar">
+    <button class="filter-btn active" data-sort="score">Sujets clivants</button>
+    <button class="filter-btn" data-sort="sources">Sujets majeurs</button>
+    <button class="filter-btn" data-sort="ranked">Classement</button>
+    <button class="filter-btn" data-sort="saved">Sujets enregistrés</button>
+    <a class="filter-link" href="/sent-to-agon">Articles envoyés vers Agôn</a>
+  </div>
+
+  <div class="saved-selection-bar" id="saved-selection-bar">
+    <div class="saved-selection-top">
+      <div class="selection-count"><span id="selected-count">0</span> arène(s) sélectionnée(s)</div>
+      <div class="saved-selection-actions">
+        <button class="select-all-arenas-btn" type="button">Tout sélectionner</button>
+        <button class="clear-selection-btn" type="button">Annuler la sélection</button>
+      </div>
+    </div>
+    <button class="generate-all-btn" type="button">Tout générer</button>
+  </div>
+
+  ${
+    sessions.length
+      ? `
+        <div class="session-tabs-wrapper">
+          <h2>Historique des analyses</h2>
+          <p>Choisis une session pour voir uniquement les sujets détectés à cette heure-là.</p>
+          <div class="session-tabs">
+            ${sessionTabs}
+          </div>
+          ${olderTabsButton}
+        </div>
+
+        ${sessionBlocks}
+      `
+      : `<div class="empty">Aucune session Certamen générée pour le moment.</div>`
   }
-  document.querySelectorAll(".filter-btn").forEach(function(btn) {
-    btn.addEventListener("click", function() {
-      currentFilter = btn.dataset.filter;
-      document.querySelectorAll(".filter-btn").forEach(function(b) { b.classList.remove("active"); });
-      btn.classList.add("active");
-      applyFilter();
-    });
-  });
-  document.querySelectorAll(".cs-tab").forEach(function(tab) {
-    tab.addEventListener("click", function() {
-      var si = tab.dataset.si;
-      document.querySelectorAll(".cs-tab").forEach(function(t) { t.classList.toggle("active", t.dataset.si === si); });
-      document.querySelectorAll(".certamen-session").forEach(function(s) {
-        var active = s.dataset.sessionIndex === si;
-        s.classList.toggle("active-session", active);
-        s.classList.toggle("hidden-session", !active);
-      });
-    });
-  });
-  var isRefreshing = false;
-  async function startRefresh() {
-    if (isRefreshing) return;
-    isRefreshing = true;
-    var btn = document.querySelector(".refresh-btn");
-    var panel = document.getElementById("progress-panel");
-    if (btn) { btn.disabled = true; btn.textContent = "En cours…"; }
-    if (panel) panel.style.display = "block";
-    try {
-      await fetch("/certamen/refresh", { method: "POST", headers: { "Content-Type": "application/json" }, body: "{}" });
-    } catch(e) {}
-    var poll = setInterval(async function() {
+
+  ${buildSubjectInteractionScriptHtml()}
+  <script>
+    var ptrIsRefreshing = false;
+
+    function showUpdateBanner() {
+      var banner = document.getElementById("update-banner");
+      if (banner) banner.style.display = "block";
+    }
+
+    function setPtrIndicator(text) {
+      var el = document.getElementById("ptr-indicator");
+      if (!el) return;
+      if (text) { el.textContent = text; el.classList.add("visible"); }
+      else { el.classList.remove("visible"); }
+    }
+
+    function renderProgress(prog) {
+      var pct = prog.stepTotal > 0 ? Math.min(100, Math.round((prog.stepIndex / prog.stepTotal) * 100)) : 0;
+      var bar = document.getElementById("prog-bar");
+      var step = document.getElementById("prog-step");
+      var name = document.getElementById("prog-name");
+      var detail = document.getElementById("prog-detail");
+      if (bar) bar.style.width = pct + "%";
+      if (step) step.textContent = prog.stepIndex || "…";
+      if (name) name.textContent = prog.step || "Démarrage…";
+      if (detail) detail.textContent = prog.detail || "";
+    }
+
+    async function startRefresh() {
+      if (ptrIsRefreshing) return;
+      ptrIsRefreshing = true;
+
+      var refreshBtn = document.querySelector(".refresh-btn");
+      if (refreshBtn) { refreshBtn.disabled = true; refreshBtn.textContent = "En cours…"; }
+
+      var panel = document.getElementById("progress-panel");
+      if (panel) { panel.style.display = "block"; }
+      renderProgress({ stepIndex: 0, stepTotal: 4, step: "Démarrage…", detail: "" });
+
+      function finishRefresh() {
+        clearInterval(progressPoll);
+        clearTimeout(timeoutId);
+        ptrIsRefreshing = false;
+        setPtrIndicator(null);
+        if (panel) panel.style.display = "none";
+        if (refreshBtn) { refreshBtn.disabled = false; refreshBtn.textContent = "Mettre à jour"; }
+        showUpdateBanner();
+      }
+
+      function failRefresh(message) {
+        clearInterval(progressPoll);
+        clearTimeout(timeoutId);
+        ptrIsRefreshing = false;
+        setPtrIndicator(null);
+        if (refreshBtn) { refreshBtn.disabled = false; refreshBtn.textContent = "Mettre à jour"; }
+        renderProgress({ stepIndex: 0, stepTotal: 4, step: "Erreur lancement de l'analyse", detail: message || "" });
+      }
+
+      var progressPoll = setInterval(async function() {
+        try {
+          var r = await fetch("/certamen/progress?t=" + Date.now());
+          var prog = await r.json();
+          renderProgress(prog);
+          if (!prog.running && prog.done) finishRefresh();
+        } catch (e) {}
+      }, 1500);
+
+      var timeoutId = setTimeout(finishRefresh, 15 * 60 * 1000);
+
       try {
-        var r = await fetch("/certamen/progress?t=" + Date.now());
-        var p = await r.json();
-        var bar = document.getElementById("prog-bar");
-        var step = document.getElementById("prog-step");
-        var total = document.getElementById("prog-total");
-        var name = document.getElementById("prog-name");
-        var detail = document.getElementById("prog-detail");
-        if (bar) bar.style.width = (p.stepTotal > 0 ? Math.round((p.stepIndex / p.stepTotal) * 100) : 0) + "%";
-        if (step) step.textContent = p.stepIndex || "…";
-        if (total) total.textContent = p.stepTotal || "…";
-        if (name) name.textContent = p.step || "";
-        if (detail) detail.textContent = p.detail || "";
-        if (!p.running && p.done) { clearInterval(poll); window.location.reload(); }
-      } catch(e) {}
-    }, 1500);
-    setTimeout(function() { clearInterval(poll); window.location.reload(); }, 15 * 60 * 1000);
-  }
-  var refreshBtn = document.querySelector(".refresh-btn");
-  if (refreshBtn) refreshBtn.addEventListener("click", function() { startRefresh(); });
-</script>
+        var launchRes = await fetch("/certamen/refresh", { method: "POST", headers: { "Content-Type": "application/json" }, body: "{}" });
+        var launchData = await launchRes.json().catch(function() { return {}; });
+        if (!launchRes.ok || launchData.error) throw new Error(launchData.error || "Réponse serveur invalide");
+      } catch (e) {
+        failRefresh(e && e.message ? e.message : "Impossible de démarrer l'analyse");
+      }
+    }
+
+    var refreshBtn = document.querySelector(".refresh-btn");
+    if (refreshBtn) {
+      refreshBtn.addEventListener("click", function() { startRefresh(); });
+    }
+
+    initializeStoryBoxes(document);
+
+    (function autoSuggestMissingStories() {
+      var subjectsNeedingStory = Array.from(document.querySelectorAll(".subject")).filter(function(el) {
+        var resume = el.querySelector(".resume");
+        var hasResume = resume && (resume.dataset.rawText || resume.textContent.trim());
+        var box = el.querySelector(".story-link-box");
+        var hasStory = box && (box.dataset.selectedMode === "existing" || box.dataset.storyDecision === "existing_story" || box.dataset.storyDecision === "uncertain");
+        return hasResume && !hasStory;
+      });
+      var delay = 0;
+      subjectsNeedingStory.forEach(function(el) {
+        setTimeout(function() { suggestStoryForSubject(el); }, delay);
+        delay += 800;
+      });
+    })();
+
+    var ptrTouchStartY = 0;
+    var ptrPullDist = 0;
+    var PTR_THRESHOLD = 80;
+
+    document.addEventListener("touchstart", function(e) {
+      ptrTouchStartY = window.scrollY === 0 ? e.touches[0].clientY : 0;
+      ptrPullDist = 0;
+    }, { passive: true });
+
+    document.addEventListener("touchmove", function(e) {
+      if (ptrTouchStartY === 0 || ptrIsRefreshing) return;
+      ptrPullDist = e.touches[0].clientY - ptrTouchStartY;
+      if (ptrPullDist > 0 && window.scrollY === 0) {
+        setPtrIndicator(ptrPullDist > PTR_THRESHOLD ? "↑ Relâchez pour actualiser" : "↓ Tirez pour actualiser");
+      }
+    }, { passive: true });
+
+    document.addEventListener("touchend", function() {
+      if (ptrTouchStartY === 0) return;
+      if (ptrPullDist > PTR_THRESHOLD && window.scrollY === 0 && !ptrIsRefreshing) {
+        startRefresh();
+      } else {
+        setPtrIndicator(null);
+      }
+      ptrTouchStartY = 0;
+      ptrPullDist = 0;
+    }, { passive: true });
+  </script>
 </body>
-</html>`;
+</html>
+`;
 }
 
 let certamenIsRunning = false;
@@ -6579,7 +6711,18 @@ async function runCertamenSession() {
     setCertamenProgress(4, "Analyse IA Certamen", `${i + 1} / ${candidates.length}`);
     console.log(`Certamen IA : ${subject.subject}`);
     const certamen = await analyzeCertamenSubjectWithAI(subject);
-    analyzed.push(Object.assign({}, subject, { certamen }));
+    // Champs au format des sujets veille mixte : permet de réutiliser telles quelles
+    // les cartes d'arène, la génération IA et la persistance (/save-update).
+    analyzed.push(Object.assign({}, subject, {
+      certamen,
+      subjectId: `certamen-${startedAt.valueOf()}-${i}`,
+      mergedSubjectTitles: [],
+      scoreAnalyzed: true,
+      debateScore: certamen.debatePotentialScore || 0,
+      controversyLevel: certamenRiskToControversyLevel(certamen.risk),
+      aiAnalyzed: false,
+      ai: null
+    }));
   }
 
   const debatables = analyzed
