@@ -5,6 +5,8 @@ const path = require("path");
 const fs = require("fs");
 const OpenAI = require("openai");
 const stringSimilarity = require("string-similarity");
+const { extractFromHtml } = require("@extractus/article-extractor");
+const { fetchTranscript } = require("youtube-transcript");
 
 const app = express();
 app.use(express.json());
@@ -621,6 +623,145 @@ function buildFullArticleFallback(payload, story) {
   });
 }
 
+// ── Récupération du texte complet d'un article ──────────────────────────────
+async function fetchArticleFullText(url) {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 12000);
+  try {
+    const res = await fetch(url, {
+      signal: controller.signal,
+      headers: { "User-Agent": "Mozilla/5.0 (compatible; BotVeille/1.0; +https://agon.app)" }
+    });
+    if (!res.ok) return null;
+    const html = await res.text();
+    const article = await extractFromHtml(html, url);
+    if (!article || !article.content) return null;
+    const text = article.content.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+    return { text, charCount: text.length };
+  } catch {
+    return null;
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+// ── Détection paywall / article tronqué ─────────────────────────────────────
+const PAYWALL_PATTERNS = [
+  /réservé[e]?\s+aux\s+abonné[e]?s/i,
+  /abonnez[-\s]vous\s+pour\s+(lire|continuer|accéder)/i,
+  /pour\s+lire\s+la\s+suite/i,
+  /article\s+réservé/i,
+  /déjà\s+abonné\b/i,
+  /se\s+connecter\s+pour\s+lire/i,
+  /cet\s+article\s+est\s+réservé/i,
+  /accès\s+réservé/i,
+  /contenu\s+réservé/i,
+  /subscribe\s+to\s+(continue|read)/i,
+  /this\s+(article|content)\s+is\s+for\s+subscribers/i,
+  /premium\s+content/i,
+];
+
+function isCompleteUsableArticle(text) {
+  if (!text || text.length < 600) return false;
+  for (const pat of PAYWALL_PATTERNS) {
+    if (pat.test(text)) return false;
+  }
+  return true;
+}
+
+// ── Extraction d'ID YouTube depuis n'importe quelle URL ─────────────────────
+function extractYouTubeIdFromAnyUrl(url) {
+  const s = String(url || "");
+  const watchMatch = s.match(/[?&]v=([A-Za-z0-9_-]{11})/);
+  if (watchMatch) return watchMatch[1];
+  const shortMatch = s.match(/youtu\.be\/([A-Za-z0-9_-]{11})/);
+  if (shortMatch) return shortMatch[1];
+  const pathMatch = s.match(/\/(?:shorts|embed|v)\/([A-Za-z0-9_-]{11})/);
+  if (pathMatch) return pathMatch[1];
+  return null;
+}
+
+// ── Récupération d'une transcription YouTube ────────────────────────────────
+async function fetchYouTubeTranscriptText(url) {
+  const videoId = extractYouTubeIdFromAnyUrl(url);
+  if (!videoId) return null;
+  try {
+    let segments;
+    try {
+      segments = await fetchTranscript(videoId, { lang: "fr" });
+    } catch {
+      segments = await fetchTranscript(videoId);
+    }
+    if (!Array.isArray(segments) || segments.length === 0) return null;
+    const text = segments.map(s => s.text).join(" ").replace(/\s+/g, " ").trim();
+    if (text.length < 300) return null;
+    return { text, charCount: text.length };
+  } catch {
+    return null;
+  }
+}
+
+// ── Sélection des sources exploitables pour le résumé factuel ───────────────
+async function selectFactualSources(allContents) {
+  const articles = allContents.filter(c => c.type !== "youtube");
+  const videos = allContents.filter(c => c.type === "youtube");
+
+  const stats = {
+    articlesChecked: articles.length,
+    articlesUsed: 0,
+    articlesIgnored: 0,
+    videosChecked: 0,
+    videosUsed: 0,
+    videosIgnored: 0,
+  };
+
+  // Fetch tous les articles en parallèle, dans l'ordre de pertinence existant
+  const fetchResults = await Promise.allSettled(
+    articles.map(a => fetchArticleFullText(a.url))
+  );
+
+  const usable = [];
+
+  for (let i = 0; i < articles.length; i++) {
+    if (usable.length >= 4) break;
+    const fetched = fetchResults[i].status === "fulfilled" ? fetchResults[i].value : null;
+    if (fetched && isCompleteUsableArticle(fetched.text)) {
+      usable.push({ ...articles[i], sourceKind: "article complet", fullText: fetched.text });
+      stats.articlesUsed++;
+    } else {
+      const reason = !fetched
+        ? "inaccessible/timeout"
+        : fetched.text.length < 600 ? "texte trop court" : "paywall/tronqué";
+      console.log(`[résumé factuel] IGNORÉ article "${articles[i].title.slice(0, 60)}" — ${reason}`);
+      stats.articlesIgnored++;
+    }
+  }
+
+  // Compléter jusqu'à 4 avec des transcriptions YouTube si nécessaire
+  if (usable.length < 4 && videos.length > 0) {
+    for (const video of videos) {
+      if (usable.length >= 4) break;
+      stats.videosChecked++;
+      const fetched = await fetchYouTubeTranscriptText(video.url);
+      if (fetched) {
+        usable.push({ ...video, sourceKind: "transcription vidéo", fullText: fetched.text });
+        stats.videosUsed++;
+      } else {
+        console.log(`[résumé factuel] IGNORÉ vidéo "${video.title.slice(0, 60)}" — pas de transcription`);
+        stats.videosIgnored++;
+      }
+    }
+  }
+
+  console.log(`[résumé factuel] ${stats.articlesUsed} article(s) complet(s), ${stats.videosUsed} vidéo(s) (transcription), ${stats.articlesIgnored + stats.videosIgnored} source(s) ignorée(s)`);
+
+  if (usable.length === 0) {
+    throw new Error("Aucune source exploitable — article complet accessible ou vidéo avec transcription — trouvée parmi les sources sélectionnées.");
+  }
+
+  return { usable, stats };
+}
+
 async function generateCompleteNarrativeContext(payload, storySelection) {
   function cleanSummarySourceTitle(title) {
     return String(title || "")
@@ -640,26 +781,11 @@ async function generateCompleteNarrativeContext(payload, storySelection) {
     }))
     .filter((item) => item.title || item.url);
 
-  // Priorité à la diversité des sources : 1 article par source en premier, puis compléter
-  const selectedContents = (() => {
-    const seenSources = new Set();
-    const picked = [];
-    const rest = [];
-    for (const item of allContents) {
-      const key = item.source || item.url;
-      if (!seenSources.has(key)) { seenSources.add(key); picked.push(item); }
-      else { rest.push(item); }
-    }
-    return [...picked, ...rest].slice(0, 6);
-  })();
-
-  if (!selectedContents.length) {
-    throw new Error("Aucune source sélectionnée pour générer le compte rendu.");
-  }
-
   if (!openai) {
     throw new Error("OPENAI_API_KEY manquant pour générer le résumé.");
   }
+
+  const { usable } = await selectFactualSources(allContents);
 
   const prompt = `Tu es un assistant éditorial pour Agôn.
 
@@ -673,6 +799,7 @@ Objectif :
 - rester strictement dans les informations présentes dans les sources.
 
 Règles absolues :
+- Fonde-toi exclusivement sur le texte intégral des sources ci-dessous.
 - Ne rien inventer.
 - Ne pas extrapoler.
 - Ne pas dramatiser.
@@ -683,14 +810,8 @@ Règles absolues :
 - Ne pas copier les formulations des sources.
 - Ne pas mentionner "les médias" en général si les sources ne permettent pas de le dire.
 - Si une information est absente, incertaine ou contradictoire, ne pas l'ajouter.
-
-Utilise au maximum 5 sources.
-
-Priorité :
-1. Privilégie les sources généralistes fiables pour établir les faits.
-2. Si possible, sélectionne des sources qui se recoupent sur les informations principales.
-3. Évite les sources trop éditorialisées pour cette étape : elles pourront être utilisées dans l'analyse médiatique.
-4. Ne sélectionne pas les vidéos YouTube pour cette étape.
+- Si les sources sont peu nombreuses, reste proportionnellement prudent dans l'ampleur des conclusions.
+- Pour les transcriptions vidéo : n'utilise que ce qui est dit explicitement ; distingue les faits rapportés des opinions ou commentaires exprimés.
 
 Important :
 Le résumé doit rester factuel, neutre et strictement fondé sur les informations présentes dans les sources.
@@ -730,13 +851,13 @@ Longueur :
 Sujet :
 ${payload.subject || ""}
 
-Sources sélectionnées :
+Sources (texte intégral) :
 ${JSON.stringify({
-  contents: selectedContents.slice(0, 5).map((item) => ({
+  contents: usable.map((item) => ({
     title: item.title,
-    type: item.type,
+    type: item.sourceKind,
     date: item.date,
-    summary: item.summary || ""
+    text: item.fullText.slice(0, 6000)
   }))
 }, null, 2)}
 

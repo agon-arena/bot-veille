@@ -763,13 +763,41 @@ function normalizeKeywordList(values, max = 8) {
   return results.slice(0, max);
 }
 
-function looksLikeBrokenKeyword(keyword) {
+function looksLikeBrokenKeyword(keyword, subject) {
   const value = String(keyword || "").trim();
   if (!value) return true;
   if (/\S\s{2,}\S/.test(value)) return true;
   if (/[A-Za-zÀ-ÖØ-öø-ÿ]\s{2,}[A-Za-zÀ-ÖØ-öø-ÿ]/.test(value)) return true;
   if (/\b[A-Za-zÀ-ÖØ-öø-ÿ]\b\s+[A-Za-zÀ-ÖØ-öø-ÿ]{3,}/.test(value)) return true;
+  if (subject && looksTruncatedKeyword(value, subject)) return true;
   return false;
+}
+
+// Détecte un tag coupé en cours de mot (ex. "Indemnit" pour "Indemnité"),
+// fréquent quand la réponse IA est tronquée : le dernier mot du tag n'existe
+// nulle part tel quel dans les sources, mais un mot plus long commençant par
+// le même préfixe, lui, y figure.
+function looksTruncatedKeyword(keyword, subject) {
+  const words = String(keyword || "").trim().split(/\s+/).filter(Boolean);
+  const lastWord = words[words.length - 1] || "";
+  if (lastWord.length < 4) return false;
+
+  const lastKey = normalizeKeywordRepairKey(lastWord);
+  if (!lastKey) return false;
+
+  const sourceWords = [
+    subject?.subject || "",
+    ...((Array.isArray(subject?.contents) ? subject.contents : []).slice(0, 10).flatMap((content) => [
+      content?.title || "",
+      content?.summary || ""
+    ]))
+  ].join(" ")
+    .split(/[^\p{L}\p{N}'’-]+/u)
+    .map(normalizeKeywordRepairKey)
+    .filter(Boolean);
+
+  if (sourceWords.includes(lastKey)) return false;
+  return sourceWords.some((word) => word.length > lastKey.length && word.startsWith(lastKey));
 }
 
 function normalizeKeywordRepairKey(value) {
@@ -814,7 +842,7 @@ function repairKeywordFromSources(subject, keyword) {
   const value = String(keyword || "").replace(/\s+/g, " ").trim();
   if (!value) return value;
 
-  if (!looksLikeBrokenKeyword(value)) {
+  if (!looksLikeBrokenKeyword(value, subject)) {
     return value;
   }
 
@@ -852,21 +880,40 @@ function filterKeywordNoise(subject, values, max = 8) {
       .filter(Boolean)
   );
 
-  const banned = new Set([
-    "france",
-    "francais",
-    "française",
-    "francaise"
+  // Tags vus passer alors qu'ils sont incompréhensibles seuls : pays/villes/
+  // institutions trop génériques pour "définir le mieux l'actualité" (cf. la
+  // règle du prompt) — on l'impose ici plutôt que d'espérer que l'IA la suive.
+  const genericStandalone = new Set([
+    "france", "francais", "francaise",
+    "chine", "etatsunis", "russie", "allemagne", "espagne", "italie", "royaumeuni",
+    "ukraine", "israel", "iran", "irak", "syrie", "liban", "japon", "bresil",
+    "inde", "canada", "mexique", "portugal", "belgique", "suisse",
+    "paris", "londres", "berlin", "madrid", "rome", "pekin", "newyork", "moscou",
+    "washington", "tokyo", "bruxelles", "geneve",
+    "assemblee", "senat", "gouvernement", "parlement", "elysee", "matignon",
+    "onu", "otan", "ue", "unioneuropeenne", "conseilconstitutionnel"
   ]);
 
   const repairedValues = (Array.isArray(values) ? values : []).map((keyword) => repairKeywordFromSources(subject, keyword));
 
   return normalizeKeywordList(repairedValues, max).filter((keyword) => {
-    const lower = String(keyword || "").trim().toLowerCase();
+    const trimmed = String(keyword || "").trim();
+    const lower = trimmed.toLowerCase();
     if (!lower) return false;
+    // Volontairement sans `subject` ici : la détection de troncature ne doit
+    // servir qu'à déclencher une réparation (cf. repairKeywordFromSources,
+    // appelé juste au-dessus) — l'utiliser pour rejeter ferait passer un
+    // simple écart grammatical AI/source (singulier vs pluriel, etc.) pour
+    // une troncature et jetterait un tag tout à fait correct.
     if (looksLikeBrokenKeyword(keyword)) return false;
-    if (banned.has(lower)) return false;
     if (sourceNames.has(lower)) return false;
+    // un chiffre suivi d'un décompte humain ne nomme rien ("24 morts", "300 blessés") ;
+    // on cible ce motif précis pour ne pas bloquer des tags datés légitimes ("1er mai", "11-Septembre")
+    if (/^\d+\s*(?:e|er|ère|ème)?\s+(morts?|blessés?|victimes?|décès|tués?|disparus?|interpellations?|arrestations?|otages?|personnes?)\b/i.test(trimmed)) return false;
+
+    const wordCount = trimmed.split(/\s+/).filter(Boolean).length;
+    if (wordCount === 1 && genericStandalone.has(normalizeKeywordRepairKey(trimmed))) return false;
+
     return true;
   }).slice(0, max);
 }
@@ -897,7 +944,18 @@ function extractNewsKeywords(subject) {
 }
 
 function normalizeUrl(url) {
-  return String(url || "").trim().replace(/\/+$/, "").split("?")[0].split("#")[0];
+  const withoutHash = String(url || "").trim().split("#")[0];
+  const [base, query = ""] = withoutHash.split("?");
+  const cleanedBase = base.replace(/\/+$/, "");
+
+  // Sur YouTube, l'identifiant de la vidéo vit dans la query string (?v=...) :
+  // le tronquer ferait correspondre toutes les vidéos "watch" entre elles.
+  const videoIdMatch = query.match(/(?:^|&)v=([^&]+)/);
+  if (videoIdMatch && /youtube\.com\/watch/i.test(cleanedBase)) {
+    return `${cleanedBase}?v=${videoIdMatch[1]}`;
+  }
+
+  return cleanedBase;
 }
 
 function selectRelevantLinksForSubject(subject, aiSelectedLinks) {
@@ -1041,7 +1099,16 @@ Règle centrale :
 - il doit nommer l'objet central de l'actualité : acteur, pays, institution, lieu, événement, loi, conflit, affaire ou phénomène précis ;
 - il ne doit pas être trop générique : proscris les mots vagues seuls comme "Tensions", "Crise", "Conflit", "Polémique", "Scandale", "Tensions diplomatiques" — ils ne nomment rien de précis ; s'ils apparaissent, associe-les obligatoirement à l'acteur, le pays, le lieu ou l'événement concerné (ex. "Tensions Chine-Taïwan" plutôt que "Tensions") ;
 - il ne doit pas se limiter à un nom de pays seul (France, Chine, États-Unis, Russie, Allemagne, etc.) ni à une grande ville seule (Paris, New York, Pékin, Londres, etc.) ; en revanche, un pays ou une ville peut apparaître associé à l'événement, l'acteur ou l'institution concerné (ex. "Émeutes Paris", "Élections Allemagne") ;
-- il doit faire 28 caractères maximum, espaces compris.
+- il ne doit jamais être un nom d'institution seul (Assemblée, Sénat, Gouvernement, ONU…) ni un chiffre seul (24 morts, 300 blessés…) : ces formulations ne nomment rien de précis ;
+- si l'actualité s'inscrit dans un conflit ou une série déjà traitée ailleurs (ex. guerre au Moyen-Orient, guerre en Ukraine), ne reprends jamais l'intitulé générique du conflit : nomme l'épisode précis de cette actualité (l'attaque, le lieu, les acteurs de ce jour précis) pour qu'il se distingue des autres tags du même conflit ;
+- il doit faire 28 caractères maximum, espaces compris ; ne tronque jamais un mot en cours de route — choisis un tag plus court plutôt qu'un mot coupé.
+
+Exemples de tags refusés sur cette plateforme, à ne jamais reproduire :
+- "Paris" pour un article sur le sacre du PSG en Ligue des champions → nom de ville seul, hors-sujet ; il fallait nommer le club ou l'événement ("Sacre du PSG en C1") ;
+- "Assemblée" pour un vote à l'Assemblée nationale → institution seule, ne dit rien du texte voté ;
+- "24 morts" pour un attentat ferroviaire → un chiffre seul ne nomme ni le lieu ni l'événement ;
+- "Machghara" pour des bombardements au Liban → nom de lieu isolé et inconnu du lecteur, incompréhensible seul ; il fallait l'associer au fait ("Frappes à Machghara, Liban") ;
+- "guerre au Moyen-Orient" recopié à l'identique sur plusieurs actualités différentes du même conflit → pas assez précis pour distinguer cet épisode des autres ; il fallait nommer l'épisode exact ("frappe israélienne à Tyr", "frappes USA-Iran sur Natanz").
 `;
 
   try {
@@ -1049,7 +1116,11 @@ Règle centrale :
       model: "gpt-4.1-mini",
       input: prompt,
       temperature: 0.15,
-      max_output_tokens: 120
+      // 120 était trop juste : un tag accentué + la structure JSON peuvent
+      // dépasser ce budget et couper la réponse en plein mot (ex. "Indemnit"
+      // au lieu de "Indemnité") — la marge supplémentaire coûte peu sur un
+      // appel aussi court.
+      max_output_tokens: 200
     });
 
     const parsed = safeJsonParse(response.output_text);
