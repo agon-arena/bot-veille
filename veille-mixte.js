@@ -1160,7 +1160,7 @@ async function analyzeOneSubjectWithAI(subject) {
     };
   }
 
-  const compactContents = subject.contents.slice(0, 20).map(content => ({
+  const compactContents = buildBalancedContentSelection(subject.contents, 24).map(content => ({
     type: content.type,
     source: content.source,
     orientation: content.orientation,
@@ -1211,8 +1211,9 @@ Ne crée jamais une autre thématique.
 Pour "selectedLinks" :
 - renvoie les URLs exactes des contenus qui parlent bien du sujet principal ;
 - si une source ne parle pas vraiment de ce sujet, ne la renvoie pas ;
-- une source qui mentionne seulement une même personnalité, un même pays ou une même institution ne suffit pas : elle doit parler du même événement, de la même décision, de la même déclaration ou du même conflit précis ;
-- ignore les sources qui traitent d'un autre épisode, d'un autre angle ou d'une information parallèle, même si elles concernent les mêmes acteurs ;
+- une source qui mentionne seulement une même personnalité, un même pays ou une même institution sans lien avec le sujet ne suffit pas ;
+- si le sujet est une affaire ou un feuilleton d'actualité qui regroupe plusieurs rebondissements (auditions, propositions de loi, réactions politiques, gardes à vue, mesures annoncées, etc.), considère que toutes les sources qui couvrent un de ces rebondissements liés à cette même affaire parlent bien du sujet ;
+- exclus uniquement les sources qui traitent d'un sujet réellement différent ou sans lien avec cette affaire/cet événement, même si elles concernent les mêmes acteurs ;
 - en cas de doute, garde la source plutôt que de l'exclure ;
 - si plusieurs sources évoquent clairement le sujet, garde-les toutes ;
 - si toutes les sources parlent bien du sujet, tu peux toutes les renvoyer ;
@@ -1306,8 +1307,9 @@ Pénalise les simples faits divers non politiques, résultats sportifs, annonces
 Pour "selectedLinks" :
 - renvoie les URLs exactes des contenus qui parlent bien du sujet principal ;
 - si une source ne parle clairement pas de ce sujet, ne la renvoie pas ;
-- une source qui mentionne seulement une même personnalité, un même pays ou une même institution ne suffit pas : elle doit parler du même événement, de la même décision, de la même déclaration ou du même conflit précis ;
-- ignore les sources qui traitent d'un autre épisode, d'un autre angle ou d'une information parallèle, même si elles concernent les mêmes acteurs ;
+- une source qui mentionne seulement une même personnalité, un même pays ou une même institution sans lien avec le sujet ne suffit pas ;
+- si le sujet est une affaire ou un feuilleton d'actualité qui regroupe plusieurs rebondissements (auditions, propositions de loi, réactions politiques, gardes à vue, mesures annoncées, etc.), considère que toutes les sources qui couvrent un de ces rebondissements liés à cette même affaire parlent bien du sujet ;
+- exclus uniquement les sources qui traitent d'un sujet réellement différent ou sans lien avec cette affaire/cet événement, même si elles concernent les mêmes acteurs ;
 - en cas de doute, garde la source plutôt que de l'exclure ;
 - n'invente jamais d'URL ; utilise uniquement les valeurs exactes du champ "link" dans les contenus.
 `;
@@ -1356,8 +1358,9 @@ Réponds uniquement en JSON valide :
 
 Règles :
 - renvoie les URLs exactes des contenus qui parlent bien du sujet principal ;
-- une source qui mentionne seulement une même personnalité, un même pays ou une même institution ne suffit pas : elle doit parler du même événement, de la même décision, de la même déclaration ou du même conflit précis ;
-- ignore les sources qui traitent d'un autre épisode ou d'un angle parallèle, même si elles concernent les mêmes acteurs ;
+- une source qui mentionne seulement une même personnalité, un même pays ou une même institution sans lien avec le sujet ne suffit pas ;
+- si le sujet est une affaire ou un feuilleton d'actualité qui regroupe plusieurs rebondissements (auditions, propositions de loi, réactions politiques, gardes à vue, mesures annoncées, etc.), considère que toutes les sources qui couvrent un de ces rebondissements liés à cette même affaire parlent bien du sujet ;
+- exclus uniquement les sources qui traitent d'un sujet réellement différent ou sans lien avec cette affaire/cet événement, même si elles concernent les mêmes acteurs ;
 - en cas de doute, garde la source plutôt que de l'exclure ;
 - n'invente jamais d'URL ; utilise uniquement les valeurs exactes du champ "link" dans les contenus.`;
 
@@ -1840,6 +1843,34 @@ function getOrientationGroup(orientation) {
   if (o.includes("gauche")) return "left";
   if (o.includes("droite") || o.includes("conservateur") || o.includes("souverainiste")) return "right";
   return "center";
+}
+
+// Sélectionne un sous-ensemble représentatif des contenus (en alternant gauche/centre/droite)
+// pour éviter qu'une simple troncature n'exclue systématiquement un groupe entier.
+function buildBalancedContentSelection(contents, cap) {
+  const list = Array.isArray(contents) ? contents : [];
+  if (list.length <= cap) return list;
+
+  const groups = { left: [], center: [], right: [] };
+  for (const content of list) {
+    const group = getOrientationGroup(content?.orientation);
+    (groups[group] || groups.center).push(content);
+  }
+
+  const order = ["left", "center", "right"];
+  const result = [];
+  let added = true;
+  while (added && result.length < cap) {
+    added = false;
+    for (const key of order) {
+      if (groups[key].length) {
+        result.push(groups[key].shift());
+        added = true;
+        if (result.length >= cap) break;
+      }
+    }
+  }
+  return result;
 }
 
 function selectPreselectedContents(contents, debateScore) {
