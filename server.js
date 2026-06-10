@@ -24,6 +24,22 @@ function loadAutoCollectConfig() {
   catch { return { enabled: false, times: ["08:00"] }; }
 }
 
+function getParisTimeHHMM() {
+  const parts = new Intl.DateTimeFormat("fr-FR", { timeZone: "Europe/Paris", hour: "2-digit", minute: "2-digit", hour12: false }).formatToParts(new Date());
+  const h = parts.find(p => p.type === "hour").value;
+  const m = parts.find(p => p.type === "minute").value;
+  return `${h}:${m}`;
+}
+
+function getParisDateStr() {
+  return new Date().toLocaleDateString("fr-CA", { timeZone: "Europe/Paris" });
+}
+
+function timeToMinutes(hhmm) {
+  const [h, m] = hhmm.split(":").map(Number);
+  return h * 60 + m;
+}
+
 function loadAutoPublishConfig() {
   try { return JSON.parse(fs.readFileSync(AUTO_PUBLISH_FILE, "utf8")); }
   catch { return { enabled: false }; }
@@ -4259,6 +4275,39 @@ app.post("/api/auto-collect", (req, res) => {
     res.json({ ok: true });
   } catch (err) {
     res.status(500).json({ ok: false, error: err.message });
+  }
+});
+
+// Appelé périodiquement (ex: toutes les 15 min via GitHub Actions) pour déclencher
+// la collecte si l'heure configurée dans l'admin (heure de Paris) est atteinte.
+app.post("/api/auto-collect-tick", requireMixteAuth, async (req, res) => {
+  const config = loadAutoCollectConfig();
+  if (!config.enabled || !Array.isArray(config.times) || !config.times.length) {
+    return res.json({ triggered: false, reason: "disabled" });
+  }
+  const nowMin = timeToMinutes(getParisTimeHHMM());
+  const today = getParisDateStr();
+  const TOLERANCE_MIN = 20;
+  const due = config.times.find(t => {
+    const tMin = timeToMinutes(t);
+    return nowMin >= tMin && nowMin - tMin < TOLERANCE_MIN;
+  });
+  if (!due) return res.json({ triggered: false, reason: "no time due" });
+  const runKey = `${today}_${due}`;
+  if (config.lastRun === runKey) {
+    return res.json({ triggered: false, reason: "already run" });
+  }
+  try {
+    await fetch("http://127.0.0.1:3002/refresh", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ minSources: config.minSources || 3 })
+    });
+    config.lastRun = runKey;
+    fs.writeFileSync(AUTO_COLLECT_FILE, JSON.stringify(config, null, 2), "utf8");
+    res.json({ triggered: true, time: due });
+  } catch (err) {
+    res.status(500).json({ triggered: false, error: err.message });
   }
 });
 

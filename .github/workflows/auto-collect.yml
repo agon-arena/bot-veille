@@ -2,8 +2,9 @@ name: Collecte automatique bot veille
 
 on:
   schedule:
-    # 1 collecte/jour à 12h heure de Paris (10h UTC en été, 11h UTC en hiver)
-    - cron: '0 10 * * *'
+    # Vérification toutes les 15 min : la collecte ne se déclenche réellement
+    # que si l'heure configurée dans l'admin (onglet "Collecte auto") est atteinte.
+    - cron: '*/15 * * * *'
   workflow_dispatch:  # déclenchement manuel depuis l'onglet Actions
 
 jobs:
@@ -11,17 +12,16 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - name: Déclencher la collecte
+      - name: Vérifier/déclencher la collecte
         run: |
           HTTP_STATUS=$(curl -s -o /tmp/response.txt -w "%{http_code}" \
             -X POST \
-            "${{ secrets.BOT_VEILLE_URL }}/refresh?token=${{ secrets.BOT_VEILLE_TOKEN }}" \
+            "${{ secrets.BOT_VEILLE_URL }}/api/auto-collect-tick?token=${{ secrets.BOT_VEILLE_TOKEN }}" \
             -H "Content-Type: application/json" \
-            -d '{"minSources": 3}' \
             --max-time 60 \
             --retry 3 \
             --retry-delay 10)
           echo "HTTP $HTTP_STATUS — $(cat /tmp/response.txt)"
           if [ "$HTTP_STATUS" != "200" ]; then
-            echo "Erreur collecte (HTTP $HTTP_STATUS)" && exit 1
+            echo "Erreur (HTTP $HTTP_STATUS)" && exit 1
           fi
