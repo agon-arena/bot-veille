@@ -227,6 +227,38 @@ function limitStoryText(text, maxLength) {
 const AGON_ARTICLE_MIN_LENGTH = 800;
 const AGON_ARTICLE_MAX_LENGTH = 1600;
 
+// Coupe un texte à la dernière phrase complète sous maxLength — jamais en
+// plein mot. Réservé au corps d'un article ou à un résumé ; les éléments de
+// fin (devise, question, signature) ne passent jamais par ici.
+function cutTextAtSentenceEnd(text, maxLength) {
+  const value = String(text || "").trim();
+  if (value.length <= maxLength) return value;
+  const window = value.slice(0, maxLength);
+  for (let i = window.length - 1; i > 0; i--) {
+    if (!".!?…".includes(window[i])) continue;
+    const next = value[i + 1];
+    if (next === undefined || /\s/.test(next)) {
+      return value.slice(0, i + 1).trim();
+    }
+  }
+  const lastSpace = window.lastIndexOf(" ");
+  return (lastSpace > 0 ? window.slice(0, lastSpace) : window).trim();
+}
+
+// Assemblage final unique pour les deux arènes : les éléments de fin sont
+// intouchables, seul le corps est raccourci (à une fin de phrase) pour que le
+// tout tienne dans maxLength. Garantit qu'une coupe ne peut jamais emporter
+// la devise, la question ou la signature.
+function assembleArticleWithinLimit(body, tailLines, maxLength = AGON_ARTICLE_MAX_LENGTH) {
+  const tail = (Array.isArray(tailLines) ? tailLines : [])
+    .map((line) => String(line || "").trim())
+    .filter(Boolean);
+  const tailText = tail.join("\n\n");
+  const budget = tailText ? maxLength - tailText.length - 2 : maxLength;
+  const fittedBody = cutTextAtSentenceEnd(String(body || "").trim(), Math.max(budget, 200));
+  return [fittedBody, tailText].filter(Boolean).join("\n\n");
+}
+
 function limitDebateQuestion(text) {
   return String(text || "").trim().replace(/\s*\?$/, " ?");
 }
@@ -264,7 +296,8 @@ function looksLikeLatinPhrase(line) {
   const words = cleaned.split(" ").filter(Boolean);
   if (words.length < 2 || words.length > 12) return false;
   if (!words.every(w => /^[A-Za-zÀ-ÿ]+$/.test(w))) return false;
-  return !words.map(w => w.toLowerCase()).some(w => FRENCH_FUNCTION_WORDS.has(w));
+  // "et" est commun au latin et au français (ex. "Memoria et iustitia") : neutre
+  return !words.map(w => w.toLowerCase()).filter(w => w !== "et").some(w => FRENCH_FUNCTION_WORDS.has(w));
 }
 
 function normalizeLatinQuestion(line) {
@@ -350,7 +383,6 @@ function extractLatinQuestionFromArticle(article) {
 function enforceFinalArticleQuestion(article, debateQuestion, latinQuestion, forcedSignature = "", options = {}) {
   const question = limitDebateQuestion(debateQuestion);
   const latin = normalizeLatinQuestion(latinQuestion) || extractLatinQuestionFromArticle(article);
-  if (!question) return limitStoryText(ensureArticleOpeningSentenceBreak(article), AGON_ARTICLE_MAX_LENGTH);
 
   const forbiddenLines = [
     options.positionA,
@@ -372,6 +404,13 @@ function enforceFinalArticleQuestion(article, debateQuestion, latinQuestion, for
     ? rawLines.pop()
     : getNextAgonArticleSignature();
 
+  if (!question) {
+    return assembleArticleWithinLimit(
+      ensureArticleOpeningSentenceBreak(rawLines.join("\n\n")),
+      [signature]
+    );
+  }
+
   const bodyBlocks = rawLines
     .filter((line) => {
       const normalizedLine = normalizeArticleLineForCompare(line);
@@ -388,12 +427,7 @@ function enforceFinalArticleQuestion(article, debateQuestion, latinQuestion, for
 
   const body = splitArticleOpeningSentence(bodyBlocks).join("\n\n").trim();
 
-  return limitStoryText([
-    body,
-    latin,
-    question,
-    signature
-  ].filter(Boolean).join("\n\n"), AGON_ARTICLE_MAX_LENGTH);
+  return assembleArticleWithinLimit(body, [latin, question, signature]);
 }
 
 function decodeLooseJsonString(value) {
@@ -894,7 +928,7 @@ Réponds uniquement en texte brut.`;
     });
     const text = String(response.output_text || "").trim();
     if (!text) throw new Error("Réponse vide de l'IA pour le résumé.");
-    return limitStoryText(text, 1800);
+    return cutTextAtSentenceEnd(text, 1800);
   } catch (error) {
     throw new Error(error.message || "Erreur génération résumé");
   }
@@ -1113,7 +1147,7 @@ async function generateStyledArticle(payload) {
 
   if (!openai) {
     return {
-      article: limitStoryText(summary, 1600),
+      article: cutTextAtSentenceEnd(summary, 1600),
       debateQuestion,
       positionA,
       positionB
@@ -1288,7 +1322,9 @@ Réponds uniquement en JSON valide, sans balises markdown.`;
   }
 
   const baseResult = {
-    article: limitStoryText(parsed.article || summary, 1600),
+    // Pas de coupe ici : l'article passe ensuite par enforceFinalArticleQuestion
+    // (finition + endpoint), seul point qui applique la limite proprement.
+    article: String(parsed.article || summary).trim(),
     debateQuestion: limitDebateQuestion(parsed.debateQuestion || debateQuestion),
     positionA: String(parsed.positionA || positionA).replace(/\s+/g, " ").trim(),
     positionB: String(parsed.positionB || positionB).replace(/\s+/g, " ").trim()
@@ -1572,8 +1608,8 @@ async function generateFreeArenaArticle(payload) {
 
   if (!openai) {
     return {
-      article: limitStoryText(summary, 1600),
-      debateQuestion: limitStoryText(subject, 100)
+      article: cutTextAtSentenceEnd(summary, 1600),
+      debateQuestion: cutTextAtSentenceEnd(subject, 100)
     };
   }
 
@@ -1632,7 +1668,7 @@ INTERDICTIONS STRICTES POUR L'ARTICLE :
 * Le texte doit ouvrir une discussion libre, pas enfermer le lecteur dans deux positions.
 
 LONGUEUR :
-Article : 1000 à 1600 caractères, signature comprise.
+Article : 900 à 1300 caractères, signature comprise. Une devise latine sera insérée ensuite avant la signature : ne dépasse jamais 1300 caractères.
 
 SORTIE :
 Réponds uniquement en JSON valide :
@@ -1666,9 +1702,17 @@ Réponds uniquement en JSON valide, sans balises markdown.`;
     parsed = { title: subject, article: rawText };
   }
 
+  const articleLines = String(parsed.article || summary)
+    .split(/\n+/)
+    .map((line) => line.trim())
+    .filter(Boolean);
+  const articleSignature = articleLines.length && AGON_ARTICLE_SIGNATURES.has(articleLines[articleLines.length - 1])
+    ? articleLines.pop()
+    : getNextAgonArticleSignature();
+
   return {
-    article: limitStoryText(parsed.article || summary, 1600),
-    debateQuestion: limitStoryText(parsed.title || subject, 100)
+    article: assembleArticleWithinLimit(articleLines.join("\n\n"), [articleSignature]),
+    debateQuestion: cutTextAtSentenceEnd(parsed.title || subject, 100)
   };
 }
 
@@ -1698,11 +1742,7 @@ function insertLatinMottoBeforeSignature(article, latinMotto, forcedSignature = 
 
   const body = splitArticleOpeningSentence(bodyBlocks).join("\n\n").trim();
 
-  return limitStoryText([
-    body,
-    motto,
-    signature
-  ].filter(Boolean).join("\n\n"), AGON_ARTICLE_MAX_LENGTH);
+  return assembleArticleWithinLimit(body, [motto, signature]);
 }
 
 async function generateFreeArenaLatinMotto(payload) {

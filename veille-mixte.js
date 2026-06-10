@@ -689,7 +689,7 @@ function fallbackAiAnalysis(subject, arenaMode = "positions") {
     positionA: "",
     positionB: "",
     keywords: extractNewsKeywords(subject),
-    selectedLinks: selectRelevantLinksForSubject(subject, [])
+    selectedLinks: applyExcludedLinks(subject, [])
   };
 }
 
@@ -974,84 +974,29 @@ function normalizeUrl(url) {
   return cleanedBase;
 }
 
-function selectRelevantLinksForSubject(subject, aiSelectedLinks) {
+// Toutes les sources sont gardées par défaut ; l'IA ne renvoie que les liens
+// à exclure (hors sujet). Une URL d'exclusion qui ne correspond à aucun
+// contenu réel est ignorée : l'erreur joue toujours dans le sens "garder".
+function applyExcludedLinks(subject, excludedLinks) {
   const contents = Array.isArray(subject?.contents) ? subject.contents : [];
   const validLinks = contents.map((content) => String(content.link || "").trim()).filter(Boolean);
 
-  const resolvedAiLinks = (Array.isArray(aiSelectedLinks) ? aiSelectedLinks : [])
-    .map((item) => String(item || "").trim())
-    .filter(Boolean)
-    .map((aiLink) => {
-      if (validLinks.includes(aiLink)) return aiLink;
-      const normAi = normalizeUrl(aiLink);
-      return validLinks.find((vl) => normalizeUrl(vl) === normAi
-        || vl.startsWith(aiLink)
-        || aiLink.startsWith(vl)
-      ) || null;
-    })
-    .filter(Boolean);
-
-  const aiSelected = new Set(resolvedAiLinks);
-
-  if (aiSelected.size > 0) {
-    return validLinks.filter((link) => aiSelected.has(link));
-  }
-
-  const subjectText = String(subject?.subject || "").trim();
-  const resumeText = String(subject?.ai?.resume || "").trim();
-  const referenceText = [subjectText, resumeText].filter(Boolean).join(" ").trim() || subjectText;
-  const subjectKeywords = new Set(getKeywords(referenceText));
-  const subjectNamedKeywords = [...subjectKeywords].filter((word) => word.length >= 5);
-  const scored = [];
-
-  contents.forEach((content) => {
-    const link = String(content?.link || "").trim();
-    const title = String(content?.title || "").trim();
-    if (!link || !title) return;
-
-    const candidateText = [title, content?.summary || ""].filter(Boolean).join(" ");
-    const sharedKeywords = countSharedKeywords(referenceText, candidateText);
-    const titleKeywords = getKeywords(candidateText);
-    const strongShared = subjectNamedKeywords.filter((word) => titleKeywords.includes(word)).length;
-    const similarity = stringSimilarity.compareTwoStrings(
-      cleanText(referenceText),
-      cleanText(candidateText)
-    );
-
-    const strongMatch = strongShared >= 1 || sharedKeywords >= 2 || similarity >= 0.5;
-
-    if (strongMatch) {
-      scored.push({ link, similarity, strongShared, sharedKeywords });
-    }
-  });
-
-  if (!scored.length) {
-    const best = contents
-      .map((content) => {
-        const link = String(content?.link || "").trim();
-        const title = String(content?.title || "").trim();
-        if (!link || !title) return null;
-        return {
-          link,
-          similarity: stringSimilarity.compareTwoStrings(cleanText(referenceText), cleanText(title)),
-          sharedKeywords: countSharedKeywords(referenceText, title),
-          strongShared: subjectNamedKeywords.filter((word) => getKeywords(title).includes(word)).length
-        };
+  const excluded = new Set(
+    (Array.isArray(excludedLinks) ? excludedLinks : [])
+      .map((item) => String(item || "").trim())
+      .filter(Boolean)
+      .map((aiLink) => {
+        if (validLinks.includes(aiLink)) return aiLink;
+        const normAi = normalizeUrl(aiLink);
+        return validLinks.find((vl) => normalizeUrl(vl) === normAi
+          || vl.startsWith(aiLink)
+          || aiLink.startsWith(vl)
+        ) || null;
       })
       .filter(Boolean)
-      .sort((a, b) => {
-        if (b.strongShared !== a.strongShared) return b.strongShared - a.strongShared;
-        if (b.sharedKeywords !== a.sharedKeywords) return b.sharedKeywords - a.sharedKeywords;
-        return b.similarity - a.similarity;
-      })[0];
+  );
 
-    if (best && (best.strongShared >= 1 || best.sharedKeywords >= 2 || best.similarity >= 0.5)) {
-      return [best.link];
-    }
-    return [];
-  }
-
-  return validLinks.filter((link) => scored.some((item) => item.link === link));
+  return validLinks.filter((link) => !excluded.has(link));
 }
 
 function safeJsonParse(text) {
@@ -1160,7 +1105,7 @@ async function analyzeOneSubjectWithAI(subject) {
     };
   }
 
-  const compactContents = buildBalancedContentSelection(subject.contents, 24).map(content => ({
+  const compactContents = (Array.isArray(subject.contents) ? subject.contents : []).map(content => ({
     type: content.type,
     source: content.source,
     orientation: content.orientation,
@@ -1190,36 +1135,38 @@ Tu dois répondre uniquement en JSON valide avec ces champs :
 {
   "debateScore": nombre entier de 0 à 10,
   "controversyLevel": "faible" | "moyen" | "fort" | "très fort",
-  "selectedLinks": ["liste des URLs des sources qui évoquent bien ce sujet et doivent rester cochées"],
+  "excludedLinks": ["URLs des seuls contenus qui ne parlent pas du tout de ce sujet"],
   "agonTheme": "une thématique Agôn exacte"
 }
 
-Critères pour debateScore :
-- 0 à 3 : sujet informatif, peu clivant, aucune tension visible ;
-- 4 à 6 : sujet débattable mais sans fracture claire — positions opposées possibles mais peu tranchées ;
-- 7 à 8 : sujet qui divise — au moins un de ces signaux est présent : élu ou parti nommément impliqué, réforme ou budget contesté, conflit social actif (grève, manifestation, blocage), décision judiciaire ou policière contestée, tension diplomatique ou militaire nommée, scandale ou mise en cause publique ;
-- 9 à 10 : sujet hautement polarisant — plusieurs de ces signaux sont présents, ou le sujet touche directement à des valeurs opposées (liberté vs sécurité, identité, religion, droits sociaux), ou il génère déjà une polémique visible dans les sources.
+Critères pour debateScore — sois exigeant, la note haute se mérite :
+- 0 à 3 : sujet factuel, pas débattable — fait divers, drame, accident, meurtre, disparition, catastrophe, sujet people, événement purement factuel, guerre racontée seulement par ses faits (attaque, bombardement, bilan, avancée militaire, morts, opération) ;
+- 4 à 5 : débat faible ou forcé — un désaccord est imaginable mais le titre et les contenus ne le montrent pas ;
+- 6 à 7 : débat possible — une décision publique, une réforme, une loi ou une controverse est présente, avec deux positions envisageables ;
+- 8 à 10 : vrai sujet clivant, politique ou polémique — désaccord explicite dans les contenus : réforme contestée, décision gouvernementale critiquée, opposition majorité/opposition, polémique publique, tension de valeurs nommée (liberté/sécurité, écologie/économie, justice/coût, souveraineté/Europe…), avec deux positions clairement possibles.
 
-Favorise les sujets politiques, sociaux, économiques, éducatifs, écologiques, internationaux ou liés aux libertés publiques.
-Pénalise les faits divers non politiques, résultats sportifs, annonces culturelles neutres ou sujets purement descriptifs.
+Favorise fortement : débat politique, polémique, controverse, désaccord public, réforme contestée, décision gouvernementale critiquée, opposition majorité/opposition, tensions entre valeurs (liberté/sécurité, écologie/économie, justice/coût, souveraineté/Europe).
+Baisse fortement : faits divers, drames, accidents, meurtres, disparitions, catastrophes, sujets people, événements purement factuels, sujets de guerre uniquement factuels (attaque, bombardement, bilan, avancée militaire, morts, opération).
+
+Règle essentielle : un sujet choquant ou triste n'est pas forcément débattable. Un fait divers ou une guerre ne mérite un bon score que si les contenus contiennent explicitement un vrai débat public plus large : justice, sécurité, récidive, politique pénale, intervention militaire, sanctions, livraison d'armes, reconnaissance d'un État, responsabilité d'un gouvernement, etc.
+Ne jamais inventer un clivage : si le titre ou les résumés ne montrent pas clairement un désaccord, mets un score bas.
+
+Exemples de scores bas : "Le corps d'une adolescente retrouvé", "Trois morts dans un accident", "Bombardements en Ukraine", "Incendie dans un immeuble".
+Exemples de scores hauts : "Immigration : une réforme contestée", "Budget : l'opposition dénonce des coupes", "Sécurité : faut-il étendre la vidéosurveillance ?", "Ukraine : la livraison d'armes divise les alliés".
 
 Pour le champ "agonTheme", choisis uniquement une valeur exacte dans cette liste :
 ${AGON_THEMES.map(theme => `- ${theme}`).join("\n")}
 
 Ne crée jamais une autre thématique.
 
-Pour "selectedLinks" :
-- renvoie les URLs exactes des contenus qui parlent bien du sujet principal ;
-- si une source ne parle pas vraiment de ce sujet, ne la renvoie pas ;
-- une source qui mentionne seulement une même personnalité, un même pays ou une même institution sans lien avec le sujet ne suffit pas ;
-- si le sujet est une affaire ou un feuilleton d'actualité qui regroupe plusieurs rebondissements (auditions, propositions de loi, réactions politiques, gardes à vue, mesures annoncées, etc.), considère que toutes les sources qui couvrent un de ces rebondissements liés à cette même affaire parlent bien du sujet ;
-- exclus uniquement les sources qui traitent d'un sujet réellement différent ou sans lien avec cette affaire/cet événement, même si elles concernent les mêmes acteurs ;
-- en cas de doute, garde la source plutôt que de l'exclure ;
-- si plusieurs sources évoquent clairement le sujet, garde-les toutes ;
-- si toutes les sources parlent bien du sujet, tu peux toutes les renvoyer ;
+Pour "excludedLinks" :
+- toutes les sources sont gardées par défaut : renvoie uniquement les URLs des contenus qui ne parlent pas du tout du sujet principal ;
+- exclus uniquement les sources qui traitent d'un sujet réellement différent ou sans lien avec cette affaire/cet événement, même si elles concernent les mêmes acteurs, le même pays ou la même institution ;
+- si le sujet est une affaire ou un feuilleton d'actualité qui regroupe plusieurs rebondissements (auditions, propositions de loi, réactions politiques, gardes à vue, mesures annoncées, etc.), ne renvoie pas les sources qui couvrent un de ces rebondissements : elles parlent bien du sujet ;
+- en cas de doute, ne renvoie pas la source : l'exclusion est réservée aux hors-sujet manifestes ;
+- si toutes les sources parlent du sujet, renvoie une liste vide ;
 - n'invente jamais d'URL ;
-- utilise uniquement les valeurs exactes du champ "link" dans les contenus ;
-- garde l'ordre d'apparition des contenus quand c'est possible.
+- utilise uniquement les valeurs exactes du champ "link" dans les contenus.
 
 Ne génère pas de tags, pas de question de débat, pas de positions A/B et pas de résumé narratif à cette étape.
 `;
@@ -1236,7 +1183,7 @@ Ne génère pas de tags, pas de question de débat, pas de positions A/B et pas 
     const text = response.output_text;
     const parsed = safeJsonParse(text);
 
-    const selectedLinks = selectRelevantLinksForSubject(subject, parsed.selectedLinks);
+    const selectedLinks = applyExcludedLinks(subject, parsed.excludedLinks);
     return {
       arenaMode,
       debateScore: Number.isInteger(parsed.debateScore) ? parsed.debateScore : 0,
@@ -1293,24 +1240,30 @@ Tu dois répondre uniquement en JSON valide avec ces champs :
 {
   "debateScore": nombre entier de 0 à 10,
   "controversyLevel": "faible" | "moyen" | "fort" | "très fort",
-  "selectedLinks": ["URLs exactes des contenus qui parlent vraiment du sujet"]
+  "excludedLinks": ["URLs des seuls contenus qui ne parlent pas du tout du sujet"]
 }
 
-Critères pour debateScore :
-- 0 à 3 : sujet informatif, peu clivant, aucune tension visible
-- 4 à 6 : sujet débattable mais sans fracture claire — positions opposées possibles mais peu tranchées
-- 7 à 8 : sujet qui divise — au moins un de ces signaux est présent : élu ou parti nommément impliqué, réforme ou budget contesté, conflit social actif (grève, manifestation, blocage), décision judiciaire ou policière contestée, tension diplomatique ou militaire nommée, scandale ou mise en cause publique
-- 9 à 10 : sujet hautement polarisant — plusieurs de ces signaux sont présents, ou le sujet touche directement à des valeurs opposées (liberté vs sécurité, identité, religion, droits sociaux), ou il génère déjà une polémique visible dans les sources
-Favorise les sujets politiques, sociaux, économiques, éducatifs, écologiques, internationaux ou liés aux libertés publiques.
-Pénalise les simples faits divers non politiques, résultats sportifs, annonces culturelles ou sujets purement descriptifs.
+Critères pour debateScore — sois exigeant, la note haute se mérite :
+- 0 à 3 : sujet factuel, pas débattable — fait divers, drame, accident, meurtre, disparition, catastrophe, sujet people, événement purement factuel, guerre racontée seulement par ses faits (attaque, bombardement, bilan, avancée militaire, morts, opération)
+- 4 à 5 : débat faible ou forcé — un désaccord est imaginable mais le titre et les contenus ne le montrent pas
+- 6 à 7 : débat possible — une décision publique, une réforme, une loi ou une controverse est présente, avec deux positions envisageables
+- 8 à 10 : vrai sujet clivant, politique ou polémique — désaccord explicite dans les contenus : réforme contestée, décision gouvernementale critiquée, opposition majorité/opposition, polémique publique, tension de valeurs nommée (liberté/sécurité, écologie/économie, justice/coût, souveraineté/Europe…), avec deux positions clairement possibles
 
-Pour "selectedLinks" :
-- renvoie les URLs exactes des contenus qui parlent bien du sujet principal ;
-- si une source ne parle clairement pas de ce sujet, ne la renvoie pas ;
-- une source qui mentionne seulement une même personnalité, un même pays ou une même institution sans lien avec le sujet ne suffit pas ;
-- si le sujet est une affaire ou un feuilleton d'actualité qui regroupe plusieurs rebondissements (auditions, propositions de loi, réactions politiques, gardes à vue, mesures annoncées, etc.), considère que toutes les sources qui couvrent un de ces rebondissements liés à cette même affaire parlent bien du sujet ;
-- exclus uniquement les sources qui traitent d'un sujet réellement différent ou sans lien avec cette affaire/cet événement, même si elles concernent les mêmes acteurs ;
-- en cas de doute, garde la source plutôt que de l'exclure ;
+Favorise fortement : débat politique, polémique, controverse, désaccord public, réforme contestée, décision gouvernementale critiquée, opposition majorité/opposition, tensions entre valeurs (liberté/sécurité, écologie/économie, justice/coût, souveraineté/Europe).
+Baisse fortement : faits divers, drames, accidents, meurtres, disparitions, catastrophes, sujets people, événements purement factuels, sujets de guerre uniquement factuels (attaque, bombardement, bilan, avancée militaire, morts, opération).
+
+Règle essentielle : un sujet choquant ou triste n'est pas forcément débattable. Un fait divers ou une guerre ne mérite un bon score que si les contenus contiennent explicitement un vrai débat public plus large : justice, sécurité, récidive, politique pénale, intervention militaire, sanctions, livraison d'armes, reconnaissance d'un État, responsabilité d'un gouvernement, etc.
+Ne jamais inventer un clivage : si le titre ou les résumés ne montrent pas clairement un désaccord, mets un score bas.
+
+Exemples de scores bas : "Le corps d'une adolescente retrouvé", "Trois morts dans un accident", "Bombardements en Ukraine", "Incendie dans un immeuble".
+Exemples de scores hauts : "Immigration : une réforme contestée", "Budget : l'opposition dénonce des coupes", "Sécurité : faut-il étendre la vidéosurveillance ?", "Ukraine : la livraison d'armes divise les alliés".
+
+Pour "excludedLinks" :
+- toutes les sources sont gardées par défaut : renvoie uniquement les URLs des contenus qui ne parlent pas du tout du sujet principal ;
+- exclus uniquement les sources qui traitent d'un sujet réellement différent ou sans lien avec cette affaire/cet événement, même si elles concernent les mêmes acteurs, le même pays ou la même institution ;
+- si le sujet est une affaire ou un feuilleton d'actualité qui regroupe plusieurs rebondissements (auditions, propositions de loi, réactions politiques, gardes à vue, mesures annoncées, etc.), ne renvoie pas les sources qui couvrent un de ces rebondissements : elles parlent bien du sujet ;
+- en cas de doute, ne renvoie pas la source : l'exclusion est réservée aux hors-sujet manifestes ;
+- si toutes les sources parlent du sujet, renvoie une liste vide ;
 - n'invente jamais d'URL ; utilise uniquement les valeurs exactes du champ "link" dans les contenus.
 `;
 
@@ -1323,7 +1276,7 @@ Pour "selectedLinks" :
     });
 
     const parsed = safeJsonParse(response.output_text);
-    const selectedLinks = selectRelevantLinksForSubject(subject, parsed.selectedLinks);
+    const selectedLinks = applyExcludedLinks(subject, parsed.excludedLinks);
     return {
       debateScore: Number.isInteger(parsed.debateScore) ? parsed.debateScore : 0,
       controversyLevel: parsed.controversyLevel || "faible",
@@ -1332,12 +1285,12 @@ Pour "selectedLinks" :
   } catch (error) {
     console.error(`Erreur IA (score) pour "${subject.subject}" :`, error.message);
     const fb = fallbackAiAnalysis(subject);
-    return { debateScore: fb.debateScore, controversyLevel: fb.controversyLevel, selectedLinks: selectRelevantLinksForSubject(subject, []) };
+    return { debateScore: fb.debateScore, controversyLevel: fb.controversyLevel, selectedLinks: applyExcludedLinks(subject, []) };
   }
 }
 
 async function verifySourcesWithAI(subject) {
-  if (!openai) return selectRelevantLinksForSubject(subject, []);
+  if (!openai) return applyExcludedLinks(subject, []);
 
   const compactContents = subject.contents.map(content => ({
     source: content.source,
@@ -1354,14 +1307,14 @@ Contenus :
 ${JSON.stringify(compactContents, null, 2)}
 
 Réponds uniquement en JSON valide :
-{ "selectedLinks": ["URLs exactes des contenus qui parlent vraiment du sujet"] }
+{ "excludedLinks": ["URLs des seuls contenus qui ne parlent pas du tout du sujet"] }
 
 Règles :
-- renvoie les URLs exactes des contenus qui parlent bien du sujet principal ;
-- une source qui mentionne seulement une même personnalité, un même pays ou une même institution sans lien avec le sujet ne suffit pas ;
-- si le sujet est une affaire ou un feuilleton d'actualité qui regroupe plusieurs rebondissements (auditions, propositions de loi, réactions politiques, gardes à vue, mesures annoncées, etc.), considère que toutes les sources qui couvrent un de ces rebondissements liés à cette même affaire parlent bien du sujet ;
-- exclus uniquement les sources qui traitent d'un sujet réellement différent ou sans lien avec cette affaire/cet événement, même si elles concernent les mêmes acteurs ;
-- en cas de doute, garde la source plutôt que de l'exclure ;
+- toutes les sources sont gardées par défaut : renvoie uniquement les URLs des contenus qui ne parlent pas du tout du sujet principal ;
+- exclus uniquement les sources qui traitent d'un sujet réellement différent ou sans lien avec cette affaire/cet événement, même si elles concernent les mêmes acteurs, le même pays ou la même institution ;
+- si le sujet est une affaire ou un feuilleton d'actualité qui regroupe plusieurs rebondissements (auditions, propositions de loi, réactions politiques, gardes à vue, mesures annoncées, etc.), ne renvoie pas les sources qui couvrent un de ces rebondissements : elles parlent bien du sujet ;
+- en cas de doute, ne renvoie pas la source : l'exclusion est réservée aux hors-sujet manifestes ;
+- si toutes les sources parlent du sujet, renvoie une liste vide ;
 - n'invente jamais d'URL ; utilise uniquement les valeurs exactes du champ "link" dans les contenus.`;
 
   try {
@@ -1372,10 +1325,10 @@ Règles :
       max_output_tokens: 2000
     });
     const parsed = safeJsonParse(response.output_text);
-    return selectRelevantLinksForSubject(subject, parsed.selectedLinks);
+    return applyExcludedLinks(subject, parsed.excludedLinks);
   } catch (error) {
     console.error(`Erreur IA (vérification sources) pour "${subject.subject}" :`, error.message);
-    return selectRelevantLinksForSubject(subject, []);
+    return applyExcludedLinks(subject, []);
   }
 }
 
@@ -1847,59 +1800,6 @@ function getOrientationGroup(orientation) {
 
 // Sélectionne un sous-ensemble représentatif des contenus (en alternant gauche/centre/droite)
 // pour éviter qu'une simple troncature n'exclue systématiquement un groupe entier.
-function buildBalancedContentSelection(contents, cap) {
-  const list = Array.isArray(contents) ? contents : [];
-  if (list.length <= cap) return list;
-
-  const groups = { left: [], center: [], right: [] };
-  for (const content of list) {
-    const group = getOrientationGroup(content?.orientation);
-    (groups[group] || groups.center).push(content);
-  }
-
-  const order = ["left", "center", "right"];
-  const result = [];
-  let added = true;
-  while (added && result.length < cap) {
-    added = false;
-    for (const key of order) {
-      if (groups[key].length) {
-        result.push(groups[key].shift());
-        added = true;
-        if (result.length >= cap) break;
-      }
-    }
-  }
-  return result;
-}
-
-function selectPreselectedContents(contents, debateScore) {
-  if (debateScore < 7) return new Set();
-
-  const selected = new Set();
-
-  const youtube = contents.find(c => c.type === "youtube");
-  if (youtube) selected.add(youtube.link);
-
-  const pressItems = contents.filter(c => c.type === "article");
-  const leftItem = pressItems.find(c => getOrientationGroup(c.orientation) === "left");
-  const rightItem = pressItems.find(c => getOrientationGroup(c.orientation) === "right");
-
-  if (leftItem) selected.add(leftItem.link);
-  if (rightItem) selected.add(rightItem.link);
-
-  if (selected.size < 2) {
-    for (const item of pressItems) {
-      if (!selected.has(item.link)) {
-        selected.add(item.link);
-        if (selected.size >= (youtube ? 3 : 2)) break;
-      }
-    }
-  }
-
-  return selected;
-}
-
 function escapeHtml(text) {
   return String(text || "")
     .replaceAll("&", "&amp;")
@@ -2610,6 +2510,21 @@ function buildSubjectInteractionScriptHtml() {
       return [opening, rest].concat(cleanParts.slice(1));
     }
 
+    // Détection par contenu d'une ligne latine (devise ou question) — miroir de
+    // looksLikeLatinPhrase côté serveur. La position seule ne suffit pas : si la
+    // ligne latine manque, le style gras tomberait sur le paragraphe précédent.
+    const FRENCH_FUNCTION_WORDS_CLIENT = ["le","la","les","un","une","des","du","de","en","au","aux","et","est","sont","avec","pour","sur","sous","par","dans","vers","qui","que","dont","mais","car","ni","ou","donc","ce","se","il","elle","ils","elles","on","nous","vous","leur","leurs","à","ne","pas","plus","sa","son","ses","cette"];
+    function looksLikeLatinLineClient(line) {
+      const cleaned = String(line || "").replace(/[.,;:!?'"«»]+/g, " ").replace(/\\s+/g, " ").trim();
+      if (!/^[A-ZÀ-Ÿ]/.test(cleaned)) return false;
+      const words = cleaned.split(" ").filter(Boolean);
+      if (words.length < 2 || words.length > 6) return false;
+      // Une initiale d'une lettre (ex. signature "J.L Grasso") n'est jamais du latin
+      if (!words.every(function(w) { return /^[A-Za-zÀ-ÿ]{2,}$/.test(w); })) return false;
+      // "et" est commun au latin et au français (ex. "Memoria et iustitia") : neutre
+      return !words.some(function(w) { const lw = w.toLowerCase(); return lw !== "et" && FRENCH_FUNCTION_WORDS_CLIENT.indexOf(lw) !== -1; });
+    }
+
     function renderArticleHtml(articleText, options) {
       const opts = options || {};
       const parts = String(articleText || "").split(/\\n\\n/)
@@ -2622,8 +2537,9 @@ function buildSubjectInteractionScriptHtml() {
           return parts.map(function(p) { return "<p>" + escapeHtmlClient(p) + "</p>"; }).join("");
         }
         const signature = parts[parts.length - 1];
-        const hasMotto = !!opts.hasMotto && parts.length >= 3;
-        const motto = hasMotto ? parts[parts.length - 2] : "";
+        const mottoCandidate = parts.length >= 3 ? parts[parts.length - 2] : "";
+        const hasMotto = !!mottoCandidate && looksLikeLatinLineClient(mottoCandidate);
+        const motto = hasMotto ? mottoCandidate : "";
         const bodyParts = parts.slice(0, parts.length - (hasMotto ? 2 : 1));
         const formattedBodyParts = splitArticleOpeningSentenceParts(bodyParts);
         const lastBodyIndex = formattedBodyParts.length - 1;
@@ -2642,8 +2558,9 @@ function buildSubjectInteractionScriptHtml() {
       }
       const signature = parts[parts.length - 1];
       const question = parts[parts.length - 2];
-      const hasLatinQuestion = parts.length >= 4;
-      const latinQuestion = hasLatinQuestion ? parts[parts.length - 3] : "";
+      const latinCandidate = parts.length >= 4 ? parts[parts.length - 3] : "";
+      const hasLatinQuestion = !!latinCandidate && looksLikeLatinLineClient(latinCandidate);
+      const latinQuestion = hasLatinQuestion ? latinCandidate : "";
       const bodyParts = parts.slice(0, parts.length - (hasLatinQuestion ? 3 : 2));
       const formattedBodyParts = splitArticleOpeningSentenceParts(bodyParts);
       const bodyHtml = formattedBodyParts.map(function(p) { return "<p>" + escapeHtmlClient(p) + "</p>"; }).join("");
@@ -2962,7 +2879,8 @@ function buildSubjectInteractionScriptHtml() {
         subjectEl.querySelectorAll(".content-item[data-link]").forEach(function(item) {
           const link = item.dataset.link;
           const checkbox = item.querySelector('input[type="checkbox"]');
-          const isSelected = preselectedLinks.has(link);
+          // Liste vide = aucune info d'exclusion exploitable : tout reste coché
+          const isSelected = preselectedLinks.size === 0 || preselectedLinks.has(link);
           if (checkbox) checkbox.checked = isSelected;
           item.classList.toggle("preselected", isSelected);
         });
@@ -3677,7 +3595,7 @@ function buildSubjectInteractionScriptHtml() {
         const agonBtnStep1 = subjectEl.querySelector(".agon-btn");
         if (agonBtnStep1) { agonBtnStep1.dataset.question = limitClientDebateQuestion(ai.debateQuestion || subjectData.subject || ""); agonBtnStep1.dataset.positionA = ai.positionA || ""; agonBtnStep1.dataset.positionB = ai.positionB || ""; agonBtnStep1.dataset.theme = normalizeAgonTheme(ai.agonTheme); }
         const preselectedLinks = new Set(Array.isArray(ai.selectedLinks) ? ai.selectedLinks.map(l => String(l || "").trim()).filter(Boolean) : []);
-        subjectEl.querySelectorAll(".content-item[data-link]").forEach(item => { const cb = item.querySelector('input[type="checkbox"]'); const sel = preselectedLinks.has(item.dataset.link); if (cb) cb.checked = sel; item.classList.toggle("preselected", sel); });
+        subjectEl.querySelectorAll(".content-item[data-link]").forEach(item => { const cb = item.querySelector('input[type="checkbox"]'); const sel = preselectedLinks.size === 0 || preselectedLinks.has(item.dataset.link); if (cb) cb.checked = sel; item.classList.toggle("preselected", sel); });
         await fetch("/save-update", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ subject: subjectData.subject, debateScore: ai.debateScore, controversyLevel: ai.controversyLevel, ai: { ...ai, fullArticleState: "short" } }) });
       }
 
@@ -3739,7 +3657,7 @@ function buildSubjectInteractionScriptHtml() {
 
             const freeArticle = String(freeData.article || "").trim();
             resumeEl = subjectEl.querySelector(".resume");
-            if (resumeEl && freeArticle) { resumeEl.dataset.rawText = freeArticle; resumeEl.innerHTML = renderArticleHtml(freeArticle, { arenaMode: "libre", hasMotto: false }); }
+            if (resumeEl && freeArticle) { resumeEl.dataset.rawText = freeArticle; resumeEl.innerHTML = renderArticleHtml(freeArticle, { arenaMode: "libre" }); }
             updateAiEditorCounters(subjectEl);
 
             const agonBtnLibre = subjectEl.querySelector(".agon-btn");
@@ -3762,7 +3680,7 @@ function buildSubjectInteractionScriptHtml() {
                 if (mottoRes.ok && mottoData.ok !== false && mottoData.article) {
                   const articleWithMotto = String(mottoData.article).trim();
                   resumeEl = subjectEl.querySelector(".resume");
-                  if (resumeEl && articleWithMotto) { resumeEl.dataset.rawText = articleWithMotto; resumeEl.innerHTML = renderArticleHtml(articleWithMotto, { arenaMode: "libre", hasMotto: true }); }
+                  if (resumeEl && articleWithMotto) { resumeEl.dataset.rawText = articleWithMotto; resumeEl.innerHTML = renderArticleHtml(articleWithMotto, { arenaMode: "libre" }); }
                   updateAiEditorCounters(subjectEl);
                 }
               } catch (mottoErr) {
@@ -3940,7 +3858,8 @@ function buildSubjectInteractionScriptHtml() {
         );
         subjectEl.querySelectorAll(".content-item[data-link]").forEach(item => {
           const cb = item.querySelector('input[type="checkbox"]');
-          const sel = preselectedLinks.has(item.dataset.link);
+          // Liste vide = aucune info d'exclusion exploitable : tout reste coché
+          const sel = preselectedLinks.size === 0 || preselectedLinks.has(item.dataset.link);
           if (cb) cb.checked = sel;
           item.classList.toggle("preselected", sel);
         });
@@ -5896,11 +5815,14 @@ function buildSubjectCardHtml(subject, ctx) {
           </div>`
         : "";
 
-      // Sources pré-sélectionnées par l'IA (analyse complète ou scoring batch)
+      // Toutes les sources sont cochées par défaut. Si une sélection IA existe
+      // (analyse complète ou scoring batch), elle ne sert qu'à décocher les
+      // contenus jugés hors sujet ; sans sélection, tout reste coché.
       const preselectedSet = new Set([
         ...(Array.isArray(ai.selectedLinks) ? ai.selectedLinks : []),
         ...(Array.isArray(subject.selectedLinks) ? subject.selectedLinks : [])
       ].map(l => String(l || "").trim()).filter(Boolean));
+      const isContentChecked = link => preselectedSet.size === 0 || preselectedSet.has(link);
 
       const articleItems = articles.map(article => {
         const date = dayjs(article.date).format("DD/MM/YYYY HH:mm");
@@ -5910,9 +5832,9 @@ function buildSubjectCardHtml(subject, ctx) {
           : "";
 
         return `
-          <li class="content-item${preselectedSet.has(article.link) ? " preselected" : ""}" data-link="${escapeHtml(article.link)}" data-orientation="${escapeHtml(article.orientation)}" data-type="article">
+          <li class="content-item${isContentChecked(article.link) ? " preselected" : ""}" data-link="${escapeHtml(article.link)}" data-orientation="${escapeHtml(article.orientation)}" data-type="article">
             <label class="article-label">
-              <input type="checkbox"${preselectedSet.has(article.link) ? " checked" : ""}>
+              <input type="checkbox"${isContentChecked(article.link) ? " checked" : ""}>
               <div>
                 <strong>${escapeHtml(article.source)}</strong> ${orientationTag}
                 <br>
@@ -5931,9 +5853,9 @@ function buildSubjectCardHtml(subject, ctx) {
         const date = dayjs(video.date).format("DD/MM/YYYY HH:mm");
 
         return `
-          <li class="content-item video-item${preselectedSet.has(video.link) ? " preselected" : ""}" data-link="${escapeHtml(video.link)}" data-type="youtube">
+          <li class="content-item video-item${isContentChecked(video.link) ? " preselected" : ""}" data-link="${escapeHtml(video.link)}" data-type="youtube">
             <label class="article-label">
-              <input type="checkbox"${preselectedSet.has(video.link) ? " checked" : ""}>
+              <input type="checkbox"${isContentChecked(video.link) ? " checked" : ""}>
               <div>
                 ${
                   video.thumbnail
