@@ -16,11 +16,17 @@ const MIXTE_PASSWORD = process.env.MIXTE_PASSWORD || "";
 const AGON_URL = (process.env.AGON_URL || "http://localhost:3001").trim();
 const SENT_TO_AGON_FILE = path.join(__dirname, "sent-to-agon.json");
 const AUTO_COLLECT_FILE = path.join(__dirname, "auto-collect-config.json");
+const AUTO_PUBLISH_FILE = path.join(__dirname, "auto-publish-config.json");
 let autoCollectTimers = [];
 
 function loadAutoCollectConfig() {
   try { return JSON.parse(fs.readFileSync(AUTO_COLLECT_FILE, "utf8")); }
   catch { return { enabled: false, times: ["08:00"] }; }
+}
+
+function loadAutoPublishConfig() {
+  try { return JSON.parse(fs.readFileSync(AUTO_PUBLISH_FILE, "utf8")); }
+  catch { return { enabled: false }; }
 }
 
 function scheduleOneAutoCollect(timeStr) {
@@ -3402,6 +3408,13 @@ app.get("/admin", (req, res) => {
         </label>
         <span class="ac-toggle-label">Collecte automatique</span>
       </div>
+      <div class="ac-toggle-row">
+        <label class="ac-toggle">
+          <input type="checkbox" id="ap-enabled" onchange="onApToggle()">
+          <span class="ac-slider"></span>
+        </label>
+        <span class="ac-toggle-label">Publication automatique sur Agôn</span>
+      </div>
       <div class="ac-fields" id="ac-fields">
         <div class="ac-field">
           <label>Fréquence par jour</label>
@@ -3488,6 +3501,7 @@ async function init() {
   renderYoutube();
   bindUnsavedFormWarning();
   await initAutoCollect();
+  await initAutoPublish();
 }
 
 function switchTab(name) {
@@ -3538,6 +3552,23 @@ function renderAcStatus() {
   if (!times.length) { div.textContent = 'Aucune heure configurée.'; div.className = 'ac-status'; return; }
   div.className = 'ac-status active';
   div.innerHTML = \`<strong>Actif</strong> — \${times.length} collecte(s)/jour :<ul>\${times.map(t => \`<li>à \${t}</li>\`).join('')}</ul>\`;
+}
+
+async function initAutoPublish() {
+  const config = await fetch('/api/auto-publish').then(r => r.json());
+  document.getElementById('ap-enabled').checked = config.enabled;
+}
+
+async function onApToggle() {
+  const enabled = document.getElementById('ap-enabled').checked;
+  try {
+    const r = await fetch('/api/auto-publish', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ enabled }) });
+    const d = await r.json();
+    if (d.ok) showToast(enabled ? 'Publication automatique activée ✓' : 'Publication automatique désactivée');
+    else showError('Erreur : ' + d.error);
+  } catch (err) {
+    showError('Erreur réseau : ' + err.message);
+  }
 }
 
 async function saveAutoCollect() {
@@ -4225,6 +4256,26 @@ app.post("/api/auto-collect", (req, res) => {
   try {
     fs.writeFileSync(AUTO_COLLECT_FILE, JSON.stringify(config, null, 2), "utf8");
     scheduleAutoCollect(config);
+    res.json({ ok: true });
+  } catch (err) {
+    res.status(500).json({ ok: false, error: err.message });
+  }
+});
+
+// ==================== PUBLICATION AUTOMATIQUE SUR AGÔN ====================
+
+app.get("/api/auto-publish", (req, res) => {
+  res.json(loadAutoPublishConfig());
+});
+
+app.post("/api/auto-publish", (req, res) => {
+  const { enabled } = req.body || {};
+  if (typeof enabled !== "boolean") {
+    return res.status(400).json({ ok: false, error: "Paramètres invalides" });
+  }
+  const config = { enabled };
+  try {
+    fs.writeFileSync(AUTO_PUBLISH_FILE, JSON.stringify(config, null, 2), "utf8");
     res.json({ ok: true });
   } catch (err) {
     res.status(500).json({ ok: false, error: err.message });
