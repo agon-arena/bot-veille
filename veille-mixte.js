@@ -884,14 +884,30 @@ function filterKeywordNoise(subject, values, max = 8) {
   // institutions trop génériques pour "définir le mieux l'actualité" (cf. la
   // règle du prompt) — on l'impose ici plutôt que d'espérer que l'IA la suive.
   const genericStandalone = new Set([
-    "france", "francais", "francaise",
-    "chine", "etatsunis", "russie", "allemagne", "espagne", "italie", "royaumeuni",
-    "ukraine", "israel", "iran", "irak", "syrie", "liban", "japon", "bresil",
-    "inde", "canada", "mexique", "portugal", "belgique", "suisse",
+    // noms communs vagues interdits par le prompt mais non enforced côté code
+    "guerre", "guerres", "crise", "crises", "conflit", "conflits",
+    "tensions", "tension", "polemique", "scandale", "incident", "tragedie",
+    "evenement", "actualite", "information", "nouvelles", "faits", "dossier",
+    // nationalité / gentilés isolés
+    "france", "francais", "francaise", "europeen", "europeenne", "international",
+    // pays — liste étendue pour couvrir les cas courants en veille francophone
+    "chine", "etatsunis", "usa", "russie", "ukraine", "israel", "iran", "irak",
+    "syrie", "liban", "palestine", "allemagne", "espagne", "italie", "royaumeuni",
+    "japon", "bresil", "inde", "canada", "mexique", "portugal", "belgique", "suisse",
+    "turquie", "grece", "pologne", "maroc", "algerie", "tunisie", "egypte",
+    "arabie", "afghanistan", "pakistan", "nigeria", "senegal", "venezuela",
+    "colombie", "argentine", "taiwan", "coree", "philippines", "australie",
+    "suede", "norvege", "danemark", "finlande", "autriche", "hongrie",
+    "roumanie", "serbie",
+    // grandes villes seules
     "paris", "londres", "berlin", "madrid", "rome", "pekin", "newyork", "moscou",
-    "washington", "tokyo", "bruxelles", "geneve",
+    "washington", "tokyo", "bruxelles", "geneve", "vienne", "varsovie",
+    "istanbul", "teheran", "bagdad", "beyrouth", "damas", "kaboul", "islamabad",
+    "caire", "riyad", "lagos", "nairobi",
+    // institutions trop génériques seules
     "assemblee", "senat", "gouvernement", "parlement", "elysee", "matignon",
-    "onu", "otan", "ue", "unioneuropeenne", "conseilconstitutionnel"
+    "onu", "otan", "omc", "fmi", "ue", "unioneuropeenne", "conseileuropeen",
+    "conseilconstitutionnel"
   ]);
 
   const repairedValues = (Array.isArray(values) ? values : []).map((keyword) => repairKeywordFromSources(subject, keyword));
@@ -1324,6 +1340,7 @@ async function verifySourcesWithAI(subject) {
   const compactContents = subject.contents.map(content => ({
     source: content.source,
     title: content.title,
+    summary: content.summary || "",
     link: content.link || ""
   }));
 
@@ -3456,6 +3473,8 @@ function buildSubjectInteractionScriptHtml() {
       const bar = document.getElementById("saved-selection-bar");
       document.body.classList.toggle("saved-selection-mode", isSavedMode);
       if (bar) bar.classList.toggle("visible", isSavedMode);
+      const rankedBar = document.getElementById("ranked-action-bar");
+      if (rankedBar) rankedBar.classList.toggle("visible", currentSort === "ranked");
 
       const activeSession = getActiveSession();
       const count = isSavedMode && activeSession ? activeSession.querySelectorAll(".subject.selected").length : 0;
@@ -3779,15 +3798,20 @@ function buildSubjectInteractionScriptHtml() {
       }
 
       if (!getMainKeywordFromEditor(subjectEl)) {
-        setStatus("Tags…");
         const tagsPayload = getSubjectAnalyzePayloadFromEditor(subjectEl);
-        const tagsRes = await fetch("/generate-tags", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(tagsPayload) });
-        const tagsData = await tagsRes.json().catch(() => ({}));
-        if (!tagsRes.ok || tagsData.ok === false) throw new Error(tagsData.error || "Erreur tags");
-        renderKeywordsInEditor(subjectEl, tagsData.mainKeyword || "");
-        const tagsBtn = subjectEl.querySelector(".tags-generate-btn");
-        if (tagsBtn) tagsBtn.textContent = "✓ Tags générés";
-        await fetch("/save-update", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ subject: tagsPayload.subject, ai: { mainKeyword: getMainKeywordFromEditor(subjectEl) } }) });
+        // Ne génère le tag que si l'article est disponible — sans article,
+        // l'IA n'a que le titre brut du sujet et produit des tags génériques
+        // (ex. "Philippines" pour un sujet sur une éruption aux Philippines).
+        if (tagsPayload.articleText) {
+          setStatus("Tags…");
+          const tagsRes = await fetch("/generate-tags", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(tagsPayload) });
+          const tagsData = await tagsRes.json().catch(() => ({}));
+          if (!tagsRes.ok || tagsData.ok === false) throw new Error(tagsData.error || "Erreur tags");
+          renderKeywordsInEditor(subjectEl, tagsData.mainKeyword || "");
+          const tagsBtn = subjectEl.querySelector(".tags-generate-btn");
+          if (tagsBtn) tagsBtn.textContent = "✓ Tags générés";
+          await fetch("/save-update", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ subject: tagsPayload.subject, ai: { mainKeyword: getMainKeywordFromEditor(subjectEl) } }) });
+        }
       }
 
       // Étape 5 : Envoi vers Agôn (toujours tenté)
@@ -3907,6 +3931,36 @@ function buildSubjectInteractionScriptHtml() {
         sortSubjects();
       });
     });
+
+    const checkTop10Btn = document.getElementById("check-top10-btn");
+    if (checkTop10Btn) {
+      checkTop10Btn.addEventListener("click", async () => {
+        const activeSession = getActiveSession();
+        if (!activeSession) return;
+        const subjects = [...activeSession.querySelectorAll(":scope > .subject")]
+          .filter(s => s.style.display !== "none")
+          .slice(0, 10);
+        checkTop10Btn.disabled = true;
+        checkTop10Btn.textContent = "En cours…";
+        for (const subjectEl of subjects) {
+          const score = Number(subjectEl.dataset.score) || 0;
+          const mode = score >= 8 ? "positions" : "libre";
+          subjectEl.dataset.arenaMode = mode;
+          subjectEl.querySelectorAll(".arena-mode-btn").forEach(b => {
+            b.classList.toggle("active", b.dataset.mode === mode);
+          });
+          const modeLabel = subjectEl.querySelector(".arena-mode-label");
+          if (modeLabel) modeLabel.textContent = mode === "libre" ? "Arène libre" : "Arène à positions";
+          const saveBtn = subjectEl.querySelector(".save-btn");
+          if (saveBtn && !saveBtn.classList.contains("saved")) {
+            saveBtn.click();
+            await new Promise(r => setTimeout(r, 120));
+          }
+        }
+        checkTop10Btn.disabled = false;
+        checkTop10Btn.textContent = "Cocher les 10";
+      });
+    }
 
     const sortSourcesBtn = document.querySelector(".sort-sources-btn");
     if (sortSourcesBtn) {
@@ -4752,6 +4806,33 @@ function buildVeilleStylesHtml() {
 
     .saved-selection-bar.visible {
       display: flex;
+    }
+
+    .ranked-action-bar {
+      display: none;
+      align-items: center;
+      gap: 10px;
+      margin: 0 0 18px;
+    }
+
+    .ranked-action-bar.visible {
+      display: flex;
+    }
+
+    .check-top10-btn {
+      border: 1px solid #ddd;
+      background: white;
+      border-radius: 999px;
+      padding: 8px 16px;
+      font: inherit;
+      font-size: 0.86rem;
+      font-weight: 700;
+      cursor: pointer;
+      color: #111;
+    }
+
+    .check-top10-btn:hover {
+      background: #f0f0f0;
     }
 
     .saved-selection-top {
@@ -5784,6 +5865,12 @@ function buildSubjectCardHtml(subject, ctx) {
           </div>`
         : "";
 
+      // Sources pré-sélectionnées par l'IA (analyse complète ou scoring batch)
+      const preselectedSet = new Set([
+        ...(Array.isArray(ai.selectedLinks) ? ai.selectedLinks : []),
+        ...(Array.isArray(subject.selectedLinks) ? subject.selectedLinks : [])
+      ].map(l => String(l || "").trim()).filter(Boolean));
+
       const articleItems = articles.map(article => {
         const date = dayjs(article.date).format("DD/MM/YYYY HH:mm");
         const orientationGroup = getOrientationGroup(article.orientation);
@@ -5792,9 +5879,9 @@ function buildSubjectCardHtml(subject, ctx) {
           : "";
 
         return `
-          <li class="content-item" data-link="${escapeHtml(article.link)}" data-orientation="${escapeHtml(article.orientation)}" data-type="article">
+          <li class="content-item${preselectedSet.has(article.link) ? " preselected" : ""}" data-link="${escapeHtml(article.link)}" data-orientation="${escapeHtml(article.orientation)}" data-type="article">
             <label class="article-label">
-              <input type="checkbox">
+              <input type="checkbox"${preselectedSet.has(article.link) ? " checked" : ""}>
               <div>
                 <strong>${escapeHtml(article.source)}</strong> ${orientationTag}
                 <br>
@@ -5813,9 +5900,9 @@ function buildSubjectCardHtml(subject, ctx) {
         const date = dayjs(video.date).format("DD/MM/YYYY HH:mm");
 
         return `
-          <li class="content-item video-item" data-link="${escapeHtml(video.link)}" data-type="youtube">
+          <li class="content-item video-item${preselectedSet.has(video.link) ? " preselected" : ""}" data-link="${escapeHtml(video.link)}" data-type="youtube">
             <label class="article-label">
-              <input type="checkbox">
+              <input type="checkbox"${preselectedSet.has(video.link) ? " checked" : ""}>
               <div>
                 ${
                   video.thumbnail
@@ -5841,11 +5928,12 @@ function buildSubjectCardHtml(subject, ctx) {
         sources: subject.sources,
         articleCount: subject.articleCount,
         youtubeCount: subject.youtubeCount,
-        contents: subject.contents.slice(0, 10).map(c => ({
+        contents: subject.contents.map(c => ({
           type: c.type,
           source: c.source,
           orientation: c.orientation,
           title: c.title,
+          summary: c.summary || "",
           link: c.link
         }))
       }));
@@ -6132,6 +6220,9 @@ function generateHtml(sessions) {
     <button class="generate-all-btn" type="button">Tout générer</button>
   </div>
 
+  <div class="ranked-action-bar" id="ranked-action-bar">
+    <button class="check-top10-btn" type="button" id="check-top10-btn">Cocher les 10</button>
+  </div>
 
   ${
     sessions.length
@@ -6781,6 +6872,10 @@ function generateCertamenHtml(sessions) {
       </div>
     </div>
     <button class="generate-all-btn" type="button">Tout générer</button>
+  </div>
+
+  <div class="ranked-action-bar" id="ranked-action-bar">
+    <button class="check-top10-btn" type="button" id="check-top10-btn">Cocher les 10</button>
   </div>
 
   ${
