@@ -2,10 +2,8 @@ name: Collecte automatique bot veille
 
 on:
   schedule:
-    # 3 collectes/jour : 7h, 12h, 18h UTC (= 9h, 14h, 20h heure Paris en été)
-    - cron: '0 7 * * *'
-    - cron: '0 12 * * *'
-    - cron: '0 18 * * *'
+    # 1 collecte/jour à 12h heure de Paris (10h UTC en été, 11h UTC en hiver)
+    - cron: '0 10 * * *'
   workflow_dispatch:  # déclenchement manuel depuis l'onglet Actions
 
 jobs:
