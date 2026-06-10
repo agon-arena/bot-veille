@@ -24,15 +24,15 @@ function loadAutoCollectConfig() {
   catch { return { enabled: false, times: ["08:00"] }; }
 }
 
-function getParisTimeHHMM() {
-  const parts = new Intl.DateTimeFormat("fr-FR", { timeZone: "Europe/Paris", hour: "2-digit", minute: "2-digit", hour12: false }).formatToParts(new Date());
+function getReunionTimeHHMM() {
+  const parts = new Intl.DateTimeFormat("fr-FR", { timeZone: "Indian/Reunion", hour: "2-digit", minute: "2-digit", hour12: false }).formatToParts(new Date());
   const h = parts.find(p => p.type === "hour").value;
   const m = parts.find(p => p.type === "minute").value;
   return `${h}:${m}`;
 }
 
-function getParisDateStr() {
-  return new Date().toLocaleDateString("fr-CA", { timeZone: "Europe/Paris" });
+function getReunionDateStr() {
+  return new Date().toLocaleDateString("fr-CA", { timeZone: "Indian/Reunion" });
 }
 
 function timeToMinutes(hhmm) {
@@ -3442,7 +3442,7 @@ app.get("/admin", (req, res) => {
           </select>
         </div>
         <div class="ac-field">
-          <label>Heure(s) de collecte</label>
+          <label>Heure(s) de collecte (heure de la Réunion)</label>
           <div class="ac-times-grid" id="ac-times"></div>
         </div>
         <div>
@@ -4285,8 +4285,8 @@ app.post("/api/auto-collect-tick", requireMixteAuth, async (req, res) => {
   if (!config.enabled || !Array.isArray(config.times) || !config.times.length) {
     return res.json({ triggered: false, reason: "disabled" });
   }
-  const nowMin = timeToMinutes(getParisTimeHHMM());
-  const today = getParisDateStr();
+  const nowMin = timeToMinutes(getReunionTimeHHMM());
+  const today = getReunionDateStr();
   const TOLERANCE_MIN = 20;
   const due = config.times.find(t => {
     const tMin = timeToMinutes(t);
