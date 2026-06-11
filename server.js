@@ -4073,10 +4073,58 @@ app.delete("/api/agon-stories/:storyId", requireMixteAuth, async (req, res) => {
   }
 });
 
-function normalizeOutgoingKeywords(keywords) {
+const WEAK_OUTGOING_SINGLE_WORD_TAGS = new Set([
+  "accord", "accords", "accident", "accidents", "accusation", "accusations",
+  "attaque", "attaques", "baisse", "blocage", "blocages", "budget", "chute",
+  "colere", "controle", "controles", "coupe", "coupes", "decision", "decret",
+  "decrets", "defaite", "debat", "debats", "demission", "dette", "election",
+  "elections", "enquete", "enquetes", "expulsion", "expulsions", "frappe",
+  "frappes", "greve", "greves", "hausse", "loi", "manifestation",
+  "manifestations", "mesure", "mesures", "mort", "morts", "motion", "plainte",
+  "plaintes", "proces", "refere", "referendum", "refoule", "refoules",
+  "reforme", "reformes", "rejet", "retrait", "sanction", "sanctions",
+  "scrutin", "suppression", "tirs", "vote", "votes"
+]);
+
+function normalizeOutgoingKeywordKey(value) {
+  return String(value || "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[’']/g, " ")
+    .replace(/[^a-z0-9]+/g, "");
+}
+
+function isWeakOutgoingSingleWordKeyword(keyword, context = {}) {
+  const value = String(keyword || "").trim();
+  if (!value || /\s/.test(value)) return false;
+
+  const key = normalizeOutgoingKeywordKey(value);
+  if (!key) return true;
+  if (WEAK_OUTGOING_SINGLE_WORD_TAGS.has(key)) return true;
+  if (/^[A-Z0-9][A-Z0-9-]{1,9}$/.test(value)) return false;
+  if (!/^[A-ZÀ-ÖØ-Ý]/.test(value)) return true;
+
+  const contents = Array.isArray(context?.contents) ? context.contents : [];
+  const sourceText = [
+    context?.subject || "",
+    ...contents.slice(0, 10).flatMap((content) => [
+      content?.title || "",
+      content?.summary || ""
+    ])
+  ].join(" ");
+  const escapedValue = value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return !new RegExp(`(^|[^\\p{L}\\p{N}])${escapedValue}([^\\p{L}\\p{N}]|$)`, "u").test(sourceText);
+}
+
+function normalizeOutgoingKeywords(keywords, context = {}) {
   return [...new Set((Array.isArray(keywords) ? keywords : [])
     .map((keyword) => String(keyword || "").trim())
-    .filter(Boolean))]
+    .filter(Boolean)
+    .filter((keyword) => {
+      const wordCount = keyword.split(/\s+/).filter(Boolean).length;
+      return wordCount !== 1 || !isWeakOutgoingSingleWordKeyword(keyword, context);
+    }))]
     .slice(0, 10);
 }
 
@@ -4114,10 +4162,10 @@ function buildTagGenerationPayload({ subject, question, sources, links }) {
 }
 
 async function ensureKeywordsBeforeAgonSend({ subject, question, sources, links, keywords }) {
-  const currentKeywords = normalizeOutgoingKeywords(keywords);
+  const payload = buildTagGenerationPayload({ subject, question, sources, links });
+  const currentKeywords = normalizeOutgoingKeywords(keywords, payload);
   if (currentKeywords.length) return currentKeywords;
 
-  const payload = buildTagGenerationPayload({ subject, question, sources, links });
   if (!payload.subject || !payload.contents.length) return currentKeywords;
 
   try {
@@ -4131,7 +4179,7 @@ async function ensureKeywordsBeforeAgonSend({ subject, question, sources, links,
       throw new Error(text || "Erreur génération tags");
     }
     const data = await response.json();
-    return normalizeOutgoingKeywords([data?.mainKeyword]);
+    return normalizeOutgoingKeywords([data?.mainKeyword], payload);
   } catch (error) {
     console.error("[send-to-agon] Tags absents et génération impossible:", error.message);
     return currentKeywords;

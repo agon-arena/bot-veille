@@ -910,6 +910,19 @@ function filterKeywordNoise(subject, values, max = 8) {
     "conseilconstitutionnel"
   ]);
 
+  const weakSingleWordTags = new Set([
+    "accord", "accords", "accident", "accidents", "accusation", "accusations",
+    "attaque", "attaques", "baisse", "blocage", "blocages", "budget", "chute",
+    "colere", "controle", "controles", "coupe", "coupes", "decision", "decret",
+    "decrets", "defaite", "debat", "debats", "demission", "dette", "election",
+    "elections", "enquete", "enquetes", "expulsion", "expulsions", "frappe",
+    "frappes", "greve", "greves", "hausse", "loi", "manifestation",
+    "manifestations", "mesure", "mesures", "mort", "morts", "motion", "plainte",
+    "plaintes", "proces", "refere", "referendum", "refoule", "refoules",
+    "reforme", "reformes", "rejet", "retrait", "sanction", "sanctions",
+    "scrutin", "suppression", "tirs", "vote", "votes"
+  ]);
+
   const repairedValues = (Array.isArray(values) ? values : []).map((keyword) => repairKeywordFromSources(subject, keyword));
 
   return normalizeKeywordList(repairedValues, max).filter((keyword) => {
@@ -929,9 +942,34 @@ function filterKeywordNoise(subject, values, max = 8) {
 
     const wordCount = trimmed.split(/\s+/).filter(Boolean).length;
     if (wordCount === 1 && genericStandalone.has(normalizeKeywordRepairKey(trimmed))) return false;
+    if (wordCount === 1 && isWeakSingleWordKeyword(subject, trimmed, weakSingleWordTags)) return false;
 
     return true;
   }).slice(0, max);
+}
+
+function isWeakSingleWordKeyword(subject, keyword, weakSingleWordTags) {
+  const value = String(keyword || "").trim();
+  if (!value || /\s/.test(value)) return false;
+
+  const key = normalizeKeywordRepairKey(value);
+  if (!key) return true;
+  if (weakSingleWordTags.has(key)) return true;
+
+  // Un mot seul est fragile : on ne le garde que s'il ressemble clairement a un
+  // nom propre, une marque, un sigle ou un phenomene nomme present dans les sources.
+  if (/^[A-Z0-9][A-Z0-9-]{1,9}$/.test(value)) return false;
+  if (!/^[A-ZÀ-ÖØ-Ý]/.test(value)) return true;
+
+  const sourceText = [
+    subject?.subject || "",
+    ...((Array.isArray(subject?.contents) ? subject.contents : []).slice(0, 10).flatMap((content) => [
+      content?.title || "",
+      content?.summary || ""
+    ]))
+  ].join(" ");
+  const escapedValue = value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return !new RegExp(`(^|[^\\p{L}\\p{N}])${escapedValue}([^\\p{L}\\p{N}]|$)`, "u").test(sourceText);
 }
 
 function extractNewsKeywords(subject) {
@@ -1014,8 +1052,12 @@ function safeJsonParse(text) {
 }
 
 async function generateSubjectTagsWithAI(subject, compactContents = null) {
-  const fallback = extractNewsKeywords(subject);
-  const fallbackMainKeyword = fallback[0] || "";
+  // Tag sentinelle volontairement reconnaissable : quand la génération échoue
+  // (IA non configurée, tag rejeté par les filtres, erreur API), on sort
+  // "Actu" plutôt qu'un mot-clé regex médiocre — voir "Actu" en production
+  // signale immédiatement un bug à corriger, là où l'ancien fallback masquait
+  // le problème.
+  const fallbackMainKeyword = "Actu";
   if (!openai) return { mainKeyword: fallbackMainKeyword };
 
   const articleText = String(subject.articleText || "").trim();
@@ -1037,8 +1079,17 @@ async function generateSubjectTagsWithAI(subject, compactContents = null) {
     sourceSection = `Contenus :\n${JSON.stringify(contents, null, 2)}`;
   }
 
+  // Sans cette date, le modèle devine l'année depuis ses données d'entraînement
+  // et produit des tags faussement datés (ex. "Grève SNCF juin 2024" pour une
+  // actualité courante).
+  const todayLabel = new Date().toLocaleDateString("fr-FR", {
+    day: "numeric", month: "long", year: "numeric", timeZone: "Europe/Paris"
+  });
+
   const prompt = `
 Tu es chargé d'extraire le tag éditorial principal d'une actualité pour une plateforme de débat.
+
+Date du jour : ${todayLabel}. L'actualité traitée est récente.
 
 Sujet principal :
 ${subject.subject}
@@ -1050,11 +1101,13 @@ ${sourceSection}
 
 Réponds uniquement en JSON valide avec cette structure :
 {
-  "mainKeyword": "le tag principal"
+  "mainKeyword": "le tag principal",
+  "alternatives": ["variante plus courte", "variante encore plus courte"]
 }
 
 Règle centrale :
 - "mainKeyword" est obligatoire ;
+- "alternatives" contient exactement 2 reformulations du même tag, de plus en plus courtes, classées de la plus précise à la plus compacte ; chaque alternative doit respecter toutes les règles ci-dessous au même titre que "mainKeyword" ;
 - il doit définir le mieux l'actualité ;
 - il doit être immédiatement compréhensible seul, sans lire le titre ;
 - il doit nommer l'objet central de l'actualité : acteur, pays, institution, lieu, événement, loi, conflit, affaire ou phénomène précis ;
@@ -1062,6 +1115,8 @@ Règle centrale :
 - il ne doit pas se limiter à un nom de pays seul (France, Chine, États-Unis, Russie, Allemagne, etc.) ni à une grande ville seule (Paris, New York, Pékin, Londres, etc.) ; en revanche, un pays ou une ville peut apparaître associé à l'événement, l'acteur ou l'institution concerné (ex. "Émeutes Paris", "Élections Allemagne") ;
 - il ne doit jamais être un nom d'institution seul (Assemblée, Sénat, Gouvernement, ONU…) ni un chiffre seul (24 morts, 300 blessés…) : ces formulations ne nomment rien de précis ;
 - si l'actualité s'inscrit dans un conflit ou une série déjà traitée ailleurs (ex. guerre au Moyen-Orient, guerre en Ukraine), ne reprends jamais l'intitulé générique du conflit : nomme l'épisode précis de cette actualité (l'attaque, le lieu, les acteurs de ce jour précis) pour qu'il se distingue des autres tags du même conflit ;
+- n'inclus jamais de date (année, mois) dans le tag, sauf si elle figure explicitement dans le sujet ou les sources fournies ; n'invente jamais une date à partir de tes connaissances générales — un tag sans date vaut toujours mieux qu'un tag avec une date erronée ;
+- évite les tags d'un seul mot sauf s'il s'agit clairement d'un nom propre, d'une marque, d'un acteur, d'un sigle ou d'un événement immédiatement identifiable ; refuse les mots seuls faibles comme "Coupe", "Refoulés", "Réforme", "Vote", "Attaque", "Grève" : associe-les à l'objet précis ("Coupe du monde", "Migrants refoulés", "Réforme des retraites", etc.) ;
 - il doit faire 28 caractères maximum, espaces compris ; ne tronque jamais un mot en cours de route — choisis un tag plus court plutôt qu'un mot coupé.
 
 Exemples de tags refusés sur cette plateforme, à ne jamais reproduire :
@@ -1069,7 +1124,8 @@ Exemples de tags refusés sur cette plateforme, à ne jamais reproduire :
 - "Assemblée" pour un vote à l'Assemblée nationale → institution seule, ne dit rien du texte voté ;
 - "24 morts" pour un attentat ferroviaire → un chiffre seul ne nomme ni le lieu ni l'événement ;
 - "Machghara" pour des bombardements au Liban → nom de lieu isolé et inconnu du lecteur, incompréhensible seul ; il fallait l'associer au fait ("Frappes à Machghara, Liban") ;
-- "guerre au Moyen-Orient" recopié à l'identique sur plusieurs actualités différentes du même conflit → pas assez précis pour distinguer cet épisode des autres ; il fallait nommer l'épisode exact ("frappe israélienne à Tyr", "frappes USA-Iran sur Natanz").
+- "guerre au Moyen-Orient" recopié à l'identique sur plusieurs actualités différentes du même conflit → pas assez précis pour distinguer cet épisode des autres ; il fallait nommer l'épisode exact ("frappe israélienne à Tyr", "frappes USA-Iran sur Natanz") ;
+- "Grève SNCF juin 2024" pour une grève en cours → date inventée, absente des sources ; il fallait "Grève SNCF" ou préciser l'objet du mouvement ("Grève SNCF des contrôleurs").
 `;
 
   try {
@@ -1077,15 +1133,24 @@ Exemples de tags refusés sur cette plateforme, à ne jamais reproduire :
       model: "gpt-4.1-mini",
       input: prompt,
       temperature: 0.15,
-      // 120 était trop juste : un tag accentué + la structure JSON peuvent
-      // dépasser ce budget et couper la réponse en plein mot (ex. "Indemnit"
-      // au lieu de "Indemnité") — la marge supplémentaire coûte peu sur un
-      // appel aussi court.
-      max_output_tokens: 200
+      // Budget calibré pour 3 tags accentués + la structure JSON ; trop juste,
+      // il couperait la réponse en plein mot (ex. "Indemnit" au lieu
+      // d'"Indemnité") — la marge supplémentaire coûte peu sur un appel
+      // aussi court.
+      max_output_tokens: 300
     });
 
     const parsed = safeJsonParse(response.output_text);
-    const mainKeyword = filterKeywordNoise(subject, [parsed.mainKeyword], 1)[0] || "";
+    const candidates = [
+      parsed.mainKeyword,
+      ...(Array.isArray(parsed.alternatives) ? parsed.alternatives : [])
+    ];
+    // On garde le premier candidat qui survit aux filtres : si le tag
+    // principal est rejeté (trop long, trop générique…), une variante plus
+    // courte prend sa place au lieu de tomber sur le tag sentinelle "Actu".
+    // max = candidates.length, sinon normalizeKeywordList tronquerait la
+    // liste avant le filtrage et jetterait les variantes de secours.
+    const mainKeyword = filterKeywordNoise(subject, candidates, candidates.length)[0] || "";
     return { mainKeyword: mainKeyword || fallbackMainKeyword };
   } catch (error) {
     console.error(`Erreur IA tags pour le sujet "${subject.subject}" :`, error.message);
@@ -1957,8 +2022,9 @@ function buildSubjectInteractionScriptHtml() {
     }
 
     function buildKeywordsHtml(ai) {
-      const rawKeywords = Array.isArray(ai?.keywords) ? ai.keywords.filter(Boolean) : [];
-      const mainKeyword = String((ai && ai.mainKeyword) || rawKeywords[0] || "").trim();
+      // Pas de repli sur ai.keywords (mots-clés regex) : seul un vrai
+      // mainKeyword s'affiche comme tag principal ; sinon, pas de chip.
+      const mainKeyword = String((ai && ai.mainKeyword) || "").trim();
       return '<div class="news-keywords">' +
         '<div class="news-keywords-label">Tag principal</div>' +
         (mainKeyword ? '<span class="news-keyword-chip main-keyword-chip" data-main-keyword="' + escapeHtmlClient(mainKeyword) + '">' + escapeHtmlClient(mainKeyword) + '<button type="button" class="news-keyword-remove-btn" aria-label="Supprimer le tag principal">×</button></span>' : '') +
@@ -5753,8 +5819,9 @@ function buildVeilleStylesHtml() {
 
 
   function buildKeywordsStaticHtml(ai) {
-    const rawKeywords = Array.isArray(ai?.keywords) ? ai.keywords.filter(Boolean) : [];
-    const mainKeyword = String(ai?.mainKeyword || rawKeywords[0] || "").trim();
+    // Pas de repli sur ai.keywords (mots-clés regex) : seul un vrai
+    // mainKeyword s'affiche comme tag principal ; sinon, pas de chip.
+    const mainKeyword = String(ai?.mainKeyword || "").trim();
     return '<div class="news-keywords">' +
       '<div class="news-keywords-label">Tag principal</div>' +
       (mainKeyword ? '<span class="news-keyword-chip main-keyword-chip" data-main-keyword="' + escapeHtml(mainKeyword) + '">' + escapeHtml(mainKeyword) + '<button type="button" class="news-keyword-remove-btn" aria-label="Supprimer le tag principal">×</button></span>' : '') +
