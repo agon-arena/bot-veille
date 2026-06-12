@@ -3832,11 +3832,11 @@ function buildSubjectInteractionScriptHtml() {
       // Étape 5 : Envoi vers Agôn (toujours tenté)
       setStatus("Envoi vers Agôn…");
       const agonBtnFinal = subjectEl.querySelector(".agon-btn:not(.sent)");
-      if (!agonBtnFinal) return;
+      if (!agonBtnFinal) return { status: "skipped-sent" };
       resumeEl = subjectEl.querySelector(".resume");
       questionEl = subjectEl.querySelector(".debate-question");
       const resumeText = (resumeEl?.dataset.rawText || resumeEl?.textContent.trim() || "").trim();
-      if (!resumeText) return;
+      if (!resumeText) return { status: "skipped-no-article" };
       let storySelection = null;
       try { storySelection = collectStorySelection(subjectEl); } catch (e) { console.warn("Story selection ignorée :", e.message); }
       updateAiEditorCounters(subjectEl);
@@ -3861,6 +3861,7 @@ function buildSubjectInteractionScriptHtml() {
       const republishBtn = subjectEl.querySelector(".republish-btn");
       if (republishBtn) { republishBtn.classList.remove("hidden"); republishBtn.disabled = false; republishBtn.textContent = "↺ Republier"; }
       rehydratePersistentStates();
+      return { status: "sent" };
     }
 
     document.addEventListener("click", async (e) => {
@@ -3872,18 +3873,46 @@ function buildSubjectInteractionScriptHtml() {
         if (activeSession) subjects = [...activeSession.querySelectorAll(".subject")].filter(s => s.style.display !== "none");
       }
       if (subjects.length === 0) return;
+      console.log("[Tout générer] " + subjects.length + " sujet(s) sélectionné(s)");
+      subjects.forEach(s => { s.classList.remove("batch-skipped", "batch-error"); s.querySelector(".batch-outcome")?.remove(); });
       generateBtn.disabled = true;
+      const outcomes = [];
       for (let i = 0; i < subjects.length; i++) {
+        const subjectTitle = subjects[i].querySelector("h3")?.textContent.trim() || ("sujet " + (i + 1));
         try {
-          await generateSubjectPipeline(subjects[i], status => {
+          const out = await generateSubjectPipeline(subjects[i], status => {
             generateBtn.textContent = \`\${i + 1} / \${subjects.length} — \${status}\`;
           });
+          outcomes.push({ el: subjects[i], title: subjectTitle, status: (out && out.status) || "sent" });
         } catch (err) {
           console.error("Erreur pipeline sujet " + (i + 1) + " :", err.message);
+          outcomes.push({ el: subjects[i], title: subjectTitle, status: "error", error: err.message });
         }
       }
+      const sentCount = outcomes.filter(o => o.status === "sent").length;
+      const issues = outcomes.filter(o => o.status !== "sent");
+      issues.forEach(o => {
+        const isError = o.status === "error";
+        o.el.classList.add(isError ? "batch-error" : "batch-skipped");
+        const note = document.createElement("div");
+        note.className = "batch-outcome";
+        note.textContent = isError
+          ? "⚠ Non envoyé — erreur : " + (o.error || "inconnue")
+          : (o.status === "skipped-sent"
+            ? "⏭ Non renvoyé : déjà marqué « Envoyé » (utilise ↺ Republier pour forcer)"
+            : "⚠ Non envoyé : article manquant");
+        o.el.prepend(note);
+      });
+      console.log("[Tout générer] Bilan : " + sentCount + "/" + outcomes.length + " envoyé(s) vers Agôn"
+        + (issues.length ? " — non envoyés : " + issues.map(o => o.title).join(" | ") : ""));
       generateBtn.disabled = false;
-      generateBtn.textContent = "Tout générer";
+      if (issues.length) {
+        generateBtn.textContent = sentCount + "/" + outcomes.length + " envoyés — " + issues.length + " non envoyé(s)";
+        alert("Tout générer : " + sentCount + "/" + outcomes.length + " envoyé(s) vers Agôn.\\n\\nNon envoyé(s) :\\n"
+          + issues.map(o => "• " + o.title + (o.status === "skipped-sent" ? " (déjà envoyé)" : (o.status === "skipped-no-article" ? " (article manquant)" : " (erreur : " + (o.error || "?") + ")"))).join("\\n"));
+      } else {
+        generateBtn.textContent = "Tout générer";
+      }
     });
 
     document.addEventListener("click", async (e) => {
@@ -4879,6 +4908,25 @@ function buildVeilleStylesHtml() {
     .generate-all-btn:disabled {
       opacity: 0.6;
       cursor: not-allowed;
+    }
+
+    /* Bilan "Tout générer" : sujets sautés ou en erreur */
+    .subject.batch-skipped { outline: 2px solid #e67e22; }
+    .subject.batch-error { outline: 2px solid #c0392b; }
+    .batch-outcome {
+      background: #fff3e0;
+      border: 1px solid #e67e22;
+      color: #7a3e00;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 6px 10px;
+      border-radius: 6px;
+      margin-bottom: 8px;
+    }
+    .subject.batch-error .batch-outcome {
+      background: #fdecea;
+      border-color: #c0392b;
+      color: #7b241c;
     }
 
     .saved-selection-actions {
