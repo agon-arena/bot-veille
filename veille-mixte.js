@@ -2497,7 +2497,7 @@ function buildSubjectInteractionScriptHtml() {
       }).filter(function(c) { return c.link || c.title; });
       const sources = [...new Set(contents.map(function(c) { return c.source; }).filter(Boolean))];
       try {
-        const response = await fetch("/suggest-story", {
+        const response = await fetchWithTimeout("/suggest-story", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ subject: subjectTitle, sources, contents, ai: { agonTheme, debateQuestion, keywords } })
@@ -2517,6 +2517,19 @@ function buildSubjectInteractionScriptHtml() {
       } catch (error) {
         console.error("Erreur suggestion histoire :", error.message);
       }
+    }
+
+    const PIPELINE_FETCH_TIMEOUT_MS = 90000;
+
+    function fetchWithTimeout(url, options = {}, timeoutMs = PIPELINE_FETCH_TIMEOUT_MS) {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), timeoutMs);
+      return fetch(url, { ...options, signal: controller.signal })
+        .catch(err => {
+          if (err.name === "AbortError") throw new Error("Délai dépassé (" + Math.round(timeoutMs / 1000) + "s) : " + url);
+          throw err;
+        })
+        .finally(() => clearTimeout(timer));
     }
 
     const AI_TITLE_MAX = 110;
@@ -3638,7 +3651,7 @@ function buildSubjectInteractionScriptHtml() {
         subjectData.arenaMode = arenaMode;
         const aiBox = analyzeBtn.closest(".ai-box");
         const aiScore = subjectEl.querySelector(".ai-score.pending");
-        const res = await fetch("/analyze", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(subjectData) });
+        const res = await fetchWithTimeout("/analyze", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(subjectData) });
         if (!res.ok) throw new Error("Erreur analyse");
         const ai = await res.json();
         ai.sourceSubject = subjectData.subject || "";
@@ -3688,7 +3701,7 @@ function buildSubjectInteractionScriptHtml() {
           if (!anyChecked && allContentItems.length > 0) {
             allContentItems.forEach(item => { const cb = item.querySelector('input[type="checkbox"]'); if (cb) cb.checked = true; });
           }
-          const fullRes = await fetch("/generate-full-article", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ subject: subjectTitle, contents: getSelectedContents(subjectEl), arenaMode }) });
+          const fullRes = await fetchWithTimeout("/generate-full-article", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ subject: subjectTitle, contents: getSelectedContents(subjectEl), arenaMode }) });
           const fullData = await fullRes.json().catch(() => ({}));
           if (!fullRes.ok || fullData.ok === false) throw new Error(fullData.error || "Erreur résumé");
           const summaryText = String(fullData.article || "").trim();
@@ -3712,7 +3725,7 @@ function buildSubjectInteractionScriptHtml() {
             subjectEl.dataset.possibleBiases = "[]";
             subjectEl.dataset.debateAngle = "";
 
-            const freeRes = await fetch("/generate-free-article", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ subject: subjectTitle, summary: summaryText, arenaMode }) });
+            const freeRes = await fetchWithTimeout("/generate-free-article", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ subject: subjectTitle, summary: summaryText, arenaMode }) });
             const freeData = await freeRes.json().catch(() => ({}));
             if (!freeRes.ok || freeData.ok === false) throw new Error(freeData.error || "Erreur article factuel");
 
@@ -3741,7 +3754,7 @@ function buildSubjectInteractionScriptHtml() {
             if (mottoArticleText) {
               try {
                 const mottoSources = [...new Set(pipelineContents.map(c => c.source).filter(Boolean))];
-                const mottoRes = await fetch("/generate-latin-motto", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ subject: factualTitle || subjectTitle, summary: summaryText, article: mottoArticleText, sources: mottoSources, agonTheme: agonBtnLibre?.dataset.theme || "" }) });
+                const mottoRes = await fetchWithTimeout("/generate-latin-motto", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ subject: factualTitle || subjectTitle, summary: summaryText, article: mottoArticleText, sources: mottoSources, agonTheme: agonBtnLibre?.dataset.theme || "" }) });
                 const mottoData = await mottoRes.json().catch(() => ({}));
                 if (mottoRes.ok && mottoData.ok !== false && mottoData.article) {
                   const articleWithMotto = String(mottoData.article).trim();
@@ -3757,7 +3770,7 @@ function buildSubjectInteractionScriptHtml() {
             // ---- Pipeline ARÈNE À POSITIONS (comportement actuel, inchangé) ----
             // Étape 3 : Angle de débat + question
             setStatus("Angle & question…");
-            const mediaRes = await fetch("/generate-final-article", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ subject: subjectTitle, summary: summaryText, contents: pipelineContents, arenaMode }) });
+            const mediaRes = await fetchWithTimeout("/generate-final-article", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ subject: subjectTitle, summary: summaryText, contents: pipelineContents, arenaMode }) });
             const mediaData = await mediaRes.json().catch(() => ({}));
             if (!mediaRes.ok || mediaData.ok === false) throw new Error(mediaData.error || "Erreur angle & question");
             subjectEl.dataset.hasMediaContrast = "false";
@@ -3790,7 +3803,7 @@ function buildSubjectInteractionScriptHtml() {
             const editables = subjectEl.querySelectorAll(".positions-box .editable");
             const posA = editables[0]?.textContent.trim() || "";
             const posB = editables[1]?.textContent.trim() || "";
-            const styledRes = await fetch("/generate-styled-article", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ subject: subjectTitle, summary: summaryText, debateAngle: mediaData.debateAngle || "", debateQuestion, positionA: posA, positionB: posB, hasMediaContrast: false, mediaTreatment: "", mainIssue: mediaData.mainIssue || "", narrativeTension: mediaData.narrativeTension || "", possibleBiases: Array.isArray(mediaData.possibleBiases) ? mediaData.possibleBiases : [], debatePotential: mediaData.debatePotential || "", editorialWarning: mediaData.editorialWarning || "", editorialDecision: mediaData.editorialDecision || "", questionQuality: mediaData.questionQuality || "", arenaMode }) });
+            const styledRes = await fetchWithTimeout("/generate-styled-article", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ subject: subjectTitle, summary: summaryText, debateAngle: mediaData.debateAngle || "", debateQuestion, positionA: posA, positionB: posB, hasMediaContrast: false, mediaTreatment: "", mainIssue: mediaData.mainIssue || "", narrativeTension: mediaData.narrativeTension || "", possibleBiases: Array.isArray(mediaData.possibleBiases) ? mediaData.possibleBiases : [], debatePotential: mediaData.debatePotential || "", editorialWarning: mediaData.editorialWarning || "", editorialDecision: mediaData.editorialDecision || "", questionQuality: mediaData.questionQuality || "", arenaMode }) });
             const styledData = await styledRes.json().catch(() => ({}));
             if (!styledRes.ok || styledData.ok === false) throw new Error(styledData.error || "Erreur article définitif");
             const styledArticle = String(styledData.article || "").trim();
@@ -3819,7 +3832,7 @@ function buildSubjectInteractionScriptHtml() {
         // (ex. "Philippines" pour un sujet sur une éruption aux Philippines).
         if (tagsPayload.articleText) {
           setStatus("Tags…");
-          const tagsRes = await fetch("/generate-tags", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(tagsPayload) });
+          const tagsRes = await fetchWithTimeout("/generate-tags", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(tagsPayload) });
           const tagsData = await tagsRes.json().catch(() => ({}));
           if (!tagsRes.ok || tagsData.ok === false) throw new Error(tagsData.error || "Erreur tags");
           renderKeywordsInEditor(subjectEl, tagsData.mainKeyword || "");
@@ -3854,7 +3867,7 @@ function buildSubjectInteractionScriptHtml() {
         const dateMatch = (item.querySelector("small")?.textContent || "").match(/(\\d{2}\\/\\d{2}\\/\\d{4})/);
         return { title: item.querySelector("a")?.textContent.trim() || "", url: item.dataset.link || "", source: item.querySelector("strong")?.textContent.trim() || "", type: item.dataset.type || "article", date: dateMatch ? dateMatch[1] : "", checked: item.querySelector('input[type="checkbox"]')?.checked ?? true };
       }).filter(l => l.url);
-      const sendRes = await fetch("/send-to-agon", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ subject: subjectTitle, sessionLabel, question: finalQuestion, positionA: finalPosA, positionB: finalPosB, theme, resume: resumeForSend, sources: agonBtnFinal.dataset.sources, links, storySelection, keywords, politicalOrientation: agonBtnFinal.dataset.politicalOrientation ? JSON.parse(agonBtnFinal.dataset.politicalOrientation) : null, arenaMode }) });
+      const sendRes = await fetchWithTimeout("/send-to-agon", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ subject: subjectTitle, sessionLabel, question: finalQuestion, positionA: finalPosA, positionB: finalPosB, theme, resume: resumeForSend, sources: agonBtnFinal.dataset.sources, links, storySelection, keywords, politicalOrientation: agonBtnFinal.dataset.politicalOrientation ? JSON.parse(agonBtnFinal.dataset.politicalOrientation) : null, arenaMode }) });
       if (!sendRes.ok) throw new Error("Erreur envoi Agôn");
       agonBtnFinal.classList.add("sent");
       agonBtnFinal.textContent = "✓ Envoyé";
