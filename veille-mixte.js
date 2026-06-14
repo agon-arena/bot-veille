@@ -3691,6 +3691,7 @@ function buildSubjectInteractionScriptHtml() {
       const alreadyFull = String(fullArticleState?.value || "short").trim() === "full";
       let resumeEl = subjectEl.querySelector(".resume");
       let questionEl = subjectEl.querySelector(".debate-question");
+      let genErrorMessage = "";
 
       if (!alreadyFull) {
         try {
@@ -3819,6 +3820,7 @@ function buildSubjectInteractionScriptHtml() {
 
         } catch (genErr) {
           console.error("Erreur génération :", genErr.message);
+          genErrorMessage = genErr.message || "Erreur génération inconnue";
         }
       } else {
         // Article déjà complet — suggestion histoire seulement
@@ -3849,7 +3851,7 @@ function buildSubjectInteractionScriptHtml() {
       resumeEl = subjectEl.querySelector(".resume");
       questionEl = subjectEl.querySelector(".debate-question");
       const resumeText = (resumeEl?.dataset.rawText || resumeEl?.textContent.trim() || "").trim();
-      if (!resumeText) return { status: "skipped-no-article" };
+      if (!resumeText) return { status: "skipped-no-article", error: genErrorMessage };
       let storySelection = null;
       try { storySelection = collectStorySelection(subjectEl); } catch (e) { console.warn("Story selection ignorée :", e.message); }
       updateAiEditorCounters(subjectEl);
@@ -3896,7 +3898,7 @@ function buildSubjectInteractionScriptHtml() {
           const out = await generateSubjectPipeline(subjects[i], status => {
             generateBtn.textContent = \`\${i + 1} / \${subjects.length} — \${status}\`;
           });
-          outcomes.push({ el: subjects[i], title: subjectTitle, status: (out && out.status) || "sent" });
+          outcomes.push({ el: subjects[i], title: subjectTitle, status: (out && out.status) || "sent", error: out && out.error });
         } catch (err) {
           console.error("Erreur pipeline sujet " + (i + 1) + " :", err.message);
           outcomes.push({ el: subjects[i], title: subjectTitle, status: "error", error: err.message });
@@ -3913,7 +3915,7 @@ function buildSubjectInteractionScriptHtml() {
           ? "⚠ Non envoyé — erreur : " + (o.error || "inconnue")
           : (o.status === "skipped-sent"
             ? "⏭ Non renvoyé : déjà marqué « Envoyé » (utilise ↺ Republier pour forcer)"
-            : "⚠ Non envoyé : article manquant");
+            : "⚠ Non envoyé : article manquant" + (o.error ? " — erreur : " + o.error : ""));
         o.el.prepend(note);
       });
       console.log("[Tout générer] Bilan : " + sentCount + "/" + outcomes.length + " envoyé(s) vers Agôn"
@@ -3922,7 +3924,7 @@ function buildSubjectInteractionScriptHtml() {
       if (issues.length) {
         generateBtn.textContent = sentCount + "/" + outcomes.length + " envoyés — " + issues.length + " non envoyé(s)";
         alert("Tout générer : " + sentCount + "/" + outcomes.length + " envoyé(s) vers Agôn.\\n\\nNon envoyé(s) :\\n"
-          + issues.map(o => "• " + o.title + (o.status === "skipped-sent" ? " (déjà envoyé)" : (o.status === "skipped-no-article" ? " (article manquant)" : " (erreur : " + (o.error || "?") + ")"))).join("\\n"));
+          + issues.map(o => "• " + o.title + (o.status === "skipped-sent" ? " (déjà envoyé)" : (o.status === "skipped-no-article" ? " (article manquant" + (o.error ? " — erreur : " + o.error : "") + ")" : " (erreur : " + (o.error || "?") + ")"))).join("\\n"));
       } else {
         generateBtn.textContent = "Tout générer";
       }
