@@ -4544,7 +4544,7 @@ async function runAutoPublishPipeline() {
   try { const { uploadAll } = require("./storage-sync"); await uploadAll(); } catch {}
 }
 
-async function generateAndPostIdeas(debateId, question, positionA, positionB) {
+async function generateAndPostIdeas(debateId, question, positionA, positionB, adminHeaders) {
   if (!openai) { console.warn("[idées-ia] OPENAI_API_KEY absent"); return; }
   const isPositions = !!(positionA && positionB);
   const N = Math.floor(Math.random() * 4) + 6;
@@ -4616,7 +4616,16 @@ Réponds en JSON : { "ideas": [ { "title": "...", "body": "..." }, ... ] }
         const txt = await r.text().catch(() => "");
         console.warn(`[idées-ia] Échec idée ${i + 1} :`, txt);
       } else {
-        console.log(`[idées-ia] ✓ Idée ${i + 1}/${ideas.length} postée (camp ${idea.side || "libre"})`);
+        const { id: argId } = await r.json().catch(() => ({}));
+        const votes = Math.floor(Math.random() * 75) + 5;
+        console.log(`[idées-ia] ✓ Idée ${i + 1}/${ideas.length} postée (camp ${idea.side || "libre"}) → ${votes} voix`);
+        if (argId && adminHeaders) {
+          await fetch(`${AGON_URL}/api/admin/argument/${argId}/set-votes`, {
+            method: "POST",
+            headers: adminHeaders,
+            body: JSON.stringify({ votes })
+          }).catch(() => {});
+        }
       }
     } catch (err) {
       console.warn(`[idées-ia] Erreur idée ${i + 1} :`, err.message);
@@ -4702,7 +4711,7 @@ async function classifyAndPublishPending() {
         console.log(`[auto-publish] ✓ Publié : "${String(item.question || "").slice(0, 60)}"`);
         publishedCount++;
         if (publishData.debateId) {
-          await generateAndPostIdeas(publishData.debateId, item.question, item.positionA || "", item.positionB || "");
+          await generateAndPostIdeas(publishData.debateId, item.question, item.positionA || "", item.positionB || "", adminHeaders);
         }
       }
     } catch (err) {
