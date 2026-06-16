@@ -13,6 +13,7 @@
   "license": "ISC",
   "dependencies": {
     "@extractus/article-extractor": "^8.1.0",
+    "@supabase/supabase-js": "^2.108.2",
     "dayjs": "^1.11.20",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",

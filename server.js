@@ -1,5 +1,7 @@
 require("dotenv").config();
 
+const storageSync = require("./storage-sync");
+
 const express = require("express");
 const path = require("path");
 const fs = require("fs");
@@ -4425,11 +4427,15 @@ app.get("/ping", (req, res) => {
   res.json({ ok: true, ts: Date.now() });
 });
 
-const httpServer = app.listen(PORT, () => {
-  console.log(`Serveur lancé sur le port ${PORT}`);
-  scheduleAutoCollect(loadAutoCollectConfig());
-});
+storageSync.init();
+storageSync.downloadAll().then(() => {
+  const httpServer = app.listen(PORT, () => {
+    console.log(`Serveur lancé sur le port ${PORT}`);
+    scheduleAutoCollect(loadAutoCollectConfig());
+    storageSync.startPeriodicSync();
+  });
 
-httpServer.on("error", (error) => {
-  console.error("Erreur serveur bot veille :", error.message);
+  httpServer.on("error", (error) => {
+    console.error("Erreur serveur bot veille :", error.message);
+  });
 });
