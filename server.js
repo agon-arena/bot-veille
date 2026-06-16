@@ -4686,6 +4686,7 @@ async function classifyAndPublishPending() {
   console.log(`[auto-publish] Classement + publication de ${publishable.length} sujet(s)...`);
 
   let publishedCount = 0;
+  const pendingIdeas = [];
   for (const item of publishable) {
     try {
       const r = await fetch(`${AGON_URL}/api/admin/veille/publish`, {
@@ -4712,12 +4713,22 @@ async function classifyAndPublishPending() {
         console.log(`[auto-publish] ✓ Publié : "${String(item.question || "").slice(0, 60)}"`);
         publishedCount++;
         if (publishData.debateId) {
-          await generateAndPostIdeas(publishData.debateId, item.question, item.positionA || "", item.positionB || "", adminHeaders);
+          pendingIdeas.push({ debateId: publishData.debateId, question: item.question, positionA: item.positionA || "", positionB: item.positionB || "" });
         }
       }
     } catch (err) {
       console.error(`[auto-publish] Erreur publication :`, err.message);
     }
+  }
+
+  if (pendingIdeas.length) {
+    const delayMs = 10 * 60 * 1000;
+    console.log(`[auto-publish] Idées IA programmées dans 10 minutes pour ${pendingIdeas.length} arène(s)`);
+    setTimeout(async () => {
+      for (const { debateId, question, positionA, positionB } of pendingIdeas) {
+        await generateAndPostIdeas(debateId, question, positionA, positionB, adminHeaders);
+      }
+    }, delayMs);
   }
   console.log(`[auto-publish] ${publishedCount}/${publishable.length} sujet(s) publiés sur Agôn`);
 
