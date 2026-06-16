@@ -4547,7 +4547,7 @@ async function runAutoPublishPipeline() {
 async function generateAndPostIdeas(debateId, question, positionA, positionB, adminHeaders) {
   if (!openai) { console.warn("[idées-ia] OPENAI_API_KEY absent"); return; }
   const isPositions = !!(positionA && positionB);
-  const N = Math.floor(Math.random() * 4) + 6;
+  const N = Math.floor(Math.random() * 3) + 7;
 
   const styleInstructions = `
 Consignes de style (OBLIGATOIRES) :
@@ -4568,7 +4568,7 @@ ${styleInstructions}
 
 Réponds en JSON : { "ideas": [ { "side": "A" ou "B", "title": "...", "body": "..." }, ... ] }
 - title : 1 phrase courte (max 120 caractères)
-- body : développement (50 à 200 caractères), peut être vide si l'idée se suffit à elle-même`
+- body : développement de longueur variable (certaines idées courtes 30-80 car., d'autres longues 200-550 car.), peut être vide si l'idée se suffit à elle-même`
     : `Tu es un simulateur de commentaires citoyens sur un réseau de débat. Génère exactement ${N} idées sur ce sujet.
 
 Sujet : ${question}
@@ -4576,7 +4576,7 @@ ${styleInstructions}
 
 Réponds en JSON : { "ideas": [ { "title": "...", "body": "..." }, ... ] }
 - title : 1 phrase courte (max 120 caractères)
-- body : développement (50 à 200 caractères), peut être vide`;
+- body : développement de longueur variable (certaines idées courtes 30-80 car., d'autres longues 200-550 car.), peut être vide`;
 
   let ideas;
   try {
@@ -4585,7 +4585,7 @@ Réponds en JSON : { "ideas": [ { "title": "...", "body": "..." }, ... ] }
       messages: [{ role: "user", content: prompt }],
       response_format: { type: "json_object" },
       temperature: 1.1,
-      max_tokens: 1200
+      max_tokens: 2500
     });
     const parsed = JSON.parse(response.choices[0].message.content);
     ideas = parsed.ideas;
