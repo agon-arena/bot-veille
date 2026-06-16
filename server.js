@@ -4544,6 +4544,83 @@ async function runAutoPublishPipeline() {
   try { const { uploadAll } = require("./storage-sync"); await uploadAll(); } catch {}
 }
 
+async function generateAndPostIdeas(debateId, question, positionA, positionB) {
+  if (!openai) { console.warn("[idées-ia] OPENAI_API_KEY absent"); return; }
+  const isPositions = !!(positionA && positionB);
+  const N = 7;
+
+  const prompt = isPositions
+    ? `Tu es un utilisateur d'un réseau de débat citoyen. Génère exactement ${N} idées courtes pour alimenter ce débat.
+
+Question : ${question}
+Camp A : ${positionA}
+Camp B : ${positionB}
+
+Répartis les idées : 4 pour le camp A et 3 pour le camp B (ou 3 pour A et 4 pour B, varie).
+Chaque idée doit sembler écrite par un citoyen différent : style, ton et longueur variés.
+Certaines peuvent être incisives, d'autres nuancées.
+
+Réponds en JSON : { "ideas": [ { "side": "A" ou "B", "title": "...", "body": "..." }, ... ] }
+- title : 1 phrase courte (max 120 caractères)
+- body : développement (50 à 200 caractères), peut être vide si l'idée se suffit à elle-même`
+    : `Tu es un utilisateur d'un réseau de débat citoyen. Génère exactement ${N} idées courtes sur ce sujet.
+
+Sujet : ${question}
+
+Chaque idée doit sembler écrite par un citoyen différent : style, ton et longueur variés.
+Certaines peuvent apporter un fait, une question, un angle inattendu.
+
+Réponds en JSON : { "ideas": [ { "title": "...", "body": "..." }, ... ] }
+- title : 1 phrase courte (max 120 caractères)
+- body : développement (50 à 200 caractères), peut être vide`;
+
+  let ideas;
+  try {
+    const response = await openai.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [{ role: "user", content: prompt }],
+      response_format: { type: "json_object" },
+      temperature: 1.1,
+      max_tokens: 1200
+    });
+    const parsed = JSON.parse(response.choices[0].message.content);
+    ideas = parsed.ideas;
+    if (!Array.isArray(ideas) || !ideas.length) throw new Error("Format invalide");
+  } catch (err) {
+    console.error("[idées-ia] Erreur génération :", err.message);
+    return;
+  }
+
+  console.log(`[idées-ia] ${ideas.length} idée(s) générée(s) pour débat ${debateId}`);
+
+  for (let i = 0; i < ideas.length; i++) {
+    const idea = ideas[i];
+    const authorKey = Math.random().toString(36).slice(2, 14);
+    try {
+      const r = await fetch(`${AGON_URL}/api/arguments`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          debate_id: debateId,
+          side: isPositions ? (idea.side || "A") : null,
+          title: String(idea.title || "").slice(0, 180),
+          body: String(idea.body || "").slice(0, 2500),
+          authorKey
+        })
+      });
+      if (!r.ok) {
+        const txt = await r.text().catch(() => "");
+        console.warn(`[idées-ia] Échec idée ${i + 1} :`, txt);
+      } else {
+        console.log(`[idées-ia] ✓ Idée ${i + 1}/${ideas.length} postée (camp ${idea.side || "libre"})`);
+      }
+    } catch (err) {
+      console.warn(`[idées-ia] Erreur idée ${i + 1} :`, err.message);
+    }
+    if (i < ideas.length - 1) await new Promise(r => setTimeout(r, 3000));
+  }
+}
+
 async function classifyAndPublishPending() {
   const adminPassword = process.env.AGON_ADMIN_PASSWORD;
   if (!adminPassword) {
@@ -4617,8 +4694,12 @@ async function classifyAndPublishPending() {
         const body = await r.text().catch(() => "");
         console.error(`[auto-publish] Échec publication "${String(item.question || "").slice(0, 60)}" : ${body}`);
       } else {
+        const publishData = await r.json().catch(() => ({}));
         console.log(`[auto-publish] ✓ Publié : "${String(item.question || "").slice(0, 60)}"`);
         publishedCount++;
+        if (publishData.debateId) {
+          await generateAndPostIdeas(publishData.debateId, item.question, item.positionA || "", item.positionB || "");
+        }
       }
     } catch (err) {
       console.error(`[auto-publish] Erreur publication :`, err.message);
