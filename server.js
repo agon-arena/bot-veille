@@ -4551,10 +4551,8 @@ async function generateAndPostIdeas(debateId, question, positionA, positionB, ad
 
   const styleInstructions = `
 Consignes de style (OBLIGATOIRES) :
-- Les idées doivent sembler écrites par des gens ordinaires, pas des experts.
-- Introduis des fautes d'orthographe et de frappe naturelles (ex: "sa" pour "ça", "j'ais", "voire" pour "voir", lettres inversées, mots collés, etc.). Pas toutes les idées, mais la majorité.
-- Les idées doivent être plutôt mauvaises, superficielles ou provocatrices : raisonnements approximatifs, raccourcis, opinions tranchées sans nuance.
-- Ton varié : certains agacés, d'autres naïfs, d'autres arrogants.`;
+- La majorité des idées (${N - 2} sur ${N}) doivent sembler écrites par des gens ordinaires, superficiels ou provocateurs : raisonnements approximatifs, raccourcis, opinions tranchées sans nuance, ton varié (agacés, naïfs, arrogants). Introduis des fautes d'orthographe et de frappe naturelles sur ces idées (ex: "sa" pour "ça", "j'ais", "voire" pour "voir", mots collés, etc.). Marque ces idées : "qualite": "mauvaise".
+- 1 ou 2 idées doivent être bien rédigées, nuancées, argumentées, sans fautes. Elles semblent venir d'une personne informée. Marque ces idées : "qualite": "bonne".`;
 
   const prompt = isPositions
     ? `Tu es un simulateur de commentaires citoyens sur un réseau de débat. Génère exactement ${N} idées pour alimenter ce débat.
@@ -4566,17 +4564,17 @@ Camp B : ${positionB}
 Répartis les idées : 4 pour le camp A et 3 pour le camp B (ou 3 pour A et 4 pour B, varie aléatoirement).
 ${styleInstructions}
 
-Réponds en JSON : { "ideas": [ { "side": "A" ou "B", "title": "...", "body": "..." }, ... ] }
+Réponds en JSON : { "ideas": [ { "side": "A" ou "B", "qualite": "bonne" ou "mauvaise", "title": "...", "body": "..." }, ... ] }
 - title : 1 phrase courte (max 120 caractères)
-- body : développement de longueur variable (certaines idées courtes 30-80 car., d'autres longues 200-550 car.), peut être vide si l'idée se suffit à elle-même`
+- body : longueur variable (mauvaises idées : 30-150 car. ; bonnes idées : 200-550 car.), peut être vide si l'idée se suffit`
     : `Tu es un simulateur de commentaires citoyens sur un réseau de débat. Génère exactement ${N} idées sur ce sujet.
 
 Sujet : ${question}
 ${styleInstructions}
 
-Réponds en JSON : { "ideas": [ { "title": "...", "body": "..." }, ... ] }
+Réponds en JSON : { "ideas": [ { "qualite": "bonne" ou "mauvaise", "title": "...", "body": "..." }, ... ] }
 - title : 1 phrase courte (max 120 caractères)
-- body : développement de longueur variable (certaines idées courtes 30-80 car., d'autres longues 200-550 car.), peut être vide`;
+- body : longueur variable (mauvaises idées : 30-150 car. ; bonnes idées : 200-550 car.), peut être vide`;
 
   let ideas;
   try {
@@ -4617,8 +4615,11 @@ Réponds en JSON : { "ideas": [ { "title": "...", "body": "..." }, ... ] }
         console.warn(`[idées-ia] Échec idée ${i + 1} :`, txt);
       } else {
         const { id: argId } = await r.json().catch(() => ({}));
-        const votes = Math.floor(Math.random() * 75) + 5;
-        console.log(`[idées-ia] ✓ Idée ${i + 1}/${ideas.length} postée (camp ${idea.side || "libre"}) → ${votes} voix`);
+        const isBonne = idea.qualite === "bonne";
+        const votes = isBonne
+          ? Math.floor(Math.random() * 35) + 45
+          : Math.floor(Math.random() * 26) + 5;
+        console.log(`[idées-ia] ✓ Idée ${i + 1}/${ideas.length} (${isBonne ? "bonne" : "mauvaise"}, camp ${idea.side || "libre"}) → ${votes} voix`);
         if (argId && adminHeaders) {
           await fetch(`${AGON_URL}/api/admin/argument/${argId}/set-votes`, {
             method: "POST",
