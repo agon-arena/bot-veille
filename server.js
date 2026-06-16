@@ -3476,6 +3476,7 @@ app.get("/admin", (req, res) => {
           <span class="ac-slider"></span>
         </label>
         <span class="ac-toggle-label">Publication automatique sur Agôn</span>
+        <button id="ap-run-btn" onclick="runAutoPublishNow()" style="margin-left:12px;padding:4px 14px;border-radius:999px;border:1px solid #111;background:#111;color:#fff;font:inherit;font-size:0.82rem;cursor:pointer;">Lancer maintenant</button>
       </div>
       <div class="ac-fields" id="ac-fields">
         <div class="ac-field">
@@ -3630,6 +3631,23 @@ async function onApToggle() {
     else showError('Erreur : ' + d.error);
   } catch (err) {
     showError('Erreur réseau : ' + err.message);
+  }
+}
+
+async function runAutoPublishNow() {
+  const btn = document.getElementById('ap-run-btn');
+  btn.disabled = true;
+  btn.textContent = 'En cours…';
+  try {
+    const r = await fetch('/api/auto-publish/run', { method: 'POST' });
+    const d = await r.json();
+    if (d.ok) showToast('Pipeline terminé ✓');
+    else showError('Erreur : ' + (d.error || 'inconnue'));
+  } catch (err) {
+    showError('Erreur réseau : ' + err.message);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Lancer maintenant';
   }
 }
 
@@ -4628,6 +4646,11 @@ async function classifyAndPublishPending() {
 }
 
 // ==================== PUBLICATION AUTOMATIQUE SUR AGÔN ====================
+
+app.post("/api/auto-publish/run", requireMixteAuth, async (req, res) => {
+  res.json({ ok: true });
+  runAutoPublishPipeline().catch(err => console.error("[auto-publish/run] Erreur :", err.message));
+});
 
 app.get("/api/auto-publish", (req, res) => {
   res.json(loadAutoPublishConfig());
