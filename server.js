@@ -4420,9 +4420,14 @@ async function runAutoPublishPipeline() {
 
   const latestSession = sessions[0];
   const allSubjects = (latestSession.subjects || []).filter(s => s.debateScore != null);
+  const maxSources = Math.max(...allSubjects.map(s => Number(s.sourceCount) || 0), 1);
   const top10 = allSubjects
     .slice()
-    .sort((a, b) => (Number(b.debateScore) || 0) - (Number(a.debateScore) || 0))
+    .sort((a, b) => {
+      const rA = (Number(a.sourceCount) / maxSources) * 0.50 + (Number(a.debateScore) / 10) * 0.50;
+      const rB = (Number(b.sourceCount) / maxSources) * 0.50 + (Number(b.debateScore) / 10) * 0.50;
+      return rB - rA;
+    })
     .slice(0, 10);
 
   console.log(`[auto-publish] ${top10.length} sujet(s) sélectionné(s) (session : ${latestSession.generatedAtLabel || "?"})`);
