@@ -4689,6 +4689,37 @@ async function classifyAndPublishPending() {
   const pendingIdeas = [];
   for (const item of publishable) {
     try {
+      // Tentative de fusion automatique
+      let autoMergedDebateId = "";
+      try {
+        const simRes = await fetch(`${AGON_URL}/api/admin/veille/check-similar`, {
+          method: "POST",
+          headers: adminHeaders,
+          body: JSON.stringify({ question: item.question, positionA: item.positionA || "", positionB: item.positionB || "", resume: item.resume || "" })
+        });
+        if (simRes.ok) {
+          const { similar } = await simRes.json().catch(() => ({}));
+          const best = (similar || []).find(s => s.confirmed === true && s.score >= 0.82);
+          if (best) {
+            const mergeRes = await fetch(`${AGON_URL}/api/admin/veille/merge`, {
+              method: "POST",
+              headers: adminHeaders,
+              body: JSON.stringify({ id: item.id, debateId: best.id, question: item.question, positionA: item.positionA || "", positionB: item.positionB || "", resume: item.resume || "", links: item.links || [] })
+            });
+            if (mergeRes.ok) {
+              const mergeData = await mergeRes.json().catch(() => ({}));
+              autoMergedDebateId = mergeData.debateId || "";
+              console.log(`[auto-publish] ⟳ Fusion automatique avec arène ${best.id} (score ${best.score}) : "${String(item.question || "").slice(0, 50)}"`);
+            } else {
+              const mergeErr = await mergeRes.json().catch(() => ({}));
+              console.log(`[auto-publish] Fusion ignorée pour "${String(item.question || "").slice(0, 50)}" : ${mergeErr.error || "incompatible"}`);
+            }
+          }
+        }
+      } catch (mergeErr) {
+        console.warn("[auto-publish] Erreur vérification fusion :", mergeErr.message);
+      }
+
       const r = await fetch(`${AGON_URL}/api/admin/veille/publish`, {
         method: "POST",
         headers: adminHeaders,
@@ -4701,7 +4732,7 @@ async function classifyAndPublishPending() {
           resume: item.resume || "",
           links: item.links || [],
           keywords: item.keywords || [],
-          linkedDebateId: "",
+          linkedDebateId: autoMergedDebateId,
           forcePublishOnAlignmentWarning: false
         })
       });
