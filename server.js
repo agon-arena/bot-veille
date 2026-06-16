@@ -4436,7 +4436,8 @@ async function runAutoPublishPipeline() {
   try { sessions = JSON.parse(fs.readFileSync(sessionsFile, "utf8")); } catch { return; }
   if (!sessions.length) return;
 
-  const latestSession = sessions[0];
+  const latestSession = sessions.find(s => (s.subjects || []).some(subj => subj.debateScore != null));
+  if (!latestSession) { console.log("[auto-publish] Aucune session avec sujets analysés"); return; }
   const allSubjects = (latestSession.subjects || []).filter(s => s.debateScore != null);
   const maxSources = Math.max(...allSubjects.map(s => Number(s.sourceCount) || 0), 1);
   const top10 = allSubjects
