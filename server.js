@@ -65,6 +65,10 @@ function scheduleOneAutoCollect(timeStr) {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ minSources: cfg.minSources || 3 })
         });
+        const autoPub = loadAutoPublishConfig();
+        if (autoPub.enabled) {
+          await runAutoPublishPipeline();
+        }
       } catch (err) {
         console.error(`[auto-collect] Erreur: ${err.message}`);
       }
@@ -4400,6 +4404,117 @@ app.post("/api/auto-collect-tick", requireMixteAuth, async (req, res) => {
     res.status(500).json({ triggered: false, error: err.message });
   }
 });
+
+// ==================== PIPELINE AUTO-PUBLISH ====================
+
+async function runAutoPublishPipeline() {
+  console.log("[auto-publish] Démarrage du pipeline...");
+  const sessionsFile = path.join(__dirname, "sessions-mixte.json");
+  if (!fs.existsSync(sessionsFile)) {
+    console.log("[auto-publish] Aucune session trouvée");
+    return;
+  }
+  let sessions;
+  try { sessions = JSON.parse(fs.readFileSync(sessionsFile, "utf8")); } catch { return; }
+  if (!sessions.length) return;
+
+  const latestSession = sessions[0];
+  const allSubjects = (latestSession.subjects || []).filter(s => s.debateScore != null);
+  const top10 = allSubjects
+    .slice()
+    .sort((a, b) => (Number(b.debateScore) || 0) - (Number(a.debateScore) || 0))
+    .slice(0, 10);
+
+  console.log(`[auto-publish] ${top10.length} sujet(s) sélectionné(s) (session : ${latestSession.generatedAtLabel || "?"})`);
+
+  const sentItems = loadSentToAgonItems();
+  const sentSubjects = new Set(sentItems.map(i => i.subject));
+  let sentCount = 0;
+
+  for (const subj of top10) {
+    const subjectTitle = subj.subject;
+    if (sentSubjects.has(subjectTitle)) {
+      console.log(`[auto-publish] Déjà envoyé : ${subjectTitle.slice(0, 60)}`);
+      continue;
+    }
+    const score = Number(subj.debateScore) || 0;
+    const arenaMode = score >= 8 ? "positions" : "libre";
+    const contents = subj.contents || [];
+    const sessionLabel = latestSession.generatedAtLabel || "";
+    console.log(`[auto-publish] Traitement : "${subjectTitle.slice(0, 60)}" (score ${score}, mode ${arenaMode})`);
+
+    try {
+      const summary = await generateCompleteNarrativeContext({ subject: subjectTitle, contents, arenaMode }, null);
+      let question = "", positionA = "", positionB = "", theme = "", resume = summary, politicalOrientation = null;
+
+      if (arenaMode === "libre") {
+        const freeResult = await generateFreeArenaArticle({ subject: subjectTitle, summary, arenaMode });
+        question = limitDebateQuestion(freeResult.debateQuestion || subjectTitle);
+        resume = freeResult.article || summary;
+        try {
+          const mottoSources = [...new Set(contents.map(c => c.source).filter(Boolean))];
+          const mottoResult = await generateFreeArenaLatinMotto({ subject: question, summary, article: resume, sources: mottoSources, agonTheme: subj.ai?.agonTheme || "" });
+          if (mottoResult.article) resume = mottoResult.article;
+        } catch (mottoErr) {
+          console.warn("[auto-publish] Devise latine ignorée :", mottoErr.message);
+        }
+      } else {
+        const mediaResult = await generateMediaAnalysis({ subject: subjectTitle, summary, contents, arenaMode });
+        question = limitDebateQuestion(mediaResult.debateQuestion || "");
+        positionA = String(mediaResult.positionA || "").trim();
+        positionB = String(mediaResult.positionB || "").trim();
+        politicalOrientation = mediaResult.politicalOrientation || null;
+        theme = normalizeAgonTheme(mediaResult.theme || subj.ai?.agonTheme || "");
+        const styledResult = await generateStyledArticle({
+          subject: subjectTitle, summary, debateAngle: mediaResult.debateAngle || "", debateQuestion: question,
+          positionA, positionB, hasMediaContrast: false, mediaTreatment: "", mainIssue: mediaResult.mainIssue || "",
+          narrativeTension: mediaResult.narrativeTension || "", possibleBiases: Array.isArray(mediaResult.possibleBiases) ? mediaResult.possibleBiases : [],
+          debatePotential: mediaResult.debatePotential || "", editorialWarning: mediaResult.editorialWarning || "",
+          editorialDecision: mediaResult.editorialDecision || "", questionQuality: mediaResult.questionQuality || "", arenaMode
+        });
+        if (styledResult.debateQuestion) question = limitDebateQuestion(styledResult.debateQuestion);
+        if (styledResult.positionA) positionA = styledResult.positionA;
+        if (styledResult.positionB) positionB = styledResult.positionB;
+        if (styledResult.article) resume = styledResult.article;
+      }
+
+      if (!theme) theme = normalizeAgonTheme(subj.ai?.agonTheme || "");
+      resume = ensureArticleOpeningSentenceBreak(resume);
+
+      const links = (subj.selectedLinks || []).map(url => {
+        const c = contents.find(x => x.link === url);
+        return { title: c?.title || "", url, source: c?.source || "", type: c?.type || "article", date: c?.date || "", checked: true };
+      }).filter(l => l.url);
+
+      const sources = subj.sources || contents.map(c => c.source).filter(Boolean).join(", ");
+      const resolvedKeywords = await ensureKeywordsBeforeAgonSend({ subject: subjectTitle, question, sources, links, keywords: [] });
+
+      const agonController = new AbortController();
+      const agonTimeout = setTimeout(() => agonController.abort(), 15000);
+      let r;
+      try {
+        r = await fetch(`${AGON_URL}/api/veille/receive`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ question, positionA, positionB, theme, resume, sources, links, storySelection: null, keywords: resolvedKeywords, politicalOrientation, arenaMode }),
+          signal: agonController.signal
+        });
+      } finally {
+        clearTimeout(agonTimeout);
+      }
+      if (!r.ok) { const body = await r.text().catch(() => ""); throw new Error(`Agôn a répondu ${r.status}: ${body}`); }
+
+      upsertSentToAgonItem({ subject: subjectTitle, sessionLabel, question, positionA, positionB, theme, resume, sources, links: Array.isArray(links) ? links : [], storySelection: null, keywords: resolvedKeywords, politicalOrientation, arenaMode, sentAt: new Date().toISOString() });
+      console.log(`[auto-publish] ✓ Envoyé : "${subjectTitle.slice(0, 60)}"`);
+      sentCount++;
+    } catch (err) {
+      console.error(`[auto-publish] ✗ Erreur sur "${subjectTitle.slice(0, 60)}" :`, err.message);
+    }
+  }
+
+  console.log(`[auto-publish] Bilan : ${sentCount}/${top10.length} envoyé(s) vers Agôn`);
+  try { const { uploadAll } = require("./storage-sync"); await uploadAll(); } catch {}
+}
 
 // ==================== PUBLICATION AUTOMATIQUE SUR AGÔN ====================
 
