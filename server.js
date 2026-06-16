@@ -4547,7 +4547,7 @@ async function runAutoPublishPipeline() {
 async function generateAndPostIdeas(debateId, question, positionA, positionB) {
   if (!openai) { console.warn("[idées-ia] OPENAI_API_KEY absent"); return; }
   const isPositions = !!(positionA && positionB);
-  const N = 7;
+  const N = Math.floor(Math.random() * 4) + 6;
 
   const styleInstructions = `
 Consignes de style (OBLIGATOIRES) :
