@@ -4517,8 +4517,95 @@ async function runAutoPublishPipeline() {
     }
   }
 
-  console.log(`[auto-publish] Bilan : ${sentCount}/${top10.length} envoyé(s) vers Agôn`);
+  console.log(`[auto-publish] Bilan envoi : ${sentCount}/${top10.length} sujet(s) envoyé(s) vers Agôn`);
+
+  // Classer puis publier tous les sujets en attente
+  await classifyAndPublishPending();
+
   try { const { uploadAll } = require("./storage-sync"); await uploadAll(); } catch {}
+}
+
+async function classifyAndPublishPending() {
+  const adminPassword = process.env.AGON_ADMIN_PASSWORD;
+  if (!adminPassword) {
+    console.log("[auto-publish] AGON_ADMIN_PASSWORD absent — classement/publication ignorés");
+    return;
+  }
+
+  // Login admin Agôn
+  let token;
+  try {
+    const loginRes = await fetch(`${AGON_URL}/api/admin/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ password: adminPassword })
+    });
+    if (!loginRes.ok) { console.error("[auto-publish] Échec login admin Agôn"); return; }
+    ({ token } = await loginRes.json());
+  } catch (err) {
+    console.error("[auto-publish] Erreur login Agôn :", err.message);
+    return;
+  }
+
+  const adminHeaders = { "Content-Type": "application/json", "x-admin-token": token };
+
+  // Récupérer les sujets en attente
+  let pending;
+  try {
+    const pendingRes = await fetch(`${AGON_URL}/api/admin/veille`, { headers: adminHeaders });
+    if (!pendingRes.ok) { console.error("[auto-publish] Échec chargement sujets en attente"); return; }
+    pending = await pendingRes.json();
+  } catch (err) {
+    console.error("[auto-publish] Erreur chargement pending :", err.message);
+    return;
+  }
+
+  function countSources(item) {
+    const names = new Set();
+    (item.links || []).forEach(l => { const s = String(l.source || "").trim().toLowerCase(); if (s) names.add(s); });
+    if (!names.size) String(item.sources || "").split(/[,;\n]+/).forEach(s => { const n = s.trim().toLowerCase(); if (n) names.add(n); });
+    return names.size;
+  }
+
+  // Filtrer (exclure les fusionnés) et classer par sources croissantes
+  const publishable = (pending || [])
+    .filter(p => !p.linkedDebateId && Array.isArray(p.links) && p.links.length > 0)
+    .sort((a, b) => countSources(a) - countSources(b));
+
+  if (!publishable.length) { console.log("[auto-publish] Aucun sujet en attente à publier"); return; }
+  console.log(`[auto-publish] Classement + publication de ${publishable.length} sujet(s)...`);
+
+  let publishedCount = 0;
+  for (const item of publishable) {
+    try {
+      const r = await fetch(`${AGON_URL}/api/admin/veille/publish`, {
+        method: "POST",
+        headers: adminHeaders,
+        body: JSON.stringify({
+          id: item.id,
+          question: item.question,
+          positionA: item.positionA || "",
+          positionB: item.positionB || "",
+          theme: item.theme || "",
+          resume: item.resume || "",
+          links: item.links || [],
+          keywords: item.keywords || [],
+          linkedDebateId: "",
+          forcePublishOnAlignmentWarning: false
+        })
+      });
+      if (!r.ok) {
+        const body = await r.text().catch(() => "");
+        console.error(`[auto-publish] Échec publication "${String(item.question || "").slice(0, 60)}" : ${body}`);
+      } else {
+        console.log(`[auto-publish] ✓ Publié : "${String(item.question || "").slice(0, 60)}"`);
+        publishedCount++;
+      }
+    } catch (err) {
+      console.error(`[auto-publish] Erreur publication :`, err.message);
+    }
+  }
+  console.log(`[auto-publish] ${publishedCount}/${publishable.length} sujet(s) publiés sur Agôn`);
 }
 
 // ==================== PUBLICATION AUTOMATIQUE SUR AGÔN ====================
