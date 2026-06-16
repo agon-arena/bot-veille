@@ -4606,7 +4606,7 @@ Réponds en JSON : { "ideas": [ { "title": "...", "body": "..." }, ... ] }
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           debate_id: debateId,
-          side: isPositions ? (idea.side || "A") : null,
+          side: isPositions ? (idea.side || "A") : (Math.random() < 0.5 ? "A" : "B"),
           title: String(idea.title || "").slice(0, 180),
           body: String(idea.body || "").slice(0, 2500),
           authorKey
@@ -4621,7 +4621,7 @@ Réponds en JSON : { "ideas": [ { "title": "...", "body": "..." }, ... ] }
     } catch (err) {
       console.warn(`[idées-ia] Erreur idée ${i + 1} :`, err.message);
     }
-    if (i < ideas.length - 1) await new Promise(r => setTimeout(r, 3000));
+    await new Promise(r => setTimeout(r, 7000));
   }
 }
 
