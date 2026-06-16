@@ -4549,26 +4549,30 @@ async function generateAndPostIdeas(debateId, question, positionA, positionB) {
   const isPositions = !!(positionA && positionB);
   const N = 7;
 
+  const styleInstructions = `
+Consignes de style (OBLIGATOIRES) :
+- Les idées doivent sembler écrites par des gens ordinaires, pas des experts.
+- Introduis des fautes d'orthographe et de frappe naturelles (ex: "sa" pour "ça", "j'ais", "voire" pour "voir", lettres inversées, mots collés, etc.). Pas toutes les idées, mais la majorité.
+- Les idées doivent être plutôt mauvaises, superficielles ou provocatrices : raisonnements approximatifs, raccourcis, opinions tranchées sans nuance.
+- Ton varié : certains agacés, d'autres naïfs, d'autres arrogants.`;
+
   const prompt = isPositions
-    ? `Tu es un utilisateur d'un réseau de débat citoyen. Génère exactement ${N} idées courtes pour alimenter ce débat.
+    ? `Tu es un simulateur de commentaires citoyens sur un réseau de débat. Génère exactement ${N} idées pour alimenter ce débat.
 
 Question : ${question}
 Camp A : ${positionA}
 Camp B : ${positionB}
 
-Répartis les idées : 4 pour le camp A et 3 pour le camp B (ou 3 pour A et 4 pour B, varie).
-Chaque idée doit sembler écrite par un citoyen différent : style, ton et longueur variés.
-Certaines peuvent être incisives, d'autres nuancées.
+Répartis les idées : 4 pour le camp A et 3 pour le camp B (ou 3 pour A et 4 pour B, varie aléatoirement).
+${styleInstructions}
 
 Réponds en JSON : { "ideas": [ { "side": "A" ou "B", "title": "...", "body": "..." }, ... ] }
 - title : 1 phrase courte (max 120 caractères)
 - body : développement (50 à 200 caractères), peut être vide si l'idée se suffit à elle-même`
-    : `Tu es un utilisateur d'un réseau de débat citoyen. Génère exactement ${N} idées courtes sur ce sujet.
+    : `Tu es un simulateur de commentaires citoyens sur un réseau de débat. Génère exactement ${N} idées sur ce sujet.
 
 Sujet : ${question}
-
-Chaque idée doit sembler écrite par un citoyen différent : style, ton et longueur variés.
-Certaines peuvent apporter un fait, une question, un angle inattendu.
+${styleInstructions}
 
 Réponds en JSON : { "ideas": [ { "title": "...", "body": "..." }, ... ] }
 - title : 1 phrase courte (max 120 caractères)
