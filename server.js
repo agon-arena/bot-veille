@@ -4606,6 +4606,25 @@ async function classifyAndPublishPending() {
     }
   }
   console.log(`[auto-publish] ${publishedCount}/${publishable.length} sujet(s) publiés sur Agôn`);
+
+  if (publishedCount === 0) return;
+
+  // Arène du jour : push notifications
+  try {
+    const pushRes = await fetch(`${AGON_URL}/api/admin/push/broadcast-daily`, {
+      method: "POST",
+      headers: adminHeaders
+    });
+    if (!pushRes.ok) {
+      console.warn("[auto-publish] Échec push arène du jour :", pushRes.status);
+    } else {
+      const pushData = await pushRes.json().catch(() => ({}));
+      const sent = (pushData.results || []).filter(r => r.status === "sent").length;
+      console.log(`[auto-publish] Arène du jour : push envoyé à ${sent}/${pushData.total || "?"} abonné(s)`);
+    }
+  } catch (err) {
+    console.warn("[auto-publish] Erreur push arène du jour :", err.message);
+  }
 }
 
 // ==================== PUBLICATION AUTOMATIQUE SUR AGÔN ====================
