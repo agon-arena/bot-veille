@@ -19,7 +19,17 @@ const AGON_URL = (process.env.AGON_URL || "http://localhost:3001").trim();
 const SENT_TO_AGON_FILE = path.join(__dirname, "sent-to-agon.json");
 const AUTO_COLLECT_FILE = path.join(__dirname, "auto-collect-config.json");
 const AUTO_PUBLISH_FILE = path.join(__dirname, "auto-publish-config.json");
+const PENDING_IDEAS_FILE = path.join(__dirname, "pending-ideas.json");
 let autoCollectTimers = [];
+
+function loadPendingIdeas() {
+  try { return JSON.parse(fs.readFileSync(PENDING_IDEAS_FILE, "utf8")); }
+  catch { return []; }
+}
+
+function savePendingIdeas(items) {
+  fs.writeFileSync(PENDING_IDEAS_FILE, JSON.stringify(items, null, 2), "utf8");
+}
 
 function loadAutoCollectConfig() {
   try { return JSON.parse(fs.readFileSync(AUTO_COLLECT_FILE, "utf8")); }
@@ -50,6 +60,24 @@ function loadAutoPublishConfig() {
   catch { return { enabled: false }; }
 }
 
+// /refresh démarre la collecte en tâche de fond sur le worker (port 3002) et répond
+// tout de suite : il faut attendre la fin réelle (via /progress) avant de lancer la
+// publication auto, sinon elle s'exécute sur la session précédente déjà envoyée.
+async function waitForVeilleMixteIdle(maxWaitMs = 25 * 60 * 1000, pollIntervalMs = 5000) {
+  const start = Date.now();
+  while (Date.now() - start < maxWaitMs) {
+    try {
+      const r = await fetch("http://127.0.0.1:3002/progress");
+      const p = await r.json();
+      if (!p.running) return true;
+    } catch (err) {
+      // erreur transitoire : on continue à essayer jusqu'au délai max
+    }
+    await new Promise(resolve => setTimeout(resolve, pollIntervalMs));
+  }
+  return false;
+}
+
 function scheduleOneAutoCollect(timeStr) {
   const [h, m] = timeStr.split(":").map(Number);
   const now = new Date();
@@ -76,7 +104,12 @@ function scheduleOneAutoCollect(timeStr) {
         });
         const autoPub = loadAutoPublishConfig();
         if (autoPub.enabled) {
-          await runAutoPublishPipeline();
+          const finished = await waitForVeilleMixteIdle();
+          if (finished) {
+            await runAutoPublishPipeline();
+          } else {
+            console.warn("[auto-collect] Délai d'attente dépassé, auto-publish annulé pour cette session.");
+          }
         }
       } catch (err) {
         console.error(`[auto-collect] Erreur: ${err.message}`);
@@ -1634,6 +1667,8 @@ Tu reçois un résumé factuel neutre d'un événement. Cette arène est une "ar
 
 Ta mission : rédiger un titre factuel et un article factuel et sobre, qui exposent les faits avec clarté sans orienter le lecteur vers une prise de position.
 
+LANGUE : le titre et l'article doivent être rédigés entièrement en français, même si le résumé factuel ou les sources contiennent des passages en anglais ou dans une autre langue. Traduis tout élément non francophone avant de l'utiliser.
+
 RÈGLE DE SÉCURITÉ FACTUELLE :
 Tu dois rédiger sans jamais enrichir les faits.
 N'ajoute jamais par mémoire, déduction ou vraisemblance :
@@ -1727,7 +1762,7 @@ Réponds uniquement en JSON valide, sans balises markdown.`;
 
   return {
     article: assembleArticleWithinLimit(articleLines.join("\n\n"), [articleSignature]),
-    debateQuestion: cutTextAtSentenceEnd(parsed.title || subject, 100)
+    debateQuestion: limitStoryText(parsed.title || subject, 100)
   };
 }
 
@@ -4427,6 +4462,16 @@ app.post("/api/auto-collect-tick", requireMixteAuth, async (req, res) => {
     config.lastRun = runKey;
     fs.writeFileSync(AUTO_COLLECT_FILE, JSON.stringify(config, null, 2), "utf8");
     res.json({ triggered: true, time: due });
+
+    // Publication auto une fois la collecte réellement terminée, en tâche de fond :
+    // ne pas faire attendre la réponse HTTP (GitHub Actions a un --max-time de 60s).
+    const autoPub = loadAutoPublishConfig();
+    if (autoPub.enabled) {
+      waitForVeilleMixteIdle().then((finished) => {
+        if (finished) return runAutoPublishPipeline();
+        console.warn("[auto-collect-tick] Délai d'attente dépassé, auto-publish annulé.");
+      }).catch((err) => console.error("[auto-collect-tick] Erreur auto-publish :", err.message));
+    }
   } catch (err) {
     res.status(500).json({ triggered: false, error: err.message });
   }
@@ -4644,29 +4689,70 @@ Réponds en JSON : { "ideas": [ { "qualite": "bonne" ou "mauvaise", "title": "..
   }
 }
 
-async function classifyAndPublishPending() {
+async function loginAgonAdmin(logLabel = "auto-publish") {
   const adminPassword = process.env.AGON_ADMIN_PASSWORD;
   if (!adminPassword) {
-    console.log("[auto-publish] AGON_ADMIN_PASSWORD absent — classement/publication ignorés");
-    return;
+    console.log(`[${logLabel}] AGON_ADMIN_PASSWORD absent — classement/publication ignorés`);
+    return null;
   }
-
-  // Login admin Agôn
-  let token;
   try {
     const loginRes = await fetch(`${AGON_URL}/api/admin/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ password: adminPassword })
     });
-    if (!loginRes.ok) { console.error("[auto-publish] Échec login admin Agôn"); return; }
-    ({ token } = await loginRes.json());
+    if (!loginRes.ok) { console.error(`[${logLabel}] Échec login admin Agôn`); return null; }
+    const { token } = await loginRes.json();
+    return { "Content-Type": "application/json", "x-admin-token": token };
   } catch (err) {
-    console.error("[auto-publish] Erreur login Agôn :", err.message);
-    return;
+    console.error(`[${logLabel}] Erreur login Agôn :`, err.message);
+    return null;
   }
+}
 
-  const adminHeaders = { "Content-Type": "application/json", "x-admin-token": token };
+// Reprend au démarrage les idées IA qui n'ont pas pu être générées (ex: redémarrage
+// du serveur dans les 10 minutes suivant une publication, qui coupait le setTimeout
+// en mémoire sans laisser de trace). Persisté dans pending-ideas.json.
+function scheduleOnePendingIdea(item) {
+  const delay = Math.max(0, new Date(item.runAt).getTime() - Date.now());
+  setTimeout(async () => {
+    const items = loadPendingIdeas();
+    const match = items.find((i) => i.debateId === item.debateId && i.runAt === item.runAt && i.status === "pending");
+    if (!match) return; // déjà traité (ex: par un autre process lors d'un chevauchement de déploiement)
+    match.status = "done";
+    savePendingIdeas(items);
+    try {
+      const adminHeaders = await loginAgonAdmin("idées-ia");
+      await generateAndPostIdeas(match.debateId, match.question, match.positionA, match.positionB, adminHeaders);
+    } catch (err) {
+      console.error("[idées-ia] Erreur reprise idée :", err.message);
+    }
+  }, delay);
+}
+
+function persistAndScheduleIdeas(entries, delayMs) {
+  const runAt = new Date(Date.now() + delayMs).toISOString();
+  const items = loadPendingIdeas();
+  for (const entry of entries) {
+    const item = { ...entry, runAt, status: "pending" };
+    items.push(item);
+    scheduleOnePendingIdea(item);
+  }
+  savePendingIdeas(items);
+}
+
+function resumePendingIdeasOnStartup() {
+  const items = loadPendingIdeas();
+  const pending = items.filter((i) => i.status === "pending");
+  if (pending.length) {
+    console.log(`[idées-ia] Reprise de ${pending.length} idée(s) en attente après redémarrage`);
+    pending.forEach(scheduleOnePendingIdea);
+  }
+}
+
+async function classifyAndPublishPending() {
+  const adminHeaders = await loginAgonAdmin();
+  if (!adminHeaders) return;
 
   // Récupérer les sujets en attente
   let pending;
@@ -4762,13 +4848,8 @@ async function classifyAndPublishPending() {
   }
 
   if (pendingIdeas.length) {
-    const delayMs = 10 * 60 * 1000;
     console.log(`[auto-publish] Idées IA programmées dans 10 minutes pour ${pendingIdeas.length} arène(s)`);
-    setTimeout(async () => {
-      for (const { debateId, question, positionA, positionB } of pendingIdeas) {
-        await generateAndPostIdeas(debateId, question, positionA, positionB, adminHeaders);
-      }
-    }, delayMs);
+    persistAndScheduleIdeas(pendingIdeas, 10 * 60 * 1000);
   }
   console.log(`[auto-publish] ${publishedCount}/${publishable.length} sujet(s) publiés sur Agôn`);
 
@@ -4828,6 +4909,7 @@ storageSync.downloadAll().then(() => {
   const httpServer = app.listen(PORT, () => {
     console.log(`Serveur lancé sur le port ${PORT}`);
     scheduleAutoCollect(loadAutoCollectConfig());
+    resumePendingIdeasOnStartup();
     storageSync.startPeriodicSync();
   });
 

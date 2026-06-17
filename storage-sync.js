@@ -21,6 +21,7 @@ const FILES_TO_SYNC = [
   "auto-publish-config.json",
   "youtube-chaines.json",
   "medias.json",
+  "pending-ideas.json",
 ];
 
 let supabase = null;
