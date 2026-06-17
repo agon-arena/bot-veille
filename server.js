@@ -311,6 +311,14 @@ function limitDebateQuestion(text) {
   return String(text || "").trim().replace(/\s*\?$/, " ?");
 }
 
+// Les modèles IA ont une connaissance figée à leur date d'entraînement : sans ce
+// rappel explicite, ils peuvent évoquer une année passée comme si elle était
+// actuelle. À insérer dans tout prompt qui mentionne "actuel", "récent" ou une date.
+function buildCurrentDateContext() {
+  const currentDateLabel = new Date().toLocaleDateString("fr-FR", { timeZone: "Indian/Reunion", year: "numeric", month: "long", day: "numeric" });
+  return `Date actuelle : ${currentDateLabel}. Nous sommes en ${new Date().getFullYear()}. N'évoque jamais une autre année comme si elle était récente ou actuelle (ta connaissance s'arrête avant cette date, mais le contexte ci-dessus est réel et à jour).`;
+}
+
 const AGON_ARTICLE_SIGNATURE_LIST = [
   "J.L Grasso",
   "F. Glorennec",
@@ -893,6 +901,8 @@ async function generateCompleteNarrativeContext(payload, storySelection) {
 
   const prompt = `Tu es un assistant éditorial pour Agôn.
 
+${buildCurrentDateContext()}
+
 Ta mission : produire un résumé factuel clair à partir des sources fournies.
 
 Agôn ne veut pas republier une revue de presse. Cette étape sert uniquement à comprendre ce qui s'est passé, de façon neutre et fiable.
@@ -1002,6 +1012,8 @@ async function generateMediaAnalysis(payload) {
     : "";
 
   const prompt = `Tu es un stratège éditorial pour Agôn.
+
+${buildCurrentDateContext()}
 
 À partir du résumé factuel et des titres de sources, trouve le vrai débat révélé par cette actualité.
 
@@ -1226,6 +1238,8 @@ async function generateStyledArticle(payload) {
 
   const prompt = `Tu es éditeur pour Agôn.
 
+${buildCurrentDateContext()}
+
 Tu reçois :
 1. un résumé factuel neutre ;
 2. un angle de débat ;
@@ -1398,6 +1412,8 @@ async function polishAgonFinalArticle(payload, previousJson) {
 
   try {
     const promptFinalisation = `Tu dois vérifier, corriger et finaliser un JSON d'article Agôn.
+
+${buildCurrentDateContext()}
 
 Objectif :
 Ajouter une question latine courte et verrouiller la structure finale.
@@ -1662,6 +1678,8 @@ async function generateFreeArenaArticle(payload) {
   }
 
   const prompt = `Tu es éditeur pour Agôn.
+
+${buildCurrentDateContext()}
 
 Tu reçois un résumé factuel neutre d'un événement. Cette arène est une "arène libre" : un espace de discussion ouverte, sans question de débat imposée et sans opposition entre deux camps.
 
@@ -2104,6 +2122,8 @@ async function suggestStoryLink(payload) {
   const analysisKeywords = Array.isArray(payload.ai?.keywords) ? payload.ai.keywords.slice(0, 8) : [];
 
   const prompt = `
+${buildCurrentDateContext()}
+
 Tu aides a rattacher une actualite a une histoire suivie dans un bot de veille.
 
 Role attendu :
@@ -4567,6 +4587,36 @@ async function runAutoPublishPipeline() {
       const sources = subj.sources || contents.map(c => c.source).filter(Boolean).join(", ");
       const resolvedKeywords = await ensureKeywordsBeforeAgonSend({ subject: subjectTitle, question, sources, links, keywords: [] });
 
+      let storySelection = null;
+      try {
+        const suggestion = await suggestStoryLink({
+          subject: subjectTitle,
+          sources,
+          contents,
+          ai: { agonTheme: theme, debateQuestion: question, keywords: resolvedKeywords }
+        });
+        const storyDecision = suggestion.story_decision || "new_story";
+        const matchedStoryId = suggestion.matched_story_id || null;
+        if ((storyDecision === "existing_story" || storyDecision === "uncertain") && matchedStoryId) {
+          storySelection = {
+            storyDecision,
+            matchedStoryId,
+            matchedStoryTitle: suggestion.matched_story_title || "",
+            previousEpisodeTitle: suggestion.previous_episode_title || "",
+            previousEpisodeUrl: suggestion.previous_episode_url || "",
+            confidence: Number(suggestion.confidence || 0),
+            reason: suggestion.reason || "",
+            criteria: suggestion.criteria || {},
+            selectionMode: "existing"
+          };
+          console.log(`[auto-publish] Histoire associée : "${storySelection.matchedStoryTitle}" (confiance ${storySelection.confidence})`);
+        } else {
+          console.log("[auto-publish] Aucune histoire existante associée pour ce sujet");
+        }
+      } catch (storyErr) {
+        console.warn("[auto-publish] Suggestion d'histoire ignorée :", storyErr.message);
+      }
+
       const agonController = new AbortController();
       const agonTimeout = setTimeout(() => agonController.abort(), 15000);
       let r;
@@ -4574,7 +4624,7 @@ async function runAutoPublishPipeline() {
         r = await fetch(`${AGON_URL}/api/veille/receive`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ question, positionA, positionB, theme, resume, sources, links, storySelection: null, keywords: resolvedKeywords, politicalOrientation, arenaMode }),
+          body: JSON.stringify({ question, positionA, positionB, theme, resume, sources, links, storySelection, keywords: resolvedKeywords, politicalOrientation, arenaMode }),
           signal: agonController.signal
         });
       } finally {
@@ -4582,7 +4632,7 @@ async function runAutoPublishPipeline() {
       }
       if (!r.ok) { const body = await r.text().catch(() => ""); throw new Error(`Agôn a répondu ${r.status}: ${body}`); }
 
-      upsertSentToAgonItem({ subject: subjectTitle, sessionLabel, question, positionA, positionB, theme, resume, sources, links: Array.isArray(links) ? links : [], storySelection: null, keywords: resolvedKeywords, politicalOrientation, arenaMode, sentAt: new Date().toISOString() });
+      upsertSentToAgonItem({ subject: subjectTitle, sessionLabel, question, positionA, positionB, theme, resume, sources, links: Array.isArray(links) ? links : [], storySelection, keywords: resolvedKeywords, politicalOrientation, arenaMode, sentAt: new Date().toISOString() });
       console.log(`[auto-publish] ✓ Envoyé : "${subjectTitle.slice(0, 60)}"`);
       sentCount++;
     } catch (err) {
@@ -4603,13 +4653,19 @@ async function generateAndPostIdeas(debateId, question, positionA, positionB, ad
   const isPositions = !!(positionA && positionB);
   const N = Math.floor(Math.random() * 3) + 7;
 
+  const dateContext = buildCurrentDateContext();
+
   const styleInstructions = `
 Consignes de style (OBLIGATOIRES) :
-- La majorité des idées (${N - 2} sur ${N}) doivent sembler écrites par des gens ordinaires, superficiels ou provocateurs : raisonnements approximatifs, raccourcis, opinions tranchées sans nuance, ton varié (agacés, naïfs, arrogants). Introduis des fautes d'orthographe et de frappe naturelles sur ces idées (ex: "sa" pour "ça", "j'ais", "voire" pour "voir", mots collés, etc.). Marque ces idées : "qualite": "mauvaise".
-- 1 ou 2 idées doivent être bien rédigées, nuancées, argumentées, sans fautes. Elles semblent venir d'une personne informée. Marque ces idées : "qualite": "bonne".`;
+- RÈGLE ABSOLUE, valable pour TOUTES les idées sans exception : zéro ton d'IA. Interdits formels : "d'une part... d'autre part", "il est important de noter que", "en somme/en conclusion/pour conclure", "il convient de", "cela soulève la question de", toute phrase d'équilibrage qui valide les deux côtés à la fin, tout vocabulaire de dissertation scolaire. Personne n'écrit comme ça sur un réseau de débat. Chaque idée doit sonner comme un vrai message tapé par une vraie personne, avec ses tics propres.
+- ${N - 4} idées doivent sembler écrites par des gens ordinaires, superficiels ou provocateurs : raisonnements approximatifs, raccourcis, opinions tranchées sans nuance, ton varié (agacés, naïfs, arrogants). Introduis des fautes d'orthographe et de frappe naturelles sur ces idées (ex: "sa" pour "ça", "j'ais", "voire" pour "voir", mots collés, etc.). Marque ces idées : "qualite": "mauvaise".
+- 2 idées doivent être correctement écrites et plutôt sensées, mais sans plus : un avis simple, parfois un peu court ou pas totalement abouti, sans faute grossière mais pas littéraire non plus. Ça reste écrit à la manière de quelqu'un de normal, pas d'un assistant. Marque ces idées : "qualite": "moyenne".
+- 2 idées doivent être bien écrites et bien raisonnées, sans fautes, mais TRANCHANTES : une position claire et affirmée, défendue avec un ou deux arguments concrets, pas un avis mou qui pèse le pour et le contre. Ça doit sonner comme une personne informée qui a un avis tranché et le dit cash, pas comme une copie bien sage. Varie le ton et la formulation d'une idée à l'autre (sec, mordant, énervé-mais-argumenté, froidement ironique...). Marque ces idées : "qualite": "bonne".`;
 
   const prompt = isPositions
     ? `Tu es un simulateur de commentaires citoyens sur un réseau de débat. Génère exactement ${N} idées pour alimenter ce débat.
+
+${dateContext}
 
 Question : ${question}
 Camp A : ${positionA}
@@ -4618,17 +4674,19 @@ Camp B : ${positionB}
 Répartis les idées : 4 pour le camp A et 3 pour le camp B (ou 3 pour A et 4 pour B, varie aléatoirement).
 ${styleInstructions}
 
-Réponds en JSON : { "ideas": [ { "side": "A" ou "B", "qualite": "bonne" ou "mauvaise", "title": "...", "body": "..." }, ... ] }
+Réponds en JSON : { "ideas": [ { "side": "A" ou "B", "qualite": "bonne" ou "moyenne" ou "mauvaise", "title": "...", "body": "..." }, ... ] }
 - title : 1 phrase courte (max 120 caractères)
-- body : longueur variable (mauvaises idées : 30-150 car. ; bonnes idées : 200-550 car.), peut être vide si l'idée se suffit`
+- body : longueur variable (mauvaises idées : 30-150 car. ; idées moyennes : 100-300 car. ; bonnes idées : 200-550 car.), peut être vide si l'idée se suffit`
     : `Tu es un simulateur de commentaires citoyens sur un réseau de débat. Génère exactement ${N} idées sur ce sujet.
+
+${dateContext}
 
 Sujet : ${question}
 ${styleInstructions}
 
-Réponds en JSON : { "ideas": [ { "qualite": "bonne" ou "mauvaise", "title": "...", "body": "..." }, ... ] }
+Réponds en JSON : { "ideas": [ { "qualite": "bonne" ou "moyenne" ou "mauvaise", "title": "...", "body": "..." }, ... ] }
 - title : 1 phrase courte (max 120 caractères)
-- body : longueur variable (mauvaises idées : 30-150 car. ; bonnes idées : 200-550 car.), peut être vide`;
+- body : longueur variable (mauvaises idées : 30-150 car. ; idées moyennes : 100-300 car. ; bonnes idées : 200-550 car.), peut être vide`;
 
   let ideas;
   try {
@@ -4669,11 +4727,11 @@ Réponds en JSON : { "ideas": [ { "qualite": "bonne" ou "mauvaise", "title": "..
         console.warn(`[idées-ia] Échec idée ${i + 1} :`, txt);
       } else {
         const { id: argId } = await r.json().catch(() => ({}));
-        const isBonne = idea.qualite === "bonne";
-        const votes = isBonne
-          ? Math.floor(Math.random() * 35) + 45
-          : Math.floor(Math.random() * 26) + 5;
-        console.log(`[idées-ia] ✓ Idée ${i + 1}/${ideas.length} (${isBonne ? "bonne" : "mauvaise"}, camp ${idea.side || "libre"}) → ${votes} voix`);
+        const isMauvaise = idea.qualite === "mauvaise";
+        const votes = isMauvaise
+          ? Math.floor(Math.random() * 26) + 5
+          : Math.floor(Math.random() * 35) + 45;
+        console.log(`[idées-ia] ✓ Idée ${i + 1}/${ideas.length} (${idea.qualite || "mauvaise"}, camp ${idea.side || "libre"}) → ${votes} voix`);
         if (argId && adminHeaders) {
           await fetch(`${AGON_URL}/api/admin/argument/${argId}/set-votes`, {
             method: "POST",
