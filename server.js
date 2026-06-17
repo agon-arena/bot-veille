@@ -42,6 +42,9 @@ function timeToMinutes(hhmm) {
   return h * 60 + m;
 }
 
+// Indian/Reunion est à UTC+4 toute l'année (pas d'heure d'été).
+const REUNION_UTC_OFFSET_HOURS = 4;
+
 function loadAutoPublishConfig() {
   try { return JSON.parse(fs.readFileSync(AUTO_PUBLISH_FILE, "utf8")); }
   catch { return { enabled: false }; }
@@ -50,9 +53,15 @@ function loadAutoPublishConfig() {
 function scheduleOneAutoCollect(timeStr) {
   const [h, m] = timeStr.split(":").map(Number);
   const now = new Date();
-  const next = new Date();
-  next.setHours(h, m, 0, 0);
-  if (next <= now) next.setDate(next.getDate() + 1);
+  // Calcule la prochaine occurrence de h:m heure de la Réunion, indépendamment
+  // du fuseau horaire local du process (ex: UTC sur Render).
+  let next = new Date(Date.UTC(
+    now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(),
+    h - REUNION_UTC_OFFSET_HOURS, m, 0, 0
+  ));
+  // Boucle (pas un simple +24h) car la date UTC et la date Réunion peuvent
+  // différer de plus d'un jour de décalage pour les heures 00h-03h59 Réunion.
+  while (next <= now) next = new Date(next.getTime() + 24 * 60 * 60 * 1000);
   const delay = next - now;
   const timer = setTimeout(async () => {
     autoCollectTimers = autoCollectTimers.filter(t => t !== timer);
@@ -4391,7 +4400,7 @@ app.post("/api/auto-collect", (req, res) => {
 });
 
 // Appelé périodiquement (ex: toutes les 15 min via GitHub Actions) pour déclencher
-// la collecte si l'heure configurée dans l'admin (heure de Paris) est atteinte.
+// la collecte si l'heure configurée dans l'admin (heure de la Réunion) est atteinte.
 app.post("/api/auto-collect-tick", requireMixteAuth, async (req, res) => {
   const config = loadAutoCollectConfig();
   if (!config.enabled || !Array.isArray(config.times) || !config.times.length) {
