@@ -4649,7 +4649,7 @@ async function runAutoPublishPipeline() {
 }
 
 async function generateAndPostIdeas(debateId, question, positionA, positionB, adminHeaders) {
-  if (!openai) { console.warn("[idées-ia] OPENAI_API_KEY absent"); return; }
+  if (!openai) { console.warn("[idées-ia] OPENAI_API_KEY absent"); return false; }
   const isPositions = !!(positionA && positionB);
   const N = Math.floor(Math.random() * 3) + 7;
 
@@ -4702,7 +4702,7 @@ Réponds en JSON : { "ideas": [ { "qualite": "bonne" ou "moyenne" ou "mauvaise",
     if (!Array.isArray(ideas) || !ideas.length) throw new Error("Format invalide");
   } catch (err) {
     console.error("[idées-ia] Erreur génération :", err.message);
-    return;
+    return false;
   }
 
   console.log(`[idées-ia] ${ideas.length} idée(s) générée(s) pour débat ${debateId}`);
@@ -4745,6 +4745,7 @@ Réponds en JSON : { "ideas": [ { "qualite": "bonne" ou "moyenne" ou "mauvaise",
     }
     await new Promise(r => setTimeout(r, 7000));
   }
+  return true;
 }
 
 async function loginAgonAdmin(logLabel = "auto-publish") {
@@ -4771,20 +4772,49 @@ async function loginAgonAdmin(logLabel = "auto-publish") {
 // Reprend au démarrage les idées IA qui n'ont pas pu être générées (ex: redémarrage
 // du serveur dans les 10 minutes suivant une publication, qui coupait le setTimeout
 // en mémoire sans laisser de trace). Persisté dans pending-ideas.json.
+// L'item n'est marqué "done" qu'après un succès réel de generateAndPostIdeas :
+// un échec (rate limit OpenAI, erreur réseau, redémarrage en cours de génération...)
+// programme une nouvelle tentative au lieu d'abandonner silencieusement.
+const MAX_IDEA_ATTEMPTS = 3;
+const IDEA_RETRY_DELAY_MS = 5 * 60 * 1000;
+
 function scheduleOnePendingIdea(item) {
   const delay = Math.max(0, new Date(item.runAt).getTime() - Date.now());
   setTimeout(async () => {
     const items = loadPendingIdeas();
-    const match = items.find((i) => i.debateId === item.debateId && i.runAt === item.runAt && i.status === "pending");
+    const match = items.find((i) => i.id === item.id && i.status === "pending");
     if (!match) return; // déjà traité (ex: par un autre process lors d'un chevauchement de déploiement)
-    match.status = "done";
-    savePendingIdeas(items);
+
+    let success = false;
     try {
       const adminHeaders = await loginAgonAdmin("idées-ia");
-      await generateAndPostIdeas(match.debateId, match.question, match.positionA, match.positionB, adminHeaders);
+      success = await generateAndPostIdeas(match.debateId, match.question, match.positionA, match.positionB, adminHeaders);
     } catch (err) {
       console.error("[idées-ia] Erreur reprise idée :", err.message);
     }
+
+    const itemsAfter = loadPendingIdeas();
+    const matchAfter = itemsAfter.find((i) => i.id === item.id);
+    if (!matchAfter) return;
+
+    if (success) {
+      matchAfter.status = "done";
+      savePendingIdeas(itemsAfter);
+      return;
+    }
+
+    matchAfter.attempts = (matchAfter.attempts || 0) + 1;
+    if (matchAfter.attempts >= MAX_IDEA_ATTEMPTS) {
+      matchAfter.status = "failed";
+      savePendingIdeas(itemsAfter);
+      console.error(`[idées-ia] Abandon après ${matchAfter.attempts} tentative(s) pour débat ${match.debateId}`);
+      return;
+    }
+
+    matchAfter.runAt = new Date(Date.now() + IDEA_RETRY_DELAY_MS).toISOString();
+    savePendingIdeas(itemsAfter);
+    console.warn(`[idées-ia] Échec, nouvelle tentative (${matchAfter.attempts}/${MAX_IDEA_ATTEMPTS}) dans 5 min pour débat ${match.debateId}`);
+    scheduleOnePendingIdea(matchAfter);
   }, delay);
 }
 
@@ -4792,7 +4822,7 @@ function persistAndScheduleIdeas(entries, delayMs) {
   const runAt = new Date(Date.now() + delayMs).toISOString();
   const items = loadPendingIdeas();
   for (const entry of entries) {
-    const item = { ...entry, runAt, status: "pending" };
+    const item = { ...entry, id: `${entry.debateId}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`, runAt, status: "pending", attempts: 0 };
     items.push(item);
     scheduleOnePendingIdea(item);
   }
