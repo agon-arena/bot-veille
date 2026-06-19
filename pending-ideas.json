@@ -1,0 +1,132 @@
+[
+  {
+    "debateId": 897,
+    "question": "Accord Iran-États-Unis : vers la réouverture du détroit d'Ormuz",
+    "positionA": "",
+    "positionB": "",
+    "runAt": "2026-06-18T08:19:44.367Z",
+    "status": "done"
+  },
+  {
+    "debateId": 898,
+    "question": "Andy Burnham en lice pour remplacer Keir Starmer au Royaume-Uni",
+    "positionA": "",
+    "positionB": "",
+    "runAt": "2026-06-18T08:19:44.367Z",
+    "status": "done"
+  },
+  {
+    "debateId": 899,
+    "question": "Interdiction des téléphones au lycée dès septembre 2026",
+    "positionA": "",
+    "positionB": "",
+    "runAt": "2026-06-18T08:19:44.367Z",
+    "status": "done"
+  },
+  {
+    "debateId": 900,
+    "question": "Faut-il prioriser la loi contre les violences sexuelles ou en analyser les coûts d'abord ?",
+    "positionA": "Prioriser la loi malgré le coût",
+    "positionB": "Analyser d'abord les contraintes budgétaires",
+    "runAt": "2026-06-18T08:19:44.367Z",
+    "status": "done"
+  },
+  {
+    "debateId": 901,
+    "question": "Rencontre Trump-Macron à Versailles dans un contexte international tendu",
+    "positionA": "",
+    "positionB": "",
+    "runAt": "2026-06-18T08:19:44.367Z",
+    "status": "done"
+  },
+  {
+    "debateId": 902,
+    "question": "L'UE doit-elle externaliser la rétention des migrants ?",
+    "positionA": "Risques pour les droits fondamentaux",
+    "positionB": "Externaliser pour mieux gérer les flux",
+    "runAt": "2026-06-18T08:19:44.367Z",
+    "status": "done"
+  },
+  {
+    "debateId": 903,
+    "question": "Faut-il prioriser sécurité ou liberté d'expression ?",
+    "positionA": "Prioriser la liberté d'expression",
+    "positionB": "Prioriser la sécurité publique",
+    "runAt": "2026-06-18T08:19:44.367Z",
+    "status": "done"
+  },
+  {
+    "debateId": 904,
+    "question": "Faut-il durcir les contrôles pour recruter les animateurs ?",
+    "positionA": "Renforcer les contrôles de recrutement",
+    "positionB": "Maintenir les contrôles actuels",
+    "runAt": "2026-06-18T08:19:44.367Z",
+    "status": "done"
+  },
+  {
+    "debateId": 905,
+    "question": "Débuts contrastés pour l'Angleterre et le Portugal en Coupe du monde 2026",
+    "positionA": "",
+    "positionB": "",
+    "runAt": "2026-06-18T08:19:44.367Z",
+    "status": "done"
+  },
+  {
+    "debateId": 906,
+    "question": "Comment sécuriser efficacement le détroit d'Ormuz ?",
+    "positionA": "Prioriser la sécurité et le déminage",
+    "positionB": "Accélérer la reprise du commerce",
+    "runAt": "2026-06-18T08:19:44.367Z",
+    "status": "done"
+  },
+  {
+    "debateId": 907,
+    "question": "Grippe aviaire : 13 000 éléphanteaux morts sur une île australienne",
+    "positionA": "",
+    "positionB": "",
+    "id": "907-1781784469798-9tst9b",
+    "runAt": "2026-06-18T12:17:49.798Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 908,
+    "question": "Romain Bardet nommé manager sportif de l’équipe Decathlon CMA CGM",
+    "positionA": "",
+    "positionB": "",
+    "id": "908-1781784469798-ctlnxe",
+    "runAt": "2026-06-18T12:17:49.798Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 909,
+    "question": "Elye Wahi interdit d'entrée au Canada pour le Mondial",
+    "positionA": "",
+    "positionB": "",
+    "id": "909-1781784469798-5x9ekk",
+    "runAt": "2026-06-18T12:17:49.798Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 910,
+    "question": "Sécurité ou liberté d'expression : quelle priorité ?",
+    "positionA": "Priorité à la liberté d'expression",
+    "positionB": "Priorité à la sécurité publique",
+    "id": "910-1781784469798-w60wfn",
+    "runAt": "2026-06-18T12:17:49.798Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 911,
+    "question": "Externaliser la gestion des migrants est-il justifié ?",
+    "positionA": "Non pour protéger les droits humains",
+    "positionB": "Oui pour mieux contrôler l'immigration",
+    "id": "911-1781784469798-1l7gz5",
+    "runAt": "2026-06-18T12:17:49.798Z",
+    "status": "done",
+    "attempts": 0
+  }
+]

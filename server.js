@@ -4249,6 +4249,29 @@ function buildTagGenerationPayload({ subject, question, sources, links }) {
   };
 }
 
+async function resolveAgonThemeAfterTagging({ subject, question, resume, sources, links, keywords }) {
+  const payload = buildTagGenerationPayload({ subject, question, sources, links });
+  const themePayload = { subject: payload.subject, question, resume, sources: payload.sources, keywords: Array.isArray(keywords) ? keywords : [] };
+  if (!themePayload.subject) return normalizeAgonTheme("");
+
+  try {
+    const response = await fetch("http://127.0.0.1:3002/generate-theme", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(themePayload)
+    });
+    if (!response.ok) {
+      const text = await response.text().catch(() => "");
+      throw new Error(text || "Erreur génération thématique");
+    }
+    const data = await response.json();
+    return normalizeAgonTheme(data?.agonTheme || "");
+  } catch (error) {
+    console.error("[auto-publish] Thématique IA indisponible, fallback :", error.message);
+    return normalizeAgonTheme("");
+  }
+}
+
 async function ensureKeywordsBeforeAgonSend({ subject, question, sources, links, keywords }) {
   const payload = buildTagGenerationPayload({ subject, question, sources, links });
   const currentKeywords = normalizeOutgoingKeywords(keywords, payload);
@@ -4562,7 +4585,6 @@ async function runAutoPublishPipeline() {
         positionA = String(mediaResult.positionA || "").trim();
         positionB = String(mediaResult.positionB || "").trim();
         politicalOrientation = mediaResult.politicalOrientation || null;
-        theme = normalizeAgonTheme(mediaResult.theme || subj.ai?.agonTheme || "");
         const styledResult = await generateStyledArticle({
           subject: subjectTitle, summary, debateAngle: mediaResult.debateAngle || "", debateQuestion: question,
           positionA, positionB, hasMediaContrast: false, mediaTreatment: "", mainIssue: mediaResult.mainIssue || "",
@@ -4576,7 +4598,6 @@ async function runAutoPublishPipeline() {
         if (styledResult.article) resume = styledResult.article;
       }
 
-      if (!theme) theme = normalizeAgonTheme(subj.ai?.agonTheme || "");
       resume = ensureArticleOpeningSentenceBreak(resume);
 
       const links = (subj.selectedLinks || []).map(url => {
@@ -4586,6 +4607,7 @@ async function runAutoPublishPipeline() {
 
       const sources = subj.sources || contents.map(c => c.source).filter(Boolean).join(", ");
       const resolvedKeywords = await ensureKeywordsBeforeAgonSend({ subject: subjectTitle, question, sources, links, keywords: [] });
+      theme = await resolveAgonThemeAfterTagging({ subject: subjectTitle, question, resume, sources, links, keywords: resolvedKeywords });
 
       let storySelection = null;
       try {

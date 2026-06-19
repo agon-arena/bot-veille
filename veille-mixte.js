@@ -1051,6 +1051,52 @@ function safeJsonParse(text) {
   }
 }
 
+async function generateAgonThemeWithAI(payload) {
+  const subject = String(payload?.subject || "").trim();
+  if (!openai || !subject) return { agonTheme: AGON_THEMES[0] };
+
+  const question = String(payload?.question || "").trim();
+  const resume = String(payload?.resume || "").trim();
+  const sources = Array.isArray(payload?.sources) ? payload.sources.filter(Boolean) : [];
+  const keywords = Array.isArray(payload?.keywords) ? payload.keywords.filter(Boolean) : [];
+
+  const prompt = `Tu choisis la thématique éditoriale Agôn la plus adaptée à cette actualité, une fois l'article et les mots-clés déjà finalisés.
+
+Sujet :
+${subject}
+
+Question de débat ou titre :
+${question || "(non précisé)"}
+
+Article :
+${resume.slice(0, 2000) || "(non précisé)"}
+
+Mots-clés : ${keywords.join(", ") || "aucun"}
+Sources : ${sources.join(", ") || "aucune"}
+
+Choisis uniquement une valeur exacte dans cette liste :
+${AGON_THEMES.map(theme => `- ${theme}`).join("\n")}
+
+Ne crée jamais une autre thématique.
+
+Réponds uniquement en JSON valide, sans texte autour :
+{ "agonTheme": "une thématique Agôn exacte" }`;
+
+  try {
+    const response = await openai.responses.create({
+      model: "gpt-4o-mini",
+      input: prompt,
+      temperature: 0.1,
+      max_output_tokens: 200
+    });
+    const parsed = safeJsonParse(response.output_text);
+    return { agonTheme: normalizeAgonTheme(parsed.agonTheme) };
+  } catch (error) {
+    console.error(`Erreur IA thématique pour "${subject}" :`, error.message);
+    return { agonTheme: AGON_THEMES[0] };
+  }
+}
+
 async function generateSubjectTagsWithAI(subject, compactContents = null) {
   // Tag sentinelle volontairement reconnaissable : quand la génération échoue
   // (IA non configurée, tag rejeté par les filtres, erreur API), on sort
@@ -1463,6 +1509,19 @@ apiApp.post("/generate-tags", async (req, res) => {
     res.json({ ok: true, mainKeyword: tags.mainKeyword || "" });
   } catch (error) {
     res.status(500).json({ ok: false, error: error.message || "Erreur génération tags" });
+  }
+});
+
+apiApp.post("/generate-theme", async (req, res) => {
+  try {
+    const body = req.body || {};
+    if (!String(body.subject || "").trim()) {
+      return res.status(400).json({ ok: false, error: "Sujet manquant" });
+    }
+    const result = await generateAgonThemeWithAI(body);
+    res.json({ ok: true, agonTheme: result.agonTheme });
+  } catch (error) {
+    res.status(500).json({ ok: false, error: error.message || "Erreur génération thématique" });
   }
 });
 
