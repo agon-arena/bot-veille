@@ -483,6 +483,22 @@ function extractYouTubeVideoId(link) {
   return "";
 }
 
+const ROUNDUP_TITLE_PATTERNS = [
+  /ce qu['’]?(il|on) (faut|sait)/i,
+  /l['’]essentiel (de|du|des|à retenir)/i,
+  /\ben bref\b/i,
+  /faits marquants/i,
+  /r[ée]sum[ée] de la (journ[ée]e|semaine|soir[ée]e)/i,
+  /retour sur (la|le|les) (journ[ée]e|semaine)/i,
+  /toute l['’]actualit[ée]/i,
+  /revue de presse/i
+];
+
+function isRoundupTitle(title) {
+  const text = String(title || "");
+  return ROUNDUP_TITLE_PATTERNS.some((pattern) => pattern.test(text));
+}
+
 async function collectArticles(lastSessionCutoff = null, knownSources = new Set()) {
   const medias = JSON.parse(fs.readFileSync(MEDIA_FILE, "utf8"));
   const contents = [];
@@ -509,6 +525,7 @@ async function collectArticles(lastSessionCutoff = null, knownSources = new Set(
         if (!isRecent(date, HOURS_BACK_ARTICLES)) { skipped++; continue; }
         if (!isNewSource && !isFreshSinceLastSession(date, lastSessionCutoff)) { skipped++; continue; }
         const title = item.title || "Sans titre";
+        if (isRoundupTitle(title)) { skipped++; continue; }
         const summary = item.contentSnippet || item.content || item.summary || "";
         contents.push({ type: "article", source: media.nom, orientation: media.orientation || "", title, link: item.link || "", date: date.toISOString(), summary, thumbnail: "", comparableText: cleanText(title) });
         kept++;
@@ -554,6 +571,7 @@ async function collectYouTubeVideos(lastSessionCutoff = null, knownSources = new
         if (!isRecent(date, HOURS_BACK_YOUTUBE)) { skipped++; continue; }
         if (!isNewSource && !isFreshSinceLastSession(date, lastSessionCutoff)) { skipped++; continue; }
         const title = item.title || "Sans titre";
+        if (isRoundupTitle(title)) { skipped++; continue; }
         const summary = item.contentSnippet || item.content || item.summary || "";
         const link = item.link || "";
         const videoId = extractYouTubeVideoId(link);
