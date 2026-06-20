@@ -1255,6 +1255,13 @@ Agôn part de l'actualité pour faire ressortir les enjeux, les choix collectifs
 Le texte doit rester naturel.
 N'affiche jamais de rubriques comme : "Pourquoi ça fait parler", "Tension d'opinion", "Biais", "Le nœud du débat", "Enjeu caché".
 
+STYLE — ÉCRITURE SIMPLE ET FLUIDE :
+* Phrases courtes, sujet-verbe-complément. Pas de propositions à rallonge avec plusieurs virgules.
+* Mots concrets et quotidiens, jamais de vocabulaire abstrait ou académique.
+* Aucune trace de "langage IA" : pas de tournures génériques, pas de formules d'équilibre creuses, pas de conclusions vagues qui pourraient s'appliquer à n'importe quel sujet.
+* Chaque phrase doit dire quelque chose de précis sur CE sujet précis ; si une phrase reste vraie en changeant le sujet, elle est à supprimer ou réécrire.
+* Écrire comme on parle à quelqu'un, pas comme on rédige une synthèse.
+
 UTILISATION DES DONNÉES :
 * Le premier paragraphe restitue les faits à partir de resumeFactuel.
 * Le deuxième paragraphe cadre l'enjeu à partir de debateAngle et narrativeTension.
@@ -1325,6 +1332,8 @@ INTERDIT :
 * "Cette tension oppose…"
 * "Deux logiques s'opposent…"
 * "Option A… À l'inverse, Option B…"
+* "D'un côté… De l'autre…" et toute variante ("D'une part… d'autre part…", "Si certains... d'autres...")
+* Présenter une option avec un avantage suivi d'un "mais" qui l'annule (ex : "vu comme un moyen de X, mais cela peut aussi Y") : construction creuse, remplace-la par un fait ou un risque concret tiré des données.
 
 FORMULATIONS INTERDITES :
 * "dans un contexte de tensions"
@@ -1337,6 +1346,16 @@ FORMULATIONS INTERDITES :
 * "Ce sujet met en lumière…"
 * "Le choix collectif porte sur…"
 * "Il s'agit d'équilibrer deux impératifs…"
+* "implique des risques considérables", "des enjeux majeurs", "des conséquences importantes" (et toute formule qui nomme un risque sans dire lequel)
+* "tant pour… que pour…"
+* "il est essentiel/crucial/important de"
+* "joue un rôle clé/central"
+* "soulève la question de"
+* "met en évidence" / "souligne l'importance de"
+* "dans un monde où…" / "à l'ère de…"
+* "représente un enjeu" (sans préciser lequel)
+* "force est de constater"
+* "par ailleurs" / "en outre" / "de plus" employés comme simple liaison de remplissage
 
 DERNIÈRE PHRASE AVANT LA QUESTION :
 Elle doit apporter une idée précise liée au sujet :
@@ -1564,6 +1583,8 @@ Style à préserver :
 - Ne pas dramatiser artificiellement.
 - Ne pas ajouter de rubrique ou de titre séparé.
 - La question latine apporte la touche symbolique : il ne faut donc pas rendre tout l'article antique, pompeux ou théâtral.
+- Phrases courtes, mots concrets. Aucune trace de "langage IA" : pas de formule d'équilibre creuse, pas de conclusion vague qui pourrait s'appliquer à n'importe quel sujet.
+- Si tu dois développer le deuxième paragraphe pour atteindre la longueur minimale, ajoute un fait, un risque ou une conséquence concrète déjà présents dans les données — jamais une phrase générique de remplissage.
 
 Formulations interdites sauf nécessité factuelle forte :
 - "dans un contexte de tensions"
@@ -1575,6 +1596,14 @@ Formulations interdites sauf nécessité factuelle forte :
 - "la stabilité fragile de la zone"
 - "les relations restent fragiles"
 - "la communauté internationale observe"
+- "D'un côté… De l'autre…" et variantes ("D'une part… d'autre part…")
+- "implique des risques considérables", "des enjeux majeurs", "des conséquences importantes" sans préciser lesquels
+- "tant pour… que pour…"
+- "il est essentiel/crucial/important de"
+- "joue un rôle clé/central"
+- "soulève la question de"
+- "met en évidence" / "souligne l'importance de"
+- "dans un monde où…" / "à l'ère de…"
 
 Règles absolues :
 - Ne rien inventer.

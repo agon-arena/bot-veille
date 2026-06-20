@@ -128,5 +128,245 @@
     "runAt": "2026-06-18T12:17:49.798Z",
     "status": "done",
     "attempts": 0
+  },
+  {
+    "debateId": 916,
+    "question": "Sécurité ou liberté d'expression pour les concerts politiques ?",
+    "positionA": "Préserver la liberté d'expression",
+    "positionB": "Prioriser la sécurité publique",
+    "id": "916-1781849965030-bqy79o",
+    "runAt": "2026-06-19T06:29:25.030Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 917,
+    "question": "Sécurité ou liberté : quelle priorité pour les événements publics ?",
+    "positionA": "Priorité à la liberté d'expression",
+    "positionB": "Priorité à la sécurité publique",
+    "id": "917-1781849965031-rptofa",
+    "runAt": "2026-06-19T06:29:25.030Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 918,
+    "question": "Affaire Lyhanna : l'autopsie confirme un viol avant le décès",
+    "positionA": "",
+    "positionB": "",
+    "id": "918-1781849965031-3j64lm",
+    "runAt": "2026-06-19T06:29:25.030Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 919,
+    "question": "Frappes israéliennes au Liban et report des négociations en Suisse",
+    "positionA": "",
+    "positionB": "",
+    "id": "919-1781849965031-f0eev0",
+    "runAt": "2026-06-19T06:29:25.030Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 920,
+    "question": "Reprise progressive du trafic à la gare de l'Est après une panne électrique",
+    "positionA": "",
+    "positionB": "",
+    "id": "920-1781849965031-18udg1",
+    "runAt": "2026-06-19T06:29:25.030Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 921,
+    "question": "Macron s'exprime sur la paix au Moyen-Orient et d'autres enjeux mondiaux",
+    "positionA": "",
+    "positionB": "",
+    "id": "921-1781849965031-s2mv7b",
+    "runAt": "2026-06-19T06:29:25.030Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 922,
+    "question": "Les sifflets à la Marseillaise sont-ils légitimes ?",
+    "positionA": "Expression légitime de mécontentement",
+    "positionB": "Atteinte aux valeurs républicaines",
+    "id": "922-1781849965031-i8qv8v",
+    "runAt": "2026-06-19T06:29:25.030Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 923,
+    "question": "Le Mexique se qualifie pour les 16es, victoire historique du Canada",
+    "positionA": "",
+    "positionB": "",
+    "id": "923-1781849965031-e8c5q5",
+    "runAt": "2026-06-19T06:29:25.030Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 924,
+    "question": "Burnham doit-il défier Starmer frontalement ?",
+    "positionA": "Oui pour un changement rapide",
+    "positionB": "Non privilégier la stabilité",
+    "id": "924-1781849965031-wfdpsn",
+    "runAt": "2026-06-19T06:29:25.030Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 925,
+    "question": "Conflits au Moyen-Orient et affaire Lyhanna : les faits marquants",
+    "positionA": "",
+    "positionB": "",
+    "id": "925-1781849965031-nnem5p",
+    "runAt": "2026-06-19T06:29:25.030Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 926,
+    "question": "Andy Burnham élu député, en lice pour succéder à Keir Starmer",
+    "positionA": "",
+    "positionB": "",
+    "id": "926-1781849965031-3zcytg",
+    "runAt": "2026-06-19T06:29:25.030Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 927,
+    "question": "Canicule : annulation de trains et vigilance accrue en France",
+    "positionA": "",
+    "positionB": "",
+    "id": "927-1781849965031-b9pkm7",
+    "runAt": "2026-06-19T06:29:25.030Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 930,
+    "question": "Fête de la musique sous la canicule : adaptations et annulations",
+    "positionA": "",
+    "positionB": "",
+    "id": "930-1781936273201-0ebl6w",
+    "runAt": "2026-06-20T06:27:53.201Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 931,
+    "question": "L'union des droites en Europe est-elle bénéfique ?",
+    "positionA": "Fragmente l'Union européenne",
+    "positionB": "Renforce les alliances nationales",
+    "id": "931-1781936273201-et9ax7",
+    "runAt": "2026-06-20T06:27:53.201Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 932,
+    "question": "Faut-il privilégier la mémoire ou la diplomatie ?",
+    "positionA": "Privilégier les relations diplomatiques",
+    "positionB": "Privilégier la mémoire historique",
+    "id": "932-1781936273201-1fjb7i",
+    "runAt": "2026-06-20T06:27:53.201Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 933,
+    "question": "Annulation d'une visite italienne aux États-Unis après des propos de Trump",
+    "positionA": "",
+    "positionB": "",
+    "id": "933-1781936273201-abefbi",
+    "runAt": "2026-06-20T06:27:53.201Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 934,
+    "question": "Achraf Hakimi sera jugé pour viol, selon la cour d’appel",
+    "positionA": "",
+    "positionB": "",
+    "id": "934-1781936273201-atimzb",
+    "runAt": "2026-06-20T06:27:53.201Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 935,
+    "question": "Concerts polémiques : liberté d'expression ou sécurité d'abord ?",
+    "positionA": "Priorité à la liberté d'expression",
+    "positionB": "Priorité à la sécurité publique",
+    "id": "935-1781936273201-4qf0qc",
+    "runAt": "2026-06-20T06:27:53.201Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 936,
+    "question": "Canicule : vigilance orange sur 53 départements en France",
+    "positionA": "",
+    "positionB": "",
+    "id": "936-1781936273201-rxfwf0",
+    "runAt": "2026-06-20T06:27:53.201Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 937,
+    "question": "Collision entre deux trains au nord de Londres : un mort et des blessés",
+    "positionA": "",
+    "positionB": "",
+    "id": "937-1781936273201-th75mk",
+    "runAt": "2026-06-20T06:27:53.201Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 938,
+    "question": "Cessez-le-feu fragile entre Israël et le Hezbollah au Liban",
+    "positionA": "",
+    "positionB": "",
+    "id": "938-1781936273201-wl50zz",
+    "runAt": "2026-06-20T06:27:53.201Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 939,
+    "question": "La médiation internationale est-elle efficace au Moyen-Orient ?",
+    "positionA": "La médiation est essentielle",
+    "positionB": "La médiation est inefficace",
+    "id": "939-1781936273201-0b8rob",
+    "runAt": "2026-06-20T06:27:53.201Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 940,
+    "question": "Faut-il relancer les négociations USA-Iran rapidement ?",
+    "positionA": "Priorité à la reprise des négociations",
+    "positionB": "Attendre des conditions plus stables",
+    "id": "940-1781936273201-kkr2gz",
+    "runAt": "2026-06-20T06:27:53.201Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 941,
+    "question": "Faut-il inclure le programme balistique iranien ?",
+    "positionA": "Inclure pour une paix complète",
+    "positionB": "Exclure pour un accord rapide",
+    "id": "941-1781936273201-wugk4p",
+    "runAt": "2026-06-20T06:27:53.201Z",
+    "status": "done",
+    "attempts": 0
   }
 ]
