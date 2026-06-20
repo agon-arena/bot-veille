@@ -454,6 +454,16 @@ function enforceFinalArticleQuestion(article, debateQuestion, latinQuestion, for
     .map((line) => line.trim())
     .filter(Boolean);
 
+  // Le modèle coupe parfois une signature à initiales collées (ex. "J.L Grasso")
+  // en deux lignes au niveau du point interne. On recolle ces fragments avant
+  // tout filtrage pour éviter qu'un morceau ("J.L") ne traîne comme alinéa parasite.
+  for (let i = 0; i < rawLines.length - 1; i += 1) {
+    const merged = `${rawLines[i]} ${rawLines[i + 1]}`.replace(/\s+/g, " ").trim();
+    if (AGON_ARTICLE_SIGNATURES.has(merged)) {
+      rawLines.splice(i, 2, merged);
+    }
+  }
+
   const signature = AGON_ARTICLE_SIGNATURES.has(forcedSignature)
     ? forcedSignature
     : rawLines.length && AGON_ARTICLE_SIGNATURES.has(rawLines[rawLines.length - 1])
