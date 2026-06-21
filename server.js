@@ -4839,6 +4839,14 @@ async function loginAgonAdmin(logLabel = "auto-publish") {
 const MAX_IDEA_ATTEMPTS = 3;
 const IDEA_RETRY_DELAY_MS = 5 * 60 * 1000;
 
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+const PUBLISH_THROTTLE_DELAY_MS = 1500;
+const PUBLISH_RATE_LIMIT_RETRIES = 4;
+const PUBLISH_RATE_LIMIT_DELAY_MS = 5000;
+
 function scheduleOnePendingIdea(item) {
   const delay = Math.max(0, new Date(item.runAt).getTime() - Date.now());
   setTimeout(async () => {
@@ -4931,7 +4939,8 @@ async function classifyAndPublishPending() {
 
   let publishedCount = 0;
   const pendingIdeas = [];
-  for (const item of publishable) {
+  for (const [index, item] of publishable.entries()) {
+    if (index > 0) await sleep(PUBLISH_THROTTLE_DELAY_MS);
     try {
       // Tentative de fusion automatique
       let autoMergedDebateId = "";
@@ -4964,24 +4973,32 @@ async function classifyAndPublishPending() {
         console.warn("[auto-publish] Erreur vérification fusion :", mergeErr.message);
       }
 
-      const r = await fetch(`${AGON_URL}/api/admin/veille/publish`, {
-        method: "POST",
-        headers: adminHeaders,
-        body: JSON.stringify({
-          id: item.id,
-          question: item.question,
-          positionA: item.positionA || "",
-          positionB: item.positionB || "",
-          theme: item.theme || "",
-          resume: item.resume || "",
-          links: item.links || [],
-          keywords: item.keywords || [],
-          linkedDebateId: autoMergedDebateId,
-          forcePublishOnAlignmentWarning: false
-        })
-      });
+      let r, body = "";
+      for (let attempt = 1; attempt <= PUBLISH_RATE_LIMIT_RETRIES; attempt += 1) {
+        r = await fetch(`${AGON_URL}/api/admin/veille/publish`, {
+          method: "POST",
+          headers: adminHeaders,
+          body: JSON.stringify({
+            id: item.id,
+            question: item.question,
+            positionA: item.positionA || "",
+            positionB: item.positionB || "",
+            theme: item.theme || "",
+            resume: item.resume || "",
+            links: item.links || [],
+            keywords: item.keywords || [],
+            linkedDebateId: autoMergedDebateId,
+            forcePublishOnAlignmentWarning: false
+          })
+        });
+        if (r.ok) break;
+        body = await r.text().catch(() => "");
+        const isRateLimited = /trop de requ[êe]tes/i.test(body);
+        if (!isRateLimited || attempt === PUBLISH_RATE_LIMIT_RETRIES) break;
+        console.warn(`[auto-publish] Rate-limit Agôn, nouvelle tentative (${attempt}/${PUBLISH_RATE_LIMIT_RETRIES}) dans ${PUBLISH_RATE_LIMIT_DELAY_MS / 1000}s pour "${String(item.question || "").slice(0, 60)}"`);
+        await sleep(PUBLISH_RATE_LIMIT_DELAY_MS);
+      }
       if (!r.ok) {
-        const body = await r.text().catch(() => "");
         console.error(`[auto-publish] Échec publication "${String(item.question || "").slice(0, 60)}" : ${body}`);
       } else {
         const publishData = await r.json().catch(() => ({}));
