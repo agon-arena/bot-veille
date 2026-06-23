@@ -8,6 +8,7 @@ const dayjs = require("dayjs");
 const OpenAI = require("openai");
 const path = require("path");
 const { renderAutoCollectCertamenWidgetHtml } = require("./certamen-auto-collect-widget");
+const { renderAutoCollectMixteWidgetHtml } = require("./auto-collect-mixte-widget");
 const { renderCertamenPublishWidgetHtml } = require("./certamen-publish-widget");
 
 const apiApp = express();
@@ -6356,6 +6357,8 @@ function generateHtml(sessions) {
     <div class="ptr-indicator" id="ptr-indicator"></div>
     <button class="update-banner" id="update-banner" onclick="window.location.reload()">Nouvelle session disponible — Charger</button>
   </div>
+
+  ${renderAutoCollectMixteWidgetHtml()}
 
   <div id="progress-panel">
     <div class="progress-step-label">Étape <span id="prog-step">…</span> / 6 — <span id="prog-name">Démarrage…</span></div>

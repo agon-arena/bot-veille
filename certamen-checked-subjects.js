@@ -77,9 +77,10 @@ function buildCertamenAgonPayload(subject, savedItem) {
     ? subject.sources.join(", ")
     : String(saved.sources || "");
 
-  // Résumé minimal et factuel : la justification déjà produite par l'IA Certamen à la
-  // collecte, ou la question elle-même en dernier recours. Jamais un article généré.
-  const resume = String(certamen.reason || saved.resume || question).trim();
+  // Pas de texte de contenu pour Certamen : uniquement le titre (question) et les
+  // positions. certamen.reason est une justification interne (diagnostic IA), jamais
+  // destinée à être publiée — on ne la réutilise donc jamais ici.
+  const resume = "";
 
   const links = Array.isArray(saved.contents)
     ? saved.contents

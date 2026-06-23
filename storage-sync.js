@@ -23,6 +23,7 @@ const FILES_TO_SYNC = [
   "youtube-chaines.json",
   "medias.json",
   "pending-ideas.json",
+  "certamen-pending-ideas.json",
 ];
 
 let supabase = null;

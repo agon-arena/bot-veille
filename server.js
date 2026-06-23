@@ -9,6 +9,7 @@ const {
 const { renderAutoCollectCertamenWidgetHtml } = require("./certamen-auto-collect-widget");
 const { getCheckedCertamenPayloadsPreview, filterPublishableCertamenPayloads } = require("./certamen-payload-validation");
 const { publishReadyCertamenPayloadsToAgon } = require("./certamen-agon-publish");
+const { resumeCertamenPendingIdeasOnStartup } = require("./certamen-ideas-seed");
 const { renderCertamenPublishWidgetHtml } = require("./certamen-publish-widget");
 
 const express = require("express");
@@ -3481,15 +3482,6 @@ app.get("/admin", (req, res) => {
     .ac-toggle input:checked + .ac-slider { background: #111; }
     .ac-toggle input:checked + .ac-slider::before { transform: translateX(20px); }
     .ac-toggle-label { font-weight: 700; font-size: 1rem; }
-    .ac-fields { display: flex; flex-direction: column; gap: 18px; }
-    .ac-fields.hidden { display: none; }
-    .ac-field { display: flex; flex-direction: column; gap: 5px; }
-    .ac-field label { font-size: 0.82rem; font-weight: 600; color: #555; }
-    .ac-field select, .ac-field input[type=time] { padding: 9px 12px; border: 1px solid #ddd; border-radius: 8px; font: inherit; font-size: 0.9rem; max-width: 220px; }
-    .ac-times-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
-    .ac-status { margin-top: 20px; padding: 12px 16px; border-radius: 10px; font-size: 0.88rem; background: #f7f7f7; color: #666; }
-    .ac-status.active { background: #f0faf0; border: 1px solid #b0d8b0; color: #2d5a2d; }
-    .ac-status ul { margin: 6px 0 0; padding-left: 18px; }
   </style>
 </head>
 <body>
@@ -3504,7 +3496,7 @@ app.get("/admin", (req, res) => {
   <div class="tabs">
     <button class="tab-btn active" onclick="switchTab('presse')">📰 Médias presse</button>
     <button class="tab-btn" onclick="switchTab('youtube')">▶ Chaînes YouTube</button>
-    <button class="tab-btn" onclick="switchTab('auto')">⏰ Collecte auto</button>
+    <button class="tab-btn" onclick="switchTab('auto')">📤 Publication auto</button>
   </div>
 
 	  <!-- Onglet Presse -->
@@ -3572,16 +3564,9 @@ app.get("/admin", (req, res) => {
     </details>`}
   </div>
 
-  <!-- Onglet Collecte automatique -->
+  <!-- Onglet Publication automatique -->
   <div id="tab-auto" class="tab-panel">
     <div class="ac-panel">
-      <div class="ac-toggle-row">
-        <label class="ac-toggle">
-          <input type="checkbox" id="ac-enabled" onchange="onAcToggle()">
-          <span class="ac-slider"></span>
-        </label>
-        <span class="ac-toggle-label">Collecte automatique</span>
-      </div>
       <div class="ac-toggle-row">
         <label class="ac-toggle">
           <input type="checkbox" id="ap-enabled" onchange="onApToggle()">
@@ -3590,25 +3575,6 @@ app.get("/admin", (req, res) => {
         <span class="ac-toggle-label">Publication automatique sur Agôn</span>
         <button id="ap-run-btn" onclick="runAutoPublishNow()" style="margin-left:12px;padding:4px 14px;border-radius:999px;border:1px solid #111;background:#111;color:#fff;font:inherit;font-size:0.82rem;cursor:pointer;">Lancer maintenant</button>
       </div>
-      <div class="ac-fields" id="ac-fields">
-        <div class="ac-field">
-          <label>Fréquence par jour</label>
-          <select id="ac-freq" onchange="renderAcTimes()">
-            <option value="1">1 fois par jour</option>
-            <option value="2">2 fois par jour</option>
-            <option value="3">3 fois par jour</option>
-            <option value="4">4 fois par jour</option>
-          </select>
-        </div>
-        <div class="ac-field">
-          <label>Heure(s) de collecte (heure de la Réunion)</label>
-          <div class="ac-times-grid" id="ac-times"></div>
-        </div>
-        <div>
-          <button class="btn btn-primary" onclick="saveAutoCollect()">Enregistrer</button>
-        </div>
-      </div>
-      <div class="ac-status" id="ac-status"></div>
     </div>
   </div>
 
@@ -3675,7 +3641,6 @@ async function init() {
   renderPresse();
   renderYoutube();
   bindUnsavedFormWarning();
-  await initAutoCollect();
   await initAutoPublish();
 }
 
@@ -3686,47 +3651,6 @@ function switchTab(name) {
   document.getElementById('tab-presse').classList.toggle('active', name === 'presse');
   document.getElementById('tab-youtube').classList.toggle('active', name === 'youtube');
   document.getElementById('tab-auto').classList.toggle('active', name === 'auto');
-}
-
-let acConfig = { enabled: false, times: ['08:00'] };
-
-async function initAutoCollect() {
-  acConfig = await fetch('/api/auto-collect').then(r => r.json());
-  document.getElementById('ac-enabled').checked = acConfig.enabled;
-  document.getElementById('ac-freq').value = String(acConfig.times.length || 1);
-  renderAcTimes();
-  renderAcStatus();
-}
-
-function onAcToggle() {
-  renderAcStatus();
-}
-
-function renderAcTimes() {
-  const count = parseInt(document.getElementById('ac-freq').value);
-  const existing = Array.from(document.querySelectorAll('.ac-time-input')).map(i => i.value);
-  const times = acConfig.times.slice();
-  while (times.length < count) times.push('08:00');
-  const grid = document.getElementById('ac-times');
-  grid.innerHTML = '';
-  for (let i = 0; i < count; i++) {
-    const val = existing[i] || times[i] || '08:00';
-    const inp = document.createElement('input');
-    inp.type = 'time';
-    inp.className = 'ac-time-input';
-    inp.value = val;
-    grid.appendChild(inp);
-  }
-}
-
-function renderAcStatus() {
-  const div = document.getElementById('ac-status');
-  const enabled = document.getElementById('ac-enabled').checked;
-  if (!enabled) { div.textContent = 'Collecte automatique désactivée.'; div.className = 'ac-status'; return; }
-  const times = Array.from(document.querySelectorAll('.ac-time-input')).map(i => i.value);
-  if (!times.length) { div.textContent = 'Aucune heure configurée.'; div.className = 'ac-status'; return; }
-  div.className = 'ac-status active';
-  div.innerHTML = \`<strong>Actif</strong> — \${times.length} collecte(s)/jour :<ul>\${times.map(t => \`<li>à \${t}</li>\`).join('')}</ul>\`;
 }
 
 async function initAutoPublish() {
@@ -3760,21 +3684,6 @@ async function runAutoPublishNow() {
   } finally {
     btn.disabled = false;
     btn.textContent = 'Lancer maintenant';
-  }
-}
-
-async function saveAutoCollect() {
-  const enabled = document.getElementById('ac-enabled').checked;
-  const times = Array.from(document.querySelectorAll('.ac-time-input')).map(i => i.value);
-  if (!times.length) { alert('Ajoutez au moins une heure.'); return; }
-  acConfig = { enabled, times };
-  try {
-    const r = await fetch('/api/auto-collect', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(acConfig) });
-    const d = await r.json();
-    if (d.ok) { showToast('Planification enregistrée ✓'); renderAcStatus(); }
-    else showError('Erreur : ' + d.error);
-  } catch (err) {
-    showError('Erreur réseau : ' + err.message);
   }
 }
 
@@ -4530,7 +4439,8 @@ app.get("/certamen/checked-preview", requireMixteAuth, (req, res) => {
 // générateurs d'article/récit.
 app.post("/certamen/publish-ready", requireMixteAuth, async (req, res) => {
   try {
-    const result = await publishReadyCertamenPayloadsToAgon();
+    const limit = Number.isInteger(req.body?.limit) ? req.body.limit : undefined;
+    const result = await publishReadyCertamenPayloadsToAgon({ limit });
     res.json({ ok: true, ...result });
   } catch (err) {
     res.status(500).json({ ok: false, error: err.message });
@@ -5150,6 +5060,7 @@ storageSync.downloadAll().then(() => {
     scheduleAutoCollect(loadAutoCollectConfig());
     scheduleAutoCollectCertamen(loadAutoCollectCertamenConfig());
     resumePendingIdeasOnStartup();
+    resumeCertamenPendingIdeasOnStartup();
     storageSync.startPeriodicSync();
   });
 
