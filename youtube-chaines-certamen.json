@@ -1,0 +1,380 @@
+[
+  {
+    "nom": "Blast",
+    "orientation": "gauche / critique sociale",
+    "url": "https://www.youtube.com/@BlastInfo",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UC__xRB5L4toU9yYawt_lIKg"
+  },
+  {
+    "nom": "Canard réfractaire",
+    "orientation": "gauche / critique sociale",
+    "url": "https://www.youtube.com/channel/UCWGsN59FON3vOtXCozQPsZQ",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCWGsN59FON3vOtXCozQPsZQ"
+  },
+  {
+    "nom": "Elucid",
+    "orientation": "gauche / critique sociale",
+    "url": "https://www.youtube.com/@ElucidMedia",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCkgO4A3Fzm5D9Xu1Y_4vCKQ"
+  },
+  {
+    "nom": "Radio Nova",
+    "orientation": "gauche / critique sociale",
+    "url": "https://www.youtube.com/@radionova",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCGvjUWz3mGV9cssraATuEsw"
+  },
+  {
+    "nom": "Le Média",
+    "orientation": "gauche",
+    "url": "https://www.youtube.com/@LeMedia-TV",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCT67YOMntJxfRnO_9bXDpvw"
+  },
+  {
+    "nom": "Mediapart",
+    "orientation": "gauche / investigation",
+    "url": "https://www.youtube.com/@Mediapart",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCdnaDhU-LDQrIEEmSIfq0-Q"
+  },
+  {
+    "nom": "Politis",
+    "orientation": "gauche",
+    "url": "https://www.youtube.com/@Politis_fr",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCtjc5x0RIiTsdYS4IFMjCGQ"
+  },
+  {
+    "nom": "Regards",
+    "orientation": "gauche / société",
+    "url": "https://www.youtube.com/@RegardsMedia",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UC6x8XQshyp9lsw3M0OwEQ0g"
+  },
+  {
+    "nom": "Reporterre",
+    "orientation": "écologie / gauche",
+    "url": "https://www.youtube.com/@reporterre_media",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCDn6zvBZNEWUv44xjgELicA"
+  },
+  {
+    "nom": "Arrêt sur images",
+    "orientation": "critique médias / gauche",
+    "url": "https://www.youtube.com/@Arrêtsurimages-w9h",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCXHWT_QoQSsdGXbqF0hAMtg"
+  },
+  {
+    "nom": "Off Investigation",
+    "orientation": "investigation / critique",
+    "url": "https://www.youtube.com/@OffInvestigation",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCEFGCs68E9Vr5te5qZuJsbg"
+  },
+  {
+    "nom": "Osons Causer",
+    "orientation": "gauche / pédagogie politique",
+    "url": "https://www.youtube.com/@OsonsCauser",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCVeMw72tepFl1Zt5fvf9QKQ"
+  },
+  {
+    "nom": "Usul",
+    "orientation": "gauche / chronique politique",
+    "url": "https://www.youtube.com/@usulmasta",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UC_NukSq2ve_AHVAz_9ikTDg"
+  },
+  {
+    "nom": "Franceinfo",
+    "orientation": "service public / actualité",
+    "url": "https://www.youtube.com/@franceinfo",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCO6K_kkdP-lnSCiO3tPx7WA"
+  },
+  {
+    "nom": "Le Monde",
+    "orientation": "centre-gauche / généraliste",
+    "url": "https://www.youtube.com/@lemondefr",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCYpRDnhk5H8h16jpS84uqsA"
+  },
+  {
+    "nom": "France 24",
+    "orientation": "international / service public",
+    "url": "https://www.youtube.com/@FRANCE24",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCCCPCZNChQdGa9EkATeye4g"
+  },
+  {
+    "nom": "RFI",
+    "orientation": "international / service public",
+    "url": "https://www.youtube.com/@RFI_Fr",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCWdBTMcseI5WsM8krLREydg"
+  },
+  {
+    "nom": "Euronews France",
+    "orientation": "international / européen",
+    "url": "https://www.youtube.com/@euronewsfr",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCW2QcKZiU8aUGg4yxCIditg"
+  },
+  {
+    "nom": "TV5MONDE Info",
+    "orientation": "francophonie / international",
+    "url": "https://www.youtube.com/@TV5MONDEINFO",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCzKH70qfN_yuXq3s91fdwmg"
+  },
+  {
+    "nom": "Public Sénat",
+    "orientation": "institutionnel / politique",
+    "url": "https://www.youtube.com/@publicsenat",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCTa1bPArjpvNMgSHAb_pflA"
+  },
+  {
+    "nom": "LCP - Assemblée nationale",
+    "orientation": "institutionnel / politique",
+    "url": "https://www.youtube.com/@lcpassembleenationale",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCHGFbA0KWBgf6gMbyUCZeCQ"
+  },
+  {
+    "nom": "ARTE",
+    "orientation": "culture / société / Europe",
+    "url": "https://www.youtube.com/@arte",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCwI-JbGNsojunnHbFAc0M4Q"
+  },
+  {
+    "nom": "ARTE Info",
+    "orientation": "actualité / Europe",
+    "url": "https://www.youtube.com/@arteinfo",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCJE3Mi77VYiirkGW_l_SpGQ"
+  },
+  {
+    "nom": "HugoDécrypte",
+    "orientation": "actualité / jeunesse",
+    "url": "https://www.youtube.com/@hugodecrypteactus",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCAcAnMF0OrCtUep3Y4M-ZPw"
+  },
+  {
+    "nom": "Thinkerview",
+    "orientation": "interviews / géopolitique",
+    "url": "https://www.youtube.com/@thinkerview",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCQgWpmt02UtJkyO32HGUASQ"
+  },
+  {
+    "nom": "Le Crayon",
+    "orientation": "débat / société",
+    "url": "https://www.youtube.com/@LeCrayonMedia",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCbXWhsd805LfcbAy7xL9d-A"
+  },
+  {
+    "nom": "C ce soir",
+    "orientation": "débat / service public",
+    "url": "https://www.youtube.com/@Ccesoir",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UC1UUvhau_2V8ETvHfwkUQwg"
+  },
+  {
+    "nom": "C dans l'air",
+    "orientation": "débat / actualité",
+    "url": "https://www.youtube.com/@Cdanslairofficiel",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCvg4_wSz4Cmo4xRPXaKU47A"
+  },
+  {
+    "nom": "28 minutes - ARTE",
+    "orientation": "débat / culture / politique",
+    "url": "https://www.youtube.com/@28minutesARTE",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UC8EzKGkEiusTm7g0mTfkWkg"
+  },
+  {
+    "nom": "Quotidien",
+    "orientation": "actualité / satire / centre-gauche",
+    "url": "https://www.youtube.com/@QuotidienTMC",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCpi-4daExRSchtsJzO06rwA"
+  },
+  {
+    "nom": "France Inter",
+    "orientation": "service public / centre-gauche",
+    "url": "https://www.youtube.com/@franceinter",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCJldRgT_D7Am-ErRHQZ90uw"
+  },
+  {
+    "nom": "France Culture",
+    "orientation": "service public / culture / idées",
+    "url": "https://www.youtube.com/@franceculture",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCd5DKToXYTKAQ6khzewww2g"
+  },
+  {
+    "nom": "BFMTV",
+    "orientation": "info continue",
+    "url": "https://www.youtube.com/@BFMTV",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCXwDLMDV86ldKoFVc_g8P0g"
+  },
+  {
+    "nom": "LCI",
+    "orientation": "info continue",
+    "url": "https://www.youtube.com/@LCI",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCewhc0fvja891XkpIPGRMxQ"
+  },
+  {
+    "nom": "CNEWS",
+    "orientation": "droite / info continue",
+    "url": "https://www.youtube.com/@CNEWS",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCciBAhIME9MQEmGbBPnh44g"
+  },
+  {
+    "nom": "Europe 1",
+    "orientation": "radio / droite-centre-droit",
+    "url": "https://www.youtube.com/@Europe1",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCIMGfEAERXjmWwQeg15BFsg"
+  },
+  {
+    "nom": "Sud Radio",
+    "orientation": "droite / débats",
+    "url": "https://www.youtube.com/@SudRadioOfficiel",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCESTwDXpoMgiYBHipMdKTkQ"
+  },
+  {
+    "nom": "RTL",
+    "orientation": "généraliste / radio",
+    "url": "https://www.youtube.com/@rtl_france",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCzBoVtUqSyAyr0kF5ABW7gQ"
+  },
+  {
+    "nom": "RMC",
+    "orientation": "radio / débats / populaire",
+    "url": "https://www.youtube.com/channel/UCgGb7tN3tIH5_Kk05D1J_bA",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCgGb7tN3tIH5_Kk05D1J_bA"
+  },
+  {
+    "nom": "Le Parisien",
+    "orientation": "généraliste / populaire",
+    "url": "https://www.youtube.com/@LeParisien",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCfHn_8-ehdem86fEvlFg-Gw"
+  },
+  {
+    "nom": "20 Minutes",
+    "orientation": "généraliste / populaire",
+    "url": "https://www.youtube.com/@20MinutesFrance",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCD25QI36ly-8hWm9OPOz7aw"
+  },
+  {
+    "nom": "Brut",
+    "orientation": "société / jeunesse",
+    "url": "https://www.youtube.com/@BrutFR",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCSKdvgqdnj72_SLggp7BDTg"
+  },
+  {
+    "nom": "Le Figaro",
+    "orientation": "droite / généraliste",
+    "url": "https://www.youtube.com/@LeFigaro",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCCDz_XYeKWd0OIyjp95dqyQ"
+  },
+  {
+    "nom": "Le Point",
+    "orientation": "centre-droit",
+    "url": "https://www.youtube.com/@LePoint",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCQd5LYcykaFeZtjDaP3bNSA"
+  },
+  {
+    "nom": "L'Express",
+    "orientation": "centre / centre-droit",
+    "url": "https://www.youtube.com/@LExpress",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCp2kK3DyhpgFOdILF3BBC9A"
+  },
+  {
+    "nom": "Marianne",
+    "orientation": "républicain / souverainiste",
+    "url": "https://www.youtube.com/@MarianneTV",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UC4V5osIDMjFwtCRxMm2e0LA"
+  },
+  {
+    "nom": "Valeurs actuelles",
+    "orientation": "droite / conservateur",
+    "url": "https://www.youtube.com/@VAplusmedia",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCnIWNujSpiiuH29-TBCz9aw"
+  },
+  {
+    "nom": "Frontières",
+    "orientation": "droite / identitaire",
+    "url": "https://www.youtube.com/@Frontieresoff",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCysox6U9HnqgCiJ-Pd-Jy_w"
+  },
+  {
+    "nom": "Boulevard Voltaire",
+    "orientation": "droite / conservateur",
+    "url": "https://www.youtube.com/@BoulevardVoltaire_",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCx9ygIxPfYR05kY92KzvbvA"
+  },
+  {
+    "nom": "Causeur",
+    "orientation": "droite / souverainiste",
+    "url": "https://www.youtube.com/@causeurfr",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCLSoWZjCGrdZo7ltIR3lEHg"
+  },
+  {
+    "nom": "Radio Courtoisie",
+    "orientation": "droite conservatrice",
+    "url": "https://www.youtube.com/@Radio_Courtoisie_",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCwMmzwcfD-0RF19DkV7rZmw"
+  },
+  {
+    "nom": "Le Dessous des cartes",
+    "orientation": "géopolitique / pédagogie",
+    "url": "https://www.youtube.com/@LeDessousdesCartes",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UC62Sw2sSA6W0_LMM3l0vDkQ"
+  },
+  {
+    "nom": "IRIS",
+    "orientation": "géopolitique / recherche",
+    "url": "https://www.youtube.com/@IRISFrance",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UChiVuUL2iSTt4AEf-rZpnnA"
+  },
+  {
+    "nom": "Diploweb",
+    "orientation": "géopolitique",
+    "url": "https://www.youtube.com/@Diploweb",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UC-aw1C1G5t7no9a-1DoY57A"
+  },
+  {
+    "nom": "Terra Bellum",
+    "orientation": "géopolitique",
+    "url": "https://www.youtube.com/@TerraBellum",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCPiye7__vJMKdBxebtERd7g"
+  },
+  {
+    "nom": "Omerta",
+    "orientation": "géopolitique / souverainiste",
+    "url": "https://www.youtube.com/@omertamediaoff",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UC3lacWBPVK-JfmGyyHx4AAw"
+  },
+  {
+    "nom": "C à vous",
+    "orientation": "débat / service public",
+    "url": "https://www.youtube.com/@CaVousFrance5",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCzMZUE_W7iorKjQWUxhsuBg"
+  },
+  {
+    "nom": "Stade 2",
+    "orientation": "sport / service public",
+    "url": "https://www.youtube.com/@stade2officiel",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCHc-VZKrIkbSQ1b5swP3lZg"
+  },
+  {
+    "nom": "Konbini News",
+    "orientation": "actualité / jeunesse",
+    "url": "https://www.youtube.com/@konbini",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCHQda5vLxrH0Ff0I0kMq4zw"
+  },
+  {
+    "nom": "Les Jours",
+    "orientation": "investigation / gauche",
+    "url": "https://www.youtube.com/@Lesjours",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCMtcnJOohHWDg0ohdHbUY2Q"
+  },
+  {
+    "nom": "L'Obs",
+    "orientation": "centre-gauche",
+    "url": "https://www.youtube.com/@lenouvelobs",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCvG0OKqvCFMYTiJ1Rnd5XBQ"
+  },
+  {
+    "nom": "POLITICO Europe",
+    "orientation": "européen / libéral",
+    "url": "https://www.youtube.com/@POLITICO",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCgjtvMmHXbutALaw9XzRkAg"
+  },
+  {
+    "nom": "Le Monde Diplomatique",
+    "orientation": "gauche",
+    "url": "https://www.youtube.com/feeds/videos.xml?channel_id=UCJZ-hXrLYUFHBnkM0Vb2mqw",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCJZ-hXrLYUFHBnkM0Vb2mqw"
+  }
+]

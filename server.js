@@ -3496,6 +3496,7 @@ app.get("/admin", (req, res) => {
   <div class="tabs">
     <button class="tab-btn active" onclick="switchTab('presse')">📰 Médias presse</button>
     <button class="tab-btn" onclick="switchTab('youtube')">▶ Chaînes YouTube</button>
+    <button class="tab-btn" onclick="switchTab('certamen')">🎓 Sources Certamen</button>
     <button class="tab-btn" onclick="switchTab('auto')">📤 Publication auto</button>
   </div>
 
@@ -3564,6 +3565,72 @@ app.get("/admin", (req, res) => {
     </details>`}
   </div>
 
+  <!-- Onglet Sources Certamen -->
+  <div id="tab-certamen" class="tab-panel">
+    <p style="color:#555;margin-bottom:18px;font-size:0.9rem;">Liste de sources dédiée à Certamen, indépendante de la veille mixte.</p>
+
+    <h3 style="margin-bottom:10px;">📰 Médias presse (Certamen)</h3>
+    <details class="source-list-dropdown">
+      <summary>Voir les médias presse Certamen</summary>
+      <ul class="source-list" id="list-presse-certamen"></ul>
+    </details>
+    ${isOnline
+      ? `<p style="background:#fff3cd;border:1px solid #ffc107;border-radius:8px;padding:12px 16px;color:#856404;font-size:0.9rem;margin-top:12px;">
+          Pour ajouter ou modifier un média, passez en mode local.
+        </p>`
+      : `<details id="form-presse-certamen-wrap">
+      <summary style="cursor:pointer;font-weight:600;color:#0645ad;margin-bottom:12px;">+ Ajouter un média presse Certamen</summary>
+      <div class="add-form">
+        <h3 id="form-presse-certamen-title">Nouveau média</h3>
+        <div class="form-grid">
+          <div><label>Nom</label><input id="pc-nom" placeholder="Le Monde"></div>
+          <div><label>Orientation</label><select id="pc-orientation">
+            <option value="généraliste">Généraliste</option>
+            <option value="gauche">Gauche</option>
+            <option value="droite">Droite</option>
+            <option value="autre">Autre</option>
+          </select></div>
+        </div>
+        <div style="margin-bottom:14px"><label>URL RSS</label><input id="pc-rss" placeholder="https://..."></div>
+        <div class="form-actions">
+          <button class="btn btn-primary" onclick="submitPresseCertamen()">Enregistrer</button>
+          <button class="btn btn-secondary" onclick="cancelPresseCertamen()">Annuler</button>
+        </div>
+      </div>
+    </details>`}
+
+    <h3 style="margin:24px 0 10px;">▶ Chaînes YouTube (Certamen)</h3>
+    <details class="source-list-dropdown">
+      <summary>Voir les chaînes YouTube Certamen</summary>
+      <ul class="source-list" id="list-youtube-certamen"></ul>
+    </details>
+    ${isOnline
+      ? ''
+      : `<details id="form-youtube-certamen-wrap">
+      <summary style="cursor:pointer;font-weight:600;color:#c0392b;margin-bottom:12px;">+ Ajouter une chaîne YouTube Certamen</summary>
+      <div class="add-form">
+        <h3 id="form-youtube-certamen-title">Nouvelle chaîne</h3>
+        <div class="form-grid">
+          <div><label>Nom</label><input id="yc-nom" placeholder="Blast"></div>
+          <div><label>Orientation</label><select id="yc-orientation">
+            <option value="généraliste">Généraliste</option>
+            <option value="gauche">Gauche</option>
+            <option value="droite">Droite</option>
+            <option value="autre">Autre</option>
+          </select></div>
+        </div>
+        <div class="form-grid">
+          <div><label>URL de la chaîne</label><input id="yc-url" placeholder="https://www.youtube.com/@..."></div>
+          <div><label>URL RSS</label><input id="yc-rss" placeholder="https://www.youtube.com/feeds/videos.xml?channel_id=..."></div>
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-primary" onclick="submitYoutubeCertamen()">Enregistrer</button>
+          <button class="btn btn-secondary" onclick="cancelYoutubeCertamen()">Annuler</button>
+        </div>
+      </div>
+    </details>`}
+  </div>
+
   <!-- Onglet Publication automatique -->
   <div id="tab-auto" class="tab-panel">
     <div class="ac-panel">
@@ -3586,6 +3653,10 @@ let medias = [];
 let chaines = [];
 let editingPresse = null;
 let editingYoutube = null;
+let mediasCertamen = [];
+let chainesCertamen = [];
+let editingPresseCertamen = null;
+let editingYoutubeCertamen = null;
 
 function normalizeOrientationToSelect(val) {
   const v = (val || '').toLowerCase();
@@ -3632,24 +3703,31 @@ function orientBadge(orientation) {
 }
 
 async function init() {
-  const [r1, r2] = await Promise.all([
+  const [r1, r2, r3, r4] = await Promise.all([
     fetch('/api/medias').then(r => r.json()),
-    fetch('/api/youtube-chaines').then(r => r.json())
+    fetch('/api/youtube-chaines').then(r => r.json()),
+    fetch('/api/medias-certamen').then(r => r.json()),
+    fetch('/api/youtube-chaines-certamen').then(r => r.json())
   ]);
   medias = r1;
   chaines = r2;
+  mediasCertamen = r3;
+  chainesCertamen = r4;
   renderPresse();
   renderYoutube();
+  renderPresseCertamen();
+  renderYoutubeCertamen();
   bindUnsavedFormWarning();
   await initAutoPublish();
 }
 
 function switchTab(name) {
   document.querySelectorAll('.tab-btn').forEach((b, i) => {
-    b.classList.toggle('active', (i === 0 && name === 'presse') || (i === 1 && name === 'youtube') || (i === 2 && name === 'auto'));
+    b.classList.toggle('active', (i === 0 && name === 'presse') || (i === 1 && name === 'youtube') || (i === 2 && name === 'certamen') || (i === 3 && name === 'auto'));
   });
   document.getElementById('tab-presse').classList.toggle('active', name === 'presse');
   document.getElementById('tab-youtube').classList.toggle('active', name === 'youtube');
+  document.getElementById('tab-certamen').classList.toggle('active', name === 'certamen');
   document.getElementById('tab-auto').classList.toggle('active', name === 'auto');
 }
 
@@ -3700,11 +3778,11 @@ function clearUnsavedFormChanges() {
 }
 
 function bindUnsavedFormWarning() {
-  ['p-nom', 'p-rss', 'y-nom', 'y-url', 'y-rss'].forEach(id => {
+  ['p-nom', 'p-rss', 'y-nom', 'y-url', 'y-rss', 'pc-nom', 'pc-rss', 'yc-nom', 'yc-url', 'yc-rss'].forEach(id => {
     const input = document.getElementById(id);
     if (input) input.addEventListener('input', markUnsavedFormChanges);
   });
-  ['p-orientation', 'y-orientation'].forEach(id => {
+  ['p-orientation', 'y-orientation', 'pc-orientation', 'yc-orientation'].forEach(id => {
     const sel = document.getElementById(id);
     if (sel) sel.addEventListener('change', markUnsavedFormChanges);
   });
@@ -3933,6 +4011,217 @@ async function saveYoutube() {
   }
 }
 
+function renderPresseCertamen() {
+  const ul = document.getElementById('list-presse-certamen');
+  if (!mediasCertamen.length) { ul.innerHTML = '<p style="color:#888">Aucun média.</p>'; return; }
+  const sorted = sortedWithOriginalIndex(mediasCertamen);
+  let html = '';
+  let lastScore = -1;
+  sorted.forEach(({ item: m, originalIndex: i, score }) => {
+    const g = getOrientationGroup(score);
+    if (score !== lastScore) {
+      html += \`<li style="list-style:none"><span class="group-header" style="background:\${g.bg};color:\${g.color}">\${g.label}</span></li>\`;
+      lastScore = score;
+    }
+    html += \`
+    <li class="source-item">
+      <div class="source-info">
+        <div class="source-nom">\${esc(m.nom)}</div>
+        <div class="source-orientation" style="color:#666;font-size:0.82rem">\${esc(m.orientation)}</div>
+        <div class="source-url">\${esc(m.rss)}</div>
+      </div>
+      \${IS_ONLINE ? '' : '<div class="source-actions"><button class="btn btn-edit" onclick="editPresseCertamen('+i+')">Modifier</button><button class="btn btn-del" onclick="deletePresseCertamen('+i+')">Supprimer</button></div>'}
+    </li>\`;
+  });
+  ul.innerHTML = html;
+}
+
+function renderYoutubeCertamen() {
+  const ul = document.getElementById('list-youtube-certamen');
+  if (!chainesCertamen.length) { ul.innerHTML = '<p style="color:#888">Aucune chaîne.</p>'; return; }
+  const sorted = sortedWithOriginalIndex(chainesCertamen);
+  let html = '';
+  let lastScore = -1;
+  sorted.forEach(({ item: c, originalIndex: i, score }) => {
+    const g = getOrientationGroup(score);
+    if (score !== lastScore) {
+      html += \`<li style="list-style:none"><span class="group-header" style="background:\${g.bg};color:\${g.color}">\${g.label}</span></li>\`;
+      lastScore = score;
+    }
+    html += \`
+    <li class="source-item">
+      <div class="source-info">
+        <div class="source-nom">\${esc(c.nom)}</div>
+        <div class="source-orientation" style="color:#666;font-size:0.82rem">\${esc(c.orientation)}</div>
+        <div class="source-url">\${esc(c.url)}</div>
+      </div>
+      \${IS_ONLINE ? '' : '<div class="source-actions"><button class="btn btn-edit" onclick="editYoutubeCertamen('+i+')">Modifier</button><button class="btn btn-del" onclick="deleteYoutubeCertamen('+i+')">Supprimer</button></div>'}
+    </li>\`;
+  });
+  ul.innerHTML = html;
+}
+
+function editPresseCertamen(i) {
+  editingPresseCertamen = i;
+  const m = mediasCertamen[i];
+  document.getElementById('pc-nom').value = m.nom;
+  document.getElementById('pc-orientation').value = normalizeOrientationToSelect(m.orientation);
+  document.getElementById('pc-rss').value = m.rss;
+  document.getElementById('form-presse-certamen-title').textContent = 'Modifier le média';
+  document.getElementById('form-presse-certamen-wrap').open = true;
+  document.getElementById('form-presse-certamen-wrap').scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function cancelPresseCertamen() {
+  editingPresseCertamen = null;
+  document.getElementById('pc-nom').value = '';
+  document.getElementById('pc-orientation').value = 'généraliste';
+  document.getElementById('pc-rss').value = '';
+  document.getElementById('form-presse-certamen-title').textContent = 'Nouveau média';
+  document.getElementById('form-presse-certamen-wrap').open = false;
+  clearUnsavedFormChanges();
+}
+
+async function submitPresseCertamen() {
+  const nom = document.getElementById('pc-nom').value.trim();
+  const orientation = document.getElementById('pc-orientation').value.trim();
+  const rss = document.getElementById('pc-rss').value.trim();
+  if (!nom || !rss) { alert('Nom et URL RSS requis.'); return; }
+
+  const previous = mediasCertamen.slice();
+  const entry = { nom, orientation, rss };
+  if (editingPresseCertamen !== null) {
+    mediasCertamen[editingPresseCertamen] = entry;
+  } else {
+    mediasCertamen.push(entry);
+  }
+
+  renderPresseCertamen();
+  cancelPresseCertamen();
+
+  const saved = await savePresseCertamen();
+  if (!saved) {
+    mediasCertamen = previous;
+    renderPresseCertamen();
+    hasUnsavedFormChanges = true;
+  } else {
+    clearUnsavedFormChanges();
+  }
+}
+
+async function deletePresseCertamen(i) {
+  if (!confirm(\`Supprimer "\${mediasCertamen[i].nom}" ?\`)) return;
+
+  const previous = mediasCertamen.slice();
+  mediasCertamen.splice(i, 1);
+  renderPresseCertamen();
+
+  const saved = await savePresseCertamen();
+  if (!saved) {
+    mediasCertamen = previous;
+    renderPresseCertamen();
+  }
+}
+
+async function savePresseCertamen() {
+  try {
+    const r = await fetch('/api/medias-certamen', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(mediasCertamen) });
+    const d = await r.json();
+    if (d.ok) {
+      showToast(\`Médias presse Certamen sauvegardés ✓ (\${d.count} médias)\`);
+      return true;
+    } else {
+      showError('Échec de la sauvegarde : ' + d.error);
+      return false;
+    }
+  } catch (err) {
+    showError('Erreur réseau : ' + err.message);
+    return false;
+  }
+}
+
+function editYoutubeCertamen(i) {
+  editingYoutubeCertamen = i;
+  const c = chainesCertamen[i];
+  document.getElementById('yc-nom').value = c.nom;
+  document.getElementById('yc-orientation').value = normalizeOrientationToSelect(c.orientation);
+  document.getElementById('yc-url').value = c.url;
+  document.getElementById('yc-rss').value = c.rss;
+  document.getElementById('form-youtube-certamen-title').textContent = 'Modifier la chaîne';
+  document.getElementById('form-youtube-certamen-wrap').open = true;
+  document.getElementById('form-youtube-certamen-wrap').scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function cancelYoutubeCertamen() {
+  editingYoutubeCertamen = null;
+  document.getElementById('yc-nom').value = '';
+  document.getElementById('yc-orientation').value = 'généraliste';
+  document.getElementById('yc-url').value = '';
+  document.getElementById('yc-rss').value = '';
+  document.getElementById('form-youtube-certamen-title').textContent = 'Nouvelle chaîne';
+  document.getElementById('form-youtube-certamen-wrap').open = false;
+  clearUnsavedFormChanges();
+}
+
+async function submitYoutubeCertamen() {
+  const nom = document.getElementById('yc-nom').value.trim();
+  const orientation = document.getElementById('yc-orientation').value.trim();
+  const url = document.getElementById('yc-url').value.trim();
+  const rss = document.getElementById('yc-rss').value.trim();
+  if (!nom || !url || !rss) { alert('Nom, URL chaîne et URL RSS requis.'); return; }
+
+  const previous = chainesCertamen.slice();
+  const entry = { nom, orientation, url, rss };
+  if (editingYoutubeCertamen !== null) {
+    chainesCertamen[editingYoutubeCertamen] = entry;
+  } else {
+    chainesCertamen.push(entry);
+  }
+
+  renderYoutubeCertamen();
+  cancelYoutubeCertamen();
+
+  const saved = await saveYoutubeCertamen();
+  if (!saved) {
+    chainesCertamen = previous;
+    renderYoutubeCertamen();
+    hasUnsavedFormChanges = true;
+  } else {
+    clearUnsavedFormChanges();
+  }
+}
+
+async function deleteYoutubeCertamen(i) {
+  if (!confirm(\`Supprimer "\${chainesCertamen[i].nom}" ?\`)) return;
+
+  const previous = chainesCertamen.slice();
+  chainesCertamen.splice(i, 1);
+  renderYoutubeCertamen();
+
+  const saved = await saveYoutubeCertamen();
+  if (!saved) {
+    chainesCertamen = previous;
+    renderYoutubeCertamen();
+  }
+}
+
+async function saveYoutubeCertamen() {
+  try {
+    const r = await fetch('/api/youtube-chaines-certamen', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(chainesCertamen) });
+    const d = await r.json();
+    if (d.ok) {
+      showToast(\`Chaînes YouTube Certamen sauvegardées ✓ (\${d.count} chaînes)\`);
+      return true;
+    } else {
+      showError('Échec de la sauvegarde : ' + d.error);
+      return false;
+    }
+  } catch (err) {
+    showError('Erreur réseau : ' + err.message);
+    return false;
+  }
+}
+
 function showToast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg;
@@ -3991,6 +4280,34 @@ app.post("/api/medias", (req, res) => {
   }
 });
 
+app.get("/api/medias-certamen", (req, res) => {
+  const filePath = path.join(__dirname, "medias-certamen.json");
+  try {
+    const data = JSON.parse(fs.readFileSync(filePath, "utf8"));
+    res.json(data);
+  } catch {
+    res.json([]);
+  }
+});
+
+app.post("/api/medias-certamen", (req, res) => {
+  const filePath = path.join(__dirname, "medias-certamen.json");
+  if (!Array.isArray(req.body)) {
+    console.error("[admin] POST /api/medias-certamen : corps invalide :", req.body);
+    return res.status(400).json({ ok: false, error: "Corps de requête invalide (tableau attendu). Rechargez la page et réessayez." });
+  }
+  try {
+    const json = JSON.stringify(req.body, null, 2);
+    fs.writeFileSync(filePath, json, "utf8");
+    const written = JSON.parse(fs.readFileSync(filePath, "utf8"));
+    console.log(`[admin] medias-certamen.json mis à jour : ${written.length} média(s).`);
+    res.json({ ok: true, count: written.length });
+  } catch (err) {
+    console.error("[admin] Erreur écriture medias-certamen.json :", err.message);
+    res.status(500).json({ ok: false, error: err.message });
+  }
+});
+
 app.get("/api/youtube-chaines", (req, res) => {
   const filePath = path.join(__dirname, "youtube-chaines.json");
   try {
@@ -4015,6 +4332,34 @@ app.post("/api/youtube-chaines", (req, res) => {
     res.json({ ok: true, count: written.length });
   } catch (err) {
     console.error("[admin] Erreur écriture youtube-chaines.json :", err.message);
+    res.status(500).json({ ok: false, error: err.message });
+  }
+});
+
+app.get("/api/youtube-chaines-certamen", (req, res) => {
+  const filePath = path.join(__dirname, "youtube-chaines-certamen.json");
+  try {
+    const data = JSON.parse(fs.readFileSync(filePath, "utf8"));
+    res.json(data);
+  } catch {
+    res.json([]);
+  }
+});
+
+app.post("/api/youtube-chaines-certamen", (req, res) => {
+  const filePath = path.join(__dirname, "youtube-chaines-certamen.json");
+  if (!Array.isArray(req.body)) {
+    console.error("[admin] POST /api/youtube-chaines-certamen : corps invalide :", req.body);
+    return res.status(400).json({ ok: false, error: "Corps de requête invalide (tableau attendu). Rechargez la page et réessayez." });
+  }
+  try {
+    const json = JSON.stringify(req.body, null, 2);
+    fs.writeFileSync(filePath, json, "utf8");
+    const written = JSON.parse(fs.readFileSync(filePath, "utf8"));
+    console.log(`[admin] youtube-chaines-certamen.json mis à jour : ${written.length} chaîne(s).`);
+    res.json({ ok: true, count: written.length });
+  } catch (err) {
+    console.error("[admin] Erreur écriture youtube-chaines-certamen.json :", err.message);
     res.status(500).json({ ok: false, error: err.message });
   }
 });

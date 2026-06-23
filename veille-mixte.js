@@ -22,6 +22,8 @@ const parser = new Parser({
 
 const MEDIA_FILE = "medias.json";
 const CHANNELS_FILE = "youtube-chaines.json";
+const MEDIA_FILE_CERTAMEN = "medias-certamen.json";
+const CHANNELS_FILE_CERTAMEN = "youtube-chaines-certamen.json";
 
 const OUTPUT_JSON = "veille-mixte.json";
 const OUTPUT_HTML = "veille-mixte.html";
@@ -502,8 +504,8 @@ function isRoundupTitle(title) {
   return ROUNDUP_TITLE_PATTERNS.some((pattern) => pattern.test(text));
 }
 
-async function collectArticles(lastSessionCutoff = null, knownSources = new Set()) {
-  const medias = JSON.parse(fs.readFileSync(MEDIA_FILE, "utf8"));
+async function collectArticles(lastSessionCutoff = null, knownSources = new Set(), sourceFile = MEDIA_FILE) {
+  const medias = JSON.parse(fs.readFileSync(sourceFile, "utf8"));
   const contents = [];
   const report = { sources: [] };
 
@@ -548,8 +550,8 @@ async function collectArticles(lastSessionCutoff = null, knownSources = new Set(
   return { contents, report };
 }
 
-async function collectYouTubeVideos(lastSessionCutoff = null, knownSources = new Set()) {
-  const channels = JSON.parse(fs.readFileSync(CHANNELS_FILE, "utf8"));
+async function collectYouTubeVideos(lastSessionCutoff = null, knownSources = new Set(), sourceFile = CHANNELS_FILE) {
+  const channels = JSON.parse(fs.readFileSync(sourceFile, "utf8"));
   const contents = [];
   const report = { sources: [] };
 
@@ -7213,10 +7215,10 @@ async function runCertamenSession() {
   console.log("======================================");
 
   setCertamenProgress(1, "Collecte des articles", "Démarrage…");
-  const { contents: articles } = await collectArticles(null, new Set());
+  const { contents: articles } = await collectArticles(null, new Set(), MEDIA_FILE_CERTAMEN);
 
   setCertamenProgress(2, "Collecte des vidéos YouTube", "Démarrage…");
-  const { contents: videos } = await collectYouTubeVideos(null, new Set());
+  const { contents: videos } = await collectYouTubeVideos(null, new Set(), CHANNELS_FILE_CERTAMEN);
 
   const contents = [...articles, ...videos];
   console.log(`Certamen : ${contents.length} contenu(s) collecté(s).`);
