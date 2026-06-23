@@ -3487,21 +3487,23 @@ app.get("/admin", (req, res) => {
 <body>
   <nav class="nav">
     <a href="/mixte">Veille mixte</a>
-    <a href="/mixte#saved">Sujets enregistrés</a>
+    <a href="/certamen">Certamen</a>
     <a href="/admin" style="background:#111;color:white;border-color:#111;">⚙ Admin</a>
   </nav>
   <h1>Administration des sources</h1>
   <p style="color:#555;margin-bottom:24px;">Gérez ici la liste des médias presse et des chaînes YouTube surveillées.</p>
 
   <div class="tabs">
-    <button class="tab-btn active" onclick="switchTab('presse')">📰 Médias presse</button>
-    <button class="tab-btn" onclick="switchTab('youtube')">▶ Chaînes YouTube</button>
-    <button class="tab-btn" onclick="switchTab('certamen')">🎓 Sources Certamen</button>
-    <button class="tab-btn" onclick="switchTab('auto')">📤 Publication auto</button>
+    <button class="tab-btn active" onclick="switchTab('veille')">📡 Veille actu</button>
+    <button class="tab-btn" onclick="switchTab('certamen')">🎓 Certamen</button>
   </div>
 
-	  <!-- Onglet Presse -->
-	  <div id="tab-presse" class="tab-panel active">
+  <!-- Onglet Veille actu -->
+  <div id="tab-veille" class="tab-panel active">
+
+	  <!-- Section Presse -->
+	  <div id="tab-presse">
+	    <h3 style="margin-bottom:10px;">📰 Médias presse</h3>
 	    <details class="source-list-dropdown">
 	      <summary>Voir les médias presse</summary>
 	      <ul class="source-list" id="list-presse"></ul>
@@ -3532,8 +3534,9 @@ app.get("/admin", (req, res) => {
     </details>`}
   </div>
 
-	  <!-- Onglet YouTube -->
-	  <div id="tab-youtube" class="tab-panel">
+	  <!-- Section YouTube -->
+	  <div id="tab-youtube">
+	    <h3 style="margin:24px 0 10px;">▶ Chaînes YouTube</h3>
 	    <details class="source-list-dropdown">
 	      <summary>Voir les chaînes YouTube</summary>
 	      <ul class="source-list" id="list-youtube"></ul>
@@ -3565,7 +3568,9 @@ app.get("/admin", (req, res) => {
     </details>`}
   </div>
 
-  <!-- Onglet Sources Certamen -->
+  </div>
+
+  <!-- Onglet Certamen -->
   <div id="tab-certamen" class="tab-panel">
     <p style="color:#555;margin-bottom:18px;font-size:0.9rem;">Liste de sources dédiée à Certamen, indépendante de la veille mixte.</p>
 
@@ -3629,10 +3634,8 @@ app.get("/admin", (req, res) => {
         </div>
       </div>
     </details>`}
-  </div>
 
-  <!-- Onglet Publication automatique -->
-  <div id="tab-auto" class="tab-panel">
+    <h3 style="margin:24px 0 10px;">📤 Publication auto</h3>
     <div class="ac-panel">
       <div class="ac-toggle-row">
         <label class="ac-toggle">
@@ -3723,12 +3726,10 @@ async function init() {
 
 function switchTab(name) {
   document.querySelectorAll('.tab-btn').forEach((b, i) => {
-    b.classList.toggle('active', (i === 0 && name === 'presse') || (i === 1 && name === 'youtube') || (i === 2 && name === 'certamen') || (i === 3 && name === 'auto'));
+    b.classList.toggle('active', (i === 0 && name === 'veille') || (i === 1 && name === 'certamen'));
   });
-  document.getElementById('tab-presse').classList.toggle('active', name === 'presse');
-  document.getElementById('tab-youtube').classList.toggle('active', name === 'youtube');
+  document.getElementById('tab-veille').classList.toggle('active', name === 'veille');
   document.getElementById('tab-certamen').classList.toggle('active', name === 'certamen');
-  document.getElementById('tab-auto').classList.toggle('active', name === 'auto');
 }
 
 async function initAutoPublish() {
