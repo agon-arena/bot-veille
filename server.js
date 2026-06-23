@@ -1,6 +1,15 @@
 require("dotenv").config();
 
 const storageSync = require("./storage-sync");
+const {
+  loadAutoCollectCertamenConfig,
+  saveAutoCollectCertamenConfig,
+  scheduleAutoCollectCertamen
+} = require("./certamen-auto-collect");
+const { renderAutoCollectCertamenWidgetHtml } = require("./certamen-auto-collect-widget");
+const { getCheckedCertamenPayloadsPreview, filterPublishableCertamenPayloads } = require("./certamen-payload-validation");
+const { publishReadyCertamenPayloadsToAgon } = require("./certamen-agon-publish");
+const { renderCertamenPublishWidgetHtml } = require("./certamen-publish-widget");
 
 const express = require("express");
 const path = require("path");
@@ -4416,6 +4425,8 @@ app.get("/certamen", requireMixteAuth, (req, res) => {
   <p>Le mode Certamen n'a pas encore été lancé.</p>
   <button id="launch-btn" onclick="launch()">Lancer la première analyse</button>
   <div id="status"></div>
+  ${renderAutoCollectCertamenWidgetHtml()}
+  ${renderCertamenPublishWidgetHtml()}
   <script>
     (async function checkRunning() {
       try {
@@ -4488,6 +4499,68 @@ app.get("/certamen/progress", requireMixteAuth, async (req, res) => {
     res.json(data);
   } catch (err) {
     res.json({ running: false, done: false, stepIndex: 0, stepTotal: 4, step: "", detail: "" });
+  }
+});
+
+// Route de test : prévisualise les sujets Certamen cochés ("Sujets clivants" →
+// "Cocher les 10"), leur payload Agôn brut et nettoyé, et leur statut de validation
+// (ready / needs_review / blocked). Lecture seule, aucune publication (cf.
+// certamen-checked-subjects.js et certamen-payload-validation.js). "publishable" ne
+// contient que les payloads "ready" — mode strict pour la future étape de publication.
+app.get("/certamen/checked-preview", requireMixteAuth, (req, res) => {
+  try {
+    const { items, readyCount, blockedCount, needsReviewCount } = getCheckedCertamenPayloadsPreview();
+    res.json({
+      ok: true,
+      checkedCount: items.length,
+      readyCount,
+      blockedCount,
+      needsReviewCount,
+      subjects: items,
+      publishable: filterPublishableCertamenPayloads(items)
+    });
+  } catch (err) {
+    res.status(500).json({ ok: false, error: err.message });
+  }
+});
+
+// Publication réelle : envoie uniquement les payloads "ready" vers Agôn (bulles Agôn /
+// debates), jamais les "blocked" ni les "needs_review", jamais de story (cf.
+// certamen-agon-publish.js). N'appelle ni /send-to-agon, ni suggestStoryLink(), ni les
+// générateurs d'article/récit.
+app.post("/certamen/publish-ready", requireMixteAuth, async (req, res) => {
+  try {
+    const result = await publishReadyCertamenPayloadsToAgon();
+    res.json({ ok: true, ...result });
+  } catch (err) {
+    res.status(500).json({ ok: false, error: err.message });
+  }
+});
+
+// ==================== AUTO-COLLECTE CERTAMEN ====================
+// Planification dédiée, séparée de l'auto-collecte veille mixte (cf. certamen-auto-collect.js).
+// Déclenche uniquement POST http://127.0.0.1:3002/certamen/refresh.
+
+app.get("/api/auto-collect-certamen", (req, res) => {
+  res.json(loadAutoCollectCertamenConfig());
+});
+
+app.post("/api/auto-collect-certamen", (req, res) => {
+  const { enabled, times } = req.body || {};
+  if (typeof enabled !== "boolean" || !Array.isArray(times) || times.length < 1 || times.length > 4) {
+    return res.status(400).json({ ok: false, error: "Paramètres invalides" });
+  }
+  const validTime = /^([01]\d|2[0-3]):[0-5]\d$/;
+  if (times.some(t => !validTime.test(t))) {
+    return res.status(400).json({ ok: false, error: "Format d'heure invalide (HH:MM attendu)" });
+  }
+  const config = { enabled, times };
+  try {
+    saveAutoCollectCertamenConfig(config);
+    scheduleAutoCollectCertamen(config);
+    res.json({ ok: true });
+  } catch (err) {
+    res.status(500).json({ ok: false, error: err.message });
   }
 });
 
@@ -5075,6 +5148,7 @@ storageSync.downloadAll().then(() => {
   const httpServer = app.listen(PORT, () => {
     console.log(`Serveur lancé sur le port ${PORT}`);
     scheduleAutoCollect(loadAutoCollectConfig());
+    scheduleAutoCollectCertamen(loadAutoCollectCertamenConfig());
     resumePendingIdeasOnStartup();
     storageSync.startPeriodicSync();
   });

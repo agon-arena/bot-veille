@@ -18,6 +18,7 @@ const FILES_TO_SYNC = [
   "veille-mixte.json",
   "veille-youtube.json",
   "auto-collect-config.json",
+  "auto-collect-certamen-config.json",
   "auto-publish-config.json",
   "youtube-chaines.json",
   "medias.json",

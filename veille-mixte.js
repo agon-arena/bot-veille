@@ -7,6 +7,8 @@ const stringSimilarity = require("string-similarity");
 const dayjs = require("dayjs");
 const OpenAI = require("openai");
 const path = require("path");
+const { renderAutoCollectCertamenWidgetHtml } = require("./certamen-auto-collect-widget");
+const { renderCertamenPublishWidgetHtml } = require("./certamen-publish-widget");
 
 const apiApp = express();
 apiApp.use(express.json({ limit: "2mb" }));
@@ -1951,9 +1953,11 @@ function escapeHtml(text) {
     .replaceAll("'", "&#039;");
 }
 
-function buildSubjectInteractionScriptHtml() {
+function buildSubjectInteractionScriptHtml(opts = {}) {
+  const topTenSorts = opts.topTenSorts || ["ranked"];
   return `
   <script>
+    const TOP10_BAR_SORTS = ${JSON.stringify(topTenSorts)};
     const AGON_THEMES = ${JSON.stringify(AGON_THEMES)};
     const AGON_THEME_ALIASES = ${JSON.stringify(AGON_THEME_ALIASES)};
     function normalizeAgonTheme(theme) {
@@ -3579,7 +3583,7 @@ function buildSubjectInteractionScriptHtml() {
       document.body.classList.toggle("saved-selection-mode", isSavedMode);
       if (bar) bar.classList.toggle("visible", isSavedMode);
       const rankedBar = document.getElementById("ranked-action-bar");
-      if (rankedBar) rankedBar.classList.toggle("visible", currentSort === "ranked");
+      if (rankedBar) rankedBar.classList.toggle("visible", TOP10_BAR_SORTS.includes(currentSort));
 
       const activeSession = getActiveSession();
       const count = isSavedMode && activeSession ? activeSession.querySelectorAll(".subject.selected").length : 0;
@@ -7009,6 +7013,9 @@ function generateCertamenHtml(sessions) {
     <button class="update-banner" id="update-banner" onclick="window.location.reload()">Nouvelle analyse disponible — Charger</button>
   </div>
 
+  ${renderAutoCollectCertamenWidgetHtml()}
+  ${renderCertamenPublishWidgetHtml()}
+
   <div id="progress-panel">
     <div class="progress-step-label">Étape <span id="prog-step">…</span> / 4 — <span id="prog-name">Démarrage…</span></div>
     <div class="progress-bar-track"><div class="progress-bar-fill" id="prog-bar"></div></div>
@@ -7055,7 +7062,7 @@ function generateCertamenHtml(sessions) {
       : `<div class="empty">Aucune session Certamen générée pour le moment.</div>`
   }
 
-  ${buildSubjectInteractionScriptHtml()}
+  ${buildSubjectInteractionScriptHtml({ topTenSorts: ["ranked", "score"] })}
   <script>
     var ptrIsRefreshing = false;
 

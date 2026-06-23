@@ -368,5 +368,195 @@
     "runAt": "2026-06-20T06:27:53.201Z",
     "status": "done",
     "attempts": 0
+  },
+  {
+    "debateId": 942,
+    "question": "Les Pays-Bas dominent la Suède et se rapprochent des seizièmes de finale",
+    "positionA": "",
+    "positionB": "",
+    "id": "942-1782022628229-nzabn5",
+    "runAt": "2026-06-21T06:27:08.229Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 943,
+    "question": "Le roi Charles III publiera sa fiche d'impôts, une première historique",
+    "positionA": "",
+    "positionB": "",
+    "id": "943-1782022628229-mtnx1j",
+    "runAt": "2026-06-21T06:27:08.229Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 944,
+    "question": "Décès de Claude Guillemot dans un crash d'avion à La Baule",
+    "positionA": "",
+    "positionB": "",
+    "id": "944-1782022628229-dyofv3",
+    "runAt": "2026-06-21T06:27:08.229Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 945,
+    "question": "État d'exception en Bolivie : l'armée et la police lèvent les barrages",
+    "positionA": "",
+    "positionB": "",
+    "id": "945-1782022628229-yztgcu",
+    "runAt": "2026-06-21T06:27:08.229Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 946,
+    "question": "Réformes sociales ou fermeté sécuritaire en Colombie ?",
+    "positionA": "Poursuivre les réformes sociales",
+    "positionB": "Adopter une politique sécuritaire dure",
+    "id": "946-1782022628229-524x6f",
+    "runAt": "2026-06-21T06:27:08.229Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 947,
+    "question": "Négociations cruciales entre l'Iran et les États-Unis en Suisse",
+    "positionA": "",
+    "positionB": "",
+    "id": "947-1782022628229-ath2mg",
+    "runAt": "2026-06-21T06:27:08.229Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 953,
+    "question": "Suspension de la vente de carburant en Crimée après des frappes ukrainiennes",
+    "positionA": "",
+    "positionB": "",
+    "id": "953-1782109128829-8bvz64",
+    "runAt": "2026-06-22T06:28:48.829Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 954,
+    "question": "Mise en place d'un système automatisé pour repérer les enfants déscolarisés",
+    "positionA": "",
+    "positionB": "",
+    "id": "954-1782109128829-urm4i6",
+    "runAt": "2026-06-22T06:28:48.829Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 955,
+    "question": "La Chine sanctionne des entreprises américaines en réponse à des mesures similaires",
+    "positionA": "",
+    "positionB": "",
+    "id": "955-1782109128829-m8iwg7",
+    "runAt": "2026-06-22T06:28:48.829Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 956,
+    "question": "Le Parti de la prospérité remporte les législatives en Éthiopie",
+    "positionA": "",
+    "positionB": "",
+    "id": "956-1782109128829-thluwb",
+    "runAt": "2026-06-22T06:28:48.829Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 957,
+    "question": "Israël doit-il être impliqué dans les négociations ?",
+    "positionA": "Inclure Israël pour stabiliser la région",
+    "positionB": "Exclure Israël pour éviter les tensions",
+    "id": "957-1782109128829-g40shd",
+    "runAt": "2026-06-22T06:28:48.829Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 958,
+    "question": "Manifestation à Paris contre le racisme et l'extrême droite",
+    "positionA": "",
+    "positionB": "",
+    "id": "958-1782109128829-20b288",
+    "runAt": "2026-06-22T06:28:48.829Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 959,
+    "question": "Progression des pourparlers Iran-États-Unis en Suisse",
+    "positionA": "",
+    "positionB": "",
+    "id": "959-1782109128829-6juft1",
+    "runAt": "2026-06-22T06:28:48.829Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 960,
+    "question": "Rumeurs de démission de Keir Starmer au Royaume-Uni",
+    "positionA": "",
+    "positionB": "",
+    "id": "960-1782109128829-wqye9o",
+    "runAt": "2026-06-22T06:28:48.829Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 961,
+    "question": "Peut-on lutter contre le narcotrafic en réduisant l'État ?",
+    "positionA": "Maintenir l'État pour soutenir la lutte",
+    "positionB": "Réduire l'État pour plus d'efficacité",
+    "id": "961-1782109128829-dgbr9v",
+    "runAt": "2026-06-22T06:28:48.829Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 962,
+    "question": "Fermeture d'Ormuz : pression légitime ou risque global ?",
+    "positionA": "Risque économique et géopolitique majeur",
+    "positionB": "Utilisation stratégique pour pression diplomatique",
+    "id": "962-1782109128829-j55ell",
+    "runAt": "2026-06-22T06:28:48.829Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 963,
+    "question": "La droite doit-elle prioriser l'écologie en 2027 ?",
+    "positionA": "Oui, pour attirer les jeunes électeurs",
+    "positionB": "Non, rester sur les thèmes traditionnels",
+    "id": "963-1782109128829-w0lvfu",
+    "runAt": "2026-06-22T06:28:48.829Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 964,
+    "question": "Canicule en France : écoles fermées et vigilance rouge étendue",
+    "positionA": "",
+    "positionB": "",
+    "id": "964-1782109128829-e199cs",
+    "runAt": "2026-06-22T06:28:48.829Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 965,
+    "question": "Canicule : 35 départements en vigilance rouge, mesures pour la Fête de la musique",
+    "positionA": "",
+    "positionB": "",
+    "id": "965-1782109128829-w29zbg",
+    "runAt": "2026-06-22T06:28:48.829Z",
+    "status": "done",
+    "attempts": 0
   }
 ]
