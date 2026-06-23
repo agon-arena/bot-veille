@@ -163,5 +163,4240 @@
     "nom": "Le Courrier International",
     "orientation": "gauche",
     "rss": "https://www.courrierinternational.com/feed/all/rss.xml"
+  },
+  {
+    "nom": "Elucid",
+    "orientation": "",
+    "rss": "https://elucid.media/feed"
+  },
+  {
+    "nom": "Indymotion — Videos",
+    "orientation": "",
+    "rss": "https://indymotion.fr/feeds/videos.xml?videoChannelId=2238"
+  },
+  {
+    "nom": "Eco Bretons",
+    "orientation": "",
+    "rss": "https://www.eco-bretons.info/feed/"
+  },
+  {
+    "nom": "Electronslibres — Podcast",
+    "orientation": "",
+    "rss": "https://electronslibres.ch/podcast/feed/"
+  },
+  {
+    "nom": "Acrimed",
+    "orientation": "",
+    "rss": "https://www.acrimed.org/spip.php?page=backend"
+  },
+  {
+    "nom": "Bluesky cp5lrx76",
+    "orientation": "",
+    "rss": "https://bsky.app/profile/did:plc:cp5lrx76vspzprxfe74fpvop/rss"
+  },
+  {
+    "nom": "Afrique XXI — lang=fr",
+    "orientation": "",
+    "rss": "https://afriquexxi.info/?page=backend&lang=fr"
+  },
+  {
+    "nom": "Afriques en Lutte",
+    "orientation": "",
+    "rss": "https://www.afriquesenlutte.org/spip.php?page=backend"
+  },
+  {
+    "nom": "Agoravox (Feedburner) — GEOF",
+    "orientation": "",
+    "rss": "http://feeds.feedburner.com/agoravox/gEOF"
+  },
+  {
+    "nom": "Agoravox — id_rubrique=35",
+    "orientation": "",
+    "rss": "https://www.agoravox.fr/spip.php?page=backend&id_rubrique=35"
+  },
+  {
+    "nom": "Agoravox — id_rubrique=29",
+    "orientation": "",
+    "rss": "https://www.agoravox.fr/spip.php?page=backend&id_rubrique=29"
+  },
+  {
+    "nom": "Agoravox — id_rubrique=39",
+    "orientation": "",
+    "rss": "https://www.agoravox.fr/spip.php?page=backend&id_rubrique=39"
+  },
+  {
+    "nom": "Agoravox — id_rubrique=28",
+    "orientation": "",
+    "rss": "https://www.agoravox.fr/spip.php?page=backend&id_rubrique=28"
+  },
+  {
+    "nom": "Agoravox — id_rubrique=41",
+    "orientation": "",
+    "rss": "https://www.agoravox.fr/spip.php?page=backend&id_rubrique=41"
+  },
+  {
+    "nom": "Ale Ale — Feed",
+    "orientation": "",
+    "rss": "https://www.aleale.org/feed/rss"
+  },
+  {
+    "nom": "Bluesky 6e6l7u2h",
+    "orientation": "",
+    "rss": "https://bsky.app/profile/did:plc:6e6l7u2hbl677j4qpr66efyn/rss"
+  },
+  {
+    "nom": "AllanBarte (mastodon.social)",
+    "orientation": "",
+    "rss": "https://mastodon.social/@AllanBarte.rss"
+  },
+  {
+    "nom": "Bluesky baubqpcu",
+    "orientation": "",
+    "rss": "https://bsky.app/profile/did:plc:baubqpcuoesmvjiimxlers3v/rss"
+  },
+  {
+    "nom": "Alter1fo",
+    "orientation": "",
+    "rss": "https://alter1fo.com/feed"
+  },
+  {
+    "nom": "Bluesky uhsv3u2e",
+    "orientation": "",
+    "rss": "https://bsky.app/profile/did:plc:uhsv3u2ewlchgh3uzzy3bjp2/rss"
+  },
+  {
+    "nom": "Bluesky ity6ryiw",
+    "orientation": "",
+    "rss": "https://bsky.app/profile/did:plc:ity6ryiwrf3scflmvskgdqxm/rss"
+  },
+  {
+    "nom": "AlterCampagne — feed=rss2",
+    "orientation": "",
+    "rss": "https://www.altercampagne.net/?feed=rss2"
+  },
+  {
+    "nom": "Bluesky zgjjnp56",
+    "orientation": "",
+    "rss": "https://bsky.app/profile/did:plc:zgjjnp56ttgzdn5elvxlppfu/rss"
+  },
+  {
+    "nom": "AOC",
+    "orientation": "",
+    "rss": "https://aoc.media/feed/"
+  },
+  {
+    "nom": "RAPasso (framapiaf.org)",
+    "orientation": "",
+    "rss": "https://framapiaf.org/@RAPasso.rss"
+  },
+  {
+    "nom": "arretsurimages (mamot.fr)",
+    "orientation": "",
+    "rss": "https://mamot.fr/@arretsurimages.rss"
+  },
+  {
+    "nom": "Arrêt sur images — All Content",
+    "orientation": "",
+    "rss": "https://api.arretsurimages.net/api/public/rss/all-content"
+  },
+  {
+    "nom": "Bluesky jmusvarq",
+    "orientation": "",
+    "rss": "https://bsky.app/profile/did:plc:jmusvarqn5czqikhnqdmjyum/rss"
+  },
+  {
+    "nom": "Attac",
+    "orientation": "",
+    "rss": "https://france.attac.org/spip.php?page=backend"
+  },
+  {
+    "nom": "Bluesky a5wesz6i",
+    "orientation": "",
+    "rss": "https://bsky.app/profile/did:plc:a5wesz6iyynwklcevyi63b4g/rss"
+  },
+  {
+    "nom": "Attac — id_rubrique=31",
+    "orientation": "",
+    "rss": "https://france.attac.org/spip.php?page=backend&id_rubrique=31"
+  },
+  {
+    "nom": "Attac (mamot.fr)",
+    "orientation": "",
+    "rss": "https://mamot.fr/@Attac.rss"
+  },
+  {
+    "nom": "Attaque",
+    "orientation": "",
+    "rss": "https://attaque.noblogs.org/feed/"
+  },
+  {
+    "nom": "Au Poste — Emissions",
+    "orientation": "",
+    "rss": "https://auposte.media/emissions.xml"
+  },
+  {
+    "nom": "David Dufresne",
+    "orientation": "",
+    "rss": "http://www.davduf.net/spip.php?page=backend"
+  },
+  {
+    "nom": "Bluesky g5jpm7mc",
+    "orientation": "",
+    "rss": "https://bsky.app/profile/did:plc:g5jpm7mczglrlizpqkrtg2vm/rss"
+  },
+  {
+    "nom": "davduf (mamot.fr)",
+    "orientation": "",
+    "rss": "https://mamot.fr/@davduf.rss"
+  },
+  {
+    "nom": "Shanti Cafe (PeerTube) — Videos",
+    "orientation": "",
+    "rss": "https://tube.shanti.cafe/feeds/videos.xml?videoChannelId=24705"
+  },
+  {
+    "nom": "Bluesky enfsoy7x",
+    "orientation": "",
+    "rss": "https://bsky.app/profile/did:plc:enfsoy7x3cml2dqkyvpf7id5/rss"
+  },
+  {
+    "nom": "Basse-Chaîne Info",
+    "orientation": "",
+    "rss": "https://basse-chaine.info/spip.php?page=backend"
+  },
+  {
+    "nom": "Basta! — id_rubrique=114",
+    "orientation": "",
+    "rss": "https://basta.media/spip.php?page=backend&id_rubrique=114"
+  },
+  {
+    "nom": "Basta! — id_mot=440",
+    "orientation": "",
+    "rss": "https://basta.media/spip.php?page=backend&id_mot=440"
+  },
+  {
+    "nom": "Basta! (portail)",
+    "orientation": "",
+    "rss": "https://portail.basta.media/spip.php?page=backend"
+  },
+  {
+    "nom": "Basta! (portail) — id_mot=165",
+    "orientation": "",
+    "rss": "https://portail.basta.media/spip.php?page=backend&id_mot=165"
+  },
+  {
+    "nom": "Basta! (portail) — id_mot=182",
+    "orientation": "",
+    "rss": "https://portail.basta.media/spip.php?page=backend&id_mot=182"
+  },
+  {
+    "nom": "Basta! (portail) — id_mot=163",
+    "orientation": "",
+    "rss": "https://portail.basta.media/spip.php?page=backend&id_mot=163"
+  },
+  {
+    "nom": "Basta! (portail) — id_mot=166",
+    "orientation": "",
+    "rss": "https://portail.basta.media/spip.php?page=backend&id_mot=166"
+  },
+  {
+    "nom": "Basta! (portail) — id_mot=231",
+    "orientation": "",
+    "rss": "https://portail.basta.media/spip.php?page=backend&id_mot=231"
+  },
+  {
+    "nom": "Basta! (portail) — id_mot=150",
+    "orientation": "",
+    "rss": "https://portail.basta.media/spip.php?page=backend&id_mot=150"
+  },
+  {
+    "nom": "Basta! (portail) — id_mot=164",
+    "orientation": "",
+    "rss": "https://portail.basta.media/spip.php?page=backend&id_mot=164"
+  },
+  {
+    "nom": "bastamedia (mastodon.social)",
+    "orientation": "",
+    "rss": "https://mastodon.social/@bastamedia.rss"
+  },
+  {
+    "nom": "Basta! — id_mot=474",
+    "orientation": "",
+    "rss": "https://basta.media/spip.php?page=backend&id_mot=474"
+  },
+  {
+    "nom": "Bluesky 6tko42pk",
+    "orientation": "",
+    "rss": "https://bsky.app/profile/did:plc:6tko42pks4rfcjh7rfqkzmhu/rss"
+  },
+  {
+    "nom": "Blast",
+    "orientation": "",
+    "rss": "https://api.blast-info.fr/rss.xml"
+  },
+  {
+    "nom": "Blast — Rss Emissions",
+    "orientation": "",
+    "rss": "https://api.blast-info.fr/rss_emissions.xml"
+  },
+  {
+    "nom": "Blast — Rss Articles",
+    "orientation": "",
+    "rss": "https://api.blast-info.fr/rss_articles.xml"
+  },
+  {
+    "nom": "Bluesky omtqqkwu",
+    "orientation": "",
+    "rss": "https://bsky.app/profile/did:plc:omtqqkwusnfvxos7pxvl4fgo/rss"
+  },
+  {
+    "nom": "blast_info (mamot.fr)",
+    "orientation": "",
+    "rss": "https://mamot.fr/@blast_info.rss"
+  },
+  {
+    "nom": "Blast — Pagaille PNF7gBJsRjCfsef 25htBA",
+    "orientation": "",
+    "rss": "https://api.blast-info.fr/contents/podcasts/pagaille-PNF7gBJsRjCfsef-25htBA/rss.xml"
+  },
+  {
+    "nom": "PeerTube.stream — Videos",
+    "orientation": "",
+    "rss": "https://peertube.stream/feeds/videos.xml?videoChannelId=9726"
+  },
+  {
+    "nom": "Bon Pote",
+    "orientation": "",
+    "rss": "https://bonpote.com/feed/"
+  },
+  {
+    "nom": "Bluesky yvxxxti5",
+    "orientation": "",
+    "rss": "https://bsky.app/profile/did:plc:yvxxxti5p2msnfh5kmzwa5f7/rss"
+  },
+  {
+    "nom": "Bondamanjak — Venezuela 2",
+    "orientation": "",
+    "rss": "https://www.bondamanjak.com/tag/venezuela-2/feed/"
+  },
+  {
+    "nom": "Bondy Blog",
+    "orientation": "",
+    "rss": "https://www.bondyblog.fr/feed/"
+  },
+  {
+    "nom": "Bourrasque Info",
+    "orientation": "",
+    "rss": "https://bourrasque-info.org/spip.php?page=backend"
+  },
+  {
+    "nom": "BDS France",
+    "orientation": "",
+    "rss": "https://www.bdsfrance.org/feed/"
+  },
+  {
+    "nom": "Bretagne Info",
+    "orientation": "",
+    "rss": "https://www.bretagne-info.bzh/feed/"
+  },
+  {
+    "nom": "Bluesky rzhvvabb",
+    "orientation": "",
+    "rss": "https://bsky.app/profile/did:plc:rzhvvabbe53zo7w76abyng2m/rss"
+  },
+  {
+    "nom": "Bure Bure Bure — Fr",
+    "orientation": "",
+    "rss": "https://bureburebure.info/fr/feed/"
+  },
+  {
+    "nom": "CADTM",
+    "orientation": "",
+    "rss": "https://www.cadtm.org/spip.php?page=backend-fr"
+  },
+  {
+    "nom": "Invidious (nadeko.net) — UC9gcw8 7IzzaosI4c0KCP0g",
+    "orientation": "",
+    "rss": "https://inv.nadeko.net/feed/channel/UC9gcw8-7IzzaosI4c0KCP0g"
+  },
+  {
+    "nom": "Cause Commune — Podcast",
+    "orientation": "",
+    "rss": "https://cause-commune.fm/feed/podcast"
+  },
+  {
+    "nom": "CauseCommune (framapiaf.org)",
+    "orientation": "",
+    "rss": "https://framapiaf.org/@CauseCommune.rss"
+  },
+  {
+    "nom": "Causeur",
+    "orientation": "",
+    "rss": "https://www.causeur.fr/feed"
+  },
+  {
+    "nom": "CCAP TV",
+    "orientation": "",
+    "rss": "https://www.ccap.tv/feed/"
+  },
+  {
+    "nom": "Cerveaux non disponibles",
+    "orientation": "",
+    "rss": "https://cerveauxnondisponibles.net/feed/"
+  },
+  {
+    "nom": "cerveauxnondisponibles (mamot.fr)",
+    "orientation": "",
+    "rss": "https://mamot.fr/@cerveauxnondisponibles.rss"
+  },
+  {
+    "nom": "Bluesky e76m7vnv",
+    "orientation": "",
+    "rss": "https://bsky.app/profile/did:plc:e76m7vnvqzjnhzllechxerjz/rss"
+  },
+  {
+    "nom": "Bluesky vm2tsoix",
+    "orientation": "",
+    "rss": "https://bsky.app/profile/did:plc:vm2tsoixg7vsygrolxd4rrho/rss"
+  },
+  {
+    "nom": "Charlie Hebdo — Iran",
+    "orientation": "",
+    "rss": "https://charliehebdo.fr/tag/iran/feed/"
+  },
+  {
+    "nom": "Charlie Hebdo — Turquie",
+    "orientation": "",
+    "rss": "https://charliehebdo.fr/tag/turquie/feed/"
+  },
+  {
+    "nom": "Bluesky ike5zasq",
+    "orientation": "",
+    "rss": "https://bsky.app/profile/did:plc:ike5zasqcwr2wyflpxsyk6dh/rss"
+  },
+  {
+    "nom": "Bluesky hx5ogwgt",
+    "orientation": "",
+    "rss": "https://bsky.app/profile/did:plc:hx5ogwgtujoenkxbe24mnsyh/rss"
+  },
+  {
+    "nom": "Bluesky owtiimeu",
+    "orientation": "",
+    "rss": "https://bsky.app/profile/did:plc:owtiimeuephyizfdn3wamvll/rss"
+  },
+  {
+    "nom": "Citoyens.com",
+    "orientation": "",
+    "rss": "https://citoyens.com/feed"
+  },
+  {
+    "nom": "Associations Citoyennes",
+    "orientation": "",
+    "rss": "https://www.associations-citoyennes.net/feed/"
+  },
+  {
+    "nom": "Contre Attaque",
+    "orientation": "",
+    "rss": "https://contre-attaque.net/feed/"
+  },
+  {
+    "nom": "contreattaque (mastodon.social)",
+    "orientation": "",
+    "rss": "https://mastodon.social/@contreattaque.rss"
+  },
+  {
+    "nom": "Agoravox (Feedburner) — Badt1elqzak",
+    "orientation": "",
+    "rss": "https://feeds.feedburner.com/crashdebug/badt1elqzak"
+  },
+  {
+    "nom": "CRIC Grenoble",
+    "orientation": "",
+    "rss": "https://cric-grenoble.info/spip.php?page=backend"
+  },
+  {
+    "nom": "CRIC Grenoble — id_mot=24",
+    "orientation": "",
+    "rss": "https://cric-grenoble.info/spip.php?page=backend&id_mot=24"
+  },
+  {
+    "nom": "CrimethInc — Fr",
+    "orientation": "",
+    "rss": "https://fr.crimethinc.com/feed/fr"
+  },
+  {
+    "nom": "Cyberacteurs — feed=rss2",
+    "orientation": "",
+    "rss": "https://www.cyberacteurs.org/blog/?feed=rss2"
+  },
+  {
+    "nom": "Cyberacteurs — Rss Petitions",
+    "orientation": "",
+    "rss": "https://www.cyberacteurs.org/rss_petitions.php"
+  },
+  {
+    "nom": "Bluesky ajulzsoh",
+    "orientation": "",
+    "rss": "https://bsky.app/profile/did:plc:ajulzsoh6yidv2kkpntq4pba/rss"
+  },
+  {
+    "nom": "De la désobéissance",
+    "orientation": "",
+    "rss": "https://deladesobeissance.fr/feed/"
+  },
+  {
+    "nom": "Disclose",
+    "orientation": "",
+    "rss": "https://disclose.ngo/feed/"
+  },
+  {
+    "nom": "Bluesky qopr6txm",
+    "orientation": "",
+    "rss": "https://bsky.app/profile/did:plc:qopr6txm3r27ym77th4ml46e/rss"
+  },
+  {
+    "nom": "Bluesky 2cte4wip",
+    "orientation": "",
+    "rss": "https://bsky.app/profile/did:plc:2cte4wipyk47qjujtxrskqcx/rss"
+  },
+  {
+    "nom": "Espaces Média",
+    "orientation": "",
+    "rss": "https://espaces.media/feed/"
+  },
+  {
+    "nom": "Expansive Info",
+    "orientation": "",
+    "rss": "https://expansive.info/spip.php?page=backend"
+  },
+  {
+    "nom": "Extinction Rebellion France",
+    "orientation": "",
+    "rss": "https://extinctionrebellion.fr/feed.xml"
+  },
+  {
+    "nom": "xrfrance (social.rebellion.global)",
+    "orientation": "",
+    "rss": "https://social.rebellion.global/@xrfrance.rss"
+  },
+  {
+    "nom": "Extinction Rebellion (mobilizon) — Instance",
+    "orientation": "",
+    "rss": "https://mobilizon.extinctionrebellion.fr/feed/instance/atom"
+  },
+  {
+    "nom": "Extinction Rebellion (tube) — Videos",
+    "orientation": "",
+    "rss": "https://tube.extinctionrebellion.fr/feeds/videos.xml?sort=-publishedAt&isLocal=true"
+  },
+  {
+    "nom": "Bluesky ps6pjfub",
+    "orientation": "",
+    "rss": "https://bsky.app/profile/did:plc:ps6pjfubpbqfdzkmqgd2hfud/rss"
+  },
+  {
+    "nom": "fakir (piaille.fr)",
+    "orientation": "",
+    "rss": "https://piaille.fr/@fakir.rss"
+  },
+  {
+    "nom": "Fipeco — Flux Rss",
+    "orientation": "",
+    "rss": "https://www.fipeco.fr/flux_rss.xml"
+  },
+  {
+    "nom": "FNLP",
+    "orientation": "",
+    "rss": "https://fnlp.fr/feed/"
+  },
+  {
+    "nom": "Forbidden Stories — Fr",
+    "orientation": "",
+    "rss": "https://forbiddenstories.org/fr/feed/"
+  },
+  {
+    "nom": "Franceinfo (replay magazine) — Cash Investigation",
+    "orientation": "",
+    "rss": "https://www.franceinfo.fr/replay-magazine/france-2/cash-investigation.rss"
+  },
+  {
+    "nom": "Franceinfo (replay magazine) — Envoye Special",
+    "orientation": "",
+    "rss": "https://www.franceinfo.fr/replay-magazine/france-2/envoye-special.rss"
+  },
+  {
+    "nom": "Radio France (podcast) — Podcast 1db16740 Cbb9 4eeb Ab65 828c07d02d3b",
+    "orientation": "",
+    "rss": "https://radiofrance-podcast.net/podcast09/podcast_1db16740-cbb9-4eeb-ab65-828c07d02d3b.xml"
+  },
+  {
+    "nom": "Frustration",
+    "orientation": "",
+    "rss": "https://frustrationmagazine.fr/feed.xml"
+  },
+  {
+    "nom": "Bluesky ddruc4bd",
+    "orientation": "",
+    "rss": "https://bsky.app/profile/did:plc:ddruc4bdy27pja4dwk4pqu4k/rss"
+  },
+  {
+    "nom": "frustrationmagazine (mastodon.social)",
+    "orientation": "",
+    "rss": "https://mastodon.social/@frustrationmagazine.rss"
+  },
+  {
+    "nom": "Alternatives économiques (blogs) — Gilles Raveaud",
+    "orientation": "",
+    "rss": "https://blogs.alternatives-economiques.fr/gilles-raveaud/rss"
+  },
+  {
+    "nom": "Agoravox (Feedburner) — Glitz Fr",
+    "orientation": "",
+    "rss": "http://feeds.feedburner.com/glitz-fr"
+  },
+  {
+    "nom": "Global Magazine — Flux",
+    "orientation": "",
+    "rss": "http://www.globalmagazine.info/flux.rss"
+  },
+  {
+    "nom": "Grains de sable",
+    "orientation": "",
+    "rss": "http://www.grainsdesable.org/feed/"
+  },
+  {
+    "nom": "Grand Format",
+    "orientation": "",
+    "rss": "https://grand-format.net/feed/"
+  },
+  {
+    "nom": "Grand site des Sanguinaires",
+    "orientation": "",
+    "rss": "https://www.grandsitesanguinaires-parata.com/feed/"
+  },
+  {
+    "nom": "GRIP",
+    "orientation": "",
+    "rss": "https://www.grip.org/feed/"
+  },
+  {
+    "nom": "Twitch guillaumemeurice",
+    "orientation": "",
+    "rss": "https://twitchrss.appspot.com/vod/guillaumemeurice"
+  },
+  {
+    "nom": "Guiti News",
+    "orientation": "",
+    "rss": "https://guitinews.fr/feed/"
+  },
+  {
+    "nom": "Indymotion — Videos (2)",
+    "orientation": "",
+    "rss": "https://indymotion.fr/feeds/videos.xml?videoChannelId=36"
+  },
+  {
+    "nom": "Histoires Crépues — Latest",
+    "orientation": "",
+    "rss": "https://histoirescrepues.fr/latest/rss/"
+  },
+  {
+    "nom": "Histoires Ordinaires — Syndication",
+    "orientation": "",
+    "rss": "https://www.histoiresordinaires.fr/xml/syndication.rss"
+  },
+  {
+    "nom": "HuffPost (envoyé spécial) — Rss Headline",
+    "orientation": "",
+    "rss": "https://www.huffingtonpost.fr/envoye-special/rss_headline.xml"
+  },
+  {
+    "nom": "Hyperbate — feed=rss2",
+    "orientation": "",
+    "rss": "http://hyperbate.fr/dernier/?feed=rss2"
+  },
+  {
+    "nom": "IAATA",
+    "orientation": "",
+    "rss": "https://iaata.info/spip.php?page=backend"
+  },
+  {
+    "nom": "Indymedia Lille",
+    "orientation": "",
+    "rss": "https://lille.indymedia.org/spip.php?page=backend"
+  },
+  {
+    "nom": "Indymedia Nantes",
+    "orientation": "",
+    "rss": "https://nantes.indymedia.org/feed/"
+  },
+  {
+    "nom": "Bluesky cfp6ccos",
+    "orientation": "",
+    "rss": "https://bsky.app/profile/did:plc:cfp6ccosrqtmmrtjvaik3ly3/rss"
+  },
+  {
+    "nom": "Infokiosques",
+    "orientation": "",
+    "rss": "https://infokiosques.net/spip.php?page=backend"
+  },
+  {
+    "nom": "Info Libertaire",
+    "orientation": "",
+    "rss": "https://www.infolibertaire.net/feed/"
+  },
+  {
+    "nom": "Bluesky vtvk2dzo",
+    "orientation": "",
+    "rss": "https://bsky.app/profile/did:plc:vtvk2dzo52bdcbkvjvd5pkas/rss"
+  },
+  {
+    "nom": "IEB",
+    "orientation": "",
+    "rss": "https://www.ieb.be/spip.php?page=backend"
+  },
+  {
+    "nom": "Interstices Fajawat — Fr",
+    "orientation": "",
+    "rss": "https://interstices-fajawat.org/fr/feed/"
+  },
+  {
+    "nom": "Investig'Action",
+    "orientation": "",
+    "rss": "https://investigaction.net/feed/"
+  },
+  {
+    "nom": "Alternatives économiques (blogs) — Jdughera",
+    "orientation": "",
+    "rss": "https://blogs.alternatives-economiques.fr/jdughera/rss"
+  },
+  {
+    "nom": "Alternatives économiques (blogs) — Laville",
+    "orientation": "",
+    "rss": "https://blogs.alternatives-economiques.fr/laville/rss"
+  },
+  {
+    "nom": "Alternatives économiques (blogs) — Harribey",
+    "orientation": "",
+    "rss": "https://blogs.alternatives-economiques.fr/harribey/rss"
+  },
+  {
+    "nom": "Kite (presse indépendante) — cat=Presse indépendante",
+    "orientation": "",
+    "rss": "https://kite.pixenjoy.com/en/rss-category?cat=Presse%20ind%c3%a9pendante"
+  },
+  {
+    "nom": "Là-bas si j'y suis",
+    "orientation": "",
+    "rss": "https://la-bas.org/spip.php?page=backend"
+  },
+  {
+    "nom": "Bluesky iennf7wn",
+    "orientation": "",
+    "rss": "https://bsky.app/profile/did:plc:iennf7wniadwmsmxvujzn32f/rss"
+  },
+  {
+    "nom": "LaBasSiJySuis (mastodon.social)",
+    "orientation": "",
+    "rss": "https://mastodon.social/@LaBasSiJySuis.rss"
+  },
+  {
+    "nom": "Là-bas si j'y suis — Podcast",
+    "orientation": "",
+    "rss": "https://la-bas.org/podcast/"
+  },
+  {
+    "nom": "L'Âge de faire",
+    "orientation": "",
+    "rss": "https://lagedefaire-lejournal.fr/feed/"
+  },
+  {
+    "nom": "Agenda Militant",
+    "orientation": "",
+    "rss": "https://www.agendamilitant.org/rss.xml"
+  },
+  {
+    "nom": "agendamilitant (mamot.fr)",
+    "orientation": "",
+    "rss": "https://mamot.fr/@agendamilitant.rss"
+  },
+  {
+    "nom": "L'Arnapée",
+    "orientation": "",
+    "rss": "https://larnapee.info/spip.php?page=backend"
+  },
+  {
+    "nom": "L'Autjournal — News %C3%89conomie",
+    "orientation": "",
+    "rss": "https://www.lautjournal.info/RssFeeds/news_Économie.xml"
+  },
+  {
+    "nom": "L'Autjournal — News Environnement",
+    "orientation": "",
+    "rss": "https://www.lautjournal.info/RssFeeds/news_Environnement.xml"
+  },
+  {
+    "nom": "L'Autjournal — News International",
+    "orientation": "",
+    "rss": "https://www.lautjournal.info/RssFeeds/news_International.xml"
+  },
+  {
+    "nom": "L'Autjournal — News Mouvements",
+    "orientation": "",
+    "rss": "https://www.lautjournal.info/RssFeeds/news_Mouvements.xml"
+  },
+  {
+    "nom": "L'Autjournal — News Mouvements Des Femmes",
+    "orientation": "",
+    "rss": "https://www.lautjournal.info/RssFeeds/news_Mouvements_des_femmes.xml"
+  },
+  {
+    "nom": "L'Autjournal — News R%C3%A9gions",
+    "orientation": "",
+    "rss": "https://www.lautjournal.info/RssFeeds/news_Régions.xml"
+  },
+  {
+    "nom": "L'Insoumission",
+    "orientation": "",
+    "rss": "https://linsoumission.fr/feed/"
+  },
+  {
+    "nom": "Observatoire du mensonge",
+    "orientation": "",
+    "rss": "https://observatoiredumensonge.com/feed/"
+  },
+  {
+    "nom": "La Gabarre",
+    "orientation": "",
+    "rss": "https://lagabarre.info/spip.php?page=backend"
+  },
+  {
+    "nom": "la_voix (mastodon.social)",
+    "orientation": "",
+    "rss": "https://mastodon.social/@la_voix.rss"
+  },
+  {
+    "nom": "La Horde",
+    "orientation": "",
+    "rss": "https://lahorde.info/spip.php?page=backend"
+  },
+  {
+    "nom": "Le Monde Diplomatique (blog) — id_rubrique=6",
+    "orientation": "",
+    "rss": "https://blog.mondediplo.net/spip.php?page=backend&id_rubrique=6"
+  },
+  {
+    "nom": "La Presse Libre — Articles",
+    "orientation": "",
+    "rss": "https://lapresselibre.info/api/articles/rss"
+  },
+  {
+    "nom": "Bluesky bw3r467r",
+    "orientation": "",
+    "rss": "https://bsky.app/profile/did:plc:bw3r467rmcugetfc77udazz6/rss"
+  },
+  {
+    "nom": "lapresselibre (mastodon.social)",
+    "orientation": "",
+    "rss": "https://mastodon.social/@lapresselibre.rss"
+  },
+  {
+    "nom": "La Règle du Jeu",
+    "orientation": "",
+    "rss": "https://laregledujeu.org/feed/"
+  },
+  {
+    "nom": "La Relève et La Peste",
+    "orientation": "",
+    "rss": "https://lareleveetlapeste.fr/feed/"
+  },
+  {
+    "nom": "Bluesky m27g2fqn",
+    "orientation": "",
+    "rss": "https://bsky.app/profile/did:plc:m27g2fqnn5jrzlquomc5hlzs/rss"
+  },
+  {
+    "nom": "Bluesky kclqwwsw",
+    "orientation": "",
+    "rss": "https://bsky.app/profile/did:plc:kclqwwswci2j7kb3gmf7lztw/rss"
+  },
+  {
+    "nom": "Mediapart — @Mauduit",
+    "orientation": "",
+    "rss": "https://mediapart.social/@mauduit.rss"
+  },
+  {
+    "nom": "Gaston Balliot — tag=palestine",
+    "orientation": "",
+    "rss": "https://www.gastonballiot.fr/?feed=rss2&tag=palestine"
+  },
+  {
+    "nom": "Journal La Brèche",
+    "orientation": "",
+    "rss": "https://journal-labreche.fr/feed/"
+  },
+  {
+    "nom": "Le Canard enchaîné — Rss",
+    "orientation": "",
+    "rss": "https://www.lecanardenchaine.fr/rss/index.xml"
+  },
+  {
+    "nom": "Le Canard enchaîné — Economie",
+    "orientation": "",
+    "rss": "https://www.lecanardenchaine.fr/rss/categories/economie.xml"
+  },
+  {
+    "nom": "Le Canard enchaîné — Edito",
+    "orientation": "",
+    "rss": "https://www.lecanardenchaine.fr/rss/rubriques/edito.xml"
+  },
+  {
+    "nom": "Le Canard enchaîné — Education",
+    "orientation": "",
+    "rss": "https://www.lecanardenchaine.fr/rss/categories/education.xml"
+  },
+  {
+    "nom": "Le Canard enchaîné — Allegro Canardo",
+    "orientation": "",
+    "rss": "https://www.lecanardenchaine.fr/rss/rubriques/allegro-canardo.xml"
+  },
+  {
+    "nom": "Bluesky uj54w5ce",
+    "orientation": "",
+    "rss": "https://bsky.app/profile/did:plc:uj54w5cel35z7qy3hk5zch4h/rss"
+  },
+  {
+    "nom": "Le Canard enchaîné — Conflit De Canard",
+    "orientation": "",
+    "rss": "https://www.lecanardenchaine.fr/rss/rubriques/conflit-de-canard.xml"
+  },
+  {
+    "nom": "Le Canard enchaîné — Couac",
+    "orientation": "",
+    "rss": "https://www.lecanardenchaine.fr/rss/rubriques/couac.xml"
+  },
+  {
+    "nom": "Le Canard enchaîné — Culture Idees",
+    "orientation": "",
+    "rss": "https://www.lecanardenchaine.fr/rss/categories/culture-idees.xml"
+  },
+  {
+    "nom": "Le Canard enchaîné — Defense",
+    "orientation": "",
+    "rss": "https://www.lecanardenchaine.fr/rss/categories/defense.xml"
+  },
+  {
+    "nom": "Le Canard enchaîné — Doc En Stock",
+    "orientation": "",
+    "rss": "https://www.lecanardenchaine.fr/rss/rubriques/doc-en-stock.xml"
+  },
+  {
+    "nom": "Le Canard enchaîné — En Revenant De Lexpo",
+    "orientation": "",
+    "rss": "https://www.lecanardenchaine.fr/rss/rubriques/en-revenant-de-lexpo.xml"
+  },
+  {
+    "nom": "Le Canard enchaîné — Environnement",
+    "orientation": "",
+    "rss": "https://www.lecanardenchaine.fr/rss/categories/environnement.xml"
+  },
+  {
+    "nom": "Le Canard enchaîné — International",
+    "orientation": "",
+    "rss": "https://www.lecanardenchaine.fr/rss/categories/international.xml"
+  },
+  {
+    "nom": "Le Canard enchaîné — La Boite Aux Images",
+    "orientation": "",
+    "rss": "https://www.lecanardenchaine.fr/rss/rubriques/la-boite-aux-images.xml"
+  },
+  {
+    "nom": "Le Canard enchaîné — La Voie Au Chapitres",
+    "orientation": "",
+    "rss": "https://www.lecanardenchaine.fr/rss/rubriques/la-voie-au-chapitres.xml"
+  },
+  {
+    "nom": "Le Canard enchaîné — Cinema",
+    "orientation": "",
+    "rss": "https://www.lecanardenchaine.fr/rss/rubriques/cinema.xml"
+  },
+  {
+    "nom": "Le Canard enchaîné — Le Coin Coin Des Varietes",
+    "orientation": "",
+    "rss": "https://www.lecanardenchaine.fr/rss/rubriques/le-coin-coin-des-varietes.xml"
+  },
+  {
+    "nom": "Le Canard enchaîné — Theatre",
+    "orientation": "",
+    "rss": "https://www.lecanardenchaine.fr/rss/rubriques/theatre.xml"
+  },
+  {
+    "nom": "Le Canard enchaîné — Les Interviews Presque Imaginaires Du Canard",
+    "orientation": "",
+    "rss": "https://www.lecanardenchaine.fr/rss/rubriques/les-interviews-presque-imaginaires-du-canard.xml"
+  },
+  {
+    "nom": "Le Canard enchaîné — Lettres Ou Pas Lettres",
+    "orientation": "",
+    "rss": "https://www.lecanardenchaine.fr/rss/rubriques/lettres-ou-pas-lettres.xml"
+  },
+  {
+    "nom": "Le Canard enchaîné — Medias",
+    "orientation": "",
+    "rss": "https://www.lecanardenchaine.fr/rss/categories/medias.xml"
+  },
+  {
+    "nom": "Le Canard enchaîné — Plouf",
+    "orientation": "",
+    "rss": "https://www.lecanardenchaine.fr/rss/rubriques/plouf.xml"
+  },
+  {
+    "nom": "Le Canard enchaîné — Plume De Canard",
+    "orientation": "",
+    "rss": "https://www.lecanardenchaine.fr/rss/rubriques/plume-de-canard.xml"
+  },
+  {
+    "nom": "Le Canard enchaîné — Police Justice",
+    "orientation": "",
+    "rss": "https://www.lecanardenchaine.fr/rss/categories/police-justice.xml"
+  },
+  {
+    "nom": "Le Canard enchaîné — Politique",
+    "orientation": "",
+    "rss": "https://www.lecanardenchaine.fr/rss/categories/politique.xml"
+  },
+  {
+    "nom": "Le Canard enchaîné — Prises De Bec",
+    "orientation": "",
+    "rss": "https://www.lecanardenchaine.fr/rss/rubriques/prises-de-bec.xml"
+  },
+  {
+    "nom": "Le Canard enchaîné — Sante",
+    "orientation": "",
+    "rss": "https://www.lecanardenchaine.fr/rss/categories/sante.xml"
+  },
+  {
+    "nom": "Le Canard enchaîné — Societe",
+    "orientation": "",
+    "rss": "https://www.lecanardenchaine.fr/rss/categories/societe.xml"
+  },
+  {
+    "nom": "Le Canard enchaîné — Social",
+    "orientation": "",
+    "rss": "https://www.lecanardenchaine.fr/rss/categories/social.xml"
+  },
+  {
+    "nom": "Le Canard enchaîné — Sport",
+    "orientation": "",
+    "rss": "https://www.lecanardenchaine.fr/rss/categories/sport.xml"
+  },
+  {
+    "nom": "Le Canard enchaîné — Technologie Sciences",
+    "orientation": "",
+    "rss": "https://www.lecanardenchaine.fr/rss/categories/technologie-sciences.xml"
+  },
+  {
+    "nom": "PeerTube tweb.tv — Videos",
+    "orientation": "",
+    "rss": "https://peertube.tweb.tv/feeds/videos.xml?videoChannelId=22"
+  },
+  {
+    "nom": "Dailymotion lecrayonmedia",
+    "orientation": "",
+    "rss": "https://www.dailymotion.com/rss/user/lecrayonmedia"
+  },
+  {
+    "nom": "Le Glob Journal",
+    "orientation": "",
+    "rss": "https://leglob-journal.fr/feed/"
+  },
+  {
+    "nom": "Le Journal des Briques",
+    "orientation": "",
+    "rss": "https://lejournaldesbriques.fr/feed/"
+  },
+  {
+    "nom": "journaldesbriques (tooter.social)",
+    "orientation": "",
+    "rss": "https://tooter.social/@journaldesbriques.rss"
+  },
+  {
+    "nom": "PeerTube.stream — Videos (2)",
+    "orientation": "",
+    "rss": "https://peertube.stream/feeds/videos.xml?videoChannelId=19755"
+  },
+  {
+    "nom": "Le Libertaire",
+    "orientation": "",
+    "rss": "https://le-libertaire.net/feed/"
+  },
+  {
+    "nom": "Le Média",
+    "orientation": "",
+    "rss": "https://api.lemediatv.fr/rss.xml"
+  },
+  {
+    "nom": "Le Nouvel Esprit Public",
+    "orientation": "",
+    "rss": "https://morss.it/https://rss.art19.com/le-nouvel-esprit-public"
+  },
+  {
+    "nom": "Le Numéro Zéro",
+    "orientation": "",
+    "rss": "https://lenumerozero.info/spip.php?page=backend"
+  },
+  {
+    "nom": "Le Père Peinard",
+    "orientation": "",
+    "rss": "https://www.leperepeinard.com/feed/"
+  },
+  {
+    "nom": "le_pere_peinard (piaille.fr)",
+    "orientation": "",
+    "rss": "https://piaille.fr/@le_pere_peinard.rss"
+  },
+  {
+    "nom": "Bluesky 25j7n7hc",
+    "orientation": "",
+    "rss": "https://bsky.app/profile/did:plc:25j7n7hczln2i6k3pbb4pbxb/rss"
+  },
+  {
+    "nom": "LePaveNumerique (mastodon.social)",
+    "orientation": "",
+    "rss": "https://mastodon.social/@LePaveNumerique.rss"
+  },
+  {
+    "nom": "Le Pavé Numérique",
+    "orientation": "",
+    "rss": "https://lepavenumerique.substack.com/feed"
+  },
+  {
+    "nom": "Le Poing",
+    "orientation": "",
+    "rss": "https://lepoing.net/feed"
+  },
+  {
+    "nom": "Bluesky mw6p4pj5",
+    "orientation": "",
+    "rss": "https://bsky.app/profile/did:plc:mw6p4pj5lq3ninq2qua4zyxb/rss"
+  },
+  {
+    "nom": "Le Ravi",
+    "orientation": "",
+    "rss": "https://www.leravi.org/feed/"
+  },
+  {
+    "nom": "Le Tangue.re",
+    "orientation": "",
+    "rss": "https://www.letangue.re/feed/"
+  },
+  {
+    "nom": "Les Économistes Atterrés",
+    "orientation": "",
+    "rss": "https://www.atterres.org/feed/"
+  },
+  {
+    "nom": "Les Amis du Monde Diplomatique",
+    "orientation": "",
+    "rss": "https://www.amis.monde-diplomatique.fr/backend.php"
+  },
+  {
+    "nom": "Les Autres Possibles",
+    "orientation": "",
+    "rss": "https://lesautrespossibles.fr/feed/"
+  },
+  {
+    "nom": "Agoravox (Feedburner) — Les Crises Fr",
+    "orientation": "",
+    "rss": "http://feeds.feedburner.com/les-crises-fr?format=xml"
+  },
+  {
+    "nom": "Les Crises — Economie",
+    "orientation": "",
+    "rss": "https://www.les-crises.fr/categorie/economie/feed/"
+  },
+  {
+    "nom": "Les Crises — Climat",
+    "orientation": "",
+    "rss": "https://www.les-crises.fr/categorie/climat/feed/"
+  },
+  {
+    "nom": "Les Crises — Crise Sociale",
+    "orientation": "",
+    "rss": "https://www.les-crises.fr/categorie/crise-sociale/feed/"
+  },
+  {
+    "nom": "Les Crises — Democratie",
+    "orientation": "",
+    "rss": "https://www.les-crises.fr/categorie/democratie/feed/"
+  },
+  {
+    "nom": "Les Crises — Divers",
+    "orientation": "",
+    "rss": "https://www.les-crises.fr/categorie/divers/feed/"
+  },
+  {
+    "nom": "Les Crises — Finance",
+    "orientation": "",
+    "rss": "https://www.les-crises.fr/categorie/finance/feed/"
+  },
+  {
+    "nom": "Les Crises — Geopolitique",
+    "orientation": "",
+    "rss": "https://www.les-crises.fr/categorie/geopolitique/feed/"
+  },
+  {
+    "nom": "Les Crises — Histoire",
+    "orientation": "",
+    "rss": "https://www.les-crises.fr/categorie/histoire/feed/"
+  },
+  {
+    "nom": "Les Gilets Jaunes de Forcalquier",
+    "orientation": "",
+    "rss": "https://lesgiletsjaunesdeforcalquier.fr/feed/"
+  },
+  {
+    "nom": "Les invités de Mediapart",
+    "orientation": "",
+    "rss": "http://rssbridge.suptribune.org/?action=display&bridge=MediapartBlogs&slug=les-invites-de-mediapart&format=Mrss"
+  },
+  {
+    "nom": "Les Jours",
+    "orientation": "",
+    "rss": "https://lesjours.fr/rss.xml"
+  },
+  {
+    "nom": "Bluesky fleaqu2y",
+    "orientation": "",
+    "rss": "https://bsky.app/profile/did:plc:fleaqu2yloy5vpnb3wamdp6m/rss"
+  },
+  {
+    "nom": "lesjoursfr (mamot.fr)",
+    "orientation": "",
+    "rss": "https://mamot.fr/@lesjoursfr.rss"
+  },
+  {
+    "nom": "Les Nouvelles News",
+    "orientation": "",
+    "rss": "https://www.lesnouvellesnews.fr/feed/"
+  },
+  {
+    "nom": "LesRepliques (mastodon.social)",
+    "orientation": "",
+    "rss": "https://mastodon.social/@LesRepliques.rss"
+  },
+  {
+    "nom": "Librinfo74",
+    "orientation": "",
+    "rss": "https://librinfo74.fr/feed/"
+  },
+  {
+    "nom": "Agoravox (Feedburner) — OVqh5Jh5Mnf",
+    "orientation": "",
+    "rss": "https://feeds.feedburner.com/suptribune/OVqh5Jh5Mnf"
+  },
+  {
+    "nom": "Littéralutte",
+    "orientation": "",
+    "rss": "https://litteralutte.com/feed/"
+  },
+  {
+    "nom": "Lundi matin",
+    "orientation": "",
+    "rss": "https://lundi.am/spip.php?page=backend"
+  },
+  {
+    "nom": "Bluesky 5pss5bde",
+    "orientation": "",
+    "rss": "https://bsky.app/profile/did:plc:5pss5bderfhm4pbo5penrt2x/rss"
+  },
+  {
+    "nom": "Lundi matin (vidéo) — Videos",
+    "orientation": "",
+    "rss": "https://video.lundi.am/feeds/videos.xml?sort=-publishedAt"
+  },
+  {
+    "nom": "Le Vent Se Lève",
+    "orientation": "",
+    "rss": "https://lvsl.fr/feed/"
+  },
+  {
+    "nom": "Bluesky 6b66t3n6",
+    "orientation": "",
+    "rss": "https://bsky.app/profile/did:plc:6b66t3n65h3v2rdz3yjoombc/rss"
+  },
+  {
+    "nom": "Médias Citoyens Diois",
+    "orientation": "",
+    "rss": "https://mediascitoyens-diois.info/feed/"
+  },
+  {
+    "nom": "Bluesky ufw5v3n7",
+    "orientation": "",
+    "rss": "https://bsky.app/profile/did:plc:ufw5v3n73rlt7e6aaknytv6u/rss"
+  },
+  {
+    "nom": "Médor",
+    "orientation": "",
+    "rss": "https://medor.coop/rss.xml"
+  },
+  {
+    "nom": "Medelu",
+    "orientation": "",
+    "rss": "https://www.medelu.org/spip.php?page=backend"
+  },
+  {
+    "nom": "Ma Commune Info",
+    "orientation": "",
+    "rss": "https://www.macommune.info/feed/"
+  },
+  {
+    "nom": "Manif-Est",
+    "orientation": "",
+    "rss": "https://manif-est.info/spip.php?page=backend"
+  },
+  {
+    "nom": "Bluesky hzftvan5",
+    "orientation": "",
+    "rss": "https://bsky.app/profile/did:plc:hzftvan5bwtllpw5g5p54xsu/rss"
+  },
+  {
+    "nom": "Mars Infos",
+    "orientation": "",
+    "rss": "https://mars-infos.org/spip.php?page=backend"
+  },
+  {
+    "nom": "Twitch mathieuburgalassi",
+    "orientation": "",
+    "rss": "https://twitchrss.appspot.com/vod/mathieuburgalassi"
+  },
+  {
+    "nom": "MC Informactions",
+    "orientation": "",
+    "rss": "https://mcinformactions.net/spip.php?page=backend"
+  },
+  {
+    "nom": "MarieClaudeS (mastodon.top)",
+    "orientation": "",
+    "rss": "https://mastodon.top/@MarieClaudeS.rss"
+  },
+  {
+    "nom": "Médiacités",
+    "orientation": "",
+    "rss": "https://www.mediacites.fr/feed/"
+  },
+  {
+    "nom": "Bluesky 6eptybcq",
+    "orientation": "",
+    "rss": "https://bsky.app/profile/did:plc:6eptybcqvf2hzvqgg4fwnhrs/rss"
+  },
+  {
+    "nom": "Mediapart (fetchrss) — 1iIaFxGYM4cZ1igOZ7GY74cZ",
+    "orientation": "",
+    "rss": "https://fetchrss.com/feed/1iIaFxGYM4cZ1igOZ7GY74cZ.rss"
+  },
+  {
+    "nom": "Mediapart — @Mediapartblogs",
+    "orientation": "",
+    "rss": "https://mediapart.social/@mediapartblogs.rss"
+  },
+  {
+    "nom": "Bluesky 2egpzsea",
+    "orientation": "",
+    "rss": "https://bsky.app/profile/did:plc:2egpzsea27fru2vkrjgdw2ob/rss"
+  },
+  {
+    "nom": "Bluesky xjkrmqoh",
+    "orientation": "",
+    "rss": "https://bsky.app/profile/did:plc:xjkrmqohuqaibiwebqg2kv3u/rss"
+  },
+  {
+    "nom": "Mediapart — @Mediapart",
+    "orientation": "",
+    "rss": "https://mediapart.social/@mediapart.rss"
+  },
+  {
+    "nom": "Twitch mediapart",
+    "orientation": "",
+    "rss": "https://twitchrss.appspot.com/vod/mediapart"
+  },
+  {
+    "nom": "Mediatico",
+    "orientation": "",
+    "rss": "https://mediatico.fr/feed/"
+  },
+  {
+    "nom": "Alternatives économiques (blogs) — Abherve",
+    "orientation": "",
+    "rss": "https://blogs.alternatives-economiques.fr/abherve/rss"
+  },
+  {
+    "nom": "Alternatives économiques (blogs) — Michelmine",
+    "orientation": "",
+    "rss": "https://blogs.alternatives-economiques.fr/michelmine/rss"
+  },
+  {
+    "nom": "Micros Rebelles — Reportage",
+    "orientation": "",
+    "rss": "https://www.micros-rebelles.fr/site/radio/emissions/reportage/feed/"
+  },
+  {
+    "nom": "Bluesky agw36fs4",
+    "orientation": "",
+    "rss": "https://bsky.app/profile/did:plc:agw36fs43mep44j2shczofts/rss"
+  },
+  {
+    "nom": "Bluesky 3rolkwoz",
+    "orientation": "",
+    "rss": "https://bsky.app/profile/did:plc:3rolkwozs4ejcb2q7z6lc7c7/rss"
+  },
+  {
+    "nom": "Mr Mondialisation",
+    "orientation": "",
+    "rss": "https://mrmondialisation.org/feed/"
+  },
+  {
+    "nom": "NHU Bretagne",
+    "orientation": "",
+    "rss": "https://www.nhu.bzh/feed/"
+  },
+  {
+    "nom": "Bluesky 7ms4j7gx",
+    "orientation": "",
+    "rss": "https://bsky.app/profile/did:plc:7ms4j7gxzepy5rrm5uqqcpgl/rss"
+  },
+  {
+    "nom": "Nice Presse",
+    "orientation": "",
+    "rss": "https://nicepresse.com/feed/"
+  },
+  {
+    "nom": "Indymotion — Videos (3)",
+    "orientation": "",
+    "rss": "https://indymotion.fr/feeds/videos.xml?videoChannelId=1369"
+  },
+  {
+    "nom": "Multinationales (Observatoire) — Page",
+    "orientation": "",
+    "rss": "https://multinationales.org/fr/page/backend"
+  },
+  {
+    "nom": "Bluesky dr2szexl",
+    "orientation": "",
+    "rss": "https://bsky.app/profile/did:plc:dr2szexl7halmn5g2cnmd6tv/rss"
+  },
+  {
+    "nom": "obs_multinationales (mastodon.online)",
+    "orientation": "",
+    "rss": "https://mastodon.online/@obs_multinationales.rss"
+  },
+  {
+    "nom": "Off Investigation",
+    "orientation": "",
+    "rss": "https://www.off-investigation.fr/feed/"
+  },
+  {
+    "nom": "Bluesky mpfh5hnn",
+    "orientation": "",
+    "rss": "https://bsky.app/profile/did:plc:mpfh5hnnqfowzzfb7sbutv3i/rss"
+  },
+  {
+    "nom": "PeerTube.stream — Videos (3)",
+    "orientation": "",
+    "rss": "https://peertube.stream/feeds/videos.xml?videoChannelId=14094"
+  },
+  {
+    "nom": "Agoravox (Feedburner) — SovdZvH8lEH",
+    "orientation": "",
+    "rss": "https://feeds.feedburner.com/opendemocracy/SovdZvH8lEH"
+  },
+  {
+    "nom": "Paris Luttes Info",
+    "orientation": "",
+    "rss": "https://paris-luttes.info/spip.php?page=backend"
+  },
+  {
+    "nom": "Pivot (Québec)",
+    "orientation": "",
+    "rss": "https://pivot.quebec/feed/"
+  },
+  {
+    "nom": "Bluesky 3slc4p4z",
+    "orientation": "",
+    "rss": "https://bsky.app/profile/did:plc:3slc4p4zdaxdqqswpninnxjs/rss"
+  },
+  {
+    "nom": "politipet (piaille.fr)",
+    "orientation": "",
+    "rss": "https://piaille.fr/@politipet.rss"
+  },
+  {
+    "nom": "Politique Actu",
+    "orientation": "",
+    "rss": "https://www.politique-actu.com/rss/politique-actu.xml"
+  },
+  {
+    "nom": "Politis — Flux Rss Apps",
+    "orientation": "",
+    "rss": "https://www.politis.fr/flux-rss-apps/"
+  },
+  {
+    "nom": "Bluesky oj6rklu3",
+    "orientation": "",
+    "rss": "https://bsky.app/profile/did:plc:oj6rklu3kys7xf37e2kmlnl5/rss"
+  },
+  {
+    "nom": "Pressenza — Fr",
+    "orientation": "",
+    "rss": "https://www.pressenza.com/fr/feed/"
+  },
+  {
+    "nom": "Pressenza — Africa Fr",
+    "orientation": "",
+    "rss": "https://www.pressenza.com/fr/-/region-fr/africa-fr/feed/"
+  },
+  {
+    "nom": "Pressenza — Amerique Centrale",
+    "orientation": "",
+    "rss": "https://www.pressenza.com/fr/-/region-fr/amerique-centrale/feed/"
+  },
+  {
+    "nom": "Pressenza — Asia Fr",
+    "orientation": "",
+    "rss": "https://www.pressenza.com/fr/-/region-fr/asia-fr/feed/"
+  },
+  {
+    "nom": "Pressenza — International Fr",
+    "orientation": "",
+    "rss": "https://www.pressenza.com/fr/-/international-fr/feed/"
+  },
+  {
+    "nom": "RAAF",
+    "orientation": "",
+    "rss": "https://raaf.noblogs.org/feed/"
+  },
+  {
+    "nom": "Bluesky y6236a7b",
+    "orientation": "",
+    "rss": "https://bsky.app/profile/did:plc:y6236a7b33aqu7mkgec6egua/rss"
+  },
+  {
+    "nom": "Bluesky 27qaqvqk",
+    "orientation": "",
+    "rss": "https://bsky.app/profile/did:plc:27qaqvqkyjntclmnyyf6piuv/rss"
+  },
+  {
+    "nom": "Giak (Substack)",
+    "orientation": "",
+    "rss": "https://giak.substack.com/feed"
+  },
+  {
+    "nom": "Réveil Communiste",
+    "orientation": "",
+    "rss": "https://www.reveilcommuniste.fr/rss"
+  },
+  {
+    "nom": "Revue Libertaire",
+    "orientation": "",
+    "rss": "https://revlibertaire.unionlibertaireanarchiste.org/feed/"
+  },
+  {
+    "nom": "Rabasse Info",
+    "orientation": "",
+    "rss": "https://rabasse.info/spip.php?page=backend"
+  },
+  {
+    "nom": "Radio Canut — feed=rss2",
+    "orientation": "",
+    "rss": "https://blogs.radiocanut.org/canutinfos-jeudi/?feed=rss2"
+  },
+  {
+    "nom": "Radio Nova (podcasts) — Website",
+    "orientation": "",
+    "rss": "https://podcasts.nova.fr/radio-nova-chat-vdb/feed/rss/website.xml"
+  },
+  {
+    "nom": "Radio Nova (podcasts) — Website (2)",
+    "orientation": "",
+    "rss": "https://podcasts.nova.fr/radio-nova-la-chronique-daymeric-lompret/feed/rss/website.xml"
+  },
+  {
+    "nom": "Radio Nova (podcasts) — Website (3)",
+    "orientation": "",
+    "rss": "https://podcasts.nova.fr/radio-nova-la-chronique-de-guillaume-meurice/feed/rss/website.xml"
+  },
+  {
+    "nom": "Radio Nova (podcasts) — Website (4)",
+    "orientation": "",
+    "rss": "https://podcasts.nova.fr/radio-nova-la-chronique-de-juliette-arnaud/feed/rss/website.xml"
+  },
+  {
+    "nom": "Radio Nova (podcasts) — Website (5)",
+    "orientation": "",
+    "rss": "https://podcasts.nova.fr/radio-nova-la-chronique-de-pierre-emmanuel-barre/feed/rss/website.xml"
+  },
+  {
+    "nom": "Radio Nova (podcasts) — Website (6)",
+    "orientation": "",
+    "rss": "https://podcasts.nova.fr/radio-nova-la-derniere/feed/rss/website.xml"
+  },
+  {
+    "nom": "Radio Parleur",
+    "orientation": "",
+    "rss": "https://radioparleur.net/feed/"
+  },
+  {
+    "nom": "Rapports de Force",
+    "orientation": "",
+    "rss": "https://rapportsdeforce.fr/feed"
+  },
+  {
+    "nom": "Radio France (podcast) — Podcast A8a14034 B729 4ddc 8bdf 1d753f4bc144",
+    "orientation": "",
+    "rss": "https://radiofrance-podcast.net/podcast09/podcast_a8a14034-b729-4ddc-8bdf-1d753f4bc144.xml"
+  },
+  {
+    "nom": "Rebellyon",
+    "orientation": "",
+    "rss": "https://rebellyon.info/spip.php?page=backend"
+  },
+  {
+    "nom": "Reflets — Public",
+    "orientation": "",
+    "rss": "https://reflets.info/feeds/public"
+  },
+  {
+    "nom": "Bluesky 5szwfaib",
+    "orientation": "",
+    "rss": "https://bsky.app/profile/did:plc:5szwfaibfba3urbuewvy6s7z/rss"
+  },
+  {
+    "nom": "Regards",
+    "orientation": "",
+    "rss": "https://regards.fr/feed/"
+  },
+  {
+    "nom": "Ballast",
+    "orientation": "",
+    "rss": "https://www.revue-ballast.fr/feed/"
+  },
+  {
+    "nom": "Revue Far Ouest",
+    "orientation": "",
+    "rss": "https://www.revue-farouest.fr/feed/"
+  },
+  {
+    "nom": "Revue21",
+    "orientation": "",
+    "rss": "https://revue21.fr/feed/"
+  },
+  {
+    "nom": "Bluesky 44hm5xpq",
+    "orientation": "",
+    "rss": "https://bsky.app/profile/did:plc:44hm5xpq4u3hggf37jvbec2v/rss"
+  },
+  {
+    "nom": "Bluesky xoywspom",
+    "orientation": "",
+    "rss": "https://bsky.app/profile/did:plc:xoywspomddm3u4jkadnl5ed6/rss"
+  },
+  {
+    "nom": "Ritimo",
+    "orientation": "",
+    "rss": "https://www.ritimo.org/spip.php?page=backend"
+  },
+  {
+    "nom": "Rue89 Bordeaux",
+    "orientation": "",
+    "rss": "https://rue89bordeaux.com/feed/"
+  },
+  {
+    "nom": "Bluesky zh22aza6",
+    "orientation": "",
+    "rss": "https://bsky.app/profile/did:plc:zh22aza6z77iuccvjv5hi3a3/rss"
+  },
+  {
+    "nom": "Rue89 Lyon",
+    "orientation": "",
+    "rss": "https://www.rue89lyon.fr/feed/"
+  },
+  {
+    "nom": "Rue89 Strasbourg",
+    "orientation": "",
+    "rss": "https://www.rue89strasbourg.com/feed"
+  },
+  {
+    "nom": "Bluesky rtsmx6po",
+    "orientation": "",
+    "rss": "https://bsky.app/profile/did:plc:rtsmx6pozn2d5qnsxrrk3x3n/rss"
+  },
+  {
+    "nom": "Bluesky josnciwj",
+    "orientation": "",
+    "rss": "https://bsky.app/profile/did:plc:josnciwjiylpgpwfhr6xdrvr/rss"
+  },
+  {
+    "nom": "Sans Nom",
+    "orientation": "",
+    "rss": "https://sansnom.noblogs.org/feed"
+  },
+  {
+    "nom": "Revue Silence",
+    "orientation": "",
+    "rss": "https://www.revuesilence.net/spip.php?page=backend"
+  },
+  {
+    "nom": "Bluesky wrni5ebe",
+    "orientation": "",
+    "rss": "https://bsky.app/profile/did:plc:wrni5ebeevtsz2oys375xqrm/rss"
+  },
+  {
+    "nom": "Bluesky pig3gjzz",
+    "orientation": "",
+    "rss": "https://bsky.app/profile/did:plc:pig3gjzzp3q3n2mczuxxfesh/rss"
+  },
+  {
+    "nom": "Splann!",
+    "orientation": "",
+    "rss": "https://splann.org/feed/"
+  },
+  {
+    "nom": "StreetPress",
+    "orientation": "",
+    "rss": "https://www.streetpress.com/rss.xml"
+  },
+  {
+    "nom": "Bluesky oc4vdaap",
+    "orientation": "",
+    "rss": "https://bsky.app/profile/did:plc:oc4vdaapdvl4rpxg7szifvqv/rss"
+  },
+  {
+    "nom": "Dailymotion streetpress",
+    "orientation": "",
+    "rss": "https://www.dailymotion.com/rss/user/streetpress"
+  },
+  {
+    "nom": "Stup Média",
+    "orientation": "",
+    "rss": "https://stup.media/feed/"
+  },
+  {
+    "nom": "Stuut Info",
+    "orientation": "",
+    "rss": "https://stuut.info/spip.php?page=backend"
+  },
+  {
+    "nom": "stuut (mastodon.social)",
+    "orientation": "",
+    "rss": "https://mastodon.social/@stuut.rss"
+  },
+  {
+    "nom": "Tahiti Infos — Syndication",
+    "orientation": "",
+    "rss": "https://www.tahiti-infos.com/xml/syndication.rss"
+  },
+  {
+    "nom": "Podcast (Ausha) — Oa1n3cGqYg8Y",
+    "orientation": "",
+    "rss": "https://feed.ausha.co/oa1n3cGqYg8Y"
+  },
+  {
+    "nom": "Telos — Fr",
+    "orientation": "",
+    "rss": "https://www.telos-eu.com/fr/rss.xml"
+  },
+  {
+    "nom": "Tendance Claire",
+    "orientation": "",
+    "rss": "https://tendanceclaire.org/feed.php"
+  },
+  {
+    "nom": "tendanceclaire (pouet.chapril.org)",
+    "orientation": "",
+    "rss": "https://pouet.chapril.org/@tendanceclaire.rss"
+  },
+  {
+    "nom": "Thinkerview",
+    "orientation": "",
+    "rss": "https://www.thinkerview.com/feed/"
+  },
+  {
+    "nom": "Bluesky qgunaom6",
+    "orientation": "",
+    "rss": "https://bsky.app/profile/did:plc:qgunaom6akvc4cajk4dhxwym/rss"
+  },
+  {
+    "nom": "UJFP",
+    "orientation": "",
+    "rss": "https://ujfp.org/feed/"
+  },
+  {
+    "nom": "Upian — Fr",
+    "orientation": "",
+    "rss": "https://www.upian.com/fr/feed/"
+  },
+  {
+    "nom": "Vu du Droit — Juridique",
+    "orientation": "",
+    "rss": "https://www.vududroit.com/category/juridique/feed/"
+  },
+  {
+    "nom": "Vu du Droit — Politique",
+    "orientation": "",
+    "rss": "https://www.vududroit.com/category/politique/feed/"
+  },
+  {
+    "nom": "Vu du Droit",
+    "orientation": "",
+    "rss": "https://www.vududroit.com/feed/"
+  },
+  {
+    "nom": "Wikipédia (historique SPIIL) — feed=rss",
+    "orientation": "",
+    "rss": "https://fr.wikipedia.org/w/index.php?title=Syndicat_de_la_presse_ind%C3%A9pendante_d%27information_en_ligne&action=history&feed=rss"
+  },
+  {
+    "nom": "20 minutes : monde",
+    "orientation": "généraliste populaire",
+    "rss": "https://partner-feeds.20min.ch/rss/20minutes/monde"
+  },
+  {
+    "nom": "20 minutes : toute l'actualité",
+    "orientation": "généraliste populaire",
+    "rss": "https://partner-feeds.20min.ch/rss/20minutes"
+  },
+  {
+    "nom": "20 minutes : vidéo",
+    "orientation": "généraliste populaire",
+    "rss": "https://partner-feeds.20min.ch/rss/20minutes/video/nos-videos"
+  },
+  {
+    "nom": "20minutes : à la une : flipboard",
+    "orientation": "",
+    "rss": "https://flipboard.com/@20minutes/a-la-une-8i4urifvz.rss"
+  },
+  {
+    "nom": "20minutes : (bot) : bluesky",
+    "orientation": "",
+    "rss": "https://bsky.app/profile/did:plc:is4wo5w4agxdv2cmymo5iylf/rss"
+  },
+  {
+    "nom": "20minutes : dailymotion",
+    "orientation": "",
+    "rss": "https://www.dailymotion.com/rss/user/20Minutes"
+  },
+  {
+    "nom": "20minutes : flipboard",
+    "orientation": "",
+    "rss": "https://flipboard.com/@20Minutes.rss"
+  },
+  {
+    "nom": "20minutes : locales",
+    "orientation": "",
+    "rss": "https://www.20minutes.fr/feeds/rss-locales.xml"
+  },
+  {
+    "nom": "20minutes : monde",
+    "orientation": "",
+    "rss": "https://www.20minutes.fr/feeds/rss-monde.xml"
+  },
+  {
+    "nom": "20minutes : monde : flipboard",
+    "orientation": "",
+    "rss": "https://flipboard.com/@20minutes/monde-lsdfdl2oz.rss"
+  },
+  {
+    "nom": "20minutes : vidéos : flipboard",
+    "orientation": "",
+    "rss": "https://flipboard.com/@20minutes/vid%C3%A9os-0n0repnez.rss"
+  },
+  {
+    "nom": "24heures",
+    "orientation": "",
+    "rss": "https://partner-feeds.publishing.tamedia.ch/rss/24heures/ticker"
+  },
+  {
+    "nom": "24heures : la une",
+    "orientation": "",
+    "rss": "https://partner-feeds.publishing.tamedia.ch/rss/24heures/la-une"
+  },
+  {
+    "nom": "24heures : monde",
+    "orientation": "",
+    "rss": "https://partner-feeds.publishing.tamedia.ch/rss/24heures/monde"
+  },
+  {
+    "nom": "7sur7 : une",
+    "orientation": "",
+    "rss": "https://www.7sur7.be/home/rss.xml"
+  },
+  {
+    "nom": "Actu.fr (2)",
+    "orientation": "généraliste",
+    "rss": "https://actu.fr/rss.xml"
+  },
+  {
+    "nom": "Actu.fr : 76actu : bluesky",
+    "orientation": "généraliste",
+    "rss": "https://bsky.app/profile/did:plc:d6jd65eyqrilgoimuolm2v7i/rss"
+  },
+  {
+    "nom": "Actu.fr : bluesky",
+    "orientation": "généraliste",
+    "rss": "https://bsky.app/profile/did:plc:wjqab6bao5lqixzlpk4axf67/rss"
+  },
+  {
+    "nom": "Actu.fr : Cantal",
+    "orientation": "généraliste",
+    "rss": "https://actu.fr/cantal/rss.xml"
+  },
+  {
+    "nom": "Actu.fr : dailymotion",
+    "orientation": "généraliste",
+    "rss": "https://www.dailymotion.com/rss/user/actufr"
+  },
+  {
+    "nom": "AFP - Agence France-Presse : (bot) : mastodon",
+    "orientation": "",
+    "rss": "https://amicale.net/@afpfr.rss"
+  },
+  {
+    "nom": "AFP - Agence France-Presse : bluesky",
+    "orientation": "",
+    "rss": "https://bsky.app/profile/did:plc:ffccycfh6c6pmxwkhvq5clkv/rss"
+  },
+  {
+    "nom": "AFP - Agence France-Presse : communiqués",
+    "orientation": "",
+    "rss": "https://www.afp.com/fr/actus/afp_communique/all/feed"
+  },
+  {
+    "nom": "AFP - Agence France-Presse : dailymotion",
+    "orientation": "",
+    "rss": "https://www.dailymotion.com/rss/user/afp"
+  },
+  {
+    "nom": "AFP - Agence France-Presse : factuel : bluesky",
+    "orientation": "",
+    "rss": "https://bsky.app/profile/did:plc:4ks5wkubjfcbgxvphqkd3wxm/rss"
+  },
+  {
+    "nom": "AFP - Agence France-Presse : Sur le fil",
+    "orientation": "",
+    "rss": "https://feeds.acast.com/public/shows/64c3a6a885617f0011e3d14f"
+  },
+  {
+    "nom": "AFP - Agence France-Presse : youtube",
+    "orientation": "",
+    "rss": "https://www.youtube.com/@AFPfr/videos"
+  },
+  {
+    "nom": "Atlantico",
+    "orientation": "",
+    "rss": "https://rss.atlantico.fr/"
+  },
+  {
+    "nom": "BFM : bluesky",
+    "orientation": "",
+    "rss": "https://bsky.app/profile/did:plc:wb4ovhhcrif6cp66oe2pqx7i/rss"
+  },
+  {
+    "nom": "BFM : dailymotion",
+    "orientation": "",
+    "rss": "https://www.dailymotion.com/rss/user/BFMTV"
+  },
+  {
+    "nom": "BFM : international",
+    "orientation": "",
+    "rss": "https://www.bfmtv.com/rss/international/"
+  },
+  {
+    "nom": "BFM : La question info",
+    "orientation": "",
+    "rss": "https://www.bfmtv.com/rss/podcasts/la-question-info/"
+  },
+  {
+    "nom": "BFM : Le titre à la une",
+    "orientation": "",
+    "rss": "https://www.bfmtv.com/rss/podcasts/le-titre-a-la-une/"
+  },
+  {
+    "nom": "BFM : vidéos",
+    "orientation": "",
+    "rss": "https://www.bfmtv.com/rss/videos/"
+  },
+  {
+    "nom": "Burkina 24 : monde",
+    "orientation": "",
+    "rss": "https://burkina24.com/category/actualite/monde/feed/"
+  },
+  {
+    "nom": "Chérie FM : infos",
+    "orientation": "",
+    "rss": "https://aod.nrjaudio.fm/xml/2039.xml"
+  },
+  {
+    "nom": "Courrier international : bluesky",
+    "orientation": "",
+    "rss": "https://bsky.app/profile/did:plc:kfygevef2pjjsyu7dfd6xpxi/rss"
+  },
+  {
+    "nom": "Courrier international : dailymotion",
+    "orientation": "",
+    "rss": "https://www.dailymotion.com/rss/user/courrierinternational"
+  },
+  {
+    "nom": "Courrier international : enquêtes",
+    "orientation": "",
+    "rss": "https://www.courrierinternational.com/feed/rubrique/enquetes/rss.xml"
+  },
+  {
+    "nom": "Courrier international : expat",
+    "orientation": "",
+    "rss": "https://www.courrierinternational.com/feed/rubrique/expat/rss.xml"
+  },
+  {
+    "nom": "Courrier international : infographie",
+    "orientation": "",
+    "rss": "https://www.courrierinternational.com/feed/rubrique/infographie/rss.xml"
+  },
+  {
+    "nom": "Courrier international : podcast",
+    "orientation": "",
+    "rss": "https://www.courrierinternational.com/feed/rubrique/podcast/rss.xml"
+  },
+  {
+    "nom": "Courrier international : réveil",
+    "orientation": "",
+    "rss": "https://www.courrierinternational.com/feed/rubrique/reveil/rss.xml"
+  },
+  {
+    "nom": "Dernières Nouvelles d'Alsace : fil info",
+    "orientation": "",
+    "rss": "https://www.dna.fr/fil-info/rss"
+  },
+  {
+    "nom": "Dernières Nouvelles d'Alsace : podcast",
+    "orientation": "",
+    "rss": "https://www.dna.fr/format/podcast/rss"
+  },
+  {
+    "nom": "Dernières Nouvelles d'Alsace : une",
+    "orientation": "",
+    "rss": "https://www.dna.fr/rss"
+  },
+  {
+    "nom": "Euronews - FR : bluesky",
+    "orientation": "",
+    "rss": "https://bsky.app/profile/did:plc:oeu6wbebsrsy2x235t7ar3eu/rss"
+  },
+  {
+    "nom": "Euronews - FR : dailymotion",
+    "orientation": "",
+    "rss": "https://www.dailymotion.com/rss/user/euronews-fr"
+  },
+  {
+    "nom": "Euronews - FR : Fact checking",
+    "orientation": "",
+    "rss": "https://fr.euronews.com/rss?level=tag&name=fact-checking"
+  },
+  {
+    "nom": "Euronews - FR : flipboard",
+    "orientation": "",
+    "rss": "https://flipboard.com/@euronewsfr.rss"
+  },
+  {
+    "nom": "Euronews - FR : monde",
+    "orientation": "",
+    "rss": "https://fr.euronews.com/rss?level=theme&name=news"
+  },
+  {
+    "nom": "Euronews - FR : The Big Question",
+    "orientation": "",
+    "rss": "https://fr.euronews.com/rss?level=program&name=the-big-question"
+  },
+  {
+    "nom": "France Antilles : Guadeloupe : international",
+    "orientation": "",
+    "rss": "https://www.guadeloupe.franceantilles.fr/actualite/international/rss.xml"
+  },
+  {
+    "nom": "France Culture : actualité",
+    "orientation": "service public / culture / idées",
+    "rss": "https://www.radiofrance.fr/franceculture/rss"
+  },
+  {
+    "nom": "France Culture : bluesky",
+    "orientation": "service public / culture / idées",
+    "rss": "https://bsky.app/profile/did:plc:3qyubes27sne6inqymxi4b4j/rss"
+  },
+  {
+    "nom": "France Culture : Culture de l'info",
+    "orientation": "service public / culture / idées",
+    "rss": "https://radiofrance-podcast.net/podcast09/podcast_fc709d54-c90f-41f4-95b4-326c4343b670.xml"
+  },
+  {
+    "nom": "France Culture : L'info de France Culture",
+    "orientation": "service public / culture / idées",
+    "rss": "https://radiofrance-podcast.net/podcast09/rss_25425.xml"
+  },
+  {
+    "nom": "France Culture : Le journal de 10h",
+    "orientation": "service public / culture / idées",
+    "rss": "https://radiofrance-podcast.net/podcast09/podcast_be6047d3-5199-11e5-9f7d-005056a87c89.xml"
+  },
+  {
+    "nom": "France Culture : Le journal de 12h30",
+    "orientation": "service public / culture / idées",
+    "rss": "https://radiofrance-podcast.net/podcast09/podcast_311d3bad-4287-11e5-9fe0-005056a87c89.xml"
+  },
+  {
+    "nom": "France Culture : Le journal de 18h",
+    "orientation": "service public / culture / idées",
+    "rss": "https://radiofrance-podcast.net/podcast09/podcast_3a9aab9c-04e4-4393-9c91-3c4a081b05a4.xml"
+  },
+  {
+    "nom": "France Culture : Le journal de 6h30",
+    "orientation": "service public / culture / idées",
+    "rss": "https://radiofrance-podcast.net/podcast09/podcast_dde65cce-41a5-11e5-9fe0-005056a87c89.xml"
+  },
+  {
+    "nom": "France Culture : Le journal de 7h",
+    "orientation": "service public / culture / idées",
+    "rss": "https://radiofrance-podcast.net/podcast09/podcast_fb002f29-41a6-11e5-9fe0-005056a87c89.xml"
+  },
+  {
+    "nom": "France Culture : Le journal de 8h",
+    "orientation": "service public / culture / idées",
+    "rss": "https://radiofrance-podcast.net/podcast09/podcast_ccda2c90-41a8-11e5-9fe0-005056a87c89.xml"
+  },
+  {
+    "nom": "France Culture : Le journal de 8h45",
+    "orientation": "service public / culture / idées",
+    "rss": "https://radiofrance-podcast.net/podcast09/podcast_3162c0f1-588d-4abf-a4b4-b4a49bb37640.xml"
+  },
+  {
+    "nom": "France Culture : Le journal de 9h",
+    "orientation": "service public / culture / idées",
+    "rss": "https://radio-france-rss.aerion.workers.dev/rss/828b5aa2-4286-11e5-9fe0-005056a87c89"
+  },
+  {
+    "nom": "France Culture : Le Reportage de la rédaction",
+    "orientation": "service public / culture / idées",
+    "rss": "https://radiofrance-podcast.net/podcast09/podcast_a2411b93-ecda-4fd7-94a6-181bfbade9be.xml"
+  },
+  {
+    "nom": "France Culture : Les journaux",
+    "orientation": "service public / culture / idées",
+    "rss": "https://radiofrance-podcast.net/podcast09/podcast_aa87513b-cba9-4a00-ad88-8cba8c77143d.xml"
+  },
+  {
+    "nom": "France Info : à la une",
+    "orientation": "",
+    "rss": "https://www.franceinfo.fr/titres.rss"
+  },
+  {
+    "nom": "France Info : (bot) : mastodon : amicale",
+    "orientation": "",
+    "rss": "https://amicale.net/@franceinfo.rss"
+  },
+  {
+    "nom": "France Info : (bot) : mastodon : piaille",
+    "orientation": "",
+    "rss": "https://piaille.fr/@franceinfo.rss"
+  },
+  {
+    "nom": "France Info : 13h15 : vidéo",
+    "orientation": "",
+    "rss": "https://www.franceinfo.fr/replay-magazine/france-2/13h15.rss"
+  },
+  {
+    "nom": "France Info : 20h30 le dimanche : vidéo",
+    "orientation": "",
+    "rss": "https://www.franceinfo.fr/replay-magazine/france-2/19h-le-dimanche.rss"
+  },
+  {
+    "nom": "France Info : 20h30 le samedi : vidéo",
+    "orientation": "",
+    "rss": "https://www.franceinfo.fr/replay-magazine/france-2/20h30-le-samedi.rss"
+  },
+  {
+    "nom": "France Info : 20h30 le vendredi : vidéo",
+    "orientation": "",
+    "rss": "https://www.franceinfo.fr/replay-magazine/france-2/20h30-le-vendredi.rss"
+  },
+  {
+    "nom": "France Info : affaires",
+    "orientation": "",
+    "rss": "https://www.franceinfo.fr/faits-divers/affaire.rss"
+  },
+  {
+    "nom": "France Info : Affaires sensibles : vidéo",
+    "orientation": "",
+    "rss": "https://www.franceinfo.fr/replay-magazine/france-2/affaires-sensibles.rss"
+  },
+  {
+    "nom": "France Info : bluesky",
+    "orientation": "",
+    "rss": "https://bsky.app/profile/did:plc:vb7d3zz6khc7zqcg7743eqiq/rss"
+  },
+  {
+    "nom": "France Info : Complément d'enquête : vidéo",
+    "orientation": "",
+    "rss": "https://www.franceinfo.fr/replay-magazine/france-2/complement-d-enquete.rss"
+  },
+  {
+    "nom": "France Info : dailymotion",
+    "orientation": "",
+    "rss": "https://www.dailymotion.com/rss/user/franceinfo"
+  },
+  {
+    "nom": "France Info : en image",
+    "orientation": "",
+    "rss": "https://www.franceinfo.fr/en-image.rss"
+  },
+  {
+    "nom": "France Info : flipboard",
+    "orientation": "",
+    "rss": "https://flipboard.com/@Franceinfo.rss"
+  },
+  {
+    "nom": "France Info : France 2 : Journal de 13h : vidéo",
+    "orientation": "",
+    "rss": "https://www.franceinfo.fr/replay-jt/france-2/13-heures.rss"
+  },
+  {
+    "nom": "France Info : France 2 : Journal de 20h : vidéo",
+    "orientation": "",
+    "rss": "https://www.franceinfo.fr/replay-jt/france-2/20-heures.rss"
+  },
+  {
+    "nom": "France Info : France 2 : Journal de 8h : vidéo",
+    "orientation": "",
+    "rss": "https://www.franceinfo.fr/replay-jt/france-2/8-heures.rss"
+  },
+  {
+    "nom": "France Info : France 2 : Journaux télévisés : vidéo",
+    "orientation": "",
+    "rss": "https://www.franceinfo.fr/replay-jt/france-2.rss"
+  },
+  {
+    "nom": "France Info : France Info Monde",
+    "orientation": "",
+    "rss": "https://radiofrance-podcast.net/podcast09/podcast_fff660fe-2339-42dc-822a-2cafc8442664.xml"
+  },
+  {
+    "nom": "France Info : Grands formats",
+    "orientation": "",
+    "rss": "https://www.franceinfo.fr/grands-formats.rss"
+  },
+  {
+    "nom": "France Info : Journal 12ans 18ans : vidéo",
+    "orientation": "",
+    "rss": "https://www.franceinfo.fr/replay-jt/franceinfo/jt-12-18-ans.rss"
+  },
+  {
+    "nom": "France Info : Journal de 23h : vidéo",
+    "orientation": "",
+    "rss": "https://www.franceinfo.fr/replay-jt/franceinfo/21h-minuit/23-heures.rss"
+  },
+  {
+    "nom": "France Info : Journal de 6h00",
+    "orientation": "",
+    "rss": "https://radio-france-rss.aerion.workers.dev/rss/4b0707cb-6152-4301-9107-b591bb3b14c1"
+  },
+  {
+    "nom": "France Info : Journal de 7h : vidéo",
+    "orientation": "",
+    "rss": "https://www.franceinfo.fr/replay-jt/franceinfo/6h30-9h30/7-heures.rss"
+  },
+  {
+    "nom": "France Info : Journal de 7h00",
+    "orientation": "",
+    "rss": "https://radio-france-rss.aerion.workers.dev/rss/4029a3c9-3a0c-4b2c-b2e9-a800ed32bdf2"
+  },
+  {
+    "nom": "France Info : Journal de 8h00",
+    "orientation": "",
+    "rss": "https://radio-france-rss.aerion.workers.dev/rss/89ddf0e1-1b2f-49f3-bebf-b1fc05e7a84a"
+  },
+  {
+    "nom": "France Info : Journal du 12h 13h : vidéo",
+    "orientation": "",
+    "rss": "https://www.franceinfo.fr/replay-jt/franceinfo/12-13-info.rss"
+  },
+  {
+    "nom": "France Info : Journal du 18h 20h : vidéo",
+    "orientation": "",
+    "rss": "https://www.franceinfo.fr/replay-jt/franceinfo/le-18h-20h.rss"
+  },
+  {
+    "nom": "France Info : Journaux télévisés : vidéo",
+    "orientation": "",
+    "rss": "https://www.franceinfo.fr/replay-jt/franceinfo.rss"
+  },
+  {
+    "nom": "France Info : L'actu pour les jeunes",
+    "orientation": "",
+    "rss": "https://www.franceinfo.fr/l-actu-pour-les-jeunes.rss"
+  },
+  {
+    "nom": "France Info : L'info s'éclaire : vidéo",
+    "orientation": "",
+    "rss": "https://www.franceinfo.fr/replay-magazine/franceinfo/l-info-s-eclaire.rss"
+  },
+  {
+    "nom": "France Info : Le 8h30",
+    "orientation": "",
+    "rss": "https://www.franceinfo.fr/replay-radio/8h30-fauvelle-dely.rss"
+  },
+  {
+    "nom": "France Info : Le 8h30 : le podcast",
+    "orientation": "",
+    "rss": "https://radiofrance-podcast.net/podcast09/podcast_326affac-ccc2-4e97-956f-59c73541ddb0.xml"
+  },
+  {
+    "nom": "France Info : Le choix de France Info",
+    "orientation": "",
+    "rss": "https://www.franceinfo.fr/replay-radio/le-choix-franceinfo.rss"
+  },
+  {
+    "nom": "France Info : Le choix de France Info : podcast",
+    "orientation": "",
+    "rss": "https://radiofrance-podcast.net/podcast09/podcast_b593aad5-ce4d-47a8-8e5e-fc7625139427.xml"
+  },
+  {
+    "nom": "France Info : Le fil info : vidéo",
+    "orientation": "",
+    "rss": "https://www.franceinfo.fr/replay-jt/franceinfo/9h30-13h.rss"
+  },
+  {
+    "nom": "France Info : Le vrai du faux",
+    "orientation": "",
+    "rss": "https://www.franceinfo.fr/replay-radio/le-vrai-du-faux.rss"
+  },
+  {
+    "nom": "France Info : Le vrai du faux : podcast",
+    "orientation": "",
+    "rss": "https://radiofrance-podcast.net/podcast09/podcast_eb76878a-d2e7-4930-a6e1-192c7ba60448.xml"
+  },
+  {
+    "nom": "France Info : Le vrai ou faux junior",
+    "orientation": "",
+    "rss": "https://www.franceinfo.fr/replay-radio/le-vrai-du-faux-junior.rss"
+  },
+  {
+    "nom": "France Info : Le vrai ou faux junior : podcast",
+    "orientation": "",
+    "rss": "https://radiofrance-podcast.net/podcast09/podcast_39fe108d-8ba1-46f6-b76c-95135f784043.xml"
+  },
+  {
+    "nom": "France Info : Les choix de la rédaction",
+    "orientation": "",
+    "rss": "https://www.franceinfo.fr/choix.rss"
+  },
+  {
+    "nom": "France Info : Les informés de France Info",
+    "orientation": "",
+    "rss": "https://radiofrance-podcast.net/podcast09/rss_14088.xml"
+  },
+  {
+    "nom": "France Info : monde",
+    "orientation": "",
+    "rss": "https://www.franceinfo.fr/monde.rss"
+  },
+  {
+    "nom": "France Info : replay radio",
+    "orientation": "",
+    "rss": "https://www.franceinfo.fr/replay-radio.rss"
+  },
+  {
+    "nom": "France Info : Salut l'info !",
+    "orientation": "",
+    "rss": "https://www.franceinfo.fr/replay-radio/salut-l-info.rss"
+  },
+  {
+    "nom": "France Info : Salut l'info ! : podcast",
+    "orientation": "",
+    "rss": "https://radiofrance-podcast.net/podcast09/podcast_9f5486b0-38b5-4544-bf49-e24b18bd022c.xml"
+  },
+  {
+    "nom": "France Info : vidéo",
+    "orientation": "",
+    "rss": "https://www.franceinfo.fr/videos.rss"
+  },
+  {
+    "nom": "France Info : Votre télé et vous : vidéo",
+    "orientation": "",
+    "rss": "https://www.franceinfo.fr/replay-magazine/france-3/votre-tele-et-vous.rss"
+  },
+  {
+    "nom": "France Info : Vrai ou Fake",
+    "orientation": "",
+    "rss": "https://www.franceinfo.fr/vrai-ou-fake.rss"
+  },
+  {
+    "nom": "France Info : Vrai ou Faux : vidéo",
+    "orientation": "",
+    "rss": "https://www.franceinfo.fr/replay-magazine/franceinfo/vrai-ou-fake-l-emission.rss"
+  },
+  {
+    "nom": "France Inter : À la une",
+    "orientation": "service public / centre-gauche",
+    "rss": "https://www.radiofrance.fr/franceinter/rss"
+  },
+  {
+    "nom": "France Inter : bluesky",
+    "orientation": "service public / centre-gauche",
+    "rss": "https://bsky.app/profile/did:plc:biwhb222rpid6vfji4j2uj3m/rss"
+  },
+  {
+    "nom": "France Inter : Bouquet international",
+    "orientation": "service public / centre-gauche",
+    "rss": "https://radiofrance-podcast.net/podcast09/rss_25458.xml"
+  },
+  {
+    "nom": "France Inter : dailymotion",
+    "orientation": "service public / centre-gauche",
+    "rss": "https://www.dailymotion.com/rss/user/franceinter"
+  },
+  {
+    "nom": "France Inter : infos multichaînes",
+    "orientation": "service public / centre-gauche",
+    "rss": "https://radiofrance-podcast.net/podcast09/rss_25474.xml"
+  },
+  {
+    "nom": "France Inter : L'info de France Inter",
+    "orientation": "service public / centre-gauche",
+    "rss": "https://radiofrance-podcast.net/podcast09/rss_24746.xml"
+  },
+  {
+    "nom": "France Inter : L'international",
+    "orientation": "service public / centre-gauche",
+    "rss": "https://radiofrance-podcast.net/podcast09/podcast_550e0c5e-423f-47d3-a073-ce61dd3191f0.xml"
+  },
+  {
+    "nom": "France Inter : L'interview",
+    "orientation": "service public / centre-gauche",
+    "rss": "https://radiofrance-podcast.net/podcast09/podcast_5504937a-59c0-11e4-a9df-005056a87c34.xml"
+  },
+  {
+    "nom": "France Inter : L'invité de 6h20",
+    "orientation": "service public / centre-gauche",
+    "rss": "https://radiofrance-podcast.net/podcast09/podcast_80dc2ff5-fe0e-11e3-907f-782bcb6744eb.xml"
+  },
+  {
+    "nom": "France Inter : L'invité de 7h50",
+    "orientation": "service public / centre-gauche",
+    "rss": "https://radiofrance-podcast.net/podcast09/podcast_dfd6c1c6-0c9c-11e3-9f7b-782bcb6744eb.xml"
+  },
+  {
+    "nom": "France Inter : L'invité de 8h20 : le grand entretien",
+    "orientation": "service public / centre-gauche",
+    "rss": "https://radiofrance-podcast.net/podcast09/podcast_ab4b2678-edce-11e1-a7b7-782bcb76618d.xml"
+  },
+  {
+    "nom": "France Inter : L'invité du 13 / 14",
+    "orientation": "service public / centre-gauche",
+    "rss": "https://radiofrance-podcast.net/podcast09/podcast_fac13fbe-e649-4397-b495-f4e734ecc798.xml"
+  },
+  {
+    "nom": "France Inter : L'invité du week-end",
+    "orientation": "service public / centre-gauche",
+    "rss": "https://radiofrance-podcast.net/podcast09/podcast_4f83b687-d9bc-11e2-9f7b-782bcb6744eb.xml"
+  },
+  {
+    "nom": "France Inter : La Grande matinale",
+    "orientation": "service public / centre-gauche",
+    "rss": "https://radiofrance-podcast.net/podcast09/podcast_bb71aaa9-2887-40e9-b37c-878356a5fe43.xml"
+  },
+  {
+    "nom": "France Inter : La Revue de presse du week-end",
+    "orientation": "service public / centre-gauche",
+    "rss": "https://radiofrance-podcast.net/podcast09/podcast_cdd3b5f6-d001-4113-90ed-73a519eea9af.xml"
+  },
+  {
+    "nom": "France Inter : Le 13/14",
+    "orientation": "service public / centre-gauche",
+    "rss": "https://radiofrance-podcast.net/podcast09/podcast_87471127-6882-446b-a907-96124b3ec9d7.xml"
+  },
+  {
+    "nom": "France Inter : Le 5/6",
+    "orientation": "service public / centre-gauche",
+    "rss": "https://radiofrance-podcast.net/podcast09/podcast_e7453290-2ace-4178-9b7a-8d179dc91fe7.xml"
+  },
+  {
+    "nom": "France Inter : Le 6/9",
+    "orientation": "service public / centre-gauche",
+    "rss": "https://radiofrance-podcast.net/podcast09/podcast_c3c143f7-f54c-403a-b206-554091e6c66a.xml"
+  },
+  {
+    "nom": "France Inter : Le débat du 7/10",
+    "orientation": "service public / centre-gauche",
+    "rss": "https://radiofrance-podcast.net/podcast09/podcast_31dee496-a6a0-426a-a165-05fe86b9dded.xml"
+  },
+  {
+    "nom": "France Inter : Le journal de 13h",
+    "orientation": "service public / centre-gauche",
+    "rss": "https://radiofrance-podcast.net/podcast09/podcast_f490f94f-06ed-42e3-8060-a7fc909e87a8.xml"
+  },
+  {
+    "nom": "France Inter : Le journal de 13h du week-end",
+    "orientation": "service public / centre-gauche",
+    "rss": "https://radiofrance-podcast.net/podcast09/podcast_f7b2226f-e683-43f6-b9b3-46256d9dc381.xml"
+  },
+  {
+    "nom": "France Inter : Le journal de 18h",
+    "orientation": "service public / centre-gauche",
+    "rss": "https://radiofrance-podcast.net/podcast09/podcast_c07ed278-d257-11e0-b8ee-842b2b72cd1d.xml"
+  },
+  {
+    "nom": "France Inter : Le journal de 18h du week-end",
+    "orientation": "service public / centre-gauche",
+    "rss": "https://radiofrance-podcast.net/podcast09/podcast_62ef9d9e-5f50-453e-b203-b246af89473f.xml"
+  },
+  {
+    "nom": "France Inter : Le journal de 19h",
+    "orientation": "service public / centre-gauche",
+    "rss": "https://radiofrance-podcast.net/podcast09/podcast_bf2a39c4-d259-11e0-b8ee-842b2b72cd1d.xml"
+  },
+  {
+    "nom": "France Inter : Le journal de 19h du week-end",
+    "orientation": "service public / centre-gauche",
+    "rss": "https://radiofrance-podcast.net/podcast09/podcast_4eeac20f-9548-4e80-9aee-08cf6e5cc869.xml"
+  },
+  {
+    "nom": "France Inter : Le journal de 23h",
+    "orientation": "service public / centre-gauche",
+    "rss": "https://radiofrance-podcast.net/podcast09/podcast_2510ac6e-d25a-11e0-b8ee-842b2b72cd1d.xml"
+  },
+  {
+    "nom": "France Inter : Le journal de 23h du week-end",
+    "orientation": "service public / centre-gauche",
+    "rss": "https://radiofrance-podcast.net/podcast09/podcast_11a82e2c-54bb-43b9-ac8c-49510cdcf49c.xml"
+  },
+  {
+    "nom": "France Inter : Le journal de 6h",
+    "orientation": "service public / centre-gauche",
+    "rss": "https://radiofrance-podcast.net/podcast09/podcast_03d9b02e-9676-11e0-b8ee-842b2b72cd1d.xml"
+  },
+  {
+    "nom": "France Inter : Le journal de 6h30",
+    "orientation": "service public / centre-gauche",
+    "rss": "https://radiofrance-podcast.net/podcast09/podcast_7cdabb5c-967c-11e0-b8ee-842b2b72cd1d.xml"
+  },
+  {
+    "nom": "France Inter : Le journal de 7h",
+    "orientation": "service public / centre-gauche",
+    "rss": "https://radiofrance-podcast.net/podcast09/podcast_5df86824-829a-41b9-96c5-89795abb6fee.xml"
+  },
+  {
+    "nom": "France Inter : Le journal de 7h du week-end",
+    "orientation": "service public / centre-gauche",
+    "rss": "https://radiofrance-podcast.net/podcast09/podcast_b541cac9-f49f-4cd2-b717-e1d870f0ee5b.xml"
+  },
+  {
+    "nom": "France Inter : Le journal de 7h30",
+    "orientation": "service public / centre-gauche",
+    "rss": "https://radiofrance-podcast.net/podcast09/podcast_4adfb4af-685b-4006-aeb4-99eeb557a521.xml"
+  },
+  {
+    "nom": "France Inter : Le journal de 7h30 du week-end",
+    "orientation": "service public / centre-gauche",
+    "rss": "https://radiofrance-podcast.net/podcast09/podcast_2115d44b-2fc6-4a09-bd5f-0f3d6841cc3c.xml"
+  },
+  {
+    "nom": "France Inter : Le journal de 8h",
+    "orientation": "service public / centre-gauche",
+    "rss": "https://radio-france-rss.aerion.workers.dev/rss/e8abde38-d00b-11e0-b8ee-842b2b72cd1d"
+  },
+  {
+    "nom": "France Inter : Le journal de 8h (2)",
+    "orientation": "service public / centre-gauche",
+    "rss": "https://radiofrance-podcast.net/podcast09/podcast_72410411-a76f-4c36-99f5-3918fbc24bb8.xml"
+  },
+  {
+    "nom": "France Inter : Le journal de 8h du week-end",
+    "orientation": "service public / centre-gauche",
+    "rss": "https://radiofrance-podcast.net/podcast09/podcast_c5dccdd2-648d-4604-9532-8397ba0ac241.xml"
+  },
+  {
+    "nom": "France Inter : Le journal de 9h",
+    "orientation": "service public / centre-gauche",
+    "rss": "https://radiofrance-podcast.net/podcast09/podcast_4ebdaf30-16bb-11e1-a6ab-842b2b72cd1d.xml"
+  },
+  {
+    "nom": "France Inter : Le reportage d'un jour dans le monde",
+    "orientation": "service public / centre-gauche",
+    "rss": "https://radiofrance-podcast.net/podcast09/rss_23655.xml"
+  },
+  {
+    "nom": "France Inter : Le zoom de la rédaction",
+    "orientation": "service public / centre-gauche",
+    "rss": "https://radiofrance-podcast.net/podcast09/podcast_1dd094f1-eaa5-11e1-a7b7-782bcb76618d.xml"
+  },
+  {
+    "nom": "France Inter : Les 80sec",
+    "orientation": "service public / centre-gauche",
+    "rss": "https://radiofrance-podcast.net/podcast09/podcast_de937d13-63d2-4921-836e-8745b1c9e9d4.xml"
+  },
+  {
+    "nom": "France Inter : Les interviews d'Inter",
+    "orientation": "service public / centre-gauche",
+    "rss": "https://radiofrance-podcast.net/podcast09/podcast_843d0386-dab0-42b2-90ac-ce6bf6c9e21f.xml"
+  },
+  {
+    "nom": "France Inter : Les journaux de France Inter",
+    "orientation": "service public / centre-gauche",
+    "rss": "https://radiofrance-podcast.net/podcast09/rss_21003.xml"
+  },
+  {
+    "nom": "France Inter : S'informer avec Inter",
+    "orientation": "service public / centre-gauche",
+    "rss": "https://radiofrance-podcast.net/podcast09/rss_23134.xml"
+  },
+  {
+    "nom": "France Inter : Secret d'info",
+    "orientation": "service public / centre-gauche",
+    "rss": "https://radiofrance-podcast.net/podcast09/podcast_8e7a557a-c2fd-4cad-9eba-83467336b2ba.xml"
+  },
+  {
+    "nom": "France Inter : Une semaine en France",
+    "orientation": "service public / centre-gauche",
+    "rss": "https://radiofrance-podcast.net/podcast09/podcast_52306f01-9070-4226-a277-3aee2997fd43.xml"
+  },
+  {
+    "nom": "France Télévisions : bluesky",
+    "orientation": "",
+    "rss": "https://bsky.app/profile/did:plc:vymajsmu55q66m4qdva5xo3v/rss"
+  },
+  {
+    "nom": "France24 : à la une",
+    "orientation": "",
+    "rss": "https://feeds.feedburner.com/france24/UKYbC7wOMbe"
+  },
+  {
+    "nom": "France24 : Au coeur de l'info - l'invité : podcast",
+    "orientation": "",
+    "rss": "https://www.france24.com/fr/%C3%A9missions/au-c%C5%93ur-de-l-info-l-invit%C3%A9/podcast"
+  },
+  {
+    "nom": "France24 : Au coeur de l'info - l'invité : vidéo",
+    "orientation": "",
+    "rss": "https://www.france24.com/fr/%C3%A9missions/au-c%C5%93ur-de-l-info-l-invit%C3%A9/rss"
+  },
+  {
+    "nom": "France24 : Billet retour : podcast",
+    "orientation": "",
+    "rss": "https://www.france24.com/fr/%C3%A9missions/billet-retour/podcast"
+  },
+  {
+    "nom": "France24 : Billet retour : vidéo",
+    "orientation": "",
+    "rss": "https://www.france24.com/fr/%C3%A9missions/billet-retour/rss"
+  },
+  {
+    "nom": "France24 : bluesky",
+    "orientation": "",
+    "rss": "https://bsky.app/profile/did:plc:wkreszch2k4mumsrlkeaflgn/rss"
+  },
+  {
+    "nom": "France24 : dailymotion",
+    "orientation": "",
+    "rss": "https://www.dailymotion.com/rss/user/france24"
+  },
+  {
+    "nom": "France24 : Focus : podcast",
+    "orientation": "",
+    "rss": "https://www.france24.com/fr/%C3%A9missions/focus/podcast"
+  },
+  {
+    "nom": "France24 : Focus : vidéo",
+    "orientation": "",
+    "rss": "https://www.france24.com/fr/%C3%A9missions/focus/rss"
+  },
+  {
+    "nom": "France24 : La semaine en images",
+    "orientation": "",
+    "rss": "https://www.france24.com/fr/tag/la-semaine-en-images/rss"
+  },
+  {
+    "nom": "France24 : Le monde dans tous ses États : podcast",
+    "orientation": "",
+    "rss": "https://www.france24.com/fr/%C3%A9missions/monde-%C3%A9tats/podcast"
+  },
+  {
+    "nom": "France24 : Le monde dans tous ses États : vidéo",
+    "orientation": "",
+    "rss": "https://www.france24.com/fr/%C3%A9missions/monde-%C3%A9tats/rss"
+  },
+  {
+    "nom": "France24 : Les Observateurs",
+    "orientation": "",
+    "rss": "https://observers.france24.com/fr/rss"
+  },
+  {
+    "nom": "France24 : monde : sympli-rss-fusion",
+    "orientation": "",
+    "rss": "https://sympli.rss-fusion.com/rss/ed181345284980c7c79fadd0f5f23b1c21c4f0fe6f70b868"
+  },
+  {
+    "nom": "France24 : Parlons-en, les invités : podcast",
+    "orientation": "",
+    "rss": "https://www.france24.com/fr/%C3%A9missions/parlons-en-invit%C3%A9s/podcast"
+  },
+  {
+    "nom": "France24 : Parlons-en, les invités : vidéo",
+    "orientation": "",
+    "rss": "https://www.france24.com/fr/%C3%A9missions/parlons-en-invit%C3%A9s/rss"
+  },
+  {
+    "nom": "France24 : Pour aller plus loin",
+    "orientation": "",
+    "rss": "https://www.france24.com/fr/tag/pour-aller-plus-loin/rss"
+  },
+  {
+    "nom": "France24 : replay : vidéo",
+    "orientation": "",
+    "rss": "https://www.france24.com/fr/%C3%A9missions/derni%C3%A8res-%C3%A9missions/rss"
+  },
+  {
+    "nom": "France24 : Reportage",
+    "orientation": "",
+    "rss": "https://www.france24.com/fr/tag/reportage-france-24/rss"
+  },
+  {
+    "nom": "France24 : Revue de presse",
+    "orientation": "",
+    "rss": "https://www.france24.com/fr/tag/revue-de-presse/rss"
+  },
+  {
+    "nom": "France24 : vidéo",
+    "orientation": "",
+    "rss": "https://www.france24.com/fr/tag/vid%C3%A9o/rss"
+  },
+  {
+    "nom": "France3 : émission",
+    "orientation": "",
+    "rss": "https://www.emissionreplay.fr/france-3/rss.xml"
+  },
+  {
+    "nom": "France3 : faits divers",
+    "orientation": "",
+    "rss": "https://france3-regions.franceinfo.fr/faits-divers/rss"
+  },
+  {
+    "nom": "Global Voices - FR : actualités",
+    "orientation": "",
+    "rss": "https://fr.globalvoices.org/feed/"
+  },
+  {
+    "nom": "Hespress : monde",
+    "orientation": "",
+    "rss": "https://fr.hespress.com/monde/feed"
+  },
+  {
+    "nom": "HuffPost : actualité",
+    "orientation": "",
+    "rss": "https://www.huffingtonpost.fr/rss/all_full.xml"
+  },
+  {
+    "nom": "HuffPost : bluesky",
+    "orientation": "",
+    "rss": "https://bsky.app/profile/did:plc:3dkkhd6dqiqswrxnitge3axp/rss"
+  },
+  {
+    "nom": "HuffPost : dailymotion",
+    "orientation": "",
+    "rss": "https://www.dailymotion.com/rss/user/LeHuffPost"
+  },
+  {
+    "nom": "HuffPost : international",
+    "orientation": "",
+    "rss": "https://www.huffingtonpost.fr/international/rss_headline.xml"
+  },
+  {
+    "nom": "HuffPost : nos vidéos",
+    "orientation": "",
+    "rss": "https://www.huffingtonpost.fr/nos-videos/rss_headline.xml"
+  },
+  {
+    "nom": "ici : à la une",
+    "orientation": "",
+    "rss": "https://www.ici.fr/rss/a-la-une.xml"
+  },
+  {
+    "nom": "ici : actualité",
+    "orientation": "",
+    "rss": "https://www.ici.fr/rss/infos.xml"
+  },
+  {
+    "nom": "ici : bluesky",
+    "orientation": "",
+    "rss": "https://bsky.app/profile/did:plc:lzbbeeuqhlqn467b5h57z3im/rss"
+  },
+  {
+    "nom": "ici : Hérault : à la une",
+    "orientation": "",
+    "rss": "https://www.ici.fr/rss/herault/a-la-une.xml"
+  },
+  {
+    "nom": "Journal de Montréal : actualité",
+    "orientation": "",
+    "rss": "https://www.journaldemontreal.com/actualite/rss.xml"
+  },
+  {
+    "nom": "KBS : international",
+    "orientation": "",
+    "rss": "https://world.kbs.co.kr/rss/rss_news.htm?lang=f&id=In"
+  },
+  {
+    "nom": "L'actualité : Claudine St-Germain",
+    "orientation": "",
+    "rss": "https://lactualite.com/chroniques/ledito/feed/"
+  },
+  {
+    "nom": "L'actualité : monde",
+    "orientation": "",
+    "rss": "https://lactualite.com/monde/feed/"
+  },
+  {
+    "nom": "L'actualité : société",
+    "orientation": "",
+    "rss": "https://lactualite.com/societe/feed/"
+  },
+  {
+    "nom": "L'Alsace : France monde",
+    "orientation": "",
+    "rss": "https://www.lalsace.fr/france-monde/rss"
+  },
+  {
+    "nom": "L'Alsace : toute l'actualité",
+    "orientation": "",
+    "rss": "https://www.lalsace.fr/rss"
+  },
+  {
+    "nom": "L'Avenir : dailymotion",
+    "orientation": "",
+    "rss": "https://www.dailymotion.com/rss/user/lavenir"
+  },
+  {
+    "nom": "L'Avenir : Luxembourg",
+    "orientation": "",
+    "rss": "https://www.lavenir.net/arc/outboundfeeds/rss/section/regions/luxembourg/?outputType=xml"
+  },
+  {
+    "nom": "L'Avenir : monde",
+    "orientation": "",
+    "rss": "https://www.lavenir.net/arc/outboundfeeds/rss/section/actu/monde/?outputType=xml"
+  },
+  {
+    "nom": "L'Essentiel : international",
+    "orientation": "",
+    "rss": "https://partner-feeds.lessentiel.lu/rss/lessentiel-fr/monde"
+  },
+  {
+    "nom": "L'Essentiel : une",
+    "orientation": "",
+    "rss": "https://partner-feeds.lessentiel.lu/rss/lessentiel-fr/"
+  },
+  {
+    "nom": "L'Essentiel : vidéo",
+    "orientation": "",
+    "rss": "https://partner-feeds.lessentiel.lu/rss/lessentiel-fr/videos"
+  },
+  {
+    "nom": "L'Essor : Isère",
+    "orientation": "",
+    "rss": "https://mesinfos.fr/lessor38/rss.xml"
+  },
+  {
+    "nom": "L'Express : bluesky",
+    "orientation": "centre / centre-droit",
+    "rss": "https://bsky.app/profile/did:plc:fpambcnvhstbckgv23fh7rem/rss"
+  },
+  {
+    "nom": "L'Express : dailymotion",
+    "orientation": "centre / centre-droit",
+    "rss": "https://www.dailymotion.com/rss/user/LEXPRESS"
+  },
+  {
+    "nom": "L'Express : La loupe",
+    "orientation": "centre / centre-droit",
+    "rss": "https://morss.it/https://feeds.acast.com/public/shows/1d0e62b5-9dc8-4f78-92b9-219c240e56a2"
+  },
+  {
+    "nom": "L'Express : monde",
+    "orientation": "centre / centre-droit",
+    "rss": "https://www.lexpress.fr/arc/outboundfeeds/rss/monde.xml"
+  },
+  {
+    "nom": "L'Express : podcasts",
+    "orientation": "centre / centre-droit",
+    "rss": "https://www.lexpress.fr/arc/outboundfeeds/rss/podcasts.xml"
+  },
+  {
+    "nom": "L'Humanité : bluesky",
+    "orientation": "gauche",
+    "rss": "https://bsky.app/profile/did:plc:vaats7pht5zoubxm6zaxq2zd/rss"
+  },
+  {
+    "nom": "L'Humanité : dailymotion",
+    "orientation": "gauche",
+    "rss": "https://www.dailymotion.com/rss/user/humanite-fr"
+  },
+  {
+    "nom": "L'Humanité : en débat",
+    "orientation": "gauche",
+    "rss": "https://www.humanite.fr/sections/en-debat/feed"
+  },
+  {
+    "nom": "L'Humanité : entretiens",
+    "orientation": "gauche",
+    "rss": "https://www.humanite.fr/mot-cle/entretiens/feed"
+  },
+  {
+    "nom": "L'Humanité : monde",
+    "orientation": "gauche",
+    "rss": "https://www.humanite.fr/sections/monde/feed"
+  },
+  {
+    "nom": "L'Humanité : presse écrite",
+    "orientation": "gauche",
+    "rss": "https://www.humanite.fr/mot-cle/presse-ecrite/feed"
+  },
+  {
+    "nom": "L'Humanité : toute l'actualité",
+    "orientation": "gauche",
+    "rss": "https://www.humanite.fr/feed"
+  },
+  {
+    "nom": "L'Humanité : tribunes",
+    "orientation": "gauche",
+    "rss": "https://www.humanite.fr/mot-cle/tribunes/feed"
+  },
+  {
+    "nom": "L'Indépendant : actualité",
+    "orientation": "",
+    "rss": "https://www.lindependant.fr/rss.xml"
+  },
+  {
+    "nom": "L'Indépendant : bluesky",
+    "orientation": "",
+    "rss": "https://bsky.app/profile/did:plc:xxup3q5kh3jyftqhfwe3fvmn/rss"
+  },
+  {
+    "nom": "L'Indépendant : international",
+    "orientation": "",
+    "rss": "https://www.lindependant.fr/actu/international/rss.xml"
+  },
+  {
+    "nom": "L'internaute",
+    "orientation": "",
+    "rss": "https://morss.it/https://www.linternaute.com/rss/"
+  },
+  {
+    "nom": "L'Opinion : international",
+    "orientation": "",
+    "rss": "https://www.lopinion.fr/international.rss"
+  },
+  {
+    "nom": "La Croix : à la une",
+    "orientation": "centre / chrétien-social",
+    "rss": "https://www.la-croix.com/feeds/rss/site.xml"
+  },
+  {
+    "nom": "La Croix : éditos",
+    "orientation": "centre / chrétien-social",
+    "rss": "https://www.la-croix.com/feeds/rss/Debats/Editos.xml"
+  },
+  {
+    "nom": "La Croix : bluesky",
+    "orientation": "centre / chrétien-social",
+    "rss": "https://bsky.app/profile/did:plc:lv3e3gevfzmjvjcauffv4sjp/rss"
+  },
+  {
+    "nom": "La Croix : chroniques",
+    "orientation": "centre / chrétien-social",
+    "rss": "https://www.la-croix.com/feeds/rss/Debats/Chroniques.xml"
+  },
+  {
+    "nom": "La Croix : courrier",
+    "orientation": "centre / chrétien-social",
+    "rss": "https://www.la-croix.com/feeds/rss/Debats/Courrier.xml"
+  },
+  {
+    "nom": "La Croix : débats",
+    "orientation": "centre / chrétien-social",
+    "rss": "https://www.la-croix.com/feeds/rss/debat.xml"
+  },
+  {
+    "nom": "La Croix : flipboard",
+    "orientation": "centre / chrétien-social",
+    "rss": "https://flipboard.com/@JournalLaCroix.rss"
+  },
+  {
+    "nom": "La Croix : international",
+    "orientation": "centre / chrétien-social",
+    "rss": "https://www.la-croix.com/feeds/rss/international.xml"
+  },
+  {
+    "nom": "La Croix : L'actualité dans le monde : flipboard",
+    "orientation": "centre / chrétien-social",
+    "rss": "https://flipboard.com/@journallacroix/l-actualit%C3%A9-dans-le-monde-gc01i4ttz.rss"
+  },
+  {
+    "nom": "La Croix : opinions et débats",
+    "orientation": "centre / chrétien-social",
+    "rss": "https://www.la-croix.com/feeds/rss/Debats/Opinions-et-debats.xml"
+  },
+  {
+    "nom": "La Dépêche : actu",
+    "orientation": "",
+    "rss": "https://www.ladepeche.fr/rss.xml"
+  },
+  {
+    "nom": "La Dépêche : Grand Sud",
+    "orientation": "",
+    "rss": "https://www.ladepeche.fr/grand-sud/rss.xml"
+  },
+  {
+    "nom": "La Dépêche : international",
+    "orientation": "",
+    "rss": "https://www.ladepeche.fr/actu/international/rss.xml"
+  },
+  {
+    "nom": "La Dernière Heure",
+    "orientation": "",
+    "rss": "https://www.dhnet.be/arc/outboundfeeds/rss/?outputType=xml"
+  },
+  {
+    "nom": "La Dernière Heure : monde",
+    "orientation": "",
+    "rss": "https://www.dhnet.be/arc/outboundfeeds/rss/section/actu/monde/?outputType=xml"
+  },
+  {
+    "nom": "La Libre : actualités",
+    "orientation": "",
+    "rss": "https://www.lalibre.be/arc/outboundfeeds/rss/?outputType=xml"
+  },
+  {
+    "nom": "La Libre : bluesky",
+    "orientation": "",
+    "rss": "https://bsky.app/profile/did:plc:e6dbovlsokffoxeo7pdnzkap/rss"
+  },
+  {
+    "nom": "La Montagne : temps forts",
+    "orientation": "",
+    "rss": "https://feeds.feedburner.com/lamontagne/aRmJKhudqxc"
+  },
+  {
+    "nom": "La Nouvelle République : bluesky",
+    "orientation": "",
+    "rss": "https://bsky.app/profile/did:plc:otpjmf6ir6be2qlnjtxqka4e/rss"
+  },
+  {
+    "nom": "La Vie : actualité",
+    "orientation": "",
+    "rss": "https://www.lavie.fr/actualite/rss.xml"
+  },
+  {
+    "nom": "La Vie : bluesky",
+    "orientation": "",
+    "rss": "https://bsky.app/profile/did:plc:ydfge3cizldccsa7wgleojte/rss"
+  },
+  {
+    "nom": "La Vie : débats",
+    "orientation": "",
+    "rss": "https://www.lavie.fr/idees/debats/rss.xml"
+  },
+  {
+    "nom": "La Voix du Nord : bluesky",
+    "orientation": "",
+    "rss": "https://bsky.app/profile/did:plc:5gboqophxgbh7htucfhyt5gb/rss"
+  },
+  {
+    "nom": "La Voix du Nord : Hors-Texte",
+    "orientation": "",
+    "rss": "https://api.octopus.saooti.com/rss/emission/6456.rss"
+  },
+  {
+    "nom": "LaPresse : (bot) : mastodon",
+    "orientation": "",
+    "rss": "https://mastodon.quebec/@lapresse.rss"
+  },
+  {
+    "nom": "LaPresse : actualités",
+    "orientation": "",
+    "rss": "https://www.lapresse.ca/actualites/rss"
+  },
+  {
+    "nom": "LaPresse : affaires",
+    "orientation": "",
+    "rss": "https://www.lapresse.ca/affaires/rss"
+  },
+  {
+    "nom": "LaPresse : analyses",
+    "orientation": "",
+    "rss": "https://www.lapresse.ca/actualites/analyses/rss"
+  },
+  {
+    "nom": "LaPresse : dialogue",
+    "orientation": "",
+    "rss": "https://www.lapresse.ca/dialogue/rss"
+  },
+  {
+    "nom": "LaPresse : international",
+    "orientation": "",
+    "rss": "https://www.lapresse.ca/international/rss"
+  },
+  {
+    "nom": "LaPresse : international : chroniques",
+    "orientation": "",
+    "rss": "https://www.lapresse.ca/international/chroniques/rss"
+  },
+  {
+    "nom": "LaPresse : manchettes",
+    "orientation": "",
+    "rss": "https://www.lapresse.ca/manchettes/rss"
+  },
+  {
+    "nom": "LaPresse : société",
+    "orientation": "",
+    "rss": "https://www.lapresse.ca/societe/rss"
+  },
+  {
+    "nom": "LaProvence : loisirs",
+    "orientation": "",
+    "rss": "https://www.laprovence.com/rss/Sorties-loisirs.xml"
+  },
+  {
+    "nom": "LaProvence : société",
+    "orientation": "",
+    "rss": "https://www.laprovence.com/rss/societe.xml"
+  },
+  {
+    "nom": "LaProvence : sport",
+    "orientation": "",
+    "rss": "https://www.laprovence.com/rss/Sports.xml"
+  },
+  {
+    "nom": "LCI : 18H Yves Calvi : podcast",
+    "orientation": "info continue",
+    "rss": "https://feeds.audiomeans.fr/feed/40d667b6-296d-4fff-a557-c057100aef4a.xml"
+  },
+  {
+    "nom": "LCI : 22H Rochebin : podcast",
+    "orientation": "info continue",
+    "rss": "https://feeds.audiomeans.fr/feed/e4ef3f99-d29a-4279-9929-d3872bc5a1c7.xml"
+  },
+  {
+    "nom": "LCI : 24H Pujadas : podcast",
+    "orientation": "info continue",
+    "rss": "https://feeds.audiomeans.fr/feed/66b09b07-6e33-4b1f-b034-c09c17585d4c.xml"
+  },
+  {
+    "nom": "LCI : Brunet sans filtre : podcast",
+    "orientation": "info continue",
+    "rss": "https://feeds.audiomeans.fr/feed/25b64777-c219-49a6-8e23-2141ff84fd0d.xml"
+  },
+  {
+    "nom": "LCI : Cartes sur table : podcast",
+    "orientation": "info continue",
+    "rss": "https://feeds.audiomeans.fr/feed/5dd8f7a4-87ff-4fa2-b279-46d568dce0e7.xml"
+  },
+  {
+    "nom": "LCI : En toute franchise : podcast",
+    "orientation": "info continue",
+    "rss": "https://feeds.audiomeans.fr/feed/bf4142a5-7a30-48eb-9b2f-03adc7a148b9.xml"
+  },
+  {
+    "nom": "LCI : En Toute Liberté : podcast",
+    "orientation": "info continue",
+    "rss": "https://feeds.audiomeans.fr/feed/987918ed-ac2e-4c86-b483-ae6725a7519e.xml"
+  },
+  {
+    "nom": "LCI : Le Grand Dossier : podcast",
+    "orientation": "info continue",
+    "rss": "https://feeds.audiomeans.fr/feed/f3c921eb-b148-4d9c-8c3b-c4ca0a041153.xml"
+  },
+  {
+    "nom": "LCI : Les Vérificateurs : podcast",
+    "orientation": "info continue",
+    "rss": "https://feeds.audiomeans.fr/feed/dd2e286e-1bd0-472a-9e43-48667117f86c.xml"
+  },
+  {
+    "nom": "LCI : On ne plaisante pas avec l'info : podcast",
+    "orientation": "info continue",
+    "rss": "https://feeds.audiomeans.fr/feed/45256f09-d71f-48ff-be7e-a401d54adeb5.xml"
+  },
+  {
+    "nom": "Le 1 hebdo : bluesky",
+    "orientation": "",
+    "rss": "https://bsky.app/profile/did:plc:fip5gyto2gsaeev2md3tgoey/rss"
+  },
+  {
+    "nom": "Le Bien Public",
+    "orientation": "",
+    "rss": "https://www.bienpublic.com/rss"
+  },
+  {
+    "nom": "Le Dauphiné Libéré : Desinfox",
+    "orientation": "généraliste / régional",
+    "rss": "https://www.ledauphine.com/societe/desinfox/rss"
+  },
+  {
+    "nom": "Le Dauphiné Libéré : faits divers justice",
+    "orientation": "généraliste / régional",
+    "rss": "https://www.ledauphine.com/faits-divers-justice/rss"
+  },
+  {
+    "nom": "Le Dauphiné Libéré : France - monde",
+    "orientation": "généraliste / régional",
+    "rss": "https://www.ledauphine.com/france-monde/rss"
+  },
+  {
+    "nom": "Le Devoir : actualité",
+    "orientation": "",
+    "rss": "http://feeds2.feedburner.com/fluxdudevoir?format=xml"
+  },
+  {
+    "nom": "Le Devoir : chroniques",
+    "orientation": "",
+    "rss": "https://www.ledevoir.com/rss/section/opinion/chroniques.xml"
+  },
+  {
+    "nom": "Le Faso : international",
+    "orientation": "",
+    "rss": "https://lefaso.net/spip.php?page=backend&id_rubrique=7"
+  },
+  {
+    "nom": "Le Figaro : à la une",
+    "orientation": "droite",
+    "rss": "https://www.lefigaro.fr/rss/figaro_actualites-a-la-une.xml"
+  },
+  {
+    "nom": "Le Figaro : bluesky",
+    "orientation": "droite",
+    "rss": "https://bsky.app/profile/did:plc:znu3bmhx5mx2icucilix5rpa/rss"
+  },
+  {
+    "nom": "Le Figaro : faits divers",
+    "orientation": "droite",
+    "rss": "https://www.lefigaro.fr/rss/figaro_faits-divers.xml"
+  },
+  {
+    "nom": "Le Figaro : flash actu",
+    "orientation": "droite",
+    "rss": "https://www.lefigaro.fr/rss/figaro_flash-actu.xml"
+  },
+  {
+    "nom": "Le Figaro : flipboard",
+    "orientation": "droite",
+    "rss": "https://flipboard.com/@LeFigaro.rss"
+  },
+  {
+    "nom": "Le Figaro : international",
+    "orientation": "droite",
+    "rss": "https://www.lefigaro.fr/rss/figaro_international.xml"
+  },
+  {
+    "nom": "Le Figaro : L'édito",
+    "orientation": "droite",
+    "rss": "https://feed.ausha.co/yEM44t6vx8n8"
+  },
+  {
+    "nom": "Le Figaro : Le Club Le Figaro Idées",
+    "orientation": "droite",
+    "rss": "https://feed.ausha.co/BngaaIax3npK"
+  },
+  {
+    "nom": "Le Figaro : Le Club Le Figaro International",
+    "orientation": "droite",
+    "rss": "https://feed.ausha.co/b7p44tmdPLg6"
+  },
+  {
+    "nom": "Le Figaro : Les débats Esprits Libres",
+    "orientation": "droite",
+    "rss": "https://feed.ausha.co/yeGaaUAz4K67"
+  },
+  {
+    "nom": "Le Figaro : magazine",
+    "orientation": "droite",
+    "rss": "https://www.lefigaro.fr/rss/figaro_lefigaromagazine.xml"
+  },
+  {
+    "nom": "Le Figaro : société",
+    "orientation": "droite",
+    "rss": "https://www.lefigaro.fr/rss/figaro_actualite-france.xml"
+  },
+  {
+    "nom": "Le Figaro : vidéos",
+    "orientation": "droite",
+    "rss": "https://www.lefigaro.fr/rss/figaro_videos.xml"
+  },
+  {
+    "nom": "Le journal de Saône-et-Loire : faits divers et justice",
+    "orientation": "",
+    "rss": "https://www.lejsl.com/faits-divers-justice/rss"
+  },
+  {
+    "nom": "Le journal de Saône-et-Loire : France et monde",
+    "orientation": "",
+    "rss": "https://www.lejsl.com/france-monde/rss"
+  },
+  {
+    "nom": "Le Matin : monde",
+    "orientation": "",
+    "rss": "https://partner-feeds.lematin.ch/rss/lematin/monde"
+  },
+  {
+    "nom": "Le Matin du Maroc : monde",
+    "orientation": "",
+    "rss": "https://lematin.ma/rssFeed/5"
+  },
+  {
+    "nom": "Le Média : peertube",
+    "orientation": "gauche",
+    "rss": "https://peertube.stream/feeds/videos.xml?videoChannelId=458"
+  },
+  {
+    "nom": "Le Monde : actu en continu",
+    "orientation": "centre-gauche / généraliste",
+    "rss": "https://www.lemonde.fr/rss/en_continu.xml"
+  },
+  {
+    "nom": "Le Monde : actu en direct",
+    "orientation": "centre-gauche / généraliste",
+    "rss": "https://www.lemonde.fr/en-direct/rss_full.xml"
+  },
+  {
+    "nom": "Le Monde : bluesky",
+    "orientation": "centre-gauche / généraliste",
+    "rss": "https://bsky.app/profile/did:plc:qqxqxgdu5z3he2piqfbfaku4/rss"
+  },
+  {
+    "nom": "Le Monde : chroniques",
+    "orientation": "centre-gauche / généraliste",
+    "rss": "https://www.lemonde.fr/chroniques/rss_full.xml"
+  },
+  {
+    "nom": "Le Monde : débats",
+    "orientation": "centre-gauche / généraliste",
+    "rss": "https://www.lemonde.fr/idees/rss_full.xml"
+  },
+  {
+    "nom": "Le Monde : débats : éditoriaux",
+    "orientation": "centre-gauche / généraliste",
+    "rss": "https://www.lemonde.fr/editoriaux/rss_full.xml"
+  },
+  {
+    "nom": "Le Monde : débats : analyses",
+    "orientation": "centre-gauche / généraliste",
+    "rss": "https://www.lemonde.fr/analyses/rss_full.xml"
+  },
+  {
+    "nom": "Le Monde : débats : chroniques",
+    "orientation": "centre-gauche / généraliste",
+    "rss": "https://www.lemonde.fr/idees-chroniques/rss_full.xml"
+  },
+  {
+    "nom": "Le Monde : débats : enquêtes idées",
+    "orientation": "centre-gauche / généraliste",
+    "rss": "https://www.lemonde.fr/enquete-idees/rss_full.xml"
+  },
+  {
+    "nom": "Le Monde : débats : entretiens idées",
+    "orientation": "centre-gauche / généraliste",
+    "rss": "https://www.lemonde.fr/entretien-idees/rss_full.xml"
+  },
+  {
+    "nom": "Le Monde : débats : tribunes",
+    "orientation": "centre-gauche / généraliste",
+    "rss": "https://www.lemonde.fr/idees-tribunes/rss_full.xml"
+  },
+  {
+    "nom": "Le Monde : débats : Un mot dans l'air",
+    "orientation": "centre-gauche / généraliste",
+    "rss": "https://www.lemonde.fr/notions/rss_full.xml"
+  },
+  {
+    "nom": "Le Monde : dailymotion",
+    "orientation": "centre-gauche / généraliste",
+    "rss": "https://www.dailymotion.com/rss/user/lemondefr"
+  },
+  {
+    "nom": "Le Monde : Facile À Lire et à Comprendre",
+    "orientation": "centre-gauche / généraliste",
+    "rss": "https://www.lemonde.fr/le-monde-en-falc/rss_full.xml"
+  },
+  {
+    "nom": "Le Monde : flipboard",
+    "orientation": "centre-gauche / généraliste",
+    "rss": "https://flipboard.com/@LeMonde.rss"
+  },
+  {
+    "nom": "Le Monde : instagram",
+    "orientation": "centre-gauche / généraliste",
+    "rss": "https://qgesqcymfpqykxgkrxiu.supabase.co/functions/v1/serve-feed?id=9dea1827-2252-4f4c-8afd-f3986434d5e0"
+  },
+  {
+    "nom": "Le Monde : international",
+    "orientation": "centre-gauche / généraliste",
+    "rss": "https://www.lemonde.fr/international/rss_full.xml"
+  },
+  {
+    "nom": "Le Monde : international : flipboard",
+    "orientation": "centre-gauche / généraliste",
+    "rss": "https://flipboard.com/@lemonde/international-16gqe4r0z.rss"
+  },
+  {
+    "nom": "Le Monde : international : justice",
+    "orientation": "centre-gauche / généraliste",
+    "rss": "https://www.lemonde.fr/justice-internationale/rss_full.xml"
+  },
+  {
+    "nom": "Le Monde : L'Heure du Monde",
+    "orientation": "centre-gauche / généraliste",
+    "rss": "https://www.lemonde.fr/lheure-du-monde/rss_full.xml"
+  },
+  {
+    "nom": "Le Monde : Le Monde événements",
+    "orientation": "centre-gauche / généraliste",
+    "rss": "https://www.lemonde.fr/le-monde-evenements/rss_full.xml"
+  },
+  {
+    "nom": "Le Monde : les plus lus",
+    "orientation": "centre-gauche / généraliste",
+    "rss": "https://www.lemonde.fr/rss/plus-lus.xml"
+  },
+  {
+    "nom": "Le Monde : les plus partagés",
+    "orientation": "centre-gauche / généraliste",
+    "rss": "https://www.lemonde.fr/rss/plus-partages.xml"
+  },
+  {
+    "nom": "Le Monde : Lettres de",
+    "orientation": "centre-gauche / généraliste",
+    "rss": "https://www.lemonde.fr/lettres-de/rss_full.xml"
+  },
+  {
+    "nom": "Le Monde : mastodon",
+    "orientation": "centre-gauche / généraliste",
+    "rss": "https://mastodon.social/@lemonde.rss"
+  },
+  {
+    "nom": "Le Monde : Retour sur 2024",
+    "orientation": "centre-gauche / généraliste",
+    "rss": "https://www.lemonde.fr/retour-sur-2024/rss_full.xml"
+  },
+  {
+    "nom": "Le Monde : Retour sur 2025",
+    "orientation": "centre-gauche / généraliste",
+    "rss": "https://www.lemonde.fr/retour-sur-2025/rss_full.xml"
+  },
+  {
+    "nom": "Le Monde : telegram",
+    "orientation": "centre-gauche / généraliste",
+    "rss": "https://rss.noleron.com/telegram/channel/LeMondeFrance"
+  },
+  {
+    "nom": "Le Monde : tiktok",
+    "orientation": "centre-gauche / généraliste",
+    "rss": "https://wtf.roflcopter.fr/rss-bridge/?action=display&bridge=TikTokBridge&context=By+user&username=%40lemondefr&format=Mrss"
+  },
+  {
+    "nom": "Le Monde : vidéo",
+    "orientation": "centre-gauche / généraliste",
+    "rss": "https://www.lemonde.fr/videos/rss_full.xml"
+  },
+  {
+    "nom": "Le Monde : vidéo : actualité",
+    "orientation": "centre-gauche / généraliste",
+    "rss": "https://www.lemonde.fr/actualite/rss_full.xml"
+  },
+  {
+    "nom": "Le Monde : vidéo : Comprendre en trois minutes",
+    "orientation": "centre-gauche / généraliste",
+    "rss": "https://www.lemonde.fr/comprendre-en-3-minutes/rss_full.xml"
+  },
+  {
+    "nom": "Le Monde : vidéo : Enquêtes",
+    "orientation": "centre-gauche / généraliste",
+    "rss": "https://www.lemonde.fr/enquetes-video/rss_full.xml"
+  },
+  {
+    "nom": "Le Monde : vidéo : Nos mini-séries",
+    "orientation": "centre-gauche / généraliste",
+    "rss": "https://www.lemonde.fr/les-series/rss_full.xml"
+  },
+  {
+    "nom": "Le Monde Diplomatique",
+    "orientation": "gauche",
+    "rss": "https://www.monde-diplomatique.fr/spip.php?page=backend"
+  },
+  {
+    "nom": "Le Monde Diplomatique : bluesky",
+    "orientation": "gauche",
+    "rss": "https://bsky.app/profile/did:plc:q4q2hko2prboin62shrck5ix/rss"
+  },
+  {
+    "nom": "Le Monde Diplomatique : mastodon",
+    "orientation": "gauche",
+    "rss": "https://mamot.fr/@mdiplo.rss"
+  },
+  {
+    "nom": "Le NouvelObs : à la une",
+    "orientation": "",
+    "rss": "https://www.nouvelobs.com/a-la-une/rss.xml"
+  },
+  {
+    "nom": "Le NouvelObs : éditos",
+    "orientation": "",
+    "rss": "https://www.nouvelobs.com/edito/rss.xml"
+  },
+  {
+    "nom": "Le NouvelObs : (bot) : mastodon",
+    "orientation": "",
+    "rss": "https://amicale.net/@le_nouvelobs.rss"
+  },
+  {
+    "nom": "Le NouvelObs : billet",
+    "orientation": "",
+    "rss": "https://www.nouvelobs.com/billet/rss.xml"
+  },
+  {
+    "nom": "Le NouvelObs : bluesky",
+    "orientation": "",
+    "rss": "https://bsky.app/profile/did:plc:xhye77kvlv7vddwpapebsljj/rss"
+  },
+  {
+    "nom": "Le NouvelObs : chroniques",
+    "orientation": "",
+    "rss": "https://www.nouvelobs.com/chroniques/rss.xml"
+  },
+  {
+    "nom": "Le NouvelObs : conférences",
+    "orientation": "",
+    "rss": "https://www.nouvelobs.com/conferences/rss.xml"
+  },
+  {
+    "nom": "Le NouvelObs : débat",
+    "orientation": "",
+    "rss": "https://www.nouvelobs.com/debat/rss.xml"
+  },
+  {
+    "nom": "Le NouvelObs : dailymotion",
+    "orientation": "",
+    "rss": "https://www.dailymotion.com/rss/user/nouvelobs"
+  },
+  {
+    "nom": "Le NouvelObs : La chronique de Mara Goyet",
+    "orientation": "",
+    "rss": "https://www.nouvelobs.com/la-chronique-de-mara-goyet/rss.xml"
+  },
+  {
+    "nom": "Le NouvelObs : La chronique de Pierre Haski",
+    "orientation": "",
+    "rss": "https://www.nouvelobs.com/la-chronique-de-pierre-haski/rss.xml"
+  },
+  {
+    "nom": "Le NouvelObs : monde",
+    "orientation": "",
+    "rss": "https://www.nouvelobs.com/monde/rss.xml"
+  },
+  {
+    "nom": "Le NouvelObs : opinions",
+    "orientation": "",
+    "rss": "https://www.nouvelobs.com/opinions/rss.xml"
+  },
+  {
+    "nom": "Le NouvelObs : reportages",
+    "orientation": "",
+    "rss": "https://www.nouvelobs.com/reportages/rss.xml"
+  },
+  {
+    "nom": "Le NouvelObs : société",
+    "orientation": "",
+    "rss": "https://www.nouvelobs.com/societe/rss.xml"
+  },
+  {
+    "nom": "Le Parisien : bluesky",
+    "orientation": "généraliste / populaire",
+    "rss": "https://bsky.app/profile/did:plc:anpfslmr5xhyw7oqzai3dprd/rss"
+  },
+  {
+    "nom": "Le Parisien : dailymotion",
+    "orientation": "généraliste / populaire",
+    "rss": "https://www.dailymotion.com/rss/user/leparisien"
+  },
+  {
+    "nom": "Le Parisien : flipboard",
+    "orientation": "généraliste / populaire",
+    "rss": "https://flipboard.com/@Le_Parisien.rss"
+  },
+  {
+    "nom": "Le Parisien : international",
+    "orientation": "généraliste / populaire",
+    "rss": "https://feeds.leparisien.fr/leparisien/rss/international"
+  },
+  {
+    "nom": "Le Parisien : société",
+    "orientation": "généraliste / populaire",
+    "rss": "https://feeds.leparisien.fr/leparisien/rss/societe"
+  },
+  {
+    "nom": "Le Parisien : toute l'actualité",
+    "orientation": "généraliste / populaire",
+    "rss": "https://feeds.leparisien.fr/leparisien/rss"
+  },
+  {
+    "nom": "Le Petit Journal : actualité",
+    "orientation": "",
+    "rss": "https://www.lepetitjournal.net/feed/"
+  },
+  {
+    "nom": "Le Petit Journal : France Monde",
+    "orientation": "",
+    "rss": "https://www.lepetitjournal.net/thematique/france-monde/feed/"
+  },
+  {
+    "nom": "Le Point : éditos du point",
+    "orientation": "centre-droit",
+    "rss": "https://www.lepoint.fr/arc/outboundfeeds/rss/category/editos-du-point/"
+  },
+  {
+    "nom": "Le Point : bluesky",
+    "orientation": "centre-droit",
+    "rss": "https://bsky.app/profile/did:plc:aixwsdaeubfrxedelxe7rqwq/rss"
+  },
+  {
+    "nom": "Le Point : débats",
+    "orientation": "centre-droit",
+    "rss": "https://www.lepoint.fr/arc/outboundfeeds/rss/category/debats/"
+  },
+  {
+    "nom": "Le Point : dailymotion",
+    "orientation": "centre-droit",
+    "rss": "https://www.dailymotion.com/rss/user/LePoint"
+  },
+  {
+    "nom": "Le Point : monde",
+    "orientation": "centre-droit",
+    "rss": "https://www.lepoint.fr/arc/outboundfeeds/rss/category/monde/"
+  },
+  {
+    "nom": "Le Point : vidéo",
+    "orientation": "centre-droit",
+    "rss": "https://www.lepoint.fr/arc/outboundfeeds/rss/category/video/"
+  },
+  {
+    "nom": "Le Progrès : France Monde",
+    "orientation": "généraliste",
+    "rss": "https://www.leprogres.fr/france-monde/rss"
+  },
+  {
+    "nom": "Le Progrès : une",
+    "orientation": "généraliste",
+    "rss": "https://www.leprogres.fr/rss"
+  },
+  {
+    "nom": "Le Républicain Lorrain",
+    "orientation": "",
+    "rss": "https://www.republicain-lorrain.fr/rss"
+  },
+  {
+    "nom": "Le Télégramme : fil info",
+    "orientation": "",
+    "rss": "https://www.letelegramme.fr//rss.xml"
+  },
+  {
+    "nom": "Le Temps : actualité",
+    "orientation": "",
+    "rss": "https://www.letemps.ch/articles.rss"
+  },
+  {
+    "nom": "Le Temps : bluesky",
+    "orientation": "",
+    "rss": "https://bsky.app/profile/did:plc:7jv6gaw5ifcn5dx6nhrguhs2/rss"
+  },
+  {
+    "nom": "Le Temps : monde",
+    "orientation": "",
+    "rss": "https://www.letemps.ch/monde.rss"
+  },
+  {
+    "nom": "Le Vif",
+    "orientation": "",
+    "rss": "https://www.levif.be/feed/"
+  },
+  {
+    "nom": "Le Vif : international",
+    "orientation": "",
+    "rss": "https://www.levif.be/international/feed/"
+  },
+  {
+    "nom": "Le Télégramme : monde",
+    "orientation": "",
+    "rss": "https://www.letelegramme.fr/monde/rss.xml"
+  },
+  {
+    "nom": "LesFrançais",
+    "orientation": "",
+    "rss": "https://lesfrancais.press/feed/"
+  },
+  {
+    "nom": "Libération : idées et débats : flipboard",
+    "orientation": "gauche",
+    "rss": "https://flipboard.com/@liberation/id%C3%A9es-et-d%C3%A9bats-h8ip3sshz.rss"
+  },
+  {
+    "nom": "Libération : éditorial",
+    "orientation": "gauche",
+    "rss": "https://www.liberation.fr/arc/outboundfeeds/rss/category/idees-et-debats/editorial/?outputType=xml"
+  },
+  {
+    "nom": "Libération : (bot) : mastodon",
+    "orientation": "gauche",
+    "rss": "https://amicale.net/@libe.rss"
+  },
+  {
+    "nom": "Libération : bluesky",
+    "orientation": "gauche",
+    "rss": "https://bsky.app/profile/did:plc:uo4didwt5qe4onrscbmqwvwm/rss"
+  },
+  {
+    "nom": "Libération : checknews",
+    "orientation": "gauche",
+    "rss": "https://www.liberation.fr/arc/outboundfeeds/rss/category/checknews/?outputType=xml"
+  },
+  {
+    "nom": "Libération : derniers articles",
+    "orientation": "gauche",
+    "rss": "https://www.liberation.fr/arc/outboundfeeds/rss/?outputType=xml"
+  },
+  {
+    "nom": "Libération : flipboard",
+    "orientation": "gauche",
+    "rss": "https://flipboard.com/@Liberation.rss"
+  },
+  {
+    "nom": "Libération : international",
+    "orientation": "gauche",
+    "rss": "https://www.liberation.fr/arc/outboundfeeds/rss/category/international/?outputType=xml"
+  },
+  {
+    "nom": "Libération : twitch",
+    "orientation": "gauche",
+    "rss": "https://twitchrss.appspot.com/vod/liberationfr"
+  },
+  {
+    "nom": "Lyon Première : faits divers",
+    "orientation": "",
+    "rss": "https://www.lyonpremiere.fr/category/faits-divers/feed/"
+  },
+  {
+    "nom": "Marianne : les podcasts : flipboard",
+    "orientation": "souverainiste / républicain",
+    "rss": "https://flipboard.com/@mariannelemag/les-podcasts-hqrkd8brz.rss"
+  },
+  {
+    "nom": "MaVille : Antibes",
+    "orientation": "",
+    "rss": "https://antibes.maville.com/flux/rss/actu.php?xtor=RSS-18&code=at"
+  },
+  {
+    "nom": "Midi Libre",
+    "orientation": "",
+    "rss": "https://www.midilibre.fr/rss.xml"
+  },
+  {
+    "nom": "Midi Libre : monde",
+    "orientation": "",
+    "rss": "https://www.midilibre.fr/actu/monde/rss.xml"
+  },
+  {
+    "nom": "Midi Libre : vidéos",
+    "orientation": "",
+    "rss": "https://www.midilibre.fr/videos/rss.xml"
+  },
+  {
+    "nom": "Nice-Matin : dailymotion",
+    "orientation": "",
+    "rss": "https://www.dailymotion.com/rss/user/nice-matin"
+  },
+  {
+    "nom": "Nice-Matin : monde",
+    "orientation": "",
+    "rss": "https://www.nicematin.com/ville/monde/rss"
+  },
+  {
+    "nom": "Nice-Matin : opinion",
+    "orientation": "",
+    "rss": "https://www.nicematin.com/sujet/opinion/rss"
+  },
+  {
+    "nom": "Nice-Matin : région",
+    "orientation": "",
+    "rss": "https://www.nicematin.com/region/rss"
+  },
+  {
+    "nom": "Ouest-France : bluesky",
+    "orientation": "",
+    "rss": "https://bsky.app/profile/did:plc:p7gdpofkiswapwrhfos7nqqd/rss"
+  },
+  {
+    "nom": "Ouest-France : flipboard",
+    "orientation": "",
+    "rss": "https://flipboard.com/@OuestFrance.rss"
+  },
+  {
+    "nom": "Radio Canada : société",
+    "orientation": "",
+    "rss": "https://ici.radio-canada.ca/info/rss/societe/en-continu"
+  },
+  {
+    "nom": "Radio Classique : Commentaires",
+    "orientation": "",
+    "rss": "https://feeds.audiomeans.fr/feed/e91c715e-4a97-445f-b9ca-8e299047330c.xml"
+  },
+  {
+    "nom": "Radio Classique : La Revue de Presse",
+    "orientation": "",
+    "rss": "https://feeds.audiomeans.fr/feed/e6c14811-86ce-46d9-bb52-ab70614b4967.xml"
+  },
+  {
+    "nom": "Radio Classique : Le journal de 6h00",
+    "orientation": "",
+    "rss": "https://feeds.audiomeans.fr/feed/b75dd340-e87e-4870-972a-72a4ff8186bc.xml"
+  },
+  {
+    "nom": "Radio Classique : Le journal de 6h30",
+    "orientation": "",
+    "rss": "https://feeds.audiomeans.fr/feed/10d9cbb1-d6df-4ca1-ae1c-b8ced4fe6b8a.xml"
+  },
+  {
+    "nom": "Radio Classique : Le journal de 7h00",
+    "orientation": "",
+    "rss": "https://feeds.audiomeans.fr/feed/8a49e759-1e2f-4437-bdff-e346204d0290.xml"
+  },
+  {
+    "nom": "Radio Classique : Le journal de 7h30",
+    "orientation": "",
+    "rss": "https://feeds.audiomeans.fr/feed/8c80fbf3-77f1-48fd-9fbe-3c86a131f909.xml"
+  },
+  {
+    "nom": "Radio Classique : Le journal de 8h00",
+    "orientation": "",
+    "rss": "https://feeds.audiomeans.fr/feed/8b5489bb-7898-42c6-9449-54c06636aa6c.xml"
+  },
+  {
+    "nom": "Radio France : Cellule investigation : bluesky",
+    "orientation": "",
+    "rss": "https://bsky.app/profile/did:plc:ody3yhafj2tt5nwe7xgvvgp6/rss"
+  },
+  {
+    "nom": "Radio France : La Grande Matinale (bouquet)",
+    "orientation": "",
+    "rss": "https://radiofrance-podcast.net/podcast09/podcast_e8e15473-5871-4bba-907c-c12ba36cadbe.xml"
+  },
+  {
+    "nom": "Radio France : monde",
+    "orientation": "",
+    "rss": "https://www.radiofrance.fr/rss/monde"
+  },
+  {
+    "nom": "Radio-Canada : à la une",
+    "orientation": "",
+    "rss": "https://ici.radio-canada.ca/info/rss/info/a-la-une"
+  },
+  {
+    "nom": "Radio-Canada : en continu",
+    "orientation": "",
+    "rss": "https://ici.radio-canada.ca/info/rss/info/en-continu"
+  },
+  {
+    "nom": "Radio-Canada : international",
+    "orientation": "",
+    "rss": "https://ici.radio-canada.ca/info/rss/international/en-continu"
+  },
+  {
+    "nom": "RFI : Accents du monde",
+    "orientation": "international / service public",
+    "rss": "https://www.rfi.fr/fr/podcasts/accents-monde/rss"
+  },
+  {
+    "nom": "RFI : Appels sur l'actualité",
+    "orientation": "international / service public",
+    "rss": "https://www.rfi.fr/fr/podcasts/appels-actualit%C3%A9/podcast"
+  },
+  {
+    "nom": "RFI : bluesky",
+    "orientation": "international / service public",
+    "rss": "https://bsky.app/profile/did:plc:vvlpfarso2eojm2xpzc7qrd7/rss"
+  },
+  {
+    "nom": "RFI : connaissances",
+    "orientation": "international / service public",
+    "rss": "https://www.rfi.fr/fr/connaissances/rss"
+  },
+  {
+    "nom": "RFI : en bref",
+    "orientation": "international / service public",
+    "rss": "https://www.rfi.fr/fr/en-bref/rss"
+  },
+  {
+    "nom": "RFI : Grand reportage",
+    "orientation": "international / service public",
+    "rss": "https://www.rfi.fr/fr/podcasts/grand-reportage/podcast"
+  },
+  {
+    "nom": "RFI : Invité international",
+    "orientation": "international / service public",
+    "rss": "https://www.rfi.fr/fr/podcasts/invit%C3%A9-mi-journ%C3%A9e/podcast"
+  },
+  {
+    "nom": "RFI : Le débat du jour",
+    "orientation": "international / service public",
+    "rss": "https://www.rfi.fr/fr/podcasts/d%C3%A9bat-jour/podcast"
+  },
+  {
+    "nom": "RFI : Menaces sur l'information",
+    "orientation": "international / service public",
+    "rss": "https://www.rfi.fr/fr/podcasts/menaces-sur-l-information/podcast"
+  },
+  {
+    "nom": "RFI : monde",
+    "orientation": "international / service public",
+    "rss": "https://www.rfi.fr/fr/monde/rss"
+  },
+  {
+    "nom": "RFI : Pourquoi RFI dit ça ?",
+    "orientation": "international / service public",
+    "rss": "https://www.rfi.fr/fr/podcasts/pourquoi-rfi-dit-%C3%A7a/podcast"
+  },
+  {
+    "nom": "RFI : Reportage France",
+    "orientation": "international / service public",
+    "rss": "http://feeds.feedburner.com/ReportageFrance"
+  },
+  {
+    "nom": "RFI : Reportage France (2)",
+    "orientation": "international / service public",
+    "rss": "https://www.rfi.fr/fr/podcasts/reportage-france/podcast"
+  },
+  {
+    "nom": "RFI : revue de presse",
+    "orientation": "international / service public",
+    "rss": "https://www.rfi.fr/fr/tag/revue-de-presse/rss"
+  },
+  {
+    "nom": "RFI : Revue de presse des hebdomadaires français",
+    "orientation": "international / service public",
+    "rss": "https://www.rfi.fr/fr/podcasts/revue-presse-fran%C3%A7aise/podcast"
+  },
+  {
+    "nom": "RFI : vidéos",
+    "orientation": "international / service public",
+    "rss": "https://www.rfi.fr/fr/tag/vid%C3%A9os/rss"
+  },
+  {
+    "nom": "RMC : 7/9 Anaïs Matin : vidéo",
+    "orientation": "radio / débats / populaire",
+    "rss": "https://rmc.bfmtv.com/rss/replay-emissions/la-matinale-week-end/"
+  },
+  {
+    "nom": "RMC : actualité",
+    "orientation": "radio / débats / populaire",
+    "rss": "https://rmc.bfmtv.com/rss/actualites/"
+  },
+  {
+    "nom": "RMC : Charles Matin",
+    "orientation": "radio / débats / populaire",
+    "rss": "https://feeds.simplecast.com/coSnnmjf"
+  },
+  {
+    "nom": "RMC : Estelle Midi : vidéo",
+    "orientation": "radio / débats / populaire",
+    "rss": "https://rmc.bfmtv.com/rss/replay-emissions/estelle-midi/"
+  },
+  {
+    "nom": "RMC : fil info",
+    "orientation": "radio / débats / populaire",
+    "rss": "https://rmc.bfmtv.com/rss/fil-info/"
+  },
+  {
+    "nom": "RMC : international",
+    "orientation": "radio / débats / populaire",
+    "rss": "https://rmc.bfmtv.com/rss/actualites/international/"
+  },
+  {
+    "nom": "RMC : Les Grandes Gueules",
+    "orientation": "radio / débats / populaire",
+    "rss": "https://feeds.simplecast.com/MBdw4Qrw"
+  },
+  {
+    "nom": "RTBF : bluesky",
+    "orientation": "",
+    "rss": "https://bsky.app/profile/did:plc:jqe2s6hy7kmxvbs67tf3lh7w/rss"
+  },
+  {
+    "nom": "RTBF : chaîne : La Première",
+    "orientation": "",
+    "rss": "https://rss.rtbf.be/article/rss/highlight_rtbf_lpm-info-actu.xml?source=internal"
+  },
+  {
+    "nom": "RTBF : chroniques",
+    "orientation": "",
+    "rss": "https://rss.rtbf.be/article/rss/highlight_rtbf_rtbfinfo-chroniques.xml?source=internal"
+  },
+  {
+    "nom": "RTBF : décrypte",
+    "orientation": "",
+    "rss": "https://rss.rtbf.be/article/rss/highlight_rtbf_decrypte.xml?source=internal"
+  },
+  {
+    "nom": "RTBF : dernière minute",
+    "orientation": "",
+    "rss": "https://rss.rtbf.be/article/rss/rtbfinfo_homepage.xml"
+  },
+  {
+    "nom": "RTBF : faky fact checking",
+    "orientation": "",
+    "rss": "https://rss.rtbf.be/article/rss/highlight_rtbf_fact-checking.xml?source=internal"
+  },
+  {
+    "nom": "RTBF : info",
+    "orientation": "",
+    "rss": "https://rss.rtbf.be/article/rss/highlight_rtbf_info.xml?source=internal"
+  },
+  {
+    "nom": "RTL : Autour du monde",
+    "orientation": "généraliste / radio",
+    "rss": "https://feeds.audiomeans.fr/feed/e7fbc216-66f7-49f9-b010-d05ed2b618d0.xml"
+  },
+  {
+    "nom": "RTL : bluesky",
+    "orientation": "généraliste / radio",
+    "rss": "https://bsky.app/profile/did:plc:tuscekukxnrvsqpy7mps4265/rss"
+  },
+  {
+    "nom": "RTL : dailymotion",
+    "orientation": "généraliste / radio",
+    "rss": "https://www.dailymotion.com/rss/user/rtl-fr"
+  },
+  {
+    "nom": "RTL : Jour J",
+    "orientation": "généraliste / radio",
+    "rss": "https://feeds.audiomeans.fr/feed/a8b59eda-172d-48a3-8323-2556b0af6aa2.xml"
+  },
+  {
+    "nom": "RTL : journal",
+    "orientation": "généraliste / radio",
+    "rss": "https://feeds.audiomeans.fr/feed/81fdd41c-51e9-4839-b867-7ad5bfe61dea.xml"
+  },
+  {
+    "nom": "RTL : Les auditeurs ont la parole",
+    "orientation": "généraliste / radio",
+    "rss": "https://feeds.audiomeans.fr/feed/252878b9-db39-465b-ad33-b8acf6695f21.xml"
+  },
+  {
+    "nom": "RTL : Les invités de RTL",
+    "orientation": "généraliste / radio",
+    "rss": "https://feeds.audiomeans.fr/feed/bd84bb2f-2f24-44a5-87ec-4851ba856c6a.xml"
+  },
+  {
+    "nom": "RTL : matin",
+    "orientation": "généraliste / radio",
+    "rss": "https://feeds.audiomeans.fr/feed/aeb105e8-907f-4710-b9d9-54ba21ca6e8c.xml"
+  },
+  {
+    "nom": "RTL : midi",
+    "orientation": "généraliste / radio",
+    "rss": "https://feeds.audiomeans.fr/feed/b10e6578-b237-43c3-a7ed-c44ff33404ac.xml"
+  },
+  {
+    "nom": "RTL : soir",
+    "orientation": "généraliste / radio",
+    "rss": "https://feeds.audiomeans.fr/feed/57fcf3bb-2411-4772-ab9c-5c346ff73d43.xml"
+  },
+  {
+    "nom": "RTL Infos : à la une",
+    "orientation": "",
+    "rss": "https://infos.rtl.lu/rss/headlines"
+  },
+  {
+    "nom": "RTS : 120 secondes",
+    "orientation": "",
+    "rss": "https://www.rts.ch/la-1ere/programmes/120-secondes/podcast/?flux=rss/podcast"
+  },
+  {
+    "nom": "RTS : actualité",
+    "orientation": "",
+    "rss": "https://www.rts.ch/info/toute-info/?format=rss/news"
+  },
+  {
+    "nom": "RTS : data",
+    "orientation": "",
+    "rss": "https://www.rts.ch/info/dossiers/data/?format=rss/news"
+  },
+  {
+    "nom": "RTS : Forum",
+    "orientation": "",
+    "rss": "https://www.rts.ch/la-1ere/programmes/forum/podcast/?flux=rss"
+  },
+  {
+    "nom": "RTS : Infrarouge",
+    "orientation": "",
+    "rss": "https://www.rts.ch/emissions/infrarouge/podcasts/?flux=rss"
+  },
+  {
+    "nom": "RTS : La matinale",
+    "orientation": "",
+    "rss": "https://www.rts.ch/la-1ere/programmes/la-matinale/podcast/?flux=rss"
+  },
+  {
+    "nom": "RTS : Le 12h30",
+    "orientation": "",
+    "rss": "https://www.rts.ch/la-1ere/programmes/le-12h30/podcast/?flux=rss"
+  },
+  {
+    "nom": "RTS : Le Journal de 6h30",
+    "orientation": "",
+    "rss": "https://www.rts.ch/la-1ere/programmes/le-journal-de-6h30/podcast/?flux=rss"
+  },
+  {
+    "nom": "RTS : Le Journal horaire",
+    "orientation": "",
+    "rss": "https://www.rts.ch/la-1ere/programmes/le-journal-horaire/podcast/?flux=rss"
+  },
+  {
+    "nom": "RTS : Le Point J",
+    "orientation": "",
+    "rss": "https://www.rts.ch/podcasts-originaux/programmes/le-point-j/podcast/?flux=rss"
+  },
+  {
+    "nom": "RTS : Mise au point",
+    "orientation": "",
+    "rss": "https://www.rts.ch/emissions/mise-au-point/podcasts/?format=rss/podcast"
+  },
+  {
+    "nom": "RTS : monde",
+    "orientation": "",
+    "rss": "https://www.rts.ch/info/monde/?format=rss/news"
+  },
+  {
+    "nom": "RTS : Revue de presse",
+    "orientation": "",
+    "rss": "https://www.rts.ch/la-1ere/programmes/revue-de-presse/podcast/?flux=rss"
+  },
+  {
+    "nom": "RTS : Tout un monde",
+    "orientation": "",
+    "rss": "https://feeds.audiomeans.fr/feed/e6c1285d-e4ba-4f4c-8403-7ba929d7ab92.xml"
+  },
+  {
+    "nom": "Slate : bluesky",
+    "orientation": "",
+    "rss": "https://bsky.app/profile/did:plc:o26ppwqjh6e3bxfvn73mjh4v/rss"
+  },
+  {
+    "nom": "Sud Ouest : bluesky",
+    "orientation": "",
+    "rss": "https://bsky.app/profile/did:plc:qtupmmogj72y37n7pl4u736w/rss"
+  },
+  {
+    "nom": "TéléPaese : bluesky",
+    "orientation": "",
+    "rss": "https://bsky.app/profile/did:plc:osnrofn5i3zaas2ydvdc6xql/rss"
+  },
+  {
+    "nom": "Taranis",
+    "orientation": "",
+    "rss": "https://taranis.news/feed/"
+  },
+  {
+    "nom": "TF1 : c'est un complot",
+    "orientation": "",
+    "rss": "https://feeds.audiomeans.fr/feed/5f226c32-2019-46f0-a65c-afe5bae72618.xml"
+  },
+  {
+    "nom": "TF1 : flipboard",
+    "orientation": "",
+    "rss": "https://flipboard.com/@TF1Info.rss"
+  },
+  {
+    "nom": "TF1 : Sept à Huit : vidéo",
+    "orientation": "",
+    "rss": "https://www.emissionreplay.fr/sept-a-huit/rss.xml"
+  },
+  {
+    "nom": "Tribune de Genève",
+    "orientation": "",
+    "rss": "https://partner-feeds.publishing.tamedia.ch/rss/tdg/ticker"
+  },
+  {
+    "nom": "Tribune de Genève : monde",
+    "orientation": "",
+    "rss": "https://partner-feeds.publishing.tamedia.ch/rss/tdg/monde"
+  },
+  {
+    "nom": "Tribune de Genève : opinion",
+    "orientation": "",
+    "rss": "https://partner-feeds.publishing.tamedia.ch/rss/tdg/opinion"
+  },
+  {
+    "nom": "TSA - Tout Sur l'Algérie : international",
+    "orientation": "",
+    "rss": "https://www.tsa-algerie.com/category/international/feed/"
+  },
+  {
+    "nom": "TV5 : une",
+    "orientation": "",
+    "rss": "https://information.tv5monde.com/rsstaxo/11"
+  },
+  {
+    "nom": "TV83",
+    "orientation": "",
+    "rss": "http://www.tv83.info/feed/"
+  },
+  {
+    "nom": "TVA Nouvelles : actualités",
+    "orientation": "",
+    "rss": "https://www.tvanouvelles.ca/rss.xml"
+  },
+  {
+    "nom": "VL Média",
+    "orientation": "",
+    "rss": "https://vl-media.fr/feed/"
+  },
+  {
+    "nom": "VL Média : international",
+    "orientation": "",
+    "rss": "https://vl-media.fr/categories/international/feed/"
+  },
+  {
+    "nom": "VL Média : régions france",
+    "orientation": "",
+    "rss": "https://vl-media.fr/categories/france/regions-france/feed/"
+  },
+  {
+    "nom": "VL Média : société",
+    "orientation": "",
+    "rss": "https://vl-media.fr/categories/france/societe/feed/"
+  },
+  {
+    "nom": "Vosges Matin : fil info",
+    "orientation": "",
+    "rss": "https://www.vosgesmatin.fr/fil-info/rss"
+  },
+  {
+    "nom": "Vosges Matin : toute l'actualité",
+    "orientation": "",
+    "rss": "https://www.vosgesmatin.fr/rss"
+  },
+  {
+    "nom": "Yonhap : international",
+    "orientation": "",
+    "rss": "https://fr.yna.co.kr/RSS/international.xml"
   }
 ]

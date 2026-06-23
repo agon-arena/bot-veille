@@ -20,6 +20,7 @@ const FILES_TO_SYNC = [
   "auto-collect-config.json",
   "auto-collect-certamen-config.json",
   "auto-publish-config.json",
+  "auto-publish-certamen-config.json",
   "youtube-chaines.json",
   "medias.json",
   "youtube-chaines-certamen.json",
@@ -71,6 +72,7 @@ async function uploadAll() {
       const content = fs.readFileSync(localPath, "utf8");
       const { error } = await supabase.storage.from(BUCKET).upload(filename, content, {
         contentType: "application/json",
+        cacheControl: "0",
         upsert: true,
       });
       if (error) console.warn(`[storage-sync] Erreur upload ${filename}:`, error.message);
