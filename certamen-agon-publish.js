@@ -21,7 +21,7 @@
 const fs = require("fs");
 const path = require("path");
 const { getCheckedCertamenPayloadsPreview, filterPublishableCertamenPayloads } = require("./certamen-payload-validation");
-const { persistAndScheduleCertamenIdeas, broadcastCertamenDailyPush } = require("./certamen-ideas-seed");
+const { persistAndScheduleCertamenIdeas } = require("./certamen-ideas-seed");
 const { loginAgonAdminForCertamen } = require("./certamen-agon-admin-auth");
 
 const AGON_URL = (process.env.AGON_URL || "http://localhost:3001").trim();
@@ -235,15 +235,77 @@ async function publishReadyCertamenPayloadsToAgon(options = {}) {
     persistAndScheduleCertamenIdeas(ideasEntries);
   }
 
-  if (result.publishedCount > 0) {
-    await broadcastCertamenDailyPush();
-  }
+  // Pas de notification push pour Certamen, contrairement à la veille mixte — demande
+  // explicite : seules les idées + voix sont reproduites, pas le broadcast.
 
   return result;
+}
+
+// Pendant à usage unique de publishReadyCertamenPayloadsToAgon : utilisé par le bouton
+// individuel ".agon-btn" et par "Tout générer" sur /certamen (cf. POST /certamen/send-to-agon
+// dans server.js). storySelection est toujours forcé à null, même si le client en envoie
+// un — Certamen ne crée jamais de bulle actu, quelle que soit l'origine de l'appel.
+async function publishSingleCertamenPayloadToAgon(rawPayload) {
+  const question = String(rawPayload.question || "").trim().slice(0, 110);
+  if (!question) throw new Error("question manquante");
+
+  const arenaMode = String(rawPayload.arenaMode || "").trim() === "libre" ? "libre" : "positions";
+  const payload = {
+    subject: rawPayload.subject || question,
+    question,
+    positionA: arenaMode === "libre" ? "" : String(rawPayload.positionA || "").trim().slice(0, 55),
+    positionB: arenaMode === "libre" ? "" : String(rawPayload.positionB || "").trim().slice(0, 55),
+    theme: rawPayload.theme || "",
+    resume: rawPayload.resume || "",
+    sources: rawPayload.sources || "",
+    links: Array.isArray(rawPayload.links) ? rawPayload.links : [],
+    storySelection: null,
+    arenaMode
+  };
+
+  if (wasAlreadySentToAgon(payload.question)) {
+    return { ok: true, skipped: true, reason: "already_sent" };
+  }
+
+  const data = await publishOnePayloadToAgon(payload);
+  const debateId = data.id || data.debateId || null;
+
+  if (debateId) {
+    await tryAttachExtraSources(debateId, payload.links);
+  }
+
+  appendSentToAgonForCertamen({
+    subject: payload.subject,
+    question: payload.question,
+    positionA: payload.positionA,
+    positionB: payload.positionB,
+    theme: payload.theme,
+    resume: payload.resume,
+    sources: payload.sources,
+    links: payload.links,
+    storySelection: null,
+    arenaMode: payload.arenaMode,
+    origin: "certamen",
+    creatorKey: CERTAMEN_CREATOR_KEY,
+    debateId,
+    sentAt: new Date().toISOString()
+  });
+
+  if (debateId) {
+    persistAndScheduleCertamenIdeas([{
+      debateId,
+      question: payload.question,
+      positionA: payload.positionA,
+      positionB: payload.positionB
+    }]);
+  }
+
+  return { ok: true, debateId };
 }
 
 module.exports = {
   MAX_PUBLISH_SUBJECTS,
   CERTAMEN_CREATOR_KEY,
-  publishReadyCertamenPayloadsToAgon
+  publishReadyCertamenPayloadsToAgon,
+  publishSingleCertamenPayloadToAgon
 };

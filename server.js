@@ -8,7 +8,7 @@ const {
 } = require("./certamen-auto-collect");
 const { renderAutoCollectCertamenWidgetHtml } = require("./certamen-auto-collect-widget");
 const { getCheckedCertamenPayloadsPreview, filterPublishableCertamenPayloads } = require("./certamen-payload-validation");
-const { publishReadyCertamenPayloadsToAgon } = require("./certamen-agon-publish");
+const { publishReadyCertamenPayloadsToAgon, publishSingleCertamenPayloadToAgon } = require("./certamen-agon-publish");
 const { resumeCertamenPendingIdeasOnStartup } = require("./certamen-ideas-seed");
 const { renderCertamenPublishWidgetHtml } = require("./certamen-publish-widget");
 
@@ -29,6 +29,7 @@ const AGON_URL = (process.env.AGON_URL || "http://localhost:3001").trim();
 const SENT_TO_AGON_FILE = path.join(__dirname, "sent-to-agon.json");
 const AUTO_COLLECT_FILE = path.join(__dirname, "auto-collect-config.json");
 const AUTO_PUBLISH_FILE = path.join(__dirname, "auto-publish-config.json");
+const AUTO_PUBLISH_CERTAMEN_FILE = path.join(__dirname, "auto-publish-certamen-config.json");
 const PENDING_IDEAS_FILE = path.join(__dirname, "pending-ideas.json");
 let autoCollectTimers = [];
 
@@ -68,6 +69,37 @@ const REUNION_UTC_OFFSET_HOURS = 4;
 function loadAutoPublishConfig() {
   try { return JSON.parse(fs.readFileSync(AUTO_PUBLISH_FILE, "utf8")); }
   catch { return { enabled: false }; }
+}
+
+function loadAutoPublishCertamenConfig() {
+  try { return JSON.parse(fs.readFileSync(AUTO_PUBLISH_CERTAMEN_FILE, "utf8")); }
+  catch { return { enabled: false }; }
+}
+
+// Même logique que waitForVeilleMixteIdle, mais sur le worker de collecte Certamen.
+async function waitForCertamenIdle(maxWaitMs = 25 * 60 * 1000, pollIntervalMs = 5000) {
+  const start = Date.now();
+  while (Date.now() - start < maxWaitMs) {
+    try {
+      const r = await fetch("http://127.0.0.1:3002/certamen/progress");
+      const p = await r.json();
+      if (!p.running) return true;
+    } catch (err) {
+      // erreur transitoire : on continue à essayer jusqu'au délai max
+    }
+    await new Promise(resolve => setTimeout(resolve, pollIntervalMs));
+  }
+  return false;
+}
+
+async function runAutoPublishCertamenPipeline() {
+  console.log("[auto-publish-certamen] Démarrage de la publication des sujets ready...");
+  try {
+    const result = await publishReadyCertamenPayloadsToAgon({});
+    console.log(`[auto-publish-certamen] ${result.publishedCount}/${result.readyCount} sujet(s) publiés sur Agôn`);
+  } catch (err) {
+    console.error("[auto-publish-certamen] Erreur :", err.message);
+  }
 }
 
 // /refresh démarre la collecte en tâche de fond sur le worker (port 3002) et répond
@@ -3568,6 +3600,18 @@ app.get("/admin", (req, res) => {
     </details>`}
   </div>
 
+  <h3 style="margin:24px 0 10px;">📤 Publication auto</h3>
+  <div class="ac-panel">
+    <div class="ac-toggle-row">
+      <label class="ac-toggle">
+        <input type="checkbox" id="ap-enabled" onchange="onApToggle()">
+        <span class="ac-slider"></span>
+      </label>
+      <span class="ac-toggle-label">Publication automatique sur Agôn</span>
+      <button id="ap-run-btn" onclick="runAutoPublishNow()" style="margin-left:12px;padding:4px 14px;border-radius:999px;border:1px solid #111;background:#111;color:#fff;font:inherit;font-size:0.82rem;cursor:pointer;">Lancer maintenant</button>
+    </div>
+  </div>
+
   </div>
 
   <!-- Onglet Certamen -->
@@ -3636,14 +3680,15 @@ app.get("/admin", (req, res) => {
     </details>`}
 
     <h3 style="margin:24px 0 10px;">📤 Publication auto</h3>
+    <p style="color:#555;font-size:0.85rem;margin-bottom:12px;">Ne publie que les sujets déjà cochés ("Cocher les 10" sur /certamen) et validés.</p>
     <div class="ac-panel">
       <div class="ac-toggle-row">
         <label class="ac-toggle">
-          <input type="checkbox" id="ap-enabled" onchange="onApToggle()">
+          <input type="checkbox" id="apc-enabled" onchange="onApcToggle()">
           <span class="ac-slider"></span>
         </label>
-        <span class="ac-toggle-label">Publication automatique sur Agôn</span>
-        <button id="ap-run-btn" onclick="runAutoPublishNow()" style="margin-left:12px;padding:4px 14px;border-radius:999px;border:1px solid #111;background:#111;color:#fff;font:inherit;font-size:0.82rem;cursor:pointer;">Lancer maintenant</button>
+        <span class="ac-toggle-label">Publication automatique sur Agôn (Certamen)</span>
+        <button id="apc-run-btn" onclick="runAutoPublishCertamenNow()" style="margin-left:12px;padding:4px 14px;border-radius:999px;border:1px solid #111;background:#111;color:#fff;font:inherit;font-size:0.82rem;cursor:pointer;">Lancer maintenant</button>
       </div>
     </div>
   </div>
@@ -3722,6 +3767,7 @@ async function init() {
   renderYoutubeCertamen();
   bindUnsavedFormWarning();
   await initAutoPublish();
+  await initAutoPublishCertamen();
 }
 
 function switchTab(name) {
@@ -3757,6 +3803,40 @@ async function runAutoPublishNow() {
     const r = await fetch('/api/auto-publish/run', { method: 'POST' });
     const d = await r.json();
     if (d.ok) showToast('Pipeline terminé ✓');
+    else showError('Erreur : ' + (d.error || 'inconnue'));
+  } catch (err) {
+    showError('Erreur réseau : ' + err.message);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Lancer maintenant';
+  }
+}
+
+async function initAutoPublishCertamen() {
+  const config = await fetch('/api/auto-publish-certamen').then(r => r.json());
+  document.getElementById('apc-enabled').checked = config.enabled;
+}
+
+async function onApcToggle() {
+  const enabled = document.getElementById('apc-enabled').checked;
+  try {
+    const r = await fetch('/api/auto-publish-certamen', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ enabled }) });
+    const d = await r.json();
+    if (d.ok) showToast(enabled ? 'Publication automatique Certamen activée ✓' : 'Publication automatique Certamen désactivée');
+    else showError('Erreur : ' + d.error);
+  } catch (err) {
+    showError('Erreur réseau : ' + err.message);
+  }
+}
+
+async function runAutoPublishCertamenNow() {
+  const btn = document.getElementById('apc-run-btn');
+  btn.disabled = true;
+  btn.textContent = 'En cours…';
+  try {
+    const r = await fetch('/api/auto-publish-certamen/run', { method: 'POST' });
+    const d = await r.json();
+    if (d.ok) showToast('Pipeline Certamen terminé ✓');
     else showError('Erreur : ' + (d.error || 'inconnue'));
   } catch (err) {
     showError('Erreur réseau : ' + err.message);
@@ -4793,9 +4873,34 @@ app.post("/certamen/publish-ready", requireMixteAuth, async (req, res) => {
   }
 });
 
+// Pendant Certamen de /send-to-agon : utilisé par le bouton individuel ".agon-btn" et par
+// "Tout générer" sur /certamen (cf. SEND_TO_AGON_ENDPOINT dans buildSubjectInteractionScriptHtml,
+// veille-mixte.js). Garantit le visuel "arène communauté" (creatorKey certamen-bot) au lieu
+// du chemin officiel veille mixte — jamais de bulle actu (storySelection forcé à null).
+app.post("/certamen/send-to-agon", requireMixteAuth, async (req, res) => {
+  try {
+    const result = await publishSingleCertamenPayloadToAgon(req.body || {});
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({ ok: false, error: err.message });
+  }
+});
+
 // ==================== AUTO-COLLECTE CERTAMEN ====================
 // Planification dédiée, séparée de l'auto-collecte veille mixte (cf. certamen-auto-collect.js).
-// Déclenche uniquement POST http://127.0.0.1:3002/certamen/refresh.
+// Déclenche POST http://127.0.0.1:3002/certamen/refresh ; la décision de publier ensuite
+// sur Agôn (auto-publish-certamen-config.json) est prise ici, pas dans certamen-auto-collect.js.
+
+async function onCertamenAutoCollectFinished() {
+  const autoPub = loadAutoPublishCertamenConfig();
+  if (!autoPub.enabled) return;
+  const finished = await waitForCertamenIdle();
+  if (finished) {
+    await runAutoPublishCertamenPipeline();
+  } else {
+    console.warn("[auto-collect-certamen] Délai d'attente dépassé, auto-publish Certamen annulé pour cette session.");
+  }
+}
 
 app.get("/api/auto-collect-certamen", (req, res) => {
   res.json(loadAutoCollectCertamenConfig());
@@ -4813,7 +4918,7 @@ app.post("/api/auto-collect-certamen", (req, res) => {
   const config = { enabled, times };
   try {
     saveAutoCollectCertamenConfig(config);
-    scheduleAutoCollectCertamen(config);
+    scheduleAutoCollectCertamen(config, onCertamenAutoCollectFinished);
     res.json({ ok: true });
   } catch (err) {
     res.status(500).json({ ok: false, error: err.message });
@@ -5393,6 +5498,36 @@ app.post("/api/auto-publish", (req, res) => {
   }
 });
 
+// ==================== PUBLICATION AUTOMATIQUE CERTAMEN SUR AGÔN ====================
+// Pendant de la section ci-dessus, mais pour Certamen : ne publie que les sujets déjà
+// cochés à la main ("Cocher les 10") et validés "ready" (cf. publishReadyCertamenPayloadsToAgon).
+// Le toggle décide si cette publication se déclenche automatiquement après chaque
+// collecte Certamen (cf. onCertamenAutoCollectFinished) ; le bouton "Lancer maintenant"
+// la déclenche immédiatement, indépendamment du toggle.
+
+app.post("/api/auto-publish-certamen/run", requireMixteAuth, async (req, res) => {
+  res.json({ ok: true });
+  runAutoPublishCertamenPipeline().catch(err => console.error("[auto-publish-certamen/run] Erreur :", err.message));
+});
+
+app.get("/api/auto-publish-certamen", (req, res) => {
+  res.json(loadAutoPublishCertamenConfig());
+});
+
+app.post("/api/auto-publish-certamen", (req, res) => {
+  const { enabled } = req.body || {};
+  if (typeof enabled !== "boolean") {
+    return res.status(400).json({ ok: false, error: "Paramètres invalides" });
+  }
+  const config = { enabled };
+  try {
+    fs.writeFileSync(AUTO_PUBLISH_CERTAMEN_FILE, JSON.stringify(config, null, 2), "utf8");
+    res.json({ ok: true });
+  } catch (err) {
+    res.status(500).json({ ok: false, error: err.message });
+  }
+});
+
 // ==================== FIN ROUTES CERTAMEN ====================
 
 app.get("/ping", (req, res) => {
@@ -5404,7 +5539,7 @@ storageSync.downloadAll().then(() => {
   const httpServer = app.listen(PORT, () => {
     console.log(`Serveur lancé sur le port ${PORT}`);
     scheduleAutoCollect(loadAutoCollectConfig());
-    scheduleAutoCollectCertamen(loadAutoCollectCertamenConfig());
+    scheduleAutoCollectCertamen(loadAutoCollectCertamenConfig(), onCertamenAutoCollectFinished);
     resumePendingIdeasOnStartup();
     resumeCertamenPendingIdeasOnStartup();
     storageSync.startPeriodicSync();

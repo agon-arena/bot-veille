@@ -200,30 +200,7 @@ function resumeCertamenPendingIdeasOnStartup() {
   }
 }
 
-// Notification push générique "arènes du jour" — identique à celle déjà envoyée par le
-// pipeline veille mixte après une publication. Best-effort, jamais bloquant.
-async function broadcastCertamenDailyPush() {
-  const adminHeaders = await loginAgonAdminForCertamen("certamen-push");
-  if (!adminHeaders) return;
-  try {
-    const pushRes = await fetch(`${AGON_URL}/api/admin/push/broadcast-daily`, {
-      method: "POST",
-      headers: adminHeaders
-    });
-    if (!pushRes.ok) {
-      console.warn("[certamen-push] Échec push arènes du jour :", pushRes.status);
-      return;
-    }
-    const pushData = await pushRes.json().catch(() => ({}));
-    const sent = (pushData.results || []).filter((r) => r.status === "sent").length;
-    console.log(`[certamen-push] Notification envoyée à ${sent}/${pushData.total || "?"} abonné(s)`);
-  } catch (err) {
-    console.warn("[certamen-push] Erreur push arènes du jour :", err.message);
-  }
-}
-
 module.exports = {
   persistAndScheduleCertamenIdeas,
-  resumeCertamenPendingIdeasOnStartup,
-  broadcastCertamenDailyPush
+  resumeCertamenPendingIdeasOnStartup
 };

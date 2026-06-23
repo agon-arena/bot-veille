@@ -1,0 +1,32 @@
+[
+  {
+    "debateId": 975,
+    "question": "Faut-il sanctionner sévèrement les autorités dans l'affaire Lyhanna ?",
+    "positionA": "Sanctions strictes pour responsables",
+    "positionB": "Sanctions limitées pour préserver institutions",
+    "id": "975-1782211359625-k8me3o",
+    "runAt": "2026-06-23T10:52:39.625Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 976,
+    "question": "Faut-il revoir la méthode de comptage des morts liées à la canicule ?",
+    "positionA": "Maintenir les méthodes actuelles",
+    "positionB": "Réformer pour plus de précision et transparence",
+    "id": "976-1782211359625-lvdfbc",
+    "runAt": "2026-06-23T10:52:39.625Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 977,
+    "question": "Faut-il instaurer l'imprescriptibilité des violences sexuelles dans l'UE ?",
+    "positionA": "Allonger les délais de prescription",
+    "positionB": "Maintenir une limite de prescription",
+    "id": "977-1782211359625-lvfaba",
+    "runAt": "2026-06-23T10:52:39.625Z",
+    "status": "done",
+    "attempts": 0
+  }
+]

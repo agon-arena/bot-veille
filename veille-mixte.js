@@ -1958,9 +1958,14 @@ function escapeHtml(text) {
 
 function buildSubjectInteractionScriptHtml(opts = {}) {
   const topTenSorts = opts.topTenSorts || ["ranked"];
+  // Sur /certamen, l'envoi vers Agôn (bouton individuel et "Tout générer") doit utiliser
+  // le chemin Certamen dédié (visuel arène communauté, certamen-bot) et jamais le chemin
+  // veille mixte officiel (/send-to-agon → is_official=true) — cf. certamen-agon-publish.js.
+  const sendToAgonEndpoint = opts.certamen ? "/certamen/send-to-agon" : "/send-to-agon";
   return `
   <script>
     const TOP10_BAR_SORTS = ${JSON.stringify(topTenSorts)};
+    const SEND_TO_AGON_ENDPOINT = ${JSON.stringify(sendToAgonEndpoint)};
     const AGON_THEMES = ${JSON.stringify(AGON_THEMES)};
     const AGON_THEME_ALIASES = ${JSON.stringify(AGON_THEME_ALIASES)};
     function normalizeAgonTheme(theme) {
@@ -3380,7 +3385,7 @@ function buildSubjectInteractionScriptHtml(opts = {}) {
           };
         }).filter(l => l.url);
 
-        const res = await fetch("/send-to-agon", {
+        const res = await fetch(SEND_TO_AGON_ENDPOINT, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ subject, sessionLabel, question, positionA, positionB, theme, resume, sources, links, storySelection, keywords, politicalOrientation: btn.dataset.politicalOrientation ? JSON.parse(btn.dataset.politicalOrientation) : null })
@@ -3953,7 +3958,7 @@ function buildSubjectInteractionScriptHtml(opts = {}) {
         const dateMatch = (item.querySelector("small")?.textContent || "").match(/(\\d{2}\\/\\d{2}\\/\\d{4})/);
         return { title: item.querySelector("a")?.textContent.trim() || "", url: item.dataset.link || "", source: item.querySelector("strong")?.textContent.trim() || "", type: item.dataset.type || "article", date: dateMatch ? dateMatch[1] : "", checked: item.querySelector('input[type="checkbox"]')?.checked ?? true };
       }).filter(l => l.url);
-      const sendRes = await fetchWithTimeout("/send-to-agon", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ subject: subjectTitle, sessionLabel, question: finalQuestion, positionA: finalPosA, positionB: finalPosB, theme, resume: resumeForSend, sources: agonBtnFinal.dataset.sources, links, storySelection, keywords, politicalOrientation: agonBtnFinal.dataset.politicalOrientation ? JSON.parse(agonBtnFinal.dataset.politicalOrientation) : null, arenaMode }) });
+      const sendRes = await fetchWithTimeout(SEND_TO_AGON_ENDPOINT, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ subject: subjectTitle, sessionLabel, question: finalQuestion, positionA: finalPosA, positionB: finalPosB, theme, resume: resumeForSend, sources: agonBtnFinal.dataset.sources, links, storySelection, keywords, politicalOrientation: agonBtnFinal.dataset.politicalOrientation ? JSON.parse(agonBtnFinal.dataset.politicalOrientation) : null, arenaMode }) });
       if (!sendRes.ok) throw new Error("Erreur envoi Agôn");
       agonBtnFinal.classList.add("sent");
       agonBtnFinal.textContent = "✓ Envoyé";
@@ -7067,7 +7072,7 @@ function generateCertamenHtml(sessions) {
       : `<div class="empty">Aucune session Certamen générée pour le moment.</div>`
   }
 
-  ${buildSubjectInteractionScriptHtml({ topTenSorts: ["ranked", "score"] })}
+  ${buildSubjectInteractionScriptHtml({ topTenSorts: ["ranked", "score"], certamen: true })}
   <script>
     var ptrIsRefreshing = false;
 

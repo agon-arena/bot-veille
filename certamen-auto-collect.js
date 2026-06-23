@@ -1,7 +1,9 @@
 // Auto-collecte Certamen : planification horaire dédiée, indépendante de l'auto-collecte
 // veille mixte (AUTO_COLLECT_FILE / scheduleAutoCollect dans server.js). Déclenche
-// uniquement POST http://127.0.0.1:3002/certamen/refresh — ne touche ni à l'envoi vers
-// Agôn, ni aux bulles actu, ni à la génération d'article.
+// uniquement POST http://127.0.0.1:3002/certamen/refresh — ne touche ni aux bulles actu,
+// ni à la génération d'article. L'envoi vers Agôn n'est jamais décidé ici : ce module
+// expose juste un hook optionnel (onAfterRefresh), appelé une fois la collecte lancée ;
+// c'est server.js qui décide d'attendre la fin et de publier, selon auto-publish-certamen-config.json.
 
 const fs = require("fs");
 const path = require("path");
@@ -26,7 +28,7 @@ function saveAutoCollectCertamenConfig(config) {
   fs.writeFileSync(AUTO_COLLECT_CERTAMEN_FILE, JSON.stringify(config, null, 2), "utf8");
 }
 
-function scheduleOneAutoCollectCertamen(timeStr) {
+function scheduleOneAutoCollectCertamen(timeStr, onAfterRefresh) {
   const [h, m] = timeStr.split(":").map(Number);
   const now = new Date();
   // Calcule la prochaine occurrence de h:m heure de la Réunion, indépendamment
@@ -48,6 +50,7 @@ function scheduleOneAutoCollectCertamen(timeStr) {
         if (r.ok) {
           const body = await r.json().catch(() => ({}));
           console.log(`[auto-collect-certamen] POST /certamen/refresh : succès (${body.running ? "déjà en cours" : "démarré"})`);
+          if (typeof onAfterRefresh === "function") onAfterRefresh();
         } else {
           const body = await r.text().catch(() => "");
           console.error(`[auto-collect-certamen] POST /certamen/refresh a échoué (${r.status}) : ${body}`);
@@ -55,7 +58,7 @@ function scheduleOneAutoCollectCertamen(timeStr) {
       } catch (err) {
         console.error(`[auto-collect-certamen] Erreur : ${err.message}`);
       }
-      scheduleOneAutoCollectCertamen(timeStr);
+      scheduleOneAutoCollectCertamen(timeStr, onAfterRefresh);
     }
   }, delay);
 
@@ -64,14 +67,14 @@ function scheduleOneAutoCollectCertamen(timeStr) {
   console.log(`[auto-collect-certamen] Heure programmée ${timeStr} → prochaine collecte le ${nextDate.toLocaleDateString("fr-FR")} à ${nextDate.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}`);
 }
 
-function scheduleAutoCollectCertamen(config) {
+function scheduleAutoCollectCertamen(config, onAfterRefresh) {
   certamenAutoCollectTimers.forEach((t) => clearTimeout(t));
   certamenAutoCollectTimers = [];
   if (!config.enabled || !Array.isArray(config.times) || !config.times.length) {
     console.log("[auto-collect-certamen] Auto-collecte Certamen désactivée.");
     return;
   }
-  config.times.forEach((t) => scheduleOneAutoCollectCertamen(t));
+  config.times.forEach((t) => scheduleOneAutoCollectCertamen(t, onAfterRefresh));
 }
 
 module.exports = {
