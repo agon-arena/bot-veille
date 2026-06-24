@@ -768,5 +768,115 @@
     "runAt": "2026-06-23T12:22:31.415Z",
     "status": "done",
     "attempts": 0
+  },
+  {
+    "debateId": 1002,
+    "question": "Faut-il financer une association aux résultats jugés insuffisants ?",
+    "positionA": "Maintenir le financement pour soutenir l'association",
+    "positionB": "Réduire le financement face aux résultats insuffisants",
+    "id": "1002-1782277718435-1vr2hi",
+    "runAt": "2026-06-24T05:18:38.435Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1003,
+    "question": "Le Parlement européen avance vers l'euro numérique",
+    "positionA": "",
+    "positionB": "",
+    "id": "1003-1782277718436-he4b7f",
+    "runAt": "2026-06-24T05:18:38.435Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1004,
+    "question": "« Seuls les rebelles » : une romance dans un Beyrouth reconstitué",
+    "positionA": "",
+    "positionB": "",
+    "id": "1004-1782277718436-lzmfir",
+    "runAt": "2026-06-24T05:18:38.435Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1005,
+    "question": "Le gouvernement propose de relouer les logements classés G sous conditions",
+    "positionA": "",
+    "positionB": "",
+    "id": "1005-1782277718436-47f3q9",
+    "runAt": "2026-06-24T05:18:38.435Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1006,
+    "question": "Dialogue avec les talibans : pragmatisme ou compromission ?",
+    "positionA": "Compromission des droits humains",
+    "positionB": "Pragmatisme pour gestion migratoire",
+    "id": "1006-1782277718436-rv1k8d",
+    "runAt": "2026-06-24T05:18:38.435Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1007,
+    "question": "Inspections urgentes sur 16 Airbus A380 après découverte de fissures",
+    "positionA": "",
+    "positionB": "",
+    "id": "1007-1782277718436-przlr3",
+    "runAt": "2026-06-24T05:18:38.435Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1008,
+    "question": "L'autonomie corse menace-t-elle l'unité nationale ?",
+    "positionA": "Renforcer l'identité corse",
+    "positionB": "Préserver l'unité nationale",
+    "id": "1008-1782277718436-v8cn16",
+    "runAt": "2026-06-24T05:18:38.435Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1009,
+    "question": "Retrait symbolique des troupes bon ou mauvais pour la diplomatie",
+    "positionA": "Renforcer la diplomatie par le retrait",
+    "positionB": "Maintenir les troupes pour négocier fermement",
+    "id": "1009-1782277718436-afpl0i",
+    "runAt": "2026-06-24T05:18:38.435Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1010,
+    "question": "Canicule en France : vigilance rouge et records de chaleur",
+    "positionA": "",
+    "positionB": "",
+    "id": "1010-1782277718436-nffhwm",
+    "runAt": "2026-06-24T05:18:38.435Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1011,
+    "question": "Marc Bloch honoré au Panthéon lors d'une cérémonie officielle",
+    "positionA": "",
+    "positionB": "",
+    "id": "1011-1782277718436-gop067",
+    "runAt": "2026-06-24T05:18:38.435Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1012,
+    "question": "Didier Deschamps quitte le Mondial 2026 après le décès de sa mère",
+    "positionA": "",
+    "positionB": "",
+    "id": "1012-1782277718436-x55mpt",
+    "runAt": "2026-06-24T05:18:38.435Z",
+    "status": "done",
+    "attempts": 0
   }
 ]
