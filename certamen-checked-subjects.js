@@ -34,6 +34,15 @@ function loadLatestCertamenSession() {
   }
 }
 
+function loadAllCertamenSessions() {
+  try {
+    const sessions = JSON.parse(fs.readFileSync(CERTAMEN_HISTORY_FILE, "utf8"));
+    return Array.isArray(sessions) ? sessions : [];
+  } catch {
+    return [];
+  }
+}
+
 function getCheckedCertamenSubjects() {
   const latestSession = loadLatestCertamenSession();
   if (!latestSession || !Array.isArray(latestSession.subjects) || !latestSession.subjects.length) {
@@ -61,16 +70,23 @@ function getCheckedCertamenSubjects() {
 // Variante pilotée par le client (bouton "Tout générer" sur /certamen) : reçoit une liste
 // explicite de titres (les sujets cochés/affichés à l'écran) au lieu de dériver la
 // sélection de saved-subjects.json. Même source de vérité pour les champs IA
-// (subject.certamen.* de la dernière session), même cap à MAX_CHECKED_SUBJECTS.
+// (subject.certamen.*), mais cherche dans TOUTES les sessions conservées, pas seulement la
+// plus récente : l'auto-collecte Certamen tourne en tâche de fond et peut remplacer la
+// "dernière session" entre le chargement de la page côté client et le clic sur le bouton —
+// un sujet encore affiché à l'écran ne doit pas devenir "introuvable" pour autant.
 function getCertamenSubjectsByTitles(titles) {
-  const latestSession = loadLatestCertamenSession();
-  if (!latestSession || !Array.isArray(latestSession.subjects) || !latestSession.subjects.length) {
-    return [];
+  const sessions = loadAllCertamenSessions();
+  if (!sessions.length) return [];
+
+  // On part de la session la plus ancienne vers la plus récente afin que la version la
+  // plus à jour d'un sujet (si son titre est identique entre deux sessions) gagne.
+  const certamenSubjectsByTitle = new Map();
+  for (let i = sessions.length - 1; i >= 0; i -= 1) {
+    for (const s of Array.isArray(sessions[i].subjects) ? sessions[i].subjects : []) {
+      certamenSubjectsByTitle.set(String(s.subject || "").trim(), s);
+    }
   }
 
-  const certamenSubjectsByTitle = new Map(
-    latestSession.subjects.map((s) => [String(s.subject || "").trim(), s])
-  );
   const savedByTitle = new Map(
     loadSavedSubjectsForCertamen().map((s) => [String(s.subject || "").trim(), s])
   );
