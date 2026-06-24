@@ -23,8 +23,6 @@ const FILES_TO_SYNC = [
   "auto-publish-certamen-config.json",
   "youtube-chaines.json",
   "medias.json",
-  "youtube-chaines-certamen.json",
-  "medias-certamen.json",
   "pending-ideas.json",
   "certamen-pending-ideas.json",
 ];
