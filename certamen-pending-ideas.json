@@ -58,5 +58,75 @@
     "runAt": "2026-06-24T04:53:24.277Z",
     "status": "done",
     "attempts": 0
+  },
+  {
+    "debateId": 1013,
+    "question": "Les géants de l'IA doivent-ils publier l'empreinte écologique de leurs activités ?",
+    "positionA": "Oui, pour plus de transparence et responsabilité",
+    "positionB": "Non, cela freine l'innovation et la compétitivité",
+    "id": "1013-1782279029128-duor68",
+    "runAt": "2026-06-24T05:40:29.127Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1014,
+    "question": "Les rédactions doivent-elles intégrer ou limiter l'usage de l'IA générative ?",
+    "positionA": "Intégrer l'IA pour moderniser les médias",
+    "positionB": "Limiter l'IA pour protéger l'emploi journalistique",
+    "id": "1014-1782279029128-10guh9",
+    "runAt": "2026-06-24T05:40:29.127Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1015,
+    "question": "L’UE doit-elle négocier avec les talibans pour gérer les expulsions d'Afghans ?",
+    "positionA": "Négocier avec les talibans pour gérer les retours",
+    "positionB": "Refuser toute négociation avec les talibans",
+    "id": "1015-1782279029128-7hsftm",
+    "runAt": "2026-06-24T05:40:29.127Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1016,
+    "question": "La Corse doit-elle obtenir une autonomie renforcée au sein de la République française ?",
+    "positionA": "Pour une autonomie renforcée",
+    "positionB": "Pour le maintien de l'unité nationale",
+    "id": "1016-1782279029128-ox4o28",
+    "runAt": "2026-06-24T05:40:29.127Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1017,
+    "question": "Les nations celtes du Royaume-Uni doivent-elles devenir indépendantes après le Brexit ?",
+    "positionA": "Pour l'indépendance des nations celtes",
+    "positionB": "Pour le maintien de l'union du Royaume-Uni",
+    "id": "1017-1782279029128-xir10w",
+    "runAt": "2026-06-24T05:40:29.127Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1018,
+    "question": "Le système pénal est-il fondamentalement racial, patriarcal et capitaliste ?",
+    "positionA": "Le système pénal est structurellement discriminant",
+    "positionB": "Le système pénal est impartial et nécessaire",
+    "id": "1018-1782279029128-dmdqur",
+    "runAt": "2026-06-24T05:40:29.127Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1019,
+    "question": "Faut-il dialoguer avec les talibans pour gérer le retour des exilés afghans ?",
+    "positionA": "Dialoguer avec les talibans",
+    "positionB": "Refuser tout dialogue avec les talibans",
+    "id": "1019-1782279029128-rbdqao",
+    "runAt": "2026-06-24T05:40:29.127Z",
+    "status": "done",
+    "attempts": 0
   }
 ]

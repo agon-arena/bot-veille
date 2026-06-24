@@ -8,6 +8,7 @@ const fs = require("fs");
 const path = require("path");
 const OpenAI = require("openai");
 const { AGON_URL, loginAgonAdminForCertamen } = require("./certamen-agon-admin-auth");
+const { enqueueIdeaJob } = require("./idea-post-queue");
 
 const openai = process.env.OPENAI_API_KEY ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY }) : null;
 
@@ -15,6 +16,12 @@ const PENDING_IDEAS_FILE = path.join(__dirname, "certamen-pending-ideas.json");
 const IDEAS_DELAY_MS = 10 * 60 * 1000; // même délai que la veille mixte
 const MAX_IDEA_ATTEMPTS = 3;
 const IDEA_RETRY_DELAY_MS = 5 * 60 * 1000;
+
+// Retry ciblé sur une idée précise (jamais re-générée, jamais republiée si elle est
+// déjà passée) quand Agôn répond "Trop de requêtes" — évite d'abandonner toute la
+// série pour un seul échec de rythme. Identique à la veille mixte (server.js).
+const IDEA_POST_MAX_ATTEMPTS = 3;
+const IDEA_POST_RATE_LIMIT_WAIT_MS = 15000;
 
 function loadPendingIdeas() {
   try {
@@ -38,6 +45,7 @@ function buildCurrentDateContext() {
 // est dupliquée dans ce module dédié Certamen.
 async function generateAndPostCertamenIdeas(debateId, question, positionA, positionB, adminHeaders) {
   if (!openai) { console.warn("[certamen-idées-ia] OPENAI_API_KEY absent"); return false; }
+  console.log(`[certamen-idées-ia] Débat ${debateId} — début génération des idées`);
   const isPositions = !!(positionA && positionB);
   const N = Math.floor(Math.random() * 3) + 7;
 
@@ -93,46 +101,67 @@ Réponds en JSON : { "ideas": [ { "qualite": "bonne" ou "moyenne" ou "mauvaise",
     return false;
   }
 
-  console.log(`[certamen-idées-ia] ${ideas.length} idée(s) générée(s) pour débat ${debateId}`);
+  console.log(`[certamen-idées-ia] Débat ${debateId} — ${ideas.length} idée(s) générée(s), publication séquentielle...`);
 
   for (let i = 0; i < ideas.length; i++) {
     const idea = ideas[i];
     const authorKey = Math.random().toString(36).slice(2, 14);
-    try {
-      const r = await fetch(`${AGON_URL}/api/arguments`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          debate_id: debateId,
-          side: isPositions ? (idea.side || "A") : (Math.random() < 0.5 ? "A" : "B"),
-          title: String(idea.title || "").slice(0, 180),
-          body: String(idea.body || "").slice(0, 2500),
-          authorKey
-        })
-      });
-      if (!r.ok) {
-        const txt = await r.text().catch(() => "");
-        console.warn(`[certamen-idées-ia] Échec idée ${i + 1} :`, txt);
-      } else {
-        const { id: argId } = await r.json().catch(() => ({}));
-        const isMauvaise = idea.qualite === "mauvaise";
-        const votes = isMauvaise
-          ? Math.floor(Math.random() * 26) + 5
-          : Math.floor(Math.random() * 35) + 45;
-        console.log(`[certamen-idées-ia] ✓ Idée ${i + 1}/${ideas.length} (${idea.qualite || "mauvaise"}, camp ${idea.side || "libre"}) → ${votes} voix`);
-        if (argId && adminHeaders) {
-          await fetch(`${AGON_URL}/api/admin/argument/${argId}/set-votes`, {
-            method: "POST",
-            headers: adminHeaders,
-            body: JSON.stringify({ votes })
-          }).catch(() => {});
+    console.log(`[certamen-idées-ia] Débat ${debateId} — idée ${i + 1}/${ideas.length} : envoi...`);
+
+    let posted = false;
+    for (let attempt = 1; attempt <= IDEA_POST_MAX_ATTEMPTS && !posted; attempt++) {
+      try {
+        const r = await fetch(`${AGON_URL}/api/arguments`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            debate_id: debateId,
+            side: isPositions ? (idea.side || "A") : (Math.random() < 0.5 ? "A" : "B"),
+            title: String(idea.title || "").slice(0, 180),
+            body: String(idea.body || "").slice(0, 2500),
+            authorKey
+          })
+        });
+        if (r.ok) {
+          posted = true;
+          const { id: argId } = await r.json().catch(() => ({}));
+          const isMauvaise = idea.qualite === "mauvaise";
+          const votes = isMauvaise
+            ? Math.floor(Math.random() * 26) + 5
+            : Math.floor(Math.random() * 35) + 45;
+          console.log(`[certamen-idées-ia] ✓ Débat ${debateId} — idée ${i + 1}/${ideas.length} publiée (${idea.qualite || "mauvaise"}, camp ${idea.side || "libre"}) → ${votes} voix`);
+          if (argId && adminHeaders) {
+            await fetch(`${AGON_URL}/api/admin/argument/${argId}/set-votes`, {
+              method: "POST",
+              headers: adminHeaders,
+              body: JSON.stringify({ votes })
+            }).catch(() => {});
+          }
+        } else {
+          const txt = await r.text().catch(() => "");
+          const isRateLimited = /trop de requ[êe]tes/i.test(txt);
+          if (isRateLimited && attempt < IDEA_POST_MAX_ATTEMPTS) {
+            console.warn(`[certamen-idées-ia] Débat ${debateId} — idée ${i + 1}/${ideas.length} : rate-limit Agôn, attente ${IDEA_POST_RATE_LIMIT_WAIT_MS / 1000}s avant nouvelle tentative (${attempt}/${IDEA_POST_MAX_ATTEMPTS})`);
+            await new Promise((res) => setTimeout(res, IDEA_POST_RATE_LIMIT_WAIT_MS));
+          } else {
+            console.warn(`[certamen-idées-ia] Débat ${debateId} — idée ${i + 1}/${ideas.length} : échec (tentative ${attempt}/${IDEA_POST_MAX_ATTEMPTS}) :`, txt);
+            break;
+          }
+        }
+      } catch (err) {
+        console.warn(`[certamen-idées-ia] Débat ${debateId} — idée ${i + 1}/${ideas.length} : erreur réseau (tentative ${attempt}/${IDEA_POST_MAX_ATTEMPTS}) :`, err.message);
+        if (attempt < IDEA_POST_MAX_ATTEMPTS) {
+          await new Promise((res) => setTimeout(res, IDEA_POST_RATE_LIMIT_WAIT_MS));
         }
       }
-    } catch (err) {
-      console.warn(`[certamen-idées-ia] Erreur idée ${i + 1} :`, err.message);
     }
+    if (!posted) {
+      console.error(`[certamen-idées-ia] Débat ${debateId} — idée ${i + 1}/${ideas.length} : abandon après ${IDEA_POST_MAX_ATTEMPTS} tentatives, passage à la suivante`);
+    }
+
     await new Promise((r) => setTimeout(r, 7000));
   }
+  console.log(`[certamen-idées-ia] Débat ${debateId} — génération des idées terminée`);
   return true;
 }
 
