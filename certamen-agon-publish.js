@@ -57,6 +57,17 @@ function appendSentToAgonForCertamen(entry) {
   fs.writeFileSync(SENT_TO_AGON_FILE, JSON.stringify(items, null, 2), "utf8");
 }
 
+// Comme pour la veille mixte (server.js, après classifyAndPublishPending), on force une
+// synchro Supabase immédiate après publication plutôt que d'attendre le prochain cycle
+// périodique de storage-sync (5 min) : ça évite qu'un redémarrage entre les deux ne fasse
+// perdre la trace d'un sujet déjà envoyé et qu'il soit republié.
+async function syncSentToAgonToSupabase() {
+  try {
+    const { uploadAll } = require("./storage-sync");
+    await uploadAll();
+  } catch {}
+}
+
 // Protection anti-doublon minimale : sent-to-agon.json est un historique partagé avec la
 // veille mixte, donc on ne s'appuie que sur la question exacte déjà envoyée — pas de
 // filtrage plus large par sujet/source qui pourrait être ambigu sur un fichier partagé.
@@ -218,6 +229,8 @@ async function publishPayloadsBatch(payloads) {
   // Pas de notification push pour Certamen, contrairement à la veille mixte — demande
   // explicite : seules les idées + voix sont reproduites, pas le broadcast.
 
+  await syncSentToAgonToSupabase();
+
   return outcomes;
 }
 
@@ -353,6 +366,8 @@ async function publishSingleCertamenPayloadToAgon(rawPayload) {
     debateId,
     sentAt: new Date().toISOString()
   });
+
+  await syncSentToAgonToSupabase();
 
   if (debateId) {
     persistAndScheduleCertamenIdeas([{

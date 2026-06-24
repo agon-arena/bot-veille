@@ -1,22 +1,24 @@
 const { createClient } = require("@supabase/supabase-js");
 const fs = require("fs");
 const path = require("path");
+const crypto = require("crypto");
 
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_KEY = process.env.SUPABASE_SECRET_KEY;
 const BUCKET = "json-data";
-const SYNC_INTERVAL_MS = 30_000;
+// Sync périodique espacée (au lieu de 30s) : la collecte RSS/YouTube est gérée par
+// un scheduler totalement séparé (cf. scheduleAutoCollect / auto-collect-config.json),
+// ce délai ne concerne que la sauvegarde des fichiers JSON vers Supabase.
+const SYNC_INTERVAL_MS = 5 * 60_000; // 5 minutes
 
 const FILES_TO_SYNC = [
   "seen-items.json",
   "sessions-veille.json",
   "sessions-mixte.json",
-  "sessions-youtube.json",
   "saved-subjects.json",
   "sent-to-agon.json",
   "certamen-sessions.json",
   "veille-mixte.json",
-  "veille-youtube.json",
   "auto-collect-config.json",
   "auto-collect-certamen-config.json",
   "auto-publish-config.json",
@@ -82,6 +84,21 @@ function saveState(state) {
   }
 }
 
+function hashContent(content) {
+  return crypto.createHash("sha256").update(content, "utf8").digest("hex");
+}
+
+// Met à jour state[filename] en ne touchant que les champs fournis, pour ne jamais
+// perdre le `hash` (utilisé par uploadAll) en mettant juste à jour `updatedAt`, ou
+// l'inverse.
+function setFileState(state, filename, { updatedAt, hash } = {}) {
+  const prev = state[filename] || {};
+  state[filename] = {
+    updatedAt: updatedAt !== undefined ? updatedAt : prev.updatedAt,
+    hash: hash !== undefined ? hash : prev.hash,
+  };
+}
+
 // Récupère uniquement les métadonnées des fichiers du bucket (dont `updated_at`),
 // sans télécharger leur contenu — coût d'egress négligeable comparé à download().
 async function fetchRemoteList() {
@@ -107,6 +124,7 @@ async function downloadFile(filename, localPath) {
   if (error) throw new Error(error.message);
   const text = await data.text();
   fs.writeFileSync(localPath, text, "utf8");
+  return text;
 }
 
 async function downloadAll() {
@@ -144,18 +162,18 @@ async function downloadAll() {
 
     try {
       if (forceDownload) {
-        await downloadFile(filename, localPath);
-        if (remoteEntry) state[filename] = remoteEntry.updated_at;
+        const text = await downloadFile(filename, localPath);
+        setFileState(state, filename, { updatedAt: remoteEntry?.updated_at, hash: hashContent(text) });
         downloadedNewerOrUnknown.push(filename);
         continue;
       }
 
       if (!localPresent) {
         if (remoteListFailed || remoteEntry) {
-          await downloadFile(filename, localPath);
+          const text = await downloadFile(filename, localPath);
           // remoteMap absent (list échouée) -> on ne connaît pas updated_at, l'état
           // restera "inconnu" jusqu'à la prochaine liste réussie : comportement sûr.
-          if (remoteEntry) state[filename] = remoteEntry.updated_at;
+          setFileState(state, filename, { updatedAt: remoteEntry?.updated_at, hash: hashContent(text) });
           downloadedMissingOrEmpty.push(filename);
         } else {
           missingRemote.push(filename);
@@ -168,7 +186,8 @@ async function downloadAll() {
       // ou Supabase modifié depuis), on retélécharge plutôt que de risquer un upload
       // ultérieur qui écraserait une donnée plus récente côté Supabase.
       if (remoteListFailed) {
-        await downloadFile(filename, localPath);
+        const text = await downloadFile(filename, localPath);
+        setFileState(state, filename, { hash: hashContent(text) });
         downloadedNewerOrUnknown.push(filename);
         continue;
       }
@@ -178,14 +197,14 @@ async function downloadAll() {
         continue;
       }
 
-      const lastSynced = state[filename];
+      const lastSynced = state[filename]?.updatedAt;
       if (lastSynced && lastSynced === remoteEntry.updated_at) {
         keptUpToDate.push(filename);
         continue;
       }
 
-      await downloadFile(filename, localPath);
-      state[filename] = remoteEntry.updated_at;
+      const text = await downloadFile(filename, localPath);
+      setFileState(state, filename, { updatedAt: remoteEntry.updated_at, hash: hashContent(text) });
       downloadedNewerOrUnknown.push(filename);
     } catch (err) {
       errored.push(filename);
@@ -224,12 +243,22 @@ async function uploadAll() {
 
   const state = loadState();
   const uploaded = [];
+  const unchanged = [];
 
   for (const filename of FILES_TO_SYNC) {
     const localPath = path.join(__dirname, filename);
     if (!fs.existsSync(localPath)) continue;
     try {
       const content = fs.readFileSync(localPath, "utf8");
+      const hash = hashContent(content);
+      // Pas de changement local depuis le dernier sync (download ou upload) :
+      // on évite un appel Supabase inutile.
+      const prevHash = state[filename]?.hash;
+      if (prevHash && prevHash === hash) {
+        unchanged.push(filename);
+        continue;
+      }
+
       const { error } = await supabase.storage.from(BUCKET).upload(filename, content, {
         contentType: "application/json",
         cacheControl: "0",
@@ -239,6 +268,7 @@ async function uploadAll() {
         console.warn(`[storage-sync] Erreur upload ${filename}:`, error.message);
       } else {
         uploaded.push(filename);
+        setFileState(state, filename, { hash });
       }
     } catch (err) {
       console.warn(`[storage-sync] Erreur upload ${filename}:`, err.message);
@@ -252,10 +282,18 @@ async function uploadAll() {
     const remoteMap = await fetchRemoteList();
     if (remoteMap) {
       for (const filename of uploaded) {
-        if (remoteMap[filename]) state[filename] = remoteMap[filename].updated_at;
+        if (remoteMap[filename]) setFileState(state, filename, { updatedAt: remoteMap[filename].updated_at });
       }
-      saveState(state);
     }
+  }
+  saveState(state);
+
+  if (uploaded.length) {
+    console.log(
+      `[storage-sync] Sync : ${uploaded.length} fichier(s) modifié(s) envoyé(s) vers Supabase (${uploaded.join(", ")}), ${unchanged.length} inchangé(s) (non transmis).`
+    );
+  } else {
+    console.log(`[storage-sync] Sync : aucun changement local depuis le dernier envoi (${unchanged.length} fichier(s) inchangé(s)), rien à transmettre à Supabase.`);
   }
 }
 
@@ -264,7 +302,9 @@ function startPeriodicSync() {
   setInterval(async () => {
     await uploadAll();
   }, SYNC_INTERVAL_MS);
-  console.log(`[storage-sync] Sync automatique toutes les ${SYNC_INTERVAL_MS / 1000}s`);
+  console.log(
+    `[storage-sync] Sync automatique toutes les ${SYNC_INTERVAL_MS / 1000}s (${SYNC_INTERVAL_MS / 60000} min) — surveille ${FILES_TO_SYNC.length} fichier(s) JSON local/Supabase, n'envoie que ceux qui ont changé. Cette sync est indépendante des collectes RSS/YouTube programmées (voir auto-collect-config.json / auto-collect-certamen-config.json).`
+  );
 }
 
-module.exports = { init, downloadAll, startPeriodicSync };
+module.exports = { init, downloadAll, uploadAll, startPeriodicSync };
