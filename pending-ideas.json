@@ -558,5 +558,215 @@
     "runAt": "2026-06-22T06:28:48.829Z",
     "status": "done",
     "attempts": 0
+  },
+  {
+    "debateId": 978,
+    "question": "Coupure de courant interrompt le concert d'Iron Maiden à Paris",
+    "positionA": "",
+    "positionB": "",
+    "id": "978-1782216751415-y2levi",
+    "runAt": "2026-06-23T12:22:31.415Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 979,
+    "question": "Éric Dupond-Moretti condamné pour diffamation fait appel",
+    "positionA": "",
+    "positionB": "",
+    "id": "979-1782216751415-s5nzxd",
+    "runAt": "2026-06-23T12:22:31.415Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 980,
+    "question": "Royaume-Uni : un rapprochement avec l'UE est-il souhaitable ?",
+    "positionA": "Privilégier un rapprochement progressif",
+    "positionB": "Maintenir l'indépendance acquise",
+    "id": "980-1782216751415-gxg3o5",
+    "runAt": "2026-06-23T12:22:31.415Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 981,
+    "question": "Messi et Mbappé en tête pour le titre de meilleur buteur de la Coupe du monde 2026",
+    "positionA": "",
+    "positionB": "",
+    "id": "981-1782216751415-yuygv2",
+    "runAt": "2026-06-23T12:22:31.415Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 982,
+    "question": "Andy Burnham en route pour Downing Street après la démission de Starmer",
+    "positionA": "",
+    "positionB": "",
+    "id": "982-1782216751415-ao5i2w",
+    "runAt": "2026-06-23T12:22:31.415Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 983,
+    "question": "Sanctions ou réforme systémique pour la justice ?",
+    "positionA": "Opter pour une réforme systémique",
+    "positionB": "Privilégier les sanctions individuelles",
+    "id": "983-1782216751415-6mp180",
+    "runAt": "2026-06-23T12:22:31.415Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 984,
+    "question": "Faut-il renforcer les liens avec l'UE malgré la polarisation ?",
+    "positionA": "Renforcer les liens pour stabiliser l'économie",
+    "positionB": "Éviter le rapprochement pour limiter la division",
+    "id": "984-1782216751415-lzbvpc",
+    "runAt": "2026-06-23T12:22:31.415Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 985,
+    "question": "Le Royaume-Uni doit-il se rapprocher de l'UE ?",
+    "positionA": "Favoriser un rapprochement progressif",
+    "positionB": "Maintenir l'indépendance vis-à-vis de l'UE",
+    "id": "985-1782216751415-cutjar",
+    "runAt": "2026-06-23T12:22:31.415Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 986,
+    "question": "Accord européen pour allonger les délais de prescription des violences sexuelles",
+    "positionA": "",
+    "positionB": "",
+    "id": "986-1782216751415-rr1bq0",
+    "runAt": "2026-06-23T12:22:31.415Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 987,
+    "question": "Relancer les liens avec l'UE ou respecter le Brexit ?",
+    "positionA": "Relancer les liens avec l'UE",
+    "positionB": "Respecter strictement le Brexit",
+    "id": "987-1782216751415-5bl4le",
+    "runAt": "2026-06-23T12:22:31.415Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 988,
+    "question": "Activation du niveau 2 du plan Orsan face à la canicule en France",
+    "positionA": "",
+    "positionB": "",
+    "id": "988-1782216751415-ieg1zq",
+    "runAt": "2026-06-23T12:22:31.415Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 989,
+    "question": "Faut-il soutenir le rapport de l'ONU sur Gaza ?",
+    "positionA": "Soutenir le rapport pour protéger les enfants",
+    "positionB": "Rejeter le rapport pour éviter l'escalade",
+    "id": "989-1782216751415-sv6qw5",
+    "runAt": "2026-06-23T12:22:31.415Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 990,
+    "question": "Canicule : 54 départements en vigilance rouge en France",
+    "positionA": "",
+    "positionB": "",
+    "id": "990-1782216751415-ub0tp4",
+    "runAt": "2026-06-23T12:22:31.415Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 991,
+    "question": "Accord de paix avec les Farc : démanteler ou maintenir ?",
+    "positionA": "Maintenir pour préserver la paix",
+    "positionB": "Démanteler pour renforcer la sécurité",
+    "id": "991-1782216751415-rkr2ia",
+    "runAt": "2026-06-23T12:22:31.415Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 992,
+    "question": "Marc Bloch, premier historien honoré au Panthéon",
+    "positionA": "",
+    "positionB": "",
+    "id": "992-1782216751415-gcshc0",
+    "runAt": "2026-06-23T12:22:31.415Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 993,
+    "question": "Refus de réouverture de l'enquête pour viol contre Luc Besson",
+    "positionA": "",
+    "positionB": "",
+    "id": "993-1782216751415-1ni1bj",
+    "runAt": "2026-06-23T12:22:31.415Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 994,
+    "question": "L'Iran administrera le détroit d'Ormuz après les négociations en Suisse",
+    "positionA": "",
+    "positionB": "",
+    "id": "994-1782216751415-fho4ry",
+    "runAt": "2026-06-23T12:22:31.415Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 995,
+    "question": "Canicule en France : décès par noyade et dans des véhicules",
+    "positionA": "",
+    "positionB": "",
+    "id": "995-1782216751415-hgs84q",
+    "runAt": "2026-06-23T12:22:31.415Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 996,
+    "question": "Démission de Keir Starmer : Andy Burnham pressenti pour le remplacer",
+    "positionA": "",
+    "positionB": "",
+    "id": "996-1782216751415-vun62h",
+    "runAt": "2026-06-23T12:22:31.415Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 997,
+    "question": "La France se qualifie pour les seizièmes après une victoire contre l'Irak",
+    "positionA": "",
+    "positionB": "",
+    "id": "997-1782216751415-85qwpg",
+    "runAt": "2026-06-23T12:22:31.415Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 998,
+    "question": "Faut-il améliorer les ressources ou adopter une loi d'urgence intégrale ?",
+    "positionA": "Améliorer les ressources actuelles",
+    "positionB": "Adopter une loi d'urgence intégrale",
+    "id": "998-1782216751415-h5jrm5",
+    "runAt": "2026-06-23T12:22:31.415Z",
+    "status": "done",
+    "attempts": 0
   }
 ]

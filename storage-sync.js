@@ -27,8 +27,14 @@ const FILES_TO_SYNC = [
   "certamen-pending-ideas.json",
 ];
 
+const STATE_FILE = path.join(__dirname, "storage-sync-state.json");
+
 let supabase = null;
 let enabled = false;
+// Protège uploadAll() : ne doit jamais s'exécuter avant la fin de la vérification
+// faite par downloadAll(), sous peine d'écraser Supabase avec des fichiers locaux
+// potentiellement obsolètes (ex: juste après un redéploiement Render).
+let downloadCompleted = false;
 
 function init() {
   if (!SUPABASE_URL || !SUPABASE_KEY) {
@@ -40,29 +46,185 @@ function init() {
   console.log("[storage-sync] Supabase connecté");
 }
 
+function isLocalFilePresentAndNonEmpty(localPath) {
+  try {
+    if (!fs.existsSync(localPath)) return false;
+    const stats = fs.statSync(localPath);
+    return stats.size > 0;
+  } catch (err) {
+    return false;
+  }
+}
+
+// État local : pour chaque fichier, le `updated_at` Supabase avec lequel le fichier
+// local était en phase lors de la dernière synchro réussie (download ou upload).
+// Ce fichier n'est ni uploadé ni téléchargé : c'est une mémoire purement locale au
+// conteneur, qui redevient naturellement vide après un redéploiement Render (le
+// disque est neuf) — ce qui force alors un téléchargement complet et sûr depuis
+// Supabase plutôt que de faire confiance à des fichiers locaux issus du dépôt Git.
+function loadState() {
+  try {
+    if (!fs.existsSync(STATE_FILE)) return {};
+    const raw = fs.readFileSync(STATE_FILE, "utf8");
+    if (!raw.trim()) return {};
+    return JSON.parse(raw);
+  } catch (err) {
+    console.warn("[storage-sync] État local illisible, on repart d'un état vide:", err.message);
+    return {};
+  }
+}
+
+function saveState(state) {
+  try {
+    fs.writeFileSync(STATE_FILE, JSON.stringify(state, null, 2), "utf8");
+  } catch (err) {
+    console.warn("[storage-sync] Impossible d'écrire l'état local:", err.message);
+  }
+}
+
+// Récupère uniquement les métadonnées des fichiers du bucket (dont `updated_at`),
+// sans télécharger leur contenu — coût d'egress négligeable comparé à download().
+async function fetchRemoteList() {
+  try {
+    const { data, error } = await supabase.storage.from(BUCKET).list("", { limit: 1000 });
+    if (error) {
+      console.warn("[storage-sync] Erreur list() Supabase:", error.message);
+      return null;
+    }
+    const map = {};
+    for (const entry of data || []) {
+      map[entry.name] = entry;
+    }
+    return map;
+  } catch (err) {
+    console.warn("[storage-sync] Erreur list() Supabase:", err.message);
+    return null;
+  }
+}
+
+async function downloadFile(filename, localPath) {
+  const { data, error } = await supabase.storage.from(BUCKET).download(filename);
+  if (error) throw new Error(error.message);
+  const text = await data.text();
+  fs.writeFileSync(localPath, text, "utf8");
+}
+
 async function downloadAll() {
-  if (!enabled) return;
-  console.log("[storage-sync] Téléchargement des fichiers depuis Supabase...");
+  if (!enabled) {
+    downloadCompleted = true;
+    return;
+  }
+
+  const forceDownload = process.env.FORCE_SUPABASE_DOWNLOAD === "true";
+  console.log(
+    `[storage-sync] Démarrage downloadAll() — mode: ${forceDownload ? "FORCE_SUPABASE_DOWNLOAD (tout retélécharger)" : "normal (comparaison local/Supabase)"}`
+  );
+
+  const state = forceDownload ? {} : loadState();
+  // En mode force, on ignore la liste distante : on retélécharge tout sans condition,
+  // exactement comme l'ancien comportement.
+  const remoteMap = forceDownload ? null : await fetchRemoteList();
+  const remoteListFailed = !forceDownload && remoteMap === null;
+  if (remoteListFailed) {
+    console.warn(
+      "[storage-sync] Impossible de lister le bucket Supabase — par sécurité, on revérifie chaque fichier individuellement plutôt que de faire confiance à l'état local."
+    );
+  }
+
+  const keptUpToDate = [];
+  const downloadedMissingOrEmpty = [];
+  const downloadedNewerOrUnknown = [];
+  const missingRemote = [];
+  const errored = [];
+
   for (const filename of FILES_TO_SYNC) {
+    const localPath = path.join(__dirname, filename);
+    const localPresent = isLocalFilePresentAndNonEmpty(localPath);
+    const remoteEntry = remoteMap ? remoteMap[filename] : undefined;
+
     try {
-      const { data, error } = await supabase.storage.from(BUCKET).download(filename);
-      if (error) {
-        // Fichier absent sur Supabase — on garde la version locale si elle existe
+      if (forceDownload) {
+        await downloadFile(filename, localPath);
+        if (remoteEntry) state[filename] = remoteEntry.updated_at;
+        downloadedNewerOrUnknown.push(filename);
         continue;
       }
-      const text = await data.text();
-      const localPath = path.join(__dirname, filename);
-      fs.writeFileSync(localPath, text, "utf8");
-      console.log(`[storage-sync] ✓ ${filename}`);
+
+      if (!localPresent) {
+        if (remoteListFailed || remoteEntry) {
+          await downloadFile(filename, localPath);
+          // remoteMap absent (list échouée) -> on ne connaît pas updated_at, l'état
+          // restera "inconnu" jusqu'à la prochaine liste réussie : comportement sûr.
+          if (remoteEntry) state[filename] = remoteEntry.updated_at;
+          downloadedMissingOrEmpty.push(filename);
+        } else {
+          missingRemote.push(filename);
+        }
+        continue;
+      }
+
+      // Fichier local présent : on ne le garde QUE si on peut prouver qu'il est à
+      // jour par rapport à Supabase. Sans preuve (liste échouée, jamais synchronisé,
+      // ou Supabase modifié depuis), on retélécharge plutôt que de risquer un upload
+      // ultérieur qui écraserait une donnée plus récente côté Supabase.
+      if (remoteListFailed) {
+        await downloadFile(filename, localPath);
+        downloadedNewerOrUnknown.push(filename);
+        continue;
+      }
+
+      if (!remoteEntry) {
+        missingRemote.push(filename);
+        continue;
+      }
+
+      const lastSynced = state[filename];
+      if (lastSynced && lastSynced === remoteEntry.updated_at) {
+        keptUpToDate.push(filename);
+        continue;
+      }
+
+      await downloadFile(filename, localPath);
+      state[filename] = remoteEntry.updated_at;
+      downloadedNewerOrUnknown.push(filename);
     } catch (err) {
+      errored.push(filename);
       console.warn(`[storage-sync] Erreur download ${filename}:`, err.message);
     }
   }
-  console.log("[storage-sync] Téléchargement terminé");
+
+  saveState(state);
+
+  if (keptUpToDate.length) {
+    console.log(`[storage-sync] Conservés localement, déjà à jour (${keptUpToDate.length}): ${keptUpToDate.join(", ")}`);
+  }
+  if (downloadedMissingOrEmpty.length) {
+    console.log(`[storage-sync] Téléchargés (absents/vides en local) (${downloadedMissingOrEmpty.length}): ${downloadedMissingOrEmpty.join(", ")}`);
+  }
+  if (downloadedNewerOrUnknown.length) {
+    console.log(`[storage-sync] Téléchargés (Supabase plus récent ou état local inconnu) (${downloadedNewerOrUnknown.length}): ${downloadedNewerOrUnknown.join(", ")}`);
+  }
+  if (missingRemote.length) {
+    console.log(`[storage-sync] Absents côté Supabase, fallback local (${missingRemote.length}): ${missingRemote.join(", ")}`);
+  }
+  if (errored.length) {
+    console.warn(`[storage-sync] Erreurs de téléchargement (${errored.length}): ${errored.join(", ")}`);
+  }
+  console.log("[storage-sync] downloadAll() terminé");
+
+  downloadCompleted = true;
 }
 
 async function uploadAll() {
   if (!enabled) return;
+  if (!downloadCompleted) {
+    console.warn("[storage-sync] uploadAll() ignoré : downloadAll() n'est pas encore terminé (protection anti-écrasement).");
+    return;
+  }
+
+  const state = loadState();
+  const uploaded = [];
+
   for (const filename of FILES_TO_SYNC) {
     const localPath = path.join(__dirname, filename);
     if (!fs.existsSync(localPath)) continue;
@@ -73,9 +235,26 @@ async function uploadAll() {
         cacheControl: "0",
         upsert: true,
       });
-      if (error) console.warn(`[storage-sync] Erreur upload ${filename}:`, error.message);
+      if (error) {
+        console.warn(`[storage-sync] Erreur upload ${filename}:`, error.message);
+      } else {
+        uploaded.push(filename);
+      }
     } catch (err) {
       console.warn(`[storage-sync] Erreur upload ${filename}:`, err.message);
+    }
+  }
+
+  // Met à jour l'état local pour que les prochains démarrages (dans le même
+  // conteneur) sachent que ces fichiers sont désormais à jour avec Supabase,
+  // sans avoir besoin de les retélécharger.
+  if (uploaded.length) {
+    const remoteMap = await fetchRemoteList();
+    if (remoteMap) {
+      for (const filename of uploaded) {
+        if (remoteMap[filename]) state[filename] = remoteMap[filename].updated_at;
+      }
+      saveState(state);
     }
   }
 }

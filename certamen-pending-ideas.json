@@ -28,5 +28,35 @@
     "runAt": "2026-06-23T10:52:39.625Z",
     "status": "done",
     "attempts": 0
+  },
+  {
+    "debateId": 999,
+    "question": "Faut-il prioriser la climatisation ou des solutions écologiques ?",
+    "positionA": "Solutions écologiques durables",
+    "positionB": "Climatisation pour santé publique",
+    "id": "999-1782274796161-6e0bob",
+    "runAt": "2026-06-24T04:29:56.098Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1000,
+    "question": "La sémantique du projet de loi sur la fin de vie est-elle dangereusement ambiguë ?",
+    "positionA": "Le texte doit clarifier la sémantique",
+    "positionB": "L'ambiguïté est nécessaire pour avancer",
+    "id": "1000-1782276167909-16faj3",
+    "runAt": "2026-06-24T04:52:47.909Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1001,
+    "question": "Faut-il privilégier Lyon ou les Alpes pour les sites des JO 2030 ?",
+    "positionA": "Favoriser Lyon pour le pôle glace",
+    "positionB": "Maintenir les sites dans les Alpes",
+    "id": "1001-1782276204277-z8n4yk",
+    "runAt": "2026-06-24T04:53:24.277Z",
+    "status": "done",
+    "attempts": 0
   }
 ]

@@ -12,6 +12,7 @@ saved-subjects.json
 sent-to-agon.json
 certamen-sessions.json
 .bot-veille-runtime.json
+storage-sync-state.json
 veille-mixte.html
 veille-mixte.json
 *.backup.js
