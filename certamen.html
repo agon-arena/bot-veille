@@ -22377,7 +22377,7 @@
           };
         }).filter(l => l.url);
 
-        const res = await fetch("/send-to-agon", {
+        const res = await fetch("/certamen/send-to-agon", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ subject, sessionLabel, question, positionA, positionB, theme, resume, sources, links, storySelection, keywords, politicalOrientation: btn.dataset.politicalOrientation ? JSON.parse(btn.dataset.politicalOrientation) : null })
@@ -22950,7 +22950,7 @@
         const dateMatch = (item.querySelector("small")?.textContent || "").match(/(\d{2}\/\d{2}\/\d{4})/);
         return { title: item.querySelector("a")?.textContent.trim() || "", url: item.dataset.link || "", source: item.querySelector("strong")?.textContent.trim() || "", type: item.dataset.type || "article", date: dateMatch ? dateMatch[1] : "", checked: item.querySelector('input[type="checkbox"]')?.checked ?? true };
       }).filter(l => l.url);
-      const sendRes = await fetchWithTimeout("/send-to-agon", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ subject: subjectTitle, sessionLabel, question: finalQuestion, positionA: finalPosA, positionB: finalPosB, theme, resume: resumeForSend, sources: agonBtnFinal.dataset.sources, links, storySelection, keywords, politicalOrientation: agonBtnFinal.dataset.politicalOrientation ? JSON.parse(agonBtnFinal.dataset.politicalOrientation) : null, arenaMode }) });
+      const sendRes = await fetchWithTimeout("/certamen/send-to-agon", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ subject: subjectTitle, sessionLabel, question: finalQuestion, positionA: finalPosA, positionB: finalPosB, theme, resume: resumeForSend, sources: agonBtnFinal.dataset.sources, links, storySelection, keywords, politicalOrientation: agonBtnFinal.dataset.politicalOrientation ? JSON.parse(agonBtnFinal.dataset.politicalOrientation) : null, arenaMode }) });
       if (!sendRes.ok) throw new Error("Erreur envoi Agôn");
       agonBtnFinal.classList.add("sent");
       agonBtnFinal.textContent = "✓ Envoyé";
