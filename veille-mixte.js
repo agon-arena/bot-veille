@@ -10,6 +10,7 @@ const path = require("path");
 const { renderAutoCollectCertamenWidgetHtml } = require("./certamen-auto-collect-widget");
 const { renderAutoCollectMixteWidgetHtml } = require("./auto-collect-mixte-widget");
 const { renderCertamenPublishWidgetHtml } = require("./certamen-publish-widget");
+const { MAX_CHECKED_SUBJECTS } = require("./certamen-checked-subjects");
 
 const apiApp = express();
 apiApp.use(express.json({ limit: "2mb" }));
@@ -6797,8 +6798,32 @@ const CERTAMEN_DEBATE_MARKERS = [
   "faut-il", "doit-on", "peut-on", "interdire", "autoriser", "réformer",
   "taxer", "supprimer", "maintenir", "renforcer", "assouplir", "durcir",
   "limiter", "obliger", "sanctionner", "contrôler", "réguler",
-  "polémique", "controverse", "débat", "divise", "inquiète",
-  "colère", "critique", "tribune", "sondage"
+  "débat", "inquiète", "critique", "tribune", "sondage", "opposition",
+  "désaccord", "affrontement", "tension"
+];
+
+// Marqueurs forts : vocabulaire explicitement polémique/clivant (poids double dans le score),
+// pour privilégier les vrais sujets clivants face aux sujets simplement informatifs et repris.
+const CERTAMEN_STRONG_DEBATE_MARKERS = [
+  "polémique", "controverse", "scandale", "scandaleux", "indignation",
+  "tollé", "colère", "fronde", "contestation", "manifestation", "grève",
+  "boycott", "dénonce", "accuse", "accusé", "accusée", "plainte", "procès",
+  "clivage", "clivant", "divise", "révolte", "injustice", "discrimination"
+];
+
+// Sigles de partis : poids fort, mais matchés avec limites de mot SUR LE TEXTE NON MIS EN
+// MINUSCULE (sensible à la casse), sinon "rn"/"ps"/"lr" déclenchent dans n'importe quel mot
+// courant (gouve-RN-ement, cor-PS, va-LeuR...). Ne matche donc que le sigle réellement écrit
+// en majuscules, isolé.
+const CERTAMEN_POLITICAL_PARTY_ACRONYMS = ["RN", "LFI", "LR", "PS", "EELV"];
+
+// Noms de personnalités politiques : insensible à la casse comme les autres marqueurs (noms
+// propres assez longs/distinctifs pour ne pas faire de faux positifs). Liste volontairement
+// équilibrée sur le spectre politique — à compléter ici au besoin.
+const CERTAMEN_POLITICAL_NAMES = [
+  "bardella", "mélenchon", "tondelier", "le pen", "macron", "attal", "lecornu",
+  "borne", "philippe", "bayrou", "darmanin", "retailleau", "wauquiez", "ciotti",
+  "zemmour", "faure", "glucksmann", "roussel", "ruffin"
 ];
 
 const CERTAMEN_EXCLUDE_KEYWORDS = [
@@ -6811,16 +6836,33 @@ const CERTAMEN_EXCLUDE_KEYWORDS = [
 ];
 
 function certamenComputeScore(subject) {
-  const text = [
+  const rawText = [
     subject.subject,
     ...((subject.contents || []).map(function(c) {
       return [c.title || "", c.summary || ""].join(" ");
     }))
-  ].join(" ").toLowerCase();
+  ].join(" ");
+  const text = rawText.toLowerCase();
 
-  const markerCount = CERTAMEN_DEBATE_MARKERS.filter(function(m) {
+  const weakMarkerCount = CERTAMEN_DEBATE_MARKERS.filter(function(m) {
     return text.includes(m);
   }).length;
+
+  const strongMarkerCount = CERTAMEN_STRONG_DEBATE_MARKERS.filter(function(m) {
+    return text.includes(m);
+  }).length;
+
+  const politicalAcronymCount = CERTAMEN_POLITICAL_PARTY_ACRONYMS.filter(function(a) {
+    return new RegExp("\\b" + a + "\\b").test(rawText);
+  }).length;
+
+  const politicalNameCount = CERTAMEN_POLITICAL_NAMES.filter(function(n) {
+    return text.includes(n);
+  }).length;
+
+  const politicalMarkerCount = politicalAcronymCount + politicalNameCount;
+
+  const markerCount = weakMarkerCount + strongMarkerCount + politicalMarkerCount;
 
   const excludeCount = CERTAMEN_EXCLUDE_KEYWORDS.filter(function(k) {
     return text.includes(k);
@@ -6830,24 +6872,31 @@ function certamenComputeScore(subject) {
   const hasMultiSources = sourceCount > 1;
   const hasMixedTypes = subject.articleCount > 0 && subject.youtubeCount > 0;
 
-  // Score automatique : marqueurs débat = signal principal, sources = bonus
-  const score = (markerCount * 3)
-    + (hasMultiSources ? Math.min(sourceCount, 5) * 0.5 : 0)
-    + (hasMixedTypes ? 1 : 0);
+  // Score automatique : les marqueurs de débat restent le signal principal, les marqueurs
+  // forts (vocabulaire explicitement polémique) comptent double, les marqueurs politiques
+  // (partis, personnalités) comptent comme les marqueurs forts pour être conservés en
+  // priorité. Le bonus sources/mixte est volontairement plafonné bas pour qu'il ne fasse
+  // jamais passer un sujet non polémique devant un sujet avec au moins un marqueur (voir tri
+  // par hasMarker dans runCertamenSession).
+  const score = (weakMarkerCount * 3) + (strongMarkerCount * 6) + (politicalMarkerCount * 6)
+    + (hasMultiSources ? Math.min(sourceCount, 5) * 0.3 : 0)
+    + (hasMixedTypes ? 0.5 : 0);
 
   // Exclure si : mots d'exclusion présents ET aucun marqueur débat
   const excluded = excludeCount > 0 && markerCount === 0;
 
-  return { text, markerCount, excludeCount, score, excluded };
+  return { text, markerCount, strongMarkerCount, politicalMarkerCount, score, excludeCount, excluded };
 }
 
 function certamenPrefilter(subjects) {
   return subjects
     .map(function(subject) {
-      const { markerCount, score, excluded } = certamenComputeScore(subject);
+      const { markerCount, strongMarkerCount, score, excluded } = certamenComputeScore(subject);
       return Object.assign({}, subject, {
         _certamenMarkers: markerCount,
+        _certamenStrongMarkers: strongMarkerCount,
         _certamenScore: score,
+        _certamenHasMarker: markerCount > 0,
         _certamenExcluded: excluded
       });
     })
@@ -7298,8 +7347,14 @@ async function runCertamenSession() {
   const prefiltered = certamenPrefilter(rawSubjects);
   console.log(`Certamen : ${prefiltered.length} sujet(s) après préfiltrage sans IA.`);
 
-  // Tri par score automatique décroissant avant envoi à l'IA
+  // Tri avant envoi à l'IA : priorité absolue aux sujets ayant au moins un marqueur de débat
+  // (polémique/clivant), pour qu'un sujet purement informatif mais multi-sources ne passe
+  // jamais devant un sujet clivant même peu repris. À l'intérieur de chaque groupe, tri par
+  // score décroissant.
   const sortedCandidates = prefiltered.slice().sort(function(a, b) {
+    const aHasMarker = a._certamenHasMarker ? 1 : 0;
+    const bHasMarker = b._certamenHasMarker ? 1 : 0;
+    if (aHasMarker !== bHasMarker) return bHasMarker - aHasMarker;
     return (b._certamenScore || 0) - (a._certamenScore || 0);
   });
 
@@ -7348,6 +7403,51 @@ async function runCertamenSession() {
   saveCertamenSessions(trimmed);
   fs.writeFileSync(CERTAMEN_OUTPUT_HTML, generateCertamenHtml(trimmed), "utf8");
   console.log(`Certamen : session sauvegardée.`);
+
+  autoCheckTopCertamenSubjects(debatables);
+}
+
+// Remplace le clic manuel sur "Cocher les 10" : sélectionne automatiquement les
+// MAX_CHECKED_SUBJECTS sujets au score IA le plus élevé de la session qui vient d'être
+// générée et les enregistre dans saved-subjects.json (même chemin que le bouton "Sauvegarder"
+// individuel), pour que getCheckedCertamenSubjects() les retienne sans intervention humaine.
+function autoCheckTopCertamenSubjects(debatables) {
+  const top = debatables.slice(0, MAX_CHECKED_SUBJECTS);
+  let checked = 0;
+  for (const subject of top) {
+    const c = subject.certamen || {};
+    try {
+      upsertSavedSubject({
+        action: "save",
+        subject: subject.subject,
+        debateScore: c.debatePotentialScore || subject.debateScore || 0,
+        debateQuestion: c.suggestedQuestion || "",
+        resume: "",
+        mainKeyword: "",
+        agonTheme: c.theme || "",
+        positionA: c.positionA || "",
+        positionB: c.positionB || "",
+        sources: Array.isArray(subject.sources) ? subject.sources.join(", ") : "",
+        contents: Array.isArray(subject.contents)
+          ? subject.contents.map(function(ct) {
+              return {
+                type: ct.type || "article",
+                link: ct.link || "",
+                source: ct.source || "",
+                title: ct.title || "",
+                thumbnail: ct.thumbnail || ""
+              };
+            })
+          : [],
+        sessionLabel: "",
+        storySelection: null
+      });
+      checked += 1;
+    } catch (err) {
+      console.error(`Certamen auto-cochage : erreur pour "${subject.subject}" :`, err.message);
+    }
+  }
+  console.log(`Certamen : ${checked}/${top.length} sujet(s) auto-coché(s) (top score IA).`);
 }
 
 apiApp.get("/certamen/progress", function(req, res) {

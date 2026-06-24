@@ -60,12 +60,6 @@
     "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCXHWT_QoQSsdGXbqF0hAMtg"
   },
   {
-    "nom": "Off Investigation",
-    "orientation": "investigation / critique",
-    "url": "https://www.youtube.com/@OffInvestigation",
-    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCEFGCs68E9Vr5te5qZuJsbg"
-  },
-  {
     "nom": "Osons Causer",
     "orientation": "gauche / pédagogie politique",
     "url": "https://www.youtube.com/@OsonsCauser",
@@ -78,16 +72,262 @@
     "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UC_NukSq2ve_AHVAz_9ikTDg"
   },
   {
-    "nom": "Franceinfo",
-    "orientation": "service public / actualité",
-    "url": "https://www.youtube.com/@franceinfo",
-    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCO6K_kkdP-lnSCiO3tPx7WA"
+    "nom": "Les Jours",
+    "orientation": "investigation / gauche",
+    "url": "https://www.youtube.com/@Lesjours",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCMtcnJOohHWDg0ohdHbUY2Q"
+  },
+  {
+    "nom": "Le Monde Diplomatique",
+    "orientation": "gauche",
+    "url": "https://www.youtube.com/feeds/videos.xml?channel_id=UCJZ-hXrLYUFHBnkM0Vb2mqw",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCJZ-hXrLYUFHBnkM0Vb2mqw"
+  },
+  {
+    "nom": "L'Humanité : POPulaire : youtube",
+    "orientation": "gauche",
+    "url": "https://www.youtube.com/playlist?list=PLOCADcFbqUJ8epF9CzVeUqFRP0UfJY15m",
+    "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PLOCADcFbqUJ8epF9CzVeUqFRP0UfJY15m"
+  },
+  {
+    "nom": "L'Humanité : youtube",
+    "orientation": "gauche",
+    "url": "https://www.youtube.com/channel/UCar0yo-PpeMk51m116826pQ",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCar0yo-PpeMk51m116826pQ"
+  },
+  {
+    "nom": "Libération : Le Libéscope : youtube",
+    "orientation": "gauche",
+    "url": "https://www.youtube.com/playlist?list=PLbo849toIn1TbJZAB5B2DPZsRAEgUkyP9",
+    "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PLbo849toIn1TbJZAB5B2DPZsRAEgUkyP9"
+  },
+  {
+    "nom": "Libération : youtube",
+    "orientation": "gauche",
+    "url": "https://www.youtube.com/channel/UC9x4Iyu-D257P0P-VDRwSzw",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UC9x4Iyu-D257P0P-VDRwSzw"
   },
   {
     "nom": "Le Monde",
     "orientation": "centre-gauche / généraliste",
     "url": "https://www.youtube.com/@lemondefr",
     "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCYpRDnhk5H8h16jpS84uqsA"
+  },
+  {
+    "nom": "Le Monde : Les moments forts de l'actu : youtube",
+    "orientation": "centre-gauche / généraliste",
+    "url": "https://www.youtube.com/playlist?list=PLFuK0VAIne9JMqU6qoNAU8kgFBDnYVeRE",
+    "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PLFuK0VAIne9JMqU6qoNAU8kgFBDnYVeRE"
+  },
+  {
+    "nom": "Le Monde : Mappemonde : youtube",
+    "orientation": "centre-gauche / généraliste",
+    "url": "https://www.youtube.com/playlist?list=PLFuK0VAIne9LhQy5THa8YrrZbyWaIRqPc",
+    "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PLFuK0VAIne9LhQy5THa8YrrZbyWaIRqPc"
+  },
+  {
+    "nom": "Le Monde : Nos dernières explications : youtube",
+    "orientation": "centre-gauche / généraliste",
+    "url": "https://www.youtube.com/playlist?list=PLFuK0VAIne9IPAKprnmkgM7aP45qQwEGe",
+    "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PLFuK0VAIne9IPAKprnmkgM7aP45qQwEGe"
+  },
+  {
+    "nom": "Le Monde : OSINT - Enquêtes vidéo open source : youtube",
+    "orientation": "centre-gauche / généraliste",
+    "url": "https://www.youtube.com/playlist?list=PLFuK0VAIne9LVg-1mTFeGvisVBWdGLelc",
+    "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PLFuK0VAIne9LVg-1mTFeGvisVBWdGLelc"
+  },
+  {
+    "nom": "Quotidien",
+    "orientation": "actualité / satire / centre-gauche",
+    "url": "https://www.youtube.com/@QuotidienTMC",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCpi-4daExRSchtsJzO06rwA"
+  },
+  {
+    "nom": "France Inter",
+    "orientation": "service public / centre-gauche",
+    "url": "https://www.youtube.com/@franceinter",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCJldRgT_D7Am-ErRHQZ90uw"
+  },
+  {
+    "nom": "France Inter : infos : youtube",
+    "orientation": "service public / centre-gauche",
+    "url": "https://www.youtube.com/playlist?list=PL43OynbWaTMKEbGOJqSBwddnVgK31qUG0",
+    "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PL43OynbWaTMKEbGOJqSBwddnVgK31qUG0"
+  },
+  {
+    "nom": "France Inter : Le débat du 7/10 : youtube",
+    "orientation": "service public / centre-gauche",
+    "url": "https://www.youtube.com/playlist?list=PL43OynbWaTMK5iS5F--GDXzk0gH2XxdRX",
+    "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PL43OynbWaTMK5iS5F--GDXzk0gH2XxdRX"
+  },
+  {
+    "nom": "France Inter : Les reportages de France Inter : youtube",
+    "orientation": "service public / centre-gauche",
+    "url": "https://www.youtube.com/playlist?list=PL43OynbWaTMK5OauwuzHhGqXdeZDRrFyD",
+    "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PL43OynbWaTMK5OauwuzHhGqXdeZDRrFyD"
+  },
+  {
+    "nom": "L'Obs",
+    "orientation": "centre-gauche",
+    "url": "https://www.youtube.com/@lenouvelobs",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCvG0OKqvCFMYTiJ1Rnd5XBQ"
+  },
+  {
+    "nom": "Le NouvelObs : international : youtube",
+    "orientation": "centre-gauche",
+    "url": "https://www.youtube.com/playlist?list=PLx11EXmJoLVY_qIRwFQLycaO1JgVL0PuP",
+    "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PLx11EXmJoLVY_qIRwFQLycaO1JgVL0PuP"
+  },
+  {
+    "nom": "Le NouvelObs : Les conférences de l'Obs : youtube",
+    "orientation": "centre-gauche",
+    "url": "https://www.youtube.com/playlist?list=PLx11EXmJoLVYshHRpapVkK1GxmCSpj3X8",
+    "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PLx11EXmJoLVYshHRpapVkK1GxmCSpj3X8"
+  },
+  {
+    "nom": "Le NouvelObs : Oncle Obs : youtube",
+    "orientation": "centre-gauche",
+    "url": "https://www.youtube.com/playlist?list=PLx11EXmJoLVZcG7VQCTW6bDvKQGPXq-uo",
+    "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PLx11EXmJoLVZcG7VQCTW6bDvKQGPXq-uo"
+  },
+  {
+    "nom": "Le NouvelObs : youtube",
+    "orientation": "centre-gauche",
+    "url": "https://www.youtube.com/channel/UC1ObaaFz4XHVPN2T5IFsU4w",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UC1ObaaFz4XHVPN2T5IFsU4w"
+  },
+  {
+    "nom": "Europe 1",
+    "orientation": "radio / droite-centre-droit",
+    "url": "https://www.youtube.com/@Europe1",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCIMGfEAERXjmWwQeg15BFsg"
+  },
+  {
+    "nom": "Le Point",
+    "orientation": "centre-droit",
+    "url": "https://www.youtube.com/@LePoint",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCQd5LYcykaFeZtjDaP3bNSA"
+  },
+  {
+    "nom": "L'Express",
+    "orientation": "centre / centre-droit",
+    "url": "https://www.youtube.com/@LExpress",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCp2kK3DyhpgFOdILF3BBC9A"
+  },
+  {
+    "nom": "L'Express : international : youtube",
+    "orientation": "centre / centre-droit",
+    "url": "https://www.youtube.com/playlist?list=PLMjjv_iZpbLjB-UfyuCn7E281JXzV3a4n",
+    "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PLMjjv_iZpbLjB-UfyuCn7E281JXzV3a4n"
+  },
+  {
+    "nom": "L'Express : La loupe : shorts : youtube",
+    "orientation": "centre / centre-droit",
+    "url": "https://www.youtube.com/playlist?list=PLMjjv_iZpbLiddRU5BJvjQ4OoTOsTNcgO",
+    "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PLMjjv_iZpbLiddRU5BJvjQ4OoTOsTNcgO"
+  },
+  {
+    "nom": "L'Express : On vous explique : shorts : youtube",
+    "orientation": "centre / centre-droit",
+    "url": "https://www.youtube.com/playlist?list=PLMjjv_iZpbLj2IKAqrI_fbgGjnd2mL5lc",
+    "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PLMjjv_iZpbLj2IKAqrI_fbgGjnd2mL5lc"
+  },
+  {
+    "nom": "CNEWS",
+    "orientation": "droite / info continue",
+    "url": "https://www.youtube.com/@CNEWS",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCciBAhIME9MQEmGbBPnh44g"
+  },
+  {
+    "nom": "Sud Radio",
+    "orientation": "droite / débats",
+    "url": "https://www.youtube.com/@SudRadioOfficiel",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCESTwDXpoMgiYBHipMdKTkQ"
+  },
+  {
+    "nom": "Le Figaro",
+    "orientation": "droite / généraliste",
+    "url": "https://www.youtube.com/@LeFigaro",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCCDz_XYeKWd0OIyjp95dqyQ"
+  },
+  {
+    "nom": "Le Figaro : actualité : youtube",
+    "orientation": "droite",
+    "url": "https://www.youtube.com/playlist?list=PLf31fciWnw6JjkVXJ_Ev-rDqIybzr6z6m",
+    "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PLf31fciWnw6JjkVXJ_Ev-rDqIybzr6z6m"
+  },
+  {
+    "nom": "Le Figaro : L'opinion : youtube",
+    "orientation": "droite",
+    "url": "https://www.youtube.com/playlist?list=PLf31fciWnw6KG6GUu2LR0L9av68WZEdcd",
+    "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PLf31fciWnw6KG6GUu2LR0L9av68WZEdcd"
+  },
+  {
+    "nom": "Le Figaro : Les directs : youtube",
+    "orientation": "droite",
+    "url": "https://www.youtube.com/playlist?list=PLf31fciWnw6JsKJOOW0FDb1kDmGBUqJI9",
+    "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PLf31fciWnw6JsKJOOW0FDb1kDmGBUqJI9"
+  },
+  {
+    "nom": "Le Figaro : Points de Vue : youtube",
+    "orientation": "droite",
+    "url": "https://www.youtube.com/playlist?list=PLf31fciWnw6K6_R5CkRgCzbN5wGIGsXj3",
+    "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PLf31fciWnw6K6_R5CkRgCzbN5wGIGsXj3"
+  },
+  {
+    "nom": "Marianne",
+    "orientation": "républicain / souverainiste",
+    "url": "https://www.youtube.com/@MarianneTV",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UC4V5osIDMjFwtCRxMm2e0LA"
+  },
+  {
+    "nom": "Valeurs actuelles",
+    "orientation": "droite / conservateur",
+    "url": "https://www.youtube.com/@VAplusmedia",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCnIWNujSpiiuH29-TBCz9aw"
+  },
+  {
+    "nom": "Frontières",
+    "orientation": "droite / identitaire",
+    "url": "https://www.youtube.com/@Frontieresoff",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCysox6U9HnqgCiJ-Pd-Jy_w"
+  },
+  {
+    "nom": "Boulevard Voltaire",
+    "orientation": "droite / conservateur",
+    "url": "https://www.youtube.com/@BoulevardVoltaire_",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCx9ygIxPfYR05kY92KzvbvA"
+  },
+  {
+    "nom": "Causeur",
+    "orientation": "droite / souverainiste",
+    "url": "https://www.youtube.com/@causeurfr",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCLSoWZjCGrdZo7ltIR3lEHg"
+  },
+  {
+    "nom": "Radio Courtoisie",
+    "orientation": "droite conservatrice",
+    "url": "https://www.youtube.com/@Radio_Courtoisie_",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCwMmzwcfD-0RF19DkV7rZmw"
+  },
+  {
+    "nom": "Omerta",
+    "orientation": "géopolitique / souverainiste",
+    "url": "https://www.youtube.com/@omertamediaoff",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UC3lacWBPVK-JfmGyyHx4AAw"
+  },
+  {
+    "nom": "Off Investigation",
+    "orientation": "investigation / critique",
+    "url": "https://www.youtube.com/@OffInvestigation",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCEFGCs68E9Vr5te5qZuJsbg"
+  },
+  {
+    "nom": "Franceinfo",
+    "orientation": "service public / actualité",
+    "url": "https://www.youtube.com/@franceinfo",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCO6K_kkdP-lnSCiO3tPx7WA"
   },
   {
     "nom": "France 24",
@@ -138,6 +378,18 @@
     "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCJE3Mi77VYiirkGW_l_SpGQ"
   },
   {
+    "nom": "Arte : reportages : youtube",
+    "orientation": "culture / société / Europe",
+    "url": "https://www.youtube.com/playlist?list=PLCwXWOyIR22tgYxQjf5Ca4jQQrhauzpQN",
+    "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PLCwXWOyIR22tgYxQjf5Ca4jQQrhauzpQN"
+  },
+  {
+    "nom": "Arte : youtube",
+    "orientation": "culture / société / Europe",
+    "url": "https://www.youtube.com/channel/UCL_cZf5sHKQHMRIEax5o3sg",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCL_cZf5sHKQHMRIEax5o3sg"
+  },
+  {
     "nom": "HugoDécrypte",
     "orientation": "actualité / jeunesse",
     "url": "https://www.youtube.com/@hugodecrypteactus",
@@ -174,22 +426,16 @@
     "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UC8EzKGkEiusTm7g0mTfkWkg"
   },
   {
-    "nom": "Quotidien",
-    "orientation": "actualité / satire / centre-gauche",
-    "url": "https://www.youtube.com/@QuotidienTMC",
-    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCpi-4daExRSchtsJzO06rwA"
-  },
-  {
-    "nom": "France Inter",
-    "orientation": "service public / centre-gauche",
-    "url": "https://www.youtube.com/@franceinter",
-    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCJldRgT_D7Am-ErRHQZ90uw"
-  },
-  {
     "nom": "France Culture",
     "orientation": "service public / culture / idées",
     "url": "https://www.youtube.com/@franceculture",
     "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCd5DKToXYTKAQ6khzewww2g"
+  },
+  {
+    "nom": "France Culture : Les Matins de France Culture : youtube",
+    "orientation": "service public / culture / idées",
+    "url": "https://www.youtube.com/playlist?list=PLKpTasoeXDroMCMte_GTmH-UaRvUg6aXj",
+    "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PLKpTasoeXDroMCMte_GTmH-UaRvUg6aXj"
   },
   {
     "nom": "BFMTV",
@@ -204,22 +450,22 @@
     "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCewhc0fvja891XkpIPGRMxQ"
   },
   {
-    "nom": "CNEWS",
-    "orientation": "droite / info continue",
-    "url": "https://www.youtube.com/@CNEWS",
-    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCciBAhIME9MQEmGbBPnh44g"
+    "nom": "LCI : 22H Rochebin : youtube",
+    "orientation": "info continue",
+    "url": "https://www.youtube.com/playlist?list=PLdzIP_iC3tqsuQfScT5i2G1FPXfsrwSxH",
+    "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PLdzIP_iC3tqsuQfScT5i2G1FPXfsrwSxH"
   },
   {
-    "nom": "Europe 1",
-    "orientation": "radio / droite-centre-droit",
-    "url": "https://www.youtube.com/@Europe1",
-    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCIMGfEAERXjmWwQeg15BFsg"
+    "nom": "LCI : 24 heures Pujadas : youtube",
+    "orientation": "info continue",
+    "url": "https://www.youtube.com/channel/UC5U7WD3gB9hLcGSqQjSObYg",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UC5U7WD3gB9hLcGSqQjSObYg"
   },
   {
-    "nom": "Sud Radio",
-    "orientation": "droite / débats",
-    "url": "https://www.youtube.com/@SudRadioOfficiel",
-    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCESTwDXpoMgiYBHipMdKTkQ"
+    "nom": "LCI : Brunet sans filtre : youtube",
+    "orientation": "info continue",
+    "url": "https://www.youtube.com/playlist?list=PLdzIP_iC3tqtmIyNEoT2v3SJWNpmRvypq",
+    "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PLdzIP_iC3tqtmIyNEoT2v3SJWNpmRvypq"
   },
   {
     "nom": "RTL",
@@ -240,70 +486,28 @@
     "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCfHn_8-ehdem86fEvlFg-Gw"
   },
   {
+    "nom": "Le Parisien : Code source : youtube",
+    "orientation": "généraliste / populaire",
+    "url": "https://www.youtube.com/playlist?list=PLw6E42YuVQ-GxPXzJP4oDjy7kaOVeiNti",
+    "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PLw6E42YuVQ-GxPXzJP4oDjy7kaOVeiNti"
+  },
+  {
     "nom": "20 Minutes",
     "orientation": "généraliste / populaire",
     "url": "https://www.youtube.com/@20MinutesFrance",
     "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCD25QI36ly-8hWm9OPOz7aw"
   },
   {
+    "nom": "20 minutes : youtube",
+    "orientation": "généraliste populaire",
+    "url": "https://www.youtube.com/channel/UCMy7SKPTAx7Oi98zXLrPeiQ",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCMy7SKPTAx7Oi98zXLrPeiQ"
+  },
+  {
     "nom": "Brut",
     "orientation": "société / jeunesse",
     "url": "https://www.youtube.com/@BrutFR",
     "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCSKdvgqdnj72_SLggp7BDTg"
-  },
-  {
-    "nom": "Le Figaro",
-    "orientation": "droite / généraliste",
-    "url": "https://www.youtube.com/@LeFigaro",
-    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCCDz_XYeKWd0OIyjp95dqyQ"
-  },
-  {
-    "nom": "Le Point",
-    "orientation": "centre-droit",
-    "url": "https://www.youtube.com/@LePoint",
-    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCQd5LYcykaFeZtjDaP3bNSA"
-  },
-  {
-    "nom": "L'Express",
-    "orientation": "centre / centre-droit",
-    "url": "https://www.youtube.com/@LExpress",
-    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCp2kK3DyhpgFOdILF3BBC9A"
-  },
-  {
-    "nom": "Marianne",
-    "orientation": "républicain / souverainiste",
-    "url": "https://www.youtube.com/@MarianneTV",
-    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UC4V5osIDMjFwtCRxMm2e0LA"
-  },
-  {
-    "nom": "Valeurs actuelles",
-    "orientation": "droite / conservateur",
-    "url": "https://www.youtube.com/@VAplusmedia",
-    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCnIWNujSpiiuH29-TBCz9aw"
-  },
-  {
-    "nom": "Frontières",
-    "orientation": "droite / identitaire",
-    "url": "https://www.youtube.com/@Frontieresoff",
-    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCysox6U9HnqgCiJ-Pd-Jy_w"
-  },
-  {
-    "nom": "Boulevard Voltaire",
-    "orientation": "droite / conservateur",
-    "url": "https://www.youtube.com/@BoulevardVoltaire_",
-    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCx9ygIxPfYR05kY92KzvbvA"
-  },
-  {
-    "nom": "Causeur",
-    "orientation": "droite / souverainiste",
-    "url": "https://www.youtube.com/@causeurfr",
-    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCLSoWZjCGrdZo7ltIR3lEHg"
-  },
-  {
-    "nom": "Radio Courtoisie",
-    "orientation": "droite conservatrice",
-    "url": "https://www.youtube.com/@Radio_Courtoisie_",
-    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCwMmzwcfD-0RF19DkV7rZmw"
   },
   {
     "nom": "Le Dessous des cartes",
@@ -330,16 +534,16 @@
     "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCPiye7__vJMKdBxebtERd7g"
   },
   {
-    "nom": "Omerta",
-    "orientation": "géopolitique / souverainiste",
-    "url": "https://www.youtube.com/@omertamediaoff",
-    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UC3lacWBPVK-JfmGyyHx4AAw"
-  },
-  {
     "nom": "C à vous",
     "orientation": "débat / service public",
     "url": "https://www.youtube.com/@CaVousFrance5",
     "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCzMZUE_W7iorKjQWUxhsuBg"
+  },
+  {
+    "nom": "C à vous : youtube",
+    "orientation": "débat / service public",
+    "url": "https://www.youtube.com/channel/UCejTWYquMXD_MFHRZiqo_Aw",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCejTWYquMXD_MFHRZiqo_Aw"
   },
   {
     "nom": "Stade 2",
@@ -354,27 +558,513 @@
     "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCHQda5vLxrH0Ff0I0kMq4zw"
   },
   {
-    "nom": "Les Jours",
-    "orientation": "investigation / gauche",
-    "url": "https://www.youtube.com/@Lesjours",
-    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCMtcnJOohHWDg0ohdHbUY2Q"
+    "nom": "AFP - Agence France-Presse : agence : youtube",
+    "orientation": "agence / généraliste",
+    "url": "https://www.youtube.com/channel/UCdZ9tvVQEJxnR77qWA_UcFA",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCdZ9tvVQEJxnR77qWA_UcFA"
   },
   {
-    "nom": "L'Obs",
-    "orientation": "centre-gauche",
-    "url": "https://www.youtube.com/@lenouvelobs",
-    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCvG0OKqvCFMYTiJ1Rnd5XBQ"
+    "nom": "AFP - Agence France-Presse : Fact-check, vrai ou faux : youtube",
+    "orientation": "agence / fact-checking",
+    "url": "https://www.youtube.com/playlist?list=PLAo5j5U8Vm-unb62vXAKaStKUQdA1qPKC",
+    "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PLAo5j5U8Vm-unb62vXAKaStKUQdA1qPKC"
   },
   {
-    "nom": "POLITICO Europe",
-    "orientation": "européen / libéral",
-    "url": "https://www.youtube.com/@POLITICO",
-    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCgjtvMmHXbutALaw9XzRkAg"
+    "nom": "AFP - Agence France-Presse : L'actu dans le monde : youtube",
+    "orientation": "agence / international",
+    "url": "https://www.youtube.com/playlist?list=PLAo5j5U8Vm-thbrYLUFFSg4WJ1P-RWfRd",
+    "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PLAo5j5U8Vm-thbrYLUFFSg4WJ1P-RWfRd"
   },
   {
-    "nom": "Le Monde Diplomatique",
-    "orientation": "gauche",
-    "url": "https://www.youtube.com/feeds/videos.xml?channel_id=UCJZ-hXrLYUFHBnkM0Vb2mqw",
-    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCJZ-hXrLYUFHBnkM0Vb2mqw"
+    "nom": "AFP - Agence France-Presse : L'actu en france : youtube",
+    "orientation": "agence / France",
+    "url": "https://www.youtube.com/playlist?list=PLAo5j5U8Vm-saiwblcl9nzlUhqVYB1qGo",
+    "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PLAo5j5U8Vm-saiwblcl9nzlUhqVYB1qGo"
+  },
+  {
+    "nom": "AFP - Agence France-Presse : Les décryptages : youtube",
+    "orientation": "agence / décryptage",
+    "url": "https://www.youtube.com/playlist?list=PLAo5j5U8Vm-sDNg7a9v2AC8z8MYJB9zW2",
+    "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PLAo5j5U8Vm-sDNg7a9v2AC8z8MYJB9zW2"
+  },
+  {
+    "nom": "AFP - Agence France-Presse : Replay : youtube",
+    "orientation": "agence / replay",
+    "url": "https://www.youtube.com/playlist?list=PLAo5j5U8Vm-uG-oySknRa8Zebd_K26N-O",
+    "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PLAo5j5U8Vm-uG-oySknRa8Zebd_K26N-O"
+  },
+  {
+    "nom": "AFP - Agence France-Presse : Sur le fil : youtube",
+    "orientation": "agence / actualité",
+    "url": "https://www.youtube.com/playlist?list=PLAo5j5U8Vm-swNTARG2U-gUQy0gxv_pyz",
+    "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PLAo5j5U8Vm-swNTARG2U-gUQy0gxv_pyz"
+  },
+  {
+    "nom": "Actu direct : youtube",
+    "orientation": "généraliste / neutre",
+    "url": "https://www.youtube.com/channel/UCE0hS4xTxjEWk5vjG6J3-bQ",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCE0hS4xTxjEWk5vjG6J3-bQ"
+  },
+  {
+    "nom": "CLPress : youtube",
+    "orientation": "actualité / terrain",
+    "url": "https://www.youtube.com/channel/UChjC3WOBMIm9QVVSEBtIkWA",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UChjC3WOBMIm9QVVSEBtIkWA"
+  },
+  {
+    "nom": "Courrier international : Courrier Stories : youtube",
+    "orientation": "international",
+    "url": "https://www.youtube.com/playlist?list=PLufFRbsXXRoMoRC_cfYjrhF8o_u2l5BOY",
+    "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PLufFRbsXXRoMoRC_cfYjrhF8o_u2l5BOY"
+  },
+  {
+    "nom": "Courrier international : youtube",
+    "orientation": "international",
+    "url": "https://www.youtube.com/channel/UC7xph2qAEotmyUPJbFVI95w",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UC7xph2qAEotmyUPJbFVI95w"
+  },
+  {
+    "nom": "Equinox : youtube",
+    "orientation": "généraliste / neutre",
+    "url": "https://www.youtube.com/channel/UClML-IgcPXomr108sJzSIWg",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UClML-IgcPXomr108sJzSIWg"
+  },
+  {
+    "nom": "Euronews - FR : l'info du jour : youtube",
+    "orientation": "international / européen",
+    "url": "https://www.youtube.com/playlist?list=PLKEy1unUi6hWfyfSJtH4tL5r5JKBBTQuj",
+    "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PLKEy1unUi6hWfyfSJtH4tL5r5JKBBTQuj"
+  },
+  {
+    "nom": "France Info : C quoi l'info ? : youtube",
+    "orientation": "service public / actualité",
+    "url": "https://www.youtube.com/playlist?list=PLy6xQyIMX0cHBWEYkz5EMLMyCnK1sqCps",
+    "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PLy6xQyIMX0cHBWEYkz5EMLMyCnK1sqCps"
+  },
+  {
+    "nom": "France Info : faits-divers : youtube",
+    "orientation": "service public / faits divers",
+    "url": "https://www.youtube.com/playlist?list=PLg6GanYvTasVhrbAjdVFu8zzUVCUINP8-",
+    "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PLg6GanYvTasVhrbAjdVFu8zzUVCUINP8-"
+  },
+  {
+    "nom": "France Info : France 2 : Télé Matin : youtube",
+    "orientation": "service public / actualité",
+    "url": "https://www.youtube.com/channel/UCGxEJXuCo8lXti1A3akxyjg",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCGxEJXuCo8lXti1A3akxyjg"
+  },
+  {
+    "nom": "France Info : Journal de 8h30 : youtube",
+    "orientation": "service public / actualité",
+    "url": "https://www.youtube.com/playlist?list=PLg6GanYvTasWQv6EPyPInaYhtyFRcht3r",
+    "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PLg6GanYvTasWQv6EPyPInaYhtyFRcht3r"
+  },
+  {
+    "nom": "France Info : Le talk : youtube",
+    "orientation": "service public / débat",
+    "url": "https://www.youtube.com/playlist?list=PLg6GanYvTasWcjznplB3ixzJktXxzjt6J",
+    "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PLg6GanYvTasWcjznplB3ixzJktXxzjt6J"
+  },
+  {
+    "nom": "France Info : Les sujets du 20h : youtube",
+    "orientation": "service public / actualité",
+    "url": "https://www.youtube.com/playlist?list=PLg6GanYvTasUlJYuk2RWi38V0iEyeeyQ4",
+    "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PLg6GanYvTasUlJYuk2RWi38V0iEyeeyQ4"
+  },
+  {
+    "nom": "France Info : Mission info : youtube",
+    "orientation": "service public / actualité",
+    "url": "https://www.youtube.com/playlist?list=PLg6GanYvTasVkP41_Hr18jVP8AjyTFUvl",
+    "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PLg6GanYvTasVkP41_Hr18jVP8AjyTFUvl"
+  },
+  {
+    "nom": "France Info : monde : youtube",
+    "orientation": "service public / international",
+    "url": "https://www.youtube.com/playlist?list=PLg6GanYvTasUwI0n690zUqKFBJgdtV36s",
+    "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PLg6GanYvTasUwI0n690zUqKFBJgdtV36s"
+  },
+  {
+    "nom": "France télévision : youtube",
+    "orientation": "service public",
+    "url": "https://www.youtube.com/channel/UCCBR4hxc0hMbWs0IfBljQMg",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCCBR4hxc0hMbWs0IfBljQMg"
+  },
+  {
+    "nom": "France24 : Derrière l'image : youtube",
+    "orientation": "international / service public",
+    "url": "https://www.youtube.com/playlist?list=PLCnUnV3yCIYtV5DT0Ozj_HUFWFcupIcst",
+    "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PLCnUnV3yCIYtV5DT0Ozj_HUFWFcupIcst"
+  },
+  {
+    "nom": "France24 : L'instant mobile : youtube",
+    "orientation": "international / service public",
+    "url": "https://www.youtube.com/playlist?list=PLCnUnV3yCIYvd9eNsuU5ijWBvylVDc_0r",
+    "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PLCnUnV3yCIYvd9eNsuU5ijWBvylVDc_0r"
+  },
+  {
+    "nom": "HuffPost : international : youtube",
+    "orientation": "généraliste / international",
+    "url": "https://www.youtube.com/playlist?list=PLluW1axwrkMM3msTlZjiKFck55PsgRosD",
+    "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PLluW1axwrkMM3msTlZjiKFck55PsgRosD"
+  },
+  {
+    "nom": "HuffPost : On explique On raconte : youtube",
+    "orientation": "généraliste / explication",
+    "url": "https://www.youtube.com/playlist?list=PLluW1axwrkMMjvGIQAUtGKEueATZrgVOS",
+    "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PLluW1axwrkMMjvGIQAUtGKEueATZrgVOS"
+  },
+  {
+    "nom": "HuffPost : youtube",
+    "orientation": "généraliste",
+    "url": "https://www.youtube.com/channel/UC9GGzAhhvhJO1hL10-BcgNA",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UC9GGzAhhvhJO1hL10-BcgNA"
+  },
+  {
+    "nom": "i-télé : youtube",
+    "orientation": "info continue",
+    "url": "https://www.youtube.com/channel/UCXKJrYczY2_fJEZgFPGY0HQ",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCXKJrYczY2_fJEZgFPGY0HQ"
+  },
+  {
+    "nom": "ici : youtube",
+    "orientation": "service public / local",
+    "url": "https://www.youtube.com/channel/UC5WjQI_NY-PODOQ3kTewebA",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UC5WjQI_NY-PODOQ3kTewebA"
+  },
+  {
+    "nom": "La Croix : youtube",
+    "orientation": "centre / chrétien-social",
+    "url": "https://www.youtube.com/channel/UCtJk8WNzhAu37r-QBmY7pRA",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCtJk8WNzhAu37r-QBmY7pRA"
+  },
+  {
+    "nom": "La Voix du Nord : youtube",
+    "orientation": "presse régionale",
+    "url": "https://www.youtube.com/channel/UCmHw3H5Eq05tksL0Df-XP_A",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCmHw3H5Eq05tksL0Df-XP_A"
+  },
+  {
+    "nom": "Nice-Matin : Nos reportages : youtube",
+    "orientation": "presse régionale",
+    "url": "https://www.youtube.com/playlist?list=PLw3LUnHXyTqXuWEWeCAxPjrCtRDRTAcjc",
+    "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PLw3LUnHXyTqXuWEWeCAxPjrCtRDRTAcjc"
+  },
+  {
+    "nom": "Ouest-France : youtube",
+    "orientation": "presse régionale",
+    "url": "https://www.youtube.com/channel/UCrpsdF7UreiF-2r5Jp0YpRg",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCrpsdF7UreiF-2r5Jp0YpRg"
+  },
+  {
+    "nom": "Radio Classique : youtube",
+    "orientation": "radio / généraliste",
+    "url": "https://www.youtube.com/channel/UCPzRiKcU-bvBMZ08OepxU4w",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCPzRiKcU-bvBMZ08OepxU4w"
+  },
+  {
+    "nom": "Radio France : cellule investigation : youtube",
+    "orientation": "service public / investigation",
+    "url": "https://www.youtube.com/channel/UCsDGtTOihftvLMX_86ewDQQ",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCsDGtTOihftvLMX_86ewDQQ"
+  },
+  {
+    "nom": "Radio France : youtube",
+    "orientation": "service public / radio",
+    "url": "https://www.youtube.com/channel/UCW7xZO5J2A2e2PKEkmwcoSQ",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCW7xZO5J2A2e2PKEkmwcoSQ"
+  },
+  {
+    "nom": "RFI : international : youtube",
+    "orientation": "international / service public",
+    "url": "https://www.youtube.com/playlist?list=PLi_zbgj_QX4rPY_YT0gU1SLPhqOYXssOP",
+    "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PLi_zbgj_QX4rPY_YT0gU1SLPhqOYXssOP"
+  },
+  {
+    "nom": "RFI : youtube",
+    "orientation": "international / service public",
+    "url": "https://www.youtube.com/channel/UCm4fSpMpPIZ9z6KHoezLUAg",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCm4fSpMpPIZ9z6KHoezLUAg"
+  },
+  {
+    "nom": "Slate : youtube",
+    "orientation": "généraliste / société",
+    "url": "https://www.youtube.com/channel/UC1yLBhh8eDSPm-_Hgz8AvNA",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UC1yLBhh8eDSPm-_Hgz8AvNA"
+  },
+  {
+    "nom": "Sud Ouest : youtube",
+    "orientation": "presse régionale",
+    "url": "https://www.youtube.com/channel/UC7PX-myPpcT4YfZEWqZxGGg",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UC7PX-myPpcT4YfZEWqZxGGg"
+  },
+  {
+    "nom": "TF1 : infos : youtube",
+    "orientation": "généraliste / info",
+    "url": "https://www.youtube.com/channel/UCsrPUA0ZSDCNZC6wyRlR7ZA",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCsrPUA0ZSDCNZC6wyRlR7ZA"
+  },
+  {
+    "nom": "TF1 : youtube",
+    "orientation": "généraliste",
+    "url": "https://www.youtube.com/channel/UC26vXhYofHiZDM2ar1zUuwQ",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UC26vXhYofHiZDM2ar1zUuwQ"
+  },
+  {
+    "nom": "TV5 : L'invité : youtube",
+    "orientation": "francophonie / international",
+    "url": "https://www.youtube.com/channel/UCtyZ1cGRbRnTGKok6RU9CwA",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCtyZ1cGRbRnTGKok6RU9CwA"
+  },
+  {
+    "nom": "TV5 : youtube",
+    "orientation": "francophonie / international",
+    "url": "https://www.youtube.com/channel/UCJsZHPR1jqKu-soDmKNMBFg",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCJsZHPR1jqKu-soDmKNMBFg"
+  },
+  {
+    "nom": "VUFranceTV : youtube",
+    "orientation": "service public / archive",
+    "url": "https://www.youtube.com/channel/UCqt99sKYNTxqlHtzV9weUYA",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCqt99sKYNTxqlHtzV9weUYA"
+  },
+  {
+    "nom": "Chaîne YouTube UCGC07JMeg-0hxVqdaUXOYIQ",
+    "orientation": "généraliste / neutre",
+    "url": "https://www.youtube.com/channel/UCGC07JMeg-0hxVqdaUXOYIQ",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCGC07JMeg-0hxVqdaUXOYIQ"
+  },
+  {
+    "nom": "Chaîne YouTube UC9gcw8-7IzzaosI4c0KCP0g",
+    "orientation": "généraliste / neutre",
+    "url": "https://www.youtube.com/channel/UC9gcw8-7IzzaosI4c0KCP0g",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UC9gcw8-7IzzaosI4c0KCP0g"
+  },
+  {
+    "nom": "Playlist YouTube PLS7ViFDG-8cjH7sruWlJ6zzSns4EviwKD",
+    "orientation": "généraliste / neutre",
+    "url": "https://www.youtube.com/playlist?list=PLS7ViFDG-8cjH7sruWlJ6zzSns4EviwKD",
+    "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PLS7ViFDG-8cjH7sruWlJ6zzSns4EviwKD"
+  },
+  {
+    "nom": "Chaîne YouTube UCQ1BSknkRJGjVspmT_WejYA",
+    "orientation": "généraliste / neutre",
+    "url": "https://www.youtube.com/channel/UCQ1BSknkRJGjVspmT_WejYA",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCQ1BSknkRJGjVspmT_WejYA"
+  },
+  {
+    "nom": "Chaîne YouTube UCQcas4dulTzVUrAo0fMfWWg",
+    "orientation": "généraliste / neutre",
+    "url": "https://www.youtube.com/channel/UCQcas4dulTzVUrAo0fMfWWg",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCQcas4dulTzVUrAo0fMfWWg"
+  },
+  {
+    "nom": "Chaîne YouTube UC76pM1Auet3YolJ5vYLeINQ",
+    "orientation": "généraliste / neutre",
+    "url": "https://www.youtube.com/channel/UC76pM1Auet3YolJ5vYLeINQ",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UC76pM1Auet3YolJ5vYLeINQ"
+  },
+  {
+    "nom": "Chaîne YouTube UCCauEjHzPXxGer8af3u4x5g",
+    "orientation": "généraliste / neutre",
+    "url": "https://www.youtube.com/channel/UCCauEjHzPXxGer8af3u4x5g",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCCauEjHzPXxGer8af3u4x5g"
+  },
+  {
+    "nom": "Chaîne YouTube UC4M0_pdWJeWRrHigdXOJ0AQ",
+    "orientation": "généraliste / neutre",
+    "url": "https://www.youtube.com/channel/UC4M0_pdWJeWRrHigdXOJ0AQ",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UC4M0_pdWJeWRrHigdXOJ0AQ"
+  },
+  {
+    "nom": "Chaîne YouTube UCDvIeLuH5wmndQ55cXeKtXw",
+    "orientation": "généraliste / neutre",
+    "url": "https://www.youtube.com/channel/UCDvIeLuH5wmndQ55cXeKtXw",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCDvIeLuH5wmndQ55cXeKtXw"
+  },
+  {
+    "nom": "Chaîne YouTube UCCLNdYtCSae8WgQCfciLIpQ",
+    "orientation": "généraliste / neutre",
+    "url": "https://www.youtube.com/channel/UCCLNdYtCSae8WgQCfciLIpQ",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCCLNdYtCSae8WgQCfciLIpQ"
+  },
+  {
+    "nom": "Chaîne YouTube UCHCwlzgXqqjrNxfVOmLsU5w",
+    "orientation": "généraliste / neutre",
+    "url": "https://www.youtube.com/channel/UCHCwlzgXqqjrNxfVOmLsU5w",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCHCwlzgXqqjrNxfVOmLsU5w"
+  },
+  {
+    "nom": "Chaîne YouTube UC7sXGI8p8PvKosLWagkK9wQ",
+    "orientation": "généraliste / neutre",
+    "url": "https://www.youtube.com/channel/UC7sXGI8p8PvKosLWagkK9wQ",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UC7sXGI8p8PvKosLWagkK9wQ"
+  },
+  {
+    "nom": "Chaîne YouTube UCMAT1VA7o6bD6qnpBBZ_New",
+    "orientation": "généraliste / neutre",
+    "url": "https://www.youtube.com/channel/UCMAT1VA7o6bD6qnpBBZ_New",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCMAT1VA7o6bD6qnpBBZ_New"
+  },
+  {
+    "nom": "Chaîne YouTube UCRAbwEqGDnUBt_gPOkplGBA",
+    "orientation": "généraliste / neutre",
+    "url": "https://www.youtube.com/channel/UCRAbwEqGDnUBt_gPOkplGBA",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCRAbwEqGDnUBt_gPOkplGBA"
+  },
+  {
+    "nom": "Chaîne YouTube UCq-8pBMM3I40QlrhM9ExXJQ",
+    "orientation": "généraliste / neutre",
+    "url": "https://www.youtube.com/channel/UCq-8pBMM3I40QlrhM9ExXJQ",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCq-8pBMM3I40QlrhM9ExXJQ"
+  },
+  {
+    "nom": "Chaîne YouTube UC9hHeywcPBnLglqnQRaNShQ",
+    "orientation": "généraliste / neutre",
+    "url": "https://www.youtube.com/channel/UC9hHeywcPBnLglqnQRaNShQ",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UC9hHeywcPBnLglqnQRaNShQ"
+  },
+  {
+    "nom": "Chaîne YouTube UCVqaxIdcM0EpQ2QSzKHvqeg",
+    "orientation": "généraliste / neutre",
+    "url": "https://www.youtube.com/channel/UCVqaxIdcM0EpQ2QSzKHvqeg",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCVqaxIdcM0EpQ2QSzKHvqeg"
+  },
+  {
+    "nom": "Chaîne YouTube UCL95UhlTaJ5YNJczY5I-X5A",
+    "orientation": "généraliste / neutre",
+    "url": "https://www.youtube.com/channel/UCL95UhlTaJ5YNJczY5I-X5A",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCL95UhlTaJ5YNJczY5I-X5A"
+  },
+  {
+    "nom": "Chaîne YouTube UCq-CfAlGjCuXyBVTzQgWYRg",
+    "orientation": "généraliste / neutre",
+    "url": "https://www.youtube.com/channel/UCq-CfAlGjCuXyBVTzQgWYRg",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCq-CfAlGjCuXyBVTzQgWYRg"
+  },
+  {
+    "nom": "Chaîne YouTube UC2PAw2DM5hDTO-6CS7JjZMQ",
+    "orientation": "généraliste / neutre",
+    "url": "https://www.youtube.com/channel/UC2PAw2DM5hDTO-6CS7JjZMQ",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UC2PAw2DM5hDTO-6CS7JjZMQ"
+  },
+  {
+    "nom": "Chaîne YouTube UC6bn_ABjeTwbJFGFMQbZFlw",
+    "orientation": "généraliste / neutre",
+    "url": "https://www.youtube.com/channel/UC6bn_ABjeTwbJFGFMQbZFlw",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UC6bn_ABjeTwbJFGFMQbZFlw"
+  },
+  {
+    "nom": "Chaîne YouTube UCcZsA3n_gUHsv1WBI3iFdow",
+    "orientation": "généraliste / neutre",
+    "url": "https://www.youtube.com/channel/UCcZsA3n_gUHsv1WBI3iFdow",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCcZsA3n_gUHsv1WBI3iFdow"
+  },
+  {
+    "nom": "Playlist YouTube PL0H7ONNEUnnszBeVGyANOrNQKh6hhKGKN",
+    "orientation": "généraliste / neutre",
+    "url": "https://www.youtube.com/playlist?list=PL0H7ONNEUnnszBeVGyANOrNQKh6hhKGKN",
+    "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PL0H7ONNEUnnszBeVGyANOrNQKh6hhKGKN"
+  },
+  {
+    "nom": "Playlist YouTube PL0H7ONNEUnnuPYjufRNlcTN5DpZfn9UXS",
+    "orientation": "généraliste / neutre",
+    "url": "https://www.youtube.com/playlist?list=PL0H7ONNEUnnuPYjufRNlcTN5DpZfn9UXS",
+    "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PL0H7ONNEUnnuPYjufRNlcTN5DpZfn9UXS"
+  },
+  {
+    "nom": "Playlist YouTube PL0H7ONNEUnnsCnhhDtyOHwrNbX7ziCkan",
+    "orientation": "généraliste / neutre",
+    "url": "https://www.youtube.com/playlist?list=PL0H7ONNEUnnsCnhhDtyOHwrNbX7ziCkan",
+    "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PL0H7ONNEUnnsCnhhDtyOHwrNbX7ziCkan"
+  },
+  {
+    "nom": "Chaîne YouTube UCZFvhyex564XUhyhaekkg7g",
+    "orientation": "généraliste / neutre",
+    "url": "https://www.youtube.com/channel/UCZFvhyex564XUhyhaekkg7g",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCZFvhyex564XUhyhaekkg7g"
+  },
+  {
+    "nom": "Chaîne YouTube UCgy0wnJan4JwrssP_BZPq3A",
+    "orientation": "généraliste / neutre",
+    "url": "https://www.youtube.com/channel/UCgy0wnJan4JwrssP_BZPq3A",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCgy0wnJan4JwrssP_BZPq3A"
+  },
+  {
+    "nom": "Chaîne YouTube UCbbmy1wFvL1Xq0G9I-mLtQg",
+    "orientation": "généraliste / neutre",
+    "url": "https://www.youtube.com/channel/UCbbmy1wFvL1Xq0G9I-mLtQg",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCbbmy1wFvL1Xq0G9I-mLtQg"
+  },
+  {
+    "nom": "Playlist YouTube PL9wDNu3ZrVQ5iAj77ot9CnDYWnZbbcc5v",
+    "orientation": "généraliste / neutre",
+    "url": "https://www.youtube.com/playlist?list=PL9wDNu3ZrVQ5iAj77ot9CnDYWnZbbcc5v",
+    "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PL9wDNu3ZrVQ5iAj77ot9CnDYWnZbbcc5v"
+  },
+  {
+    "nom": "Playlist YouTube PL9wDNu3ZrVQ5NtNHF1dYQa0MdB2YYWoCF",
+    "orientation": "généraliste / neutre",
+    "url": "https://www.youtube.com/playlist?list=PL9wDNu3ZrVQ5NtNHF1dYQa0MdB2YYWoCF",
+    "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PL9wDNu3ZrVQ5NtNHF1dYQa0MdB2YYWoCF"
+  },
+  {
+    "nom": "Playlist YouTube PL9wDNu3ZrVQ5hRncHFA91UR3_1XlNZApX",
+    "orientation": "généraliste / neutre",
+    "url": "https://www.youtube.com/playlist?list=PL9wDNu3ZrVQ5hRncHFA91UR3_1XlNZApX",
+    "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PL9wDNu3ZrVQ5hRncHFA91UR3_1XlNZApX"
+  },
+  {
+    "nom": "Playlist YouTube PL9wDNu3ZrVQ4N-MrQP2hNlPgpt7KOW-2E",
+    "orientation": "généraliste / neutre",
+    "url": "https://www.youtube.com/playlist?list=PL9wDNu3ZrVQ4N-MrQP2hNlPgpt7KOW-2E",
+    "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PL9wDNu3ZrVQ4N-MrQP2hNlPgpt7KOW-2E"
+  },
+  {
+    "nom": "Playlist YouTube PL9wDNu3ZrVQ6y2SYIfOLTgDpjSbBxi-AE",
+    "orientation": "généraliste / neutre",
+    "url": "https://www.youtube.com/playlist?list=PL9wDNu3ZrVQ6y2SYIfOLTgDpjSbBxi-AE",
+    "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PL9wDNu3ZrVQ6y2SYIfOLTgDpjSbBxi-AE"
+  },
+  {
+    "nom": "Playlist YouTube PL9wDNu3ZrVQ5LgBk-IdeAf-bLLBGzivCl",
+    "orientation": "généraliste / neutre",
+    "url": "https://www.youtube.com/playlist?list=PL9wDNu3ZrVQ5LgBk-IdeAf-bLLBGzivCl",
+    "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PL9wDNu3ZrVQ5LgBk-IdeAf-bLLBGzivCl"
+  },
+  {
+    "nom": "Playlist YouTube PL9wDNu3ZrVQ4DktiNgLclEUeAjUtkLtFR",
+    "orientation": "généraliste / neutre",
+    "url": "https://www.youtube.com/playlist?list=PL9wDNu3ZrVQ4DktiNgLclEUeAjUtkLtFR",
+    "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PL9wDNu3ZrVQ4DktiNgLclEUeAjUtkLtFR"
+  },
+  {
+    "nom": "Chaîne YouTube UC45NsEyqTGMtOeEM-UvlTuQ",
+    "orientation": "généraliste / neutre",
+    "url": "https://www.youtube.com/channel/UC45NsEyqTGMtOeEM-UvlTuQ",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UC45NsEyqTGMtOeEM-UvlTuQ"
+  },
+  {
+    "nom": "Chaîne YouTube UCTFpJ5uRFY25i23Vd_--s8w",
+    "orientation": "généraliste / neutre",
+    "url": "https://www.youtube.com/channel/UCTFpJ5uRFY25i23Vd_--s8w",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCTFpJ5uRFY25i23Vd_--s8w"
+  },
+  {
+    "nom": "Chaîne YouTube UCmbhrKMU_X7Gi47bZEEajEQ",
+    "orientation": "généraliste / neutre",
+    "url": "https://www.youtube.com/channel/UCmbhrKMU_X7Gi47bZEEajEQ",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCmbhrKMU_X7Gi47bZEEajEQ"
+  },
+  {
+    "nom": "Chaîne YouTube UC0cT8BZdFUmC0vgr1XS7aPA",
+    "orientation": "généraliste / neutre",
+    "url": "https://www.youtube.com/channel/UC0cT8BZdFUmC0vgr1XS7aPA",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UC0cT8BZdFUmC0vgr1XS7aPA"
+  },
+  {
+    "nom": "Chaîne YouTube UCojmN0_VgImHjZ7326rReDQ",
+    "orientation": "généraliste / neutre",
+    "url": "https://www.youtube.com/channel/UCojmN0_VgImHjZ7326rReDQ",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCojmN0_VgImHjZ7326rReDQ"
   }
 ]

@@ -174,8 +174,10 @@ function scheduleOneCertamenPendingIdea(item) {
 
     let success = false;
     try {
-      const adminHeaders = await loginAgonAdminForCertamen("certamen-idées-ia");
-      success = await generateAndPostCertamenIdeas(match.debateId, match.question, match.positionA, match.positionB, adminHeaders);
+      success = await enqueueIdeaJob(match.debateId, async () => {
+        const adminHeaders = await loginAgonAdminForCertamen("certamen-idées-ia");
+        return generateAndPostCertamenIdeas(match.debateId, match.question, match.positionA, match.positionB, adminHeaders);
+      });
     } catch (err) {
       console.error("[certamen-idées-ia] Erreur reprise idée :", err.message);
     }
