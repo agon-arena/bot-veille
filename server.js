@@ -8,7 +8,7 @@ const {
 } = require("./certamen-auto-collect");
 const { renderAutoCollectCertamenWidgetHtml } = require("./certamen-auto-collect-widget");
 const { getCheckedCertamenPayloadsPreview, filterPublishableCertamenPayloads } = require("./certamen-payload-validation");
-const { publishReadyCertamenPayloadsToAgon, publishSingleCertamenPayloadToAgon } = require("./certamen-agon-publish");
+const { publishReadyCertamenPayloadsToAgon, publishSelectedCertamenSubjectsToAgon, publishSingleCertamenPayloadToAgon } = require("./certamen-agon-publish");
 const { resumeCertamenPendingIdeasOnStartup } = require("./certamen-ideas-seed");
 const { renderCertamenPublishWidgetHtml } = require("./certamen-publish-widget");
 
@@ -4873,14 +4873,27 @@ app.post("/certamen/publish-ready", requireMixteAuth, async (req, res) => {
   }
 });
 
-// Pendant Certamen de /send-to-agon : utilisé par le bouton individuel ".agon-btn" et par
-// "Tout générer" sur /certamen (cf. SEND_TO_AGON_ENDPOINT dans buildSubjectInteractionScriptHtml,
+// Pendant Certamen de /send-to-agon : utilisé par le bouton individuel ".agon-btn" sur
+// /certamen (cf. SEND_TO_AGON_ENDPOINT dans buildSubjectInteractionScriptHtml,
 // veille-mixte.js). Garantit le visuel "arène communauté" (creatorKey certamen-bot) au lieu
 // du chemin officiel veille mixte — jamais de bulle actu (storySelection forcé à null).
 app.post("/certamen/send-to-agon", requireMixteAuth, async (req, res) => {
   try {
     const result = await publishSingleCertamenPayloadToAgon(req.body || {});
     res.json(result);
+  } catch (err) {
+    res.status(500).json({ ok: false, error: err.message });
+  }
+});
+
+// "Tout générer" sur /certamen : publie directement les sujets sélectionnés à l'écran via
+// le pipeline Certamen (question/positions/thème déjà calculés à la collecte), sans
+// aucune régénération IA (pas de résumé/article). Sur la veille mixte, ce bouton reste
+// inchangé et utilise generateSubjectPipeline() côté client (article complet).
+app.post("/certamen/publish-selected", requireMixteAuth, async (req, res) => {
+  try {
+    const result = await publishSelectedCertamenSubjectsToAgon(req.body?.subjects || []);
+    res.json({ ok: true, ...result });
   } catch (err) {
     res.status(500).json({ ok: false, error: err.message });
   }

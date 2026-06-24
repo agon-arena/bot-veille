@@ -58,6 +58,35 @@ function getCheckedCertamenSubjects() {
   return matched.slice(0, MAX_CHECKED_SUBJECTS);
 }
 
+// Variante pilotée par le client (bouton "Tout générer" sur /certamen) : reçoit une liste
+// explicite de titres (les sujets cochés/affichés à l'écran) au lieu de dériver la
+// sélection de saved-subjects.json. Même source de vérité pour les champs IA
+// (subject.certamen.* de la dernière session), même cap à MAX_CHECKED_SUBJECTS.
+function getCertamenSubjectsByTitles(titles) {
+  const latestSession = loadLatestCertamenSession();
+  if (!latestSession || !Array.isArray(latestSession.subjects) || !latestSession.subjects.length) {
+    return [];
+  }
+
+  const certamenSubjectsByTitle = new Map(
+    latestSession.subjects.map((s) => [String(s.subject || "").trim(), s])
+  );
+  const savedByTitle = new Map(
+    loadSavedSubjectsForCertamen().map((s) => [String(s.subject || "").trim(), s])
+  );
+
+  const matched = [];
+  for (const rawTitle of Array.isArray(titles) ? titles : []) {
+    const title = String(rawTitle || "").trim();
+    if (!title) continue;
+    const certamenSubject = certamenSubjectsByTitle.get(title);
+    if (!certamenSubject) continue;
+    matched.push({ subject: certamenSubject, savedItem: savedByTitle.get(title) || null });
+  }
+
+  return matched.slice(0, MAX_CHECKED_SUBJECTS);
+}
+
 // Payload Agôn minimal : question + positions + thème, pas de résumé/article généré.
 // Priorité absolue à subject.certamen.* ; fallback prudent sur le sujet enregistré
 // (saved-subjects.json) ou le titre brut si un champ manque — jamais de nouvel appel IA.
@@ -111,5 +140,6 @@ function buildCertamenAgonPayload(subject, savedItem) {
 module.exports = {
   MAX_CHECKED_SUBJECTS,
   getCheckedCertamenSubjects,
+  getCertamenSubjectsByTitles,
   buildCertamenAgonPayload
 };

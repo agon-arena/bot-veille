@@ -20958,7 +20958,8 @@
   
   <script>
     const TOP10_BAR_SORTS = ["ranked","score"];
-    const AGON_THEMES = ["Politique","International","Économie - emploi","Société - éducation","Sciences - technologie","Climat - environnement","Justice - faits divers","Culture - modes","Philosophie - sciences sociales","Médias - divertissements","Sports - loisirs","Santé - bien-être","Vie personnelle - modes de vie","Espace jeunes"];
+    const CERTAMEN_MODE = true;
+    const AGON_THEMES =["Politique","International","Économie - emploi","Société - éducation","Sciences - technologie","Climat - environnement","Justice - faits divers","Culture - modes","Philosophie - sciences sociales","Médias - divertissements","Sports - loisirs","Santé - bien-être","Vie personnelle - modes de vie","Espace jeunes"];
     const AGON_THEME_ALIASES = {"Politique, économie et relations internationales":"Politique","Société, éducation et justice":"Société - éducation","Sciences, technologies et environnement":"Sciences - technologie","Culture, modes et médias":"Culture - modes","Santé, corps et bien-être":"Santé - bien-être","Sport, loisirs et passions":"Sports - loisirs","Espace jeunes (collégiens - lycéens)":"Espace jeunes","Économie / emploi":"Économie - emploi","Société / éducation":"Société - éducation","Sciences et technologie":"Sciences - technologie","Justice / faits divers":"Justice - faits divers","Culture - tendances":"Culture - modes","Vie personnelle et modes de vie":"Vie personnelle - modes de vie"};
     function normalizeAgonTheme(theme) {
       const value = String(theme || "").trim();
@@ -22960,6 +22961,55 @@
       return { status: "sent" };
     }
 
+    async function publishSelectedCertamenSubjects(subjects, generateBtn) {
+      const titles = subjects.map(s => s.querySelector("h3")?.textContent.trim()).filter(Boolean);
+      console.log("[Tout générer] " + titles.length + " sujet(s) — pipeline Certamen (publication directe)");
+      subjects.forEach(s => { s.classList.remove("batch-skipped", "batch-error"); s.querySelector(".batch-outcome")?.remove(); });
+      generateBtn.disabled = true;
+      generateBtn.textContent = "Publication en cours…";
+      try {
+        const res = await fetchWithTimeout("/certamen/publish-selected", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ subjects: titles }) });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok || data.ok === false) throw new Error(data.error || "Erreur publication Certamen");
+        const results = Array.isArray(data.results) ? data.results : [];
+        const byTitle = new Map(results.map(r => [r.subject, r]));
+        const outcomes = subjects.map((el, i) => {
+          const title = titles[i] || ("sujet " + (i + 1));
+          const r = byTitle.get(title);
+          if (!r) return { el, title, status: "error", error: "résultat manquant" };
+          if (r.ok && r.skipped) return { el, title, status: "skipped-sent" };
+          if (r.ok) return { el, title, status: "sent" };
+          return { el, title, status: "error", error: r.error };
+        });
+        outcomes.filter(o => o.status === "sent").forEach(o => {
+          const agonBtn = o.el.querySelector(".agon-btn");
+          if (agonBtn) { agonBtn.classList.add("sent"); agonBtn.textContent = "✓ Envoyé"; }
+        });
+        const sentCount = outcomes.filter(o => o.status === "sent").length;
+        const issues = outcomes.filter(o => o.status !== "sent");
+        issues.forEach(o => {
+          const isError = o.status === "error";
+          o.el.classList.add(isError ? "batch-error" : "batch-skipped");
+          const note = document.createElement("div");
+          note.className = "batch-outcome";
+          note.textContent = isError ? "⚠ Non envoyé — " + (o.error || "erreur inconnue") : "⏭ Non renvoyé : déjà envoyé";
+          o.el.prepend(note);
+        });
+        rehydratePersistentStates();
+        generateBtn.textContent = issues.length ? (sentCount + "/" + outcomes.length + " envoyés — " + issues.length + " non envoyé(s)") : "Tout générer";
+        if (issues.length) {
+          alert("Tout générer : " + sentCount + "/" + outcomes.length + " envoyé(s) vers Agôn.\n\nNon envoyé(s) :\n"
+            + issues.map(o => "• " + o.title + (o.status === "skipped-sent" ? " (déjà envoyé)" : " (" + (o.error || "erreur") + ")")).join("\n"));
+        }
+      } catch (err) {
+        console.error("[Tout générer] Erreur publication Certamen :", err.message);
+        alert("Erreur publication Certamen : " + err.message);
+        generateBtn.textContent = "Tout générer";
+      } finally {
+        generateBtn.disabled = false;
+      }
+    }
+
     document.addEventListener("click", async (e) => {
       if (!e.target.closest(".generate-all-btn")) return;
       const generateBtn = e.target.closest(".generate-all-btn");
@@ -22969,6 +23019,10 @@
         if (activeSession) subjects = [...activeSession.querySelectorAll(".subject")].filter(s => s.style.display !== "none");
       }
       if (subjects.length === 0) return;
+      if (CERTAMEN_MODE) {
+        await publishSelectedCertamenSubjects(subjects, generateBtn);
+        return;
+      }
       console.log("[Tout générer] " + subjects.length + " sujet(s) sélectionné(s)");
       subjects.forEach(s => { s.classList.remove("batch-skipped", "batch-error"); s.querySelector(".batch-outcome")?.remove(); });
       generateBtn.disabled = true;

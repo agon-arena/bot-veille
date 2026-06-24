@@ -20,7 +20,7 @@
 
 const fs = require("fs");
 const path = require("path");
-const { getCheckedCertamenPayloadsPreview, filterPublishableCertamenPayloads } = require("./certamen-payload-validation");
+const { getCheckedCertamenPayloadsPreview, getSelectedCertamenPayloadsPreview, filterPublishableCertamenPayloads } = require("./certamen-payload-validation");
 const { persistAndScheduleCertamenIdeas } = require("./certamen-ideas-seed");
 const { loginAgonAdminForCertamen } = require("./certamen-agon-admin-auth");
 
@@ -135,6 +135,92 @@ async function publishOnePayloadToAgon(payload) {
   throw new Error("Échec après nouvelles tentatives (rate-limit persistant)");
 }
 
+// Publie un payload déjà validé/nettoyé et enregistre son historique. Renvoie un outcome
+// normalisé { ok, skipped?, blocked?, debateId?, error? } — jamais d'exception : tout échec
+// réseau ou de garde-fou est capturé ici pour que l'appelant puisse traiter un lot entier
+// sans qu'une erreur sur un sujet n'interrompe les suivants.
+async function publishOnePayloadAndRecord(payload, ideasEntries) {
+  // Garde-fou absolu, vérifié juste avant l'envoi réseau : storySelection doit être
+  // strictement null. Ne devrait jamais se déclencher (déjà forcé en amont par
+  // validateAndCleanCertamenPayload), mais on bloque explicitement si jamais.
+  if (payload.storySelection !== null) {
+    console.error(`[certamen-publish] BLOQUÉ — storySelection non nul pour "${payload.subject}"`);
+    return { ok: false, blocked: true, error: "storySelection non nul — publication refusée" };
+  }
+
+  if (wasAlreadySentToAgon(payload.question)) {
+    console.log(`[certamen-publish] Déjà envoyé, ignoré : "${String(payload.subject || "").slice(0, 60)}"`);
+    return { ok: true, skipped: true, reason: "already_sent" };
+  }
+
+  try {
+    const data = await publishOnePayloadToAgon(payload);
+    const debateId = data.id || data.debateId || null;
+    console.log(`[certamen-publish] ✓ Publié (arène communauté) : "${String(payload.subject || "").slice(0, 60)}" (debateId=${debateId || "?"})`);
+
+    if (debateId) {
+      await tryAttachExtraSources(debateId, payload.links);
+    }
+
+    appendSentToAgonForCertamen({
+      subject: payload.subject,
+      question: payload.question,
+      positionA: payload.positionA,
+      positionB: payload.positionB,
+      theme: payload.theme,
+      resume: payload.resume,
+      sources: payload.sources,
+      links: payload.links,
+      storySelection: null,
+      arenaMode: payload.arenaMode,
+      origin: "certamen",
+      creatorKey: CERTAMEN_CREATOR_KEY,
+      debateId,
+      sentAt: new Date().toISOString()
+    });
+
+    if (debateId) {
+      ideasEntries.push({
+        debateId,
+        question: payload.question,
+        positionA: payload.arenaMode === "libre" ? "" : (payload.positionA || ""),
+        positionB: payload.arenaMode === "libre" ? "" : (payload.positionB || "")
+      });
+    }
+
+    return { ok: true, debateId };
+  } catch (err) {
+    console.error(`[certamen-publish] Erreur pour "${String(payload.subject || "").slice(0, 60)}" :`, err.message);
+    return { ok: false, error: err.message };
+  }
+}
+
+// Publie une liste de payloads déjà validés, en respectant la limite Agôn de 5
+// requêtes/60s sur /api/debates, puis programme les idées IA + voix groupées. Renvoie un
+// tableau d'outcomes dans le même ordre que `payloads`.
+async function publishPayloadsBatch(payloads) {
+  const ideasEntries = [];
+  const outcomes = [];
+
+  for (let i = 0; i < payloads.length; i += 1) {
+    if (i > 0) {
+      // Pause longue toutes les 5 publications, pause courte sinon.
+      await sleep(i % RATE_LIMIT_BATCH_SIZE === 0 ? RATE_LIMIT_WINDOW_PAUSE_MS : BETWEEN_CALLS_DELAY_MS);
+    }
+    outcomes.push(await publishOnePayloadAndRecord(payloads[i], ideasEntries));
+  }
+
+  if (ideasEntries.length) {
+    console.log(`[certamen-publish] Idées IA + voix programmées dans 10 minutes pour ${ideasEntries.length} arène(s)`);
+    persistAndScheduleCertamenIdeas(ideasEntries);
+  }
+
+  // Pas de notification push pour Certamen, contrairement à la veille mixte — demande
+  // explicite : seules les idées + voix sont reproduites, pas le broadcast.
+
+  return outcomes;
+}
+
 async function publishReadyCertamenPayloadsToAgon(options = {}) {
   const limit = Number.isInteger(options.limit) && options.limit > 0
     ? Math.min(options.limit, MAX_PUBLISH_SUBJECTS)
@@ -157,88 +243,65 @@ async function publishReadyCertamenPayloadsToAgon(options = {}) {
     return result;
   }
 
-  // Mêmes idées IA + voix + notification que la veille mixte, déclenchées 10 minutes
-  // après chaque publication réussie (cf. certamen-ideas-seed.js).
-  const ideasEntries = [];
-
-  for (let i = 0; i < readyPayloads.length; i += 1) {
+  const outcomes = await publishPayloadsBatch(readyPayloads);
+  outcomes.forEach((outcome, i) => {
     const payload = readyPayloads[i];
-
-    // Garde-fou absolu, vérifié juste avant l'envoi réseau : storySelection doit être
-    // strictement null. Ne devrait jamais se déclencher (déjà forcé en amont par
-    // validateAndCleanCertamenPayload), mais on bloque explicitement si jamais.
-    if (payload.storySelection !== null) {
-      console.error(`[certamen-publish] BLOQUÉ — storySelection non nul pour "${payload.subject}"`);
-      result.results.push({ subject: payload.subject, ok: false, error: "storySelection non nul — publication refusée" });
-      result.skipped.push(payload.subject);
-      continue;
-    }
-
-    if (wasAlreadySentToAgon(payload.question)) {
-      console.log(`[certamen-publish] Déjà envoyé, ignoré : "${String(payload.subject || "").slice(0, 60)}"`);
-      result.skipped.push(payload.subject);
-      result.results.push({ subject: payload.subject, ok: true, skipped: true, reason: "already_sent" });
-      continue;
-    }
-
-    if (i > 0) {
-      // Reste sous la limite Agôn de 5 requêtes/60s sur /api/debates : pause longue
-      // toutes les 5 publications, pause courte sinon.
-      await sleep(i % RATE_LIMIT_BATCH_SIZE === 0 ? RATE_LIMIT_WINDOW_PAUSE_MS : BETWEEN_CALLS_DELAY_MS);
-    }
-
-    try {
-      const data = await publishOnePayloadToAgon(payload);
-      const debateId = data.id || data.debateId || null;
-      console.log(`[certamen-publish] ✓ Publié (arène communauté) : "${String(payload.subject || "").slice(0, 60)}" (debateId=${debateId || "?"})`);
-
-      if (debateId) {
-        await tryAttachExtraSources(debateId, payload.links);
-      }
-
-      appendSentToAgonForCertamen({
-        subject: payload.subject,
-        question: payload.question,
-        positionA: payload.positionA,
-        positionB: payload.positionB,
-        theme: payload.theme,
-        resume: payload.resume,
-        sources: payload.sources,
-        links: payload.links,
-        storySelection: null,
-        arenaMode: payload.arenaMode,
-        origin: "certamen",
-        creatorKey: CERTAMEN_CREATOR_KEY,
-        debateId,
-        sentAt: new Date().toISOString()
-      });
-
-      result.publishedCount += 1;
-      result.results.push({ subject: payload.subject, ok: true, debateId });
-
-      if (debateId) {
-        ideasEntries.push({
-          debateId,
-          question: payload.question,
-          positionA: payload.arenaMode === "libre" ? "" : (payload.positionA || ""),
-          positionB: payload.arenaMode === "libre" ? "" : (payload.positionB || "")
-        });
-      }
-    } catch (err) {
-      console.error(`[certamen-publish] Erreur pour "${String(payload.subject || "").slice(0, 60)}" :`, err.message);
-      result.results.push({ subject: payload.subject, ok: false, error: err.message });
-    }
-  }
-
-  if (ideasEntries.length) {
-    console.log(`[certamen-publish] Idées IA + voix programmées dans 10 minutes pour ${ideasEntries.length} arène(s)`);
-    persistAndScheduleCertamenIdeas(ideasEntries);
-  }
-
-  // Pas de notification push pour Certamen, contrairement à la veille mixte — demande
-  // explicite : seules les idées + voix sont reproduites, pas le broadcast.
+    result.results.push({ subject: payload.subject, ...outcome });
+    if (outcome.ok && !outcome.skipped) result.publishedCount += 1;
+    if (outcome.skipped || outcome.blocked) result.skipped.push(payload.subject);
+  });
 
   return result;
+}
+
+// Pendant à usage unique de publishReadyCertamenPayloadsToAgon, mais piloté par une liste
+// explicite de titres envoyée par le client (bouton "Tout générer" sur /certamen, page
+// "sujets enregistrés") plutôt que par l'intersection globale avec saved-subjects.json.
+// Aucun appel IA : les champs question/positions/thème viennent uniquement de
+// subject.certamen.* déjà calculés à la collecte (cf. certamen-checked-subjects.js).
+// Renvoie un résultat par titre demandé, y compris pour les sujets introuvables, bloqués
+// ou à revoir, afin que le client puisse afficher un statut précis pour chacun.
+async function publishSelectedCertamenSubjectsToAgon(titles) {
+  const requestedTitles = (Array.isArray(titles) ? titles : [])
+    .map((t) => String(t || "").trim())
+    .filter(Boolean);
+
+  const preview = getSelectedCertamenPayloadsPreview(requestedTitles);
+  const previewByTitle = new Map(preview.items.map((item) => [item.subject, item]));
+
+  const readyAll = filterPublishableCertamenPayloads(preview.items);
+  const readyPayloads = readyAll.slice(0, MAX_PUBLISH_SUBJECTS);
+  const truncated = new Set(readyAll.slice(MAX_PUBLISH_SUBJECTS).map((p) => p.subject));
+
+  const outcomes = await publishPayloadsBatch(readyPayloads);
+  const outcomeByTitle = new Map(readyPayloads.map((payload, i) => [payload.subject, outcomes[i]]));
+
+  const results = requestedTitles.map((title) => {
+    const previewItem = previewByTitle.get(title);
+    if (!previewItem) {
+      return { subject: title, ok: false, error: "Sujet introuvable dans la dernière session Certamen" };
+    }
+    if (previewItem.status === "blocked") {
+      return { subject: title, ok: false, error: "Bloqué : " + previewItem.reasons.join(", ") };
+    }
+    if (previewItem.status === "needs_review") {
+      return { subject: title, ok: false, error: "À revoir : " + previewItem.reasons.join(", ") };
+    }
+    if (truncated.has(title)) {
+      return { subject: title, ok: false, error: `Limite de ${MAX_PUBLISH_SUBJECTS} publications par lot atteinte` };
+    }
+    const outcome = outcomeByTitle.get(title) || { ok: false, error: "Erreur inconnue" };
+    return { subject: title, ...outcome };
+  });
+
+  return {
+    checkedCount: preview.items.length,
+    readyCount: preview.readyCount,
+    blockedCount: preview.blockedCount,
+    needsReviewCount: preview.needsReviewCount,
+    publishedCount: results.filter((r) => r.ok && !r.skipped).length,
+    results
+  };
 }
 
 // Pendant à usage unique de publishReadyCertamenPayloadsToAgon : utilisé par le bouton
@@ -307,5 +370,6 @@ module.exports = {
   MAX_PUBLISH_SUBJECTS,
   CERTAMEN_CREATOR_KEY,
   publishReadyCertamenPayloadsToAgon,
+  publishSelectedCertamenSubjectsToAgon,
   publishSingleCertamenPayloadToAgon
 };

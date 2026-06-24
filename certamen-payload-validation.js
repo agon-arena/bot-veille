@@ -3,7 +3,7 @@
 // analyzeCertamenSubjectWithAI() (via certamen-checked-subjects.js) : on ne génère jamais
 // de texte de remplacement, on détecte et on classe (ready / needs_review / blocked).
 
-const { getCheckedCertamenSubjects, buildCertamenAgonPayload } = require("./certamen-checked-subjects");
+const { getCheckedCertamenSubjects, getCertamenSubjectsByTitles, buildCertamenAgonPayload } = require("./certamen-checked-subjects");
 
 // Cap connu appliqué en amont (analyzeCertamenSubjectWithAI : .slice(0, 55)) : une position
 // dont la longueur colle à cette limite et qui ne se termine pas par une ponctuation/espace
@@ -133,13 +133,11 @@ function validateAndCleanCertamenPayload(payload) {
   return { payload: cleaned, status, reasons: allReasons };
 }
 
-// Sélectionne les 10 sujets Certamen cochés, construit leur payload brut, puis applique
-// la validation/nettoyage. Ne publie rien : sert uniquement à la prévisualisation et au
-// futur filtrage "mode strict" (seuls les "ready" seront publiables).
-function getCheckedCertamenPayloadsPreview() {
-  const checked = getCheckedCertamenSubjects();
-
-  const items = checked.map(({ subject, savedItem }) => {
+// Construit le payload + validation pour une liste de sujets déjà appariés à la dernière
+// session Certamen (forme { subject, savedItem }). Partagé par les deux modes de
+// sélection ci-dessous (cochés via saved-subjects.json, ou titres explicites du client).
+function buildCertamenPayloadsPreview(matchedSubjects) {
+  const items = matchedSubjects.map(({ subject, savedItem }) => {
     const rawPayload = buildCertamenAgonPayload(subject, savedItem);
     const { payload: cleanedPayload, status, reasons } = validateAndCleanCertamenPayload(rawPayload);
     return {
@@ -159,6 +157,19 @@ function getCheckedCertamenPayloadsPreview() {
   };
 }
 
+// Sélectionne les 10 sujets Certamen cochés, construit leur payload brut, puis applique
+// la validation/nettoyage. Ne publie rien : sert uniquement à la prévisualisation et au
+// futur filtrage "mode strict" (seuls les "ready" seront publiables).
+function getCheckedCertamenPayloadsPreview() {
+  return buildCertamenPayloadsPreview(getCheckedCertamenSubjects());
+}
+
+// Même logique que ci-dessus, mais pilotée par une liste explicite de titres envoyée par
+// le client (bouton "Tout générer" sur /certamen) plutôt que par saved-subjects.json.
+function getSelectedCertamenPayloadsPreview(titles) {
+  return buildCertamenPayloadsPreview(getCertamenSubjectsByTitles(titles));
+}
+
 // Mode strict : seuls les payloads "ready" doivent être considérés publiables. Les
 // "blocked" ne le seront jamais ; les "needs_review" nécessitent une validation manuelle
 // (non implémentée à cette étape — aucune publication n'est faite ici).
@@ -171,5 +182,6 @@ function filterPublishableCertamenPayloads(items) {
 module.exports = {
   validateAndCleanCertamenPayload,
   getCheckedCertamenPayloadsPreview,
+  getSelectedCertamenPayloadsPreview,
   filterPublishableCertamenPayloads
 };

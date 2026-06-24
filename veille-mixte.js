@@ -1966,6 +1966,11 @@ function buildSubjectInteractionScriptHtml(opts = {}) {
   <script>
     const TOP10_BAR_SORTS = ${JSON.stringify(topTenSorts)};
     const SEND_TO_AGON_ENDPOINT = ${JSON.stringify(sendToAgonEndpoint)};
+    // Sur /certamen, "Tout générer" doit publier directement (question/positions/thème déjà
+    // calculés à la collecte), jamais régénérer un résumé/article — cf. la branche
+    // CERTAMEN_MODE dans le handler ".generate-all-btn" ci-dessous. Sur la veille mixte, ce
+    // flag reste à false et le bouton continue d'utiliser generateSubjectPipeline() en entier.
+    const CERTAMEN_MODE = ${JSON.stringify(!!opts.certamen)};
     const AGON_THEMES = ${JSON.stringify(AGON_THEMES)};
     const AGON_THEME_ALIASES = ${JSON.stringify(AGON_THEME_ALIASES)};
     function normalizeAgonTheme(theme) {
@@ -3968,6 +3973,59 @@ function buildSubjectInteractionScriptHtml(opts = {}) {
       return { status: "sent" };
     }
 
+    // Publication directe pour Certamen ("Tout générer" sur /certamen) : aucun appel IA,
+    // aucun résumé/article — uniquement les champs déjà calculés à la collecte
+    // (subject.certamen.* : question, positions, thème). Cf. POST /certamen/publish-selected
+    // dans server.js et certamen-agon-publish.js::publishSelectedCertamenSubjectsToAgon.
+    async function publishSelectedCertamenSubjects(subjects, generateBtn) {
+      const titles = subjects.map(s => s.querySelector("h3")?.textContent.trim()).filter(Boolean);
+      console.log("[Tout générer] " + titles.length + " sujet(s) — pipeline Certamen (publication directe)");
+      subjects.forEach(s => { s.classList.remove("batch-skipped", "batch-error"); s.querySelector(".batch-outcome")?.remove(); });
+      generateBtn.disabled = true;
+      generateBtn.textContent = "Publication en cours…";
+      try {
+        const res = await fetchWithTimeout("/certamen/publish-selected", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ subjects: titles }) });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok || data.ok === false) throw new Error(data.error || "Erreur publication Certamen");
+        const results = Array.isArray(data.results) ? data.results : [];
+        const byTitle = new Map(results.map(r => [r.subject, r]));
+        const outcomes = subjects.map((el, i) => {
+          const title = titles[i] || ("sujet " + (i + 1));
+          const r = byTitle.get(title);
+          if (!r) return { el, title, status: "error", error: "résultat manquant" };
+          if (r.ok && r.skipped) return { el, title, status: "skipped-sent" };
+          if (r.ok) return { el, title, status: "sent" };
+          return { el, title, status: "error", error: r.error };
+        });
+        outcomes.filter(o => o.status === "sent").forEach(o => {
+          const agonBtn = o.el.querySelector(".agon-btn");
+          if (agonBtn) { agonBtn.classList.add("sent"); agonBtn.textContent = "✓ Envoyé"; }
+        });
+        const sentCount = outcomes.filter(o => o.status === "sent").length;
+        const issues = outcomes.filter(o => o.status !== "sent");
+        issues.forEach(o => {
+          const isError = o.status === "error";
+          o.el.classList.add(isError ? "batch-error" : "batch-skipped");
+          const note = document.createElement("div");
+          note.className = "batch-outcome";
+          note.textContent = isError ? "⚠ Non envoyé — " + (o.error || "erreur inconnue") : "⏭ Non renvoyé : déjà envoyé";
+          o.el.prepend(note);
+        });
+        rehydratePersistentStates();
+        generateBtn.textContent = issues.length ? (sentCount + "/" + outcomes.length + " envoyés — " + issues.length + " non envoyé(s)") : "Tout générer";
+        if (issues.length) {
+          alert("Tout générer : " + sentCount + "/" + outcomes.length + " envoyé(s) vers Agôn.\\n\\nNon envoyé(s) :\\n"
+            + issues.map(o => "• " + o.title + (o.status === "skipped-sent" ? " (déjà envoyé)" : " (" + (o.error || "erreur") + ")")).join("\\n"));
+        }
+      } catch (err) {
+        console.error("[Tout générer] Erreur publication Certamen :", err.message);
+        alert("Erreur publication Certamen : " + err.message);
+        generateBtn.textContent = "Tout générer";
+      } finally {
+        generateBtn.disabled = false;
+      }
+    }
+
     document.addEventListener("click", async (e) => {
       if (!e.target.closest(".generate-all-btn")) return;
       const generateBtn = e.target.closest(".generate-all-btn");
@@ -3977,6 +4035,10 @@ function buildSubjectInteractionScriptHtml(opts = {}) {
         if (activeSession) subjects = [...activeSession.querySelectorAll(".subject")].filter(s => s.style.display !== "none");
       }
       if (subjects.length === 0) return;
+      if (CERTAMEN_MODE) {
+        await publishSelectedCertamenSubjects(subjects, generateBtn);
+        return;
+      }
       console.log("[Tout générer] " + subjects.length + " sujet(s) sélectionné(s)");
       subjects.forEach(s => { s.classList.remove("batch-skipped", "batch-error"); s.querySelector(".batch-outcome")?.remove(); });
       generateBtn.disabled = true;
