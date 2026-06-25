@@ -20,13 +20,20 @@
 
 const fs = require("fs");
 const path = require("path");
+const OpenAI = require("openai");
 const { getCheckedCertamenPayloadsPreview, getSelectedCertamenPayloadsPreview, filterPublishableCertamenPayloads } = require("./certamen-payload-validation");
 const { persistAndScheduleCertamenIdeas } = require("./certamen-ideas-seed");
 const { loginAgonAdminForCertamen } = require("./certamen-agon-admin-auth");
 
+const openai = process.env.OPENAI_API_KEY ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY }) : null;
+
 const AGON_URL = (process.env.AGON_URL || "http://localhost:3001").trim();
 const SENT_TO_AGON_FILE = path.join(__dirname, "sent-to-agon.json");
 const MAX_PUBLISH_SUBJECTS = 10;
+
+// Même seuil que classifyAndPublishPending() côté veille mixte (server.js) pour la
+// fusion automatique à la publication.
+const MERGE_SIMILARITY_THRESHOLD = 0.82;
 
 // Identifiant fixe, non-admin, qui donne le visuel "arène communauté" sur Agôn
 // (creator_key truthy et différent de AGON_ADMIN_CREATOR_KEY).
@@ -105,6 +112,113 @@ async function tryAttachExtraSources(debateId, links) {
   }
 }
 
+// Réutilise l'endpoint générique check-similar d'Agôn (déjà utilisé par la veille mixte
+// dans classifyAndPublishPending(), server.js) — il n'est pas spécifique au tunnel admin
+// "officiel" : il interroge toute la table debates, quelle que soit l'origine. Renvoie le
+// meilleur candidat confirmé par l'IA, ou null si aucun/pas d'accès admin.
+async function findConfirmedSimilarDebate(payload) {
+  const adminHeaders = await loginAgonAdminForCertamen("certamen-publish");
+  if (!adminHeaders) return null;
+
+  try {
+    const r = await fetch(`${AGON_URL}/api/admin/veille/check-similar`, {
+      method: "POST",
+      headers: adminHeaders,
+      body: JSON.stringify({
+        question: payload.question,
+        positionA: payload.arenaMode === "libre" ? "" : (payload.positionA || ""),
+        positionB: payload.arenaMode === "libre" ? "" : (payload.positionB || ""),
+        resume: payload.resume || ""
+      })
+    });
+    if (!r.ok) return null;
+    const { similar } = await r.json().catch(() => ({}));
+    return (similar || []).find((s) => s.confirmed === true && s.score >= MERGE_SIMILARITY_THRESHOLD) || null;
+  } catch (err) {
+    console.warn("[certamen-publish] Erreur vérification de similarité :", err.message);
+    return null;
+  }
+}
+
+// Duplique evaluateVeilleMergeAlignmentWithAI() côté Agôn (server.js) : même prompt, même
+// modèle. Appelée uniquement quand les deux arènes sont à positions — jamais pour une
+// arène libre, qui n'a pas de camp A/B à faire correspondre.
+//
+// IMPORTANT (garde-fou demandé explicitement) : contrairement à la veille mixte, qui
+// laisse fusionner un cas "ambiguous" (un humain valide ensuite à la publication),
+// Certamen publie sans relecture — donc seul un verdict "coherent" autorise la fusion ici.
+// "inverted" et "ambiguous" sont traités comme "ne pas fusionner" pour ne jamais risquer
+// de mélanger les votes de deux camps qui ne correspondent pas.
+async function checkCertamenPositionAlignment(existingOptionA, existingOptionB, positionA, positionB) {
+  if (!openai) return "ambiguous";
+
+  const prompt = [
+    "Tu vérifies la cohérence d'une fusion entre deux arènes à positions.",
+    "Dis si la nouvelle position A correspond plutôt à l'ancienne position A, à l'ancienne position B, ou si c'est ambigu.",
+    'Réponds uniquement en JSON: {"verdict":"coherent|inverted|ambiguous","reason":"..."}',
+    "",
+    "Arène existante :",
+    `A: ${String(existingOptionA || "").trim()}`,
+    `B: ${String(existingOptionB || "").trim()}`,
+    "",
+    "Nouvelle arène :",
+    `A: ${String(positionA || "").trim()}`,
+    `B: ${String(positionB || "").trim()}`
+  ].join("\n");
+
+  try {
+    const response = await openai.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [{ role: "user", content: prompt }],
+      response_format: { type: "json_object" },
+      max_tokens: 180,
+      temperature: 0
+    });
+    const parsed = JSON.parse(response.choices[0].message.content);
+    return ["coherent", "inverted", "ambiguous"].includes(parsed?.verdict) ? parsed.verdict : "ambiguous";
+  } catch (err) {
+    console.warn("[certamen-publish] Erreur vérification d'alignement des positions :", err.message);
+    return "ambiguous";
+  }
+}
+
+// Décide si `payload` doit être fusionné dans une arène Agôn existante plutôt que publié
+// comme nouvelle arène. Ne fusionne jamais entre une arène libre et une arène à positions
+// (incompatible par construction). Pour une paire d'arènes à positions :
+// - "coherent" → fusion directe ;
+// - "inverted" → fusion quand même, en permutant positionA/positionB sur `payload` (même
+//   comportement que côté veille mixte, /api/admin/veille/publish sur Agôn) ;
+// - "ambiguous" → pas de fusion, publication séparée (aucune relecture humaine ici pour
+//   trancher le doute, contrairement à la veille mixte).
+async function findMergeTargetForCertamenPayload(payload) {
+  const match = await findConfirmedSimilarDebate(payload);
+  if (!match) return null;
+
+  const isLibre = payload.arenaMode === "libre";
+  const matchIsLibre = match.type === "open";
+  if (isLibre !== matchIsLibre) return null;
+
+  if (!isLibre) {
+    const verdict = await checkCertamenPositionAlignment(match.optionA, match.optionB, payload.positionA, payload.positionB);
+    if (verdict === "inverted") {
+      [payload.positionA, payload.positionB] = [payload.positionB, payload.positionA];
+      if (payload.politicalOrientation && payload.politicalOrientation.isPolitical) {
+        payload.politicalOrientation = {
+          ...payload.politicalOrientation,
+          positionA: payload.politicalOrientation.positionB,
+          positionB: payload.politicalOrientation.positionA
+        };
+      }
+      console.log(`[certamen-publish] Positions permutées pour fusionner avec l'arène ${match.id} : "${String(payload.subject || "").slice(0, 60)}"`);
+    } else if (verdict !== "coherent") {
+      console.log(`[certamen-publish] Fusion écartée (positions ${verdict}) pour "${String(payload.subject || "").slice(0, 60)}" — publication séparée.`);
+      return null;
+    }
+  }
+
+  return match;
+}
+
 async function publishOnePayloadToAgon(payload) {
   const isLibre = payload.arenaMode === "libre";
   const firstSourceUrl = Array.isArray(payload.links) && payload.links[0]?.url ? payload.links[0].url : "";
@@ -117,7 +231,10 @@ async function publishOnePayloadToAgon(payload) {
     option_a: isLibre ? "" : (payload.positionA || ""),
     option_b: isLibre ? "" : (payload.positionB || ""),
     source_url: firstSourceUrl,
-    creatorKey: CERTAMEN_CREATOR_KEY
+    creatorKey: CERTAMEN_CREATOR_KEY,
+    // Permet à Agôn d'afficher le baromètre gauche/droite sur l'arène, comme pour la
+    // veille mixte (/api/veille/receive) — null si le sujet n'a pas de clivage détecté.
+    politicalOrientation: isLibre ? null : (payload.politicalOrientation || null)
     // Pas de storySelection : ce champ n'existe pas sur /api/debates, donc aucune
     // bulle actu ne peut être créée par cet appel, par construction.
   };
@@ -165,6 +282,37 @@ async function publishOnePayloadAndRecord(payload, ideasEntries) {
   }
 
   try {
+    const mergeTarget = await findMergeTargetForCertamenPayload(payload);
+    if (mergeTarget) {
+      const debateId = mergeTarget.id;
+      console.log(`[certamen-publish] ⟳ Fusion automatique avec arène ${debateId} (score ${mergeTarget.score}) : "${String(payload.subject || "").slice(0, 60)}"`);
+      await tryAttachExtraSources(debateId, payload.links);
+
+      appendSentToAgonForCertamen({
+        subject: payload.subject,
+        question: payload.question,
+        positionA: payload.positionA,
+        positionB: payload.positionB,
+        theme: payload.theme,
+        resume: payload.resume,
+        sources: payload.sources,
+        links: payload.links,
+        storySelection: null,
+        arenaMode: payload.arenaMode,
+        politicalOrientation: payload.politicalOrientation || null,
+        origin: "certamen",
+        creatorKey: CERTAMEN_CREATOR_KEY,
+        debateId,
+        merged: true,
+        mergedIntoQuestion: mergeTarget.question || "",
+        sentAt: new Date().toISOString()
+      });
+
+      // Pas d'idées/voix programmées ici : l'arène existante a déjà sa propre série
+      // (créée lors de sa première publication) — on ne fait qu'y attacher des sources.
+      return { ok: true, debateId, merged: true };
+    }
+
     const data = await publishOnePayloadToAgon(payload);
     const debateId = data.id || data.debateId || null;
     console.log(`[certamen-publish] ✓ Publié (arène communauté) : "${String(payload.subject || "").slice(0, 60)}" (debateId=${debateId || "?"})`);
@@ -184,6 +332,7 @@ async function publishOnePayloadAndRecord(payload, ideasEntries) {
       links: payload.links,
       storySelection: null,
       arenaMode: payload.arenaMode,
+      politicalOrientation: payload.politicalOrientation || null,
       origin: "certamen",
       creatorKey: CERTAMEN_CREATOR_KEY,
       debateId,
@@ -336,11 +485,42 @@ async function publishSingleCertamenPayloadToAgon(rawPayload) {
     sources: rawPayload.sources || "",
     links: Array.isArray(rawPayload.links) ? rawPayload.links : [],
     storySelection: null,
-    arenaMode
+    arenaMode,
+    politicalOrientation: arenaMode === "libre" ? null : (rawPayload.politicalOrientation || null)
   };
 
   if (wasAlreadySentToAgon(payload.question)) {
     return { ok: true, skipped: true, reason: "already_sent" };
+  }
+
+  const mergeTarget = await findMergeTargetForCertamenPayload(payload);
+  if (mergeTarget) {
+    const debateId = mergeTarget.id;
+    console.log(`[certamen-publish] ⟳ Fusion automatique avec arène ${debateId} (score ${mergeTarget.score}) : "${String(payload.subject || "").slice(0, 60)}"`);
+    await tryAttachExtraSources(debateId, payload.links);
+
+    appendSentToAgonForCertamen({
+      subject: payload.subject,
+      question: payload.question,
+      positionA: payload.positionA,
+      positionB: payload.positionB,
+      theme: payload.theme,
+      resume: payload.resume,
+      sources: payload.sources,
+      links: payload.links,
+      storySelection: null,
+      arenaMode: payload.arenaMode,
+      politicalOrientation: payload.politicalOrientation || null,
+      origin: "certamen",
+      creatorKey: CERTAMEN_CREATOR_KEY,
+      debateId,
+      merged: true,
+      mergedIntoQuestion: mergeTarget.question || "",
+      sentAt: new Date().toISOString()
+    });
+
+    await syncSentToAgonToSupabase();
+    return { ok: true, debateId, merged: true };
   }
 
   const data = await publishOnePayloadToAgon(payload);
@@ -361,6 +541,7 @@ async function publishSingleCertamenPayloadToAgon(rawPayload) {
     links: payload.links,
     storySelection: null,
     arenaMode: payload.arenaMode,
+    politicalOrientation: payload.politicalOrientation || null,
     origin: "certamen",
     creatorKey: CERTAMEN_CREATOR_KEY,
     debateId,

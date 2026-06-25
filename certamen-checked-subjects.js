@@ -117,6 +117,7 @@ function buildCertamenAgonPayload(subject, savedItem) {
   const positionA = String(certamen.positionA || saved.positionA || "").trim().slice(0, 55);
   const positionB = String(certamen.positionB || saved.positionB || "").trim().slice(0, 55);
   const theme = String(certamen.theme || saved.agonTheme || "").trim();
+  const politicalOrientation = certamen.politicalOrientation || saved.politicalOrientation || null;
 
   const sources = Array.isArray(subject.sources) && subject.sources.length
     ? subject.sources.join(", ")
@@ -149,7 +150,8 @@ function buildCertamenAgonPayload(subject, savedItem) {
     links,
     keywords: saved.mainKeyword ? [saved.mainKeyword] : [],
     storySelection: null,
-    arenaMode: positionA && positionB ? "positions" : "libre"
+    arenaMode: positionA && positionB ? "positions" : "libre",
+    politicalOrientation
   };
 }
 

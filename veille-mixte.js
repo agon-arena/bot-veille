@@ -6914,7 +6914,8 @@ async function analyzeCertamenSubjectWithAI(subject) {
       positionA: "Pour",
       positionB: "Contre",
       theme: AGON_THEMES[0],
-      risk: "medium"
+      risk: "medium",
+      politicalOrientation: { isPolitical: false, positionA: null, positionB: null }
     };
   }
 
@@ -6988,18 +6989,37 @@ Ne force jamais un débat. Si le sujet ne s'y prête pas, réponds "avoid".`;
     const parsed = safeJsonParse(response.output_text || "");
     const allowedDecisions = new Set(["arena", "understand", "reformulate", "avoid"]);
     const allowedRisks = new Set(["low", "medium", "high"]);
+    const isDebatable = parsed.isDebatable === true;
+    const editorialDecision = allowedDecisions.has(String(parsed.editorialDecision || ""))
+      ? parsed.editorialDecision : "avoid";
+    const suggestedQuestion = limitDebateQuestionText(parsed.suggestedQuestion || "");
+    let positionA = String(parsed.positionA || "").slice(0, 55);
+    let positionB = String(parsed.positionB || "").slice(0, 55);
+
+    // Détection du clivage gauche/droite et réassignation positionA=gauche/positionB=droite,
+    // seulement pour les sujets retenus (évite un appel IA superflu sur les ~120 candidats
+    // écartés par session) — même logique que alignPositionsByPolitics() dans server.js
+    // (veille mixte), nécessaire pour que la jauge politique d'Agôn s'affiche sur Certamen.
+    let politicalOrientation = { isPolitical: false, positionA: null, positionB: null };
+    if (editorialDecision !== "avoid" && positionA && positionB) {
+      const aligned = await alignCertamenPositionsByPolitics({ debateQuestion: suggestedQuestion, positionA, positionB });
+      positionA = aligned.positionA;
+      positionB = aligned.positionB;
+      politicalOrientation = aligned.politicalOrientation;
+    }
+
     return {
-      isDebatable: parsed.isDebatable === true,
+      isDebatable,
       debatePotentialScore: Number.isFinite(Number(parsed.debatePotentialScore))
         ? Math.max(0, Math.min(10, Number(parsed.debatePotentialScore))) : 0,
-      editorialDecision: allowedDecisions.has(String(parsed.editorialDecision || ""))
-        ? parsed.editorialDecision : "avoid",
+      editorialDecision,
       reason: String(parsed.reason || "").slice(0, 200),
-      suggestedQuestion: limitDebateQuestionText(parsed.suggestedQuestion || ""),
-      positionA: String(parsed.positionA || "").slice(0, 55),
-      positionB: String(parsed.positionB || "").slice(0, 55),
+      suggestedQuestion,
+      positionA,
+      positionB,
       theme: normalizeAgonTheme(parsed.theme),
-      risk: allowedRisks.has(String(parsed.risk || "")) ? parsed.risk : "medium"
+      risk: allowedRisks.has(String(parsed.risk || "")) ? parsed.risk : "medium",
+      politicalOrientation
     };
   } catch (error) {
     console.error(`Erreur IA Certamen pour "${subject.subject}" :`, error.message);
@@ -7012,9 +7032,62 @@ Ne force jamais un débat. Si le sujet ne s'y prête pas, réponds "avoid".`;
       positionA: "",
       positionB: "",
       theme: AGON_THEMES[0],
-      risk: "medium"
+      risk: "medium",
+      politicalOrientation: { isPolitical: false, positionA: null, positionB: null }
     };
   }
+}
+
+// Identique à alignPositionsByPolitics() de server.js (même prompt, mêmes règles) —
+// dupliqué ici car veille-mixte.js et server.js sont deux process Node séparés.
+async function alignCertamenPositionsByPolitics({ debateQuestion, positionA, positionB }) {
+  if (!openai || !debateQuestion || !positionA || !positionB) {
+    return { positionA, positionB, politicalOrientation: { isPolitical: false, positionA: null, positionB: null } };
+  }
+
+  const prompt = `Tu analyses une question de débat et ses deux positions.
+
+Question : "${debateQuestion}"
+Position A : "${positionA}"
+Position B : "${positionB}"
+
+Ta mission :
+Déterminer si cette question révèle un clivage politique gauche/droite, même tendanciel ou probable.
+
+Un clivage gauche/droite existe quand une des positions s'aligne tendanciellement avec des valeurs de gauche (solidarité, régulation, services publics, égalité, collectif) et l'autre avec des valeurs de droite (liberté individuelle, marché, sécurité, mérite, souveraineté nationale).
+
+Même si le clivage n'est pas parfaitement symétrique ou évident, réponds true dès qu'une orientation probable se dégage. Ne réponds false que si le débat est vraiment neutre politiquement (purement technique, scientifique ou factuel).
+
+JSON attendu uniquement :
+{
+  "hasPoliticalOrientation": true/false,
+  "leftPosition": "...",
+  "rightPosition": "..."
+}
+
+Si hasPoliticalOrientation est false, leftPosition et rightPosition sont des chaînes vides.
+
+Réponds uniquement en JSON valide, sans balises markdown.`;
+
+  try {
+    const response = await openai.responses.create({
+      model: "gpt-4.1-mini",
+      input: prompt,
+      temperature: 0.4,
+      max_output_tokens: 200
+    });
+    const parsed = safeJsonParse(response.output_text || "");
+    if (parsed.hasPoliticalOrientation && parsed.leftPosition && parsed.rightPosition) {
+      return {
+        positionA: String(parsed.leftPosition).trim().slice(0, 55),
+        positionB: String(parsed.rightPosition).trim().slice(0, 55),
+        politicalOrientation: { isPolitical: true, positionA: "left", positionB: "right" }
+      };
+    }
+  } catch (error) {
+    console.error("Erreur alignement politique Certamen :", error.message);
+  }
+  return { positionA, positionB, politicalOrientation: { isPolitical: false, positionA: null, positionB: null } };
 }
 
 function certamenRiskToControversyLevel(risk) {
@@ -7069,7 +7142,10 @@ function generateCertamenHtml(sessions) {
 
   const sessionBlocks = sessions.map((session, index) => {
     const subjects = session.subjects || [];
-    const subjectBlocks = subjects.map(subject => buildSubjectCardHtml(subject, { savedTitles, sentKeys, mergeGroupByKeepId: new Map() })).join("");
+    const mergeGroupByKeepId = new Map(
+      (session.deduplication?.mergeGroups || []).map((group) => [String(group?.keepSubjectId || ""), group])
+    );
+    const subjectBlocks = subjects.map(subject => buildSubjectCardHtml(subject, { savedTitles, sentKeys, mergeGroupByKeepId })).join("");
 
     const isLatest = index === 0;
 
@@ -7344,7 +7420,14 @@ async function runCertamenSession() {
   const rawSubjects = filterMultiSourceSubjects(groups, 1); // min 1 source (vs 4 en mode mixte)
   console.log(`Certamen : ${rawSubjects.length} sujet(s) après regroupement (seuil 1 source).`);
 
-  const prefiltered = certamenPrefilter(rawSubjects);
+  // Même déduplication IA que la veille mixte (deduplicateSubjectsWithAI, appelée avant le
+  // scoring) : fusionne les sujets bruts qui parlent du même fait d'actualité avant de les
+  // noter, pour qu'un sujet repéré sous deux titres différents ne soit pas scoré/affiché en double.
+  const deduplication = await deduplicateSubjectsWithAI(rawSubjects);
+  const dedupedSubjects = deduplication.subjects;
+  console.log(`Certamen : ${dedupedSubjects.length} sujet(s) après déduplication (${deduplication.mergeResult.mergeGroups.length} fusion(s)).`);
+
+  const prefiltered = certamenPrefilter(dedupedSubjects);
   console.log(`Certamen : ${prefiltered.length} sujet(s) après préfiltrage sans IA.`);
 
   // Tri avant envoi à l'IA : priorité absolue aux sujets ayant au moins un marqueur de débat
@@ -7371,11 +7454,13 @@ async function runCertamenSession() {
     console.log(`Certamen IA : ${subject.subject}`);
     const certamen = await analyzeCertamenSubjectWithAI(subject);
     // Champs au format des sujets veille mixte : permet de réutiliser telles quelles
-    // les cartes d'arène, la génération IA et la persistance (/save-update).
+    // les cartes d'arène, la génération IA et la persistance (/save-update). subjectId
+    // n'est volontairement pas réécrit ici : il provient de deduplicateSubjectsWithAI()
+    // (via ensureSubjectIds) et doit rester stable pour que mergeGroupByKeepId (affichage
+    // du bandeau "Sujets fusionnés ici par l'IA") retrouve le bon sujet.
     analyzed.push(Object.assign({}, subject, {
       certamen,
-      subjectId: `certamen-${startedAt.valueOf()}-${i}`,
-      mergedSubjectTitles: [],
+      mergedSubjectTitles: subject.mergedSubjectTitles || [],
       scoreAnalyzed: true,
       debateScore: certamen.debatePotentialScore || 0,
       controversyLevel: certamenRiskToControversyLevel(certamen.risk),
@@ -7394,6 +7479,8 @@ async function runCertamenSession() {
     generatedAt: startedAt.toISOString(),
     generatedAtLabel: startedAt.format("DD/MM/YYYY à HH:mm"),
     subjectCount: debatables.length,
+    mergeCount: deduplication.mergeResult.mergeGroups.length,
+    deduplication: deduplication.mergeResult,
     subjects: debatables
   };
 
