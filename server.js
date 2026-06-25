@@ -143,7 +143,7 @@ function scheduleOneAutoCollect(timeStr) {
         await fetch("http://127.0.0.1:3002/refresh", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ minSources: cfg.minSources || 3 })
+          body: JSON.stringify({ minSources: cfg.minSources || 2 })
         });
         const autoPub = loadAutoPublishConfig();
         if (autoPub.enabled) {
@@ -880,25 +880,31 @@ async function selectFactualSources(allContents) {
     videosIgnored: 0,
   };
 
-  // Fetch tous les articles en parallèle, dans l'ordre de pertinence existant
-  const fetchResults = await Promise.allSettled(
-    articles.map(a => fetchArticleFullText(a.url))
-  );
-
   const usable = [];
 
-  for (let i = 0; i < articles.length; i++) {
-    if (usable.length >= 4) break;
-    const fetched = fetchResults[i].status === "fulfilled" ? fetchResults[i].value : null;
-    if (fetched && isCompleteUsableArticle(fetched.text)) {
-      usable.push({ ...articles[i], sourceKind: "article complet", fullText: fetched.text });
-      stats.articlesUsed++;
-    } else {
-      const reason = !fetched
-        ? "inaccessible/timeout"
-        : fetched.text.length < 600 ? "texte trop court" : "paywall/tronqué";
-      console.log(`[résumé factuel] IGNORÉ article "${articles[i].title.slice(0, 60)}" — ${reason}`);
-      stats.articlesIgnored++;
+  // Les sources visibles/envoyées à Agôn restent dans allContents/links. Ici on ne
+  // télécharge que le texte complet nécessaire au résumé IA, par petits lots.
+  const ARTICLE_FULL_TEXT_BATCH_SIZE = 2;
+  for (let start = 0; start < articles.length && usable.length < 4; start += ARTICLE_FULL_TEXT_BATCH_SIZE) {
+    const batch = articles.slice(start, start + ARTICLE_FULL_TEXT_BATCH_SIZE);
+    const fetchResults = await Promise.allSettled(
+      batch.map(a => fetchArticleFullText(a.url))
+    );
+
+    for (let i = 0; i < batch.length; i++) {
+      if (usable.length >= 4) break;
+      const article = batch[i];
+      const fetched = fetchResults[i].status === "fulfilled" ? fetchResults[i].value : null;
+      if (fetched && isCompleteUsableArticle(fetched.text)) {
+        usable.push({ ...article, sourceKind: "article complet", fullText: fetched.text });
+        stats.articlesUsed++;
+      } else {
+        const reason = !fetched
+          ? "inaccessible/timeout"
+          : fetched.text.length < 600 ? "texte trop court" : "paywall/tronqué";
+        console.log(`[résumé factuel] IGNORÉ article "${article.title.slice(0, 60)}" — ${reason}`);
+        stats.articlesIgnored++;
+      }
     }
   }
 
@@ -2436,7 +2442,6 @@ app.post("/mixte-login", (req, res) => {
 });
 
 const VEILLE_MIXTE_HTML = path.join(__dirname, "veille-mixte.html");
-const VEILLE_YOUTUBE_HTML = path.join(__dirname, "veille-youtube.html");
 
 function sendEmptyMixtePage(res) {
   return res.send(`<!DOCTYPE html>
@@ -2482,9 +2487,9 @@ function sendEmptyMixtePage(res) {
     </div>
     <div class="refresh-row">
       <select class="min-sources-select" id="min-sources-select" title="Sources minimum par sujet">
-        <option value="2">2 sources min.</option>
+        <option value="2" selected>2 sources min.</option>
         <option value="3">3 sources min.</option>
-        <option value="4" selected>4 sources min.</option>
+        <option value="4">4 sources min.</option>
         <option value="5">5 sources min.</option>
         <option value="6">6 sources min.</option>
       </select>
@@ -2519,7 +2524,7 @@ function sendEmptyMixtePage(res) {
 
     async function startRefresh() {
       const btn = document.querySelector('.refresh-btn');
-      const minSources = Number(document.getElementById('min-sources-select')?.value) || 4;
+      const minSources = Number(document.getElementById('min-sources-select')?.value) || 2;
       btn.disabled = true;
       btn.textContent = 'Collecte en cours...';
       await fetch('/refresh', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ minSources }) });
@@ -2563,96 +2568,6 @@ function sendEmptyMixtePage(res) {
 </html>`);
 }
 
-function sendMissingPage(res, title, message) {
-  return res.send(`
-    <!DOCTYPE html>
-    <html lang="fr">
-    <head>
-      <meta charset="UTF-8">
-      <title>${title}</title>
-      <style>
-        body { font-family: system-ui; max-width: 500px; margin: 80px auto; padding: 0 16px; text-align: center; color: #111; }
-        h1 { font-size: 1.3rem; margin-bottom: 8px; }
-        p { color: #555; margin-bottom: 24px; }
-        .min-sources-row { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 20px; font-size: 0.9rem; color: #555; }
-        .min-sources-row select { padding: 6px 10px; border: 1px solid #ccc; border-radius: 8px; font: inherit; font-size: 0.9rem; }
-        #launch-btn {
-          background: #111; color: #fff; border: none; border-radius: 999px;
-          padding: 12px 28px; font: inherit; font-size: 1rem; font-weight: 700;
-          cursor: pointer; margin-bottom: 12px;
-        }
-        #launch-btn:disabled { opacity: 0.5; cursor: wait; }
-        #status { font-size: 0.88rem; color: #555; min-height: 20px; }
-      </style>
-    </head>
-    <body>
-      <h1>${title}</h1>
-      <p>${message}</p>
-      <div class="min-sources-row">
-        <label for="min-sources">Sources minimum :</label>
-        <select id="min-sources">
-          <option value="2">2 sources</option>
-          <option value="3">3 sources</option>
-          <option value="4" selected>4 sources (défaut)</option>
-          <option value="5">5 sources</option>
-          <option value="6">6 sources</option>
-        </select>
-      </div>
-      <button id="launch-btn" onclick="launch()">Lancer la première collecte</button>
-      <div id="status"></div>
-      <script>
-        (async function autoHookRunning() {
-          try {
-            var r = await fetch('/progress?t=' + Date.now());
-            var p = await r.json();
-            if (!p.running) return;
-            var btn = document.getElementById('launch-btn');
-            var status = document.getElementById('status');
-            if (btn) { btn.disabled = true; btn.textContent = 'Collecte en cours…'; }
-            if (status) status.textContent = 'Collecte déjà en cours, veuillez patienter…';
-            var poll = setInterval(async function() {
-              try {
-                var r2 = await fetch('/progress?t=' + Date.now());
-                var p2 = await r2.json();
-                if (p2.step && status) status.textContent = 'Étape ' + p2.stepIndex + ' / ' + p2.stepTotal + ' — ' + p2.step + (p2.detail ? ' (' + p2.detail + ')' : '');
-                if (!p2.running && p2.done) { clearInterval(poll); window.location.reload(); }
-              } catch(e) {}
-            }, 2000);
-          } catch(e) {}
-        })();
-
-        async function launch() {
-          const btn = document.getElementById('launch-btn');
-          const status = document.getElementById('status');
-          btn.disabled = true;
-          btn.textContent = 'Collecte en cours…';
-          status.textContent = 'Récupération des sources et analyse IA…';
-          try {
-            var minSources = Number(document.getElementById('min-sources')?.value) || 4;
-            await fetch('/refresh', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ minSources }) });
-            var seenRunning = false;
-            var poll = setInterval(async function() {
-              try {
-                var r = await fetch('/progress?t=' + Date.now());
-                var p = await r.json();
-                if (p.running) seenRunning = true;
-                if (p.step) status.textContent = 'Étape ' + p.stepIndex + ' / ' + p.stepTotal + ' — ' + p.step + (p.detail ? ' (' + p.detail + ')' : '');
-                if (seenRunning && p.done) { clearInterval(poll); window.location.reload(); }
-              } catch(e) {}
-            }, 2000);
-            setTimeout(function() { clearInterval(poll); window.location.reload(); }, 15 * 60 * 1000);
-          } catch(e) {
-            status.textContent = 'Erreur : ' + e.message;
-            btn.disabled = false;
-            btn.textContent = 'Réessayer';
-          }
-        }
-      </script>
-    </body>
-    </html>
-  `);
-}
-
 app.get("/", (req, res) => {
   res.redirect("/mixte");
 });
@@ -2662,13 +2577,6 @@ app.get("/veille-mixte.html", requireMixteAuth, (req, res) => {
     return sendEmptyMixtePage(res);
   }
   res.sendFile(VEILLE_MIXTE_HTML);
-});
-
-app.get("/youtube", (req, res) => {
-  if (!fs.existsSync(VEILLE_YOUTUBE_HTML)) {
-    return sendMissingPage(res, "Veille YouTube", "La veille YouTube n'a pas encore été générée.");
-  }
-  res.sendFile(VEILLE_YOUTUBE_HTML);
 });
 
 app.get("/mixte", requireMixteAuth, (req, res) => {
@@ -4685,6 +4593,8 @@ app.post("/send-to-agon", requireMixteAuth, async (req, res) => {
   try {
     const { subject, sessionLabel, question, positionA, positionB, theme, resume, sources, links, storySelection, keywords, politicalOrientation } = req.body;
     const arenaMode = String(req.body?.arenaMode || "").trim() === "libre" ? "libre" : "positions";
+    const rawPoliticalGroup = String(req.body?.politicalGroup || "").trim();
+    const politicalGroup = (rawPoliticalGroup === "left" || rawPoliticalGroup === "right") ? rawPoliticalGroup : "mixed";
     if (!question) return res.status(400).json({ ok: false, error: "question manquante" });
     const normalizedQuestion = limitDebateQuestion(question);
     const normalizedResume = ensureArticleOpeningSentenceBreak(resume);
@@ -4697,7 +4607,7 @@ app.post("/send-to-agon", requireMixteAuth, async (req, res) => {
       r = await fetch(`${AGON_URL}/api/veille/receive`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ question: normalizedQuestion, positionA, positionB, theme, resume: normalizedResume, sources, links: links || [], storySelection: storySelection || null, keywords: resolvedKeywords, politicalOrientation: politicalOrientation || null, arenaMode }),
+        body: JSON.stringify({ question: normalizedQuestion, positionA, positionB, theme, resume: normalizedResume, sources, links: links || [], storySelection: storySelection || null, keywords: resolvedKeywords, politicalOrientation: politicalOrientation || null, arenaMode, politicalGroup }),
         signal: agonController.signal
       });
     } finally {
@@ -4722,6 +4632,7 @@ app.post("/send-to-agon", requireMixteAuth, async (req, res) => {
       keywords: resolvedKeywords,
       politicalOrientation: politicalOrientation || null,
       arenaMode,
+      politicalGroup,
       sentAt: new Date().toISOString()
     });
     console.log("[send-to-agon] Succès");
@@ -4987,7 +4898,7 @@ app.post("/api/auto-collect-tick", requireMixteAuth, async (req, res) => {
     await fetch("http://127.0.0.1:3002/refresh", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ minSources: config.minSources || 3 })
+      body: JSON.stringify({ minSources: config.minSources || 2 })
     });
     config.lastRun = runKey;
     fs.writeFileSync(AUTO_COLLECT_FILE, JSON.stringify(config, null, 2), "utf8");
@@ -5009,6 +4920,170 @@ app.post("/api/auto-collect-tick", requireMixteAuth, async (req, res) => {
 
 // ==================== PIPELINE AUTO-PUBLISH ====================
 
+// Même classification binaire que sortSubjects()/getOrientationGroupClient() côté client
+// (veille-mixte.js) : sert à repérer, parmi les sujets d'une session, ceux qui ont au moins
+// une source de presse de gauche ou de droite — indépendamment du clivage gauche/droite
+// détecté par l'IA sur la question de débat (politicalOrientation), qui est une notion
+// différente (positions du débat, pas orientation du média source).
+function getMediaOrientationGroup(orientation) {
+  const o = (orientation || "").toLowerCase();
+  if (o.includes("gauche")) return "left";
+  if (o.includes("droite") || o.includes("conservateur") || o.includes("souverainiste")) return "right";
+  return "center";
+}
+
+function countMediaOrientationSources(subj, group) {
+  const sources = new Set();
+  (subj.contents || []).forEach((c) => {
+    if (c?.source && getMediaOrientationGroup(c.orientation) === group) sources.add(c.source);
+  });
+  return sources.size;
+}
+
+// Équivalent automatique du filtre "Médias de gauche"/"Médias de droite" + "Cocher les 10"
+// du tableau de bord veille mixte (cf. sortSubjects() dans veille-mixte.js) : sélectionne les
+// sujets ayant le plus de sources de cette orientation. Volontairement pas d'exclusion des
+// sujets déjà publiés ailleurs (top 10, run précédent...) : on veut bien remplir les 10
+// places de chaque côté même si le sujet est repris d'ailleurs — publishMixteSubjectToAgon
+// réutilise alors l'article déjà généré au lieu de redemander une génération IA.
+function selectTopSubjectsByMediaOrientation(allSubjects, group, limit) {
+  return allSubjects
+    .filter((s) => countMediaOrientationSources(s, group) > 0)
+    .map((s) => ({ subject: s, matchCount: countMediaOrientationSources(s, group) }))
+    .sort((a, b) => b.matchCount - a.matchCount || (Number(b.subject.debateScore) || 0) - (Number(a.subject.debateScore) || 0))
+    .slice(0, limit)
+    .map((x) => x.subject);
+}
+
+// Génère l'article (libre ou à positions selon le score) et l'envoie à Agôn pour un sujet de
+// la veille mixte. Partagé par le top 10 par score et les lots dédiés médias de gauche/droite
+// de runAutoPublishPipeline — politicalGroup ne sert qu'à étiqueter l'origine de la sélection
+// (cf. "Cocher les 10" côté client), il ne change rien à la génération.
+// reuseFrom : item sent-to-agon.json déjà publié pour ce même sujet (top 10, run précédent,
+// ou autre lot gauche/droite traité plus tôt dans ce même run). Quand il est fourni, on saute
+// toute la génération IA (résumé, article, thème, mots-clés, histoire liée) et on réenvoie
+// le même contenu à Agôn, seul politicalGroup change — évite de payer un appel IA en double
+// pour un sujet déjà rédigé.
+async function publishMixteSubjectToAgon(subj, { sessionLabel, politicalGroup = "mixed", reuseFrom = null } = {}) {
+  const subjectTitle = subj.subject;
+  const contents = subj.contents || [];
+
+  let arenaMode, question, positionA, positionB, theme, resume, sources, links, storySelection, keywords, politicalOrientation;
+
+  if (reuseFrom) {
+    console.log(`[auto-publish] Réutilisation de l'article déjà généré : "${subjectTitle.slice(0, 60)}" (groupe ${politicalGroup})`);
+    arenaMode = reuseFrom.arenaMode === "positions" ? "positions" : "libre";
+    question = reuseFrom.question || subjectTitle;
+    positionA = reuseFrom.positionA || "";
+    positionB = reuseFrom.positionB || "";
+    theme = reuseFrom.theme || "";
+    resume = reuseFrom.resume || "";
+    sources = reuseFrom.sources || contents.map(c => c.source).filter(Boolean).join(", ");
+    links = Array.isArray(reuseFrom.links) ? reuseFrom.links : [];
+    storySelection = reuseFrom.storySelection || null;
+    keywords = Array.isArray(reuseFrom.keywords) ? reuseFrom.keywords : [];
+    politicalOrientation = reuseFrom.politicalOrientation || null;
+  } else {
+    const score = Number(subj.debateScore) || 0;
+    arenaMode = score >= 8 ? "positions" : "libre";
+    console.log(`[auto-publish] Traitement : "${subjectTitle.slice(0, 60)}" (score ${score}, mode ${arenaMode}, groupe ${politicalGroup})`);
+
+    const summary = await generateCompleteNarrativeContext({ subject: subjectTitle, contents, arenaMode }, null);
+    question = ""; positionA = ""; positionB = ""; theme = ""; resume = summary; politicalOrientation = null;
+
+    if (arenaMode === "libre") {
+      const freeResult = await generateFreeArenaArticle({ subject: subjectTitle, summary, arenaMode });
+      question = limitDebateQuestion(freeResult.debateQuestion || subjectTitle);
+      resume = freeResult.article || summary;
+      try {
+        const mottoSources = [...new Set(contents.map(c => c.source).filter(Boolean))];
+        const mottoResult = await generateFreeArenaLatinMotto({ subject: question, summary, article: resume, sources: mottoSources, agonTheme: subj.ai?.agonTheme || "" });
+        if (mottoResult.article) resume = mottoResult.article;
+      } catch (mottoErr) {
+        console.warn("[auto-publish] Devise latine ignorée :", mottoErr.message);
+      }
+    } else {
+      const mediaResult = await generateMediaAnalysis({ subject: subjectTitle, summary, contents, arenaMode });
+      question = limitDebateQuestion(mediaResult.debateQuestion || "");
+      positionA = String(mediaResult.positionA || "").trim();
+      positionB = String(mediaResult.positionB || "").trim();
+      politicalOrientation = mediaResult.politicalOrientation || null;
+      const styledResult = await generateStyledArticle({
+        subject: subjectTitle, summary, debateAngle: mediaResult.debateAngle || "", debateQuestion: question,
+        positionA, positionB, hasMediaContrast: false, mediaTreatment: "", mainIssue: mediaResult.mainIssue || "",
+        narrativeTension: mediaResult.narrativeTension || "", possibleBiases: Array.isArray(mediaResult.possibleBiases) ? mediaResult.possibleBiases : [],
+        debatePotential: mediaResult.debatePotential || "", editorialWarning: mediaResult.editorialWarning || "",
+        editorialDecision: mediaResult.editorialDecision || "", questionQuality: mediaResult.questionQuality || "", arenaMode
+      });
+      if (styledResult.debateQuestion) question = limitDebateQuestion(styledResult.debateQuestion);
+      if (styledResult.positionA) positionA = styledResult.positionA;
+      if (styledResult.positionB) positionB = styledResult.positionB;
+      if (styledResult.article) resume = styledResult.article;
+    }
+
+    resume = ensureArticleOpeningSentenceBreak(resume);
+
+    links = (subj.selectedLinks || []).map(url => {
+      const c = contents.find(x => x.link === url);
+      return { title: c?.title || "", url, source: c?.source || "", type: c?.type || "article", date: c?.date || "", checked: true };
+    }).filter(l => l.url);
+
+    sources = subj.sources || contents.map(c => c.source).filter(Boolean).join(", ");
+    keywords = await ensureKeywordsBeforeAgonSend({ subject: subjectTitle, question, sources, links, keywords: [] });
+    theme = await resolveAgonThemeAfterTagging({ subject: subjectTitle, question, resume, sources, links, keywords });
+
+    storySelection = null;
+    try {
+      const suggestion = await suggestStoryLink({
+        subject: subjectTitle,
+        sources,
+        contents,
+        ai: { agonTheme: theme, debateQuestion: question, keywords }
+      });
+      const storyDecision = suggestion.story_decision || "new_story";
+      const matchedStoryId = suggestion.matched_story_id || null;
+      if ((storyDecision === "existing_story" || storyDecision === "uncertain") && matchedStoryId) {
+        storySelection = {
+          storyDecision,
+          matchedStoryId,
+          matchedStoryTitle: suggestion.matched_story_title || "",
+          previousEpisodeTitle: suggestion.previous_episode_title || "",
+          previousEpisodeUrl: suggestion.previous_episode_url || "",
+          confidence: Number(suggestion.confidence || 0),
+          reason: suggestion.reason || "",
+          criteria: suggestion.criteria || {},
+          selectionMode: "existing"
+        };
+        console.log(`[auto-publish] Histoire associée : "${storySelection.matchedStoryTitle}" (confiance ${storySelection.confidence})`);
+      } else {
+        console.log("[auto-publish] Aucune histoire existante associée pour ce sujet");
+      }
+    } catch (storyErr) {
+      console.warn("[auto-publish] Suggestion d'histoire ignorée :", storyErr.message);
+    }
+  }
+
+  const agonController = new AbortController();
+  const agonTimeout = setTimeout(() => agonController.abort(), 15000);
+  let r;
+  try {
+    r = await fetch(`${AGON_URL}/api/veille/receive`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ question, positionA, positionB, theme, resume, sources, links, storySelection, keywords, politicalOrientation, arenaMode, politicalGroup }),
+      signal: agonController.signal
+    });
+  } finally {
+    clearTimeout(agonTimeout);
+  }
+  if (!r.ok) { const body = await r.text().catch(() => ""); throw new Error(`Agôn a répondu ${r.status}: ${body}`); }
+
+  const publishedItem = { subject: subjectTitle, sessionLabel, question, positionA, positionB, theme, resume, sources, links, storySelection, keywords, politicalOrientation, arenaMode, politicalGroup, sentAt: new Date().toISOString() };
+  upsertSentToAgonItem(publishedItem);
+  console.log(`[auto-publish] ✓ Envoyé (${politicalGroup}) : "${subjectTitle.slice(0, 60)}"`);
+  return publishedItem;
+}
+
 async function runAutoPublishPipeline() {
   console.log("[auto-publish] Démarrage du pipeline...");
   const sessionsFile = path.join(__dirname, "sessions-mixte.json");
@@ -5023,6 +5098,7 @@ async function runAutoPublishPipeline() {
   const latestSession = sessions.find(s => (s.subjects || []).some(subj => subj.debateScore != null));
   if (!latestSession) { console.log("[auto-publish] Aucune session avec sujets analysés"); return; }
   const allSubjects = (latestSession.subjects || []).filter(s => s.debateScore != null);
+  const sessionLabel = latestSession.generatedAtLabel || "";
   const maxSources = Math.max(...allSubjects.map(s => Number(s.sourceCount) || 0), 1);
   const top10 = allSubjects
     .slice()
@@ -5033,123 +5109,53 @@ async function runAutoPublishPipeline() {
     })
     .slice(0, 10);
 
-  console.log(`[auto-publish] ${top10.length} sujet(s) sélectionné(s) (session : ${latestSession.generatedAtLabel || "?"})`);
+  console.log(`[auto-publish] ${top10.length} sujet(s) sélectionné(s) (session : ${sessionLabel || "?"})`);
 
   const sentItems = loadSentToAgonItems();
   const sentSubjects = new Set(sentItems.map(i => i.subject));
+  // Permet aux lots gauche/droite de réutiliser l'article d'un sujet déjà publié (top 10,
+  // run précédent, ou l'autre lot traité juste avant dans ce même run) sans repasser par l'IA.
+  const sentItemsByTitle = new Map(sentItems.map(i => [i.subject, i]));
   let sentCount = 0;
 
   for (const subj of top10) {
-    const subjectTitle = subj.subject;
-    if (sentSubjects.has(subjectTitle)) {
-      console.log(`[auto-publish] Déjà envoyé : ${subjectTitle.slice(0, 60)}`);
+    if (sentSubjects.has(subj.subject)) {
+      console.log(`[auto-publish] Déjà envoyé : ${subj.subject.slice(0, 60)}`);
       continue;
     }
-    const score = Number(subj.debateScore) || 0;
-    const arenaMode = score >= 8 ? "positions" : "libre";
-    const contents = subj.contents || [];
-    const sessionLabel = latestSession.generatedAtLabel || "";
-    console.log(`[auto-publish] Traitement : "${subjectTitle.slice(0, 60)}" (score ${score}, mode ${arenaMode})`);
-
     try {
-      const summary = await generateCompleteNarrativeContext({ subject: subjectTitle, contents, arenaMode }, null);
-      let question = "", positionA = "", positionB = "", theme = "", resume = summary, politicalOrientation = null;
-
-      if (arenaMode === "libre") {
-        const freeResult = await generateFreeArenaArticle({ subject: subjectTitle, summary, arenaMode });
-        question = limitDebateQuestion(freeResult.debateQuestion || subjectTitle);
-        resume = freeResult.article || summary;
-        try {
-          const mottoSources = [...new Set(contents.map(c => c.source).filter(Boolean))];
-          const mottoResult = await generateFreeArenaLatinMotto({ subject: question, summary, article: resume, sources: mottoSources, agonTheme: subj.ai?.agonTheme || "" });
-          if (mottoResult.article) resume = mottoResult.article;
-        } catch (mottoErr) {
-          console.warn("[auto-publish] Devise latine ignorée :", mottoErr.message);
-        }
-      } else {
-        const mediaResult = await generateMediaAnalysis({ subject: subjectTitle, summary, contents, arenaMode });
-        question = limitDebateQuestion(mediaResult.debateQuestion || "");
-        positionA = String(mediaResult.positionA || "").trim();
-        positionB = String(mediaResult.positionB || "").trim();
-        politicalOrientation = mediaResult.politicalOrientation || null;
-        const styledResult = await generateStyledArticle({
-          subject: subjectTitle, summary, debateAngle: mediaResult.debateAngle || "", debateQuestion: question,
-          positionA, positionB, hasMediaContrast: false, mediaTreatment: "", mainIssue: mediaResult.mainIssue || "",
-          narrativeTension: mediaResult.narrativeTension || "", possibleBiases: Array.isArray(mediaResult.possibleBiases) ? mediaResult.possibleBiases : [],
-          debatePotential: mediaResult.debatePotential || "", editorialWarning: mediaResult.editorialWarning || "",
-          editorialDecision: mediaResult.editorialDecision || "", questionQuality: mediaResult.questionQuality || "", arenaMode
-        });
-        if (styledResult.debateQuestion) question = limitDebateQuestion(styledResult.debateQuestion);
-        if (styledResult.positionA) positionA = styledResult.positionA;
-        if (styledResult.positionB) positionB = styledResult.positionB;
-        if (styledResult.article) resume = styledResult.article;
-      }
-
-      resume = ensureArticleOpeningSentenceBreak(resume);
-
-      const links = (subj.selectedLinks || []).map(url => {
-        const c = contents.find(x => x.link === url);
-        return { title: c?.title || "", url, source: c?.source || "", type: c?.type || "article", date: c?.date || "", checked: true };
-      }).filter(l => l.url);
-
-      const sources = subj.sources || contents.map(c => c.source).filter(Boolean).join(", ");
-      const resolvedKeywords = await ensureKeywordsBeforeAgonSend({ subject: subjectTitle, question, sources, links, keywords: [] });
-      theme = await resolveAgonThemeAfterTagging({ subject: subjectTitle, question, resume, sources, links, keywords: resolvedKeywords });
-
-      let storySelection = null;
-      try {
-        const suggestion = await suggestStoryLink({
-          subject: subjectTitle,
-          sources,
-          contents,
-          ai: { agonTheme: theme, debateQuestion: question, keywords: resolvedKeywords }
-        });
-        const storyDecision = suggestion.story_decision || "new_story";
-        const matchedStoryId = suggestion.matched_story_id || null;
-        if ((storyDecision === "existing_story" || storyDecision === "uncertain") && matchedStoryId) {
-          storySelection = {
-            storyDecision,
-            matchedStoryId,
-            matchedStoryTitle: suggestion.matched_story_title || "",
-            previousEpisodeTitle: suggestion.previous_episode_title || "",
-            previousEpisodeUrl: suggestion.previous_episode_url || "",
-            confidence: Number(suggestion.confidence || 0),
-            reason: suggestion.reason || "",
-            criteria: suggestion.criteria || {},
-            selectionMode: "existing"
-          };
-          console.log(`[auto-publish] Histoire associée : "${storySelection.matchedStoryTitle}" (confiance ${storySelection.confidence})`);
-        } else {
-          console.log("[auto-publish] Aucune histoire existante associée pour ce sujet");
-        }
-      } catch (storyErr) {
-        console.warn("[auto-publish] Suggestion d'histoire ignorée :", storyErr.message);
-      }
-
-      const agonController = new AbortController();
-      const agonTimeout = setTimeout(() => agonController.abort(), 15000);
-      let r;
-      try {
-        r = await fetch(`${AGON_URL}/api/veille/receive`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ question, positionA, positionB, theme, resume, sources, links, storySelection, keywords: resolvedKeywords, politicalOrientation, arenaMode }),
-          signal: agonController.signal
-        });
-      } finally {
-        clearTimeout(agonTimeout);
-      }
-      if (!r.ok) { const body = await r.text().catch(() => ""); throw new Error(`Agôn a répondu ${r.status}: ${body}`); }
-
-      upsertSentToAgonItem({ subject: subjectTitle, sessionLabel, question, positionA, positionB, theme, resume, sources, links: Array.isArray(links) ? links : [], storySelection, keywords: resolvedKeywords, politicalOrientation, arenaMode, sentAt: new Date().toISOString() });
-      console.log(`[auto-publish] ✓ Envoyé : "${subjectTitle.slice(0, 60)}"`);
+      const published = await publishMixteSubjectToAgon(subj, { sessionLabel });
+      sentSubjects.add(subj.subject);
+      sentItemsByTitle.set(subj.subject, published);
       sentCount++;
     } catch (err) {
-      console.error(`[auto-publish] ✗ Erreur sur "${subjectTitle.slice(0, 60)}" :`, err.message);
+      console.error(`[auto-publish] ✗ Erreur sur "${subj.subject.slice(0, 60)}" :`, err.message);
     }
   }
 
   console.log(`[auto-publish] Bilan envoi : ${sentCount}/${top10.length} sujet(s) envoyé(s) vers Agôn`);
+
+  // Lots dédiés "médias de gauche" / "médias de droite" (10 de chaque), équivalent automatique
+  // du filtre + "Cocher les 10" + "Tout générer" manuel sur le tableau de bord veille mixte —
+  // indépendants du top 10 par score ci-dessus. On reprend même les sujets déjà publiés
+  // ailleurs pour remplir les 10 places de chaque côté (cf. sentItemsByTitle ci-dessus pour
+  // éviter de régénérer l'article dans ce cas).
+  for (const group of ["left", "right"]) {
+    const picks = selectTopSubjectsByMediaOrientation(allSubjects, group, 10);
+    const groupLabel = group === "left" ? "gauche" : "droite";
+    let groupSentCount = 0;
+    for (const subj of picks) {
+      try {
+        const reuseFrom = sentItemsByTitle.get(subj.subject) || null;
+        const published = await publishMixteSubjectToAgon(subj, { sessionLabel, politicalGroup: group, reuseFrom });
+        sentItemsByTitle.set(subj.subject, published);
+        groupSentCount++;
+      } catch (err) {
+        console.error(`[auto-publish] ✗ Erreur (médias ${groupLabel}) sur "${subj.subject.slice(0, 60)}" :`, err.message);
+      }
+    }
+    console.log(`[auto-publish] Bilan envoi médias ${groupLabel} : ${groupSentCount}/${picks.length} sujet(s) envoyé(s) vers Agôn`);
+  }
 
   // Classer puis publier tous les sujets en attente
   await classifyAndPublishPending();

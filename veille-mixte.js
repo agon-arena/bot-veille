@@ -38,7 +38,7 @@ const HOURS_BACK_YOUTUBE = 168;
 
 const SIMILARITY_THRESHOLD = 0.52;
 const MIN_SHARED_KEYWORDS = 2;
-const MIN_DISTINCT_SOURCES = 3;
+const MIN_DISTINCT_SOURCES = 2;
 
 const UPDATE_INTERVAL_MINUTES = 720;
 const MAX_SESSIONS_TO_KEEP = 12;
@@ -439,43 +439,28 @@ function persistYoutubeRssUrl(channelName, rssUrl) {
 }
 
 async function getWorkingYouTubeRssUrl(channel) {
-  const attempts = [];
-  if (channel.rss) {
-    attempts.push({ kind: "stored", url: channel.rss });
-  }
-
-  if (channel.url) {
-    try {
-      const rebuilt = await getRssUrlFromYouTubeChannel({ ...channel, rss: "" });
-      if (!attempts.some((item) => item.url === rebuilt)) {
-        attempts.push({ kind: "rebuilt", url: rebuilt });
-      }
-    } catch (error) {
-      if (!attempts.length) {
-        throw error;
-      }
-    }
-  }
-
-  if (!attempts.length) {
-    throw new Error("Aucun flux YouTube utilisable n'a pu être déterminé");
-  }
-
   let lastError = null;
-
-  for (const attempt of attempts) {
+  if (channel.rss) {
     try {
-      const feed = await fetchFeedWithFallback(attempt.url, `Flux YouTube ${channel.nom}`);
-      if (attempt.kind === "rebuilt") {
-        persistYoutubeRssUrl(channel.nom, attempt.url);
-      }
-      return { rssUrl: attempt.url, feed };
+      const feed = await fetchFeedWithFallback(channel.rss, `Flux YouTube ${channel.nom}`);
+      return { rssUrl: channel.rss, feed };
     } catch (error) {
       lastError = error;
     }
   }
 
-  throw lastError || new Error("Impossible de lire le flux YouTube");
+  if (channel.url) {
+    try {
+      const rebuilt = await getRssUrlFromYouTubeChannel({ ...channel, rss: "" });
+      const feed = await fetchFeedWithFallback(rebuilt, `Flux YouTube ${channel.nom}`);
+      persistYoutubeRssUrl(channel.nom, rebuilt);
+      return { rssUrl: rebuilt, feed };
+    } catch (error) {
+      lastError = error;
+    }
+  }
+
+  throw lastError || new Error("Aucun flux YouTube utilisable n'a pu être déterminé");
 }
 
 function extractYouTubeVideoId(link) {
@@ -3327,7 +3312,8 @@ function buildSubjectInteractionScriptHtml(opts = {}) {
         sources: sourcesEl ? sourcesEl.textContent.trim() : "",
         contents: contentItems,
         sessionLabel,
-        storySelection
+        storySelection,
+        politicalGroup: subjectEl.dataset.politicalGroup || "mixed"
       };
 
       try {
@@ -3390,11 +3376,12 @@ function buildSubjectInteractionScriptHtml(opts = {}) {
             checked: item.querySelector('input[type="checkbox"]')?.checked ?? true
           };
         }).filter(l => l.url);
+        const politicalGroup = (subjectEl.dataset.politicalGroup === "left" || subjectEl.dataset.politicalGroup === "right") ? subjectEl.dataset.politicalGroup : "mixed";
 
         const res = await fetch(SEND_TO_AGON_ENDPOINT, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ subject, sessionLabel, question, positionA, positionB, theme, resume, sources, links, storySelection, keywords, politicalOrientation: btn.dataset.politicalOrientation ? JSON.parse(btn.dataset.politicalOrientation) : null })
+          body: JSON.stringify({ subject, sessionLabel, question, positionA, positionB, theme, resume, sources, links, storySelection, keywords, politicalOrientation: btn.dataset.politicalOrientation ? JSON.parse(btn.dataset.politicalOrientation) : null, politicalGroup })
         });
         if (!res.ok) throw new Error();
         const subjectElBtn = btn.closest(".subject");
@@ -3540,11 +3527,21 @@ function buildSubjectInteractionScriptHtml(opts = {}) {
           fetch("/api/saved-subjects?t=" + Date.now()),
           fetch("/api/sent-to-agon-items?t=" + Date.now())
         ]);
-        const savedData = await savedRes.json().catch(function() { return { ok: false, subjects: [] }; });
+        const savedData = await savedRes.json().catch(function() { return { ok: false, subjects: [], items: [] }; });
         const sentData = await sentRes.json().catch(function() { return { ok: false, items: [], keys: [] }; });
 
         const savedSubjects = new Set(Array.isArray(savedData.subjects) ? savedData.subjects.map(function(item) { return String(item || "").trim(); }).filter(Boolean) : []);
         const sentKeys = new Set(Array.isArray(sentData.keys) ? sentData.keys.map(function(item) { return String(item || "").trim(); }).filter(Boolean) : []);
+        // politicalGroup posé par "Cocher les 10" n'existe qu'en mémoire (dataset) tant
+        // que generateSubjectPipeline() ne l'a pas envoyé — sans cette restauration, un
+        // rechargement de page entre "Cocher les 10" et "Tout générer" le ferait
+        // silencieusement retomber sur "mixed", même pour un sujet enregistré.
+        const savedPoliticalGroupByTitle = new Map(
+          (Array.isArray(savedData.items) ? savedData.items : []).map(function(item) {
+            const group = (item?.politicalGroup === "left" || item?.politicalGroup === "right") ? item.politicalGroup : "mixed";
+            return [String(item?.subject || "").trim(), group];
+          })
+        );
 
         document.querySelectorAll('.subject').forEach(function(subjectEl) {
           const saveBtn = subjectEl.querySelector('.save-btn');
@@ -3559,6 +3556,8 @@ function buildSubjectInteractionScriptHtml(opts = {}) {
             const isSaved = savedSubjects.has(String(subjectTitle || "").trim());
             saveBtn.classList.toggle('saved', isSaved);
             saveBtn.textContent = isSaved ? '★ Enregistré' : '☆ Enregistrer';
+            const savedGroup = savedPoliticalGroupByTitle.get(String(subjectTitle || "").trim());
+            if (savedGroup) subjectEl.dataset.politicalGroup = savedGroup;
           }
 
           if (agonBtn) {
@@ -3640,9 +3639,82 @@ function buildSubjectInteractionScriptHtml(opts = {}) {
       updateSavedSelectionUi();
     }
 
+    function setSubjectStatCounts(s, sourceCount, articleCount, videoCount) {
+      const sourcesEl = s.querySelector(".stat-sources-count");
+      const sourcesDropdownEl = s.querySelector(".stat-sources-dropdown-count");
+      const articlesEl = s.querySelector(".stat-articles-count");
+      const videosEl = s.querySelector(".stat-videos-count");
+      if (sourcesEl) sourcesEl.textContent = String(sourceCount);
+      if (sourcesDropdownEl) sourcesDropdownEl.textContent = String(sourceCount);
+      if (articlesEl) articlesEl.textContent = String(articleCount);
+      if (videosEl) videosEl.textContent = String(videoCount);
+    }
+
+    function resetOrientationFilter(activeSession) {
+      activeSession.querySelectorAll(".content-item[data-orientation]").forEach(item => {
+        item.style.display = "";
+      });
+      activeSession.querySelectorAll(".sources-dropdown h4, .sources-dropdown h4 + ul").forEach(el => {
+        el.style.display = "";
+      });
+      activeSession.querySelectorAll(":scope > .subject").forEach(s => {
+        const totalArticles = s.querySelectorAll(".content-item[data-type='article']").length;
+        const totalVideos = s.querySelectorAll(".content-item[data-type='youtube']").length;
+        setSubjectStatCounts(s, Number(s.dataset.sources) || 0, totalArticles, totalVideos);
+      });
+    }
+
     function sortSubjects() {
       const activeSession = getActiveSession();
       if (!activeSession) return;
+
+      if (currentSort !== "left" && currentSort !== "right") {
+        resetOrientationFilter(activeSession);
+      }
+
+      if (currentSort === "left" || currentSort === "right") {
+        clearThemeHeaders(activeSession);
+        const subjects = [...activeSession.querySelectorAll(":scope > .subject")];
+        const counts = new Map();
+        subjects.forEach(s => {
+          let articleCount = 0;
+          let videoCount = 0;
+          const matchingSources = new Set();
+          s.querySelectorAll(".content-item[data-orientation]").forEach(item => {
+            const matches = getOrientationGroupClient(item.dataset.orientation) === currentSort;
+            item.style.display = matches ? "" : "none";
+            if (matches) {
+              if (item.dataset.type === "article") articleCount++;
+              if (item.dataset.type === "youtube") videoCount++;
+              const sourceName = item.querySelector("strong")?.textContent.trim();
+              if (sourceName) matchingSources.add(sourceName);
+            }
+          });
+          s.querySelectorAll(".sources-dropdown h4").forEach(h4 => {
+            const ul = h4.nextElementSibling;
+            if (!ul || ul.tagName !== "UL") return;
+            const anyVisible = [...ul.querySelectorAll(".content-item")].some(li => li.style.display !== "none");
+            h4.style.display = anyVisible ? "" : "none";
+            ul.style.display = anyVisible ? "" : "none";
+          });
+          setSubjectStatCounts(s, matchingSources.size, articleCount, videoCount);
+          counts.set(s, matchingSources.size);
+        });
+        subjects.sort((a, b) => counts.get(b) - counts.get(a));
+        const visible = [];
+        subjects.forEach(s => {
+          activeSession.appendChild(s);
+          const hide = counts.get(s) === 0;
+          s.style.display = hide ? "none" : "";
+          if (!hide) visible.push(s);
+        });
+        visible.forEach((s, i) => {
+          const badge = s.querySelector(".subject-number");
+          if (badge) badge.textContent = (i + 1) + "/" + visible.length;
+        });
+        updateSavedSelectionUi();
+        return;
+      }
 
       if (currentSort === "ranked") {
         clearThemeHeaders(activeSession);
@@ -3673,11 +3745,10 @@ function buildSubjectInteractionScriptHtml(opts = {}) {
         subjects.sort((a, b) => Number(b.dataset[currentSort]) - Number(a.dataset[currentSort]));
       }
       const visible = [];
-      subjects.forEach((s, i) => {
+      subjects.forEach((s) => {
         activeSession.appendChild(s);
         const isSaved = s.querySelector(".save-btn")?.classList.contains("saved");
-        const hide = (currentSort === "left" && i >= 10)
-          || (currentSort === "saved" && !isSaved);
+        const hide = currentSort === "saved" && !isSaved;
         s.style.display = hide ? "none" : "";
         if (!hide) visible.push(s);
       });
@@ -3737,6 +3808,8 @@ function buildSubjectInteractionScriptHtml(opts = {}) {
     async function generateSubjectPipeline(subjectEl, setStatus) {
       // Mode d'arène choisi pour ce sujet (source de vérité = subjectEl.dataset.arenaMode, "positions" par défaut)
       const arenaMode = subjectEl.dataset.arenaMode === "libre" ? "libre" : "positions";
+      // Groupe politique (source de vérité = subjectEl.dataset.politicalGroup, posé par "Cocher les 10" sur les filtres Médias de gauche/droite ; "mixed" sinon)
+      const politicalGroup = (subjectEl.dataset.politicalGroup === "left" || subjectEl.dataset.politicalGroup === "right") ? subjectEl.dataset.politicalGroup : "mixed";
 
       // Étape 1 : Analyse IA (si pas encore fait), dans le mode choisi
       const analyzeBtn = subjectEl.querySelector(".analyze-btn[data-mode='positions']") || subjectEl.querySelector(".analyze-btn");
@@ -3964,7 +4037,7 @@ function buildSubjectInteractionScriptHtml(opts = {}) {
         const dateMatch = (item.querySelector("small")?.textContent || "").match(/(\\d{2}\\/\\d{2}\\/\\d{4})/);
         return { title: item.querySelector("a")?.textContent.trim() || "", url: item.dataset.link || "", source: item.querySelector("strong")?.textContent.trim() || "", type: item.dataset.type || "article", date: dateMatch ? dateMatch[1] : "", checked: item.querySelector('input[type="checkbox"]')?.checked ?? true };
       }).filter(l => l.url);
-      const sendRes = await fetchWithTimeout(SEND_TO_AGON_ENDPOINT, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ subject: subjectTitle, sessionLabel, question: finalQuestion, positionA: finalPosA, positionB: finalPosB, theme, resume: resumeForSend, sources: agonBtnFinal.dataset.sources, links, storySelection, keywords, politicalOrientation: agonBtnFinal.dataset.politicalOrientation ? JSON.parse(agonBtnFinal.dataset.politicalOrientation) : null, arenaMode }) });
+      const sendRes = await fetchWithTimeout(SEND_TO_AGON_ENDPOINT, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ subject: subjectTitle, sessionLabel, question: finalQuestion, positionA: finalPosA, positionB: finalPosB, theme, resume: resumeForSend, sources: agonBtnFinal.dataset.sources, links, storySelection, keywords, politicalOrientation: agonBtnFinal.dataset.politicalOrientation ? JSON.parse(agonBtnFinal.dataset.politicalOrientation) : null, arenaMode, politicalGroup }) });
       if (!sendRes.ok) throw new Error("Erreur envoi Agôn");
       agonBtnFinal.classList.add("sent");
       agonBtnFinal.textContent = "✓ Envoyé";
@@ -4158,6 +4231,7 @@ function buildSubjectInteractionScriptHtml(opts = {}) {
           const score = Number(subjectEl.dataset.score) || 0;
           const mode = score >= 8 ? "positions" : "libre";
           subjectEl.dataset.arenaMode = mode;
+          subjectEl.dataset.politicalGroup = (currentSort === "left" || currentSort === "right") ? currentSort : "mixed";
           subjectEl.querySelectorAll(".arena-mode-btn").forEach(b => {
             b.classList.toggle("active", b.dataset.mode === mode);
           });
@@ -4484,6 +4558,28 @@ function buildVeilleStylesHtml() {
 
 	    .filter-btn[data-sort="saved"].active::before {
 	      color: #fff;
+	    }
+
+	    .filter-btn[data-sort="left"] {
+	      color: #b30000;
+	      border-color: #ffb3b3;
+	    }
+
+	    .filter-btn[data-sort="left"].active {
+	      background: #b30000;
+	      color: #fff;
+	      border-color: #b30000;
+	    }
+
+	    .filter-btn[data-sort="right"] {
+	      color: #003399;
+	      border-color: #b3c2ff;
+	    }
+
+	    .filter-btn[data-sort="right"].active {
+	      background: #003399;
+	      color: #fff;
+	      border-color: #003399;
 	    }
 
     .theme-header {
@@ -6133,9 +6229,13 @@ function buildSubjectCardHtml(subject, ctx) {
 
       const videoItems = videos.map(video => {
         const date = dayjs(video.date).format("DD/MM/YYYY HH:mm");
+        const videoOrientationGroup = getOrientationGroup(video.orientation);
+        const videoOrientationTag = video.orientation
+          ? `<span class="source-tag ${videoOrientationGroup}">${escapeHtml(video.orientation)}</span>`
+          : "";
 
         return `
-          <li class="content-item video-item${isContentChecked(video.link) ? " preselected" : ""}" data-link="${escapeHtml(video.link)}" data-type="youtube">
+          <li class="content-item video-item${isContentChecked(video.link) ? " preselected" : ""}" data-link="${escapeHtml(video.link)}" data-orientation="${escapeHtml(video.orientation)}" data-type="youtube">
             <label class="article-label">
               <input type="checkbox"${isContentChecked(video.link) ? " checked" : ""}>
               <div>
@@ -6146,6 +6246,7 @@ function buildSubjectCardHtml(subject, ctx) {
                 }
                 <strong>${escapeHtml(video.source)}</strong>
                 <span class="source-tag youtube">YouTube</span>
+                ${videoOrientationTag}
                 <br>
                 <a href="${escapeHtml(video.link)}" target="_blank" rel="noopener noreferrer">
                   ${escapeHtml(video.title)}
@@ -6251,13 +6352,13 @@ function buildSubjectCardHtml(subject, ctx) {
           ${aiBoxHtml}
 
           <div class="subject-stats">
-            <span>${subject.sourceCount} sources</span>
-            <span>${subject.articleCount} article(s)</span>
-            <span>${subject.youtubeCount} vidéo(s)</span>
+            <span><span class="stat-sources-count">${subject.sourceCount}</span> sources</span>
+            <span><span class="stat-articles-count">${subject.articleCount}</span> article(s)</span>
+            <span><span class="stat-videos-count">${subject.youtubeCount}</span> vidéo(s)</span>
           </div>
 
 	          <details class="sources-dropdown">
-	            <summary>Voir les sources (${subject.sourceCount})</summary>
+	            <summary>Voir les sources (<span class="stat-sources-dropdown-count">${subject.sourceCount}</span>)</summary>
 	            <p class="sources">${escapeHtml(subject.sources.join(", "))}</p>
 	            ${
 	              articles.length
@@ -6416,8 +6517,8 @@ function generateHtml(sessions) {
     </div>
     <div class="refresh-row">
       <select class="min-sources-select" id="min-sources-select" title="Sources minimum par sujet">
-        <option value="2">2 sources min.</option>
-        <option value="3" selected>3 sources min.</option>
+        <option value="2" selected>2 sources min.</option>
+        <option value="3">3 sources min.</option>
         <option value="4">4 sources min.</option>
         <option value="5">5 sources min.</option>
         <option value="6">6 sources min.</option>
@@ -6442,6 +6543,8 @@ function generateHtml(sessions) {
     <button class="filter-btn active" data-sort="score">Sujets clivants</button>
     <button class="filter-btn" data-sort="sources">Sujets majeurs</button>
     <button class="filter-btn" data-sort="ranked">Classement mixte</button>
+    <button class="filter-btn" data-sort="left">Médias de gauche</button>
+    <button class="filter-btn" data-sort="right">Médias de droite</button>
     <button class="filter-btn" data-sort="saved">Sujets enregistrés</button>
     <a class="filter-link" href="/sent-to-agon">Articles envoyés vers Agôn</a>
   </div>
@@ -6478,7 +6581,7 @@ function generateHtml(sessions) {
       : `<div class="empty">Aucune session mixte pour le moment.</div>`
   }
 
-  ${buildSubjectInteractionScriptHtml()}
+  ${buildSubjectInteractionScriptHtml({ topTenSorts: ["ranked", "left", "right"] })}
   <script>
     var ptrIsRefreshing = false;
     var ptrBaseTimestamp = null;
@@ -6555,7 +6658,7 @@ function generateHtml(sessions) {
         if (s0.length > 0) ptrBaseTimestamp = s0[0].generatedAt;
       } catch (e) {}
 
-      var minSourcesVal = Number(document.getElementById("min-sources-select")?.value) || 3;
+      var minSourcesVal = Number(document.getElementById("min-sources-select")?.value) || 2;
 
       async function finishRefresh() {
         clearInterval(progressPoll);

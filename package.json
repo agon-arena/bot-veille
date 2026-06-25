@@ -2,10 +2,9 @@
   "name": "bot-veille",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "start.js",
   "scripts": {
     "start": "node start.js",
-    "watch": "node veille.js",
     "server": "node server.js"
   },
   "keywords": [],

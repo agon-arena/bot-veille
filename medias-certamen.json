@@ -71,7 +71,7 @@
   },
   {
     "nom": "Attac",
-    "orientation": "altermondialiste",
+    "orientation": "gauche / altermondialiste",
     "rss": "https://france.attac.org/spip.php?page=backend"
   },
   {
@@ -141,7 +141,7 @@
   },
   {
     "nom": "La Horde",
-    "orientation": "antifascisme",
+    "orientation": "gauche / antifascisme",
     "rss": "https://lahorde.info/spip.php?page=backend"
   },
   {
@@ -221,7 +221,7 @@
   },
   {
     "nom": "Multinationales.org",
-    "orientation": "économie / multinationales",
+    "orientation": "gauche / économie / multinationales",
     "rss": "https://multinationales.org/fr/page/backend"
   },
   {
@@ -231,17 +231,17 @@
   },
   {
     "nom": "Paris Luttes Info",
-    "orientation": "militant / local",
+    "orientation": "gauche / militant / local",
     "rss": "https://paris-luttes.info/spip.php?page=backend"
   },
   {
     "nom": "Radio Parleur",
-    "orientation": "social / mouvements sociaux",
+    "orientation": "gauche / social / mouvements sociaux",
     "rss": "https://radioparleur.net/feed/"
   },
   {
     "nom": "Rapports de Force",
-    "orientation": "social / syndicats",
+    "orientation": "gauche / social / syndicats",
     "rss": "https://rapportsdeforce.fr/feed"
   },
   {
@@ -276,7 +276,7 @@
   },
   {
     "nom": "StreetPress",
-    "orientation": "société / jeunesse / enquête",
+    "orientation": "gauche / société / jeunesse / enquête",
     "rss": "https://www.streetpress.com/rss.xml"
   },
   {
@@ -488,5 +488,65 @@
     "nom": "Atlantico",
     "orientation": "droite / libéral-conservateur",
     "rss": "https://rss.atlantico.fr/"
+  },
+  {
+    "nom": "Le Point — 24h infos",
+    "orientation": "droite",
+    "rss": "https://www.lepoint.fr/24h-infos/rss.xml"
+  },
+  {
+    "nom": "CNews — France",
+    "orientation": "droite",
+    "rss": "https://www.cnews.fr/rss/categorie/france"
+  },
+  {
+    "nom": "CNews — Faits divers",
+    "orientation": "droite",
+    "rss": "https://www.cnews.fr/rss/categorie/faits%20divers"
+  },
+  {
+    "nom": "Contrepoints — Culture",
+    "orientation": "droite",
+    "rss": "https://contrepoints.org/thematique/culture/feed/"
+  },
+  {
+    "nom": "Contrepoints — International / Afrique",
+    "orientation": "droite",
+    "rss": "https://contrepoints.org/thematique/international/afrique/feed/"
+  },
+  {
+    "nom": "Capital — Économie / marchés",
+    "orientation": "droite",
+    "rss": "http://rss.capital.fr/rss/economies-et-marches.xml"
+  },
+  {
+    "nom": "Les Échos — Économie France",
+    "orientation": "droite",
+    "rss": "https://services.lesechos.fr/rss/les-echos-economie-france.xml"
+  },
+  {
+    "nom": "Les Échos — Politique société",
+    "orientation": "droite",
+    "rss": "https://services.lesechos.fr/rss/les-echos-politique-societe.xml"
+  },
+  {
+    "nom": "Les Échos — Idées débats",
+    "orientation": "droite",
+    "rss": "https://services.lesechos.fr/rss/les-echos-idees-debats.xml"
+  },
+  {
+    "nom": "Les Échos — Tech médias",
+    "orientation": "droite",
+    "rss": "https://services.lesechos.fr/rss/les-echos-tech-medias.xml"
+  },
+  {
+    "nom": "Boulevard Voltaire",
+    "orientation": "droite",
+    "rss": "https://www.bvoltaire.fr/feed/"
+  },
+  {
+    "nom": "Frontières",
+    "orientation": "droite",
+    "rss": "https://www.frontieresmedia.fr/feed/"
   }
 ]

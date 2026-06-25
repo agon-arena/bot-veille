@@ -48,5 +48,55 @@
     "runAt": "2026-06-24T10:13:57.304Z",
     "status": "done",
     "attempts": 0
+  },
+  {
+    "debateId": 1021,
+    "question": "Faut-il créer des fichiers de surveillance pour mieux contrôler les pédocriminels ?",
+    "positionA": "Pour la création de fichiers de surveillance",
+    "positionB": "Contre la création de fichiers de surveillance",
+    "id": "1021-1782301213255-a3macs",
+    "runAt": "2026-06-24T11:50:13.255Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1022,
+    "question": "La justice est-elle adaptée à la libération de la parole des victimes ?",
+    "positionA": "La justice doit s'adapter et renforcer sa réponse",
+    "positionB": "La justice doit respecter ses procédures actuelles",
+    "id": "1022-1782301213256-quvsx3",
+    "runAt": "2026-06-24T11:50:13.255Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1023,
+    "question": "Faut-il qu'une hausse des frais d'inscription finance mieux l'université ?",
+    "positionA": "Augmenter les frais pour sauver les universités",
+    "positionB": "Maintenir des frais bas pour garantir l'accès",
+    "id": "1023-1782301213256-ffq4u4",
+    "runAt": "2026-06-24T11:50:13.255Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1024,
+    "question": "Faut-il qualifier les actions israéliennes à Gaza de génocide selon le droit international ?",
+    "positionA": "Oui, c'est un génocide",
+    "positionB": "Non, ce n'est pas un génocide",
+    "id": "1024-1782301213256-j0ujj0",
+    "runAt": "2026-06-24T11:50:13.255Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1025,
+    "question": "Les magistrats doivent-ils bénéficier d'une immunité disciplinaire renforcée ?",
+    "positionA": "Maintenir l'immunité disciplinaire des magistrats",
+    "positionB": "Réduire l'immunité pour plus de contrôle",
+    "id": "1025-1782301213256-v9g6xy",
+    "runAt": "2026-06-24T11:50:13.255Z",
+    "status": "done",
+    "attempts": 0
   }
 ]

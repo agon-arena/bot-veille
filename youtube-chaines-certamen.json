@@ -1066,5 +1066,47 @@
     "orientation": "généraliste / neutre",
     "url": "https://www.youtube.com/channel/UCojmN0_VgImHjZ7326rReDQ",
     "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCojmN0_VgImHjZ7326rReDQ"
+  },
+  {
+    "nom": "Tocsin",
+    "orientation": "droite",
+    "url": "https://www.youtube.com/channel/UCLuLxfwPrxe4wUPkdYM_VDA",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCLuLxfwPrxe4wUPkdYM_VDA"
+  },
+  {
+    "nom": "Charlotte d'Ornellas",
+    "orientation": "droite",
+    "url": "https://www.youtube.com/channel/UCQfGDLkC6iBKj4Gl8pFLmLw",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCQfGDLkC6iBKj4Gl8pFLmLw"
+  },
+  {
+    "nom": "Sud Radio / André Bercoff",
+    "orientation": "droite",
+    "url": "https://www.youtube.com/playlist?list=PLaXVMKmPLMDQe5oKZlhHutOQlGCq7EVU4",
+    "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PLaXVMKmPLMDQe5oKZlhHutOQlGCq7EVU4"
+  },
+  {
+    "nom": "Pascal Praud / L'Heure des Pros",
+    "orientation": "droite",
+    "url": "https://www.youtube.com/playlist?list=PLohg8tfh_cS71OJvp1cRX7evXGFweG2qu",
+    "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PLohg8tfh_cS71OJvp1cRX7evXGFweG2qu"
+  },
+  {
+    "nom": "Le Figaro TV",
+    "orientation": "droite",
+    "url": "https://www.youtube.com/channel/UCvrNoLkkDgcFrLV2oX8mbEg",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCvrNoLkkDgcFrLV2oX8mbEg"
+  },
+  {
+    "nom": "Le Club Le Figaro Politique",
+    "orientation": "droite",
+    "url": "https://www.youtube.com/playlist?list=PL_3P3xgnwTL2MrWjjqOU_N4ojRZUdCYur",
+    "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PL_3P3xgnwTL2MrWjjqOU_N4ojRZUdCYur"
+  },
+  {
+    "nom": "Le Club Le Figaro Idées",
+    "orientation": "droite",
+    "url": "https://www.youtube.com/playlist?list=PL_3P3xgnwTL0URgHrMBOd7rYePTCzCa8a",
+    "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PL_3P3xgnwTL0URgHrMBOd7rYePTCzCa8a"
   }
 ]

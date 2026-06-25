@@ -3,9 +3,6 @@ node_modules
 veille.html
 veille.json
 sessions-veille.json
-veille-youtube.html
-veille-youtube.json
-sessions-youtube.json
 seen-items.json
 auto-collect-config.json
 saved-subjects.json

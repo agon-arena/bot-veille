@@ -878,5 +878,185 @@
     "runAt": "2026-06-24T05:18:38.435Z",
     "status": "done",
     "attempts": 0
+  },
+  {
+    "debateId": 1026,
+    "question": "L'autonomie corse menace-t-elle l'unité républicaine ?",
+    "positionA": "Non elle valorise la diversité",
+    "positionB": "Oui elle fragilise la République",
+    "id": "1026-1782303341545-3v2ay8",
+    "runAt": "2026-06-24T12:25:41.545Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1027,
+    "question": "Faut-il retirer les troupes américaines d'Iran ?",
+    "positionA": "Retrait pour réduire les tensions",
+    "positionB": "Maintien pour préserver l'influence",
+    "id": "1027-1782303341545-9brpup",
+    "runAt": "2026-06-24T12:25:41.545Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1028,
+    "question": "Préservation du patrimoine ou adaptation climatique ?",
+    "positionA": "Priorité à l'adaptation climatique des logements",
+    "positionB": "Priorité à la préservation du patrimoine",
+    "id": "1028-1782303341545-ezhzfx",
+    "runAt": "2026-06-24T12:25:41.545Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1029,
+    "question": "Faut-il dissoudre le Parlement en Espagne ?",
+    "positionA": "Maintenir le gouvernement actuel",
+    "positionB": "Organiser des élections anticipées",
+    "id": "1029-1782303341545-frx7f1",
+    "runAt": "2026-06-24T12:25:41.545Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1030,
+    "question": "Le protocole Iran-USA stabilise-t-il le Moyen-Orient ?",
+    "positionA": "Il favorise la stabilité régionale",
+    "positionB": "Il crée plus de tensions",
+    "id": "1030-1782303341545-gj1goa",
+    "runAt": "2026-06-24T12:25:41.545Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1031,
+    "question": "Faut-il créer des fichiers de surveillance des pédocriminels ?",
+    "positionA": "Non pour protéger les libertés individuelles",
+    "positionB": "Oui pour prévenir les récidives",
+    "id": "1031-1782303341545-z52l6s",
+    "runAt": "2026-06-24T12:25:41.545Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1032,
+    "question": "Marc et Simonne Bloch honorés au Panthéon pour leur engagement",
+    "positionA": "",
+    "positionB": "",
+    "id": "1032-1782303341545-n4u0t4",
+    "runAt": "2026-06-24T12:25:41.545Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1033,
+    "question": "Premier cas d'Ebola isolé en France chez un médecin de retour de RDC",
+    "positionA": "",
+    "positionB": "",
+    "id": "1033-1782303341545-32u59q",
+    "runAt": "2026-06-24T12:25:41.545Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1034,
+    "question": "Sanchez doit-il démissionner face aux accusations ?",
+    "positionA": "Maintien en fonction pour stabilité",
+    "positionB": "Démission pour préserver l'intégrité",
+    "id": "1034-1782390145251-wt28dy",
+    "runAt": "2026-06-25T12:32:25.250Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1035,
+    "question": "Examens en canicule : maintien ou adaptation ?",
+    "positionA": "Adapter les examens pour protéger les élèves",
+    "positionB": "Maintenir les examens pour respecter le calendrier",
+    "id": "1035-1782390145252-kc7paw",
+    "runAt": "2026-06-25T12:32:25.250Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1036,
+    "question": "Qui doit financer la rénovation des écoles face à la canicule ?",
+    "positionA": "Priorité aux financements nationaux",
+    "positionB": "Responsabilité des collectivités locales",
+    "id": "1036-1782390145252-wshu9z",
+    "runAt": "2026-06-25T12:32:25.250Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1037,
+    "question": "Les médias doivent-ils s'excuser publiquement ?",
+    "positionA": "Oui pour rétablir l'intégrité",
+    "positionB": "Non pour éviter la surenchère",
+    "id": "1037-1782390145252-kouqyh",
+    "runAt": "2026-06-25T12:32:25.250Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1038,
+    "question": "Sécurité stricte en Colombie faut-il préserver les libertés ou renforcer la sécurité ?",
+    "positionA": "Préserver les libertés individuelles",
+    "positionB": "Renforcer la sécurité pour réduire la violence",
+    "id": "1038-1782390145252-4zb3yx",
+    "runAt": "2026-06-25T12:32:25.250Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1039,
+    "question": "Le risque climatique doit-il relever du devoir de vigilance ?",
+    "positionA": "Inclure le climat dans le devoir de vigilance",
+    "positionB": "Limiter le devoir de vigilance aux cas traditionnels",
+    "id": "1039-1782390145252-svnolf",
+    "runAt": "2026-06-25T12:32:25.250Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1040,
+    "question": "Les commémorations peuvent-elles être politisées ?",
+    "positionA": "Oui, elles renforcent le message du dirigeant",
+    "positionB": "Non, elles doivent rester apolitiques",
+    "id": "1040-1782390145252-62q5vf",
+    "runAt": "2026-06-25T12:32:25.250Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1041,
+    "question": "Interception d'un cinquième pétrolier russe par la France",
+    "positionA": "",
+    "positionB": "",
+    "id": "1041-1782390145252-g3xr87",
+    "runAt": "2026-06-25T12:32:25.250Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1042,
+    "question": "Sanctions individuelles ou réforme systémique ?",
+    "positionA": "Opter pour une réforme systémique",
+    "positionB": "Privilégier des sanctions individuelles",
+    "id": "1042-1782390145252-cdj1n6",
+    "runAt": "2026-06-25T12:32:25.250Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1043,
+    "question": "Séismes dévastateurs au Venezuela : bilan humain et matériel lourd",
+    "positionA": "",
+    "positionB": "",
+    "id": "1043-1782390145252-glt7id",
+    "runAt": "2026-06-25T12:32:25.250Z",
+    "status": "done",
+    "attempts": 0
   }
 ]
