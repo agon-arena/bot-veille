@@ -52,6 +52,13 @@ const DEFAULT_FETCH_HEADERS = {
   "Cache-Control": "no-cache",
   "Pragma": "no-cache"
 };
+const BROWSER_RSS_FETCH_HEADERS = {
+  "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Safari/605.1.15",
+  "Accept": "application/rss+xml, application/xml, text/xml, text/html",
+  "Accept-Language": "fr-FR,fr;q=0.9,en;q=0.8",
+  "Cache-Control": "no-cache",
+  "Pragma": "no-cache"
+};
 
 const AGON_THEMES = [
   "Politique",
@@ -113,20 +120,30 @@ function withTimeout(promise, timeoutMs, label) {
 
 const PAUSE_DURATIONS_MS = {
   403: 24 * 60 * 60 * 1000,
-  429: 6 * 60 * 60 * 1000
+  429: 12 * 60 * 60 * 1000
 };
 
 const pausedSources = new Map();
 const collectionDiagnostics = {
   mediaRssFetched: 0,
   youtubeRssFetched: 0,
-  youtubeHtmlFetched: 0
+  youtubeHtmlFetched: 0,
+  rssErrors403: 0,
+  rssErrors404: 0,
+  rssErrors429: 0,
+  rssFetchFailed: 0,
+  rssNonXml: 0
 };
 
 function resetCollectionDiagnostics() {
   collectionDiagnostics.mediaRssFetched = 0;
   collectionDiagnostics.youtubeRssFetched = 0;
   collectionDiagnostics.youtubeHtmlFetched = 0;
+  collectionDiagnostics.rssErrors403 = 0;
+  collectionDiagnostics.rssErrors404 = 0;
+  collectionDiagnostics.rssErrors429 = 0;
+  collectionDiagnostics.rssFetchFailed = 0;
+  collectionDiagnostics.rssNonXml = 0;
 }
 
 function logCollectionDiagnostics(label, preparedSubjects) {
@@ -138,8 +155,123 @@ function logCollectionDiagnostics(label, preparedSubjects) {
     `pages d'articles complets fetchées=0; ` +
     `articles complets évités après 4 sources exploitables=0; ` +
     `sujets préparés=${preparedSubjects}; ` +
-    `sujets publiés=0`
+    `sujets publiés=0; ` +
+    `erreurs RSS 403=${collectionDiagnostics.rssErrors403}; ` +
+    `erreurs RSS 404=${collectionDiagnostics.rssErrors404}; ` +
+    `erreurs RSS 429=${collectionDiagnostics.rssErrors429}; ` +
+    `fetch failed=${collectionDiagnostics.rssFetchFailed}; ` +
+    `flux non XML=${collectionDiagnostics.rssNonXml}`
   );
+}
+
+function extractHttpStatus(error) {
+  const direct = Number(error?.httpStatus || error?.status || error?.statusCode || error?.response?.status || error?.response?.statusCode);
+  if (Number.isFinite(direct) && direct > 0) return direct;
+  const message = String(error?.message || "");
+  const match = message.match(/\b(403|404|429|5\d\d)\b/);
+  return match ? Number(match[1]) : null;
+}
+
+function describeFetchFailure(error) {
+  if (!error) return "cause inconnue";
+  if (error.name === "AbortError" || error.code === "ETIMEDOUT") return "timeout/aborted";
+  const cause = error.cause || {};
+  const code = String(error.code || cause.code || "").trim();
+  if (code) {
+    if (code === "ENOTFOUND") return "DNS/host introuvable";
+    if (code === "ECONNRESET") return "connexion réinitialisée";
+    if (code === "ECONNREFUSED") return "connexion refusée";
+    if (code === "ETIMEDOUT") return "timeout réseau";
+    if (code.includes("CERT") || code.includes("TLS") || code.includes("SSL")) return `TLS/certificat (${code})`;
+    if (code === "UND_ERR_TOO_MANY_REDIRECTS") return "trop de redirections";
+    return code;
+  }
+  if (/redirect/i.test(String(error.message || ""))) return "redirect";
+  if (/fetch failed/i.test(String(error.message || ""))) return "fetch failed";
+  return String(error.message || "cause inconnue");
+}
+
+function createFeedError(label, message, props = {}) {
+  const error = new Error(`${label} — ${message}`);
+  Object.assign(error, props);
+  return error;
+}
+
+function registerRssError(error) {
+  const status = extractHttpStatus(error);
+  if (status === 403) collectionDiagnostics.rssErrors403++;
+  else if (status === 404) collectionDiagnostics.rssErrors404++;
+  else if (status === 429) collectionDiagnostics.rssErrors429++;
+  else if (error?.rssErrorKind === "fetch_failed") collectionDiagnostics.rssFetchFailed++;
+  else if (error?.rssErrorKind === "non_xml") collectionDiagnostics.rssNonXml++;
+}
+
+function getRssErrorDetails(sourceName, error, options = {}) {
+  const status = extractHttpStatus(error);
+  const orientation = options.orientation || "";
+  const rss = options.rss || "";
+  const base = { nom: sourceName, orientation, rss, kept: 0, skipped: 0 };
+
+  if (status === 404) {
+    return {
+      ...base,
+      statut: "URL RSS à remplacer (HTTP 404)",
+      message: error.message
+    };
+  }
+  if (status === 403) {
+    return {
+      ...base,
+      statut: "erreur HTTP 403",
+      message: "Accès refusé après essai avec headers navigateur"
+    };
+  }
+  if (status === 429) {
+    return {
+      ...base,
+      statut: "erreur HTTP 429",
+      message: "Rate limit, flux mis en pause temporaire"
+    };
+  }
+  if (error?.rssErrorKind === "fetch_failed") {
+    return {
+      ...base,
+      statut: "fetch failed",
+      cause: error.fetchFailureCause || describeFetchFailure(error),
+      message: error.message
+    };
+  }
+  if (error?.rssErrorKind === "non_xml") {
+    return {
+      ...base,
+      statut: "flux non XML",
+      message: error.message
+    };
+  }
+
+  return {
+    ...base,
+    statut: "erreur",
+    message: error.message
+  };
+}
+
+function logRssError(sourceName, error, options = {}) {
+  const status = extractHttpStatus(error);
+  const prefix = `[RSS] ${sourceName}${options.orientation ? ` (${options.orientation})` : ""}`;
+  if (status === 404) {
+    console.error(`${prefix} — URL RSS à remplacer: ${options.rss || "URL inconnue"}`);
+  } else if (status === 403) {
+    console.error(`${prefix} — HTTP 403 après essai avec headers navigateur: ${options.rss || "URL inconnue"}`);
+  } else if (status === 429) {
+    console.error(`${prefix} — HTTP 429, pause temporaire sans relance immédiate: ${options.rss || "URL inconnue"}`);
+  } else if (error?.rssErrorKind === "fetch_failed") {
+    console.error(`${prefix} — fetch failed (${error.fetchFailureCause || describeFetchFailure(error)}): ${options.rss || "URL inconnue"}`);
+  } else if (error?.rssErrorKind === "non_xml") {
+    console.error(`${prefix} — flux non XML: ${options.rss || "URL inconnue"}`);
+  } else {
+    console.error(`${prefix} — erreur: ${error.message}`);
+  }
 }
 
 function isSourcePaused(sourceName) {
@@ -171,17 +303,32 @@ async function fetchTextWithTimeout(url, options, label, timeoutMs = FEED_TIMEOU
     });
 
     if (!response.ok) {
-      const error = new Error(`${label} a répondu ${response.status}`);
-      error.httpStatus = response.status;
-      throw error;
+      throw createFeedError(label, `HTTP ${response.status}${response.statusText ? ` ${response.statusText}` : ""}`, {
+        httpStatus: response.status,
+        rssErrorKind: "http_status",
+        fetchUrl: url
+      });
     }
 
     return await response.text();
   } catch (error) {
     if (error && error.name === "AbortError") {
-      throw new Error(`${label} a dépassé ${Math.round(timeoutMs / 1000)}s`);
+      throw createFeedError(label, `timeout après ${Math.round(timeoutMs / 1000)}s`, {
+        rssErrorKind: "fetch_failed",
+        fetchFailureCause: "timeout/aborted",
+        fetchUrl: url
+      });
     }
-    throw error;
+    if (error?.rssErrorKind || extractHttpStatus(error)) {
+      throw error;
+    }
+    const failureCause = describeFetchFailure(error);
+    throw createFeedError(label, `fetch failed (${failureCause})`, {
+      rssErrorKind: "fetch_failed",
+      fetchFailureCause: failureCause,
+      fetchUrl: url,
+      originalError: error
+    });
   } finally {
     clearTimeout(timeoutId);
   }
@@ -205,18 +352,44 @@ async function fetchFeedWithFallback(url, label, timeoutMs = FEED_TIMEOUT_MS) {
   try {
     return await parseFeedWithTimeout(url, label, timeoutMs);
   } catch (initialError) {
+    const initialStatus = extractHttpStatus(initialError);
+    if (initialStatus === 404) {
+      throw createFeedError(label, "URL RSS à remplacer (HTTP 404)", {
+        httpStatus: 404,
+        rssErrorKind: "http_status",
+        fetchUrl: url,
+        originalError: initialError
+      });
+    }
+    if (initialStatus === 429) {
+      throw createFeedError(label, "HTTP 429, flux mis en pause sans relance immédiate", {
+        httpStatus: 429,
+        rssErrorKind: "http_status",
+        fetchUrl: url,
+        originalError: initialError
+      });
+    }
+
     const feedText = await fetchTextWithTimeout(url, {
-      headers: DEFAULT_FETCH_HEADERS
+      headers: BROWSER_RSS_FETCH_HEADERS,
+      redirect: "follow"
     }, label, timeoutMs);
 
     if (!looksLikeXmlFeed(feedText)) {
-      throw new Error(`${label} ne renvoie pas un flux XML exploitable`);
+      throw createFeedError(label, "flux non XML exploitable (probable HTML/anti-bot)", {
+        rssErrorKind: "non_xml",
+        fetchUrl: url
+      });
     }
 
     try {
       return await parseFeedTextWithTimeout(feedText, label, timeoutMs);
     } catch (parseError) {
-      throw new Error(`${label} n'a pas pu être analysé (${parseError.message || initialError.message})`);
+      throw createFeedError(label, `flux XML illisible (${parseError.message || initialError.message})`, {
+        rssErrorKind: "parse_error",
+        fetchUrl: url,
+        originalError: parseError
+      });
     }
   }
 }
@@ -551,12 +724,14 @@ async function collectArticles(lastSessionCutoff = null, knownSources = new Set(
       }
       report.sources.push({ nom: media.nom, statut: "ok", kept, skipped });
     } catch (error) {
-      if (error.httpStatus === 403 || error.httpStatus === 429) {
-        pauseSource(media.nom, error.httpStatus);
-        report.sources.push({ nom: media.nom, statut: `erreur HTTP ${error.httpStatus}`, kept: 0, skipped: 0 });
+      registerRssError(error);
+      logRssError(media.nom, error, { orientation: media.orientation || "", rss: media.rss });
+      const status = extractHttpStatus(error);
+      if (status === 403 || status === 429) {
+        pauseSource(media.nom, status);
+        report.sources.push(getRssErrorDetails(media.nom, error, { orientation: media.orientation || "", rss: media.rss }));
       } else {
-        console.error(`Erreur article avec ${media.nom}:`, error.message);
-        report.sources.push({ nom: media.nom, statut: "erreur", kept: 0, skipped: 0, message: error.message });
+        report.sources.push(getRssErrorDetails(media.nom, error, { orientation: media.orientation || "", rss: media.rss }));
       }
     }
   }
@@ -599,12 +774,14 @@ async function collectYouTubeVideos(lastSessionCutoff = null, knownSources = new
       }
       report.sources.push({ nom: channel.nom, statut: "ok", kept, skipped });
     } catch (error) {
-      if (error.httpStatus === 403 || error.httpStatus === 429) {
-        pauseSource(channel.nom, error.httpStatus);
-        report.sources.push({ nom: channel.nom, statut: `erreur HTTP ${error.httpStatus}`, kept: 0, skipped: 0 });
+      registerRssError(error);
+      logRssError(channel.nom, error, { orientation: channel.orientation || "", rss: channel.rss || channel.url || "" });
+      const status = extractHttpStatus(error);
+      if (status === 403 || status === 429) {
+        pauseSource(channel.nom, status);
+        report.sources.push(getRssErrorDetails(channel.nom, error, { orientation: channel.orientation || "", rss: channel.rss || channel.url || "" }));
       } else {
-        console.error(`Erreur YouTube avec ${channel.nom}:`, error.message);
-        report.sources.push({ nom: channel.nom, statut: "erreur", kept: 0, skipped: 0, message: error.message });
+        report.sources.push(getRssErrorDetails(channel.nom, error, { orientation: channel.orientation || "", rss: channel.rss || channel.url || "" }));
       }
     }
   }
