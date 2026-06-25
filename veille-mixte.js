@@ -117,6 +117,30 @@ const PAUSE_DURATIONS_MS = {
 };
 
 const pausedSources = new Map();
+const collectionDiagnostics = {
+  mediaRssFetched: 0,
+  youtubeRssFetched: 0,
+  youtubeHtmlFetched: 0
+};
+
+function resetCollectionDiagnostics() {
+  collectionDiagnostics.mediaRssFetched = 0;
+  collectionDiagnostics.youtubeRssFetched = 0;
+  collectionDiagnostics.youtubeHtmlFetched = 0;
+}
+
+function logCollectionDiagnostics(label, preparedSubjects) {
+  console.log(
+    `[diagnostic collecte] ${label} — ` +
+    `flux RSS médias fetchés=${collectionDiagnostics.mediaRssFetched}; ` +
+    `flux RSS YouTube fetchés=${collectionDiagnostics.youtubeRssFetched}; ` +
+    `pages HTML YouTube fetchées=${collectionDiagnostics.youtubeHtmlFetched}; ` +
+    `pages d'articles complets fetchées=0; ` +
+    `articles complets évités après 4 sources exploitables=0; ` +
+    `sujets préparés=${preparedSubjects}; ` +
+    `sujets publiés=0`
+  );
+}
 
 function isSourcePaused(sourceName) {
   const resumeAt = pausedSources.get(sourceName);
@@ -399,6 +423,7 @@ async function getRssUrlFromYouTubeChannel(channel) {
     throw new Error("Aucun champ rss ou url fourni");
   }
 
+  collectionDiagnostics.youtubeHtmlFetched++;
   const html = await fetchTextWithTimeout(channel.url, {
     headers: DEFAULT_FETCH_HEADERS
   }, `Lecture de la chaîne YouTube ${channel.nom || channel.url}`);
@@ -442,6 +467,7 @@ async function getWorkingYouTubeRssUrl(channel) {
   let lastError = null;
   if (channel.rss) {
     try {
+      collectionDiagnostics.youtubeRssFetched++;
       const feed = await fetchFeedWithFallback(channel.rss, `Flux YouTube ${channel.nom}`);
       return { rssUrl: channel.rss, feed };
     } catch (error) {
@@ -452,6 +478,7 @@ async function getWorkingYouTubeRssUrl(channel) {
   if (channel.url) {
     try {
       const rebuilt = await getRssUrlFromYouTubeChannel({ ...channel, rss: "" });
+      collectionDiagnostics.youtubeRssFetched++;
       const feed = await fetchFeedWithFallback(rebuilt, `Flux YouTube ${channel.nom}`);
       persistYoutubeRssUrl(channel.nom, rebuilt);
       return { rssUrl: rebuilt, feed };
@@ -507,6 +534,7 @@ async function collectArticles(lastSessionCutoff = null, knownSources = new Set(
 
     try {
       console.log(`Article — lecture de ${media.nom}...`);
+      collectionDiagnostics.mediaRssFetched++;
       const feed = await fetchFeedWithFallback(media.rss, `Flux RSS ${media.nom}`);
       const isNewSource = knownSources.size > 0 && !knownSources.has(media.nom);
       let kept = 0, skipped = 0;
@@ -6770,6 +6798,7 @@ async function runWatchSession(minSources = MIN_DISTINCT_SOURCES) {
   console.log("======================================");
   console.log(`Nouvelle session mixte : ${startedAt.format("DD/MM/YYYY HH:mm:ss")}`);
   console.log("======================================");
+  resetCollectionDiagnostics();
   if (lastSessionCutoff) {
     console.log("Filtre fraîcheur actif : seulement les contenus publiés après " + lastSessionCutoff.format("DD/MM/YYYY HH:mm:ss") + ".");
   } else {
@@ -6857,6 +6886,7 @@ async function runWatchSession(minSources = MIN_DISTINCT_SOURCES) {
   console.log(`Fichier généré : ${OUTPUT_HTML}`);
   console.log(`Historique généré : ${HISTORY_FILE}`);
   console.log(`Analyse IA : ${openai ? "activée" : "désactivée, clé API absente"}`);
+  logCollectionDiagnostics("mixte", analyzedSubjects.length);
 }
 
 let isRunning = false;
@@ -7508,6 +7538,7 @@ async function runCertamenSession() {
   console.log("======================================");
   console.log(`Nouvelle session Certamen : ${startedAt.format("DD/MM/YYYY HH:mm:ss")}`);
   console.log("======================================");
+  resetCollectionDiagnostics();
 
   setCertamenProgress(1, "Collecte des articles", "Démarrage…");
   const { contents: articles } = await collectArticles(null, new Set(), MEDIA_FILE_CERTAMEN);
@@ -7593,6 +7624,7 @@ async function runCertamenSession() {
   saveCertamenSessions(trimmed);
   fs.writeFileSync(CERTAMEN_OUTPUT_HTML, generateCertamenHtml(trimmed), "utf8");
   console.log(`Certamen : session sauvegardée.`);
+  logCollectionDiagnostics("Certamen", debatables.length);
 
   autoCheckTopCertamenSubjects(debatables);
 }

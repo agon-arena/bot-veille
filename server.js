@@ -98,6 +98,16 @@ async function runAutoPublishCertamenPipeline() {
   try {
     const result = await publishReadyCertamenPayloadsToAgon({});
     console.log(`[auto-publish-certamen] ${result.publishedCount}/${result.readyCount} sujet(s) publiés sur Agôn`);
+    console.log(
+      `[diagnostic collecte] auto-publish Certamen — ` +
+      `flux RSS médias fetchés=0; ` +
+      `flux RSS YouTube fetchés=0; ` +
+      `pages HTML YouTube fetchées=0; ` +
+      `pages d'articles complets fetchées=0; ` +
+      `articles complets évités après 4 sources exploitables=0; ` +
+      `sujets préparés=${result.readyCount}; ` +
+      `sujets publiés=${result.publishedCount}`
+    );
   } catch (err) {
     console.error("[auto-publish-certamen] Erreur :", err.message);
   }
@@ -866,6 +876,36 @@ async function fetchYouTubeTranscriptText(url) {
   }
 }
 
+let activeAutoPublishDiagnostics = null;
+
+function createAutoPublishDiagnostics() {
+  return {
+    articleFullTextFetched: 0,
+    articleFullTextAvoidedAfterLimit: 0,
+    subjectsPrepared: 0,
+    subjectsPublished: 0
+  };
+}
+
+function recordFactualSourceDiagnostics(stats) {
+  if (!activeAutoPublishDiagnostics || !stats) return;
+  activeAutoPublishDiagnostics.articleFullTextFetched += stats.articleFullTextFetched || 0;
+  activeAutoPublishDiagnostics.articleFullTextAvoidedAfterLimit += stats.articleFullTextAvoidedAfterLimit || 0;
+}
+
+function logAutoPublishDiagnostics(label, diagnostics) {
+  console.log(
+    `[diagnostic collecte] ${label} — ` +
+    `flux RSS médias fetchés=0; ` +
+    `flux RSS YouTube fetchés=0; ` +
+    `pages HTML YouTube fetchées=0; ` +
+    `pages d'articles complets fetchées=${diagnostics.articleFullTextFetched}; ` +
+    `articles complets évités après 4 sources exploitables=${diagnostics.articleFullTextAvoidedAfterLimit}; ` +
+    `sujets préparés=${diagnostics.subjectsPrepared}; ` +
+    `sujets publiés=${diagnostics.subjectsPublished}`
+  );
+}
+
 // ── Sélection des sources exploitables pour le résumé factuel ───────────────
 async function selectFactualSources(allContents) {
   const articles = allContents.filter(c => c.type !== "youtube");
@@ -878,6 +918,8 @@ async function selectFactualSources(allContents) {
     videosChecked: 0,
     videosUsed: 0,
     videosIgnored: 0,
+    articleFullTextFetched: 0,
+    articleFullTextAvoidedAfterLimit: 0,
   };
 
   const usable = [];
@@ -887,6 +929,7 @@ async function selectFactualSources(allContents) {
   const ARTICLE_FULL_TEXT_BATCH_SIZE = 2;
   for (let start = 0; start < articles.length && usable.length < 4; start += ARTICLE_FULL_TEXT_BATCH_SIZE) {
     const batch = articles.slice(start, start + ARTICLE_FULL_TEXT_BATCH_SIZE);
+    stats.articleFullTextFetched += batch.length;
     const fetchResults = await Promise.allSettled(
       batch.map(a => fetchArticleFullText(a.url))
     );
@@ -907,6 +950,9 @@ async function selectFactualSources(allContents) {
       }
     }
   }
+  if (usable.length >= 4) {
+    stats.articleFullTextAvoidedAfterLimit = Math.max(0, articles.length - stats.articleFullTextFetched);
+  }
 
   // Compléter jusqu'à 4 avec des transcriptions YouTube si nécessaire
   if (usable.length < 4 && videos.length > 0) {
@@ -925,6 +971,7 @@ async function selectFactualSources(allContents) {
   }
 
   console.log(`[résumé factuel] ${stats.articlesUsed} article(s) complet(s), ${stats.videosUsed} vidéo(s) (transcription), ${stats.articlesIgnored + stats.videosIgnored} source(s) ignorée(s)`);
+  recordFactualSourceDiagnostics(stats);
 
   if (usable.length === 0) {
     throw new Error("Aucune source exploitable — article complet accessible ou vidéo avec transcription — trouvée parmi les sources sélectionnées.");
@@ -5099,6 +5146,8 @@ async function runAutoPublishPipeline() {
   if (!latestSession) { console.log("[auto-publish] Aucune session avec sujets analysés"); return; }
   const allSubjects = (latestSession.subjects || []).filter(s => s.debateScore != null);
   const sessionLabel = latestSession.generatedAtLabel || "";
+  const diagnostics = createAutoPublishDiagnostics();
+  activeAutoPublishDiagnostics = diagnostics;
   const maxSources = Math.max(...allSubjects.map(s => Number(s.sourceCount) || 0), 1);
   const top10 = allSubjects
     .slice()
@@ -5110,6 +5159,7 @@ async function runAutoPublishPipeline() {
     .slice(0, 10);
 
   console.log(`[auto-publish] ${top10.length} sujet(s) sélectionné(s) (session : ${sessionLabel || "?"})`);
+  diagnostics.subjectsPrepared += top10.length;
 
   const sentItems = loadSentToAgonItems();
   const sentSubjects = new Set(sentItems.map(i => i.subject));
@@ -5128,6 +5178,7 @@ async function runAutoPublishPipeline() {
       sentSubjects.add(subj.subject);
       sentItemsByTitle.set(subj.subject, published);
       sentCount++;
+      diagnostics.subjectsPublished++;
     } catch (err) {
       console.error(`[auto-publish] ✗ Erreur sur "${subj.subject.slice(0, 60)}" :`, err.message);
     }
@@ -5144,12 +5195,14 @@ async function runAutoPublishPipeline() {
     const picks = selectTopSubjectsByMediaOrientation(allSubjects, group, 10);
     const groupLabel = group === "left" ? "gauche" : "droite";
     let groupSentCount = 0;
+    diagnostics.subjectsPrepared += picks.length;
     for (const subj of picks) {
       try {
         const reuseFrom = sentItemsByTitle.get(subj.subject) || null;
         const published = await publishMixteSubjectToAgon(subj, { sessionLabel, politicalGroup: group, reuseFrom });
         sentItemsByTitle.set(subj.subject, published);
         groupSentCount++;
+        diagnostics.subjectsPublished++;
       } catch (err) {
         console.error(`[auto-publish] ✗ Erreur (médias ${groupLabel}) sur "${subj.subject.slice(0, 60)}" :`, err.message);
       }
@@ -5158,7 +5211,11 @@ async function runAutoPublishPipeline() {
   }
 
   // Classer puis publier tous les sujets en attente
-  await classifyAndPublishPending();
+  const pendingResult = await classifyAndPublishPending();
+  diagnostics.subjectsPrepared += pendingResult.preparedCount;
+  diagnostics.subjectsPublished += pendingResult.publishedCount;
+  logAutoPublishDiagnostics("auto-publish mixte", diagnostics);
+  activeAutoPublishDiagnostics = null;
 
   try { const { uploadAll } = require("./storage-sync"); await uploadAll(); } catch {}
 }
@@ -5393,17 +5450,17 @@ function resumePendingIdeasOnStartup() {
 
 async function classifyAndPublishPending() {
   const adminHeaders = await loginAgonAdmin();
-  if (!adminHeaders) return;
+  if (!adminHeaders) return { preparedCount: 0, publishedCount: 0 };
 
   // Récupérer les sujets en attente
   let pending;
   try {
     const pendingRes = await fetch(`${AGON_URL}/api/admin/veille`, { headers: adminHeaders });
-    if (!pendingRes.ok) { console.error("[auto-publish] Échec chargement sujets en attente"); return; }
+    if (!pendingRes.ok) { console.error("[auto-publish] Échec chargement sujets en attente"); return { preparedCount: 0, publishedCount: 0 }; }
     pending = await pendingRes.json();
   } catch (err) {
     console.error("[auto-publish] Erreur chargement pending :", err.message);
-    return;
+    return { preparedCount: 0, publishedCount: 0 };
   }
 
   function countSources(item) {
@@ -5418,7 +5475,7 @@ async function classifyAndPublishPending() {
     .filter(p => !p.linkedDebateId && Array.isArray(p.links) && p.links.length > 0)
     .sort((a, b) => countSources(a) - countSources(b));
 
-  if (!publishable.length) { console.log("[auto-publish] Aucun sujet en attente à publier"); return; }
+  if (!publishable.length) { console.log("[auto-publish] Aucun sujet en attente à publier"); return { preparedCount: 0, publishedCount: 0 }; }
   console.log(`[auto-publish] Classement + publication de ${publishable.length} sujet(s)...`);
 
   let publishedCount = 0;
@@ -5503,7 +5560,7 @@ async function classifyAndPublishPending() {
   }
   console.log(`[auto-publish] ${publishedCount}/${publishable.length} sujet(s) publiés sur Agôn`);
 
-  if (publishedCount === 0) return;
+  if (publishedCount === 0) return { preparedCount: publishable.length, publishedCount };
 
   // Arène du jour : push notifications
   try {
@@ -5521,6 +5578,8 @@ async function classifyAndPublishPending() {
   } catch (err) {
     console.warn("[auto-publish] Erreur push arène du jour :", err.message);
   }
+
+  return { preparedCount: publishable.length, publishedCount };
 }
 
 // ==================== PUBLICATION AUTOMATIQUE SUR AGÔN ====================
