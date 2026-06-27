@@ -6,14 +6,15 @@ const crypto = require("crypto");
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_KEY = process.env.SUPABASE_SECRET_KEY;
 const BUCKET = "json-data";
-// Sync périodique espacée (au lieu de 30s) : la collecte RSS/YouTube est gérée par
-// un scheduler totalement séparé (cf. scheduleAutoCollect / auto-collect-config.json),
-// ce délai ne concerne que la sauvegarde des fichiers JSON vers Supabase.
-const SYNC_INTERVAL_MS = 5 * 60_000; // 5 minutes
+// Sync périodique : la collecte RSS/YouTube est gérée par un scheduler séparé
+// (cf. scheduleAutoCollect / auto-collect-config.json), ce délai ne concerne que
+// la sauvegarde de sécurité des fichiers JSON vers Supabase Storage.
+// 30 min = perte maximale acceptable en cas de crash ; évite les syncs permanentes.
+const SYNC_INTERVAL_MS = 30 * 60_000; // 30 minutes
 
 const FILES_TO_SYNC = [
-  "seen-items.json",
-  "sessions-veille.json",
+  // seen-items.json    — retiré : jamais écrit par le bot actuel (relique ancienne version)
+  // sessions-veille.json — retiré : jamais écrit depuis mai 2026, remplacé par sessions-mixte.json
   "sessions-mixte.json",
   "saved-subjects.json",
   "sent-to-agon.json",

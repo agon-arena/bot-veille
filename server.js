@@ -243,8 +243,14 @@ function loadSentToAgonItems() {
   }
 }
 
+// Conserve les N entrées les plus récentes (index 0 = le plus récent, via unshift).
+// La déduplication dans runAutoPublishPipeline() charge ce fichier pour éviter
+// de republier un sujet déjà envoyé — 500 entrées couvrent plusieurs mois d'historique.
+const SENT_TO_AGON_MAX = 500;
+
 function saveSentToAgonItems(items) {
-  fs.writeFileSync(SENT_TO_AGON_FILE, JSON.stringify(items, null, 2), "utf8");
+  const trimmed = items.length > SENT_TO_AGON_MAX ? items.slice(0, SENT_TO_AGON_MAX) : items;
+  fs.writeFileSync(SENT_TO_AGON_FILE, JSON.stringify(trimmed, null, 2), "utf8");
 }
 
 function safeJsonParse(text) {
