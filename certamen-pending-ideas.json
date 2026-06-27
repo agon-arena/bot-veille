@@ -98,5 +98,65 @@
     "runAt": "2026-06-24T11:50:13.255Z",
     "status": "done",
     "attempts": 0
+  },
+  {
+    "debateId": 1082,
+    "question": "Faut-il renforcer le contrôle de l’enseignement supérieur privé lucratif ?",
+    "positionA": "Renforcer le contrôle et la régulation",
+    "positionB": "Maintenir l’autonomie des établissements privés",
+    "id": "1082-1782462012431-8qdhkv",
+    "runAt": "2026-06-26T08:30:12.431Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1083,
+    "question": "TotalEnergies doit-elle être responsable des émissions carbone de ses clients ?",
+    "positionA": "Oui, responsabilité élargie",
+    "positionB": "Non, responsabilité limitée à ses activités",
+    "id": "1083-1782462012431-n45u6d",
+    "runAt": "2026-06-26T08:30:12.431Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1084,
+    "question": "La Cour suprême doit-elle protéger ou lever la protection contre l'expulsion des Haïtiens ?",
+    "positionA": "Protéger les Haïtiens contre l'expulsion",
+    "positionB": "Lever la protection pour contrôler l'immigration",
+    "id": "1084-1782462012431-3x6bnt",
+    "runAt": "2026-06-26T08:30:12.431Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1085,
+    "question": "La politique migratoire stricte de Trump est-elle bénéfique pour les États-Unis ?",
+    "positionA": "Opposition à la politique migratoire stricte",
+    "positionB": "Soutien à la politique migratoire stricte",
+    "id": "1085-1782462012431-xtgo29",
+    "runAt": "2026-06-26T08:30:12.431Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1086,
+    "question": "Faut-il interdire le mariage aux personnes sous OQTF en France ?",
+    "positionA": "Autoriser le mariage malgré l'OQTF",
+    "positionB": "Interdire le mariage sous OQTF",
+    "id": "1086-1782462012431-yoggj0",
+    "runAt": "2026-06-26T08:30:12.431Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1087,
+    "question": "L’Espagne doit-elle présenter des excuses officielles au Mexique pour la colonisation ?",
+    "positionA": "Oui, des excuses sont nécessaires",
+    "positionB": "Non, les excuses ne sont pas appropriées",
+    "id": "1087-1782462012431-mrfgpp",
+    "runAt": "2026-06-26T08:30:12.431Z",
+    "status": "done",
+    "attempts": 0
   }
 ]
