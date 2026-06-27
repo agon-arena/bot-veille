@@ -1253,11 +1253,12 @@ Position A : "${positionA}"
 Position B : "${positionB}"
 
 Ta mission :
-Déterminer si cette question révèle un clivage politique gauche/droite, même tendanciel ou probable.
+Déterminer si cette question révèle un clivage politique gauche/droite clair et structurant.
 
-Un clivage gauche/droite existe quand une des positions s'aligne tendanciellement avec des valeurs de gauche (solidarité, régulation, services publics, égalité, collectif) et l'autre avec des valeurs de droite (liberté individuelle, marché, sécurité, mérite, souveraineté nationale).
+Un clivage gauche/droite existe quand UNE DES POSITIONS s'aligne nettement avec des valeurs de gauche (solidarité, régulation, services publics, égalité, collectif, redistribution) ET L'AUTRE avec des valeurs de droite (liberté individuelle, marché, sécurité, mérite, souveraineté nationale, moins d'État) — et que ce clivage est le cœur du débat, pas un simple sous-entendu.
 
-Même si le clivage n'est pas parfaitement symétrique ou évident, réponds true dès qu'une orientation probable se dégage. Ne réponds false que si le débat est vraiment neutre politiquement (purement technique, scientifique ou factuel).
+Réponds true si le clivage gauche/droite est réel et reconnaissable — même s'il n'est pas parfaitement symétrique. Un débat sur le salaire minimum, la nationalisation, la fiscalité, l'immigration, la sécurité, les retraites ou les services publics est typiquement politique au sens gauche/droite.
+Réponds false si le débat est purement éthique, scientifique, technique, ou de société sans ancrage idéologique clair (ex. : impact des réseaux sociaux, bien-être animal, intelligence artificielle au sens général).
 
 JSON attendu uniquement :
 {

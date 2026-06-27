@@ -1058,5 +1058,255 @@
     "runAt": "2026-06-25T12:32:25.250Z",
     "status": "done",
     "attempts": 0
+  },
+  {
+    "debateId": 1049,
+    "question": "La polarisation politique est-elle bénéfique ?",
+    "positionA": "Renforce le débat démocratique",
+    "positionB": "Divise la société",
+    "id": "1049-1782415768261-h99x6d",
+    "runAt": "2026-06-25T19:39:28.261Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1050,
+    "question": "Répression ou dialogue pour gérer les manifestations ?",
+    "positionA": "Favoriser le dialogue et la transparence",
+    "positionB": "Prioriser la sécurité et l'ordre",
+    "id": "1050-1782415768262-wa6wmd",
+    "runAt": "2026-06-25T19:39:28.261Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1051,
+    "question": "Répression ou dialogue pour gérer les manifestations ?",
+    "positionA": "Favoriser le dialogue et la transparence",
+    "positionB": "Prioriser la sécurité et l'ordre",
+    "id": "1051-1782415768262-vcsvuq",
+    "runAt": "2026-06-25T19:39:28.261Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1052,
+    "question": "Sécurité ou liberté pour les commémorations au Kenya ?",
+    "positionA": "Respect des droits de commémoration",
+    "positionB": "Priorité à la sécurité publique",
+    "id": "1052-1782415768262-xtg8xw",
+    "runAt": "2026-06-25T19:39:28.261Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1053,
+    "question": "Mariages en situation irrégulière faut-il interdire ou non ?",
+    "positionA": "Protéger les droits individuels",
+    "positionB": "Renforcer le contrôle migratoire",
+    "id": "1053-1782415768262-pdhbdr",
+    "runAt": "2026-06-25T19:39:28.261Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1054,
+    "question": "Marc Bloch entre au Panthéon pour son parcours exceptionnel ?",
+    "positionA": "",
+    "positionB": "",
+    "id": "1054-1782415768262-jraav3",
+    "runAt": "2026-06-25T19:39:28.261Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1055,
+    "question": "Tensions autour des symboles LGBTQIA+ lors de la Coupe du Monde ?",
+    "positionA": "",
+    "positionB": "",
+    "id": "1055-1782415768262-erh5xq",
+    "runAt": "2026-06-25T19:39:28.261Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1056,
+    "question": "Faut-il des mesures publiques pour protéger les animaux ?",
+    "positionA": "Nécessité d'une intervention publique",
+    "positionB": "Responsabilité individuelle suffisante",
+    "id": "1056-1782415768262-qriqob",
+    "runAt": "2026-06-25T19:39:28.261Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1057,
+    "question": "Canicule en France : niveau maximal de mobilisation du système de santé ?",
+    "positionA": "",
+    "positionB": "",
+    "id": "1057-1782415768262-08b0ib",
+    "runAt": "2026-06-25T19:39:28.261Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1058,
+    "question": "Faut-il choisir souveraineté ou protection humanitaire ?",
+    "positionA": "Protéger les migrants vulnérables",
+    "positionB": "Prioriser la souveraineté nationale",
+    "id": "1058-1782415768262-gpfrw9",
+    "runAt": "2026-06-25T19:39:28.261Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1059,
+    "question": "Les médias doivent-ils renforcer la vérification des contenus ?",
+    "positionA": "Renforcer la vérification des contenus",
+    "positionB": "Préserver la liberté éditoriale",
+    "id": "1059-1782415768262-p5xfz5",
+    "runAt": "2026-06-25T19:39:28.261Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1060,
+    "question": "Les médias doivent-ils renforcer la vérification des contenus ?",
+    "positionA": "Renforcer la vérification des contenus",
+    "positionB": "Préserver la liberté éditoriale",
+    "id": "1060-1782415768262-zvkr6h",
+    "runAt": "2026-06-25T19:39:28.261Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1061,
+    "question": "Faut-il choisir souveraineté ou protection humanitaire ?",
+    "positionA": "Protéger les migrants vulnérables",
+    "positionB": "Prioriser la souveraineté nationale",
+    "id": "1061-1782415768262-k8xdn8",
+    "runAt": "2026-06-25T19:39:28.261Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1062,
+    "question": "Justice : prioriser les plaintes ou l'enfance ?",
+    "positionA": "Renforcer la protection de l'enfance",
+    "positionB": "Prioriser la gestion des plaintes",
+    "id": "1062-1782415768262-8spasl",
+    "runAt": "2026-06-25T19:39:28.261Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1063,
+    "question": "Justice : prioriser les plaintes ou l'enfance ?",
+    "positionA": "Renforcer la protection de l'enfance",
+    "positionB": "Prioriser la gestion des plaintes",
+    "id": "1063-1782415768262-jy69mf",
+    "runAt": "2026-06-25T19:39:28.261Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1064,
+    "question": "France Culture présente des excuses pour un montage sur Mélenchon ?",
+    "positionA": "",
+    "positionB": "",
+    "id": "1064-1782415768262-ez2i55",
+    "runAt": "2026-06-25T19:39:28.261Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1065,
+    "question": "Décès d'un adolescent à Narbonne : enquête sur un guet-apens mortel",
+    "positionA": "",
+    "positionB": "",
+    "id": "1065-1782415768262-zkc2iu",
+    "runAt": "2026-06-25T19:39:28.261Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1066,
+    "question": "Marylise Léon réélue à la tête de la CFDT pour quatre ans",
+    "positionA": "",
+    "positionB": "",
+    "id": "1066-1782415768262-rvpx89",
+    "runAt": "2026-06-25T19:39:28.261Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1067,
+    "question": "Les entreprises doivent-elles inclure les émissions clients ?",
+    "positionA": "Intégrer les émissions pour plus de responsabilité",
+    "positionB": "Limiter l'intégration pour préserver l'industrie",
+    "id": "1067-1782415768262-bolq39",
+    "runAt": "2026-06-25T19:39:28.261Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1068,
+    "question": "Les entreprises doivent-elles inclure les émissions clients ?",
+    "positionA": "Intégrer les émissions pour plus de responsabilité",
+    "positionB": "Limiter l'intégration pour préserver l'industrie",
+    "id": "1068-1782415768262-2bclqm",
+    "runAt": "2026-06-25T19:39:28.261Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1069,
+    "question": "Séismes au Venezuela : bilan lourd et aide internationale en cours",
+    "positionA": "",
+    "positionB": "",
+    "id": "1069-1782415768262-xfvn2w",
+    "runAt": "2026-06-25T19:39:28.261Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1070,
+    "question": "Séismes au Venezuela : bilan lourd et aide internationale en cours",
+    "positionA": "",
+    "positionB": "",
+    "id": "1070-1782415768262-yp44vi",
+    "runAt": "2026-06-25T19:39:28.261Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1071,
+    "question": "Restrictions sanitaires ou libertés en canicule ?",
+    "positionA": "Prioriser les restrictions sanitaires",
+    "positionB": "Préserver les libertés individuelles",
+    "id": "1071-1782415768262-idldsh",
+    "runAt": "2026-06-25T19:39:28.261Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1072,
+    "question": "Restrictions sanitaires ou libertés en canicule ?",
+    "positionA": "Prioriser les restrictions sanitaires",
+    "positionB": "Préserver les libertés individuelles",
+    "id": "1072-1782415768262-f5azb9",
+    "runAt": "2026-06-25T19:39:28.261Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1073,
+    "question": "Restrictions sanitaires ou libertés en canicule ?",
+    "positionA": "Prioriser les restrictions sanitaires",
+    "positionB": "Préserver les libertés individuelles",
+    "id": "1073-1782415768262-zk3ekf",
+    "runAt": "2026-06-25T19:39:28.261Z",
+    "status": "done",
+    "attempts": 0
   }
 ]

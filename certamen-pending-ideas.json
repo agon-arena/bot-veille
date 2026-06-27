@@ -158,5 +158,145 @@
     "runAt": "2026-06-26T08:30:12.431Z",
     "status": "done",
     "attempts": 0
+  },
+  {
+    "debateId": 1088,
+    "question": "Les jeunes de Nanterre doivent-ils privilégier la mémoire ou la réforme policière ?",
+    "positionA": "Prioriser la réforme et la responsabilité policière",
+    "positionB": "Prioriser la mémoire et l'engagement culturel",
+    "id": "1088-1782548371346-hbaut8",
+    "runAt": "2026-06-27T08:29:31.345Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1090,
+    "question": "Faut-il suspendre les chantiers l'après-midi pendant les canicules ?",
+    "positionA": "Suspendre les chantiers l'après-midi",
+    "positionB": "Maintenir les chantiers malgré la chaleur",
+    "id": "1090-1782548371346-1w98aa",
+    "runAt": "2026-06-27T08:29:31.345Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1092,
+    "question": "La politique migratoire doit-elle privilégier l'ouverture ou la restriction ?",
+    "positionA": "Privilégier une politique migratoire ouverte",
+    "positionB": "Privilégier une politique migratoire restrictive",
+    "id": "1092-1782548371346-ue4cfy",
+    "runAt": "2026-06-27T08:29:31.345Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1094,
+    "question": "Faut-il agir immédiatement contre la canicule ou privilégier d'autres urgences ?",
+    "positionA": "Agir vite contre la canicule",
+    "positionB": "Prioriser d'autres urgences sociales",
+    "id": "1094-1782548371346-rj8xyb",
+    "runAt": "2026-06-27T08:29:31.345Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1097,
+    "question": "Faut-il prioriser les investissements massifs pour l’adaptation climatique face à la canicule ?",
+    "positionA": "Investir massivement dans l’adaptation climatique",
+    "positionB": "Limiter les dépenses et gérer autrement les risques",
+    "id": "1097-1782548371346-q6qora",
+    "runAt": "2026-06-27T08:29:31.345Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1098,
+    "question": "La lutte contre la canicule doit-elle privilégier mesures individuelles ou politiques ?",
+    "positionA": "Renforcer les politiques publiques",
+    "positionB": "Prioriser les actions individuelles",
+    "id": "1098-1782548371346-dbg595",
+    "runAt": "2026-06-27T08:29:31.345Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1100,
+    "question": "Le contrôle gouvernemental d'OpenAI freine-t-il ou protège-t-il l'innovation ?",
+    "positionA": "Contrôle nécessaire pour sécurité et éthique",
+    "positionB": "Contrôle freine innovation et liberté d'accès",
+    "id": "1100-1782548371346-l33eof",
+    "runAt": "2026-06-27T08:29:31.345Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1089,
+    "question": "Les jeunes de Nanterre doivent-ils privilégier la mémoire ou la réforme policière ?",
+    "positionA": "Prioriser la réforme et la responsabilité policière",
+    "positionB": "Prioriser la mémoire et l'engagement culturel",
+    "id": "1089-1782548403368-57h3f8",
+    "runAt": "2026-06-27T08:30:03.368Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1091,
+    "question": "Faut-il suspendre les chantiers l'après-midi pendant les canicules ?",
+    "positionA": "Suspendre les chantiers l'après-midi",
+    "positionB": "Maintenir les chantiers malgré la chaleur",
+    "id": "1091-1782548403368-ks97ko",
+    "runAt": "2026-06-27T08:30:03.368Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1093,
+    "question": "Faut-il interdire la baignade aux non-locuteurs dans un lac public ?",
+    "positionA": "Autoriser pour respecter liberté et inclusion",
+    "positionB": "Interdire pour garantir sécurité et communication",
+    "id": "1093-1782548403368-42t04f",
+    "runAt": "2026-06-27T08:30:03.368Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1095,
+    "question": "Faut-il agir immédiatement contre la canicule ou privilégier d'autres urgences ?",
+    "positionA": "Agir vite contre la canicule",
+    "positionB": "Prioriser d'autres urgences sociales",
+    "id": "1095-1782548403368-hw6rm5",
+    "runAt": "2026-06-27T08:30:03.368Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1096,
+    "question": "Faut-il prioriser les investissements massifs pour l’adaptation climatique face à la canicule ?",
+    "positionA": "Investir massivement dans l’adaptation climatique",
+    "positionB": "Limiter les dépenses et gérer autrement les risques",
+    "id": "1096-1782548403368-ge8ckr",
+    "runAt": "2026-06-27T08:30:03.368Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1099,
+    "question": "La lutte contre la canicule doit-elle privilégier mesures individuelles ou politiques ?",
+    "positionA": "Renforcer les politiques publiques",
+    "positionB": "Prioriser les actions individuelles",
+    "id": "1099-1782548403368-9h8q9d",
+    "runAt": "2026-06-27T08:30:03.368Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1101,
+    "question": "Le Burkina Faso doit-il rompre ses relations diplomatiques avec la France ?",
+    "positionA": "Soutenir la rupture diplomatique",
+    "positionB": "Maintenir les relations diplomatiques",
+    "id": "1101-1782548403368-4sh94u",
+    "runAt": "2026-06-27T08:30:03.368Z",
+    "status": "done",
+    "attempts": 0
   }
 ]
