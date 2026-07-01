@@ -4982,7 +4982,7 @@ app.post("/api/auto-collect-tick", requireMixteAuth, async (req, res) => {
 function getMediaOrientationGroup(orientation) {
   const o = (orientation || "").toLowerCase();
   if (o.includes("gauche")) return "left";
-  if (o.includes("droite") || o.includes("conservateur") || o.includes("souverainiste")) return "right";
+  if (o.includes("droit") || o.includes("conservateur") || o.includes("souverainiste")) return "right";
   return "center";
 }
 
