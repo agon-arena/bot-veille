@@ -3858,6 +3858,8 @@ function buildSubjectInteractionScriptHtml(opts = {}) {
     function resetOrientationFilter(activeSession) {
       activeSession.querySelectorAll(".content-item[data-orientation]").forEach(item => {
         item.style.display = "";
+        const checkbox = item.querySelector('input[type="checkbox"]');
+        if (checkbox) checkbox.checked = item.classList.contains("preselected");
       });
       activeSession.querySelectorAll(".sources-dropdown h4, .sources-dropdown h4 + ul").forEach(el => {
         el.style.display = "";
@@ -3888,6 +3890,8 @@ function buildSubjectInteractionScriptHtml(opts = {}) {
           s.querySelectorAll(".content-item[data-orientation]").forEach(item => {
             const matches = getOrientationGroupClient(item.dataset.orientation) === currentSort;
             item.style.display = matches ? "" : "none";
+            const cb = item.querySelector('input[type="checkbox"]');
+            if (cb) cb.checked = matches;
             if (matches) {
               if (item.dataset.type === "article") articleCount++;
               if (item.dataset.type === "youtube") videoCount++;
@@ -7270,15 +7274,37 @@ Réponds uniquement en JSON valide :
   "risk": "low" | "medium" | "high"
 }
 
+STYLE OBLIGATOIRE pour suggestedQuestion et positionA/positionB :
+Tu simules un vrai internaute qui tape vite et sans relire.
+Ces trois champs DOIVENT contenir des fautes. Ce n'est pas optionnel.
+
+Types de fautes à introduire (choisis aléatoirement) :
+* oubli d'accent (ex : "etat", "a" pour "à", "ou" pour "où")
+* accord raté (ex : "les gens sont pret", "on est obliger de")
+* faute phonétique (ex : "sa" pour "ça", "et" pour "est")
+* mot manquant (ex : "faut arrêter", "on peut pas")
+* majuscule oubliée en début de phrase
+* ponctuation absente ou doublée (ex : "??" ou pas de "?")
+
+Niveau variable : la plupart avec 1-2 fautes légères, environ 1 sur 4 avec une grosse faute évidente.
+Exemples de bon rendu :
+* suggestedQuestion: "les policier doivent ils filmer tout le temps ?"
+* positionA: "oui sa protège tout le monde"
+* positionB: "non c'est la fin de la vie privée"
+Exemples de grosse faute :
+* suggestedQuestion: "faut t'il vraiment durcir les peines ?"
+* positionA: "les criminel récidive, on est obliger"
+* positionB: "la prison sa règle rien du tout"
+
 Règles pour suggestedQuestion :
-- question claire, concrète et débattable ;
+- question concrète et débattable ;
 - ancrée dans le sujet précis ;
 - pas de question évidente ("faut-il éviter les accidents ?") ;
 - les deux camps doivent sembler défendables.
 
 Règles pour positionA/positionB :
-- étiquettes de camp courtes et neutres ;
-- pas d'arguments, pas de "car", "pour que", "afin de" ;
+- étiquettes de camp courtes, directes, parfois passionnées ;
+- pas d'arguments longs, pas de "car", "pour que", "afin de" ;
 - symétriques et défendables.
 
 Règles pour editorialDecision :
@@ -7293,7 +7319,7 @@ Ne force jamais un débat. Si le sujet ne s'y prête pas, réponds "avoid".`;
     const response = await openai.responses.create({
       model: "gpt-4.1-mini",
       input: prompt,
-      temperature: 0.2,
+      temperature: 0.9,
       max_output_tokens: 600
     });
     const parsed = safeJsonParse(response.output_text || "");

@@ -1107,7 +1107,6 @@ Réponds uniquement en texte brut.`;
 async function generateMediaAnalysis(payload) {
   const summary = String(payload?.summary || "").trim();
   const subject = String(payload?.subject || "").trim();
-  const isCertamen = !!payload?.certamen;
   const sourceTitles = Array.isArray(payload?.contents)
     ? payload.contents.map(c => String(c?.title || "").trim()).filter(Boolean).slice(0, 8)
     : [];
@@ -1173,34 +1172,6 @@ Exemples :
 Principe central :
 tu peux améliorer la clarté, le style et l'enjeu, mais jamais compléter les faits.
 
-STYLE DE LA QUESTION ET DES POSITIONS :
-${isCertamen ? `RÈGLE OBLIGATOIRE — tu simules un vrai internaute qui tape vite et sans relire.
-La debateQuestion ET les deux positions DOIVENT contenir des fautes. Ce n'est pas optionnel.
-
-Types de fautes à introduire systématiquement (choisis aléatoirement parmi eux) :
-* oubli d'accent (ex : "etat", "etre", "a" pour "à", "ou" pour "où")
-* accord raté (ex : "les gens sont pret", "une décision forte et nécessaire")
-* mot collé ou séparé (ex : "c'est pas" au lieu de "ce n'est pas", "y'a")
-* majuscule oubliée en début de phrase
-* faute phonétique (ex : "sa" pour "ça", "ces" pour "s'est", "et" pour "est")
-* mot manquant (ex : "faut arrêter", "on peut pas laisser")
-* ponctuation absente ou doublée (ex : "??" ou pas de point d'interrogation)
-
-Niveau de faute : variable selon les sujets.
-- La plupart : 1-2 fautes légères
-- Environ 1 sur 4 : grosse faute évidente (ex : "les politicien font rien", "sa sert a quoi", "on est obliger de")
-
-Le style doit être direct, parfois agressif ou passionné, jamais éditorial.
-Exemples de bon rendu :
-* debateQuestion: "les policier doivent ils filmer tout le temps ?"
-* positionA: "oui sa protège tout le monde"
-* positionB: "non c'est la fin de la vie privée"
-
-Exemples de grosse faute :
-* debateQuestion: "faut t'il vraiment durcir les peines ?"
-* positionA: "les criminel récidive, on est obliger"
-* positionB: "la prison sa règle rien du tout"` : `La question et les positions doivent être claires, neutres et bien formulées.`}
-
 Réponds uniquement en JSON :
 {
   "debatePotential": "fort | moyen | faible",
@@ -1226,7 +1197,7 @@ Réponds uniquement en JSON valide, sans balises markdown.`;
   const response = await openai.responses.create({
     model: "gpt-4o",
     input: prompt,
-    temperature: isCertamen ? 0.9 : 0.5,
+    temperature: 0.5,
     max_output_tokens: 900
   });
 
@@ -5086,7 +5057,7 @@ async function publishMixteSubjectToAgon(subj, { sessionLabel, politicalGroup = 
         console.warn("[auto-publish] Devise latine ignorée :", mottoErr.message);
       }
     } else {
-      const mediaResult = await generateMediaAnalysis({ subject: subjectTitle, summary, contents, arenaMode, certamen: true });
+      const mediaResult = await generateMediaAnalysis({ subject: subjectTitle, summary, contents, arenaMode });
       question = limitDebateQuestion(mediaResult.debateQuestion || "");
       positionA = String(mediaResult.positionA || "").trim();
       positionB = String(mediaResult.positionB || "").trim();
@@ -5199,6 +5170,8 @@ async function runAutoPublishPipeline() {
 
   const sentItems = loadSentToAgonItems();
   const sentSubjects = new Set(sentItems.map(i => i.subject));
+  // Clé "sujet:groupe" pour détecter les doublons dans les boucles gauche/droite.
+  const sentSubjectsByGroup = new Set(sentItems.map(i => `${i.subject}:${i.politicalGroup || "mixed"}`));
   // Permet aux lots gauche/droite de réutiliser l'article d'un sujet déjà publié (top 10,
   // run précédent, ou l'autre lot traité juste avant dans ce même run) sans repasser par l'IA.
   const sentItemsByTitle = new Map(sentItems.map(i => [i.subject, i]));
@@ -5212,6 +5185,7 @@ async function runAutoPublishPipeline() {
     try {
       const published = await publishMixteSubjectToAgon(subj, { sessionLabel });
       sentSubjects.add(subj.subject);
+      sentSubjectsByGroup.add(`${subj.subject}:mixed`);
       sentItemsByTitle.set(subj.subject, published);
       sentCount++;
       diagnostics.subjectsPublished++;
@@ -5233,9 +5207,15 @@ async function runAutoPublishPipeline() {
     let groupSentCount = 0;
     diagnostics.subjectsPrepared += picks.length;
     for (const subj of picks) {
+      const groupKey = `${subj.subject}:${group}`;
+      if (sentSubjectsByGroup.has(groupKey)) {
+        console.log(`[auto-publish] Déjà envoyé (${groupLabel}) : ${subj.subject.slice(0, 60)}`);
+        continue;
+      }
       try {
         const reuseFrom = sentItemsByTitle.get(subj.subject) || null;
         const published = await publishMixteSubjectToAgon(subj, { sessionLabel, politicalGroup: group, reuseFrom });
+        sentSubjectsByGroup.add(groupKey);
         sentItemsByTitle.set(subj.subject, published);
         groupSentCount++;
         diagnostics.subjectsPublished++;
