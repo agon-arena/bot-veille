@@ -5117,6 +5117,18 @@ async function publishMixteSubjectToAgon(subj, { sessionLabel, politicalGroup = 
     }
   }
 
+  // Pour les bulles gauche/droite : exclure les sources du bord opposé.
+  // On garde les sources du bon bord (left/right) + les généralistes ("center").
+  // La bulle "mixed" reçoit tout.
+  if (politicalGroup === "left" || politicalGroup === "right") {
+    const allowedGroups = new Set([politicalGroup, "center"]);
+    links = links.filter(l => {
+      const c = contents.find(x => x.link === l.url || x.source === l.source);
+      const group = c ? getMediaOrientationGroup(c.orientation) : "center";
+      return allowedGroups.has(group);
+    });
+  }
+
   const agonController = new AbortController();
   const agonTimeout = setTimeout(() => agonController.abort(), 15000);
   let r;
