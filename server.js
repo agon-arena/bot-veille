@@ -1438,14 +1438,12 @@ DEUXIÈME PARAGRAPHE — MÉTHODE :
 2. Retour à la ligne obligatoire après l'énoncé des options.
 3. Montrer ce qui rend le choix difficile : enjeu commun, risque identifiable, prix à payer.
 4. Finir sur une phrase courte et précise qui resserre la tension.
+5. Applique à chaque phrase le test générique déjà énoncé dans STYLE (reste-t-elle vraie sur n'importe quel autre débat ?) — il couvre aussi bien les schémas "X oppose Y" que "tandis que X… Y".
 
 INTERDIT :
 * "Le choix est…"
 * "Le dilemme est…"
-* "Cette tension oppose…"
-* "Deux logiques s'opposent…"
 * "Option A… À l'inverse, Option B…"
-* "D'un côté… De l'autre…" et toute variante ("D'une part… d'autre part…", "Si certains... d'autres...")
 * Présenter une option avec un avantage suivi d'un "mais" qui l'annule (ex : "vu comme un moyen de X, mais cela peut aussi Y") : construction creuse, remplace-la par un fait ou un risque concret tiré des données.
 
 FORMULATIONS INTERDITES :
@@ -1459,7 +1457,7 @@ FORMULATIONS INTERDITES :
 * "Ce sujet met en lumière…"
 * "Le choix collectif porte sur…"
 * "Il s'agit d'équilibrer deux impératifs…"
-* "implique des risques considérables", "des enjeux majeurs", "des conséquences importantes" (et toute formule qui nomme un risque sans dire lequel)
+* "implique des risques considérables", "des enjeux majeurs", "des conséquences importantes", "des questions éthiques/politiques/sociales majeures" (et toute formule qui nomme un risque, un enjeu ou une question sans dire lequel ni pourquoi)
 * "tant pour… que pour…"
 * "il est essentiel/crucial/important de"
 * "joue un rôle clé/central"
@@ -1473,7 +1471,7 @@ FORMULATIONS INTERDITES :
 DERNIÈRE PHRASE AVANT LA QUESTION :
 Elle doit apporter une idée précise liée au sujet :
 choix politique concret, risque identifiable, rapport de force, coût social, économique ou institutionnel.
-Elle ne doit jamais être une formule générique.
+Elle ne doit jamais être une formule générique. Applique-lui le même test qu'au reste du paragraphe (ci-dessus).
 
 LONGUEUR :
 1000 à 1600 caractères.
