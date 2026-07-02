@@ -253,6 +253,19 @@ function saveSentToAgonItems(items) {
   fs.writeFileSync(SENT_TO_AGON_FILE, JSON.stringify(trimmed, null, 2), "utf8");
 }
 
+function normalizeSentToAgonKey(value) {
+  return String(value || "").replace(/\s+/g, " ").trim();
+}
+
+function normalizePoliticalGroup(value) {
+  const group = String(value || "").trim();
+  return group === "left" || group === "right" ? group : "mixed";
+}
+
+function buildSentToAgonGroupKey(subject, politicalGroup) {
+  return `${normalizeSentToAgonKey(subject)}\u0001${normalizePoliticalGroup(politicalGroup)}`;
+}
+
 function safeJsonParse(text) {
   const raw = String(text || "").trim();
   if (!raw) throw new Error("Réponse IA vide.");
@@ -279,13 +292,18 @@ function upsertSentToAgonItem(payload) {
   }
 
   const items = loadSentToAgonItems();
-  const key = question || subject;
-  const existingIndex = items.findIndex((item) => String(item.question || item.subject || "").trim() === key);
+  const politicalGroup = normalizePoliticalGroup(payload?.politicalGroup);
+  const key = buildSentToAgonGroupKey(subject || question, politicalGroup);
+  const existingIndex = items.findIndex((item) => {
+    const itemSubject = normalizeSentToAgonKey(item.subject || item.question);
+    return buildSentToAgonGroupKey(itemSubject, item.politicalGroup) === key;
+  });
   const nextItem = {
     ...(existingIndex !== -1 ? items[existingIndex] : {}),
     ...payload,
     subject,
     question,
+    politicalGroup,
     sentAt: payload?.sentAt || new Date().toISOString()
   };
 
@@ -883,6 +901,7 @@ async function fetchYouTubeTranscriptText(url) {
 }
 
 let activeAutoPublishDiagnostics = null;
+let autoPublishPipelineRunning = false;
 
 function createAutoPublishDiagnostics() {
   return {
@@ -5149,15 +5168,21 @@ async function publishMixteSubjectToAgon(subj, { sessionLabel, politicalGroup = 
 }
 
 async function runAutoPublishPipeline() {
-  console.log("[auto-publish] Démarrage du pipeline...");
-  const sessionsFile = path.join(__dirname, "sessions-mixte.json");
-  if (!fs.existsSync(sessionsFile)) {
-    console.log("[auto-publish] Aucune session trouvée");
-    return;
+  if (autoPublishPipelineRunning) {
+    console.log("[auto-publish] Pipeline déjà en cours, lancement ignoré.");
+    return { skipped: true, reason: "already_running" };
   }
-  let sessions;
-  try { sessions = JSON.parse(fs.readFileSync(sessionsFile, "utf8")); } catch { return; }
-  if (!sessions.length) return;
+  autoPublishPipelineRunning = true;
+  try {
+    console.log("[auto-publish] Démarrage du pipeline...");
+    const sessionsFile = path.join(__dirname, "sessions-mixte.json");
+    if (!fs.existsSync(sessionsFile)) {
+      console.log("[auto-publish] Aucune session trouvée");
+      return;
+    }
+    let sessions;
+    try { sessions = JSON.parse(fs.readFileSync(sessionsFile, "utf8")); } catch { return; }
+    if (!sessions.length) return;
 
   const latestSession = sessions.find(s => (s.subjects || []).some(subj => subj.debateScore != null));
   if (!latestSession) { console.log("[auto-publish] Aucune session avec sujets analysés"); return; }
@@ -5179,24 +5204,39 @@ async function runAutoPublishPipeline() {
   diagnostics.subjectsPrepared += top10.length;
 
   const sentItems = loadSentToAgonItems();
-  const sentSubjects = new Set(sentItems.map(i => i.subject));
-  // Clé "sujet:groupe" pour détecter les doublons dans les boucles gauche/droite.
-  const sentSubjectsByGroup = new Set(sentItems.map(i => `${i.subject}:${i.politicalGroup || "mixed"}`));
+  // Clé "sujet + groupe" : un même sujet peut exister en général, gauche et droite,
+  // mais jamais deux fois dans le même groupe.
+  const sentSubjectsByGroup = new Set(
+    sentItems
+      .map(i => buildSentToAgonGroupKey(i.subject || i.question, i.politicalGroup))
+      .filter(Boolean)
+  );
+  const sentSubjects = new Set(
+    sentItems
+      .map(i => normalizeSentToAgonKey(i.subject || i.question))
+      .filter(Boolean)
+  );
   // Permet aux lots gauche/droite de réutiliser l'article d'un sujet déjà publié (top 10,
   // run précédent, ou l'autre lot traité juste avant dans ce même run) sans repasser par l'IA.
-  const sentItemsByTitle = new Map(sentItems.map(i => [i.subject, i]));
+  const sentItemsByTitle = new Map();
+  sentItems.forEach((item) => {
+    const key = normalizeSentToAgonKey(item.subject);
+    if (key && !sentItemsByTitle.has(key)) sentItemsByTitle.set(key, item);
+  });
   let sentCount = 0;
 
   for (const subj of top10) {
-    if (sentSubjects.has(subj.subject)) {
+    const subjectKey = normalizeSentToAgonKey(subj.subject);
+    const groupKey = buildSentToAgonGroupKey(subj.subject, "mixed");
+    if (sentSubjects.has(subjectKey)) {
       console.log(`[auto-publish] Déjà envoyé : ${subj.subject.slice(0, 60)}`);
       continue;
     }
     try {
       const published = await publishMixteSubjectToAgon(subj, { sessionLabel });
-      sentSubjects.add(subj.subject);
-      sentSubjectsByGroup.add(`${subj.subject}:mixed`);
-      sentItemsByTitle.set(subj.subject, published);
+      sentSubjects.add(subjectKey);
+      sentSubjectsByGroup.add(groupKey);
+      sentItemsByTitle.set(normalizeSentToAgonKey(subj.subject), published);
       sentCount++;
       diagnostics.subjectsPublished++;
     } catch (err) {
@@ -5217,16 +5257,16 @@ async function runAutoPublishPipeline() {
     let groupSentCount = 0;
     diagnostics.subjectsPrepared += picks.length;
     for (const subj of picks) {
-      const groupKey = `${subj.subject}:${group}`;
+      const groupKey = buildSentToAgonGroupKey(subj.subject, group);
       if (sentSubjectsByGroup.has(groupKey)) {
         console.log(`[auto-publish] Déjà envoyé (${groupLabel}) : ${subj.subject.slice(0, 60)}`);
         continue;
       }
       try {
-        const reuseFrom = sentItemsByTitle.get(subj.subject) || null;
+        const reuseFrom = sentItemsByTitle.get(normalizeSentToAgonKey(subj.subject)) || null;
         const published = await publishMixteSubjectToAgon(subj, { sessionLabel, politicalGroup: group, reuseFrom });
         sentSubjectsByGroup.add(groupKey);
-        sentItemsByTitle.set(subj.subject, published);
+        sentItemsByTitle.set(normalizeSentToAgonKey(subj.subject), published);
         groupSentCount++;
         diagnostics.subjectsPublished++;
       } catch (err) {
@@ -5243,7 +5283,11 @@ async function runAutoPublishPipeline() {
   logAutoPublishDiagnostics("auto-publish mixte", diagnostics);
   activeAutoPublishDiagnostics = null;
 
-  try { const { uploadAll } = require("./storage-sync"); await uploadAll(); } catch {}
+    try { const { uploadAll } = require("./storage-sync"); await uploadAll(); } catch {}
+  } finally {
+    autoPublishPipelineRunning = false;
+    activeAutoPublishDiagnostics = null;
+  }
 }
 
 // Retry ciblé sur une idée précise (jamais re-générée, jamais republiée si elle est

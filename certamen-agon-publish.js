@@ -75,13 +75,57 @@ async function syncSentToAgonToSupabase() {
   } catch {}
 }
 
+function normalizeCertamenSourceUrl(url) {
+  return String(url || "").trim().split("#")[0].trim();
+}
+
+function extractCertamenSourceUrlsFromLinks(links) {
+  return (Array.isArray(links) ? links : [])
+    .map((link) => normalizeCertamenSourceUrl(link?.url || link?.link || link?.source_url || ""))
+    .filter(Boolean);
+}
+
+function isCertamenSentItem(item) {
+  return item?.origin === "certamen" ||
+    item?.creatorKey === CERTAMEN_CREATOR_KEY ||
+    item?.creator_key === CERTAMEN_CREATOR_KEY;
+}
+
+function extractCertamenSourceUrlsFromSentItem(item) {
+  return [
+    normalizeCertamenSourceUrl(item?.source_url || item?.sourceUrl || ""),
+    ...extractCertamenSourceUrlsFromLinks(item?.links)
+  ].filter(Boolean);
+}
+
 // Protection anti-doublon minimale : sent-to-agon.json est un historique partagé avec la
-// veille mixte, donc on ne s'appuie que sur la question exacte déjà envoyée — pas de
-// filtrage plus large par sujet/source qui pourrait être ambigu sur un fichier partagé.
+// veille mixte, donc la question reste comparée strictement. Pour Certamen, on ajoute un
+// garde-fou déterministe par URL source exacte, limité aux publications Certamen.
 function wasAlreadySentToAgon(question) {
   const q = String(question || "").trim();
   if (!q) return false;
   return loadSentToAgonForCertamen().some((item) => String(item?.question || "").trim() === q);
+}
+
+function findAlreadySentCertamenSource(payload) {
+  const sourceUrls = new Set(extractCertamenSourceUrlsFromLinks(payload?.links));
+  if (!sourceUrls.size) return null;
+
+  for (const item of loadSentToAgonForCertamen()) {
+    if (!isCertamenSentItem(item)) continue;
+    for (const url of extractCertamenSourceUrlsFromSentItem(item)) {
+      if (sourceUrls.has(url)) {
+        return {
+          url,
+          subject: String(item?.subject || ""),
+          question: String(item?.question || ""),
+          debateId: item?.debateId || null
+        };
+      }
+    }
+  }
+
+  return null;
 }
 
 // Best-effort, jamais bloquant : tente d'attacher les sources restantes (au-delà de la
@@ -279,6 +323,21 @@ async function publishOnePayloadAndRecord(payload, ideasEntries) {
   if (wasAlreadySentToAgon(payload.question)) {
     console.log(`[certamen-publish] Déjà envoyé, ignoré : "${String(payload.subject || "").slice(0, 60)}"`);
     return { ok: true, skipped: true, reason: "already_sent" };
+  }
+
+  const alreadySentSource = findAlreadySentCertamenSource(payload);
+  if (alreadySentSource) {
+    console.log(
+      `[certamen-publish] Source déjà envoyée, ignoré : "${String(payload.subject || "").slice(0, 60)}" ` +
+      `(déjà liée à "${alreadySentSource.subject.slice(0, 60)}", url=${alreadySentSource.url})`
+    );
+    return {
+      ok: true,
+      skipped: true,
+      reason: "already_sent_source",
+      matchedSourceUrl: alreadySentSource.url,
+      matchedDebateId: alreadySentSource.debateId
+    };
   }
 
   try {
@@ -491,6 +550,17 @@ async function publishSingleCertamenPayloadToAgon(rawPayload) {
 
   if (wasAlreadySentToAgon(payload.question)) {
     return { ok: true, skipped: true, reason: "already_sent" };
+  }
+
+  const alreadySentSource = findAlreadySentCertamenSource(payload);
+  if (alreadySentSource) {
+    return {
+      ok: true,
+      skipped: true,
+      reason: "already_sent_source",
+      matchedSourceUrl: alreadySentSource.url,
+      matchedDebateId: alreadySentSource.debateId
+    };
   }
 
   const mergeTarget = await findMergeTargetForCertamenPayload(payload);
