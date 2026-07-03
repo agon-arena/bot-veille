@@ -1308,5 +1308,785 @@
     "runAt": "2026-06-25T19:39:28.261Z",
     "status": "done",
     "attempts": 0
+  },
+  {
+    "debateId": 1102,
+    "question": "Le PS doit-il choisir primaire unitaire ou soutien à Glucksmann ?",
+    "positionA": "choisir la primaire unitaire",
+    "positionB": "soutenir Raphaël Glucksmann",
+    "id": "1102-1782894582361-vxl4kt",
+    "runAt": "2026-07-01T08:39:42.360Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1103,
+    "question": "Faut-il censurer le gouvernement pour la canicule ?",
+    "positionA": "Oui ils sont responsables de l'impréparation",
+    "positionB": "Non cela créerait du chaos politique",
+    "id": "1103-1782894582361-52x9ww",
+    "runAt": "2026-07-01T08:39:42.360Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1104,
+    "question": "Faut-il renforcer l'autorité ou l'école d'abord ?",
+    "positionA": "L'éducation doit passer avant l'autorité",
+    "positionB": "L'autorité doit être restaurée en premier",
+    "id": "1104-1782894582361-kyjd6z",
+    "runAt": "2026-07-01T08:39:42.360Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1105,
+    "question": "Faut-il revaloriser les allocations chômage malgré l'opposition patronale ?",
+    "positionA": "oui pour soutenir le pouvoir d'achat",
+    "positionB": "non pour limiter les charges patronales",
+    "id": "1105-1782894582361-rsai8v",
+    "runAt": "2026-07-01T08:39:42.360Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1106,
+    "question": "Les Moretti envisagent de rouvrir des restaurants malgré les poursuites",
+    "positionA": "",
+    "positionB": "",
+    "id": "1106-1782894582361-j7kyo9",
+    "runAt": "2026-07-01T08:39:42.360Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1107,
+    "question": "La justice est-elle utilisée contre le RN ?",
+    "positionA": "Non la justice suit son cours",
+    "positionB": "Oui c'est clairement politique",
+    "id": "1107-1782894582361-spbdxf",
+    "runAt": "2026-07-01T08:39:42.360Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1108,
+    "question": "Primaire ouverte ou restreinte pour le PS ?",
+    "positionA": "Primaire ouverte pour élargir la base",
+    "positionB": "Primaire restreinte pour préserver l'identité",
+    "id": "1108-1782894582361-zdt745",
+    "runAt": "2026-07-01T08:39:42.360Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1109,
+    "question": "Faut-il supprimer le droit du sol en France ?",
+    "positionA": "Non cela crée des exclus",
+    "positionB": "Oui cela renforce l'intégration",
+    "id": "1109-1782894582361-5z4eo9",
+    "runAt": "2026-07-01T08:39:42.360Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1110,
+    "question": "Canicule : perturbations attendues sur le réseau SNCF",
+    "positionA": "",
+    "positionB": "",
+    "id": "1110-1782894582361-gvr5ay",
+    "runAt": "2026-07-01T08:39:42.360Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1111,
+    "question": "Nouvelles mesures sociales et économiques en vigueur au 1er juillet",
+    "positionA": "",
+    "positionB": "",
+    "id": "1111-1782894582361-n8z7tt",
+    "runAt": "2026-07-01T08:39:42.360Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1112,
+    "question": "Les sportives transgenres peuvent-elles participer aux compétitions féminines ?",
+    "positionA": "Oui elles doivent participer comme les autres",
+    "positionB": "Non cela fausse les compétitions féminines",
+    "id": "1112-1782894582361-sdrqrm",
+    "runAt": "2026-07-01T08:39:42.360Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1113,
+    "question": "Les sportives transgenres peuvent-elles participer aux compétitions féminines ?",
+    "positionA": "Oui elles doivent participer comme les autres",
+    "positionB": "Non cela fausse les compétitions féminines",
+    "id": "1113-1782894582361-0ovk1l",
+    "runAt": "2026-07-01T08:39:42.360Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1114,
+    "question": "les ministres peuvent ils soutenir qui ils veulent ?",
+    "positionA": "non, ils doivent respecter leur parti",
+    "positionB": "oui, c'est leur liberté individuelle",
+    "id": "1114-1782894582361-reu5at",
+    "runAt": "2026-07-01T08:39:42.360Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1115,
+    "question": "les ministres peuvent ils soutenir qui ils veulent ?",
+    "positionA": "non, ils doivent respecter leur parti",
+    "positionB": "oui, c'est leur liberté individuelle",
+    "id": "1115-1782894582361-y9ajs4",
+    "runAt": "2026-07-01T08:39:42.360Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1116,
+    "question": "Les enquêtes sur le RN sont-elles justifiées ?",
+    "positionA": "Oui la transparence est essentielle",
+    "positionB": "Non c'est une manœuvre politique",
+    "id": "1116-1782894582361-4y2yq0",
+    "runAt": "2026-07-01T08:39:42.360Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1117,
+    "question": "Faut-il autoriser l'aide à mourir ?",
+    "positionA": "Oui chacun doit choisir sa fin",
+    "positionB": "Non cela met en danger les vulnérables",
+    "id": "1117-1782894582361-l3qbkq",
+    "runAt": "2026-07-01T08:39:42.360Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1118,
+    "question": "Washington lève les restrictions sur l'IA d'Anthropic",
+    "positionA": "",
+    "positionB": "",
+    "id": "1118-1782894582361-sd5k5b",
+    "runAt": "2026-07-01T08:39:42.360Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1119,
+    "question": "Les enquêtes sur le RN sont-elles justifiées ?",
+    "positionA": "Oui la transparence est essentielle",
+    "positionB": "Non c'est une manœuvre politique",
+    "id": "1119-1782894582361-84dhga",
+    "runAt": "2026-07-01T08:39:42.360Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1120,
+    "question": "Faut-il autoriser l'aide à mourir ?",
+    "positionA": "Oui chacun doit choisir sa fin",
+    "positionB": "Non cela met en danger les vulnérables",
+    "id": "1120-1782894582361-96u4bx",
+    "runAt": "2026-07-01T08:39:42.360Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1121,
+    "question": "Faut-il régulariser vite la détention des mineurs ?",
+    "positionA": "Non précipiter une loi mal pensée",
+    "positionB": "Oui éviter des libérations non contrôlées",
+    "id": "1121-1782894582361-neb0so",
+    "runAt": "2026-07-01T08:39:42.360Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1122,
+    "question": "Le droit du sol doit-il être changé aux USA ?",
+    "positionA": "Non respecter la constitution d'abord",
+    "positionB": "Oui pour mieux gérer l'immigration",
+    "id": "1122-1782894582361-zylhkg",
+    "runAt": "2026-07-01T08:39:42.360Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1123,
+    "question": "Le gouvernement doit-il prioriser l'anticipation climatique ?",
+    "positionA": "Oui, cela permet de sauver des vies",
+    "positionB": "Non, c'est trop coûteux et complexe",
+    "id": "1123-1782894582361-by12sp",
+    "runAt": "2026-07-01T08:39:42.360Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1124,
+    "question": "Le droit du sol doit-il être changé aux USA ?",
+    "positionA": "Non respecter la constitution d'abord",
+    "positionB": "Oui pour mieux gérer l'immigration",
+    "id": "1124-1782894582361-amazsv",
+    "runAt": "2026-07-01T08:39:42.360Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1125,
+    "question": "Le gouvernement doit-il prioriser l'anticipation climatique ?",
+    "positionA": "Oui, cela permet de sauver des vies",
+    "positionB": "Non, c'est trop coûteux et complexe",
+    "id": "1125-1782894582361-stw2og",
+    "runAt": "2026-07-01T08:39:42.360Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1126,
+    "question": "Dates fixées pour la présidentielle française de 2027",
+    "positionA": "",
+    "positionB": "",
+    "id": "1126-1782894582361-1mm5l8",
+    "runAt": "2026-07-01T08:39:42.360Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1127,
+    "question": "Dates fixées pour la présidentielle française de 2027",
+    "positionA": "",
+    "positionB": "",
+    "id": "1127-1782894582361-v1ulev",
+    "runAt": "2026-07-01T08:39:42.360Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1128,
+    "question": "La France se qualifie pour les huitièmes de finale de la Coupe du monde 2026",
+    "positionA": "",
+    "positionB": "",
+    "id": "1128-1782894582361-t6rtri",
+    "runAt": "2026-07-01T08:39:42.360Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1136,
+    "question": "Nouvelle panne du réseau mobile d'Orange en trois jours",
+    "positionA": "",
+    "positionB": "",
+    "id": "1136-1782969875015-zrmqsp",
+    "runAt": "2026-07-02T05:34:35.014Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1137,
+    "question": "Agression d'un agent du SMUR à Brest par des gens du voyage",
+    "positionA": "",
+    "positionB": "",
+    "id": "1137-1782969875015-mjdshs",
+    "runAt": "2026-07-02T05:34:35.014Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1138,
+    "question": "Renforcement du projet de loi sur la protection des mineurs",
+    "positionA": "",
+    "positionB": "",
+    "id": "1138-1782969875015-8m34jg",
+    "runAt": "2026-07-02T05:34:35.014Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1139,
+    "question": "Maintien du terme « régime de Vichy » dans les programmes scolaires",
+    "positionA": "",
+    "positionB": "",
+    "id": "1139-1782969875015-afzu66",
+    "runAt": "2026-07-02T05:34:35.014Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1140,
+    "question": "Rome doit-elle sanctionner la FSSPX pour ces sacres ?",
+    "positionA": "Sanctionner pour affirmer l'autorité papale",
+    "positionB": "Tolérer pour préserver l'unité de l'Église",
+    "id": "1140-1782969875015-xr8hg7",
+    "runAt": "2026-07-02T05:34:35.014Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1141,
+    "question": "Compétitivité ou climat : quelle priorité ?",
+    "positionA": "Prioriser la politique climatique",
+    "positionB": "Prioriser la compétitivité économique",
+    "id": "1141-1782969875015-zqa41o",
+    "runAt": "2026-07-02T05:34:35.014Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1142,
+    "question": "Faut-il privilégier l'unité ou l'autonomie dans l'Église ?",
+    "positionA": "Privilégier l'unité avec Rome",
+    "positionB": "Affirmer l'autonomie lefebvriste",
+    "id": "1142-1782969875015-jq26m8",
+    "runAt": "2026-07-02T05:34:35.014Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1143,
+    "question": "APL pour étudiants étrangers faut-il rétablir ou maintenir la suppression ?",
+    "positionA": "Rétablir les APL pour ces étudiants",
+    "positionB": "Maintenir la suppression des APL",
+    "id": "1143-1782969875015-jt0s1j",
+    "runAt": "2026-07-02T05:34:35.014Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1144,
+    "question": "Stockage d'eau: prioriser agriculture ou sécurité civile ?",
+    "positionA": "Prioriser l'agriculture",
+    "positionB": "Prioriser l'eau potable",
+    "id": "1144-1782969875015-s1cs5q",
+    "runAt": "2026-07-02T05:34:35.014Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1145,
+    "question": "Justice internationale ou souveraineté nationale prioritaire",
+    "positionA": "Priorité à la justice internationale",
+    "positionB": "Priorité à la souveraineté nationale",
+    "id": "1145-1782969875015-5j8t4k",
+    "runAt": "2026-07-02T05:34:35.014Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1146,
+    "question": "Condamnations confirmées pour des militants de Sainte-Soline",
+    "positionA": "",
+    "positionB": "",
+    "id": "1146-1782969875015-05d6f3",
+    "runAt": "2026-07-02T05:34:35.014Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1147,
+    "question": "Isabelle Adjani voit sa peine réduite en appel pour fraude fiscale",
+    "positionA": "",
+    "positionB": "",
+    "id": "1147-1782969875015-htr7xx",
+    "runAt": "2026-07-02T05:34:35.014Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1148,
+    "question": "faut t'il durcir les peines pour proteger les enfants ?",
+    "positionA": "non la prison seule resoud rien du tout",
+    "positionB": "oui faut etre plus dur avec les coupables",
+    "id": "1148-1782969875015-8mpu8j",
+    "runAt": "2026-07-02T05:34:35.014Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1149,
+    "question": "Sécurité ou environnement quelle priorité",
+    "positionA": "Respect des normes environnementales",
+    "positionB": "Priorité à la sécurité nationale",
+    "id": "1149-1782969875015-dewub4",
+    "runAt": "2026-07-02T05:34:35.014Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1150,
+    "question": "Sécurité ou environnement quelle priorité",
+    "positionA": "Respect des normes environnementales",
+    "positionB": "Priorité à la sécurité nationale",
+    "id": "1150-1782969875015-r99j2j",
+    "runAt": "2026-07-02T05:34:35.014Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1151,
+    "question": "Peut-on faire campagne sous contrôle judiciaire ?",
+    "positionA": "Priorité à la justice et ses décisions",
+    "positionB": "Priorité à la participation démocratique",
+    "id": "1151-1782969875015-ahhrcw",
+    "runAt": "2026-07-02T05:34:35.014Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1152,
+    "question": "Faut-il construire plus de prisons ?",
+    "positionA": "Réduire le nombre de détenus",
+    "positionB": "Augmenter le nombre de places",
+    "id": "1152-1782969875015-sxeehz",
+    "runAt": "2026-07-02T05:34:35.014Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1153,
+    "question": "Le calendrier électoral est-il équitable ?",
+    "positionA": "Calendrier avantage certains candidats",
+    "positionB": "Calendrier n'affecte pas l'équité",
+    "id": "1153-1782969875015-r1pt5y",
+    "runAt": "2026-07-02T05:34:35.014Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1154,
+    "question": "Faut-il construire plus de prisons ?",
+    "positionA": "Réduire le nombre de détenus",
+    "positionB": "Augmenter le nombre de places",
+    "id": "1154-1782969875015-xz7mef",
+    "runAt": "2026-07-02T05:34:35.014Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1155,
+    "question": "Peut-on faire campagne sous contrôle judiciaire ?",
+    "positionA": "Priorité à la justice et ses décisions",
+    "positionB": "Priorité à la participation démocratique",
+    "id": "1155-1782969875015-bf6obf",
+    "runAt": "2026-07-02T05:34:35.014Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1156,
+    "question": "Le calendrier électoral est-il équitable ?",
+    "positionA": "Calendrier avantage certains candidats",
+    "positionB": "Calendrier n'affecte pas l'équité",
+    "id": "1156-1782969875015-eudyhi",
+    "runAt": "2026-07-02T05:34:35.014Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1157,
+    "question": "Peut-on faire campagne sous contrôle judiciaire ?",
+    "positionA": "Priorité à la justice et ses décisions",
+    "positionB": "Priorité à la participation démocratique",
+    "id": "1157-1782969875015-yaefpu",
+    "runAt": "2026-07-02T05:34:35.014Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1158,
+    "question": "Eau potable ou agriculture quelle priorité",
+    "positionA": "Prioriser l'eau potable",
+    "positionB": "Favoriser l'agriculture",
+    "id": "1158-1782969875015-jctjs0",
+    "runAt": "2026-07-02T05:34:35.014Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1159,
+    "question": "Incendies dans le Sud de la France : évacuations et vigilance maximale",
+    "positionA": "",
+    "positionB": "",
+    "id": "1159-1782969875015-rbe2zt",
+    "runAt": "2026-07-02T05:34:35.014Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1160,
+    "question": "Eau potable ou agriculture quelle priorité",
+    "positionA": "Prioriser l'eau potable",
+    "positionB": "Favoriser l'agriculture",
+    "id": "1160-1782969875015-odg9z6",
+    "runAt": "2026-07-02T05:34:35.014Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1161,
+    "question": "Le calendrier électoral est-il équitable ?",
+    "positionA": "Calendrier avantage certains candidats",
+    "positionB": "Calendrier n'affecte pas l'équité",
+    "id": "1161-1782969875015-1uhrg0",
+    "runAt": "2026-07-02T05:34:35.014Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1162,
+    "question": "Qualifications et faits marquants de la Coupe du monde 2026",
+    "positionA": "",
+    "positionB": "",
+    "id": "1162-1782969875015-4y5ed2",
+    "runAt": "2026-07-02T05:34:35.014Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1163,
+    "question": "Qualifications et faits marquants de la Coupe du monde 2026",
+    "positionA": "",
+    "positionB": "",
+    "id": "1163-1782969875015-jy9983",
+    "runAt": "2026-07-02T05:34:35.014Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1174,
+    "question": "Protocole SNCF en cas de fuite d'animal sur les voies",
+    "positionA": "",
+    "positionB": "",
+    "id": "1174-1783002218580-njtwsn",
+    "runAt": "2026-07-02T14:33:38.578Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1175,
+    "question": "L'OCDE appelle la France à un redressement budgétaire urgent",
+    "positionA": "",
+    "positionB": "",
+    "id": "1175-1783002218580-5gzyjx",
+    "runAt": "2026-07-02T14:33:38.578Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1176,
+    "question": "Un candidat peut-il faire campagne avec un bracelet électronique ?",
+    "positionA": "Autoriser pour préserver les droits politiques",
+    "positionB": "Interdire pour garantir l'équité électorale",
+    "id": "1176-1783002218580-yaelgd",
+    "runAt": "2026-07-02T14:33:38.578Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1177,
+    "question": "Le PS et les Écologistes face à des divisions internes",
+    "positionA": "",
+    "positionB": "",
+    "id": "1177-1783002218580-zdojta",
+    "runAt": "2026-07-02T14:33:38.578Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1178,
+    "question": "Polémique autour d'Hamza F. : plaintes pour harcèlement et vol",
+    "positionA": "",
+    "positionB": "",
+    "id": "1178-1783002218580-7xz9v1",
+    "runAt": "2026-07-02T14:33:38.578Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1179,
+    "question": "Excommunication de six évêques de la Fraternité Saint-Pie X confirmée",
+    "positionA": "",
+    "positionB": "",
+    "id": "1179-1783002218580-2fcnnc",
+    "runAt": "2026-07-02T14:33:38.578Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1180,
+    "question": "Centre-droit : s'unir ou préserver ses identités ?",
+    "positionA": "Favoriser l'union pour éviter la dispersion",
+    "positionB": "Préserver les identités politiques distinctes",
+    "id": "1180-1783002218580-rnei6z",
+    "runAt": "2026-07-02T14:33:38.578Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1181,
+    "question": "La prescription nuit-elle à la justice dans l'affaire Kohler ?",
+    "positionA": "La prescription protège les droits individuels",
+    "positionB": "La prescription entrave la justice",
+    "id": "1181-1783002218580-26vwa3",
+    "runAt": "2026-07-02T14:33:38.578Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1182,
+    "question": "Peut-on restreindre certains discours au nom de l'égalité ?",
+    "positionA": "Limiter pour prévenir la stigmatisation",
+    "positionB": "Protéger la liberté d'expression",
+    "id": "1182-1783002218580-ak6r8b",
+    "runAt": "2026-07-02T14:33:38.578Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1183,
+    "question": "Excommunication de six évêques de la Fraternité Saint-Pie X confirmée",
+    "positionA": "",
+    "positionB": "",
+    "id": "1183-1783002218580-g9d7w2",
+    "runAt": "2026-07-02T14:33:38.578Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1184,
+    "question": "Centre-droit : s'unir ou préserver ses identités ?",
+    "positionA": "Favoriser l'union pour éviter la dispersion",
+    "positionB": "Préserver les identités politiques distinctes",
+    "id": "1184-1783002218580-y0dr2k",
+    "runAt": "2026-07-02T14:33:38.578Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1185,
+    "question": "Proposition d'interdiction de cigarettes pour les générations post-2009",
+    "positionA": "",
+    "positionB": "",
+    "id": "1185-1783002218580-k7g757",
+    "runAt": "2026-07-02T14:33:38.578Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1186,
+    "question": "Excommunication de six évêques de la Fraternité Saint-Pie X confirmée",
+    "positionA": "",
+    "positionB": "",
+    "id": "1186-1783002218580-34zkft",
+    "runAt": "2026-07-02T14:33:38.578Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1187,
+    "question": "Centre-droit : s'unir ou préserver ses identités ?",
+    "positionA": "Favoriser l'union pour éviter la dispersion",
+    "positionB": "Préserver les identités politiques distinctes",
+    "id": "1187-1783002218580-320zjf",
+    "runAt": "2026-07-02T14:33:38.578Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1188,
+    "question": "Amende d'un million d'euros pour un pétrolier de la flotte fantôme russe",
+    "positionA": "",
+    "positionB": "",
+    "id": "1188-1783002218580-1ns3l7",
+    "runAt": "2026-07-02T14:33:38.578Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1189,
+    "question": "Affluence massive chez Lidl pour climatiseurs et ventilateurs",
+    "positionA": "",
+    "positionB": "",
+    "id": "1189-1783002218580-78ghyc",
+    "runAt": "2026-07-02T14:33:38.578Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1190,
+    "question": "Demande en mariage spectaculaire au sommet de l'Empire State Building",
+    "positionA": "",
+    "positionB": "",
+    "id": "1190-1783002218580-90dg8n",
+    "runAt": "2026-07-02T14:33:38.578Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1191,
+    "question": "Non-lieu pour Aurore Bergé dans l'affaire des crèches privées",
+    "positionA": "",
+    "positionB": "",
+    "id": "1191-1783002218580-kk6r4n",
+    "runAt": "2026-07-02T14:33:38.578Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1192,
+    "question": "Attaques massives sur Kyiv : bilan humain et réactions internationales",
+    "positionA": "",
+    "positionB": "",
+    "id": "1192-1783002218580-vkfb6n",
+    "runAt": "2026-07-02T14:33:38.578Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1193,
+    "question": "Incendies dans le sud de la France : évacuations et interventions en cours",
+    "positionA": "",
+    "positionB": "",
+    "id": "1193-1783002218580-27dfpx",
+    "runAt": "2026-07-02T14:33:38.578Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1194,
+    "question": "Séismes au Venezuela : tensions et opérations de secours en cours",
+    "positionA": "",
+    "positionB": "",
+    "id": "1194-1783002218580-fk3r7z",
+    "runAt": "2026-07-02T14:33:38.578Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1195,
+    "question": "Annulation de la condamnation de Dany Leprince : vers un nouveau procès",
+    "positionA": "",
+    "positionB": "",
+    "id": "1195-1783002218580-n5x9iw",
+    "runAt": "2026-07-02T14:33:38.578Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1196,
+    "question": "Attaques massives sur Kyiv : bilan humain et réactions internationales",
+    "positionA": "",
+    "positionB": "",
+    "id": "1196-1783002218580-g65r3q",
+    "runAt": "2026-07-02T14:33:38.578Z",
+    "status": "done",
+    "attempts": 0
   }
 ]

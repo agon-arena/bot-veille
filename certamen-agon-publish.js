@@ -24,6 +24,7 @@ const OpenAI = require("openai");
 const { getCheckedCertamenPayloadsPreview, getSelectedCertamenPayloadsPreview, filterPublishableCertamenPayloads } = require("./certamen-payload-validation");
 const { persistAndScheduleCertamenIdeas } = require("./certamen-ideas-seed");
 const { loginAgonAdminForCertamen } = require("./certamen-agon-admin-auth");
+const { cleanCertamenGeneratedText } = require("./certamen-text-cleanup");
 
 const openai = process.env.OPENAI_API_KEY ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY }) : null;
 
@@ -530,15 +531,15 @@ async function publishSelectedCertamenSubjectsToAgon(titles) {
 // dans server.js). storySelection est toujours forcé à null, même si le client en envoie
 // un — Certamen ne crée jamais de bulle actu, quelle que soit l'origine de l'appel.
 async function publishSingleCertamenPayloadToAgon(rawPayload) {
-  const question = String(rawPayload.question || "").trim().slice(0, 110);
+  const question = cleanCertamenGeneratedText(rawPayload.question || "").slice(0, 110);
   if (!question) throw new Error("question manquante");
 
   const arenaMode = String(rawPayload.arenaMode || "").trim() === "libre" ? "libre" : "positions";
   const payload = {
     subject: rawPayload.subject || question,
     question,
-    positionA: arenaMode === "libre" ? "" : String(rawPayload.positionA || "").trim().slice(0, 55),
-    positionB: arenaMode === "libre" ? "" : String(rawPayload.positionB || "").trim().slice(0, 55),
+    positionA: arenaMode === "libre" ? "" : cleanCertamenGeneratedText(rawPayload.positionA || "").slice(0, 55),
+    positionB: arenaMode === "libre" ? "" : cleanCertamenGeneratedText(rawPayload.positionB || "").slice(0, 55),
     theme: rawPayload.theme || "",
     resume: rawPayload.resume || "",
     sources: rawPayload.sources || "",

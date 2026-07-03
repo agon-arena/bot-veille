@@ -298,5 +298,175 @@
     "runAt": "2026-06-27T08:30:03.368Z",
     "status": "done",
     "attempts": 0
+  },
+  {
+    "debateId": 1129,
+    "question": "faut il réduire les delais pour proteger les enfant ou pas ?",
+    "positionA": "oui faut agir vite pour eviter les drame",
+    "positionB": "non faut pas bruler les etapes ni trop presser",
+    "id": "1129-1782937216714-xx6vhq",
+    "runAt": "2026-07-01T20:30:16.710Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1130,
+    "question": "faut t'il virer lage legal de la retraire ?",
+    "positionA": "non sa protege la securiter sociale",
+    "positionB": "oui faut plus de liberté sur le depart",
+    "id": "1130-1782937216714-hf7nyy",
+    "runAt": "2026-07-01T20:30:16.710Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1131,
+    "question": "que ferait la police si lextrme droite gagne en 2027 ?",
+    "positionA": "la police doit resisté a une dictature",
+    "positionB": "la police doit obéir au nouveau pouvoir",
+    "id": "1131-1782937216714-l7uird",
+    "runAt": "2026-07-01T20:30:16.710Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1132,
+    "question": "faut il revoir la constitution pour durcir la justice des mineurs ?",
+    "positionA": "non faut protégé les mineur encore",
+    "positionB": "oui sa renforcera la securité",
+    "id": "1132-1782937216714-zz1tfd",
+    "runAt": "2026-07-01T20:30:16.710Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1133,
+    "question": "faut il garder le droit du sol au usa ou le supprimé ?",
+    "positionA": "oui faut protège le droit du sol",
+    "positionB": "non faut arreter pour controle lé immigration",
+    "id": "1133-1782937216714-mt1wij",
+    "runAt": "2026-07-01T20:30:16.710Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1134,
+    "question": "le gouvernement est t'il vraiment responsable de la gestion canicule ?",
+    "positionA": "oui faut qu'il assume ses faute",
+    "positionB": "non c'est trop compliké a gérer",
+    "id": "1134-1782937216714-5y6kdb",
+    "runAt": "2026-07-01T20:30:16.710Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1135,
+    "question": "faut t'il durcir les peines pour proteger les enfants ?",
+    "positionA": "non la prison seule resoud rien du tout",
+    "positionB": "oui faut etre plus dur avec les coupables",
+    "id": "1135-1782937216714-1nspb6",
+    "runAt": "2026-07-01T20:30:16.710Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1164,
+    "question": "waulquiez a t il raison de favorisé philippe au depens de retailleau ?",
+    "positionA": "oui faut soutenir le plus serieux",
+    "positionB": "non faut pas sacrifier retailleau pour rien",
+    "id": "1164-1782980301288-j2lb86",
+    "runAt": "2026-07-02T08:28:21.287Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1165,
+    "question": "l'union de la gauch et ecolo est elle obligé pour gagnée en 2027 ?",
+    "positionA": "oui faut faire bloc pour battre lextrme droite",
+    "positionB": "non chaque parti doit garder son identiter",
+    "id": "1165-1782980301288-k77g7u",
+    "runAt": "2026-07-02T08:28:21.287Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1166,
+    "question": "faudrait il agir plus vite sur la loi pour regler la surpopulation en prison ?",
+    "positionA": "non faut prendre le temp pour faire bien",
+    "positionB": "oui faut pas attendre sa devient dramatique",
+    "id": "1166-1782980301288-l414a6",
+    "runAt": "2026-07-02T08:28:21.287Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1167,
+    "question": "est ce que un president doi pouvoir gagné des millard en crypto ?",
+    "positionA": "non c'est un conflit dinteret grave",
+    "positionB": "oui il peut sa reste son argent privé",
+    "id": "1167-1782980301288-0uw2ku",
+    "runAt": "2026-07-02T08:28:21.287Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1168,
+    "question": "faut il laissr les villageois decider des data centers ou pas ?",
+    "positionA": "oui la population doit garder control",
+    "positionB": "non faut laisser le developpement avancer",
+    "id": "1168-1782980301288-zmysmt",
+    "runAt": "2026-07-02T08:28:21.287Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1169,
+    "question": "faut il limite les immigrés pour protéger les emploie locaux ?",
+    "positionA": "non l'immigration enrichit le pays",
+    "positionB": "oui faut protéger nos travailleurs en premier",
+    "id": "1169-1782980301288-l3hy2d",
+    "runAt": "2026-07-02T08:28:21.287Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1170,
+    "question": "faut il que les parents soit mieux informer sur les violences en perisco ?",
+    "positionA": "oui faut plus de transparance tout de suite",
+    "positionB": "non sa risque de creer de la panique injustifier",
+    "id": "1170-1782980301288-etfpwh",
+    "runAt": "2026-07-02T08:28:21.287Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1171,
+    "question": "le mali, burkina et niger ont raison de quit la cpi ?",
+    "positionA": "non sa menace la justice universelle",
+    "positionB": "oui faut plus subir la justice etranger",
+    "id": "1171-1782980301288-eu33gm",
+    "runAt": "2026-07-02T08:28:21.287Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1172,
+    "question": "faut t'il assouplir les regles pour stocker leau agricole ?",
+    "positionA": "non faut pas mettre l'environnement en danger",
+    "positionB": "oui faut protéger les agriculteurs",
+    "id": "1172-1782980301288-9h0fip",
+    "runAt": "2026-07-02T08:28:21.287Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1173,
+    "question": "que fera la police si lextrême droite arrive au pouvouir ?",
+    "positionA": "la police doit résister au pouvoir extrême",
+    "positionB": "la police doit obéir au gouvernement",
+    "id": "1173-1782980301288-x03oms",
+    "runAt": "2026-07-02T08:28:21.287Z",
+    "status": "done",
+    "attempts": 0
   }
 ]

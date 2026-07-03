@@ -4,6 +4,7 @@
 // de texte de remplacement, on détecte et on classe (ready / needs_review / blocked).
 
 const { getCheckedCertamenSubjects, getCertamenSubjectsByTitles, buildCertamenAgonPayload } = require("./certamen-checked-subjects");
+const { cleanCertamenGeneratedText } = require("./certamen-text-cleanup");
 
 // Cap connu appliqué en amont (analyzeCertamenSubjectWithAI : .slice(0, 55)) : une position
 // dont la longueur colle à cette limite et qui ne se termine pas par une ponctuation/espace
@@ -94,9 +95,9 @@ function validateAndCleanCertamenPayload(payload) {
     reasons.push("duplicate_links_removed");
   }
 
-  cleaned.question = String(cleaned.question || "").trim();
-  cleaned.positionA = String(cleaned.positionA || "").trim();
-  cleaned.positionB = String(cleaned.positionB || "").trim();
+  cleaned.question = cleanCertamenGeneratedText(cleaned.question).slice(0, 110);
+  cleaned.positionA = cleanCertamenGeneratedText(cleaned.positionA).slice(0, 55);
+  cleaned.positionB = cleanCertamenGeneratedText(cleaned.positionB).slice(0, 55);
   cleaned.theme = String(cleaned.theme || "").trim();
   cleaned.resume = String(cleaned.resume || "").trim();
   cleaned.arenaMode = cleaned.arenaMode === "libre" ? "libre" : "positions";

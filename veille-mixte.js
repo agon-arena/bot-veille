@@ -11,6 +11,7 @@ const { renderAutoCollectCertamenWidgetHtml } = require("./certamen-auto-collect
 const { renderAutoCollectMixteWidgetHtml } = require("./auto-collect-mixte-widget");
 const { renderCertamenPublishWidgetHtml } = require("./certamen-publish-widget");
 const { MAX_CHECKED_SUBJECTS } = require("./certamen-checked-subjects");
+const { cleanCertamenGeneratedText } = require("./certamen-text-cleanup");
 
 const apiApp = express();
 apiApp.use(express.json({ limit: "2mb" }));
@@ -7274,27 +7275,21 @@ Réponds uniquement en JSON valide :
   "risk": "low" | "medium" | "high"
 }
 
-STYLE OBLIGATOIRE pour suggestedQuestion et positionA/positionB :
-Tu simules un vrai internaute qui tape vite et sans relire.
-Ces trois champs DOIVENT contenir des fautes. Ce n'est pas optionnel.
+STYLE pour suggestedQuestion et positionA/positionB :
+Écris comme un vrai utilisateur d'Agôn : clair, direct, naturel, pas comme un assistant.
+Ne cherche PAS à introduire des fautes. Le français doit rester globalement correct.
+Tu peux garder un style oral léger dans les positions ("oui", "non", "faut"), mais sans fautes grossières.
 
-Types de fautes à introduire (choisis aléatoirement) :
-* oubli d'accent (ex : "etat", "a" pour "à", "ou" pour "où")
-* accord raté (ex : "les gens sont pret", "on est obliger de")
-* faute phonétique (ex : "sa" pour "ça", "et" pour "est")
-* mot manquant (ex : "faut arrêter", "on peut pas")
-* majuscule oubliée en début de phrase
-* ponctuation absente ou doublée (ex : "??" ou pas de "?")
+À éviter absolument :
+* fautes visibles dans la question ("faut t'il", "lextrme", "pouvouir", mots oubliés) ;
+* accents manquants sur les mots importants ;
+* conjugaisons ou accords cassés ;
+* ponctuation doublée ou absence de point d'interrogation pour suggestedQuestion.
 
-Niveau variable : la plupart avec 1-2 fautes légères, environ 1 sur 4 avec une grosse faute évidente.
 Exemples de bon rendu :
-* suggestedQuestion: "les policier doivent ils filmer tout le temps ?"
-* positionA: "oui sa protège tout le monde"
-* positionB: "non c'est la fin de la vie privée"
-Exemples de grosse faute :
-* suggestedQuestion: "faut t'il vraiment durcir les peines ?"
-* positionA: "les criminel récidive, on est obliger"
-* positionB: "la prison sa règle rien du tout"
+* suggestedQuestion: "Faut-il durcir les règles face à la récidive ?"
+* positionA: "oui, il faut protéger les victimes"
+* positionB: "non, la prison ne règle pas tout"
 
 Règles pour suggestedQuestion :
 - question concrète et débattable ;
@@ -7328,9 +7323,9 @@ Ne force jamais un débat. Si le sujet ne s'y prête pas, réponds "avoid".`;
     const isDebatable = parsed.isDebatable === true;
     const editorialDecision = allowedDecisions.has(String(parsed.editorialDecision || ""))
       ? parsed.editorialDecision : "avoid";
-    const suggestedQuestion = limitDebateQuestionText(parsed.suggestedQuestion || "");
-    let positionA = String(parsed.positionA || "").slice(0, 55);
-    let positionB = String(parsed.positionB || "").slice(0, 55);
+    const suggestedQuestion = limitDebateQuestionText(cleanCertamenGeneratedText(parsed.suggestedQuestion || ""));
+    let positionA = cleanCertamenGeneratedText(parsed.positionA || "").slice(0, 55);
+    let positionB = cleanCertamenGeneratedText(parsed.positionB || "").slice(0, 55);
 
     // Détection du clivage gauche/droite et réassignation positionA=gauche/positionB=droite,
     // seulement pour les sujets retenus (évite un appel IA superflu sur les ~120 candidats
