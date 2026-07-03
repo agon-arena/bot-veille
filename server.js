@@ -34,6 +34,24 @@ const AUTO_PUBLISH_CERTAMEN_FILE = path.join(__dirname, "auto-publish-certamen-c
 const PENDING_IDEAS_FILE = path.join(__dirname, "pending-ideas.json");
 let autoCollectTimers = [];
 
+// Modèle des 3 générations "article" (analyse du débat, article stylé, arène libre).
+// gpt-5-mini remplace gpt-4o (test A/B du 03/07/2026 : questions mieux ancrées dans le
+// fait précis, zéro formulation interdite de la charte, coût ÷6) ; retour arrière :
+// ARTICLE_AI_MODEL=gpt-4o dans .env puis relancer start.js.
+const ARTICLE_AI_MODEL = (process.env.ARTICLE_AI_MODEL || "gpt-5-mini").trim();
+
+// Les modèles gpt-5 ignorent temperature (l'API la refuse) et raisonnent avant de
+// répondre : effort minimal, sinon les tokens de raisonnement — facturés en sortie —
+// annulent une partie du gain de prix sur une tâche de rédaction guidée.
+function buildArticleModelRequest(request) {
+  const options = { ...request, model: ARTICLE_AI_MODEL };
+  if (/^gpt-5/.test(ARTICLE_AI_MODEL)) {
+    delete options.temperature;
+    options.reasoning = { effort: "minimal" };
+  }
+  return options;
+}
+
 function loadPendingIdeas() {
   try { return JSON.parse(fs.readFileSync(PENDING_IDEAS_FILE, "utf8")); }
   catch { return []; }
@@ -1202,6 +1220,8 @@ Réponds uniquement en JSON :
   "editorialDecision": "arena | understand | reformulate | avoid"
 }
 
+positionA et positionB sont des étiquettes de camp courtes (3 à 7 mots), jamais des arguments ni des phrases complètes. La limite de 55 caractères est stricte : au-delà, la position sera coupée en plein mot à l'affichage. Si ta formulation dépasse, raccourcis-la avant de répondre.
+
 Si le sujet ne permet pas un vrai débat, choisis "understand" ou "avoid".
 
 Sujet :
@@ -1213,12 +1233,11 @@ ${sourcesTitlesSection}
 
 Réponds uniquement en JSON valide, sans balises markdown.`;
 
-  const response = await openai.responses.create({
-    model: "gpt-4o",
+  const response = await openai.responses.create(buildArticleModelRequest({
     input: prompt,
     temperature: 0.5,
     max_output_tokens: 900
-  });
+  }));
 
   let parsed = {};
   try {
@@ -1509,12 +1528,11 @@ ${inputJson}
 
 Réponds uniquement en JSON valide, sans balises markdown.`;
 
-  const response = await openai.responses.create({
-    model: "gpt-4o",
+  const response = await openai.responses.create(buildArticleModelRequest({
     input: prompt,
     temperature: 0.35,
     max_output_tokens: 2000
-  });
+  }));
 
   const rawText = String(response.output_text || "").trim();
   if (!rawText) throw new Error("Réponse vide de l'IA pour l'article final.");
@@ -1912,12 +1930,11 @@ ${summary}
 
 Réponds uniquement en JSON valide, sans balises markdown.`;
 
-  const response = await openai.responses.create({
-    model: "gpt-4o",
+  const response = await openai.responses.create(buildArticleModelRequest({
     input: prompt,
     temperature: 0.35,
     max_output_tokens: 2000
-  });
+  }));
 
   const rawText = String(response.output_text || "").trim();
   if (!rawText) throw new Error("Réponse vide de l'IA pour l'article factuel.");
@@ -4668,6 +4685,17 @@ app.post("/send-to-agon", requireMixteAuth, async (req, res) => {
     const politicalGroup = (rawPoliticalGroup === "left" || rawPoliticalGroup === "right") ? rawPoliticalGroup : "mixed";
     if (!question) return res.status(400).json({ ok: false, error: "question manquante" });
     const normalizedQuestion = limitDebateQuestion(question);
+    // Anti-doublon : un envoi manuel pendant que le pipeline auto tourne (ou un
+    // double-clic) créait deux lignes d'attente pour le même sujet+groupe côté Agôn.
+    // "Republier" passe force=true pour renvoyer volontairement.
+    if (req.body?.force !== true) {
+      const groupKey = buildSentToAgonGroupKey(subject || normalizedQuestion, politicalGroup);
+      const already = loadSentToAgonItems().find(i => buildSentToAgonGroupKey(i.subject || i.question, i.politicalGroup) === groupKey);
+      if (already) {
+        console.log(`[send-to-agon] Refusé (doublon ${politicalGroup}) : "${String(subject || normalizedQuestion).slice(0, 60)}" déjà envoyé le ${already.sentAt || "?"}`);
+        return res.status(409).json({ ok: false, alreadySent: true, error: `Sujet déjà envoyé à Agôn (${politicalGroup === "mixed" ? "général" : politicalGroup}). Utilise « Republier » pour renvoyer volontairement.` });
+      }
+    }
     const normalizedResume = ensureArticleOpeningSentenceBreak(resume);
     const resolvedKeywords = await ensureKeywordsBeforeAgonSend({ subject, question: normalizedQuestion, sources, links, keywords });
     console.log(`[send-to-agon] Envoi vers ${AGON_URL}/api/veille/receive`);
@@ -5541,9 +5569,32 @@ async function classifyAndPublishPending() {
   }
 
   // Filtrer (exclure les fusionnés) et classer par sources croissantes
-  const publishable = (pending || [])
+  const sortedPending = (pending || [])
     .filter(p => !p.linkedDebateId && Array.isArray(p.links) && p.links.length > 0)
     .sort((a, b) => countSources(a) - countSources(b));
+
+  // Doublons dans la file d'attente (même question + même groupe politique) : un sujet
+  // envoyé plusieurs fois (envoi manuel + pipeline, double génération...) ne doit produire
+  // qu'une seule arène par groupe. Trié par sources croissantes, le dernier écrase les
+  // précédents dans la Map : on garde la version la plus sourcée.
+  const pendingDedupKey = (p) => buildSentToAgonGroupKey(String(p.question || ""), p.politicalGroup);
+  const bestPendingByKey = new Map();
+  for (const p of sortedPending) bestPendingByKey.set(pendingDedupKey(p), p);
+  const publishable = sortedPending.filter(p => bestPendingByKey.get(pendingDedupKey(p)) === p);
+  const duplicatePending = sortedPending.filter(p => bestPendingByKey.get(pendingDedupKey(p)) !== p);
+  if (duplicatePending.length) {
+    console.log(`[auto-publish] ${duplicatePending.length} doublon(s) de question ignoré(s) dans la file d'attente`);
+    // Retirer les doublons de la file côté Agôn (best-effort), sinon ils y restent
+    // indéfiniment et risquent d'être publiés à la main depuis l'admin.
+    for (const dup of duplicatePending) {
+      try {
+        await fetch(`${AGON_URL}/api/admin/veille/${encodeURIComponent(dup.id)}`, { method: "DELETE", headers: adminHeaders });
+        console.log(`[auto-publish] Doublon supprimé de la file : "${String(dup.question || "").slice(0, 60)}" (${dup.politicalGroup || "mixed"})`);
+      } catch (err) {
+        console.warn(`[auto-publish] Échec suppression doublon ${dup.id} :`, err.message);
+      }
+    }
+  }
 
   if (!publishable.length) { console.log("[auto-publish] Aucun sujet en attente à publier"); return { preparedCount: 0, publishedCount: 0 }; }
   console.log(`[auto-publish] Classement + publication de ${publishable.length} sujet(s)...`);
@@ -5602,14 +5653,18 @@ async function classifyAndPublishPending() {
             forcePublishOnAlignmentWarning: false
           })
         });
-        if (r.ok) break;
+        if (r.ok || r.status === 409) break;
         body = await r.text().catch(() => "");
         const isRateLimited = /trop de requ[êe]tes/i.test(body);
         if (!isRateLimited || attempt === PUBLISH_RATE_LIMIT_RETRIES) break;
         console.warn(`[auto-publish] Rate-limit Agôn, nouvelle tentative (${attempt}/${PUBLISH_RATE_LIMIT_RETRIES}) dans ${PUBLISH_RATE_LIMIT_DELAY_MS / 1000}s pour "${String(item.question || "").slice(0, 60)}"`);
         await sleep(PUBLISH_RATE_LIMIT_DELAY_MS);
       }
-      if (!r.ok) {
+      if (r.status === 409) {
+        // Ligne d'attente déjà consommée (publiée par un autre passage, ex: "Publier
+        // tout" dans l'admin Agôn pendant que ce pipeline tournait) : ne pas republier.
+        console.log(`[auto-publish] Déjà publié entre-temps, ignoré : "${String(item.question || "").slice(0, 60)}"`);
+      } else if (!r.ok) {
         console.error(`[auto-publish] Échec publication "${String(item.question || "").slice(0, 60)}" : ${body}`);
       } else {
         const publishData = await r.json().catch(() => ({}));

@@ -99,20 +99,32 @@ function extractCertamenSourceUrlsFromSentItem(item) {
   ].filter(Boolean);
 }
 
-// Protection anti-doublon minimale : sent-to-agon.json est un historique partagé avec la
-// veille mixte, donc la question reste comparée strictement. Pour Certamen, on ajoute un
-// garde-fou déterministe par URL source exacte, limité aux publications Certamen.
+// Anti-doublon limité à la session en cours (demande explicite : les redites
+// inter-sessions sont acceptées — un sujet déjà traité la veille peut être republié).
+// La fenêtre de 6h couvre les relances d'un même lot (double-clic "Tout générer",
+// redémarrage du bot en cours de publication) sans jamais bloquer la session suivante
+// (les sessions Certamen sont espacées d'au moins 12h).
+const CERTAMEN_DUPLICATE_WINDOW_MS = 6 * 60 * 60 * 1000;
+
+function loadRecentSentToAgonForCertamen() {
+  const cutoff = Date.now() - CERTAMEN_DUPLICATE_WINDOW_MS;
+  return loadSentToAgonForCertamen().filter((item) => {
+    const t = new Date(item?.sentAt || 0).getTime();
+    return Number.isFinite(t) && t >= cutoff;
+  });
+}
+
 function wasAlreadySentToAgon(question) {
   const q = String(question || "").trim();
   if (!q) return false;
-  return loadSentToAgonForCertamen().some((item) => String(item?.question || "").trim() === q);
+  return loadRecentSentToAgonForCertamen().some((item) => String(item?.question || "").trim() === q);
 }
 
 function findAlreadySentCertamenSource(payload) {
   const sourceUrls = new Set(extractCertamenSourceUrlsFromLinks(payload?.links));
   if (!sourceUrls.size) return null;
 
-  for (const item of loadSentToAgonForCertamen()) {
+  for (const item of loadRecentSentToAgonForCertamen()) {
     if (!isCertamenSentItem(item)) continue;
     for (const url of extractCertamenSourceUrlsFromSentItem(item)) {
       if (sourceUrls.has(url)) {
@@ -415,19 +427,78 @@ async function publishOnePayloadAndRecord(payload, ideasEntries) {
   }
 }
 
+// Garde intra-session : un même lot ne doit jamais publier deux arènes sur la même
+// actualité (demande explicite — les redites inter-sessions sont tolérées, pas celles
+// d'une même session). Filet en aval de la déduplication de session
+// (deduplicateSubjectsWithAI, veille-mixte.js) : si elle a laissé passer deux sujets
+// jumeaux (cas sondages 1251/1254 du 03/07/2026), chaque payload est comparé aux sujets
+// déjà publiés dans CE lot avant l'envoi. Fail-open : en cas d'erreur IA on publie quand
+// même — mieux vaut un doublon possible qu'une publication bloquée.
+async function isDuplicateOfBatchSubjects(payload, publishedInBatch) {
+  if (!openai || !publishedInBatch.length) return false;
+
+  const prompt = [
+    "Tu vérifies qu'une session de publication de débats ne contient pas deux sujets sur la même actualité.",
+    "",
+    "Nouveau sujet à publier :",
+    `- ${String(payload.subject || "").trim()} (question : ${String(payload.question || "").trim()})`,
+    "",
+    "Sujets déjà publiés dans cette session :",
+    ...publishedInBatch.map((p, i) => `${i + 1}. ${String(p.subject || "").trim()} (question : ${String(p.question || "").trim()})`),
+    "",
+    "Le nouveau sujet porte-t-il sur la même actualité précise (même affaire, même annonce, même décision, même polémique, même séquence médiatique) qu'un des sujets déjà publiés ? Une simple proximité thématique ne compte pas.",
+    'Réponds uniquement en JSON : {"duplicate":true|false,"matchedIndex":1,"reason":"une phrase courte"}'
+  ].join("\n");
+
+  try {
+    const response = await openai.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [{ role: "user", content: prompt }],
+      response_format: { type: "json_object" },
+      max_tokens: 120,
+      temperature: 0
+    });
+    const parsed = JSON.parse(response.choices[0].message.content);
+    if (parsed?.duplicate !== true) return false;
+
+    const matched = publishedInBatch[Number(parsed.matchedIndex) - 1] || null;
+    console.log(
+      `[certamen-publish] Doublon intra-session ignoré : "${String(payload.subject || "").slice(0, 60)}"` +
+      (matched ? ` ≈ "${String(matched.subject || "").slice(0, 60)}"` : "") +
+      ` | raison : ${String(parsed.reason || "").slice(0, 120)}`
+    );
+    return true;
+  } catch (err) {
+    console.warn("[certamen-publish] Erreur garde intra-session (publication maintenue) :", err.message);
+    return false;
+  }
+}
+
 // Publie une liste de payloads déjà validés, en respectant la limite Agôn de 5
 // requêtes/60s sur /api/debates, puis programme les idées IA + voix groupées. Renvoie un
 // tableau d'outcomes dans le même ordre que `payloads`.
 async function publishPayloadsBatch(payloads) {
   const ideasEntries = [];
   const outcomes = [];
+  const publishedInBatch = [];
 
   for (let i = 0; i < payloads.length; i += 1) {
     if (i > 0) {
       // Pause longue toutes les 5 publications, pause courte sinon.
       await sleep(i % RATE_LIMIT_BATCH_SIZE === 0 ? RATE_LIMIT_WINDOW_PAUSE_MS : BETWEEN_CALLS_DELAY_MS);
     }
-    outcomes.push(await publishOnePayloadAndRecord(payloads[i], ideasEntries));
+
+    const payload = payloads[i];
+    if (await isDuplicateOfBatchSubjects(payload, publishedInBatch)) {
+      outcomes.push({ ok: true, skipped: true, reason: "duplicate_in_session" });
+      continue;
+    }
+
+    const outcome = await publishOnePayloadAndRecord(payload, ideasEntries);
+    if (outcome.ok && !outcome.skipped) {
+      publishedInBatch.push({ subject: payload.subject, question: payload.question });
+    }
+    outcomes.push(outcome);
   }
 
   if (ideasEntries.length) {

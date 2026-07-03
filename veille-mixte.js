@@ -2031,7 +2031,12 @@ Critères pour ne pas fusionner :
 - fusion trop large qui ferait perdre la précision du sujet.
 
 Seuil de confiance :
-ne propose une fusion que si la confiance est supérieure ou égale à 0.75.
+ne propose une fusion que si la confiance est supérieure ou égale à 0.8.
+
+Concision (OBLIGATOIRE, la réponse est parsée automatiquement et ne doit pas être tronquée) :
+- chaque "reason" fait une seule phrase courte (15 mots maximum) ;
+- ne recopie jamais les titres complets dans les raisons ;
+- "doNotMerge" liste au maximum les 8 paires les plus ambiguës — ce champ sert uniquement au diagnostic.
 
 Sujet principal :
 pour chaque groupe fusionné, choisir comme sujet principal :
@@ -2069,12 +2074,26 @@ Format JSON attendu :
 
   try {
     console.log(`${candidates.length} sujet(s) envoyés à la déduplication IA.`);
-    const response = await openai.responses.create({
+    // Une sortie tronquée (plafond max_output_tokens atteint) rend le JSON illisible et
+    // faisait silencieusement retomber la session à 0 fusion (sessions Certamen des 2 et
+    // 3 juillet 2026, doublon sondages 1251/1254) : budget large, et un unique retry avec
+    // budget doublé si l'API signale explicitement une réponse incomplète.
+    let response = await openai.responses.create({
       model: "gpt-4.1-mini",
       input: prompt,
       temperature: 0.1,
-      max_output_tokens: 1800
+      max_output_tokens: 6000
     });
+    if (response.status === "incomplete") {
+      console.warn("Déduplication IA : réponse tronquée (max_output_tokens), nouvelle tentative avec budget doublé.");
+      response = await openai.responses.create({
+        model: "gpt-4.1-mini",
+        input: prompt,
+        temperature: 0.1,
+        max_output_tokens: 12000
+      });
+      if (response.status === "incomplete") throw new Error("réponse encore tronquée après retry (max_output_tokens)");
+    }
     const parsed = safeJsonParse(response.output_text);
     const applied = applySubjectMergeGroups(safeSubjects, parsed);
     return {
@@ -2086,7 +2105,7 @@ Format JSON attendu :
     };
   } catch (error) {
     console.error("Erreur déduplication IA :", error.message);
-    return { subjects: safeSubjects, mergeResult: { mergeGroups: [], doNotMerge: [] } };
+    return { subjects: safeSubjects, mergeResult: { mergeGroups: [], doNotMerge: [], error: error.message } };
   }
 }
 
@@ -3587,9 +3606,13 @@ function buildSubjectInteractionScriptHtml(opts = {}) {
         const res = await fetch(SEND_TO_AGON_ENDPOINT, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ subject, sessionLabel, question, positionA, positionB, theme, resume, sources, links, storySelection, keywords, politicalOrientation: btn.dataset.politicalOrientation ? JSON.parse(btn.dataset.politicalOrientation) : null, politicalGroup })
+          body: JSON.stringify({ subject, sessionLabel, question, positionA, positionB, theme, resume, sources, links, storySelection, keywords, politicalOrientation: btn.dataset.politicalOrientation ? JSON.parse(btn.dataset.politicalOrientation) : null, politicalGroup, force: isRepublish })
         });
-        if (!res.ok) throw new Error();
+        if (!res.ok) {
+          let serverMessage = "";
+          try { serverMessage = (await res.json()).error || ""; } catch (parseErr) {}
+          throw new Error(serverMessage || "Échec de l'envoi vers Agôn");
+        }
         const subjectElBtn = btn.closest(".subject");
         const primaryBtn = subjectElBtn?.querySelector(".agon-btn");
         const republishBtn = subjectElBtn?.querySelector(".republish-btn");
@@ -4248,6 +4271,16 @@ function buildSubjectInteractionScriptHtml(opts = {}) {
         return { title: item.querySelector("a")?.textContent.trim() || "", url: item.dataset.link || "", source: item.querySelector("strong")?.textContent.trim() || "", type: item.dataset.type || "article", date: dateMatch ? dateMatch[1] : "", checked: item.querySelector('input[type="checkbox"]')?.checked ?? true };
       }).filter(l => l.url);
       const sendRes = await fetchWithTimeout(SEND_TO_AGON_ENDPOINT, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ subject: subjectTitle, sessionLabel, question: finalQuestion, positionA: finalPosA, positionB: finalPosB, theme, resume: resumeForSend, sources: agonBtnFinal.dataset.sources, links, storySelection, keywords, politicalOrientation: agonBtnFinal.dataset.politicalOrientation ? JSON.parse(agonBtnFinal.dataset.politicalOrientation) : null, arenaMode, politicalGroup }) });
+      if (sendRes.status === 409) {
+        // Déjà envoyé (ex: pipeline auto passé avant ce lot) : on marque comme envoyé
+        // au lieu de créer un doublon ou d'afficher une erreur.
+        agonBtnFinal.classList.add("sent");
+        agonBtnFinal.textContent = "✓ Déjà envoyé";
+        const republishBtnDup = subjectEl.querySelector(".republish-btn");
+        if (republishBtnDup) { republishBtnDup.classList.remove("hidden"); republishBtnDup.disabled = false; republishBtnDup.textContent = "↺ Republier"; }
+        rehydratePersistentStates();
+        return { status: "skipped-sent" };
+      }
       if (!sendRes.ok) throw new Error("Erreur envoi Agôn");
       agonBtnFinal.classList.add("sent");
       agonBtnFinal.textContent = "✓ Envoyé";
@@ -7047,6 +7080,7 @@ async function runWatchSession(minSources = MIN_DISTINCT_SOURCES) {
     groupCount: groups.length,
     subjectCount: analyzedSubjects.length,
     mergeCount: deduplication.mergeResult.mergeGroups.length,
+    dedupError: deduplication.mergeResult.error || null,
     deduplication: deduplication.mergeResult,
     aiEnabled: Boolean(openai),
     collectReport: { articles: articlesReport, youtube: videosReport },
@@ -7277,8 +7311,9 @@ Réponds uniquement en JSON valide :
 
 STYLE pour suggestedQuestion et positionA/positionB :
 Écris comme un vrai utilisateur d'Agôn : clair, direct, naturel, pas comme un assistant.
-Ne cherche PAS à introduire des fautes. Le français doit rester globalement correct.
-Tu peux garder un style oral léger dans les positions ("oui", "non", "faut"), mais sans fautes grossières.
+Le français doit rester globalement correct, mais pas trop scolaire.
+La plupart des questions doivent être propres. Parfois, environ 1 fois sur 5, tu peux laisser une petite imperfection naturelle : minuscule en début de phrase, accent secondaire oublié, tournure orale.
+Tu peux garder un style oral léger dans les positions ("oui", "non", "faut"), avec parfois une petite faute légère, mais sans fautes grossières.
 
 À éviter absolument :
 * fautes visibles dans la question ("faut t'il", "lextrme", "pouvouir", mots oubliés) ;
@@ -7290,10 +7325,18 @@ Exemples de bon rendu :
 * suggestedQuestion: "Faut-il durcir les règles face à la récidive ?"
 * positionA: "oui, il faut protéger les victimes"
 * positionB: "non, la prison ne règle pas tout"
+Exemples acceptables de petites imperfections rares :
+* suggestedQuestion: "faut-il limiter les pouvoirs du président ?"
+* positionA: "oui faut éviter les abus"
+* positionB: "non, ça bloque l'action"
 
 Règles pour suggestedQuestion :
 - question concrète et débattable ;
 - ancrée dans le sujet précis ;
+- mentionne si possible l'acteur, le dispositif, le lieu ou la décision au coeur du sujet ;
+- évite les formulations génériques qui pourraient s'appliquer à dix autres articles ;
+- évite de commencer par "Faut-il" par défaut. Utilise "Faut-il" seulement si le sujet porte vraiment sur une interdiction, une obligation, un financement ou une réforme à décider ;
+- varie les formes : "X doit-il...", "Y peut-elle...", "La décision de X est-elle...", "Qui doit...", "X menace-t-il...", "X a-t-il raison de..." ;
 - pas de question évidente ("faut-il éviter les accidents ?") ;
 - les deux camps doivent sembler défendables.
 
@@ -7812,6 +7855,7 @@ async function runCertamenSession() {
     generatedAtLabel: startedAt.format("DD/MM/YYYY à HH:mm"),
     subjectCount: debatables.length,
     mergeCount: deduplication.mergeResult.mergeGroups.length,
+    dedupError: deduplication.mergeResult.error || null,
     deduplication: deduplication.mergeResult,
     subjects: debatables
   };

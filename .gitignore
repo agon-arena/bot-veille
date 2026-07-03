@@ -19,3 +19,4 @@ veille-mixte.json
 *.before-*.js
 
 .env
+bot-veille.log
