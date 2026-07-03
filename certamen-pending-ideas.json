@@ -468,5 +468,65 @@
     "runAt": "2026-07-02T08:28:21.287Z",
     "status": "done",
     "attempts": 0
+  },
+  {
+    "debateId": 1249,
+    "question": "Faut-il reconnaître en France la filiation d'enfants nés par GPA à l'étranger ?",
+    "positionA": "oui, il faut reconnaître ces filiations",
+    "positionB": "non, ça revient à accepter la GPA ici",
+    "id": "1249-1783066601801-dml9aa",
+    "runAt": "2026-07-03T08:26:41.800Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1250,
+    "question": "Le mécénat forcé des riches, est-ce une bonne idée ?",
+    "positionA": "oui, il faut que les riches participent plus",
+    "positionB": "non, ça freine la liberté économique",
+    "id": "1250-1783066601801-pbcz66",
+    "runAt": "2026-07-03T08:26:41.800Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1251,
+    "question": "Les sondages influencent-ils trop la présidentielle ?",
+    "positionA": "oui, ils orientent trop le vote",
+    "positionB": "non, ils informent utilement",
+    "id": "1251-1783066601801-sz0zfz",
+    "runAt": "2026-07-03T08:26:41.800Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1252,
+    "question": "Faut-il bloquer les ministres au lobbying dix ans après leur mandat ?",
+    "positionA": "oui, pour éviter conflits d’intérêts",
+    "positionB": "non, ça limite leur expérience utile",
+    "id": "1252-1783066601801-au0qjo",
+    "runAt": "2026-07-03T08:26:41.800Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1253,
+    "question": "Faut-il interdire l'obsolescence programmée pour protéger les consommateurs ?",
+    "positionA": "oui, c'est une arnaque à bannir",
+    "positionB": "non, c'est la liberté des entreprises",
+    "id": "1253-1783066601801-fff9cm",
+    "runAt": "2026-07-03T08:26:41.800Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1254,
+    "question": "Faut-il interdire les sondages pour mieux débattre en campagne ?",
+    "positionA": "oui, ça recentrerait le débat sur les idées",
+    "positionB": "non, c’est utile pour un vote stratégique",
+    "id": "1254-1783066601801-0yzd4v",
+    "runAt": "2026-07-03T08:26:41.800Z",
+    "status": "done",
+    "attempts": 0
   }
 ]

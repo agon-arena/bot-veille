@@ -272,7 +272,13 @@ function saveSentToAgonItems(items) {
 }
 
 function normalizeSentToAgonKey(value) {
-  return String(value || "").replace(/\s+/g, " ").trim();
+  return String(value || "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^\p{L}\p{N}\s]/gu, " ")
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
 function normalizePoliticalGroup(value) {
@@ -282,6 +288,28 @@ function normalizePoliticalGroup(value) {
 
 function buildSentToAgonGroupKey(subject, politicalGroup) {
   return `${normalizeSentToAgonKey(subject)}\u0001${normalizePoliticalGroup(politicalGroup)}`;
+}
+
+function getSentToAgonKeyCandidates(value) {
+  const fields = typeof value === "string"
+    ? [value]
+    : [value?.subject, value?.question];
+  return [...new Set(fields.map(normalizeSentToAgonKey).filter(Boolean))];
+}
+
+function getSentToAgonGroupKeys(value, politicalGroup) {
+  const group = normalizePoliticalGroup(
+    politicalGroup ?? (typeof value === "object" && value ? value.politicalGroup : "")
+  );
+  return getSentToAgonKeyCandidates(value).map((key) => `${key}\u0001${group}`);
+}
+
+function hasSentToAgonGroupMatch(items, value, politicalGroup) {
+  const targetKeys = new Set(getSentToAgonGroupKeys(value, politicalGroup));
+  if (!targetKeys.size) return false;
+  return (Array.isArray(items) ? items : []).some((item) => {
+    return getSentToAgonGroupKeys(item, item?.politicalGroup).some((key) => targetKeys.has(key));
+  });
 }
 
 function safeJsonParse(text) {
@@ -311,10 +339,9 @@ function upsertSentToAgonItem(payload) {
 
   const items = loadSentToAgonItems();
   const politicalGroup = normalizePoliticalGroup(payload?.politicalGroup);
-  const key = buildSentToAgonGroupKey(subject || question, politicalGroup);
+  const nextKeys = new Set(getSentToAgonGroupKeys({ subject, question }, politicalGroup));
   const existingIndex = items.findIndex((item) => {
-    const itemSubject = normalizeSentToAgonKey(item.subject || item.question);
-    return buildSentToAgonGroupKey(itemSubject, item.politicalGroup) === key;
+    return getSentToAgonGroupKeys(item, item.politicalGroup).some((key) => nextKeys.has(key));
   });
   const nextItem = {
     ...(existingIndex !== -1 ? items[existingIndex] : {}),
@@ -4689,8 +4716,9 @@ app.post("/send-to-agon", requireMixteAuth, async (req, res) => {
     // double-clic) créait deux lignes d'attente pour le même sujet+groupe côté Agôn.
     // "Republier" passe force=true pour renvoyer volontairement.
     if (req.body?.force !== true) {
-      const groupKey = buildSentToAgonGroupKey(subject || normalizedQuestion, politicalGroup);
-      const already = loadSentToAgonItems().find(i => buildSentToAgonGroupKey(i.subject || i.question, i.politicalGroup) === groupKey);
+      const sentItems = loadSentToAgonItems();
+      const targetKeys = new Set(getSentToAgonGroupKeys({ subject, question: normalizedQuestion }, politicalGroup));
+      const already = sentItems.find((item) => getSentToAgonGroupKeys(item, item?.politicalGroup).some((key) => targetKeys.has(key)));
       if (already) {
         console.log(`[send-to-agon] Refusé (doublon ${politicalGroup}) : "${String(subject || normalizedQuestion).slice(0, 60)}" déjà envoyé le ${already.sentAt || "?"}`);
         return res.status(409).json({ ok: false, alreadySent: true, error: `Sujet déjà envoyé à Agôn (${politicalGroup === "mixed" ? "général" : politicalGroup}). Utilise « Republier » pour renvoyer volontairement.` });
@@ -5235,27 +5263,23 @@ async function runAutoPublishPipeline() {
   // Clé "sujet + groupe" : un même sujet peut exister en général, gauche et droite,
   // mais jamais deux fois dans le même groupe.
   const sentSubjectsByGroup = new Set(
-    sentItems
-      .map(i => buildSentToAgonGroupKey(i.subject || i.question, i.politicalGroup))
-      .filter(Boolean)
+    sentItems.flatMap(i => getSentToAgonGroupKeys(i, i.politicalGroup))
   );
   const sentSubjects = new Set(
-    sentItems
-      .map(i => normalizeSentToAgonKey(i.subject || i.question))
-      .filter(Boolean)
+    sentItems.flatMap(i => getSentToAgonKeyCandidates(i))
   );
   // Permet aux lots gauche/droite de réutiliser l'article d'un sujet déjà publié (top 10,
   // run précédent, ou l'autre lot traité juste avant dans ce même run) sans repasser par l'IA.
   const sentItemsByTitle = new Map();
   sentItems.forEach((item) => {
-    const key = normalizeSentToAgonKey(item.subject);
-    if (key && !sentItemsByTitle.has(key)) sentItemsByTitle.set(key, item);
+    getSentToAgonKeyCandidates(item).forEach((key) => {
+      if (key && !sentItemsByTitle.has(key)) sentItemsByTitle.set(key, item);
+    });
   });
   let sentCount = 0;
 
   for (const subj of top10) {
     const subjectKey = normalizeSentToAgonKey(subj.subject);
-    const groupKey = buildSentToAgonGroupKey(subj.subject, "mixed");
     if (sentSubjects.has(subjectKey)) {
       console.log(`[auto-publish] Déjà envoyé : ${subj.subject.slice(0, 60)}`);
       continue;
@@ -5263,8 +5287,8 @@ async function runAutoPublishPipeline() {
     try {
       const published = await publishMixteSubjectToAgon(subj, { sessionLabel });
       sentSubjects.add(subjectKey);
-      sentSubjectsByGroup.add(groupKey);
-      sentItemsByTitle.set(normalizeSentToAgonKey(subj.subject), published);
+      getSentToAgonGroupKeys(published, published.politicalGroup).forEach((key) => sentSubjectsByGroup.add(key));
+      getSentToAgonKeyCandidates(published).forEach((key) => sentItemsByTitle.set(key, published));
       sentCount++;
       diagnostics.subjectsPublished++;
     } catch (err) {
@@ -5281,10 +5305,13 @@ async function runAutoPublishPipeline() {
   // éviter de régénérer l'article dans ce cas).
   for (const group of ["left", "right"]) {
     const picks = selectTopSubjectsByMediaOrientation(allSubjects, group, 10);
+    // Le carousel Agôn affiche les plus récents en premier : on envoie donc les
+    // moins sourcés du lot d'abord, pour que les plus sourcés arrivent en tête.
+    const publicationOrder = picks.slice().reverse();
     const groupLabel = group === "left" ? "gauche" : "droite";
     let groupSentCount = 0;
     diagnostics.subjectsPrepared += picks.length;
-    for (const subj of picks) {
+    for (const subj of publicationOrder) {
       const groupKey = buildSentToAgonGroupKey(subj.subject, group);
       if (sentSubjectsByGroup.has(groupKey)) {
         console.log(`[auto-publish] Déjà envoyé (${groupLabel}) : ${subj.subject.slice(0, 60)}`);
@@ -5293,8 +5320,8 @@ async function runAutoPublishPipeline() {
       try {
         const reuseFrom = sentItemsByTitle.get(normalizeSentToAgonKey(subj.subject)) || null;
         const published = await publishMixteSubjectToAgon(subj, { sessionLabel, politicalGroup: group, reuseFrom });
-        sentSubjectsByGroup.add(groupKey);
-        sentItemsByTitle.set(normalizeSentToAgonKey(subj.subject), published);
+        getSentToAgonGroupKeys(published, published.politicalGroup).forEach((key) => sentSubjectsByGroup.add(key));
+        getSentToAgonKeyCandidates(published).forEach((key) => sentItemsByTitle.set(key, published));
         groupSentCount++;
         diagnostics.subjectsPublished++;
       } catch (err) {
@@ -5573,15 +5600,33 @@ async function classifyAndPublishPending() {
     .filter(p => !p.linkedDebateId && Array.isArray(p.links) && p.links.length > 0)
     .sort((a, b) => countSources(a) - countSources(b));
 
+  const sentItemsForPending = loadSentToAgonItems();
+  const alreadySentPending = sortedPending.filter((p) => {
+    return hasSentToAgonGroupMatch(sentItemsForPending, { question: p.question }, p.politicalGroup);
+  });
+  if (alreadySentPending.length) {
+    console.log(`[auto-publish] ${alreadySentPending.length} sujet(s) déjà envoyés ignoré(s) dans la file d'attente`);
+    for (const dup of alreadySentPending) {
+      try {
+        await fetch(`${AGON_URL}/api/admin/veille/${encodeURIComponent(dup.id)}`, { method: "DELETE", headers: adminHeaders });
+        console.log(`[auto-publish] Sujet déjà envoyé supprimé de la file : "${String(dup.question || "").slice(0, 60)}" (${dup.politicalGroup || "mixed"})`);
+      } catch (err) {
+        console.warn(`[auto-publish] Échec suppression sujet déjà envoyé ${dup.id} :`, err.message);
+      }
+    }
+  }
+
+  const unsentPending = sortedPending.filter((p) => !hasSentToAgonGroupMatch(sentItemsForPending, { question: p.question }, p.politicalGroup));
+
   // Doublons dans la file d'attente (même question + même groupe politique) : un sujet
   // envoyé plusieurs fois (envoi manuel + pipeline, double génération...) ne doit produire
   // qu'une seule arène par groupe. Trié par sources croissantes, le dernier écrase les
   // précédents dans la Map : on garde la version la plus sourcée.
   const pendingDedupKey = (p) => buildSentToAgonGroupKey(String(p.question || ""), p.politicalGroup);
   const bestPendingByKey = new Map();
-  for (const p of sortedPending) bestPendingByKey.set(pendingDedupKey(p), p);
-  const publishable = sortedPending.filter(p => bestPendingByKey.get(pendingDedupKey(p)) === p);
-  const duplicatePending = sortedPending.filter(p => bestPendingByKey.get(pendingDedupKey(p)) !== p);
+  for (const p of unsentPending) bestPendingByKey.set(pendingDedupKey(p), p);
+  const publishable = unsentPending.filter(p => bestPendingByKey.get(pendingDedupKey(p)) === p);
+  const duplicatePending = unsentPending.filter(p => bestPendingByKey.get(pendingDedupKey(p)) !== p);
   if (duplicatePending.length) {
     console.log(`[auto-publish] ${duplicatePending.length} doublon(s) de question ignoré(s) dans la file d'attente`);
     // Retirer les doublons de la file côté Agôn (best-effort), sinon ils y restent
@@ -5604,6 +5649,11 @@ async function classifyAndPublishPending() {
   for (const [index, item] of publishable.entries()) {
     if (index > 0) await sleep(PUBLISH_THROTTLE_DELAY_MS);
     try {
+      if (hasSentToAgonGroupMatch(sentItemsForPending, { question: item.question }, item.politicalGroup)) {
+        console.log(`[auto-publish] Déjà envoyé pendant ce passage, ignoré : "${String(item.question || "").slice(0, 60)}" (${item.politicalGroup || "mixed"})`);
+        continue;
+      }
+
       // Tentative de fusion automatique
       let autoMergedDebateId = "";
       try {
@@ -5650,6 +5700,7 @@ async function classifyAndPublishPending() {
             links: item.links || [],
             keywords: item.keywords || [],
             linkedDebateId: autoMergedDebateId,
+            politicalGroup: item.politicalGroup || "mixed",
             forcePublishOnAlignmentWarning: false
           })
         });
@@ -5670,6 +5721,25 @@ async function classifyAndPublishPending() {
         const publishData = await r.json().catch(() => ({}));
         console.log(`[auto-publish] ✓ Publié : "${String(item.question || "").slice(0, 60)}"`);
         publishedCount++;
+        const savedSentItem = upsertSentToAgonItem({
+          subject: item.subject || item.question,
+          sessionLabel: item.sessionLabel || "",
+          question: item.question,
+          positionA: item.positionA || "",
+          positionB: item.positionB || "",
+          theme: item.theme || "",
+          resume: item.resume || "",
+          sources: item.sources || "",
+          links: Array.isArray(item.links) ? item.links : [],
+          storySelection: item.storySelection || null,
+          keywords: item.keywords || [],
+          politicalOrientation: item.politicalOrientation || null,
+          arenaMode: item.positionA || item.positionB ? "positions" : "libre",
+          politicalGroup: item.politicalGroup || "mixed",
+          debateId: publishData.debateId || null,
+          sentAt: new Date().toISOString()
+        });
+        sentItemsForPending.unshift(savedSentItem);
         if (publishData.debateId) {
           pendingIdeas.push({ debateId: publishData.debateId, question: item.question, positionA: item.positionA || "", positionB: item.positionB || "" });
         }

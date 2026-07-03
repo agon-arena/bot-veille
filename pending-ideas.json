@@ -2088,5 +2088,175 @@
     "runAt": "2026-07-02T14:33:38.578Z",
     "status": "done",
     "attempts": 0
+  },
+  {
+    "debateId": 1225,
+    "question": "Sécheresse : restrictions sur le lavage de voitures en France",
+    "positionA": "",
+    "positionB": "",
+    "id": "1225-1783060766521-lskye5",
+    "runAt": "2026-07-03T06:49:26.520Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1227,
+    "question": "Présentation du plan douanes 2030 pour renforcer la lutte antidrogue",
+    "positionA": "",
+    "positionB": "",
+    "id": "1227-1783060766521-4m5sin",
+    "runAt": "2026-07-03T06:49:26.520Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1229,
+    "question": "Décision cruciale de la Cour de cassation sur la GPA à l'étranger",
+    "positionA": "",
+    "positionB": "",
+    "id": "1229-1783060766521-o1xrs2",
+    "runAt": "2026-07-03T06:49:26.520Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1230,
+    "question": "Décès d'un homme en garde à vue à Paris : enquête de l'IGPN",
+    "positionA": "",
+    "positionB": "",
+    "id": "1230-1783060766521-h6403l",
+    "runAt": "2026-07-03T06:49:26.520Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1231,
+    "question": "Évolution des positions sur le nucléaire et la sécurité routière",
+    "positionA": "",
+    "positionB": "",
+    "id": "1231-1783060766521-nwlkgf",
+    "runAt": "2026-07-03T06:49:26.520Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1232,
+    "question": "Souveraineté et liberté au cœur du débat politique en France",
+    "positionA": "",
+    "positionB": "",
+    "id": "1232-1783060766521-5i04f2",
+    "runAt": "2026-07-03T06:49:26.520Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1233,
+    "question": "Faut-il renforcer la régulation des propos climatosceptiques ?",
+    "positionA": "Renforcer la régulation",
+    "positionB": "Préserver la liberté d'expression",
+    "id": "1233-1783060766521-8332fi",
+    "runAt": "2026-07-03T06:49:26.520Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1234,
+    "question": "L’Assurance maladie propose une interdiction de vente de tabac aux générations futures",
+    "positionA": "",
+    "positionB": "",
+    "id": "1234-1783060766521-vl2hvv",
+    "runAt": "2026-07-03T06:49:26.520Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1235,
+    "question": "Départs de feu en France : une saison des incendies déjà intense",
+    "positionA": "",
+    "positionB": "",
+    "id": "1235-1783060766521-4c33wt",
+    "runAt": "2026-07-03T06:49:26.520Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1236,
+    "question": "Guillaume Erner reste à la matinale de France Culture sans son billet d'humeur",
+    "positionA": "",
+    "positionB": "",
+    "id": "1236-1783060766521-q0kf9g",
+    "runAt": "2026-07-03T06:49:26.520Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1238,
+    "question": "Prioriser climat ou stabilité en période de canicule ?",
+    "positionA": "Urgence climatique mesures immédiates",
+    "positionB": "Stabilité politique éviter l'instabilité",
+    "id": "1238-1783060766521-ppt0ou",
+    "runAt": "2026-07-03T06:49:26.520Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1239,
+    "question": "Écorégions ou régions actuelles : quel modèle choisir ?",
+    "positionA": "Prioriser la gestion écologique",
+    "positionB": "Préserver l'identité régionale",
+    "id": "1239-1783060766521-51nmyt",
+    "runAt": "2026-07-03T06:49:26.520Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1240,
+    "question": "L'Assurance-maladie propose des mesures pour réduire son déficit",
+    "positionA": "",
+    "positionB": "",
+    "id": "1240-1783060766521-neqk3d",
+    "runAt": "2026-07-03T06:49:26.520Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1241,
+    "question": "Canicule : vigilance jaune dans cinq départements du Sud",
+    "positionA": "",
+    "positionB": "",
+    "id": "1241-1783060766521-2eno6o",
+    "runAt": "2026-07-03T06:49:26.520Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1242,
+    "question": "Faut-il privilégier l'unité ou le pluralisme chez LR ?",
+    "positionA": "Favoriser l'unité autour d'un seul candidat",
+    "positionB": "Encourager le pluralisme des candidatures",
+    "id": "1242-1783060766521-xk3drw",
+    "runAt": "2026-07-03T06:49:26.520Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1243,
+    "question": "Sauvetage d'Hernán Gil après huit jours sous les décombres au Venezuela",
+    "positionA": "",
+    "positionB": "",
+    "id": "1243-1783060766521-lhuafd",
+    "runAt": "2026-07-03T06:49:26.520Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1244,
+    "question": "Attaques massives sur Kiev : bilan lourd et tensions accrues",
+    "positionA": "",
+    "positionB": "",
+    "id": "1244-1783060766521-sv377m",
+    "runAt": "2026-07-03T06:49:26.520Z",
+    "status": "done",
+    "attempts": 0
   }
 ]
