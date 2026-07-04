@@ -312,6 +312,16 @@ function hasSentToAgonGroupMatch(items, value, politicalGroup) {
   });
 }
 
+function isSentToAgonPublishedItem(item) {
+  if (!item || typeof item !== "object") return false;
+  if (item.publishStatus === "queued") return false;
+  if (item.publishStatus === "published") return true;
+  // Entrées historiques : avant publishStatus, ce fichier représentait des
+  // arènes effectivement traitées. On les garde donc bloquantes pour éviter
+  // de republier tout l'historique.
+  return true;
+}
+
 function safeJsonParse(text) {
   const raw = String(text || "").trim();
   if (!raw) throw new Error("Réponse IA vide.");
@@ -5217,7 +5227,7 @@ async function publishMixteSubjectToAgon(subj, { sessionLabel, politicalGroup = 
   }
   if (!r.ok) { const body = await r.text().catch(() => ""); throw new Error(`Agôn a répondu ${r.status}: ${body}`); }
 
-  const publishedItem = { subject: subjectTitle, sessionLabel, question, positionA, positionB, theme, resume, sources, links, storySelection, keywords, politicalOrientation, arenaMode, politicalGroup, sentAt: new Date().toISOString() };
+  const publishedItem = { subject: subjectTitle, sessionLabel, question, positionA, positionB, theme, resume, sources, links, storySelection, keywords, politicalOrientation, arenaMode, politicalGroup, publishStatus: "queued", sentAt: new Date().toISOString() };
   upsertSentToAgonItem(publishedItem);
   console.log(`[auto-publish] ✓ Envoyé (${politicalGroup}) : "${subjectTitle.slice(0, 60)}"`);
   return publishedItem;
@@ -5260,13 +5270,14 @@ async function runAutoPublishPipeline() {
   diagnostics.subjectsPrepared += top10.length;
 
   const sentItems = loadSentToAgonItems();
+  const publishedSentItems = sentItems.filter(isSentToAgonPublishedItem);
   // Clé "sujet + groupe" : un même sujet peut exister en général, gauche et droite,
   // mais jamais deux fois dans le même groupe.
   const sentSubjectsByGroup = new Set(
-    sentItems.flatMap(i => getSentToAgonGroupKeys(i, i.politicalGroup))
+    publishedSentItems.flatMap(i => getSentToAgonGroupKeys(i, i.politicalGroup))
   );
   const sentSubjects = new Set(
-    sentItems.flatMap(i => getSentToAgonKeyCandidates(i))
+    publishedSentItems.flatMap(i => getSentToAgonKeyCandidates(i))
   );
   // Permet aux lots gauche/droite de réutiliser l'article d'un sujet déjà publié (top 10,
   // run précédent, ou l'autre lot traité juste avant dans ce même run) sans repasser par l'IA.
@@ -5394,12 +5405,15 @@ Réponds en JSON : { "ideas": [ { "qualite": "bonne" ou "moyenne" ou "mauvaise",
 
   let ideas;
   try {
+    // gpt-5-mini : temperature refusée par l'API, max_tokens remplacé par
+    // max_completion_tokens (qui inclut les tokens de raisonnement, d'où la marge),
+    // raisonnement minimal comme pour les articles (cf. buildArticleModelRequest).
     const response = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
+      model: "gpt-5-mini",
       messages: [{ role: "user", content: prompt }],
       response_format: { type: "json_object" },
-      temperature: 1.1,
-      max_tokens: 2500
+      reasoning_effort: "minimal",
+      max_completion_tokens: 3000
     });
     const parsed = JSON.parse(response.choices[0].message.content);
     ideas = parsed.ideas;
@@ -5435,8 +5449,8 @@ Réponds en JSON : { "ideas": [ { "qualite": "bonne" ou "moyenne" ou "mauvaise",
           const { id: argId } = await r.json().catch(() => ({}));
           const isMauvaise = idea.qualite === "mauvaise";
           const votes = isMauvaise
-            ? Math.floor(Math.random() * 26) + 5
-            : Math.floor(Math.random() * 35) + 45;
+            ? Math.floor(Math.random() * 14) + 3
+            : Math.floor(Math.random() * 23) + 17;
           console.log(`[idées-ia] ✓ Débat ${debateId} — idée ${i + 1}/${ideas.length} publiée (${idea.qualite || "mauvaise"}, camp ${idea.side || "libre"}) → ${votes} voix`);
           if (argId && adminHeaders) {
             await fetch(`${AGON_URL}/api/admin/argument/${argId}/set-votes`, {
@@ -5600,7 +5614,7 @@ async function classifyAndPublishPending() {
     .filter(p => !p.linkedDebateId && Array.isArray(p.links) && p.links.length > 0)
     .sort((a, b) => countSources(a) - countSources(b));
 
-  const sentItemsForPending = loadSentToAgonItems();
+  const sentItemsForPending = loadSentToAgonItems().filter(isSentToAgonPublishedItem);
   const alreadySentPending = sortedPending.filter((p) => {
     return hasSentToAgonGroupMatch(sentItemsForPending, { question: p.question }, p.politicalGroup);
   });
@@ -5654,14 +5668,27 @@ async function classifyAndPublishPending() {
         continue;
       }
 
-      // Tentative de fusion automatique
+      // Tentative de fusion automatique. Un échec de check-similar (rate-limit 429
+      // notamment) ne doit plus être ignoré en silence : sans cette vérification,
+      // le sujet est publié sans fusion et peut créer un doublon dans son groupe.
       let autoMergedDebateId = "";
       try {
-        const simRes = await fetch(`${AGON_URL}/api/admin/veille/check-similar`, {
-          method: "POST",
-          headers: adminHeaders,
-          body: JSON.stringify({ question: item.question, positionA: item.positionA || "", positionB: item.positionB || "", resume: item.resume || "" })
-        });
+        let simRes = null;
+        for (let attempt = 1; attempt <= PUBLISH_RATE_LIMIT_RETRIES; attempt += 1) {
+          simRes = await fetch(`${AGON_URL}/api/admin/veille/check-similar`, {
+            method: "POST",
+            headers: adminHeaders,
+            body: JSON.stringify({ question: item.question, positionA: item.positionA || "", positionB: item.positionB || "", resume: item.resume || "" })
+          });
+          if (simRes.status !== 429) break;
+          if (attempt < PUBLISH_RATE_LIMIT_RETRIES) {
+            console.warn(`[auto-publish] Rate-limit check-similar, nouvelle tentative (${attempt}/${PUBLISH_RATE_LIMIT_RETRIES}) dans ${PUBLISH_RATE_LIMIT_DELAY_MS / 1000}s pour "${String(item.question || "").slice(0, 60)}"`);
+            await sleep(PUBLISH_RATE_LIMIT_DELAY_MS);
+          }
+        }
+        if (!simRes.ok) {
+          console.warn(`[auto-publish] check-similar indisponible (HTTP ${simRes.status}) pour "${String(item.question || "").slice(0, 60)}" — publication sans tentative de fusion`);
+        }
         if (simRes.ok) {
           const { similar } = await simRes.json().catch(() => ({}));
           const best = (similar || []).find(s => s.confirmed === true && s.score >= 0.82);
@@ -5736,6 +5763,7 @@ async function classifyAndPublishPending() {
           politicalOrientation: item.politicalOrientation || null,
           arenaMode: item.positionA || item.positionB ? "positions" : "libre",
           politicalGroup: item.politicalGroup || "mixed",
+          publishStatus: "published",
           debateId: publishData.debateId || null,
           sentAt: new Date().toISOString()
         });

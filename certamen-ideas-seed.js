@@ -127,8 +127,8 @@ Réponds en JSON : { "ideas": [ { "qualite": "bonne" ou "moyenne" ou "mauvaise",
           const { id: argId } = await r.json().catch(() => ({}));
           const isMauvaise = idea.qualite === "mauvaise";
           const votes = isMauvaise
-            ? Math.floor(Math.random() * 26) + 5
-            : Math.floor(Math.random() * 35) + 45;
+            ? Math.floor(Math.random() * 14) + 3
+            : Math.floor(Math.random() * 23) + 17;
           console.log(`[certamen-idées-ia] ✓ Débat ${debateId} — idée ${i + 1}/${ideas.length} publiée (${idea.qualite || "mauvaise"}, camp ${idea.side || "libre"}) → ${votes} voix`);
           if (argId && adminHeaders) {
             await fetch(`${AGON_URL}/api/admin/argument/${argId}/set-votes`, {

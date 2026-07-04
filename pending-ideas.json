@@ -2258,5 +2258,345 @@
     "runAt": "2026-07-03T06:49:26.520Z",
     "status": "done",
     "attempts": 0
+  },
+  {
+    "debateId": 1245,
+    "question": "Trois nouvelles plaintes pour violences sexuelles contre Patrick Bruel",
+    "positionA": "",
+    "positionB": "",
+    "id": "1245-1783060766521-vcl901",
+    "runAt": "2026-07-03T06:49:26.520Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1246,
+    "question": "Trois nouvelles plaintes pour violences sexuelles contre Patrick Bruel",
+    "positionA": "",
+    "positionB": "",
+    "id": "1246-1783060766521-wrzd7j",
+    "runAt": "2026-07-03T06:49:26.520Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1247,
+    "question": "Trois nouvelles plaintes pour violences sexuelles contre Patrick Bruel",
+    "positionA": "",
+    "positionB": "",
+    "id": "1247-1783060766521-iw1lz9",
+    "runAt": "2026-07-03T06:49:26.520Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1248,
+    "question": "Trois nouvelles plaintes pour violences sexuelles contre Patrick Bruel",
+    "positionA": "",
+    "positionB": "",
+    "id": "1248-1783060766521-wygfkx",
+    "runAt": "2026-07-03T06:49:26.520Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1255,
+    "question": "Les parents de Hamza «La Douane» envisagent une plainte pour insultes racistes",
+    "positionA": "",
+    "positionB": "",
+    "id": "1255-1783088288389-fyzvad",
+    "runAt": "2026-07-03T14:28:08.304Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1256,
+    "question": "Déposer une motion de censure malgré une estimation non vérifiée ?",
+    "positionA": "Déposer la motion",
+    "positionB": "S'abstenir pour vérification",
+    "id": "1256-1783097844519-g8ywie",
+    "runAt": "2026-07-03T17:07:24.515Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1257,
+    "question": "S'appuyer sur ce rapport pour construire le redressement ?",
+    "positionA": "utiliser le rapport comme base",
+    "positionB": "refuser le rapport comme cadre",
+    "id": "1257-1783097844519-29awhu",
+    "runAt": "2026-07-03T17:07:24.515Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1258,
+    "question": "Démantèlement d'un réseau de passeurs lié à des trajets Syrie–Guyane–France",
+    "positionA": "",
+    "positionB": "",
+    "id": "1258-1783097844519-ydmpec",
+    "runAt": "2026-07-03T17:07:24.515Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1259,
+    "question": "Vacances d'été : GPS et cartes papier coexistent dans les trajets routiers",
+    "positionA": "",
+    "positionB": "",
+    "id": "1259-1783097844519-eih5tk",
+    "runAt": "2026-07-03T17:07:24.515Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1260,
+    "question": "Meurtre de Louis : des failles signalées dans la protection de l'enfance",
+    "positionA": "",
+    "positionB": "",
+    "id": "1260-1783097844519-1zo4a9",
+    "runAt": "2026-07-03T17:07:24.515Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1261,
+    "question": "250e anniversaire de l'indépendance américaine et le rôle de la France",
+    "positionA": "",
+    "positionB": "",
+    "id": "1261-1783097844519-6sevqh",
+    "runAt": "2026-07-04T07:07:57.000Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1262,
+    "question": "Expulser massivement ou privilégier intégration et politiques sociales ?",
+    "positionA": "intégration et politiques sociales",
+    "positionB": "expulsions strictes",
+    "id": "1262-1783097844519-rhv6ba",
+    "runAt": "2026-07-04T07:07:57.000Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1263,
+    "question": "Canicule à Philadelphie avant France–Paraguay en huitièmes du Mondial",
+    "positionA": "",
+    "positionB": "",
+    "id": "1263-1783097844519-75yc7j",
+    "runAt": "2026-07-04T07:07:57.000Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1264,
+    "question": "Faut-il recentraliser la protection de l'enfance au niveau de l'État ?",
+    "positionA": "Reprise en main étatique",
+    "positionB": "Maintien de réponses locales",
+    "id": "1264-1783097844519-tu4fwl",
+    "runAt": "2026-07-04T07:07:57.000Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1265,
+    "question": "Faut-il prioriser stabilité électorale ou expression du mécontentement ?",
+    "positionA": "Prioriser stabilité et recours au vote de raison",
+    "positionB": "Prioriser expression du mécontentement et vote d'affirm",
+    "id": "1265-1783097844519-yyq8cc",
+    "runAt": "2026-07-04T07:07:57.000Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1266,
+    "question": "Expulser massivement ou privilégier intégration et politiques sociales ?",
+    "positionA": "intégration et politiques sociales",
+    "positionB": "expulsions strictes",
+    "id": "1266-1783097844519-ixoikc",
+    "runAt": "2026-07-04T03:47:27.635Z",
+    "status": "failed",
+    "attempts": 3
+  },
+  {
+    "debateId": 1267,
+    "question": "Condamnation pour diffamation d’une militante de Némésis contre l’ancienne maire de Besançon",
+    "positionA": "",
+    "positionB": "",
+    "id": "1267-1783097844519-2ek2er",
+    "runAt": "2026-07-04T07:07:57.000Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1268,
+    "question": "Fêter centralement sur le National Mall ou privilégier des célébrations décentralisées ?",
+    "positionA": "Célébration centralisée à DC",
+    "positionB": "Célébrations décentralisées par États",
+    "id": "1268-1783097844519-33tqre",
+    "runAt": "2026-07-04T07:07:57.000Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1269,
+    "question": "L'OMM prévoit un El Niño de forte intensité entre juillet et septembre 2026",
+    "positionA": "",
+    "positionB": "",
+    "id": "1269-1783097844519-8dqji6",
+    "runAt": "2026-07-04T07:07:57.000Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1270,
+    "question": "Stéphanie Rist se dit favorable à interdire la vente de cigarettes aux personnes nées après 2009",
+    "positionA": "",
+    "positionB": "",
+    "id": "1270-1783097844519-kz0dd4",
+    "runAt": "2026-07-04T04:50:01.057Z",
+    "status": "failed",
+    "attempts": 3
+  },
+  {
+    "debateId": 1271,
+    "question": "Enquête après une collision à Paris impliquant la voiture de fonction de J.-P. Raffarin",
+    "positionA": "",
+    "positionB": "",
+    "id": "1271-1783097844519-9w4vye",
+    "runAt": "2026-07-04T05:07:04.059Z",
+    "status": "failed",
+    "attempts": 3
+  },
+  {
+    "debateId": 1272,
+    "question": "Début des funérailles d'Ali Khamenei à Téhéran dans un contexte de tensions régionales",
+    "positionA": "",
+    "positionB": "",
+    "id": "1272-1783097844519-z6vxod",
+    "runAt": "2026-07-04T05:24:40.008Z",
+    "status": "done",
+    "attempts": 2
+  },
+  {
+    "debateId": 1273,
+    "question": "Enquête après une collision à Paris impliquant la voiture de fonction de J.-P. Raffarin",
+    "positionA": "",
+    "positionB": "",
+    "id": "1273-1783097844519-xz9yk4",
+    "runAt": "2026-07-04T05:32:29.034Z",
+    "status": "done",
+    "attempts": 2
+  },
+  {
+    "debateId": 1274,
+    "question": "Kiev frappée par une salve de drones et missiles causant de lourdes pertes civiles",
+    "positionA": "",
+    "positionB": "",
+    "id": "1274-1783097844519-9d08gv",
+    "runAt": "2026-07-04T05:32:49.777Z",
+    "status": "done",
+    "attempts": 2
+  },
+  {
+    "debateId": 1275,
+    "question": "Kiev frappée par une salve de drones et missiles causant de lourdes pertes civiles",
+    "positionA": "",
+    "positionB": "",
+    "id": "1275-1783097844519-by34g8",
+    "runAt": "2026-07-04T05:49:06.783Z",
+    "status": "done",
+    "attempts": 2
+  },
+  {
+    "debateId": 1276,
+    "question": "Faut‑il reconnaître en France la filiation établie à l'étranger pour les enfants nés par GPA ?",
+    "positionA": "Reconnaître systématiquement la filiation",
+    "positionB": "Prioriser la cohérence avec l'interdiction nationale",
+    "id": "1276-1783097844519-rfgprr",
+    "runAt": "2026-07-04T06:21:37.536Z",
+    "status": "done",
+    "attempts": 2
+  },
+  {
+    "debateId": 1277,
+    "question": "Enquête après une collision à Paris impliquant la voiture de fonction de J.-P. Raffarin",
+    "positionA": "",
+    "positionB": "",
+    "id": "1277-1783097844519-cbjqwb",
+    "runAt": "2026-07-04T06:33:26.506Z",
+    "status": "done",
+    "attempts": 2
+  },
+  {
+    "debateId": 1278,
+    "question": "Explosion à Monaco : une suspecte ukrainienne recherchée après un colis piégé",
+    "positionA": "",
+    "positionB": "",
+    "id": "1278-1783097844519-q74e83",
+    "runAt": "2026-07-04T06:33:46.137Z",
+    "status": "done",
+    "attempts": 2
+  },
+  {
+    "debateId": 1279,
+    "question": "Faut‑il reconnaître en France la filiation établie à l'étranger pour les enfants nés par GPA ?",
+    "positionA": "Reconnaître systématiquement la filiation",
+    "positionB": "Prioriser la cohérence avec l'interdiction nationale",
+    "id": "1279-1783097844519-6w5gpb",
+    "runAt": "2026-07-04T06:34:11.470Z",
+    "status": "done",
+    "attempts": 2
+  },
+  {
+    "debateId": 1280,
+    "question": "Explosion à Monaco : une suspecte ukrainienne recherchée après un colis piégé",
+    "positionA": "",
+    "positionB": "",
+    "id": "1280-1783097844519-6qmse4",
+    "runAt": "2026-07-04T06:48:57.037Z",
+    "status": "done",
+    "attempts": 2
+  },
+  {
+    "debateId": 1281,
+    "question": "Faut‑il reconnaître en France la filiation établie à l'étranger pour les enfants nés par GPA ?",
+    "positionA": "Reconnaître systématiquement la filiation",
+    "positionB": "Prioriser la cohérence avec l'interdiction nationale",
+    "id": "1281-1783097844519-vwuqwq",
+    "runAt": "2026-07-04T06:49:09.196Z",
+    "status": "done",
+    "attempts": 2
+  },
+  {
+    "debateId": 1282,
+    "question": "Explosion à Monaco : une suspecte ukrainienne recherchée après un colis piégé",
+    "positionA": "",
+    "positionB": "",
+    "id": "1282-1783097844519-bpzr5v",
+    "runAt": "2026-07-04T06:49:27.741Z",
+    "status": "done",
+    "attempts": 2
+  },
+  {
+    "debateId": 1283,
+    "question": "Faut-il renforcer des obligations nationales pour prévenir les décès liés aux canicules ?",
+    "positionA": "Renforcer obligations nationales",
+    "positionB": "Favoriser réponses locales et flexibles",
+    "id": "1283-1783097844519-nr668x",
+    "runAt": "2026-07-04T06:49:41.453Z",
+    "status": "done",
+    "attempts": 2
+  },
+  {
+    "debateId": 1284,
+    "question": "Faut-il renforcer des obligations nationales pour prévenir les décès liés aux canicules ?",
+    "positionA": "Renforcer obligations nationales",
+    "positionB": "Favoriser réponses locales et flexibles",
+    "id": "1284-1783097844519-c742ed",
+    "runAt": "2026-07-04T06:49:58.571Z",
+    "status": "done",
+    "attempts": 2
   }
 ]

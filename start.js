@@ -7,6 +7,41 @@ let shuttingDown = false;
 let veilleMixteProcess = null;
 let serverProcess = null;
 
+// Journal persistant : la sortie des enfants est recopiée dans bot-veille.log
+// (horodatée) en plus du terminal, pour pouvoir diagnostiquer après coup les
+// incidents nocturnes (ex: échecs en série des idées IA sans trace exploitable).
+const LOG_FILE = path.join(__dirname, "bot-veille.log");
+const LOG_MAX_BYTES = 10 * 1024 * 1024;
+
+function rotateLogIfTooBig() {
+  try {
+    if (fs.existsSync(LOG_FILE) && fs.statSync(LOG_FILE).size > LOG_MAX_BYTES) {
+      fs.renameSync(LOG_FILE, LOG_FILE + ".old");
+    }
+  } catch (error) {
+    console.warn("Rotation de bot-veille.log impossible :", error.message);
+  }
+}
+
+rotateLogIfTooBig();
+const logStream = fs.createWriteStream(LOG_FILE, { flags: "a" });
+
+function teeChildOutput(label, child) {
+  for (const [source, target] of [[child.stdout, process.stdout], [child.stderr, process.stderr]]) {
+    let buffer = "";
+    source.setEncoding("utf8");
+    source.on("data", (chunk) => {
+      target.write(chunk);
+      buffer += chunk;
+      const lines = buffer.split("\n");
+      buffer = lines.pop();
+      for (const line of lines) {
+        logStream.write(new Date().toISOString() + " [" + label + "] " + line + "\n");
+      }
+    });
+  }
+}
+
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
@@ -125,8 +160,9 @@ async function clearOccupiedPorts() {
 function spawnChild(label, script) {
   const child = spawn("node", [script], {
     cwd: __dirname,
-    stdio: "inherit"
+    stdio: ["inherit", "pipe", "pipe"]
   });
+  teeChildOutput(label, child);
 
   child.on("exit", (code, signal) => {
     if (shuttingDown) return;

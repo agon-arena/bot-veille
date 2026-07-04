@@ -7252,6 +7252,28 @@ function certamenPrefilter(subjects) {
     .filter(function(s) { return !s._certamenExcluded; });
 }
 
+// Formes de question proposées au modèle pour éviter le tic "Faut-il … ?" : chaque appel
+// tire 3 formes au hasard et les impose en priorité. La variété entre arènes d'une même
+// session vient de ce tirage (les appels étant indépendants, une simple consigne "varie"
+// ne suffit pas — le modèle retombe sur "Faut-il" quand rien ne l'oriente).
+const CERTAMEN_QUESTION_FORMS = [
+  "\"[acteur] doit-il/doit-elle [décision] ?\" — ex : \"Le Sénat doit-il assouplir les règles sur les pesticides ?\"",
+  "\"[acteur] a-t-il raison de [action] ?\" — ex : \"Ruffin a-t-il raison de vouloir bloquer le lobbying des ex-ministres ?\"",
+  "\"La décision de [acteur] est-elle [qualificatif] ?\" — ex : \"La condamnation d'Epson est-elle un tournant pour les consommateurs ?\"",
+  "\"Qui doit [responsabilité] ?\" — ex : \"Qui doit payer l'adaptation à la canicule ?\"",
+  "\"[mesure/décision] : [option] ou [option] ?\" — ex : \"Sondages en campagne : outil démocratique ou poison du débat ?\"",
+  "\"[sujet] menace-t-il/elle [enjeu] ?\" — ex : \"Les sondages menacent-ils la sincérité du vote ?\"",
+  "\"Peut-on [action débattue] ?\" — ex : \"Peut-on faire campagne sous contrôle judiciaire ?\"",
+  "\"Jusqu'où [action/tolérance] ?\" — ex : \"Jusqu'où restreindre la cigarette pour les jeunes générations ?\"",
+  "\"Pourquoi pas [proposition] ?\" — ex : \"Pourquoi pas un mécénat obligatoire pour les grandes fortunes ?\"",
+  "\"[acteur] va-t-il trop loin avec [mesure] ?\" — ex : \"L'Assurance maladie va-t-elle trop loin avec l'interdiction du tabac ?\""
+];
+
+function pickCertamenQuestionForms(count = 3) {
+  const shuffled = CERTAMEN_QUESTION_FORMS.slice().sort(() => Math.random() - 0.5);
+  return shuffled.slice(0, count);
+}
+
 async function analyzeCertamenSubjectWithAI(subject) {
   if (!openai) {
     return {
@@ -7322,7 +7344,7 @@ Tu peux garder un style oral léger dans les positions ("oui", "non", "faut"), a
 * ponctuation doublée ou absence de point d'interrogation pour suggestedQuestion.
 
 Exemples de bon rendu :
-* suggestedQuestion: "Faut-il durcir les règles face à la récidive ?"
+* suggestedQuestion: "La justice est-elle trop laxiste face à la récidive ?"
 * positionA: "oui, il faut protéger les victimes"
 * positionB: "non, la prison ne règle pas tout"
 Exemples acceptables de petites imperfections rares :
@@ -7335,8 +7357,9 @@ Règles pour suggestedQuestion :
 - ancrée dans le sujet précis ;
 - mentionne si possible l'acteur, le dispositif, le lieu ou la décision au coeur du sujet ;
 - évite les formulations génériques qui pourraient s'appliquer à dix autres articles ;
-- évite de commencer par "Faut-il" par défaut. Utilise "Faut-il" seulement si le sujet porte vraiment sur une interdiction, une obligation, un financement ou une réforme à décider ;
-- varie les formes : "X doit-il...", "Y peut-elle...", "La décision de X est-elle...", "Qui doit...", "X menace-t-il...", "X a-t-il raison de..." ;
+- FORME IMPOSÉE : formule la question selon l'une de ces formes, dans cet ordre de préférence :
+${pickCertamenQuestionForms(3).map((form, i) => `  ${i + 1}. ${form}`).join("\n")}
+- INTERDIT de commencer par "Faut-il" sauf si aucune des formes ci-dessus ne peut convenir ET que le sujet porte sur une interdiction, une obligation ou une réforme à trancher ;
 - pas de question évidente ("faut-il éviter les accidents ?") ;
 - les deux camps doivent sembler défendables.
 
