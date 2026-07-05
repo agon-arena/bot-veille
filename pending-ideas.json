@@ -2598,5 +2598,295 @@
     "runAt": "2026-07-04T06:49:58.571Z",
     "status": "done",
     "attempts": 2
+  },
+  {
+    "debateId": 1347,
+    "question": "Des milliers de manifestants mobilisés en France après l'affaire Lyhanna",
+    "positionA": "",
+    "positionB": "",
+    "id": "1347-1783230966617-qzukp5",
+    "runAt": "2026-07-05T06:06:06.613Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1348,
+    "question": "Adapter les dates présidentielles au climat social ?",
+    "positionA": "Priorité au calendrier stable",
+    "positionB": "Prendre en compte le climat social",
+    "id": "1348-1783230966617-112mb0",
+    "runAt": "2026-07-05T06:06:06.613Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1349,
+    "question": "Débat public sur la souveraineté et la liberté en vue de 2027",
+    "positionA": "",
+    "positionB": "",
+    "id": "1349-1783230966617-ezacnm",
+    "runAt": "2026-07-05T06:06:06.613Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1350,
+    "question": "Doit-on tolérer une commémoration partagée avec une organisation liée à un acteur politique ?",
+    "positionA": "Prioriser l'unité et la participation",
+    "positionB": "Prioriser la neutralité et la séparation",
+    "id": "1350-1783230966617-qjcef1",
+    "runAt": "2026-07-05T06:06:06.613Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1351,
+    "question": "Peut-on juger la crédibilité écologique d’un candidat sur ses décisions passées ?",
+    "positionA": "Valoriser la trajectoire passée",
+    "positionB": "Exiger plus d'ambition actuelle",
+    "id": "1351-1783230966617-etdd6y",
+    "runAt": "2026-07-05T06:06:06.613Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1352,
+    "question": "Présidentielle 2027 : Édouard Philippe face à des réserves d'opinion malgré un ancrage central",
+    "positionA": "",
+    "positionB": "",
+    "id": "1352-1783230966617-b9nyh6",
+    "runAt": "2026-07-05T06:06:06.613Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1353,
+    "question": "Un rapport documente des violences sexuelles contre des Palestiniens en lien avec la colonisation",
+    "positionA": "",
+    "positionB": "",
+    "id": "1353-1783230966617-mz7lrv",
+    "runAt": "2026-07-05T06:06:06.613Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1354,
+    "question": "Benoît Hamon juge difficile une candidature unitaire de la gauche pour 2027",
+    "positionA": "",
+    "positionB": "",
+    "id": "1354-1783230966617-ncyf6u",
+    "runAt": "2026-07-05T06:06:06.613Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1355,
+    "question": "Kyiv visée par l'attaque russe la plus importante depuis le début du conflit",
+    "positionA": "",
+    "positionB": "",
+    "id": "1355-1783230966617-s0qono",
+    "runAt": "2026-07-05T06:06:06.613Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1356,
+    "question": "Doit-on tolérer une commémoration partagée avec une organisation liée à un acteur politique ?",
+    "positionA": "Prioriser l'unité et la participation",
+    "positionB": "Prioriser la neutralité et la séparation",
+    "id": "1356-1783230966617-7gabmn",
+    "runAt": "2026-07-05T06:06:06.613Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1357,
+    "question": "Faut‑il prioriser ordre public ou protection des migrants ?",
+    "positionA": "Prioriser protection et prévention",
+    "positionB": "Prioriser ordre public et départs",
+    "id": "1357-1783230966617-ba9gdf",
+    "runAt": "2026-07-05T06:06:06.613Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1358,
+    "question": "Faut‑il prioriser ordre public ou protection des migrants ?",
+    "positionA": "Prioriser protection et prévention",
+    "positionB": "Prioriser ordre public et départs",
+    "id": "1358-1783230966617-kfs5wl",
+    "runAt": "2026-07-05T06:06:06.613Z",
+    "status": "pending",
+    "attempts": 0
+  },
+  {
+    "debateId": 1359,
+    "question": "Sept départements du sud placés en vigilance orange canicule dimanche",
+    "positionA": "",
+    "positionB": "",
+    "id": "1359-1783230966617-vb0qf7",
+    "runAt": "2026-07-05T06:06:06.613Z",
+    "status": "pending",
+    "attempts": 0
+  },
+  {
+    "debateId": 1360,
+    "question": "À Lampedusa, le pape appelle l'Union européenne à protéger et intégrer les migrants",
+    "positionA": "",
+    "positionB": "",
+    "id": "1360-1783230966617-eh2mhy",
+    "runAt": "2026-07-05T06:06:06.613Z",
+    "status": "pending",
+    "attempts": 0
+  },
+  {
+    "debateId": 1361,
+    "question": "À Lampedusa, le pape appelle l'Union européenne à protéger et intégrer les migrants",
+    "positionA": "",
+    "positionB": "",
+    "id": "1361-1783230966617-4eqnrk",
+    "runAt": "2026-07-05T06:06:06.613Z",
+    "status": "pending",
+    "attempts": 0
+  },
+  {
+    "debateId": 1363,
+    "question": "Bernard Arnault visé par un redressement fiscal de 22,5 millions d’euros",
+    "positionA": "",
+    "positionB": "",
+    "id": "1363-1783230966617-yuj9i1",
+    "runAt": "2026-07-05T06:06:06.613Z",
+    "status": "pending",
+    "attempts": 0
+  },
+  {
+    "debateId": 1364,
+    "question": "Bernard Arnault visé par un redressement fiscal de 22,5 millions d’euros",
+    "positionA": "",
+    "positionB": "",
+    "id": "1364-1783230966617-wr6sgc",
+    "runAt": "2026-07-05T06:06:06.613Z",
+    "status": "pending",
+    "attempts": 0
+  },
+  {
+    "debateId": 1365,
+    "question": "Le RN doit-il miser sur Le Pen ou préparer Bardella comme candidat ?",
+    "positionA": "Parier sur Marine Le Pen",
+    "positionB": "Préparer Jordan Bardella",
+    "id": "1365-1783230966617-d42kw4",
+    "runAt": "2026-07-05T06:06:06.613Z",
+    "status": "pending",
+    "attempts": 0
+  },
+  {
+    "debateId": 1366,
+    "question": "Funérailles nationales d’Ali Khamenei à Téhéran et début des cérémonies",
+    "positionA": "",
+    "positionB": "",
+    "id": "1366-1783230966617-314imx",
+    "runAt": "2026-07-05T06:06:06.613Z",
+    "status": "pending",
+    "attempts": 0
+  },
+  {
+    "debateId": 1367,
+    "question": "Le RN doit-il miser sur Le Pen ou préparer Bardella comme candidat ?",
+    "positionA": "Parier sur Marine Le Pen",
+    "positionB": "Préparer Jordan Bardella",
+    "id": "1367-1783230966617-tse8h0",
+    "runAt": "2026-07-05T06:06:06.613Z",
+    "status": "pending",
+    "attempts": 0
+  },
+  {
+    "debateId": 1368,
+    "question": "Les commémorations doivent-elles restreindre l'usage partisan ?",
+    "positionA": "Priorité à l'unité symbolique",
+    "positionB": "Respect liberté d'expression politique",
+    "id": "1368-1783230966617-th22zw",
+    "runAt": "2026-07-05T06:06:06.613Z",
+    "status": "pending",
+    "attempts": 0
+  },
+  {
+    "debateId": 1369,
+    "question": "Funérailles nationales d’Ali Khamenei à Téhéran et début des cérémonies",
+    "positionA": "",
+    "positionB": "",
+    "id": "1369-1783230966617-x9a636",
+    "runAt": "2026-07-05T06:06:06.613Z",
+    "status": "pending",
+    "attempts": 0
+  },
+  {
+    "debateId": 1370,
+    "question": "Les commémorations doivent-elles restreindre l'usage partisan ?",
+    "positionA": "Priorité à l'unité symbolique",
+    "positionB": "Respect liberté d'expression politique",
+    "id": "1370-1783230966617-gvxfa3",
+    "runAt": "2026-07-05T06:06:06.613Z",
+    "status": "pending",
+    "attempts": 0
+  },
+  {
+    "debateId": 1371,
+    "question": "Le RN doit-il miser sur Le Pen ou préparer Bardella comme candidat ?",
+    "positionA": "Parier sur Marine Le Pen",
+    "positionB": "Préparer Jordan Bardella",
+    "id": "1371-1783230966617-vfeo2i",
+    "runAt": "2026-07-05T06:06:06.613Z",
+    "status": "pending",
+    "attempts": 0
+  },
+  {
+    "debateId": 1372,
+    "question": "Funérailles nationales d’Ali Khamenei à Téhéran et début des cérémonies",
+    "positionA": "",
+    "positionB": "",
+    "id": "1372-1783230966617-zycbuh",
+    "runAt": "2026-07-05T06:06:06.613Z",
+    "status": "pending",
+    "attempts": 0
+  },
+  {
+    "debateId": 1373,
+    "question": "La France se qualifie pour les quarts après sa victoire 1-0 contre le Paraguay",
+    "positionA": "",
+    "positionB": "",
+    "id": "1373-1783230966617-kyshub",
+    "runAt": "2026-07-05T06:06:06.613Z",
+    "status": "pending",
+    "attempts": 0
+  },
+  {
+    "debateId": 1374,
+    "question": "Les commémorations doivent-elles restreindre l'usage partisan ?",
+    "positionA": "Priorité à l'unité symbolique",
+    "positionB": "Respect liberté d'expression politique",
+    "id": "1374-1783230966617-45relp",
+    "runAt": "2026-07-05T06:06:06.613Z",
+    "status": "pending",
+    "attempts": 0
+  },
+  {
+    "debateId": 1375,
+    "question": "La France se qualifie pour les quarts après sa victoire 1-0 contre le Paraguay",
+    "positionA": "",
+    "positionB": "",
+    "id": "1375-1783230966617-joxj2g",
+    "runAt": "2026-07-05T06:06:06.613Z",
+    "status": "pending",
+    "attempts": 0
+  },
+  {
+    "debateId": 1376,
+    "question": "La France se qualifie pour les quarts après sa victoire 1-0 contre le Paraguay",
+    "positionA": "",
+    "positionB": "",
+    "id": "1376-1783230966617-ulsrsc",
+    "runAt": "2026-07-05T06:06:06.613Z",
+    "status": "pending",
+    "attempts": 0
   }
 ]

@@ -1223,6 +1223,11 @@ Les titres de sources peuvent t'aider à repérer un angle, mais tout élément 
 Si un titre évoque un élément que le résumé factuel ne reprend pas, ignore cet élément pour construire la question : reste au niveau de généralité que permet le résumé.
 La question doit pouvoir se déduire de ce qui est écrit dans le résumé factuel, sans information supplémentaire.
 
+RÈGLE D'ALIGNEMENT SUR LE FAIT PRINCIPAL :
+La question Agôn doit naître du fait principal du résumé, pas d'un élément secondaire du contexte.
+Si le résumé contient plusieurs événements, choisis l'angle le plus directement lié au cœur de l'actualité traitée.
+N'utilise jamais un acteur, une déclaration ou une tension périphérique pour fabriquer un débat plus spectaculaire que ce que le fait principal permet.
+
 RÈGLE DE SÉCURITÉ FACTUELLE :
 N'ajoute jamais un fait absent du résumé factuel ou des titres fournis.
 N'enrichis pas par mémoire, déduction ou vraisemblance.
@@ -1443,11 +1448,14 @@ Agôn part de l'actualité pour faire ressortir les enjeux, les choix collectifs
 Le texte doit rester naturel.
 N'affiche jamais de rubriques comme : "Pourquoi ça fait parler", "Tension d'opinion", "Biais", "Le nœud du débat", "Enjeu caché".
 
-STYLE — ÉCRITURE SIMPLE ET FLUIDE :
+STYLE — ÉCRITURE JOURNALISTIQUE :
 * Phrases courtes, sujet-verbe-complément. Pas de propositions à rallonge avec plusieurs virgules.
 * Mots concrets et quotidiens, jamais de vocabulaire abstrait ou académique.
+* Première phrase concrète : un fait, un acteur, un lieu ou une décision — jamais une idée abstraite.
+* Pas de ton administratif ni scolaire : pas de plan apparent, pas d'exposé d'options, pas de synthèse de dissertation.
 * Aucune trace de "langage IA" : pas de tournures génériques, pas de formules d'équilibre creuses, pas de conclusions vagues qui pourraient s'appliquer à n'importe quel sujet.
-* Chaque phrase doit dire quelque chose de précis sur CE sujet précis ; si une phrase reste vraie en changeant le sujet, elle est à supprimer ou réécrire.
+* Chaque phrase doit contenir un fait, un acteur, un choix, un risque ou une conséquence propre à CE sujet précis ; si une phrase reste vraie en changeant le sujet, elle est à supprimer ou réécrire.
+* Ne résume pas tout le dossier : garde uniquement les faits nécessaires pour comprendre la question finale.
 * Écrire comme on parle à quelqu'un, pas comme on rédige une synthèse.
 
 UTILISATION DES DONNÉES :
@@ -1504,13 +1512,14 @@ RÈGLES ABSOLUES :
 * La phrase avant la question doit être affirmative.
 
 PONT FACTUEL ENTRE LE CORPS ET LA QUESTION :
+* L'article et la question doivent rester centrés sur le fait principal du résumé : ne construis jamais l'article autour d'un acteur, d'une déclaration ou d'une tension périphérique.
 * Si debateQuestion fait référence à une mesure, un chiffre, un dispositif, une proposition ou un acteur précis, le corps de l'article doit l'avoir nommé et expliqué avant la question.
 * La question finale ne doit jamais introduire une information, un chiffre, une mesure ou un acteur absent du corps de l'article.
 * Le lecteur doit comprendre, en lisant uniquement les deux paragraphes, pourquoi cette question se pose précisément ainsi.
 
 DEUXIÈME PARAGRAPHE — MÉTHODE :
-1. Présenter les deux options face à face, sans les nommer mécaniquement.
-2. Retour à la ligne obligatoire après l'énoncé des options.
+1. Pars d'un élément concret du dossier : calendrier, décision attendue, acteur fragilisé, coût politique, risque, contradiction interne, rapport de force, conséquence pour un groupe, symbole diplomatique ou politique.
+2. Le lecteur doit comprendre les deux issues possibles à travers ce fil concret, mais ne les présente jamais comme deux cases symétriques ni comme une énumération d'options.
 3. Montrer ce qui rend le choix difficile : enjeu commun, risque identifiable, prix à payer.
 4. Finir sur une phrase courte et précise qui resserre la tension.
 5. Applique à chaque phrase le test générique déjà énoncé dans STYLE (reste-t-elle vraie sur n'importe quel autre débat ?) — il couvre aussi bien les schémas "X oppose Y" que "tandis que X… Y".
@@ -1519,6 +1528,11 @@ INTERDIT :
 * "Le choix est…"
 * "Le dilemme est…"
 * "Option A… À l'inverse, Option B…"
+* "Le parti peut… Ou il peut…" (et toute construction "X peut… Ou il peut…")
+* "On peut… On peut aussi…"
+* "D'un côté… De l'autre…"
+* "Entre X et Y…"
+* "Chacun de ces choix…"
 * Présenter une option avec un avantage suivi d'un "mais" qui l'annule (ex : "vu comme un moyen de X, mais cela peut aussi Y") : construction creuse, remplace-la par un fait ou un risque concret tiré des données.
 
 FORMULATIONS INTERDITES :
@@ -1624,6 +1638,9 @@ Ajouter une question latine courte et verrouiller la structure finale.
 Corrige uniquement les problèmes de structure, de longueur, de question latine, de question Agôn, de positions ou de signature.
 Ne réécris pas tout si ce n'est pas nécessaire.
 Conserve le fond, le ton et les faits du texte fourni.
+Ne rends pas le texte plus scolaire : ne remplace jamais une formulation concrète par une formule générale.
+Ne transforme pas le deuxième paragraphe en dissertation à deux options symétriques ("D'un côté… De l'autre…", "On peut… On peut aussi…", "Chacun de ces choix…").
+Ne déplace pas la question Agôn vers un élément secondaire du sujet.
 
 RÈGLE DE SÉCURITÉ FACTUELLE :
 Ne complète jamais les faits.

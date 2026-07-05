@@ -1352,14 +1352,6 @@ Tu es chargé d'extraire le tag éditorial principal d'une actualité pour une p
 
 Date du jour : ${todayLabel}. L'actualité traitée est récente.
 
-Sujet principal :
-${subject.subject}
-
-Sources :
-${subject.sources.join(", ")}
-
-${sourceSection}
-
 Réponds uniquement en JSON valide avec cette structure :
 {
   "mainKeyword": "le tag principal",
@@ -1387,6 +1379,14 @@ Exemples de tags refusés sur cette plateforme, à ne jamais reproduire :
 - "Machghara" pour des bombardements au Liban → nom de lieu isolé et inconnu du lecteur, incompréhensible seul ; il fallait l'associer au fait ("Frappes à Machghara, Liban") ;
 - "guerre au Moyen-Orient" recopié à l'identique sur plusieurs actualités différentes du même conflit → pas assez précis pour distinguer cet épisode des autres ; il fallait nommer l'épisode exact ("frappe israélienne à Tyr", "frappes USA-Iran sur Natanz") ;
 - "Grève SNCF juin 2024" pour une grève en cours → date inventée, absente des sources ; il fallait "Grève SNCF" ou préciser l'objet du mouvement ("Grève SNCF des contrôleurs").
+
+Sujet principal :
+${subject.subject}
+
+Sources :
+${subject.sources.join(", ")}
+
+${sourceSection}
 `;
 
   try {
@@ -1447,16 +1447,6 @@ Analyse ce sujet de veille et évalue son potentiel de débat public.
 Mode d'arène demandé :
 ${arenaMode === "libre" ? "arène libre" : "arène à positions"}
 
-Sujet principal :
-${subject.subject}
-
-Sources :
-${subject.sources.join(", ")}
-
-Contenus :
-${JSON.stringify(compactContents, null, 2)}
-
-
 Tu dois répondre uniquement en JSON valide avec ces champs :
 {
   "debateScore": nombre entier de 0 à 10,
@@ -1495,12 +1485,21 @@ Pour "excludedLinks" :
 - utilise uniquement les valeurs exactes du champ "link" dans les contenus.
 
 Ne génère pas de tags, pas de question de débat, pas de positions A/B et pas de résumé narratif à cette étape.
+
+Sujet principal :
+${subject.subject}
+
+Sources :
+${subject.sources.join(", ")}
+
+Contenus :
+${JSON.stringify(compactContents, null, 2)}
 `;
 
 
   try {
     const response = await openai.responses.create({
-      model: "gpt-4.1-mini",
+      model: SCORING_AI_MODEL,
       input: prompt,
       temperature: 0.2,
       max_output_tokens: 1500
@@ -1535,41 +1534,28 @@ Ne génère pas de tags, pas de question de débat, pas de positions A/B et pas 
   }
 }
 
-async function analyzeOneScoreWithAI(subject) {
-  if (!openai) {
-    const fb = fallbackAiAnalysis(subject);
-    return { debateScore: fb.debateScore, controversyLevel: fb.controversyLevel };
-  }
+// Modèle des appels de scoring (classification pure) — gpt-4o-mini est ~2,7×
+// moins cher que gpt-4.1-mini en entrée et suffit pour noter un potentiel de débat.
+const SCORING_AI_MODEL = "gpt-4o-mini";
 
-  const compactContents = subject.contents.map(content => ({
+// Chaque résumé est plafonné dans le payload de scoring : au-delà, il n'apporte
+// plus rien à une note de 0 à 10 mais gonfle la facture (outlier observé : un
+// sujet à 32 000 caractères de contenus).
+function compactContentsForScoring(subject) {
+  return (Array.isArray(subject.contents) ? subject.contents : []).map(content => ({
     type: content.type,
     source: content.source,
     orientation: content.orientation,
     title: content.title,
-    summary: content.summary || "",
+    summary: String(content.summary || "").slice(0, 1200),
     link: content.link || ""
   }));
-
-  const prompt = `
-Analyse ce sujet de veille et évalue son potentiel.
-
-Sujet principal :
-${subject.subject}
-
-Sources :
-${subject.sources.join(", ")}
-
-Contenus :
-${JSON.stringify(compactContents, null, 2)}
-
-Tu dois répondre uniquement en JSON valide avec ces champs :
-{
-  "debateScore": nombre entier de 0 à 10,
-  "controversyLevel": "faible" | "moyen" | "fort" | "très fort",
-  "excludedLinks": ["URLs des seuls contenus qui ne parlent pas du tout du sujet"]
 }
 
-Critères pour debateScore — sois exigeant, la note haute se mérite :
+// Règles partagées entre le scoring unitaire et le scoring par lot. Elles ouvrent
+// le prompt (partie statique) pour que le cache automatique d'OpenAI s'applique
+// d'un appel au suivant ; les données variables vont en fin de prompt.
+const SCORING_RULES = `Critères pour debateScore — sois exigeant, la note haute se mérite :
 - 0 à 3 : sujet factuel, pas débattable — fait divers, drame, accident, meurtre, disparition, catastrophe, sujet people, événement purement factuel, guerre racontée seulement par ses faits (attaque, bombardement, bilan, avancée militaire, morts, opération)
 - 4 à 5 : débat faible ou forcé — un désaccord est imaginable mais le titre et les contenus ne le montrent pas
 - 6 à 7 : débat possible — une décision publique, une réforme, une loi ou une controverse est présente, avec deux positions envisageables
@@ -1590,12 +1576,39 @@ Pour "excludedLinks" :
 - si le sujet est une affaire ou un feuilleton d'actualité qui regroupe plusieurs rebondissements (auditions, propositions de loi, réactions politiques, gardes à vue, mesures annoncées, etc.), ne renvoie pas les sources qui couvrent un de ces rebondissements : elles parlent bien du sujet ;
 - en cas de doute, ne renvoie pas la source : l'exclusion est réservée aux hors-sujet manifestes ;
 - si toutes les sources parlent du sujet, renvoie une liste vide ;
-- n'invente jamais d'URL ; utilise uniquement les valeurs exactes du champ "link" dans les contenus.
+- n'invente jamais d'URL ; utilise uniquement les valeurs exactes du champ "link" dans les contenus.`;
+
+async function analyzeOneScoreWithAI(subject) {
+  if (!openai) {
+    const fb = fallbackAiAnalysis(subject);
+    return { debateScore: fb.debateScore, controversyLevel: fb.controversyLevel };
+  }
+
+  const prompt = `
+Analyse ce sujet de veille et évalue son potentiel.
+
+Tu dois répondre uniquement en JSON valide avec ces champs :
+{
+  "debateScore": nombre entier de 0 à 10,
+  "controversyLevel": "faible" | "moyen" | "fort" | "très fort",
+  "excludedLinks": ["URLs des seuls contenus qui ne parlent pas du tout du sujet"]
+}
+
+${SCORING_RULES}
+
+Sujet principal :
+${subject.subject}
+
+Sources :
+${subject.sources.join(", ")}
+
+Contenus :
+${JSON.stringify(compactContentsForScoring(subject), null, 2)}
 `;
 
   try {
     const response = await openai.responses.create({
-      model: "gpt-4.1-mini",
+      model: SCORING_AI_MODEL,
       input: prompt,
       temperature: 0.2,
       max_output_tokens: 2000
@@ -1833,24 +1846,112 @@ apiApp.post("/save-update", (req, res) => {
   }
 });
 
+// Scoring par lot : un appel pour plusieurs sujets au lieu d'un appel par sujet.
+// Le préambule (règles ~1100 tokens) n'est payé qu'une fois par lot au lieu
+// d'une fois par sujet, et comme il ouvre le prompt, le cache OpenAI le facture
+// à moitié prix d'un lot au suivant.
+const SCORING_BATCH_SIZE = 8;
+const SCORING_BATCH_MAX_CONTENT_CHARS = 26000;
+
+async function analyzeScoreBatchWithAI(batch) {
+  const payload = batch.map((subject, index) => ({
+    id: index,
+    subject: subject.subject,
+    sources: subject.sources,
+    contents: compactContentsForScoring(subject)
+  }));
+
+  const prompt = `
+Analyse chaque sujet de veille de la liste et évalue son potentiel.
+
+Tu dois répondre uniquement en JSON valide avec cette structure :
+{
+  "subjects": [
+    { "id": 0, "debateScore": nombre entier de 0 à 10, "controversyLevel": "faible" | "moyen" | "fort" | "très fort", "excludedLinks": ["URLs des seuls contenus qui ne parlent pas du tout du sujet"] }
+  ]
+}
+Rends exactement un objet par sujet fourni, dans le même ordre, en reprenant son "id" exact.
+Évalue chaque sujet indépendamment des autres, avec les critères ci-dessous ; les règles "excludedLinks" s'appliquent aux contenus du sujet concerné uniquement.
+
+${SCORING_RULES}
+
+Sujets à analyser :
+${JSON.stringify(payload, null, 2)}
+`;
+
+  const response = await openai.responses.create({
+    model: SCORING_AI_MODEL,
+    input: prompt,
+    temperature: 0.2,
+    max_output_tokens: 2500
+  });
+  if (response.status === "incomplete") throw new Error("réponse tronquée (max_output_tokens)");
+
+  const parsed = safeJsonParse(response.output_text);
+  const rows = Array.isArray(parsed.subjects) ? parsed.subjects : [];
+  const byId = new Map(rows.map(row => [Number(row.id), row]));
+
+  return batch.map((subject, index) => {
+    const row = byId.get(index);
+    if (!row || !Number.isInteger(row.debateScore)) {
+      throw new Error(`sujet ${index} absent ou invalide dans la réponse du lot`);
+    }
+    return {
+      debateScore: row.debateScore,
+      controversyLevel: row.controversyLevel || "faible",
+      selectedLinks: applyExcludedLinks(subject, row.excludedLinks)
+    };
+  });
+}
+
 async function analyzeScoresWithAI(subjects) {
   console.log(`${subjects.length} sujet(s) envoyés à l'analyse de score IA.`);
   const results = [];
 
-  for (let _si = 0; _si < subjects.length; _si++) {
-    const subject = subjects[_si];
-    setProgress(5, "Analyse IA", `${_si + 1} / ${subjects.length} sujets`);
-    console.log(`Score IA : ${subject.subject}`);
-    const score = await analyzeOneScoreWithAI(subject);
-    results.push({
-      ...subject,
-      debateScore: score.debateScore,
-      controversyLevel: score.controversyLevel,
-      selectedLinks: score.selectedLinks,
-      scoreAnalyzed: true,
-      ai: null,
-      aiAnalyzed: false
+  // Lots bornés en nombre ET en volume : un sujet aux contenus énormes ne doit
+  // pas faire déborder le prompt du lot.
+  const batches = [];
+  let current = [];
+  let currentChars = 0;
+  for (const subject of subjects) {
+    const chars = JSON.stringify(compactContentsForScoring(subject)).length;
+    if (current.length && (current.length >= SCORING_BATCH_SIZE || currentChars + chars > SCORING_BATCH_MAX_CONTENT_CHARS)) {
+      batches.push(current);
+      current = [];
+      currentChars = 0;
+    }
+    current.push(subject);
+    currentChars += chars;
+  }
+  if (current.length) batches.push(current);
+
+  let done = 0;
+  for (const batch of batches) {
+    setProgress(5, "Analyse IA", `${done} / ${subjects.length} sujets`);
+    console.log(`Score IA (lot de ${batch.length}) : ${batch.map(s => s.subject).join(" | ")}`);
+    let scores;
+    try {
+      scores = await analyzeScoreBatchWithAI(batch);
+    } catch (error) {
+      // Lot illisible ou incomplet : repli sujet par sujet pour ne rien perdre.
+      console.warn(`Score IA : lot en échec (${error.message}), repli sujet par sujet.`);
+      scores = [];
+      for (const subject of batch) {
+        scores.push(await analyzeOneScoreWithAI(subject));
+      }
+    }
+    batch.forEach((subject, i) => {
+      results.push({
+        ...subject,
+        debateScore: scores[i].debateScore,
+        controversyLevel: scores[i].controversyLevel,
+        selectedLinks: scores[i].selectedLinks,
+        scoreAnalyzed: true,
+        ai: null,
+        aiAnalyzed: false
+      });
     });
+    done += batch.length;
   }
 
   return results.sort((a, b) => {
