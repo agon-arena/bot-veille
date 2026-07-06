@@ -437,17 +437,17 @@
   {
     "nom": "Le Point",
     "orientation": "centre-droit",
-    "rss": "https://www.lepoint.fr/rss.xml"
+    "rss": "https://www.lepoint.fr/sitemap-news.xml"
   },
   {
     "nom": "L'Express",
     "orientation": "centre / centre-droit",
-    "rss": "https://www.lexpress.fr/arc/outboundfeeds/rss/"
+    "rss": "https://www.lexpress.fr/arc/outboundfeeds/rss/alaune.xml"
   },
   {
     "nom": "Les Echos",
     "orientation": "centre-droit / économie",
-    "rss": "https://www.lesechos.fr/rss/rss_une.xml"
+    "rss": "https://sitemap.lesechos.fr/sitemap_news.xml"
   },
   {
     "nom": "Telos",
@@ -490,11 +490,6 @@
     "rss": "https://rss.atlantico.fr/"
   },
   {
-    "nom": "Le Point — 24h infos",
-    "orientation": "droite",
-    "rss": "https://www.lepoint.fr/24h-infos/rss.xml"
-  },
-  {
     "nom": "CNews — France",
     "orientation": "droite",
     "rss": "https://www.cnews.fr/rss/categorie/france"
@@ -515,24 +510,9 @@
     "rss": "https://contrepoints.org/thematique/international/afrique/feed/"
   },
   {
-    "nom": "Capital — Économie / marchés",
+    "nom": "Capital",
     "orientation": "droite",
-    "rss": "http://rss.capital.fr/rss/economies-et-marches.xml"
-  },
-  {
-    "nom": "Les Échos — Économie France",
-    "orientation": "droite",
-    "rss": "https://services.lesechos.fr/rss/les-echos-economie-france.xml"
-  },
-  {
-    "nom": "Les Échos — Politique société",
-    "orientation": "droite",
-    "rss": "https://services.lesechos.fr/rss/les-echos-politique-societe.xml"
-  },
-  {
-    "nom": "Les Échos — Idées débats",
-    "orientation": "droite",
-    "rss": "https://services.lesechos.fr/rss/les-echos-idees-debats.xml"
+    "rss": "https://www.capital.fr/sitemap/news.xml"
   },
   {
     "nom": "Les Échos — Tech médias",

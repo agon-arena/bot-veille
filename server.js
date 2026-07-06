@@ -40,6 +40,20 @@ let autoCollectTimers = [];
 // ARTICLE_AI_MODEL=gpt-4o dans .env puis relancer start.js.
 const ARTICLE_AI_MODEL = (process.env.ARTICLE_AI_MODEL || "gpt-5-mini").trim();
 
+// Qui exécute les pipelines automatiques (collecte programmée, tick GitHub Actions,
+// auto-publish, reprise des idées en attente) : l'instance locale uniquement. L'instance
+// Render est une sauvegarde passive depuis le 06/07/2026 — quand les deux tournaient,
+// chaque journée était collectée, générée et publiée deux fois (double coût OpenAI).
+// Render définit automatiquement la variable RENDER ; BOT_AUTO_PIPELINES=on|off force
+// le comportement quel que soit l'environnement. Les routes manuelles (/refresh,
+// /run-auto-publish, admin) restent utilisables sur les deux instances.
+const AUTO_PIPELINES_ENABLED = (() => {
+  const forced = String(process.env.BOT_AUTO_PIPELINES || "").trim().toLowerCase();
+  if (forced === "on") return true;
+  if (forced === "off") return false;
+  return !process.env.RENDER;
+})();
+
 // Les modèles gpt-5 ignorent temperature (l'API la refuse) et raisonnent avant de
 // répondre : effort minimal, sinon les tokens de raisonnement — facturés en sortie —
 // annulent une partie du gain de prix sur une tâche de rédaction guidée.
@@ -111,7 +125,17 @@ async function waitForCertamenIdle(maxWaitMs = 25 * 60 * 1000, pollIntervalMs = 
   return false;
 }
 
+// Verrou anti-runs concurrents : le 05/07/2026, un double déclenchement du planificateur
+// a lancé deux publications en parallèle, chacune aveugle aux arènes publiées par l'autre
+// (garde intra-session par run) → doublon 1377/1378 sur Agôn.
+let _autoPublishCertamenRunning = false;
+
 async function runAutoPublishCertamenPipeline() {
+  if (_autoPublishCertamenRunning) {
+    console.warn("[auto-publish-certamen] Publication déjà en cours, second déclenchement ignoré.");
+    return;
+  }
+  _autoPublishCertamenRunning = true;
   console.log("[auto-publish-certamen] Démarrage de la publication des sujets ready...");
   try {
     const result = await publishReadyCertamenPayloadsToAgon({});
@@ -128,6 +152,8 @@ async function runAutoPublishCertamenPipeline() {
     );
   } catch (err) {
     console.error("[auto-publish-certamen] Erreur :", err.message);
+  } finally {
+    _autoPublishCertamenRunning = false;
   }
 }
 
@@ -160,7 +186,10 @@ function scheduleOneAutoCollect(timeStr) {
   ));
   // Boucle (pas un simple +24h) car la date UTC et la date Réunion peuvent
   // différer de plus d'un jour de décalage pour les heures 00h-03h59 Réunion.
-  while (next <= now) next = new Date(next.getTime() + 24 * 60 * 60 * 1000);
+  // Marge de 60s : setTimeout peut sonner quelques ms avant l'heure cible ; sans marge,
+  // la reprogrammation retombe sur la même occurrence → double collecte (cf. incident
+  // Certamen du 05/07/2026).
+  while (next.getTime() - now.getTime() < 60 * 1000) next = new Date(next.getTime() + 24 * 60 * 60 * 1000);
   const delay = next - now;
   const timer = setTimeout(async () => {
     autoCollectTimers = autoCollectTimers.filter(t => t !== timer);
@@ -196,6 +225,7 @@ function scheduleOneAutoCollect(timeStr) {
 function scheduleAutoCollect(config) {
   autoCollectTimers.forEach(t => clearTimeout(t));
   autoCollectTimers = [];
+  if (!AUTO_PIPELINES_ENABLED) return;
   if (!config.enabled || !Array.isArray(config.times) || !config.times.length) return;
   config.times.forEach(t => scheduleOneAutoCollect(t));
 }
@@ -878,24 +908,46 @@ function buildFullArticleFallback(payload, story) {
 }
 
 // ── Récupération du texte complet d'un article ──────────────────────────────
-async function fetchArticleFullText(url) {
+const ARTICLE_FETCH_BOT_HEADERS = {
+  "User-Agent": "Mozilla/5.0 (compatible; BotVeille/1.0; +https://agon.app)"
+};
+const ARTICLE_FETCH_BROWSER_HEADERS = {
+  "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Safari/605.1.15",
+  "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+  "Accept-Language": "fr-FR,fr;q=0.9,en;q=0.8"
+};
+
+async function fetchArticleHtml(url, headers) {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 12000);
   try {
     const res = await fetch(url, {
       signal: controller.signal,
-      headers: { "User-Agent": "Mozilla/5.0 (compatible; BotVeille/1.0; +https://agon.app)" }
+      redirect: "follow",
+      headers
     });
     if (!res.ok) return null;
-    const html = await res.text();
+    return await res.text();
+  } catch {
+    return null;
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+async function fetchArticleFullText(url) {
+  // Essai en bot déclaré puis, en cas d'échec, en headers navigateur — miroir
+  // du fallback RSS : certains sites refusent l'un mais acceptent l'autre.
+  let html = await fetchArticleHtml(url, ARTICLE_FETCH_BOT_HEADERS);
+  if (!html) html = await fetchArticleHtml(url, ARTICLE_FETCH_BROWSER_HEADERS);
+  if (!html) return null;
+  try {
     const article = await extractFromHtml(html, url);
     if (!article || !article.content) return null;
     const text = article.content.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
     return { text, charCount: text.length };
   } catch {
     return null;
-  } finally {
-    clearTimeout(timeout);
   }
 }
 
@@ -4997,7 +5049,7 @@ app.post("/api/auto-collect-certamen", (req, res) => {
   const config = { enabled, times };
   try {
     saveAutoCollectCertamenConfig(config);
-    scheduleAutoCollectCertamen(config, onCertamenAutoCollectFinished);
+    if (AUTO_PIPELINES_ENABLED) scheduleAutoCollectCertamen(config, onCertamenAutoCollectFinished);
     res.json({ ok: true });
   } catch (err) {
     res.status(500).json({ ok: false, error: err.message });
@@ -5032,6 +5084,9 @@ app.post("/api/auto-collect", (req, res) => {
 // Appelé périodiquement (ex: toutes les 15 min via GitHub Actions) pour déclencher
 // la collecte si l'heure configurée dans l'admin (heure de la Réunion) est atteinte.
 app.post("/api/auto-collect-tick", requireMixteAuth, async (req, res) => {
+  if (!AUTO_PIPELINES_ENABLED) {
+    return res.json({ triggered: false, reason: "auto pipelines disabled on this instance" });
+  }
   const config = loadAutoCollectConfig();
   if (!config.enabled || !Array.isArray(config.times) || !config.times.length) {
     return res.json({ triggered: false, reason: "disabled" });
@@ -5422,14 +5477,14 @@ Réponds en JSON : { "ideas": [ { "qualite": "bonne" ou "moyenne" ou "mauvaise",
 
   let ideas;
   try {
-    // gpt-5-mini : temperature refusée par l'API, max_tokens remplacé par
-    // max_completion_tokens (qui inclut les tokens de raisonnement, d'où la marge),
-    // raisonnement minimal comme pour les articles (cf. buildArticleModelRequest).
+    // gpt-4o-mini : la sortie coûte 0,60 $/M contre 2 $/M en gpt-5-mini, et ces
+    // faux commentaires sont le 2e poste de dépense (~2 800 tokens de sortie par
+    // débat publié). Pas de reasoning_effort ici : paramètre propre aux gpt-5.
     const response = await openai.chat.completions.create({
-      model: "gpt-5-mini",
+      model: "gpt-4o-mini",
       messages: [{ role: "user", content: prompt }],
       response_format: { type: "json_object" },
-      reasoning_effort: "minimal",
+      temperature: 1,
       max_completion_tokens: 3000
     });
     const parsed = JSON.parse(response.choices[0].message.content);
@@ -5887,10 +5942,14 @@ storageSync.init();
 storageSync.downloadAll().then(() => {
   const httpServer = app.listen(PORT, () => {
     console.log(`Serveur lancé sur le port ${PORT}`);
-    scheduleAutoCollect(loadAutoCollectConfig());
-    scheduleAutoCollectCertamen(loadAutoCollectCertamenConfig(), onCertamenAutoCollectFinished);
-    resumePendingIdeasOnStartup();
-    resumeCertamenPendingIdeasOnStartup();
+    if (AUTO_PIPELINES_ENABLED) {
+      scheduleAutoCollect(loadAutoCollectConfig());
+      scheduleAutoCollectCertamen(loadAutoCollectCertamenConfig(), onCertamenAutoCollectFinished);
+      resumePendingIdeasOnStartup();
+      resumeCertamenPendingIdeasOnStartup();
+    } else {
+      console.log("[auto-pipelines] Instance passive (RENDER détecté ou BOT_AUTO_PIPELINES=off) : collecte auto, tick GitHub Actions, auto-publish et reprise d'idées désactivés. Seule l'instance locale publie.");
+    }
     storageSync.startPeriodicSync();
   });
 

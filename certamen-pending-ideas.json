@@ -528,5 +528,55 @@
     "runAt": "2026-07-03T08:26:41.800Z",
     "status": "done",
     "attempts": 0
+  },
+  {
+    "debateId": 1378,
+    "question": "La loi intégrale contre les violences sexuelles est-elle vraiment utile ?",
+    "positionA": "oui, faut une loi forte et complète",
+    "positionB": "non, ça peut être excessif ou inefficace",
+    "id": "1378-1783238994828-ym2nxc",
+    "runAt": "2026-07-05T08:19:54.827Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1379,
+    "question": "Jusqu'où tolérer les manifestations anti-migrants en Afrique du Sud ?",
+    "positionA": "non, faut respecter les droits des migrants",
+    "positionB": "oui, faut protéger les Sud-Africains d'abord",
+    "id": "1379-1783238994829-4bm3tz",
+    "runAt": "2026-07-05T09:25:14.602Z",
+    "status": "done",
+    "attempts": 1
+  },
+  {
+    "debateId": 1380,
+    "question": "Peut-on réinventer les festivals pour faire face au changement climatique ?",
+    "positionA": "non, vaut mieux réduire ou annuler",
+    "positionB": "oui, faut changer les formats et lieux",
+    "id": "1380-1783238994829-v1y5z8",
+    "runAt": "2026-07-05T08:19:54.827Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1381,
+    "question": "Qui doit garantir l'indépendance des médias face aux pressions politiques ?",
+    "positionA": "les médias doivent être critiques envers tous",
+    "positionB": "les médias favorisent trop certains partis",
+    "id": "1381-1783238994829-vy35ji",
+    "runAt": "2026-07-05T08:19:54.827Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1377,
+    "question": "le gouvernement doit-il adopter une loi intégrale contre les violences sexuelles cet automne ?",
+    "positionA": "oui, faut une loi forte et rapide",
+    "positionB": "non, faut éviter un texte au rabais",
+    "id": "1377-1783239022279-qg33d5",
+    "runAt": "2026-07-05T08:20:22.278Z",
+    "status": "done",
+    "attempts": 0
   }
 ]

@@ -349,6 +349,44 @@ function looksLikeXmlFeed(text) {
   return value.startsWith("<?xml") || value.startsWith("<rss") || value.startsWith("<feed");
 }
 
+// Certains médias (Le Point, Les Échos, Capital…) n'exposent plus de flux RSS
+// mais publient un sitemap Google News (<urlset> + balises <news:…>) avec titre
+// et date de publication : on le convertit au même format que rss-parser.
+function looksLikeNewsSitemap(text) {
+  const value = String(text || "");
+  return value.includes("<urlset") && value.includes("<news:");
+}
+
+function decodeXmlEntities(text) {
+  return String(text || "")
+    .replace(/&#(\d+);/g, (_, code) => String.fromCodePoint(Number(code)))
+    .replace(/&#x([0-9a-fA-F]+);/g, (_, code) => String.fromCodePoint(parseInt(code, 16)))
+    .replace(/&quot;/g, '"')
+    .replace(/&apos;/g, "'")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&amp;/g, "&");
+}
+
+function parseNewsSitemap(xmlText) {
+  const items = [];
+  for (const block of String(xmlText || "").match(/<url>[\s\S]*?<\/url>/g) || []) {
+    const loc = block.match(/<loc>\s*([\s\S]*?)\s*<\/loc>/);
+    const title = block.match(/<news:title>\s*(?:<!\[CDATA\[)?([\s\S]*?)(?:\]\]>)?\s*<\/news:title>/);
+    const pubDate = block.match(/<news:publication_date>\s*([\s\S]*?)\s*<\/news:publication_date>/)
+      || block.match(/<lastmod>\s*([\s\S]*?)\s*<\/lastmod>/);
+    if (!loc || !title) continue;
+    const item = {
+      title: decodeXmlEntities(title[1].trim()),
+      link: decodeXmlEntities(loc[1].trim()),
+      contentSnippet: ""
+    };
+    if (pubDate) item.isoDate = pubDate[1].trim();
+    items.push(item);
+  }
+  return { items };
+}
+
 async function fetchFeedWithFallback(url, label, timeoutMs = FEED_TIMEOUT_MS) {
   try {
     return await parseFeedWithTimeout(url, label, timeoutMs);
@@ -375,6 +413,10 @@ async function fetchFeedWithFallback(url, label, timeoutMs = FEED_TIMEOUT_MS) {
       headers: BROWSER_RSS_FETCH_HEADERS,
       redirect: "follow"
     }, label, timeoutMs);
+
+    if (looksLikeNewsSitemap(feedText)) {
+      return parseNewsSitemap(feedText);
+    }
 
     if (!looksLikeXmlFeed(feedText)) {
       throw createFeedError(label, "flux non XML exploitable (probable HTML/anti-bot)", {
@@ -1384,7 +1426,7 @@ Sujet principal :
 ${subject.subject}
 
 Sources :
-${subject.sources.join(", ")}
+${subject.sources.slice(0, SCORING_MAX_SOURCE_NAMES).join(", ")}
 
 ${sourceSection}
 `;
@@ -1431,12 +1473,12 @@ async function analyzeOneSubjectWithAI(subject) {
     };
   }
 
-  const compactContents = (Array.isArray(subject.contents) ? subject.contents : []).map(content => ({
+  const compactContents = (Array.isArray(subject.contents) ? subject.contents : []).slice(0, SCORING_MAX_CONTENTS).map(content => ({
     type: content.type,
     source: content.source,
     orientation: content.orientation,
     title: content.title,
-    summary: content.summary || "",
+    summary: String(content.summary || "").slice(0, 1200),
     link: content.link || ""
   }));
 
@@ -1490,7 +1532,7 @@ Sujet principal :
 ${subject.subject}
 
 Sources :
-${subject.sources.join(", ")}
+${subject.sources.slice(0, SCORING_MAX_SOURCE_NAMES).join(", ")}
 
 Contenus :
 ${JSON.stringify(compactContents, null, 2)}
@@ -1538,11 +1580,19 @@ ${JSON.stringify(compactContents, null, 2)}
 // moins cher que gpt-4.1-mini en entrée et suffit pour noter un potentiel de débat.
 const SCORING_AI_MODEL = "gpt-4o-mini";
 
+// Plafonds des prompts de scoring/vérification : la fusion inter-sessions fait grossir
+// les sujets feuilletons (jusqu'à 327 contenus observés le 06/07/2026), et chaque appel
+// embarquait la totalité. 30 contenus suffisent largement à noter un potentiel de débat.
+// Les contenus au-delà du plafond ne sont pas montrés au modèle : ils sont gardés par
+// défaut, applyExcludedLinks n'exclut que les URLs explicitement listées.
+const SCORING_MAX_CONTENTS = 30;
+const SCORING_MAX_SOURCE_NAMES = 40;
+
 // Chaque résumé est plafonné dans le payload de scoring : au-delà, il n'apporte
 // plus rien à une note de 0 à 10 mais gonfle la facture (outlier observé : un
 // sujet à 32 000 caractères de contenus).
 function compactContentsForScoring(subject) {
-  return (Array.isArray(subject.contents) ? subject.contents : []).map(content => ({
+  return (Array.isArray(subject.contents) ? subject.contents : []).slice(0, SCORING_MAX_CONTENTS).map(content => ({
     type: content.type,
     source: content.source,
     orientation: content.orientation,
@@ -1600,7 +1650,7 @@ Sujet principal :
 ${subject.subject}
 
 Sources :
-${subject.sources.join(", ")}
+${subject.sources.slice(0, SCORING_MAX_SOURCE_NAMES).join(", ")}
 
 Contenus :
 ${JSON.stringify(compactContentsForScoring(subject), null, 2)}
@@ -1631,10 +1681,10 @@ ${JSON.stringify(compactContentsForScoring(subject), null, 2)}
 async function verifySourcesWithAI(subject) {
   if (!openai) return applyExcludedLinks(subject, []);
 
-  const compactContents = subject.contents.map(content => ({
+  const compactContents = subject.contents.slice(0, SCORING_MAX_CONTENTS).map(content => ({
     source: content.source,
     title: content.title,
-    summary: content.summary || "",
+    summary: String(content.summary || "").slice(0, 1200),
     link: content.link || ""
   }));
 

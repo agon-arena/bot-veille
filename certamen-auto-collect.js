@@ -37,7 +37,11 @@ function scheduleOneAutoCollectCertamen(timeStr, onAfterRefresh) {
     now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(),
     h - REUNION_UTC_OFFSET_HOURS, m, 0, 0
   ));
-  while (next <= now) next = new Date(next.getTime() + 24 * 60 * 60 * 1000);
+  // Marge de 60s : setTimeout peut sonner quelques ms avant l'heure cible. Sans marge,
+  // la reprogrammation retombe sur la même occurrence et déclenche une seconde collecte
+  // immédiate (double-run du 05/07/2026 : deux auto-publish simultanés → arènes 1377/1378
+  // en doublon sur Agôn).
+  while (next.getTime() - now.getTime() < 60 * 1000) next = new Date(next.getTime() + 24 * 60 * 60 * 1000);
   const delay = next - now;
 
   const timer = setTimeout(async () => {

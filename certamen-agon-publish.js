@@ -423,7 +423,9 @@ async function publishOnePayloadAndRecord(payload, ideasEntries) {
     return { ok: true, debateId };
   } catch (err) {
     console.error(`[certamen-publish] Erreur pour "${String(payload.subject || "").slice(0, 60)}" :`, err.message);
-    return { ok: false, error: err.message };
+    // Un 409 signifie qu'Agôn vient de recevoir ce même sujet (autre POST concurrent) :
+    // le sujet existe donc bien côté Agôn et doit compter dans la garde intra-session.
+    return { ok: false, error: err.message, receivedByAgon: /répondu 409/.test(err.message) };
   }
 }
 
@@ -495,7 +497,7 @@ async function publishPayloadsBatch(payloads) {
     }
 
     const outcome = await publishOnePayloadAndRecord(payload, ideasEntries);
-    if (outcome.ok && !outcome.skipped) {
+    if ((outcome.ok && !outcome.skipped) || outcome.receivedByAgon) {
       publishedInBatch.push({ subject: payload.subject, question: payload.question });
     }
     outcomes.push(outcome);
