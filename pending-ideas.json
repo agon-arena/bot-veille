@@ -2365,7 +2365,7 @@
     "positionA": "",
     "positionB": "",
     "id": "1261-1783097844519-6sevqh",
-    "runAt": "2026-07-04T07:07:57.000Z",
+    "runAt": "2026-07-03T17:07:24.515Z",
     "status": "done",
     "attempts": 0
   },
@@ -2375,7 +2375,7 @@
     "positionA": "intégration et politiques sociales",
     "positionB": "expulsions strictes",
     "id": "1262-1783097844519-rhv6ba",
-    "runAt": "2026-07-04T07:07:57.000Z",
+    "runAt": "2026-07-03T17:07:24.515Z",
     "status": "done",
     "attempts": 0
   },
@@ -2385,7 +2385,7 @@
     "positionA": "",
     "positionB": "",
     "id": "1263-1783097844519-75yc7j",
-    "runAt": "2026-07-04T07:07:57.000Z",
+    "runAt": "2026-07-03T17:07:24.515Z",
     "status": "done",
     "attempts": 0
   },
@@ -2395,7 +2395,7 @@
     "positionA": "Reprise en main étatique",
     "positionB": "Maintien de réponses locales",
     "id": "1264-1783097844519-tu4fwl",
-    "runAt": "2026-07-04T07:07:57.000Z",
+    "runAt": "2026-07-03T17:07:24.515Z",
     "status": "done",
     "attempts": 0
   },
@@ -2405,7 +2405,7 @@
     "positionA": "Prioriser stabilité et recours au vote de raison",
     "positionB": "Prioriser expression du mécontentement et vote d'affirm",
     "id": "1265-1783097844519-yyq8cc",
-    "runAt": "2026-07-04T07:07:57.000Z",
+    "runAt": "2026-07-03T17:07:24.515Z",
     "status": "done",
     "attempts": 0
   },
@@ -2415,9 +2415,9 @@
     "positionA": "intégration et politiques sociales",
     "positionB": "expulsions strictes",
     "id": "1266-1783097844519-ixoikc",
-    "runAt": "2026-07-04T03:47:27.635Z",
-    "status": "failed",
-    "attempts": 3
+    "runAt": "2026-07-03T17:07:24.515Z",
+    "status": "done",
+    "attempts": 0
   },
   {
     "debateId": 1267,
@@ -2425,7 +2425,7 @@
     "positionA": "",
     "positionB": "",
     "id": "1267-1783097844519-2ek2er",
-    "runAt": "2026-07-04T07:07:57.000Z",
+    "runAt": "2026-07-03T17:07:24.515Z",
     "status": "done",
     "attempts": 0
   },
@@ -2435,7 +2435,7 @@
     "positionA": "Célébration centralisée à DC",
     "positionB": "Célébrations décentralisées par États",
     "id": "1268-1783097844519-33tqre",
-    "runAt": "2026-07-04T07:07:57.000Z",
+    "runAt": "2026-07-03T17:07:24.515Z",
     "status": "done",
     "attempts": 0
   },
@@ -2445,7 +2445,7 @@
     "positionA": "",
     "positionB": "",
     "id": "1269-1783097844519-8dqji6",
-    "runAt": "2026-07-04T07:07:57.000Z",
+    "runAt": "2026-07-03T17:07:24.515Z",
     "status": "done",
     "attempts": 0
   },
@@ -2455,9 +2455,9 @@
     "positionA": "",
     "positionB": "",
     "id": "1270-1783097844519-kz0dd4",
-    "runAt": "2026-07-04T04:50:01.057Z",
-    "status": "failed",
-    "attempts": 3
+    "runAt": "2026-07-03T17:07:24.515Z",
+    "status": "done",
+    "attempts": 0
   },
   {
     "debateId": 1271,
@@ -2465,9 +2465,9 @@
     "positionA": "",
     "positionB": "",
     "id": "1271-1783097844519-9w4vye",
-    "runAt": "2026-07-04T05:07:04.059Z",
-    "status": "failed",
-    "attempts": 3
+    "runAt": "2026-07-03T17:07:24.515Z",
+    "status": "done",
+    "attempts": 0
   },
   {
     "debateId": 1272,
@@ -2475,9 +2475,9 @@
     "positionA": "",
     "positionB": "",
     "id": "1272-1783097844519-z6vxod",
-    "runAt": "2026-07-04T05:24:40.008Z",
+    "runAt": "2026-07-03T17:07:24.515Z",
     "status": "done",
-    "attempts": 2
+    "attempts": 0
   },
   {
     "debateId": 1273,
@@ -2485,9 +2485,9 @@
     "positionA": "",
     "positionB": "",
     "id": "1273-1783097844519-xz9yk4",
-    "runAt": "2026-07-04T05:32:29.034Z",
+    "runAt": "2026-07-03T17:07:24.515Z",
     "status": "done",
-    "attempts": 2
+    "attempts": 0
   },
   {
     "debateId": 1274,
@@ -2495,9 +2495,9 @@
     "positionA": "",
     "positionB": "",
     "id": "1274-1783097844519-9d08gv",
-    "runAt": "2026-07-04T05:32:49.777Z",
+    "runAt": "2026-07-03T17:07:24.515Z",
     "status": "done",
-    "attempts": 2
+    "attempts": 0
   },
   {
     "debateId": 1275,
@@ -2505,9 +2505,9 @@
     "positionA": "",
     "positionB": "",
     "id": "1275-1783097844519-by34g8",
-    "runAt": "2026-07-04T05:49:06.783Z",
+    "runAt": "2026-07-03T17:07:24.515Z",
     "status": "done",
-    "attempts": 2
+    "attempts": 0
   },
   {
     "debateId": 1276,
@@ -2515,9 +2515,9 @@
     "positionA": "Reconnaître systématiquement la filiation",
     "positionB": "Prioriser la cohérence avec l'interdiction nationale",
     "id": "1276-1783097844519-rfgprr",
-    "runAt": "2026-07-04T06:21:37.536Z",
+    "runAt": "2026-07-03T17:07:24.515Z",
     "status": "done",
-    "attempts": 2
+    "attempts": 0
   },
   {
     "debateId": 1277,
@@ -2525,9 +2525,9 @@
     "positionA": "",
     "positionB": "",
     "id": "1277-1783097844519-cbjqwb",
-    "runAt": "2026-07-04T06:33:26.506Z",
+    "runAt": "2026-07-03T17:07:24.515Z",
     "status": "done",
-    "attempts": 2
+    "attempts": 0
   },
   {
     "debateId": 1278,
@@ -2535,9 +2535,9 @@
     "positionA": "",
     "positionB": "",
     "id": "1278-1783097844519-q74e83",
-    "runAt": "2026-07-04T06:33:46.137Z",
+    "runAt": "2026-07-03T17:07:24.515Z",
     "status": "done",
-    "attempts": 2
+    "attempts": 0
   },
   {
     "debateId": 1279,
@@ -2545,9 +2545,9 @@
     "positionA": "Reconnaître systématiquement la filiation",
     "positionB": "Prioriser la cohérence avec l'interdiction nationale",
     "id": "1279-1783097844519-6w5gpb",
-    "runAt": "2026-07-04T06:34:11.470Z",
+    "runAt": "2026-07-03T17:07:24.515Z",
     "status": "done",
-    "attempts": 2
+    "attempts": 0
   },
   {
     "debateId": 1280,
@@ -2555,9 +2555,9 @@
     "positionA": "",
     "positionB": "",
     "id": "1280-1783097844519-6qmse4",
-    "runAt": "2026-07-04T06:48:57.037Z",
+    "runAt": "2026-07-03T17:07:24.515Z",
     "status": "done",
-    "attempts": 2
+    "attempts": 0
   },
   {
     "debateId": 1281,
@@ -2565,9 +2565,9 @@
     "positionA": "Reconnaître systématiquement la filiation",
     "positionB": "Prioriser la cohérence avec l'interdiction nationale",
     "id": "1281-1783097844519-vwuqwq",
-    "runAt": "2026-07-04T06:49:09.196Z",
+    "runAt": "2026-07-03T17:07:24.515Z",
     "status": "done",
-    "attempts": 2
+    "attempts": 0
   },
   {
     "debateId": 1282,
@@ -2575,9 +2575,9 @@
     "positionA": "",
     "positionB": "",
     "id": "1282-1783097844519-bpzr5v",
-    "runAt": "2026-07-04T06:49:27.741Z",
+    "runAt": "2026-07-03T17:07:24.515Z",
     "status": "done",
-    "attempts": 2
+    "attempts": 0
   },
   {
     "debateId": 1283,
@@ -2585,9 +2585,9 @@
     "positionA": "Renforcer obligations nationales",
     "positionB": "Favoriser réponses locales et flexibles",
     "id": "1283-1783097844519-nr668x",
-    "runAt": "2026-07-04T06:49:41.453Z",
+    "runAt": "2026-07-03T17:07:24.515Z",
     "status": "done",
-    "attempts": 2
+    "attempts": 0
   },
   {
     "debateId": 1284,
@@ -2595,297 +2595,997 @@
     "positionA": "Renforcer obligations nationales",
     "positionB": "Favoriser réponses locales et flexibles",
     "id": "1284-1783097844519-c742ed",
-    "runAt": "2026-07-04T06:49:58.571Z",
+    "runAt": "2026-07-03T17:07:24.515Z",
     "status": "done",
-    "attempts": 2
+    "attempts": 0
   },
   {
-    "debateId": 1347,
-    "question": "Des milliers de manifestants mobilisés en France après l'affaire Lyhanna",
+    "debateId": 1294,
+    "question": "Plan Antilles-Guyane : un dispositif national pour lutter contre le narcotrafic",
     "positionA": "",
     "positionB": "",
-    "id": "1347-1783230966617-qzukp5",
-    "runAt": "2026-07-05T06:06:06.613Z",
+    "id": "1294-1783174833764-vyvcia",
+    "runAt": "2026-07-04T14:30:33.762Z",
     "status": "done",
     "attempts": 0
   },
   {
-    "debateId": 1348,
-    "question": "Adapter les dates présidentielles au climat social ?",
-    "positionA": "Priorité au calendrier stable",
-    "positionB": "Prendre en compte le climat social",
-    "id": "1348-1783230966617-112mb0",
-    "runAt": "2026-07-05T06:06:06.613Z",
-    "status": "done",
-    "attempts": 0
-  },
-  {
-    "debateId": 1349,
-    "question": "Débat public sur la souveraineté et la liberté en vue de 2027",
+    "debateId": 1295,
+    "question": "Un fumeur sur cinq jette encore son mégot par la fenêtre de sa voiture, selon un sondage",
     "positionA": "",
     "positionB": "",
-    "id": "1349-1783230966617-ezacnm",
-    "runAt": "2026-07-05T06:06:06.613Z",
+    "id": "1295-1783174833764-guohxj",
+    "runAt": "2026-07-04T14:30:33.762Z",
     "status": "done",
     "attempts": 0
   },
   {
-    "debateId": 1350,
-    "question": "Doit-on tolérer une commémoration partagée avec une organisation liée à un acteur politique ?",
-    "positionA": "Prioriser l'unité et la participation",
-    "positionB": "Prioriser la neutralité et la séparation",
-    "id": "1350-1783230966617-qjcef1",
-    "runAt": "2026-07-05T06:06:06.613Z",
-    "status": "done",
-    "attempts": 0
-  },
-  {
-    "debateId": 1351,
-    "question": "Peut-on juger la crédibilité écologique d’un candidat sur ses décisions passées ?",
-    "positionA": "Valoriser la trajectoire passée",
-    "positionB": "Exiger plus d'ambition actuelle",
-    "id": "1351-1783230966617-etdd6y",
-    "runAt": "2026-07-05T06:06:06.613Z",
-    "status": "done",
-    "attempts": 0
-  },
-  {
-    "debateId": 1352,
-    "question": "Présidentielle 2027 : Édouard Philippe face à des réserves d'opinion malgré un ancrage central",
+    "debateId": 1296,
+    "question": "Escroquerie en cryptomonnaies : 1,5 million d'euros dérobés à un couple du Golfe de Saint-Tropez",
     "positionA": "",
     "positionB": "",
-    "id": "1352-1783230966617-b9nyh6",
-    "runAt": "2026-07-05T06:06:06.613Z",
+    "id": "1296-1783174833764-hj43wc",
+    "runAt": "2026-07-04T14:30:33.762Z",
     "status": "done",
     "attempts": 0
   },
   {
-    "debateId": 1353,
-    "question": "Un rapport documente des violences sexuelles contre des Palestiniens en lien avec la colonisation",
+    "debateId": 1297,
+    "question": "Origine et noms des principaux vents régionaux du sud de la France",
     "positionA": "",
     "positionB": "",
-    "id": "1353-1783230966617-mz7lrv",
-    "runAt": "2026-07-05T06:06:06.613Z",
+    "id": "1297-1783174833764-9p75w9",
+    "runAt": "2026-07-04T14:30:33.762Z",
     "status": "done",
     "attempts": 0
   },
   {
-    "debateId": 1354,
-    "question": "Benoît Hamon juge difficile une candidature unitaire de la gauche pour 2027",
+    "debateId": 1298,
+    "question": "Début du Championnat des Nations de rugby avec Nouvelle-Zélande–France",
     "positionA": "",
     "positionB": "",
-    "id": "1354-1783230966617-ncyf6u",
-    "runAt": "2026-07-05T06:06:06.613Z",
+    "id": "1298-1783174833764-xml9bm",
+    "runAt": "2026-07-04T14:30:33.762Z",
     "status": "done",
     "attempts": 0
   },
   {
-    "debateId": 1355,
-    "question": "Kyiv visée par l'attaque russe la plus importante depuis le début du conflit",
+    "debateId": 1299,
+    "question": "La couverture médiatique hostile fausse-t-elle la compétition présidentielle ?",
+    "positionA": "Corriger la diabolisation",
+    "positionB": "Maintenir une couverture critique",
+    "id": "1299-1783174833764-sfnxzv",
+    "runAt": "2026-07-04T14:30:33.762Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1300,
+    "question": "Benoît Hamon commente les difficultés d'une candidature unitaire à gauche pour 2027",
     "positionA": "",
     "positionB": "",
-    "id": "1355-1783230966617-s0qono",
-    "runAt": "2026-07-05T06:06:06.613Z",
+    "id": "1300-1783174833764-koi8t4",
+    "runAt": "2026-07-04T14:30:33.762Z",
     "status": "done",
     "attempts": 0
   },
   {
-    "debateId": 1356,
-    "question": "Doit-on tolérer une commémoration partagée avec une organisation liée à un acteur politique ?",
-    "positionA": "Prioriser l'unité et la participation",
-    "positionB": "Prioriser la neutralité et la séparation",
-    "id": "1356-1783230966617-7gabmn",
-    "runAt": "2026-07-05T06:06:06.613Z",
-    "status": "done",
-    "attempts": 0
-  },
-  {
-    "debateId": 1357,
-    "question": "Faut‑il prioriser ordre public ou protection des migrants ?",
-    "positionA": "Prioriser protection et prévention",
-    "positionB": "Prioriser ordre public et départs",
-    "id": "1357-1783230966617-ba9gdf",
-    "runAt": "2026-07-05T06:06:06.613Z",
-    "status": "done",
-    "attempts": 0
-  },
-  {
-    "debateId": 1358,
-    "question": "Faut‑il prioriser ordre public ou protection des migrants ?",
-    "positionA": "Prioriser protection et prévention",
-    "positionB": "Prioriser ordre public et départs",
-    "id": "1358-1783230966617-kfs5wl",
-    "runAt": "2026-07-05T06:06:06.613Z",
-    "status": "done",
-    "attempts": 0
-  },
-  {
-    "debateId": 1359,
-    "question": "Sept départements du sud placés en vigilance orange canicule dimanche",
+    "debateId": 1301,
+    "question": "Fortes chaleurs et départ du Tour de France : mesures et vigilance renforcées",
     "positionA": "",
     "positionB": "",
-    "id": "1359-1783230966617-vb0qf7",
-    "runAt": "2026-07-05T06:06:06.613Z",
+    "id": "1301-1783174833764-wgm65d",
+    "runAt": "2026-07-04T14:30:33.762Z",
     "status": "done",
     "attempts": 0
   },
   {
-    "debateId": 1360,
-    "question": "À Lampedusa, le pape appelle l'Union européenne à protéger et intégrer les migrants",
+    "debateId": 1302,
+    "question": "La couverture médiatique hostile fausse-t-elle la compétition présidentielle ?",
+    "positionA": "Corriger la diabolisation",
+    "positionB": "Maintenir une couverture critique",
+    "id": "1302-1783174833764-e63w1w",
+    "runAt": "2026-07-04T14:30:33.762Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1303,
+    "question": "Construire la LGV ou rénover l'existant ?",
+    "positionA": "Construire la nouvelle LGV",
+    "positionB": "Rénover les infrastructures actuelles",
+    "id": "1303-1783174833764-npqsdi",
+    "runAt": "2026-07-04T14:30:33.762Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1304,
+    "question": "Faut-il prioriser la sécurité du congrès ou restreindre les manifestations massives ?",
+    "positionA": "donner la priorité aux manifestations",
+    "positionB": "prioriser maintien de l'ordre et tenue du congrès",
+    "id": "1304-1783174833764-lky75m",
+    "runAt": "2026-07-04T14:30:33.762Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1305,
+    "question": "La Cour doit-elle confirmer une inéligibilité qui exclut Le Pen ?",
+    "positionA": "Confirmer l'inéligibilité",
+    "positionB": "Alléger ou annuler l'inéligibilité",
+    "id": "1305-1783174833764-0t3tzi",
+    "runAt": "2026-07-04T14:30:33.762Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1306,
+    "question": "Le pape Léon XIV appelle l'Europe à mieux protéger et intégrer les migrants depuis Lampedusa",
     "positionA": "",
     "positionB": "",
-    "id": "1360-1783230966617-eh2mhy",
-    "runAt": "2026-07-05T06:06:06.613Z",
+    "id": "1306-1783174833764-5lrhgw",
+    "runAt": "2026-07-04T14:30:33.762Z",
     "status": "done",
     "attempts": 0
   },
   {
-    "debateId": 1361,
-    "question": "À Lampedusa, le pape appelle l'Union européenne à protéger et intégrer les migrants",
+    "debateId": 1307,
+    "question": "Tour de France 2026 : parcours, principales étapes et favoris annoncés",
     "positionA": "",
     "positionB": "",
-    "id": "1361-1783230966617-4eqnrk",
-    "runAt": "2026-07-05T06:06:06.613Z",
+    "id": "1307-1783174833764-bn2cnb",
+    "runAt": "2026-07-04T14:30:33.762Z",
     "status": "done",
     "attempts": 0
   },
   {
-    "debateId": 1363,
-    "question": "Bernard Arnault visé par un redressement fiscal de 22,5 millions d’euros",
+    "debateId": 1308,
+    "question": "Canicule de juin 2026 : hausse de la mortalité et difficultés dans la gestion des corps",
     "positionA": "",
     "positionB": "",
-    "id": "1363-1783230966617-yuj9i1",
-    "runAt": "2026-07-05T06:06:06.613Z",
+    "id": "1308-1783174833764-u6gj1a",
+    "runAt": "2026-07-04T14:30:33.762Z",
     "status": "done",
     "attempts": 0
   },
   {
-    "debateId": 1364,
-    "question": "Bernard Arnault visé par un redressement fiscal de 22,5 millions d’euros",
+    "debateId": 1309,
+    "question": "Coupe du monde 2026 : bilans et affiches des huitièmes de finale",
     "positionA": "",
     "positionB": "",
-    "id": "1364-1783230966617-wr6sgc",
-    "runAt": "2026-07-05T06:06:06.613Z",
+    "id": "1309-1783174833764-zbi1ae",
+    "runAt": "2026-07-04T14:30:33.762Z",
     "status": "done",
     "attempts": 0
   },
   {
-    "debateId": 1365,
-    "question": "Le RN doit-il miser sur Le Pen ou préparer Bardella comme candidat ?",
-    "positionA": "Parier sur Marine Le Pen",
-    "positionB": "Préparer Jordan Bardella",
-    "id": "1365-1783230966617-d42kw4",
-    "runAt": "2026-07-05T06:06:06.613Z",
-    "status": "done",
-    "attempts": 0
-  },
-  {
-    "debateId": 1366,
-    "question": "Funérailles nationales d’Ali Khamenei à Téhéran et début des cérémonies",
+    "debateId": 1310,
+    "question": "Le pape Léon XIV appelle l'Europe à mieux protéger et intégrer les migrants depuis Lampedusa",
     "positionA": "",
     "positionB": "",
-    "id": "1366-1783230966617-314imx",
-    "runAt": "2026-07-05T06:06:06.613Z",
+    "id": "1310-1783174833764-vk7ulp",
+    "runAt": "2026-07-04T14:30:33.762Z",
     "status": "done",
     "attempts": 0
   },
   {
-    "debateId": 1367,
-    "question": "Le RN doit-il miser sur Le Pen ou préparer Bardella comme candidat ?",
-    "positionA": "Parier sur Marine Le Pen",
-    "positionB": "Préparer Jordan Bardella",
-    "id": "1367-1783230966617-tse8h0",
-    "runAt": "2026-07-05T06:06:06.613Z",
+    "debateId": 1311,
+    "question": "Quelle mémoire privilégier pour rassembler lors du 250e anniversaire ?",
+    "positionA": "récit unificateur héroïque",
+    "positionB": "mémoire plurielle et critique",
+    "id": "1311-1783174833764-11elaq",
+    "runAt": "2026-07-04T14:30:33.762Z",
     "status": "done",
     "attempts": 0
   },
   {
-    "debateId": 1368,
-    "question": "Les commémorations doivent-elles restreindre l'usage partisan ?",
-    "positionA": "Priorité à l'unité symbolique",
-    "positionB": "Respect liberté d'expression politique",
-    "id": "1368-1783230966617-th22zw",
-    "runAt": "2026-07-05T06:06:06.613Z",
-    "status": "done",
-    "attempts": 0
-  },
-  {
-    "debateId": 1369,
-    "question": "Funérailles nationales d’Ali Khamenei à Téhéran et début des cérémonies",
+    "debateId": 1312,
+    "question": "France–Paraguay : préparation et tensions avant les huitièmes à Philadelphie",
     "positionA": "",
     "positionB": "",
-    "id": "1369-1783230966617-x9a636",
-    "runAt": "2026-07-05T06:06:06.613Z",
+    "id": "1312-1783174833764-oq5fey",
+    "runAt": "2026-07-04T14:30:33.762Z",
     "status": "done",
     "attempts": 0
   },
   {
-    "debateId": 1370,
-    "question": "Les commémorations doivent-elles restreindre l'usage partisan ?",
-    "positionA": "Priorité à l'unité symbolique",
-    "positionB": "Respect liberté d'expression politique",
-    "id": "1370-1783230966617-gvxfa3",
-    "runAt": "2026-07-05T06:06:06.613Z",
-    "status": "done",
-    "attempts": 0
-  },
-  {
-    "debateId": 1371,
-    "question": "Le RN doit-il miser sur Le Pen ou préparer Bardella comme candidat ?",
-    "positionA": "Parier sur Marine Le Pen",
-    "positionB": "Préparer Jordan Bardella",
-    "id": "1371-1783230966617-vfeo2i",
-    "runAt": "2026-07-05T06:06:06.613Z",
-    "status": "done",
-    "attempts": 0
-  },
-  {
-    "debateId": 1372,
-    "question": "Funérailles nationales d’Ali Khamenei à Téhéran et début des cérémonies",
+    "debateId": 1313,
+    "question": "France–Paraguay : préparation et tensions avant les huitièmes à Philadelphie",
     "positionA": "",
     "positionB": "",
-    "id": "1372-1783230966617-zycbuh",
-    "runAt": "2026-07-05T06:06:06.613Z",
+    "id": "1313-1783174833764-7zhcqe",
+    "runAt": "2026-07-04T14:30:33.762Z",
     "status": "done",
     "attempts": 0
   },
   {
-    "debateId": 1373,
-    "question": "La France se qualifie pour les quarts après sa victoire 1-0 contre le Paraguay",
+    "debateId": 1314,
+    "question": "Tour de France 2026 : parcours, principales étapes et favoris annoncés",
     "positionA": "",
     "positionB": "",
-    "id": "1373-1783230966617-kyshub",
-    "runAt": "2026-07-05T06:06:06.613Z",
+    "id": "1314-1783174833764-u2673d",
+    "runAt": "2026-07-04T14:30:33.762Z",
     "status": "done",
     "attempts": 0
   },
   {
-    "debateId": 1374,
-    "question": "Les commémorations doivent-elles restreindre l'usage partisan ?",
-    "positionA": "Priorité à l'unité symbolique",
-    "positionB": "Respect liberté d'expression politique",
-    "id": "1374-1783230966617-45relp",
-    "runAt": "2026-07-05T06:06:06.613Z",
-    "status": "done",
-    "attempts": 0
-  },
-  {
-    "debateId": 1375,
-    "question": "La France se qualifie pour les quarts après sa victoire 1-0 contre le Paraguay",
+    "debateId": 1315,
+    "question": "Coupe du monde 2026 : bilans et affiches des huitièmes de finale",
     "positionA": "",
     "positionB": "",
-    "id": "1375-1783230966617-joxj2g",
-    "runAt": "2026-07-05T06:06:06.613Z",
+    "id": "1315-1783174833764-on3gjm",
+    "runAt": "2026-07-04T14:30:33.762Z",
     "status": "done",
     "attempts": 0
   },
   {
-    "debateId": 1376,
-    "question": "La France se qualifie pour les quarts après sa victoire 1-0 contre le Paraguay",
+    "debateId": 1316,
+    "question": "Funérailles nationales d’Ali Khamenei à Téhéran réunissent des milliers de fidèles",
     "positionA": "",
     "positionB": "",
-    "id": "1376-1783230966617-ulsrsc",
-    "runAt": "2026-07-05T06:06:06.613Z",
+    "id": "1316-1783174833764-xxmezm",
+    "runAt": "2026-07-04T14:30:33.762Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1317,
+    "question": "Coupe du monde 2026 : bilans et affiches des huitièmes de finale",
+    "positionA": "",
+    "positionB": "",
+    "id": "1317-1783174833764-0i0fsv",
+    "runAt": "2026-07-04T14:30:33.762Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1318,
+    "question": "Tour de France 2026 : parcours, principales étapes et favoris annoncés",
+    "positionA": "",
+    "positionB": "",
+    "id": "1318-1783174833764-9hbo28",
+    "runAt": "2026-07-04T14:30:33.762Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1319,
+    "question": "Funérailles nationales d’Ali Khamenei à Téhéran réunissent des milliers de fidèles",
+    "positionA": "",
+    "positionB": "",
+    "id": "1319-1783174833764-smr5zp",
+    "runAt": "2026-07-04T14:30:33.762Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1320,
+    "question": "Quelle mémoire privilégier pour rassembler lors du 250e anniversaire ?",
+    "positionA": "récit unificateur héroïque",
+    "positionB": "mémoire plurielle et critique",
+    "id": "1320-1783174833764-3u2ujs",
+    "runAt": "2026-07-04T14:30:33.762Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1321,
+    "question": "Quelle mémoire privilégier pour rassembler lors du 250e anniversaire ?",
+    "positionA": "récit unificateur héroïque",
+    "positionB": "mémoire plurielle et critique",
+    "id": "1321-1783174833764-xjs8i1",
+    "runAt": "2026-07-04T14:30:33.762Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1322,
+    "question": "Des milliers de manifestants mobilisés dans près de 80 villes après l'affaire Lyhanna",
+    "positionA": "",
+    "positionB": "",
+    "id": "1322-1783228689371-tndjpl",
+    "runAt": "2026-07-05T05:28:09.370Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1323,
+    "question": "Édouard Philippe lance officiellement sa campagne présidentielle à l'Adidas Arena",
+    "positionA": "",
+    "positionB": "",
+    "id": "1323-1783228689371-6lzdiu",
+    "runAt": "2026-07-05T05:28:09.370Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1324,
+    "question": "Rapport d'ONG documente des violences sexuelles infligées à des Palestiniens",
+    "positionA": "",
+    "positionB": "",
+    "id": "1324-1783228689371-ru0fpo",
+    "runAt": "2026-07-05T05:28:09.370Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1325,
+    "question": "À Paris, une marche citoyenne contre les violences sexuelles rassemble des manifestantes",
+    "positionA": "",
+    "positionB": "",
+    "id": "1325-1783228689371-oiedoj",
+    "runAt": "2026-07-05T05:28:09.370Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1326,
+    "question": "Comment garantir indépendance média sans laisser la pression politique l'emporter ?",
+    "positionA": "Renforcer contrôle public et sanctions",
+    "positionB": "Protéger stricte indépendance rédactionnelle",
+    "id": "1326-1783228689371-751ztc",
+    "runAt": "2026-07-05T05:28:09.370Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1327,
+    "question": "Doit-on prioriser l'adaptation climatique dès maintenant au Parlement ?",
+    "positionA": "Prioriser adaptation et rehausser crédits",
+    "positionB": "Maintenir ordre du jour et priorités actuelles",
+    "id": "1327-1783228689371-qntc7q",
+    "runAt": "2026-07-05T05:28:09.370Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1328,
+    "question": "Comment France Culture doit-elle réagir pour préserver indépendance et confiance ?",
+    "positionA": "sanctionner plus fermement",
+    "positionB": "préserver autonomie éditoriale",
+    "id": "1328-1783228689371-cbevx3",
+    "runAt": "2026-07-05T05:28:09.370Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1329,
+    "question": "Un homme escalade la tour Eiffel et y accroche un drapeau américain",
+    "positionA": "",
+    "positionB": "",
+    "id": "1329-1783228689371-xlat9t",
+    "runAt": "2026-07-05T05:28:09.370Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1330,
+    "question": "Funérailles nationales d'Ali Khamenei rassemblent une foule au centre de Téhéran",
+    "positionA": "",
+    "positionB": "",
+    "id": "1330-1783228689371-bbx3um",
+    "runAt": "2026-07-05T05:28:09.370Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1331,
+    "question": "Sept départements du Sud placés en vigilance orange canicule ce dimanche",
+    "positionA": "",
+    "positionB": "",
+    "id": "1331-1783228689371-zh7s70",
+    "runAt": "2026-07-05T05:28:09.370Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1332,
+    "question": "Un homme retrouvé sans vie dans le canal Saint‑Martin à Paris",
+    "positionA": "",
+    "positionB": "",
+    "id": "1332-1783228689371-muz8dr",
+    "runAt": "2026-07-05T05:28:09.370Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1333,
+    "question": "Redressement fiscal de 22,5 millions d’euros pour Bernard Arnault et son épouse",
+    "positionA": "",
+    "positionB": "",
+    "id": "1333-1783228689371-a8qht4",
+    "runAt": "2026-07-05T05:28:09.370Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1334,
+    "question": "Redressement fiscal de 22,5 millions d’euros pour Bernard Arnault et son épouse",
+    "positionA": "",
+    "positionB": "",
+    "id": "1334-1783228689371-f4ee2d",
+    "runAt": "2026-07-05T05:28:09.370Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1335,
+    "question": "Premier cas d’Ebola diagnostiqué en France : le patient déclaré guéri et sorti de l’hôpital",
+    "positionA": "",
+    "positionB": "",
+    "id": "1335-1783228689371-qbo25i",
+    "runAt": "2026-07-05T05:28:09.370Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1336,
+    "question": "Unir publiquement le parti ou préparer ouvertement une alternative ?",
+    "positionA": "afficher unité et loyauté",
+    "positionB": "clarifier alternative et succession",
+    "id": "1336-1783228689371-jnqcs7",
+    "runAt": "2026-07-05T05:28:09.370Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1337,
+    "question": "Faut-il organiser des célébrations internationales qui amplifient des figures polarisantes ?",
+    "positionA": "priorité unité et visibilité",
+    "positionB": "limiter visibilité de figures polarisantes",
+    "id": "1337-1783228689371-bbjf6q",
+    "runAt": "2026-07-05T05:28:09.370Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1338,
+    "question": "Unir publiquement le parti ou préparer ouvertement une alternative ?",
+    "positionA": "afficher unité et loyauté",
+    "positionB": "clarifier alternative et succession",
+    "id": "1338-1783228689371-xgmloj",
+    "runAt": "2026-07-05T05:28:09.370Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1339,
+    "question": "Faut-il organiser des célébrations internationales qui amplifient des figures polarisantes ?",
+    "positionA": "priorité unité et visibilité",
+    "positionB": "limiter visibilité de figures polarisantes",
+    "id": "1339-1783228689371-2hento",
+    "runAt": "2026-07-05T05:28:09.370Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1340,
+    "question": "Tour de France 2026 : début en Catalogne, Vingegaard en jaune après le chrono par équipes",
+    "positionA": "",
+    "positionB": "",
+    "id": "1340-1783228689371-keik5b",
+    "runAt": "2026-07-05T05:28:09.370Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1341,
+    "question": "Faut-il organiser des célébrations internationales qui amplifient des figures polarisantes ?",
+    "positionA": "priorité unité et visibilité",
+    "positionB": "limiter visibilité de figures polarisantes",
+    "id": "1341-1783228689371-qfrdv2",
+    "runAt": "2026-07-05T05:28:09.370Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1342,
+    "question": "Unir publiquement le parti ou préparer ouvertement une alternative ?",
+    "positionA": "afficher unité et loyauté",
+    "positionB": "clarifier alternative et succession",
+    "id": "1342-1783228689371-bhbl27",
+    "runAt": "2026-07-05T05:28:09.370Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1343,
+    "question": "Tour de France 2026 : début en Catalogne, Vingegaard en jaune après le chrono par équipes",
+    "positionA": "",
+    "positionB": "",
+    "id": "1343-1783228689371-p2d6hl",
+    "runAt": "2026-07-05T05:28:09.370Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1344,
+    "question": "France qualifiée aux dépens du Paraguay après un penalty de Mbappé",
+    "positionA": "",
+    "positionB": "",
+    "id": "1344-1783228689371-wavzty",
+    "runAt": "2026-07-05T05:28:09.370Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1345,
+    "question": "France qualifiée aux dépens du Paraguay après un penalty de Mbappé",
+    "positionA": "",
+    "positionB": "",
+    "id": "1345-1783228689371-862zye",
+    "runAt": "2026-07-05T05:28:09.370Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1346,
+    "question": "France qualifiée aux dépens du Paraguay après un penalty de Mbappé",
+    "positionA": "",
+    "positionB": "",
+    "id": "1346-1783228689371-jpngs7",
+    "runAt": "2026-07-05T05:28:09.370Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1387,
+    "question": "Les MQ-9 Reaper de l’armée de l’Air équipés du missile Hellfire à Cognac-Châteaubernard",
+    "positionA": "",
+    "positionB": "",
+    "id": "1387-1783261145058-oheu6c",
+    "runAt": "2026-07-05T14:29:05.057Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1388,
+    "question": "Faut-il élargir la présomption de légitime défense pour les policiers ?",
+    "positionA": "Maintenir contrôle judiciaire automatique",
+    "positionB": "Renforcer présomption défense",
+    "id": "1388-1783261145059-4412qa",
+    "runAt": "2026-07-05T14:29:05.057Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1389,
+    "question": "Témoignages de rescapés au 9e congrès mondial pour l'abolition de la peine de mort",
+    "positionA": "",
+    "positionB": "",
+    "id": "1389-1783261145059-2kajfk",
+    "runAt": "2026-07-05T14:29:05.057Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1390,
+    "question": "Faut-il arrêter ou laisser suivre ce projet hôtelier ?",
+    "positionA": "Arrêter le projet",
+    "positionB": "Laisser le projet suivre",
+    "id": "1390-1783261145059-ktksll",
+    "runAt": "2026-07-05T14:29:05.057Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1391,
+    "question": "Faut-il élargir la présomption de légitime défense pour les policiers ?",
+    "positionA": "Maintenir contrôle judiciaire automatique",
+    "positionB": "Renforcer présomption défense",
+    "id": "1391-1783261145059-t2qhi0",
+    "runAt": "2026-07-05T14:29:05.057Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1392,
+    "question": "Entretien Poutine-Trump le 4 juillet et évolutions militaires en mer Noire",
+    "positionA": "",
+    "positionB": "",
+    "id": "1392-1783261145059-xi3exa",
+    "runAt": "2026-07-05T14:29:05.057Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1393,
+    "question": "À Avignon, « Maldoror » de Julien Gosselin ouvre le festival",
+    "positionA": "",
+    "positionB": "",
+    "id": "1393-1783261145059-ounr9g",
+    "runAt": "2026-07-05T14:29:05.057Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1394,
+    "question": "Doit-il rester le «président de la constance» ou changer de stratégie pour capter la colère ?",
+    "positionA": "Constante et rassemblement centre-droite",
+    "positionB": "Adapter le discours pour capter la colère",
+    "id": "1394-1783261145059-m5m08r",
+    "runAt": "2026-07-05T14:29:05.057Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1395,
+    "question": "Double séisme au Venezuela : bilan humain lourd et inquiétudes pour les sinistrés",
+    "positionA": "",
+    "positionB": "",
+    "id": "1395-1783261145059-7095cl",
+    "runAt": "2026-07-05T14:29:05.057Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1396,
+    "question": "France bat le Paraguay 1-0 en huitièmes de la Coupe du monde à Philadelphie",
+    "positionA": "",
+    "positionB": "",
+    "id": "1396-1783261145059-u9x1uz",
+    "runAt": "2026-07-05T14:29:05.057Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1397,
+    "question": "France bat le Paraguay 1-0 en huitièmes de la Coupe du monde à Philadelphie",
+    "positionA": "",
+    "positionB": "",
+    "id": "1397-1783261145059-nba99b",
+    "runAt": "2026-07-05T14:29:05.057Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1398,
+    "question": "Faut-il maintenir une commémoration présidentielle pilotée par Freedom 250 ?",
+    "positionA": "laisser Freedom 250 piloter",
+    "positionB": "restaurer commission bipartane",
+    "id": "1398-1783261145059-rnjz68",
+    "runAt": "2026-07-05T14:29:05.057Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1399,
+    "question": "Faut-il maintenir une commémoration présidentielle pilotée par Freedom 250 ?",
+    "positionA": "laisser Freedom 250 piloter",
+    "positionB": "restaurer commission bipartane",
+    "id": "1399-1783261145059-0zz129",
+    "runAt": "2026-07-05T14:29:05.057Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1400,
+    "question": "Incendie au Vieux-Port de Marseille : deux bateaux coulés et opérations de secours",
+    "positionA": "",
+    "positionB": "",
+    "id": "1400-1783261145059-ovn02j",
+    "runAt": "2026-07-05T14:29:05.057Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1401,
+    "question": "Comment répondre aux violences sans politiser le deuil",
+    "positionA": "Préserver le caractère civique du deuil",
+    "positionB": "Réponse pénale stricte",
+    "id": "1401-1783261145059-a5b8sc",
+    "runAt": "2026-07-05T14:29:05.057Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1402,
+    "question": "Emmanuel Macron annoncé en visite en Syrie, première d'un président français depuis 2009",
+    "positionA": "",
+    "positionB": "",
+    "id": "1402-1783261145059-dysk9o",
+    "runAt": "2026-07-05T14:29:05.057Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1403,
+    "question": "Le PCF doit‑il maintenir une candidature autonome en 2027 ?",
+    "positionA": "Maintenir candidature autonome",
+    "positionB": "Chercher une alliance avec LFI",
+    "id": "1403-1783261145059-f3v313",
+    "runAt": "2026-07-05T14:29:05.057Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1404,
+    "question": "Le PCF doit‑il maintenir une candidature autonome en 2027 ?",
+    "positionA": "Maintenir candidature autonome",
+    "positionB": "Chercher une alliance avec LFI",
+    "id": "1404-1783261145059-s4udga",
+    "runAt": "2026-07-05T14:29:05.057Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1405,
+    "question": "Comment répondre aux violences sans politiser le deuil",
+    "positionA": "Préserver le caractère civique du deuil",
+    "positionB": "Réponse pénale stricte",
+    "id": "1405-1783261145059-op85tg",
+    "runAt": "2026-07-05T14:29:05.057Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1406,
+    "question": "Incendie à Trévillach : 1 500 hectares brûlés et mobilisation des secours",
+    "positionA": "",
+    "positionB": "",
+    "id": "1406-1783261145059-fxpm10",
+    "runAt": "2026-07-05T14:29:05.057Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1407,
+    "question": "Incendie à Trévillach : 1 500 hectares brûlés et mobilisation des secours",
+    "positionA": "",
+    "positionB": "",
+    "id": "1407-1783261145059-fcrcxb",
+    "runAt": "2026-07-05T14:29:05.057Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1408,
+    "question": "Faut‑il privilégier un durcissement répressif ou la retenue proportionnée ?",
+    "positionA": "préserver proportionnalité et libertés",
+    "positionB": "durcir les sanctions",
+    "id": "1408-1783315545255-7qvhto",
+    "runAt": "2026-07-06T05:35:45.254Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1409,
+    "question": "Stratégie électorale viser l'élimination du RN au 1er tour ou préparer un second tour",
+    "positionA": "Viser l'élimination au 1er tour",
+    "positionB": "Construire une alternative pour le 2nd tour",
+    "id": "1409-1783315545255-calho4",
+    "runAt": "2026-07-06T05:35:45.254Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1410,
+    "question": "Emmanuel Macron annoncé à Damas, date de la visite non précisée",
+    "positionA": "",
+    "positionB": "",
+    "id": "1410-1783315545255-govabp",
+    "runAt": "2026-07-06T05:35:45.254Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1411,
+    "question": "Seize départements en vigilance orange pour canicule ce lundi 6 juillet",
+    "positionA": "",
+    "positionB": "",
+    "id": "1411-1783315545255-lwc8vu",
+    "runAt": "2026-07-06T05:35:45.254Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1412,
+    "question": "La gauche doit‑elle privilégier l'union ou l'autonomie pour 2027 ?",
+    "positionA": "Privilégier l'union avec La France insoumise",
+    "positionB": "Maintenir une candidature autonome",
+    "id": "1412-1783315545255-1phxgw",
+    "runAt": "2026-07-06T05:35:45.254Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1413,
+    "question": "Au Festival d'Avignon, Tiphaine Raffier présente une pièce sur la fin de vie",
+    "positionA": "",
+    "positionB": "",
+    "id": "1413-1783315545255-6nvdrs",
+    "runAt": "2026-07-06T05:35:45.254Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1414,
+    "question": "Festival d'Avignon : Julien Gosselin présente Maldoror, une mise en scène immersive et sombre",
+    "positionA": "",
+    "positionB": "",
+    "id": "1414-1783315545255-26cdr2",
+    "runAt": "2026-07-06T05:35:45.254Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1415,
+    "question": "Narbonne : plus de 4 500 participants à une marche blanche pour Louis, adolescent tué fin juin",
+    "positionA": "",
+    "positionB": "",
+    "id": "1415-1783315545255-vgmdzg",
+    "runAt": "2026-07-06T05:35:45.254Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1416,
+    "question": "Coupe du monde 2026 : résultats des huitièmes et tirage des quarts",
+    "positionA": "",
+    "positionB": "",
+    "id": "1416-1783315545255-82k5i2",
+    "runAt": "2026-07-06T05:35:45.254Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1417,
+    "question": "Incendie de deux bateaux dans le Vieux-Port de Marseille : les navires ont coulé",
+    "positionA": "",
+    "positionB": "",
+    "id": "1417-1783315545255-ef7uut",
+    "runAt": "2026-07-06T05:35:45.254Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1418,
+    "question": "Faut-il assouplir les normes européennes pour renforcer la compétitivité ?",
+    "positionA": "Maintenir normes pour la transition",
+    "positionB": "Assouplir normes pour compétitivité",
+    "id": "1418-1783315545255-hxb1ad",
+    "runAt": "2026-07-06T05:35:45.254Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1419,
+    "question": "Charles Leclerc remporte le Grand Prix de Grande-Bretagne à Silverstone",
+    "positionA": "",
+    "positionB": "",
+    "id": "1419-1783315545255-17wjsf",
+    "runAt": "2026-07-06T05:35:45.254Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1420,
+    "question": "Un policier tire sur un homme après des agressions au couteau à Clermont-Ferrand",
+    "positionA": "",
+    "positionB": "",
+    "id": "1420-1783315545255-qmsotz",
+    "runAt": "2026-07-06T05:35:45.254Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1421,
+    "question": "Un policier tire sur un homme après des agressions au couteau à Clermont-Ferrand",
+    "positionA": "",
+    "positionB": "",
+    "id": "1421-1783315545255-j2cr3p",
+    "runAt": "2026-07-06T05:35:45.254Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1422,
+    "question": "Maintenir ou ajourner le procès en appel après les aveux ?",
+    "positionA": "Maintenir le procès en appel",
+    "positionB": "Ajourner ou annuler le procès",
+    "id": "1422-1783315545255-3f8ikc",
+    "runAt": "2026-07-06T05:35:45.254Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1423,
+    "question": "Faut-il prioriser frappes ciblant infrastructures ou protection des zones civiles ?",
+    "positionA": "Prioriser frappes sur infrastructures",
+    "positionB": "Prioriser protection des civils urbains",
+    "id": "1423-1783315545255-6u96ht",
+    "runAt": "2026-07-06T05:35:45.254Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1424,
+    "question": "Défilé de militants d'extrême droite et discours officiels lors du 250e anniversaire des États-Unis",
+    "positionA": "",
+    "positionB": "",
+    "id": "1424-1783315545255-ksnuab",
+    "runAt": "2026-07-06T05:35:45.254Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1425,
+    "question": "Faut-il prioriser frappes ciblant infrastructures ou protection des zones civiles ?",
+    "positionA": "Prioriser frappes sur infrastructures",
+    "positionB": "Prioriser protection des civils urbains",
+    "id": "1425-1783315545255-nu44je",
+    "runAt": "2026-07-06T05:35:45.254Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1426,
+    "question": "Une intervention extérieure doit-elle permettre de modifier une suspension automatique ?",
+    "positionA": "Priorité à l'application stricte du règlement",
+    "positionB": "Admettre les réexamens exceptionnels",
+    "id": "1426-1783315545255-88o9no",
+    "runAt": "2026-07-06T05:35:45.254Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1427,
+    "question": "Une intervention extérieure doit-elle permettre de modifier une suspension automatique ?",
+    "positionA": "Priorité à l'application stricte du règlement",
+    "positionB": "Admettre les réexamens exceptionnels",
+    "id": "1427-1783315545255-byfnqf",
+    "runAt": "2026-07-06T05:35:45.254Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1428,
+    "question": "Étapes 2 et 3 du Tour de France 2026 perturbées par des incendies autour du parcours",
+    "positionA": "",
+    "positionB": "",
+    "id": "1428-1783315545255-qvtzgz",
+    "runAt": "2026-07-06T05:35:45.254Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1429,
+    "question": "Incendie majeur dans les Pyrénées-Orientales : milliers d'évacués et vaste mobilisation des secours",
+    "positionA": "",
+    "positionB": "",
+    "id": "1429-1783315545255-27kmw6",
+    "runAt": "2026-07-06T05:35:45.254Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1430,
+    "question": "Incendie majeur dans les Pyrénées-Orientales : milliers d'évacués et vaste mobilisation des secours",
+    "positionA": "",
+    "positionB": "",
+    "id": "1430-1783315545255-6wjlls",
+    "runAt": "2026-07-06T05:35:45.254Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1431,
+    "question": "Faut-il privilégier une primaire ou un accord rapide, ou laisser la concurrence se jouer librement ?",
+    "positionA": "unité rapide via accord ou primaire",
+    "positionB": "laisser la concurrence se dérouler librement",
+    "id": "1431-1783315545255-jr0b1h",
+    "runAt": "2026-07-06T05:35:45.254Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1432,
+    "question": "Faut-il privilégier une primaire ou un accord rapide, ou laisser la concurrence se jouer librement ?",
+    "positionA": "unité rapide via accord ou primaire",
+    "positionB": "laisser la concurrence se dérouler librement",
+    "id": "1432-1783315545255-f9m7r6",
+    "runAt": "2026-07-06T05:35:45.254Z",
     "status": "done",
     "attempts": 0
   }
