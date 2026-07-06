@@ -41,17 +41,19 @@ let autoCollectTimers = [];
 const ARTICLE_AI_MODEL = (process.env.ARTICLE_AI_MODEL || "gpt-5-mini").trim();
 
 // Qui exécute les pipelines automatiques (collecte programmée, tick GitHub Actions,
-// auto-publish, reprise des idées en attente) : l'instance locale uniquement. L'instance
-// Render est une sauvegarde passive depuis le 06/07/2026 — quand les deux tournaient,
-// chaque journée était collectée, générée et publiée deux fois (double coût OpenAI).
-// Render définit automatiquement la variable RENDER ; BOT_AUTO_PIPELINES=on|off force
-// le comportement quel que soit l'environnement. Les routes manuelles (/refresh,
-// /run-auto-publish, admin) restent utilisables sur les deux instances.
+// auto-publish, reprise des idées en attente) : l'instance Render uniquement — elle est
+// allumée en permanence, là où le Mac peut être éteint ou hors ligne aux heures de
+// collecte. L'instance locale est passive depuis le 06/07/2026 : quand les deux
+// tournaient, chaque journée était collectée, générée et publiée deux fois (double coût
+// OpenAI). Render définit automatiquement la variable RENDER ; BOT_AUTO_PIPELINES=on|off
+// force le comportement quel que soit l'environnement (ex. =on en local pour reprendre
+// la main si Render est down). Les routes manuelles (/refresh, /run-auto-publish, admin)
+// restent utilisables sur les deux instances.
 const AUTO_PIPELINES_ENABLED = (() => {
   const forced = String(process.env.BOT_AUTO_PIPELINES || "").trim().toLowerCase();
   if (forced === "on") return true;
   if (forced === "off") return false;
-  return !process.env.RENDER;
+  return Boolean(process.env.RENDER);
 })();
 
 // Les modèles gpt-5 ignorent temperature (l'API la refuse) et raisonnent avant de
@@ -5948,7 +5950,7 @@ storageSync.downloadAll().then(() => {
       resumePendingIdeasOnStartup();
       resumeCertamenPendingIdeasOnStartup();
     } else {
-      console.log("[auto-pipelines] Instance passive (RENDER détecté ou BOT_AUTO_PIPELINES=off) : collecte auto, tick GitHub Actions, auto-publish et reprise d'idées désactivés. Seule l'instance locale publie.");
+      console.log("[auto-pipelines] Instance passive (hors Render, ou BOT_AUTO_PIPELINES=off) : collecte auto, tick GitHub Actions, auto-publish et reprise d'idées désactivés. Seule l'instance Render publie.");
     }
     storageSync.startPeriodicSync();
   });
