@@ -3812,9 +3812,41 @@ let editingPresseCertamen = null;
 let editingYoutubeCertamen = null;
 
 function normalizeOrientationToSelect(val) {
-  const v = (val || '').toLowerCase();
-  if (v.includes('gauche')) return 'gauche';
-  if (v.includes('droite') || v.includes('conservateur') || v.includes('souverainiste')) return 'droite';
+  const v = String(val || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+  if (
+    v.includes('gauche') ||
+    v.includes('ecolog') ||
+    v.includes('ecolo') ||
+    v.includes('libertaire') ||
+    v.includes('altermondialiste') ||
+    v.includes('alter-mondialiste') ||
+    v.includes('anticapitaliste') ||
+    v.includes('anti-capitaliste') ||
+    v.includes('socialiste') ||
+    v.includes('social-democrate') ||
+    v.includes('social democrate') ||
+    v.includes('progressiste') ||
+    v.includes('insoumis') ||
+    v.includes('insoumission') ||
+    v.includes('communiste') ||
+    v.includes('marxiste') ||
+    v.includes('feministe') ||
+    v.includes('syndical') ||
+    v.includes('alternatif') ||
+    v.includes('alternative')
+  ) return 'gauche';
+  if (
+    v.includes('droite') ||
+    v.includes('centre-droit') ||
+    v.includes('centre droit') ||
+    v.includes('droite-centre') ||
+    v.includes('droite centre') ||
+    v.includes('conservateur') ||
+    v.includes('souverainiste') ||
+    v.includes('liberal') ||
+    v.includes('republicain') ||
+    v.includes('identitaire')
+  ) return 'droite';
   if (v.includes('généraliste') || v.includes('generaliste') || v.includes('centre') || v.includes('régional') || v.includes('regional') || v.includes('service public') || v.includes('institutionnel')) return 'généraliste';
   if (val && val.trim()) return 'autre';
   return 'généraliste';
@@ -3830,17 +3862,37 @@ const ORIENT_GROUPS = [
 ];
 
 function getOrientationScore(orientation) {
-  const o = (orientation || "").toLowerCase();
-  // Droite en priorité absolue (avant tout terme neutre comme "info continue", "généraliste"…)
+  const o = String(orientation || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+  // Droite au sens large, avant tout terme neutre comme "centre" ou "généraliste".
   if (o.includes("droite") && !o.includes("centre")) return 4;
-  if (o.includes("souverainiste") || o.includes("conservateur") || o.includes("identitaire")) return 4;
-  if (o.includes("républicain") && !o.includes("gauche")) return 4;
-  // Centre-droit
-  if (o.includes("centre-droit") || o.includes("droite-centre") || (o.includes("centre") && o.includes("droit"))) return 3;
-  // Gauche (avant généraliste)
-  if ((o.includes("gauche") || o.includes("écologie")) && !o.includes("centre")) return 0;
+  if (o.includes("centre-droit") || o.includes("centre droit") || o.includes("droite-centre") || o.includes("droite centre") || (o.includes("centre") && o.includes("droit"))) return 4;
+  if (o.includes("souverainiste") || o.includes("conservateur") || o.includes("identitaire") || o.includes("liberal")) return 4;
+  if (o.includes("republicain") && !o.includes("gauche")) return 4;
+  // Gauche au sens large, avant tout terme neutre comme "centre" ou "généraliste".
+  if (
+    o.includes("gauche") ||
+    o.includes("ecolog") ||
+    o.includes("ecolo") ||
+    o.includes("libertaire") ||
+    o.includes("altermondialiste") ||
+    o.includes("alter-mondialiste") ||
+    o.includes("anticapitaliste") ||
+    o.includes("anti-capitaliste") ||
+    o.includes("socialiste") ||
+    o.includes("social-democrate") ||
+    o.includes("social democrate") ||
+    o.includes("progressiste") ||
+    o.includes("insoumis") ||
+    o.includes("insoumission") ||
+    o.includes("communiste") ||
+    o.includes("marxiste") ||
+    o.includes("feministe") ||
+    o.includes("syndical") ||
+    o.includes("alternatif") ||
+    o.includes("alternative")
+  ) return 0;
   // Centre-gauche
-  if (o.includes("centre-gauche") || o.includes("satire")) return 1;
+  if (o.includes("satire")) return 1;
   // Généraliste / neutre (tout le reste)
   return 2;
 }
@@ -5137,9 +5189,41 @@ app.post("/api/auto-collect-tick", requireMixteAuth, async (req, res) => {
 // détecté par l'IA sur la question de débat (politicalOrientation), qui est une notion
 // différente (positions du débat, pas orientation du média source).
 function getMediaOrientationGroup(orientation) {
-  const o = (orientation || "").toLowerCase();
-  if (o.includes("gauche")) return "left";
-  if (o.includes("droit") || o.includes("conservateur") || o.includes("souverainiste")) return "right";
+  const o = String(orientation || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+  if (
+    o.includes("gauche") ||
+    o.includes("ecolog") ||
+    o.includes("ecolo") ||
+    o.includes("libertaire") ||
+    o.includes("altermondialiste") ||
+    o.includes("alter-mondialiste") ||
+    o.includes("anticapitaliste") ||
+    o.includes("anti-capitaliste") ||
+    o.includes("socialiste") ||
+    o.includes("social-democrate") ||
+    o.includes("social democrate") ||
+    o.includes("progressiste") ||
+    o.includes("insoumis") ||
+    o.includes("insoumission") ||
+    o.includes("communiste") ||
+    o.includes("marxiste") ||
+    o.includes("feministe") ||
+    o.includes("syndical") ||
+    o.includes("alternatif") ||
+    o.includes("alternative")
+  ) return "left";
+  if (
+    o.includes("droite") ||
+    o.includes("centre-droit") ||
+    o.includes("centre droit") ||
+    o.includes("droite-centre") ||
+    o.includes("droite centre") ||
+    o.includes("conservateur") ||
+    o.includes("souverainiste") ||
+    o.includes("liberal") ||
+    o.includes("republicain") ||
+    o.includes("identitaire")
+  ) return "right";
   return "center";
 }
 

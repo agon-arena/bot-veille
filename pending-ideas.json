@@ -3588,5 +3588,645 @@
     "runAt": "2026-07-06T05:35:45.254Z",
     "status": "done",
     "attempts": 0
+  },
+  {
+    "debateId": 1438,
+    "question": "Adopter une présomption légale de légitime défense pour policiers ?",
+    "positionA": "Renforcer le contrôle judiciaire",
+    "positionB": "Protéger les policiers",
+    "id": "1438-1783348095538-ut1h0r",
+    "runAt": "2026-07-06T14:38:15.538Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1439,
+    "question": "Poursuivre pour apologie ou protéger l'expression pro-palestinienne ?",
+    "positionA": "Priorité à la répression pénale",
+    "positionB": "Priorité à la liberté d'expression",
+    "id": "1439-1783348095539-l7bigc",
+    "runAt": "2026-07-06T14:38:15.538Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1440,
+    "question": "Faut-il privilégier la simplification des règles ou la préservation des normes ?",
+    "positionA": "Prioriser la simplification réglementaire",
+    "positionB": "Préserver et renforcer les normes environnementales",
+    "id": "1440-1783348095539-j52v79",
+    "runAt": "2026-07-06T14:38:15.538Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1441,
+    "question": "Adopter une présomption légale de légitime défense pour policiers ?",
+    "positionA": "Renforcer le contrôle judiciaire",
+    "positionB": "Protéger les policiers",
+    "id": "1441-1783348095539-i7c48y",
+    "runAt": "2026-07-06T14:38:15.538Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1442,
+    "question": "Faut-il faire de la régularisation massive une politique nationale ?",
+    "positionA": "Régularisation généralisée",
+    "positionB": "Maintien de règles plus strictes",
+    "id": "1442-1783348095539-cmmo0a",
+    "runAt": "2026-07-06T14:38:15.538Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1443,
+    "question": "Incendie dans les Aspres : évacuations et vaste mobilisation des secours",
+    "positionA": "",
+    "positionB": "",
+    "id": "1443-1783348095539-o1jbva",
+    "runAt": "2026-07-06T14:38:15.538Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1444,
+    "question": "Comment réagir aux propos racistes de la sénatrice paraguayenne ?",
+    "positionA": "Réponse publique et sanctions fortes",
+    "positionB": "Réponse mesurée et canaliser diplomatiquement",
+    "id": "1444-1783348095539-ahr6bi",
+    "runAt": "2026-07-06T14:38:15.538Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1445,
+    "question": "Peut-on critiquer la gestion de la canicule sans mobiliser les victimes ?",
+    "positionA": "Priorité à la dignité des victimes",
+    "positionB": "Priorité à la force des critiques publiques",
+    "id": "1445-1783348095539-hgbdck",
+    "runAt": "2026-07-06T14:38:15.538Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1446,
+    "question": "Renforcer la protection judiciaire face au risque de menaces ?",
+    "positionA": "Sécurité renforcée des tribunaux",
+    "positionB": "Maintien d'une normalité visible",
+    "id": "1446-1783348095539-tpxp4v",
+    "runAt": "2026-07-06T14:38:15.538Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1447,
+    "question": "Faut-il encadrer plus strictement les streams violents monétisés ?",
+    "positionA": "Renforcer l'encadrement",
+    "positionB": "Préserver liberté de diffusion",
+    "id": "1447-1783348095539-6zqjw9",
+    "runAt": "2026-07-06T14:38:15.538Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1448,
+    "question": "Renforcer la protection judiciaire face au risque de menaces ?",
+    "positionA": "Sécurité renforcée des tribunaux",
+    "positionB": "Maintien d'une normalité visible",
+    "id": "1448-1783348095539-b6zy7k",
+    "runAt": "2026-07-06T14:38:15.538Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1449,
+    "question": "Faut-il encadrer plus strictement les streams violents monétisés ?",
+    "positionA": "Renforcer l'encadrement",
+    "positionB": "Préserver liberté de diffusion",
+    "id": "1449-1783348095539-kkm4k8",
+    "runAt": "2026-07-06T14:38:15.538Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1450,
+    "question": "Tir d'essai de missile chinois depuis un sous-marin dans le Pacifique Sud",
+    "positionA": "",
+    "positionB": "",
+    "id": "1450-1783348095539-7x7122",
+    "runAt": "2026-07-06T14:38:15.538Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1451,
+    "question": "Nouvelle vague de frappes sur Kiev et enjeux de la défense antiaérienne ukrainienne",
+    "positionA": "",
+    "positionB": "",
+    "id": "1451-1783348095539-fzwi6o",
+    "runAt": "2026-07-06T14:38:15.538Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1452,
+    "question": "Faut-il privilégier une démonstration de force publique ou une mise en retrait lors des funérailles ?",
+    "positionA": "Démonstration publique forte",
+    "positionB": "Mise en retrait et modestie",
+    "id": "1452-1783348095539-u1df71",
+    "runAt": "2026-07-06T14:38:15.538Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1453,
+    "question": "Le Hamas dissout ses instances dirigeantes à Gaza et transfère la gestion au NCAG",
+    "positionA": "",
+    "positionB": "",
+    "id": "1453-1783348095539-ph3jk8",
+    "runAt": "2026-07-06T14:38:15.538Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1454,
+    "question": "Le Hamas dissout ses instances dirigeantes à Gaza et transfère la gestion au NCAG",
+    "positionA": "",
+    "positionB": "",
+    "id": "1454-1783348095539-ip21sz",
+    "runAt": "2026-07-06T14:38:15.538Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1455,
+    "question": "Faut-il appliquer strictement la suspension automatique prévue par le règlement ?",
+    "positionA": "Application stricte du règlement",
+    "positionB": "Pouvoir d'atténuation disciplinaire",
+    "id": "1455-1783348095539-pu5bbt",
+    "runAt": "2026-07-06T14:38:15.538Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1456,
+    "question": "Faut-il appliquer strictement la suspension automatique prévue par le règlement ?",
+    "positionA": "Application stricte du règlement",
+    "positionB": "Pouvoir d'atténuation disciplinaire",
+    "id": "1456-1783348095539-qy7rau",
+    "runAt": "2026-07-06T14:38:15.538Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1457,
+    "question": "Cédric Jubillar reconnaît avoir tué son épouse dans une lettre à son avocat",
+    "positionA": "",
+    "positionB": "",
+    "id": "1457-1783348095539-nk0cp3",
+    "runAt": "2026-07-06T14:38:15.538Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1458,
+    "question": "Cédric Jubillar reconnaît avoir tué son épouse dans une lettre à son avocat",
+    "positionA": "",
+    "positionB": "",
+    "id": "1458-1783348095539-2fnmxr",
+    "runAt": "2026-07-06T14:38:15.538Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1459,
+    "question": "Instaurer une présomption réfragable de légitime défense pour les policiers ?",
+    "positionA": "Renforcer garanties et contrôles",
+    "positionB": "Protéger juridiquement les forces",
+    "id": "1459-1783401985104-o4n5px",
+    "runAt": "2026-07-07T05:47:58.739Z",
+    "status": "failed",
+    "attempts": 3
+  },
+  {
+    "debateId": 1460,
+    "question": "Un événement de l'AMFAR interdit par la préfecture des Hauts-de-Seine",
+    "positionA": "",
+    "positionB": "",
+    "id": "1460-1783401985104-emgra8",
+    "runAt": "2026-07-07T05:48:17.212Z",
+    "status": "failed",
+    "attempts": 3
+  },
+  {
+    "debateId": 1461,
+    "question": "Faut-il présumer la légalité des tirs policiers avant enquête ?",
+    "positionA": "Maintenir l'examen impartial des tirs",
+    "positionB": "Présumer la légalité pour protéger l'ordre",
+    "id": "1461-1783401985104-kqalr5",
+    "runAt": "2026-07-07T05:48:32.505Z",
+    "status": "failed",
+    "attempts": 3
+  },
+  {
+    "debateId": 1462,
+    "question": "Le PS doit-il privilégier fermeté publique ou unité interne ?",
+    "positionA": "Affirmer fermeté publique",
+    "positionB": "Prioriser unité interne",
+    "id": "1462-1783401985104-6q4wwq",
+    "runAt": "2026-07-07T05:48:49.223Z",
+    "status": "failed",
+    "attempts": 3
+  },
+  {
+    "debateId": 1463,
+    "question": "Motion de censure écologiste contre Sébastien Lecornu rejetée par l'Assemblée",
+    "positionA": "",
+    "positionB": "",
+    "id": "1463-1783401985104-7ija5n",
+    "runAt": "2026-07-07T05:49:02.811Z",
+    "status": "failed",
+    "attempts": 3
+  },
+  {
+    "debateId": 1464,
+    "question": "Espagne et Belgique qualifiées pour les quarts après les huitièmes de la Coupe du Monde 2026",
+    "positionA": "",
+    "positionB": "",
+    "id": "1464-1783401985104-5bn0rv",
+    "runAt": "2026-07-07T05:49:21.629Z",
+    "status": "failed",
+    "attempts": 3
+  },
+  {
+    "debateId": 1465,
+    "question": "Présumer la légalité des tirs policiers ou maintenir la charge de la preuve ?",
+    "positionA": "Maintenir charge de la preuve actuelle",
+    "positionB": "Présumer la légalité des tirs",
+    "id": "1465-1783401985104-mu2wzy",
+    "runAt": "2026-07-07T05:49:36.188Z",
+    "status": "failed",
+    "attempts": 3
+  },
+  {
+    "debateId": 1466,
+    "question": "répondre par renforcement militaire collectif ou par désescalade diplomatique ?",
+    "positionA": "prioriser la désescalade diplomatique",
+    "positionB": "renforcement militaire collectif",
+    "id": "1466-1783401985104-gph16f",
+    "runAt": "2026-07-07T05:49:49.055Z",
+    "status": "failed",
+    "attempts": 3
+  },
+  {
+    "debateId": 1467,
+    "question": "Présumer la légalité des tirs policiers ou maintenir la charge de la preuve ?",
+    "positionA": "Maintenir charge de la preuve actuelle",
+    "positionB": "Présumer la légalité des tirs",
+    "id": "1467-1783401985104-4thf6g",
+    "runAt": "2026-07-07T05:50:04.201Z",
+    "status": "failed",
+    "attempts": 3
+  },
+  {
+    "debateId": 1468,
+    "question": "La Commission européenne demande à la France de revoir sa loi sur l'accès des mineurs aux réseaux s…",
+    "positionA": "",
+    "positionB": "",
+    "id": "1468-1783401985104-bn3q7x",
+    "runAt": "2026-07-07T05:50:24.246Z",
+    "status": "failed",
+    "attempts": 3
+  },
+  {
+    "debateId": 1469,
+    "question": "répondre par renforcement militaire collectif ou par désescalade diplomatique ?",
+    "positionA": "prioriser la désescalade diplomatique",
+    "positionB": "renforcement militaire collectif",
+    "id": "1469-1783401985104-h0vxvr",
+    "runAt": "2026-07-07T05:50:40.735Z",
+    "status": "failed",
+    "attempts": 3
+  },
+  {
+    "debateId": 1470,
+    "question": "Investir vite en Syrie ou conditionner la coopération politique ?",
+    "positionA": "rapide relance économique",
+    "positionB": "coopération conditionnée",
+    "id": "1470-1783401985104-94u1r0",
+    "runAt": "2026-07-07T05:50:58.776Z",
+    "status": "failed",
+    "attempts": 3
+  },
+  {
+    "debateId": 1471,
+    "question": "Pogacar remporte la 3e étape et endosse le maillot jaune aux Angles",
+    "positionA": "",
+    "positionB": "",
+    "id": "1471-1783401985104-4q1c60",
+    "runAt": "2026-07-07T05:51:11.407Z",
+    "status": "failed",
+    "attempts": 3
+  },
+  {
+    "debateId": 1472,
+    "question": "Une inéligibilité doit-elle empêcher Marine Le Pen de se présenter ?",
+    "positionA": "Appliquer l'inéligibilité",
+    "positionB": "Permettre la candidature malgré tout",
+    "id": "1472-1783401985104-vwdobl",
+    "runAt": "2026-07-07T05:51:24.441Z",
+    "status": "failed",
+    "attempts": 3
+  },
+  {
+    "debateId": 1473,
+    "question": "Comment répondre aux propos racistes d'une sénatrice étrangère ?",
+    "positionA": "Sanction et poursuites fermes",
+    "positionB": "Réponse diplomatique et mesurée",
+    "id": "1473-1783401985104-c4qt49",
+    "runAt": "2026-07-07T05:51:43.969Z",
+    "status": "failed",
+    "attempts": 3
+  },
+  {
+    "debateId": 1474,
+    "question": "La Fifa doit-elle refuser les pressions politiques sur ses sanctions ?",
+    "positionA": "Refuser toute pression",
+    "positionB": "Permettre réexamen exceptionnel",
+    "id": "1474-1783401985104-xcsm3t",
+    "runAt": "2026-07-07T05:52:01.496Z",
+    "status": "failed",
+    "attempts": 3
+  },
+  {
+    "debateId": 1475,
+    "question": "Cédric Jubillar reconnaît avoir tué son épouse et des investigations sont relancées",
+    "positionA": "",
+    "positionB": "",
+    "id": "1475-1783401985104-twwv8p",
+    "runAt": "2026-07-07T05:52:13.183Z",
+    "status": "failed",
+    "attempts": 3
+  },
+  {
+    "debateId": 1476,
+    "question": "Comment répondre aux propos racistes d'une sénatrice étrangère ?",
+    "positionA": "Sanction et poursuites fermes",
+    "positionB": "Réponse diplomatique et mesurée",
+    "id": "1476-1783401985104-flsuo3",
+    "runAt": "2026-07-07T05:52:32.689Z",
+    "status": "failed",
+    "attempts": 3
+  },
+  {
+    "debateId": 1477,
+    "question": "La Fifa doit-elle refuser les pressions politiques sur ses sanctions ?",
+    "positionA": "Refuser toute pression",
+    "positionB": "Permettre réexamen exceptionnel",
+    "id": "1477-1783401985104-tcuiwo",
+    "runAt": "2026-07-07T05:52:53.548Z",
+    "status": "failed",
+    "attempts": 3
+  },
+  {
+    "debateId": 1478,
+    "question": "Cédric Jubillar reconnaît avoir tué son épouse et des investigations sont relancées",
+    "positionA": "",
+    "positionB": "",
+    "id": "1478-1783401985104-snh78c",
+    "runAt": "2026-07-07T05:53:14.399Z",
+    "status": "failed",
+    "attempts": 3
+  },
+  {
+    "debateId": 1479,
+    "question": "Une inéligibilité doit-elle empêcher Marine Le Pen de se présenter ?",
+    "positionA": "Appliquer l'inéligibilité",
+    "positionB": "Permettre la candidature malgré tout",
+    "id": "1479-1783401985104-6vw6dy",
+    "runAt": "2026-07-07T05:53:34.603Z",
+    "status": "failed",
+    "attempts": 3
+  },
+  {
+    "debateId": 1480,
+    "question": "Incendies et canicule dans le sud de la France : évacuations et soutiens internationaux",
+    "positionA": "",
+    "positionB": "",
+    "id": "1480-1783401985104-bxunnv",
+    "runAt": "2026-07-07T05:53:55.818Z",
+    "status": "failed",
+    "attempts": 3
+  },
+  {
+    "debateId": 1481,
+    "question": "Incendies et canicule dans le sud de la France : évacuations et soutiens internationaux",
+    "positionA": "",
+    "positionB": "",
+    "id": "1481-1783401985104-hpjqqq",
+    "runAt": "2026-07-07T05:54:14.267Z",
+    "status": "failed",
+    "attempts": 3
+  },
+  {
+    "debateId": 1482,
+    "question": "Faut‑il laisser l'élection partielle se tenir rapidement telle que voulue par Farage ?",
+    "positionA": "Vite respecter le choix des électeurs",
+    "positionB": "Prudence préserver l'enquête et l'intégrité",
+    "id": "1482-1783434311734-l65zw0",
+    "runAt": "2026-07-07T14:35:11.733Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1483,
+    "question": "Le PS doit-il reconduire Olivier Faure comme Premier secrétaire ?",
+    "positionA": "Maintenir Faure",
+    "positionB": "Remplacer Faure",
+    "id": "1483-1783434311734-tyil8j",
+    "runAt": "2026-07-07T14:35:11.733Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1484,
+    "question": "Faut‑il laisser l'élection partielle se tenir rapidement telle que voulue par Farage ?",
+    "positionA": "Vite respecter le choix des électeurs",
+    "positionB": "Prudence préserver l'enquête et l'intégrité",
+    "id": "1484-1783434311734-m8id3n",
+    "runAt": "2026-07-07T14:35:11.733Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1485,
+    "question": "Le président doit-il s'abstenir de commenter la condamnation de Le Pen ?",
+    "positionA": "Respect strict de la réserve présidentielle",
+    "positionB": "Prise de parole politique engagée",
+    "id": "1485-1783434311734-t8zihf",
+    "runAt": "2026-07-07T14:35:11.733Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1486,
+    "question": "Présidentielle 2027 : ambitions parallèles et place de l'IA dans la campagne",
+    "positionA": "",
+    "positionB": "",
+    "id": "1486-1783434311734-4mt2lg",
+    "runAt": "2026-07-07T14:35:11.733Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1487,
+    "question": "Le RN doit-il maintenir la candidature de Marine Le Pen ou investir Jordan Bardella ?",
+    "positionA": "Maintenir Marine Le Pen",
+    "positionB": "Investir Jordan Bardella",
+    "id": "1487-1783434311734-1ickhr",
+    "runAt": "2026-07-07T14:35:11.733Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1488,
+    "question": "La cour d'appel confirme les condamnations dans l'affaire des assistants parlementaires européens d…",
+    "positionA": "",
+    "positionB": "",
+    "id": "1488-1783434311734-pnw3lm",
+    "runAt": "2026-07-07T14:35:11.733Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1489,
+    "question": "Faut‑il instituer une présomption légale de légitime défense pour les forces de l'ordre ?",
+    "positionA": "Maintenir l'exigence de preuve",
+    "positionB": "Présumer la légitimité des tirs",
+    "id": "1489-1783434311734-qthkvt",
+    "runAt": "2026-07-07T14:35:11.733Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1490,
+    "question": "Faut‑il instituer une présomption légale de légitime défense pour les forces de l'ordre ?",
+    "positionA": "Maintenir l'exigence de preuve",
+    "positionB": "Présumer la légitimité des tirs",
+    "id": "1490-1783434311734-nglr48",
+    "runAt": "2026-07-07T14:35:11.733Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1491,
+    "question": "Sanctionner fermement ou privilégier le dialogue et la réparation ?",
+    "positionA": "Dialogue et réparation ciblée",
+    "positionB": "Sanction ferme et dissuasive",
+    "id": "1491-1783434311734-w9kni3",
+    "runAt": "2026-07-07T14:35:11.733Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1492,
+    "question": "Une condamnation avec bracelet et inéligibilité doit-elle restreindre la campagne ?",
+    "positionA": "Respect strict de la peine",
+    "positionB": "Aménagements pour permettre la campagne",
+    "id": "1492-1783434311734-939y6w",
+    "runAt": "2026-07-07T14:35:11.733Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1493,
+    "question": "Mondial 2026 : controverse sur la levée de suspension de Balogun avant Belgique–États-Unis",
+    "positionA": "",
+    "positionB": "",
+    "id": "1493-1783434311734-rqh6dm",
+    "runAt": "2026-07-07T14:35:11.733Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1494,
+    "question": "Sanctionner fermement ou privilégier le dialogue et la réparation ?",
+    "positionA": "Dialogue et réparation ciblée",
+    "positionB": "Sanction ferme et dissuasive",
+    "id": "1494-1783434311734-ozyjjc",
+    "runAt": "2026-07-07T14:35:11.733Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1495,
+    "question": "Bac 2026 : taux provisoire de réussite quasi stable à 85,5 %",
+    "positionA": "",
+    "positionB": "",
+    "id": "1495-1783434311734-lwokmk",
+    "runAt": "2026-07-07T14:35:11.733Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1496,
+    "question": "Incendies : massif des Aspres et feu dans la Drôme restent actifs",
+    "positionA": "",
+    "positionB": "",
+    "id": "1496-1783434311734-g6eqe6",
+    "runAt": "2026-07-07T14:35:11.733Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1497,
+    "question": "Suspecte de l'attentat à Monaco retrouvée morte en Ukraine",
+    "positionA": "",
+    "positionB": "",
+    "id": "1497-1783434311734-jkkbk5",
+    "runAt": "2026-07-07T14:35:11.733Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1498,
+    "question": "Explosions près du Four Seasons à Damas lors de la visite d'Emmanuel Macron",
+    "positionA": "",
+    "positionB": "",
+    "id": "1498-1783434311734-8lghap",
+    "runAt": "2026-07-07T14:35:11.733Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1499,
+    "question": "Explosions près du Four Seasons à Damas lors de la visite d'Emmanuel Macron",
+    "positionA": "",
+    "positionB": "",
+    "id": "1499-1783434311734-3n2f4e",
+    "runAt": "2026-07-07T14:35:11.733Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1500,
+    "question": "Le RN doit-il maintenir la candidature de Le Pen malgré le bracelet ?",
+    "positionA": "Maintenir Le Pen",
+    "positionB": "La remplacer pour campagne libre",
+    "id": "1500-1783434311734-vjlti1",
+    "runAt": "2026-07-07T14:35:11.733Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1501,
+    "question": "Le RN doit-il maintenir la candidature de Le Pen malgré le bracelet ?",
+    "positionA": "Maintenir Le Pen",
+    "positionB": "La remplacer pour campagne libre",
+    "id": "1501-1783434311734-hvo4kq",
+    "runAt": "2026-07-07T14:35:11.733Z",
+    "status": "done",
+    "attempts": 0
   }
 ]

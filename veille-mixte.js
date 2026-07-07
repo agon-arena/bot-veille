@@ -387,6 +387,110 @@ function parseNewsSitemap(xmlText) {
   return { items };
 }
 
+function getFeedUrlFilterRegexes(source) {
+  return getSourceRegexes(source, "includeUrlPattern", "includeUrlPatterns");
+}
+
+function getSourceRegexes(source, singleKey, multipleKey) {
+  const rawPatterns = [];
+  if (source && source[singleKey]) rawPatterns.push(source[singleKey]);
+  if (source && Array.isArray(source[multipleKey])) rawPatterns.push(...source[multipleKey]);
+  return rawPatterns.map((pattern) => {
+    try {
+      return new RegExp(String(pattern), "i");
+    } catch (error) {
+      console.warn(`[source] filtre invalide ignoré pour ${source.nom || "source"}: ${pattern}`);
+      return null;
+    }
+  }).filter(Boolean);
+}
+
+function applyFeedSourceFilters(feed, source) {
+  const regexes = getFeedUrlFilterRegexes(source);
+  if (!regexes.length) return feed;
+  const items = (feed.items || []).filter((item) => {
+    const url = String(item.link || item.guid || "");
+    return regexes.some((regex) => regex.test(url));
+  });
+  return { ...feed, items };
+}
+
+function getFeedTitleExcludeRegexes(source) {
+  return getSourceRegexes(source, "excludeTitlePattern", "excludeTitlePatterns");
+}
+
+function getFeedTitleStripRegexes(source) {
+  return getSourceRegexes(source, "stripTitleSuffixPattern", "stripTitleSuffixPatterns");
+}
+
+function normalizeFeedItemTitle(title, source) {
+  let nextTitle = String(title || "Sans titre").trim();
+  for (const regex of getFeedTitleStripRegexes(source)) {
+    nextTitle = nextTitle.replace(regex, "").trim();
+  }
+  return nextTitle || String(title || "Sans titre").trim() || "Sans titre";
+}
+
+function shouldSkipFeedItemTitle(title, source) {
+  const value = String(title || "").trim();
+  return getFeedTitleExcludeRegexes(source).some((regex) => regex.test(value));
+}
+
+function getMediaFeedCandidates(media) {
+  const candidates = [];
+  if (media.rss) {
+    candidates.push({
+      url: media.rss,
+      label: `Flux RSS ${media.nom}`,
+      fallback: false
+    });
+  }
+
+  const fallbacks = [];
+  if (media.rssFallback) fallbacks.push(media.rssFallback);
+  if (Array.isArray(media.rssFallbacks)) fallbacks.push(...media.rssFallbacks);
+
+  for (let index = 0; index < fallbacks.length; index++) {
+    const fallback = fallbacks[index];
+    const url = typeof fallback === "string" ? fallback : fallback?.url || fallback?.rss;
+    if (!url) continue;
+    candidates.push({
+      url,
+      label: typeof fallback === "object" && fallback.label ? fallback.label : `Fallback RSS ${media.nom} #${index + 1}`,
+      fallback: true
+    });
+  }
+
+  return candidates;
+}
+
+async function fetchMediaFeed(media) {
+  const candidates = getMediaFeedCandidates(media);
+  let lastError = null;
+
+  for (const candidate of candidates) {
+    try {
+      if (candidate.fallback) {
+        console.log(`[fallback] ${media.nom} — essai via ${candidate.label}`);
+      }
+      collectionDiagnostics.mediaRssFetched++;
+      const feed = await fetchFeedWithFallback(candidate.url, candidate.label);
+      return {
+        feed: applyFeedSourceFilters(feed, media),
+        usedFallback: candidate.fallback,
+        candidate
+      };
+    } catch (error) {
+      lastError = error;
+      if (!candidate.fallback && candidates.some((item) => item.fallback)) {
+        console.warn(`[fallback] ${media.nom} — flux principal indisponible (${error.message}), tentative fallback.`);
+      }
+    }
+  }
+
+  throw lastError || new Error(`Aucun flux RSS utilisable pour ${media.nom}`);
+}
+
 async function fetchFeedWithFallback(url, label, timeoutMs = FEED_TIMEOUT_MS) {
   try {
     return await parseFeedWithTimeout(url, label, timeoutMs);
@@ -750,8 +854,7 @@ async function collectArticles(lastSessionCutoff = null, knownSources = new Set(
 
     try {
       console.log(`Article — lecture de ${media.nom}...`);
-      collectionDiagnostics.mediaRssFetched++;
-      const feed = await fetchFeedWithFallback(media.rss, `Flux RSS ${media.nom}`);
+      const { feed, usedFallback, candidate } = await fetchMediaFeed(media);
       const isNewSource = knownSources.size > 0 && !knownSources.has(media.nom);
       let kept = 0, skipped = 0;
 
@@ -759,13 +862,21 @@ async function collectArticles(lastSessionCutoff = null, knownSources = new Set(
         const date = getItemDate(item);
         if (!isRecent(date, HOURS_BACK_ARTICLES)) { skipped++; continue; }
         if (!isNewSource && !isFreshSinceLastSession(date, lastSessionCutoff)) { skipped++; continue; }
-        const title = item.title || "Sans titre";
+        const rawTitle = item.title || "Sans titre";
+        const title = normalizeFeedItemTitle(rawTitle, media);
+        if (shouldSkipFeedItemTitle(rawTitle, media) || shouldSkipFeedItemTitle(title, media)) { skipped++; continue; }
         if (isRoundupTitle(title)) { skipped++; continue; }
         const summary = item.contentSnippet || item.content || item.summary || "";
         contents.push({ type: "article", source: media.nom, orientation: media.orientation || "", title, link: item.link || "", date: date.toISOString(), summary, thumbnail: "", comparableText: cleanText(title) });
         kept++;
       }
-      report.sources.push({ nom: media.nom, statut: "ok", kept, skipped });
+      report.sources.push({
+        nom: media.nom,
+        statut: "ok",
+        kept,
+        skipped,
+        message: usedFallback ? `fallback ${candidate.label}` : ""
+      });
     } catch (error) {
       registerRssError(error);
       logRssError(media.nom, error, { orientation: media.orientation || "", rss: media.rss });
@@ -2301,9 +2412,41 @@ async function analyzeSubjectsWithAI(subjects) {
 }
 
 function getOrientationGroup(orientation) {
-  const o = (orientation || "").toLowerCase();
-  if (o.includes("gauche")) return "left";
-  if (o.includes("droite") || o.includes("conservateur") || o.includes("souverainiste")) return "right";
+  const o = String(orientation || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+  if (
+    o.includes("gauche") ||
+    o.includes("ecolog") ||
+    o.includes("ecolo") ||
+    o.includes("libertaire") ||
+    o.includes("altermondialiste") ||
+    o.includes("alter-mondialiste") ||
+    o.includes("anticapitaliste") ||
+    o.includes("anti-capitaliste") ||
+    o.includes("socialiste") ||
+    o.includes("social-democrate") ||
+    o.includes("social democrate") ||
+    o.includes("progressiste") ||
+    o.includes("insoumis") ||
+    o.includes("insoumission") ||
+    o.includes("communiste") ||
+    o.includes("marxiste") ||
+    o.includes("feministe") ||
+    o.includes("syndical") ||
+    o.includes("alternatif") ||
+    o.includes("alternative")
+  ) return "left";
+  if (
+    o.includes("droite") ||
+    o.includes("centre-droit") ||
+    o.includes("centre droit") ||
+    o.includes("droite-centre") ||
+    o.includes("droite centre") ||
+    o.includes("conservateur") ||
+    o.includes("souverainiste") ||
+    o.includes("liberal") ||
+    o.includes("republicain") ||
+    o.includes("identitaire")
+  ) return "right";
   return "center";
 }
 
@@ -3234,9 +3377,41 @@ function buildSubjectInteractionScriptHtml(opts = {}) {
     }
 
     function getOrientationGroupClient(orientation) {
-      const o = (orientation || "").toLowerCase();
-      if (o.indexOf("gauche") !== -1) return "left";
-      if (o.indexOf("droite") !== -1 || o.indexOf("conservateur") !== -1 || o.indexOf("souverainiste") !== -1) return "right";
+      const o = String(orientation || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+      if (
+        o.indexOf("gauche") !== -1 ||
+        o.indexOf("ecolog") !== -1 ||
+        o.indexOf("ecolo") !== -1 ||
+        o.indexOf("libertaire") !== -1 ||
+        o.indexOf("altermondialiste") !== -1 ||
+        o.indexOf("alter-mondialiste") !== -1 ||
+        o.indexOf("anticapitaliste") !== -1 ||
+        o.indexOf("anti-capitaliste") !== -1 ||
+        o.indexOf("socialiste") !== -1 ||
+        o.indexOf("social-democrate") !== -1 ||
+        o.indexOf("social democrate") !== -1 ||
+        o.indexOf("progressiste") !== -1 ||
+        o.indexOf("insoumis") !== -1 ||
+        o.indexOf("insoumission") !== -1 ||
+        o.indexOf("communiste") !== -1 ||
+        o.indexOf("marxiste") !== -1 ||
+        o.indexOf("feministe") !== -1 ||
+        o.indexOf("syndical") !== -1 ||
+        o.indexOf("alternatif") !== -1 ||
+        o.indexOf("alternative") !== -1
+      ) return "left";
+      if (
+        o.indexOf("droite") !== -1 ||
+        o.indexOf("centre-droit") !== -1 ||
+        o.indexOf("centre droit") !== -1 ||
+        o.indexOf("droite-centre") !== -1 ||
+        o.indexOf("droite centre") !== -1 ||
+        o.indexOf("conservateur") !== -1 ||
+        o.indexOf("souverainiste") !== -1 ||
+        o.indexOf("liberal") !== -1 ||
+        o.indexOf("republicain") !== -1 ||
+        o.indexOf("identitaire") !== -1
+      ) return "right";
       return "center";
     }
 
@@ -6814,7 +6989,7 @@ function generateHtml(sessions) {
       const isPause = s.statut === "pause";
       const icon = isOk ? "✓" : isPause ? "⏸" : "✗";
       const cls = isOk ? "cr-ok" : isPause ? "cr-pause" : "cr-err";
-      const detail = isOk ? `${s.kept} retenu(s), ${s.skipped} ignoré(s)` : (s.message ? `${s.statut} — ${s.message}` : s.statut);
+      const detail = isOk ? `${s.kept} retenu(s), ${s.skipped} ignoré(s)${s.message ? ` — ${s.message}` : ""}` : (s.message ? `${s.statut} — ${s.message}` : s.statut);
       return `<tr class="${cls}"><td class="cr-icon">${icon}</td><td class="cr-name">${escapeHtml(s.nom)}</td><td class="cr-detail">${escapeHtml(detail)}</td></tr>`;
     };
 
@@ -6999,7 +7174,7 @@ function generateHtml(sessions) {
         var isPause = s.statut === 'pause';
         var icon = isOk ? '✓' : isPause ? '⏸' : '✗';
         var cls = isOk ? 'cr-ok' : isPause ? 'cr-pause' : 'cr-err';
-        var detail = isOk ? (s.kept + ' retenu(s), ' + s.skipped + ' ignoré(s)') : (s.message ? s.statut + ' — ' + s.message : s.statut);
+        var detail = isOk ? (s.kept + ' retenu(s), ' + s.skipped + ' ignoré(s)' + (s.message ? ' — ' + s.message : '')) : (s.message ? s.statut + ' — ' + s.message : s.statut);
         return '<tr class="' + cls + '"><td class="cr-icon">' + icon + '</td><td class="cr-name">' + s.nom + '</td><td class="cr-detail">' + detail + '</td></tr>';
       }
 
@@ -8111,11 +8286,21 @@ apiApp.post("/certamen/refresh", async function(req, res) {
 
 // ==================== FIN MODE CERTAMEN ====================
 
+function renderMixteHtmlFromHistory() {
+  const existingSessions = loadSessions().slice(0, MAX_SESSIONS_TO_KEEP);
+  fs.writeFileSync(OUTPUT_HTML, generateHtml(existingSessions), "utf8");
+  console.log(`veille-mixte.html régénéré (${existingSessions.length} session(s)).`);
+}
+
+if (process.argv.includes("--render-html")) {
+  renderMixteHtmlFromHistory();
+  process.exit(0);
+}
+
 if (!fs.existsSync(OUTPUT_HTML)) {
   const existingSessions = loadSessions();
   if (existingSessions.length > 0) {
-    fs.writeFileSync(OUTPUT_HTML, generateHtml(existingSessions), "utf8");
-    console.log(`veille-mixte.html régénéré au démarrage (${existingSessions.length} session(s)).`);
+    renderMixteHtmlFromHistory();
   }
 }
 

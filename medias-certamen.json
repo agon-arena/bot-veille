@@ -256,7 +256,7 @@
   },
   {
     "nom": "Rue89 Bordeaux",
-    "orientation": "local / indépendant",
+    "orientation": "gauche / local indépendant",
     "rss": "https://rue89bordeaux.com/feed/"
   },
   {
@@ -517,7 +517,8 @@
   {
     "nom": "Les Échos — Tech médias",
     "orientation": "droite",
-    "rss": "https://services.lesechos.fr/rss/les-echos-tech-medias.xml"
+    "rss": "https://sitemap.lesechos.fr/sitemap_news.xml",
+    "includeUrlPattern": "/tech-medias/"
   },
   {
     "nom": "Boulevard Voltaire",
@@ -527,6 +528,16 @@
   {
     "nom": "Frontières",
     "orientation": "droite",
-    "rss": "https://www.frontieresmedia.fr/feed/"
+    "rss": "https://www.frontieresmedia.fr/feed/",
+    "rssFallbacks": [
+      {
+        "label": "Google News site:frontieresmedia.fr",
+        "url": "https://news.google.com/rss/search?q=site%3Afrontieresmedia.fr&hl=fr&gl=FR&ceid=FR%3Afr"
+      }
+    ],
+    "stripTitleSuffixPattern": "\\s+-\\s+frontieresmedia\\.fr$",
+    "excludeTitlePatterns": [
+      "^(Nos abonnements|Faire un don|Les magazines|Frontières)$"
+    ]
   }
 ]

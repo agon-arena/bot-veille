@@ -1,0 +1,74 @@
+Démarrage du bot de veille...
+Arrêt de l'ancienne instance launcher (15558)...
+Instance active : { launcherPid: 19787, veilleMixtePid: 19810, serverPid: 19814 }
+◇ injected env (6) from .env // tip: ⌘ custom filepath { path: '/custom/path/.env' }
+◇ injected env (6) from .env // tip: ◈ encrypted .env [www.dotenvx.com]
+Bot veille prêt — collecte manuelle uniquement (bouton Mise à jour).
+API mixte lancée sur 127.0.0.1:3002
+[storage-sync] Supabase connecté
+[storage-sync] Démarrage downloadAll() — mode: normal (comparaison local/Supabase)
+[storage-sync] Conservés localement, déjà à jour (8): sessions-mixte.json, veille-mixte.json, auto-collect-config.json, auto-collect-certamen-config.json, auto-publish-config.json, auto-publish-certamen-config.json, youtube-chaines.json, medias.json
+[storage-sync] Téléchargés (Supabase plus récent ou état local inconnu) (5): saved-subjects.json, sent-to-agon.json, certamen-sessions.json, pending-ideas.json, certamen-pending-ideas.json
+[storage-sync] downloadAll() terminé
+Serveur lancé sur le port 3000
+[auto-collect] Prochaine collecte 09:00 → 07:00
+[auto-collect] Prochaine collecte 18:00 → 16:00
+[auto-collect-certamen] Heure programmée 12:00 → prochaine collecte le 07/07/2026 à 10:00
+[storage-sync] Sync automatique toutes les 1800s (30 min) — surveille 13 fichier(s) JSON local/Supabase, n'envoie que ceux qui ont changé. Cette sync est indépendante des collectes RSS/YouTube programmées (voir auto-collect-config.json / auto-collect-certamen-config.json).
+Démarrage du bot de veille...
+Arrêt de l'ancienne instance launcher (19787)...
+Arrêt du bot de veille...
+Instance active : { launcherPid: 19985, veilleMixtePid: 20008, serverPid: 20012 }
+◇ injected env (6) from .env // tip: ⌘ multiple files { path: ['.env.local', '.env'] }
+◇ injected env (6) from .env // tip: ⌘ custom filepath { path: '/custom/path/.env' }
+Bot veille prêt — collecte manuelle uniquement (bouton Mise à jour).
+API mixte lancée sur 127.0.0.1:3002
+[storage-sync] Supabase connecté
+[storage-sync] Démarrage downloadAll() — mode: normal (comparaison local/Supabase)
+[storage-sync] Conservés localement, déjà à jour (13): sessions-mixte.json, saved-subjects.json, sent-to-agon.json, certamen-sessions.json, veille-mixte.json, auto-collect-config.json, auto-collect-certamen-config.json, auto-publish-config.json, auto-publish-certamen-config.json, youtube-chaines.json, medias.json, pending-ideas.json, certamen-pending-ideas.json
+[storage-sync] downloadAll() terminé
+Serveur lancé sur le port 3000
+[auto-pipelines] Instance passive (hors Render, ou BOT_AUTO_PIPELINES=off) : collecte auto, tick GitHub Actions, auto-publish et reprise d'idées désactivés. Seule l'instance Render publie.
+[storage-sync] Sync automatique toutes les 1800s (30 min) — surveille 13 fichier(s) JSON local/Supabase, n'envoie que ceux qui ont changé. Cette sync est indépendante des collectes RSS/YouTube programmées (voir auto-collect-config.json / auto-collect-certamen-config.json).
+[storage-sync] Sync : aucun changement local depuis le dernier envoi (13 fichier(s) inchangé(s)), rien à transmettre à Supabase.
+[storage-sync] Sync : aucun changement local depuis le dernier envoi (13 fichier(s) inchangé(s)), rien à transmettre à Supabase.
+[storage-sync] Sync : aucun changement local depuis le dernier envoi (13 fichier(s) inchangé(s)), rien à transmettre à Supabase.
+[storage-sync] Sync : aucun changement local depuis le dernier envoi (13 fichier(s) inchangé(s)), rien à transmettre à Supabase.
+[storage-sync] Sync : aucun changement local depuis le dernier envoi (13 fichier(s) inchangé(s)), rien à transmettre à Supabase.
+[storage-sync] Sync : aucun changement local depuis le dernier envoi (13 fichier(s) inchangé(s)), rien à transmettre à Supabase.
+[storage-sync] Sync : aucun changement local depuis le dernier envoi (13 fichier(s) inchangé(s)), rien à transmettre à Supabase.
+[storage-sync] Sync : aucun changement local depuis le dernier envoi (13 fichier(s) inchangé(s)), rien à transmettre à Supabase.
+[storage-sync] Sync : aucun changement local depuis le dernier envoi (13 fichier(s) inchangé(s)), rien à transmettre à Supabase.
+[storage-sync] Sync : aucun changement local depuis le dernier envoi (13 fichier(s) inchangé(s)), rien à transmettre à Supabase.
+[storage-sync] Sync : aucun changement local depuis le dernier envoi (13 fichier(s) inchangé(s)), rien à transmettre à Supabase.
+[storage-sync] Sync : aucun changement local depuis le dernier envoi (13 fichier(s) inchangé(s)), rien à transmettre à Supabase.
+[storage-sync] Sync : aucun changement local depuis le dernier envoi (13 fichier(s) inchangé(s)), rien à transmettre à Supabase.
+[storage-sync] Sync : aucun changement local depuis le dernier envoi (13 fichier(s) inchangé(s)), rien à transmettre à Supabase.
+[storage-sync] Sync : aucun changement local depuis le dernier envoi (13 fichier(s) inchangé(s)), rien à transmettre à Supabase.
+[storage-sync] Sync : aucun changement local depuis le dernier envoi (13 fichier(s) inchangé(s)), rien à transmettre à Supabase.
+[storage-sync] Sync : aucun changement local depuis le dernier envoi (13 fichier(s) inchangé(s)), rien à transmettre à Supabase.
+[storage-sync] Sync : aucun changement local depuis le dernier envoi (13 fichier(s) inchangé(s)), rien à transmettre à Supabase.
+[storage-sync] Sync : aucun changement local depuis le dernier envoi (13 fichier(s) inchangé(s)), rien à transmettre à Supabase.
+[storage-sync] Sync : aucun changement local depuis le dernier envoi (13 fichier(s) inchangé(s)), rien à transmettre à Supabase.
+[storage-sync] Sync : aucun changement local depuis le dernier envoi (13 fichier(s) inchangé(s)), rien à transmettre à Supabase.
+[storage-sync] Sync : aucun changement local depuis le dernier envoi (13 fichier(s) inchangé(s)), rien à transmettre à Supabase.
+[storage-sync] Sync : aucun changement local depuis le dernier envoi (13 fichier(s) inchangé(s)), rien à transmettre à Supabase.
+[storage-sync] Sync : aucun changement local depuis le dernier envoi (13 fichier(s) inchangé(s)), rien à transmettre à Supabase.
+[storage-sync] Sync : aucun changement local depuis le dernier envoi (13 fichier(s) inchangé(s)), rien à transmettre à Supabase.
+[storage-sync] Sync : aucun changement local depuis le dernier envoi (13 fichier(s) inchangé(s)), rien à transmettre à Supabase.
+[storage-sync] Sync : aucun changement local depuis le dernier envoi (13 fichier(s) inchangé(s)), rien à transmettre à Supabase.
+[storage-sync] Sync : aucun changement local depuis le dernier envoi (13 fichier(s) inchangé(s)), rien à transmettre à Supabase.
+[storage-sync] Sync : aucun changement local depuis le dernier envoi (13 fichier(s) inchangé(s)), rien à transmettre à Supabase.
+[storage-sync] Sync : aucun changement local depuis le dernier envoi (13 fichier(s) inchangé(s)), rien à transmettre à Supabase.
+[storage-sync] Sync : aucun changement local depuis le dernier envoi (13 fichier(s) inchangé(s)), rien à transmettre à Supabase.
+[storage-sync] Sync : aucun changement local depuis le dernier envoi (13 fichier(s) inchangé(s)), rien à transmettre à Supabase.
+[storage-sync] Sync : aucun changement local depuis le dernier envoi (13 fichier(s) inchangé(s)), rien à transmettre à Supabase.
+[storage-sync] Sync : aucun changement local depuis le dernier envoi (13 fichier(s) inchangé(s)), rien à transmettre à Supabase.
+[storage-sync] Sync : aucun changement local depuis le dernier envoi (13 fichier(s) inchangé(s)), rien à transmettre à Supabase.
+[storage-sync] Sync : aucun changement local depuis le dernier envoi (13 fichier(s) inchangé(s)), rien à transmettre à Supabase.
+[storage-sync] Sync : aucun changement local depuis le dernier envoi (13 fichier(s) inchangé(s)), rien à transmettre à Supabase.
+[storage-sync] Sync : aucun changement local depuis le dernier envoi (13 fichier(s) inchangé(s)), rien à transmettre à Supabase.
+[storage-sync] Sync : aucun changement local depuis le dernier envoi (13 fichier(s) inchangé(s)), rien à transmettre à Supabase.
+[storage-sync] Sync : aucun changement local depuis le dernier envoi (13 fichier(s) inchangé(s)), rien à transmettre à Supabase.
+[storage-sync] Sync : 1 fichier(s) modifié(s) envoyé(s) vers Supabase (medias.json), 12 inchangé(s) (non transmis).
+Arrêt du bot de veille...
