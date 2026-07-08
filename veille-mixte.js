@@ -1518,6 +1518,8 @@ Règle centrale :
 - il doit être immédiatement compréhensible seul, sans lire le titre ;
 - il doit nommer l'objet central de l'actualité : acteur, pays, institution, lieu, événement, loi, conflit, affaire ou phénomène précis ;
 - il ne doit pas être trop générique : proscris les mots vagues seuls comme "Tensions", "Crise", "Conflit", "Polémique", "Scandale", "Tensions diplomatiques" — ils ne nomment rien de précis ; s'ils apparaissent, associe-les obligatoirement à l'acteur, le pays, le lieu ou l'événement concerné (ex. "Tensions Chine-Taïwan" plutôt que "Tensions") ;
+  Exemple insuffisant : "Tensions commerciales" — ne nomme aucun acteur ni pays précis, applicable à n'importe quel conflit commercial.
+  Exemple valable : "Tensions commerciales USA-Chine" — nomme les deux acteurs concernés, compréhensible immédiatement sans lire le titre.
 - il ne doit pas se limiter à un nom de pays seul (France, Chine, États-Unis, Russie, Allemagne, etc.) ni à une grande ville seule (Paris, New York, Pékin, Londres, etc.) ; en revanche, un pays ou une ville peut apparaître associé à l'événement, l'acteur ou l'institution concerné (ex. "Émeutes Paris", "Élections Allemagne") ;
 - il ne doit jamais être un nom d'institution seul (Assemblée, Sénat, Gouvernement, ONU…) ni un chiffre seul (24 morts, 300 blessés…) : ces formulations ne nomment rien de précis ;
 - si l'actualité s'inscrit dans un conflit ou une série déjà traitée ailleurs (ex. guerre au Moyen-Orient, guerre en Ukraine), ne reprends jamais l'intitulé générique du conflit : nomme l'épisode précis de cette actualité (l'attaque, le lieu, les acteurs de ce jour précis) pour qu'il se distingue des autres tags du même conflit ;
@@ -2243,10 +2245,21 @@ async function deduplicateSubjectsWithAI(subjects) {
     return { subjects: safeSubjects, mergeResult: { mergeGroups: [], doNotMerge: [] } };
   }
 
-  const candidates = safeSubjects.slice(0, MAX_SUBJECTS_TO_DEDUP_WITH_AI).map((subject) => ({
-    subjectId: subject.subjectId,
-    subjectTitle: subject.subject
-  }));
+  const freshCandidates = safeSubjects.slice(0, MAX_SUBJECTS_TO_DEDUP_WITH_AI).map((subject) => {
+    // Un seul titre représentatif (celui du premier article collecté pour ce sujet)
+    // suffisait rarement à reconnaître la même actualité couverte par des sources qui la
+    // formulent très différemment (ex. arènes 1519/1536 sur la même affaire judiciaire) :
+    // on donne aussi les autres formulations vues dans le groupe, quand elles existent.
+    const otherTitles = [...new Set((subject.contents || [])
+      .map((content) => String(content?.title || "").trim())
+      .filter((title) => title && title !== subject.subject))].slice(0, 3);
+    return {
+      subjectId: subject.subjectId,
+      subjectTitle: subject.subject,
+      ...(otherTitles.length ? { otherTitles } : {})
+    };
+  });
+  const candidates = freshCandidates;
 
   const prompt = `
 Tu dois proposer une déduplication de sujets d'actualité.
@@ -2266,6 +2279,7 @@ Données disponibles :
 tu travailles uniquement à partir des sujets existants, avec :
 - subjectId
 - subjectTitle
+- otherTitles (optionnel) : d'autres formulations du même sujet vues dans d'autres sources — sers-t'en activement pour reconnaître deux sujets qui couvrent la même actualité alors que leurs subjectTitle respectifs sont très différents.
 
 Tu ne disposes pas des articles complets, ni des résumés, ni du contenu détaillé.
 
@@ -2284,6 +2298,10 @@ Critères pour fusionner :
 Cas particulier — conflit ou affaire en cours :
 si les deux sujets se rapportent manifestement au même conflit armé, à la même crise géopolitique ou à la même affaire judiciaire en cours (même zone géographique, même belligérants ou protagonistes, même séquence temporelle), fusionne-les même si les formulations sont très différentes.
 Exemples : "Frappe à Téhéran : 9 morts" et "Guerre en Iran : les attaques ont repris" → même conflit, même zone, fusion justifiée. "Bombe à Gaza" et "Négociations sur le cessez-le-feu à Gaza" → même conflit mais événements de nature différente, ne pas fusionner.
+
+Cas particulier — même personnalité, même procédure judiciaire ou politique :
+deux sujets qui décrivent des angles différents de la même procédure visant la même personne (condamnation, pourvoi en cassation, appel, éligibilité, candidature) désignent la même actualité même si l'un se concentre sur la décision judiciaire et l'autre sur ses conséquences politiques ou électorales. Fusionne-les.
+Exemple : "Une candidate condamnée en appel peut-elle se présenter malgré son pourvoi en cassation ?" et "Faut-il admettre ou restreindre la candidature d'une personne condamnée ?" → même personne, même procédure judiciaire en cours, même enjeu d'éligibilité : fusion justifiée même si aucun mot n'est partagé.
 
 Critères pour ne pas fusionner :
 - simple proximité thématique ;
@@ -4598,6 +4616,17 @@ function buildSubjectInteractionScriptHtml(opts = {}) {
       }).filter(l => l.url);
       const sendRes = await fetchWithTimeout(SEND_TO_AGON_ENDPOINT, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ subject: subjectTitle, sessionLabel, question: finalQuestion, positionA: finalPosA, positionB: finalPosB, theme, resume: resumeForSend, sources: agonBtnFinal.dataset.sources, links, storySelection, keywords, politicalOrientation: agonBtnFinal.dataset.politicalOrientation ? JSON.parse(agonBtnFinal.dataset.politicalOrientation) : null, arenaMode, politicalGroup }) });
       if (sendRes.status === 409) {
+        const sendErrData = await sendRes.json().catch(() => ({}));
+        if (sendErrData.similarDebate) {
+          // Un débat existant très proche a été détecté (formulation différente de la
+          // même actualité) : on n'envoie pas, mais on ne le marque pas non plus comme
+          // "déjà envoyé" — l'humain doit choisir Republier (force) ou aller fusionner
+          // manuellement depuis l'admin Agôn.
+          alert("Débat très proche déjà publié sur Agôn : " + (sendErrData.error || "vérifie l'admin Agôn avant d'envoyer."));
+          const republishBtnSim = subjectEl.querySelector(".republish-btn");
+          if (republishBtnSim) { republishBtnSim.classList.remove("hidden"); republishBtnSim.disabled = false; republishBtnSim.textContent = "↺ Envoyer quand même"; }
+          return { status: "skipped-similar", error: sendErrData.error || "" };
+        }
         // Déjà envoyé (ex: pipeline auto passé avant ce lot) : on marque comme envoyé
         // au lieu de créer un doublon ou d'afficher une erreur.
         agonBtnFinal.classList.add("sent");

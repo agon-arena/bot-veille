@@ -1271,6 +1271,11 @@ sécurité/liberté, fermeté/accompagnement, urgence/prudence, diplomatie/rappo
 
 Pour les sujets sans décision collective directe (fait divers, accident, catastrophe, affaire judiciaire, violence, décès) : ne cherche pas le débat dans l'événement lui-même. Cherche-le dans la réponse collective — médiatisation, fonctionnement des institutions, traitement sociétal. N'utilise cet angle "réponse collective" que si le résumé factuel mentionne déjà, explicitement, un élément concret de cette réponse (réaction citée, mesure évoquée, polémique engagée, dispositif existant). Si le résumé ne contient aucun élément de ce type, ne fabrique pas un tel angle : choisis "understand" ou "avoid". Exemple valable seulement si le résumé évoque déjà la médiatisation : une disparition médiatisée → "La médiatisation d'une disparition aide-t-elle l'enquête ou menace-t-elle la présomption d'innocence ?". Si aucun angle pertinent n'émerge, choisis "avoid".
 
+RÈGLE DE CLARTÉ IMMÉDIATE DE LA QUESTION :
+debateQuestion doit rester une vraie question opposant deux camps, mais le lecteur doit aussi comprendre immédiatement de quelle actualité elle parle, sans avoir besoin de lire le résumé factuel : nomme l'acteur, le lieu, l'événement ou la mesure concernée. N'écris jamais un dilemme abstrait détaché du fait, qui pourrait s'appliquer telle quelle à n'importe quelle actualité similaire.
+Exemple insuffisant : "Faut-il privilégier la fermeté ou l'accompagnement ?" — ce dilemme ne dit pas de quelle actualité il s'agit.
+Exemple valable : "Faut-il durcir les sanctions contre les auteurs des violences après la finale du PSG, ou privilégier l'accompagnement ?" — garde le dilemme tout en nommant le fait précis.
+
 RÈGLE D'ANCRAGE FACTUEL DE LA QUESTION :
 debateAngle, narrativeTension et debateQuestion ne doivent désigner aucune mesure, chiffre, dispositif, proposition ou acteur qui n'apparaît pas explicitement dans le résumé factuel.
 Les titres de sources peuvent t'aider à repérer un angle, mais tout élément concret cité dans la question finale (mesure, chiffre, dispositif, proposition, acteur) doit être traçable mot pour mot dans le résumé factuel — pas seulement dans un titre.
@@ -1986,20 +1991,24 @@ Si une information n'est pas explicitement présente dans le résumé factuel, t
 Principe central : tu peux améliorer le style et la clarté, mais tu ne dois jamais compléter les faits.
 
 TITRE FACTUEL (champ "title") :
-* Une phrase courte, sobre et factuelle qui résume le sujet.
+* Une phrase courte, sobre et factuelle.
+* Le lecteur doit comprendre de quoi parle l'actualité rien qu'en lisant le titre, sans avoir besoin de lire l'article : nomme l'acteur, l'événement, le lieu ou la décision précise, ne te contente jamais de décrire l'effet ou le climat général autour du sujet.
+* Interdit les titres qui parlent du sujet sans le nommer, du type "une affaire relance les inquiétudes autour de…", "reste un facteur de tension autour de…", "suscite des interrogations sur…" : ces formulations cachent le fait précis derrière une tournure vague.
 * Jamais une question.
 * Jamais une formulation binaire ou orientée débat.
 * Maximum 90 caractères.
 Exemples valables :
-- "Violences après la finale du PSG : les réparations publiques au cœur des tensions"
-- "Une affaire relance les inquiétudes autour de la sécurité des mineurs"
-- "L'intelligence artificielle s'installe progressivement dans les pratiques scolaires"
-- "Le logement reste un facteur majeur de tension sociale"
+- "Violences après la finale du PSG : Paris annonce des réparations pour les commerçants"
+- "Un enseignant mis en examen pour agression sur mineurs à Lyon"
+- "L'intelligence artificielle testée dans plusieurs lycées franciliens"
+- "Les loyers parisiens atteignent un nouveau record"
 Formulations interdites :
 - "Faut-il durcir les sanctions contre les violences urbaines ?"
 - "Sécurité ou justice sociale ?"
 - "L'État doit-il sanctionner davantage ?"
-- toute formulation binaire ou orientée débat.
+- toute formulation binaire ou orientée débat ;
+- "Une affaire relance les inquiétudes autour de la sécurité des mineurs" (ne dit ni quelle affaire, ni où, ni qui) ;
+- "Le logement reste un facteur majeur de tension sociale" (généralité qui ne nomme aucun fait précis).
 
 ARTICLE FACTUEL (champ "article") — structure obligatoire :
 1. Une accroche factuelle courte et concrète.
@@ -4856,6 +4865,50 @@ app.post("/send-to-agon", requireMixteAuth, async (req, res) => {
         console.log(`[send-to-agon] Refusé (doublon ${politicalGroup}) : "${String(subject || normalizedQuestion).slice(0, 60)}" déjà envoyé le ${already.sentAt || "?"}`);
         return res.status(409).json({ ok: false, alreadySent: true, error: `Sujet déjà envoyé à Agôn (${politicalGroup === "mixed" ? "général" : politicalGroup}). Utilise « Republier » pour renvoyer volontairement.` });
       }
+
+      // Quasi-doublon : le pipeline auto passe par check-similar avant de publier
+      // (classifyAndPublishPending), mais l'envoi manuel depuis le dashboard filait
+      // droit vers /api/veille/receive sans jamais comparer aux débats déjà publiés —
+      // deux formulations différentes de la même actualité (ex. arènes 1519/1536,
+      // toutes deux sur une candidate condamnée en cassation) créaient donc deux
+      // arènes séparées. Best-effort : une panne de cette vérification ne doit pas
+      // empêcher un envoi manuel légitime.
+      try {
+        let adminHeaders = await getCachedAgonAdminHeaders("send-to-agon");
+        if (adminHeaders) {
+          let simRes = await fetch(`${AGON_URL}/api/admin/veille/check-similar`, {
+            method: "POST",
+            headers: adminHeaders,
+            body: JSON.stringify({ question: normalizedQuestion, positionA: positionA || "", positionB: positionB || "", resume: resume || "" })
+          });
+          if (simRes.status === 401 || simRes.status === 403) {
+            invalidateCachedAgonAdminHeaders();
+            adminHeaders = await getCachedAgonAdminHeaders("send-to-agon");
+            if (adminHeaders) {
+              simRes = await fetch(`${AGON_URL}/api/admin/veille/check-similar`, {
+                method: "POST",
+                headers: adminHeaders,
+                body: JSON.stringify({ question: normalizedQuestion, positionA: positionA || "", positionB: positionB || "", resume: resume || "" })
+              });
+            }
+          }
+          if (simRes.ok) {
+            const { similar } = await simRes.json().catch(() => ({}));
+            const best = (similar || []).find((s) => s.confirmed === true && s.score >= 0.82);
+            if (best) {
+              console.log(`[send-to-agon] Refusé (quasi-doublon) : "${normalizedQuestion.slice(0, 60)}" ~ arène ${best.id} (score ${best.score})`);
+              return res.status(409).json({
+                ok: false,
+                similarDebate: true,
+                similarDebateId: best.id,
+                error: `Un débat très proche existe déjà : "${String(best.question || "").slice(0, 80)}" (arène ${best.id}). Utilise « Republier » pour envoyer quand même, ou fusionne depuis l'admin Agôn.`
+              });
+            }
+          }
+        }
+      } catch (simErr) {
+        console.warn("[send-to-agon] Vérification de similarité ignorée :", simErr.message);
+      }
     }
     const normalizedResume = ensureArticleOpeningSentenceBreak(resume);
     const resolvedKeywords = await ensureKeywordsBeforeAgonSend({ subject, question: normalizedQuestion, sources, links, keywords });
@@ -5664,6 +5717,23 @@ async function loginAgonAdmin(logLabel = "auto-publish") {
     console.error(`[${logLabel}] Erreur login Agôn :`, err.message);
     return null;
   }
+}
+
+// Le token admin Agôn est valide 30 jours côté serveur (ADMIN_TOKEN_TTL_MS) : se
+// reconnecter à chaque appel gaspille inutilement le quota de /api/admin/login
+// (5 requêtes/minute/IP côté Agôn) — un envoi manuel un peu groupé depuis le dashboard
+// suffirait à le faire sauter. On garde le token en mémoire et on ne se reconnecte
+// que si une requête ultérieure le rejette (401/403, cf. invalidateCachedAgonAdminHeaders).
+let cachedAgonAdminHeaders = null;
+
+async function getCachedAgonAdminHeaders(logLabel = "auto-publish") {
+  if (cachedAgonAdminHeaders) return cachedAgonAdminHeaders;
+  cachedAgonAdminHeaders = await loginAgonAdmin(logLabel);
+  return cachedAgonAdminHeaders;
+}
+
+function invalidateCachedAgonAdminHeaders() {
+  cachedAgonAdminHeaders = null;
 }
 
 // Reprend au démarrage les idées IA qui n'ont pas pu être générées (ex: redémarrage
