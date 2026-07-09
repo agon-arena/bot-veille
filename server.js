@@ -1577,11 +1577,14 @@ PONT FACTUEL ENTRE LE CORPS ET LA QUESTION :
 * Le lecteur doit comprendre, en lisant uniquement les deux paragraphes, pourquoi cette question se pose précisément ainsi.
 
 DEUXIÈME PARAGRAPHE — MÉTHODE :
-1. Pars d'un élément concret du dossier : calendrier, décision attendue, acteur fragilisé, coût politique, risque, contradiction interne, rapport de force, conséquence pour un groupe, symbole diplomatique ou politique.
-2. Le lecteur doit comprendre les deux issues possibles à travers ce fil concret, mais ne les présente jamais comme deux cases symétriques ni comme une énumération d'options.
-3. Montrer ce qui rend le choix difficile : enjeu commun, risque identifiable, prix à payer.
-4. Finir sur une phrase courte et précise qui resserre la tension.
-5. Applique à chaque phrase le test générique déjà énoncé dans STYLE (reste-t-elle vraie sur n'importe quel autre débat ?) — il couvre aussi bien les schémas "X oppose Y" que "tandis que X… Y".
+2 à 3 phrases maximum. Choisis un seul point d'entrée concret parmi ceux-ci (varie ce choix d'un article à l'autre, ne prends jamais toujours le même) :
+* une échéance ou une décision à venir ;
+* un acteur qui a le plus à perdre ou à gagner ;
+* un précédent ou un chiffre déjà cité dans le résumé ;
+* une conséquence directe pour un groupe précis.
+À partir de ce seul point d'entrée, fais sentir la tension sans l'énoncer comme un plan ("il faut choisir entre X et Y") : montre-la à travers le fait lui-même.
+Interdit : résumer les deux camps, les nommer, les comparer phrase par phrase. Une seule idée développée vaut mieux que deux options mises en balance.
+Applique à chaque phrase le test générique déjà énoncé dans STYLE (reste-t-elle vraie sur n'importe quel autre débat ?) — il couvre aussi bien les schémas "X oppose Y" que "tandis que X… Y".
 
 INTERDIT :
 * "Le choix est…"
@@ -1622,7 +1625,7 @@ choix politique concret, risque identifiable, rapport de force, coût social, é
 Elle ne doit jamais être une formule générique. Applique-lui le même test qu'au reste du paragraphe (ci-dessus).
 
 LONGUEUR :
-1000 à 1600 caractères.
+700 à 1100 caractères.
 
 SORTIE :
 Réponds uniquement en JSON valide :
@@ -1703,7 +1706,6 @@ Ne déplace pas la question Agôn vers un élément secondaire du sujet.
 
 RÈGLE DE SÉCURITÉ FACTUELLE :
 Ne complète jamais les faits.
-Si tu dois allonger l'article, développe uniquement l'enjeu, la tension ou les conséquences possibles déjà présentes, sans ajouter de fait nouveau.
 
 Interdit d'ajouter :
 - une fonction politique ou institutionnelle ;
@@ -1720,9 +1722,9 @@ Principe central :
 tu peux améliorer la fluidité, la structure, la devise latine et la clarté, mais tu ne dois jamais compléter les faits.
 
 Contraintes strictes :
-- article : minimum 800 caractères, signature comprise. Si le texte fourni est trop court, développe le deuxième paragraphe pour atteindre cette taille.
-- article : objectif 1000 à 1400 caractères.
-- article : jamais plus de 1600 caractères, signature comprise.
+- article : minimum 550 caractères, signature comprise. Si le texte fourni est trop court, resserre plutôt la formulation ; n'ajoute jamais une phrase pour atteindre une taille.
+- article : objectif 700 à 1000 caractères.
+- article : jamais plus de 1200 caractères, signature comprise.
 - latinQuestion : obligatoire, jamais vide.
 - debateQuestion : maximum 80 caractères, espaces, apostrophes, accents, tirets et point d'interrogation final compris.
 - positionA : maximum 55 caractères, espaces compris.
@@ -1845,7 +1847,7 @@ Style à préserver :
 - Ne pas ajouter de rubrique ou de titre séparé.
 - La question latine apporte la touche symbolique : il ne faut donc pas rendre tout l'article antique, pompeux ou théâtral.
 - Phrases courtes, mots concrets. Aucune trace de "langage IA" : pas de formule d'équilibre creuse, pas de conclusion vague qui pourrait s'appliquer à n'importe quel sujet.
-- Si tu dois développer le deuxième paragraphe pour atteindre la longueur minimale, ajoute un fait, un risque ou une conséquence concrète déjà présents dans les données — jamais une phrase générique de remplissage.
+- Le deuxième paragraphe doit rester à 2-3 phrases : ne l'allonge jamais pour atteindre une longueur minimale, resserre plutôt le reste de l'article.
 
 Formulations interdites sauf nécessité factuelle forte :
 - "dans un contexte de tensions"
@@ -4894,7 +4896,7 @@ app.post("/send-to-agon", requireMixteAuth, async (req, res) => {
           }
           if (simRes.ok) {
             const { similar } = await simRes.json().catch(() => ({}));
-            const best = (similar || []).find((s) => s.confirmed === true && s.score >= 0.82);
+            const best = (similar || []).find((s) => s.confirmed === true && s.score >= VEILLE_SIMILARITY_MERGE_THRESHOLD);
             if (best) {
               console.log(`[send-to-agon] Refusé (quasi-doublon) : "${normalizedQuestion.slice(0, 60)}" ~ arène ${best.id} (score ${best.score})`);
               return res.status(409).json({
@@ -5752,6 +5754,14 @@ function sleep(ms) {
 const PUBLISH_THROTTLE_DELAY_MS = 1500;
 const PUBLISH_RATE_LIMIT_RETRIES = 4;
 const PUBLISH_RATE_LIMIT_DELAY_MS = 5000;
+// Score minimal (sur le score IA renvoyé par /api/admin/veille/check-similar) pour
+// déclencher une fusion automatique. 0.82 était plus strict que le propre barème de
+// l'IA de comparaison (qui qualifie déjà 0.7-0.9 de "très proche, probable doublon"
+// et passe confirmed=true dès 0.65) : des doublons bien réels mais reformulés selon
+// le camp politique (ex. arènes 1574/1586 sur Le Pen, 1580/1584 sur les frappes en
+// Iran, mêmes actus scorées à 0.7 par l'IA) passaient sous ce seuil et étaient
+// republiés en double au lieu d'être fusionnés.
+const VEILLE_SIMILARITY_MERGE_THRESHOLD = 0.75;
 
 function scheduleOnePendingIdea(item) {
   const delay = Math.max(0, new Date(item.runAt).getTime() - Date.now());
@@ -5837,9 +5847,16 @@ async function classifyAndPublishPending() {
     return names.size;
   }
 
-  // Filtrer (exclure les fusionnés) et classer par sources croissantes
+  // Classer par sources croissantes. On NE filtre plus les sujets déjà fusionnés
+  // (linkedDebateId posé par un /merge antérieur) : un /publish qui échoue après un
+  // /merge réussi (ex: garde "aucune source du bon camp" côté Agôn, qui ne dépend
+  // pas du fait que linkedDebateId soit posé) laissait la ligne bloquée à vie, exclue
+  // de tout passage futur — cf. les ~24 sujets en attente depuis jusqu'à 6 jours
+  // découverts le 9 juillet 2026 (ex: arènes 1465/1479/1487 jamais fusionnées côté
+  // droite faute de source de droite parmi les liens retenus). On retente ces lignes
+  // à chaque passage ; si l'échec est définitif, il est nettoyé plus bas (cf. sameError).
   const sortedPending = (pending || [])
-    .filter(p => !p.linkedDebateId && Array.isArray(p.links) && p.links.length > 0)
+    .filter(p => Array.isArray(p.links) && p.links.length > 0)
     .sort((a, b) => countSources(a) - countSources(b));
 
   const sentItemsForPending = loadSentToAgonItems().filter(isSentToAgonPublishedItem);
@@ -5899,40 +5916,47 @@ async function classifyAndPublishPending() {
       // Tentative de fusion automatique. Un échec de check-similar (rate-limit 429
       // notamment) ne doit plus être ignoré en silence : sans cette vérification,
       // le sujet est publié sans fusion et peut créer un doublon dans son groupe.
-      let autoMergedDebateId = "";
+      // Si un /merge précédent avait déjà posé linkedDebateId (tentative antérieure
+      // dont seul le /publish avait échoué), inutile de repasser par check-similar.
+      let autoMergedDebateId = String(item.linkedDebateId || "").trim();
+      if (autoMergedDebateId) {
+        console.log(`[auto-publish] Reprise d'une fusion déjà posée (arène ${autoMergedDebateId}) : "${String(item.question || "").slice(0, 50)}"`);
+      }
       try {
-        let simRes = null;
-        for (let attempt = 1; attempt <= PUBLISH_RATE_LIMIT_RETRIES; attempt += 1) {
-          simRes = await fetch(`${AGON_URL}/api/admin/veille/check-similar`, {
-            method: "POST",
-            headers: adminHeaders,
-            body: JSON.stringify({ question: item.question, positionA: item.positionA || "", positionB: item.positionB || "", resume: item.resume || "" })
-          });
-          if (simRes.status !== 429) break;
-          if (attempt < PUBLISH_RATE_LIMIT_RETRIES) {
-            console.warn(`[auto-publish] Rate-limit check-similar, nouvelle tentative (${attempt}/${PUBLISH_RATE_LIMIT_RETRIES}) dans ${PUBLISH_RATE_LIMIT_DELAY_MS / 1000}s pour "${String(item.question || "").slice(0, 60)}"`);
-            await sleep(PUBLISH_RATE_LIMIT_DELAY_MS);
-          }
-        }
-        if (!simRes.ok) {
-          console.warn(`[auto-publish] check-similar indisponible (HTTP ${simRes.status}) pour "${String(item.question || "").slice(0, 60)}" — publication sans tentative de fusion`);
-        }
-        if (simRes.ok) {
-          const { similar } = await simRes.json().catch(() => ({}));
-          const best = (similar || []).find(s => s.confirmed === true && s.score >= 0.82);
-          if (best) {
-            const mergeRes = await fetch(`${AGON_URL}/api/admin/veille/merge`, {
+        if (!autoMergedDebateId) {
+          let simRes = null;
+          for (let attempt = 1; attempt <= PUBLISH_RATE_LIMIT_RETRIES; attempt += 1) {
+            simRes = await fetch(`${AGON_URL}/api/admin/veille/check-similar`, {
               method: "POST",
               headers: adminHeaders,
-              body: JSON.stringify({ id: item.id, debateId: best.id, question: item.question, positionA: item.positionA || "", positionB: item.positionB || "", resume: item.resume || "", links: item.links || [] })
+              body: JSON.stringify({ question: item.question, positionA: item.positionA || "", positionB: item.positionB || "", resume: item.resume || "" })
             });
-            if (mergeRes.ok) {
-              const mergeData = await mergeRes.json().catch(() => ({}));
-              autoMergedDebateId = mergeData.debateId || "";
-              console.log(`[auto-publish] ⟳ Fusion automatique avec arène ${best.id} (score ${best.score}) : "${String(item.question || "").slice(0, 50)}"`);
-            } else {
-              const mergeErr = await mergeRes.json().catch(() => ({}));
-              console.log(`[auto-publish] Fusion ignorée pour "${String(item.question || "").slice(0, 50)}" : ${mergeErr.error || "incompatible"}`);
+            if (simRes.status !== 429) break;
+            if (attempt < PUBLISH_RATE_LIMIT_RETRIES) {
+              console.warn(`[auto-publish] Rate-limit check-similar, nouvelle tentative (${attempt}/${PUBLISH_RATE_LIMIT_RETRIES}) dans ${PUBLISH_RATE_LIMIT_DELAY_MS / 1000}s pour "${String(item.question || "").slice(0, 60)}"`);
+              await sleep(PUBLISH_RATE_LIMIT_DELAY_MS);
+            }
+          }
+          if (!simRes.ok) {
+            console.warn(`[auto-publish] check-similar indisponible (HTTP ${simRes.status}) pour "${String(item.question || "").slice(0, 60)}" — publication sans tentative de fusion`);
+          }
+          if (simRes.ok) {
+            const { similar } = await simRes.json().catch(() => ({}));
+            const best = (similar || []).find(s => s.confirmed === true && s.score >= VEILLE_SIMILARITY_MERGE_THRESHOLD);
+            if (best) {
+              const mergeRes = await fetch(`${AGON_URL}/api/admin/veille/merge`, {
+                method: "POST",
+                headers: adminHeaders,
+                body: JSON.stringify({ id: item.id, debateId: best.id, question: item.question, positionA: item.positionA || "", positionB: item.positionB || "", resume: item.resume || "", links: item.links || [] })
+              });
+              if (mergeRes.ok) {
+                const mergeData = await mergeRes.json().catch(() => ({}));
+                autoMergedDebateId = mergeData.debateId || "";
+                console.log(`[auto-publish] ⟳ Fusion automatique avec arène ${best.id} (score ${best.score}) : "${String(item.question || "").slice(0, 50)}"`);
+              } else {
+                const mergeErr = await mergeRes.json().catch(() => ({}));
+                console.log(`[auto-publish] Fusion ignorée pour "${String(item.question || "").slice(0, 50)}" : ${mergeErr.error || "incompatible"}`);
+              }
             }
           }
         }
@@ -5972,6 +5996,21 @@ async function classifyAndPublishPending() {
         console.log(`[auto-publish] Déjà publié entre-temps, ignoré : "${String(item.question || "").slice(0, 60)}"`);
       } else if (!r.ok) {
         console.error(`[auto-publish] Échec publication "${String(item.question || "").slice(0, 60)}" : ${body}`);
+        // Échec définitif et non lié à une panne temporaire : ce sujet a déjà été fusionné
+        // (linkedDebateId posé, cf. autoMergedDebateId) mais aucune source du bon camp
+        // n'est présente parmi ses liens — cette condition ne changera jamais toute seule
+        // (les liens du sujet sont figés). Le laisser en attente le condamnait à y rester
+        // indéfiniment, exclu de tout futur passage puisqu'il porte déjà linkedDebateId
+        // (cf. sujets bloqués depuis jusqu'à 6 jours découverts le 9 juillet 2026, ex.
+        // arènes 1465/1479/1487 côté droite). On nettoie la ligne au lieu de la garder.
+        if (autoMergedDebateId && /aucune source/i.test(body)) {
+          try {
+            await fetch(`${AGON_URL}/api/admin/veille/${encodeURIComponent(item.id)}`, { method: "DELETE", headers: adminHeaders });
+            console.log(`[auto-publish] Sujet fusionné mais impubliable (${item.politicalGroup || "mixed"}) supprimé de la file : "${String(item.question || "").slice(0, 60)}"`);
+          } catch (cleanupErr) {
+            console.warn(`[auto-publish] Échec suppression sujet impubliable ${item.id} :`, cleanupErr.message);
+          }
+        }
       } else {
         const publishData = await r.json().catch(() => ({}));
         console.log(`[auto-publish] ✓ Publié : "${String(item.question || "").slice(0, 60)}"`);

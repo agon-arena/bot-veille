@@ -44,7 +44,16 @@ const MIN_DISTINCT_SOURCES = 2;
 const UPDATE_INTERVAL_MINUTES = 720;
 const MAX_SESSIONS_TO_KEEP = 12;
 const MAX_SUBJECTS_TO_ANALYZE_WITH_AI = 25;
-const MAX_SUBJECTS_TO_DEDUP_WITH_AI = 80;
+// Les sessions réelles collectent entre 100 et 195 sujets bruts (contenus multi-sources)
+// avant déduplication : un plafond de 80 laissait 20 à 115 sujets par session ne jamais
+// être comparés à rien (silencieusement tronqués par le .slice() dans
+// deduplicateSubjectsWithAI), donc jamais fusionnés même quand ils parlaient de la même
+// actualité qu'un sujet resté sous le plafond (ex. session du 9 juil 2026 : subject_090
+// sur les ambitions de Bardella, jamais comparé au cluster Le Pen subject_001, republié
+// en doublon). Le payload envoyé à l'IA ne contient que id+titre+otherTitles par sujet
+// (quelques dizaines de tokens chacun) : monter ce plafond a un coût négligeable comparé
+// au scoring ou à la génération d'articles.
+const MAX_SUBJECTS_TO_DEDUP_WITH_AI = 250;
 const FEED_TIMEOUT_MS = 15000;
 const DEFAULT_FETCH_HEADERS = {
   "User-Agent": BOT_USER_AGENT,
@@ -1383,6 +1392,26 @@ function normalizeUrl(url) {
 // Toutes les sources sont gardées par défaut ; l'IA ne renvoie que les liens
 // à exclure (hors sujet). Une URL d'exclusion qui ne correspond à aucun
 // contenu réel est ignorée : l'erreur joue toujours dans le sens "garder".
+// Copie de getMediaOrientationGroup (server.js) : les deux fichiers tournent en
+// processus séparés (server.js / veille-mixte.js), sans require croisé.
+function getMediaOrientationGroup(orientation) {
+  const o = String(orientation || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
+  if (
+    o.includes("gauche") || o.includes("ecolog") || o.includes("ecolo") || o.includes("libertaire") ||
+    o.includes("altermondialiste") || o.includes("alter-mondialiste") || o.includes("anticapitaliste") ||
+    o.includes("anti-capitaliste") || o.includes("socialiste") || o.includes("social-democrate") ||
+    o.includes("social democrate") || o.includes("progressiste") || o.includes("insoumis") ||
+    o.includes("insoumission") || o.includes("communiste") || o.includes("marxiste") ||
+    o.includes("feministe") || o.includes("syndical") || o.includes("alternatif") || o.includes("alternative")
+  ) return "left";
+  if (
+    o.includes("droite") || o.includes("centre-droit") || o.includes("centre droit") ||
+    o.includes("droite-centre") || o.includes("droite centre") || o.includes("conservateur") ||
+    o.includes("souverainiste") || o.includes("liberal") || o.includes("republicain") || o.includes("identitaire")
+  ) return "right";
+  return "center";
+}
+
 function applyExcludedLinks(subject, excludedLinks) {
   const contents = Array.isArray(subject?.contents) ? subject.contents : [];
   const validLinks = contents.map((content) => String(content.link || "").trim()).filter(Boolean);
@@ -1401,6 +1430,22 @@ function applyExcludedLinks(subject, excludedLinks) {
       })
       .filter(Boolean)
   );
+
+  // Garde-fou : ne jamais exclure la SEULE source d'un bord politique (gauche/droite)
+  // sur ce sujet. medias.json a beaucoup moins de titres classés "droite" que
+  // gauche/centre : un sujet n'a très souvent qu'une unique source de droite (voire
+  // aucune), donc la moindre exclusion — même légitime — fait tomber ce bord à zéro et
+  // rend la bulle correspondante impubliable (aucune source du bon camp). Mesuré sur
+  // 12 sessions réelles (5-9 juillet 2026) : 14 sujets ont perdu toute source droite
+  // après exclusion contre seulement 2 pour la gauche, alors que les deux bords avaient
+  // un nombre comparable de sujets éligibles (365 vs 338) — la gauche encaisse ces
+  // exclusions grâce à ses sources de secours, la droite n'en a généralement pas.
+  for (const group of ["left", "right"]) {
+    const groupContents = contents.filter((c) => getMediaOrientationGroup(c.orientation) === group);
+    if (groupContents.length !== 1) continue;
+    const soleLink = String(groupContents[0].link || "").trim();
+    if (soleLink) excluded.delete(soleLink);
+  }
 
   return validLinks.filter((link) => !excluded.has(link));
 }
@@ -2302,6 +2347,12 @@ Exemples : "Frappe à Téhéran : 9 morts" et "Guerre en Iran : les attaques ont
 Cas particulier — même personnalité, même procédure judiciaire ou politique :
 deux sujets qui décrivent des angles différents de la même procédure visant la même personne (condamnation, pourvoi en cassation, appel, éligibilité, candidature) désignent la même actualité même si l'un se concentre sur la décision judiciaire et l'autre sur ses conséquences politiques ou électorales. Fusionne-les.
 Exemple : "Une candidate condamnée en appel peut-elle se présenter malgré son pourvoi en cassation ?" et "Faut-il admettre ou restreindre la candidature d'une personne condamnée ?" → même personne, même procédure judiciaire en cours, même enjeu d'éligibilité : fusion justifiée même si aucun mot n'est partagé.
+
+Cas particulier — deux sous-angles qui mèneraient au même dilemme :
+chaque sujet sera transformé plus tard en une question de débat qui oppose deux camps. Si deux sujets, bien que centrés sur des faits distincts, posent en réalité le même dilemme de fond (la même décision collective à prendre, sur le même épisode chaud d'un conflit ou d'une séquence politique en cours), fusionne-les : sinon deux débats presque identiques seront publiés côte à côte. Ce cas est plus large que "même conflit" : il s'applique même quand les faits déclencheurs diffèrent (une frappe et une menace, une candidature et le rôle d'un possible successeur), du moment que le dilemme qui en découlerait pour le lecteur est le même.
+Exemple à fusionner : "Frappes américaines en Iran : poursuivre ou cesser ?" et "Menaces et tensions de Trump au Moyen-Orient : quelle réponse ?" → deux facettes de la même séquence d'escalade militaire en cours, le lecteur se verrait proposer deux fois le même choix (poursuivre la fermeté ou désescalader) ; fusion justifiée même si l'une parle d'une frappe déjà survenue et l'autre de menaces.
+Exemple à fusionner : "Candidature de Marine Le Pen malgré sa condamnation" et "Les ambitions contrariées de Jordan Bardella derrière la candidature de Marine Le Pen" → même dilemme de fond (qui doit porter la candidature du RN malgré la condamnation), fusion justifiée même si le second se concentre sur Bardella.
+Exemple à ne pas fusionner : "Bombe à Gaza" et "Négociations sur le cessez-le-feu à Gaza" → un lecteur se verrait proposer deux dilemmes réellement différents (comment réagir à une frappe / comment juger une négociation en cours), pas de fusion.
 
 Critères pour ne pas fusionner :
 - simple proximité thématique ;
