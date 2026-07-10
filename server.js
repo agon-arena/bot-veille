@@ -28,6 +28,7 @@ const PORT = process.env.PORT || 3000;
 const MIXTE_PASSWORD = process.env.MIXTE_PASSWORD || "";
 const AGON_URL = (process.env.AGON_URL || "http://localhost:3001").trim();
 const SENT_TO_AGON_FILE = path.join(__dirname, "sent-to-agon.json");
+const SENT_OPINIONS_TO_AGON_FILE = path.join(__dirname, "sent-opinions-to-agon.json");
 const AUTO_COLLECT_FILE = path.join(__dirname, "auto-collect-config.json");
 const AUTO_PUBLISH_FILE = path.join(__dirname, "auto-publish-config.json");
 const AUTO_PUBLISH_CERTAMEN_FILE = path.join(__dirname, "auto-publish-certamen-config.json");
@@ -205,13 +206,12 @@ function scheduleOneAutoCollect(timeStr) {
           body: JSON.stringify({ minSources: cfg.minSources || 2 })
         });
         const autoPub = loadAutoPublishConfig();
-        if (autoPub.enabled) {
-          const finished = await waitForVeilleMixteIdle();
-          if (finished) {
-            await runAutoPublishPipeline();
-          } else {
-            console.warn("[auto-collect] Délai d'attente dépassé, auto-publish annulé pour cette session.");
-          }
+        const finished = await waitForVeilleMixteIdle();
+        if (finished) {
+          if (autoPub.enabled) await runAutoPublishPipeline();
+          await publishOpinionItemsToAgon();
+        } else {
+          console.warn("[auto-collect] Délai d'attente dépassé, auto-publish annulé pour cette session.");
         }
       } catch (err) {
         console.error(`[auto-collect] Erreur: ${err.message}`);
@@ -301,6 +301,70 @@ const SENT_TO_AGON_MAX = 500;
 function saveSentToAgonItems(items) {
   const trimmed = items.length > SENT_TO_AGON_MAX ? items.slice(0, SENT_TO_AGON_MAX) : items;
   fs.writeFileSync(SENT_TO_AGON_FILE, JSON.stringify(trimmed, null, 2), "utf8");
+}
+
+// Suivi séparé des liens de presse d'opinion déjà envoyés vers Agôn (/api/veille/opinion-articles) :
+// simple liste de liens, pas de logique de sujet/groupe comme sent-to-agon.json puisqu'il n'y a
+// pas de "débat" ici. La table opinion_articles a de toute façon une contrainte UNIQUE sur link
+// côté Agôn (dédoublonnage garanti même si ce fichier est perdu) ; ce fichier n'est qu'une
+// optimisation pour éviter de renvoyer inutilement des centaines de liens déjà connus à chaque run.
+const SENT_OPINIONS_TO_AGON_MAX = 2000;
+
+function loadSentOpinionLinks() {
+  if (!fs.existsSync(SENT_OPINIONS_TO_AGON_FILE)) return new Set();
+  try {
+    const links = JSON.parse(fs.readFileSync(SENT_OPINIONS_TO_AGON_FILE, "utf8"));
+    return new Set(Array.isArray(links) ? links : []);
+  } catch {
+    return new Set();
+  }
+}
+
+function saveSentOpinionLinks(linksSet) {
+  const links = [...linksSet];
+  const trimmed = links.length > SENT_OPINIONS_TO_AGON_MAX ? links.slice(-SENT_OPINIONS_TO_AGON_MAX) : links;
+  fs.writeFileSync(SENT_OPINIONS_TO_AGON_FILE, JSON.stringify(trimmed, null, 2), "utf8");
+}
+
+// Pousse vers Agôn les articles de presse d'opinion à source unique de la dernière session
+// (cf. extractOpinionItems côté veille-mixte.js). Contrairement à publishMixteSubjectToAgon,
+// pas de génération IA ni de fiche débat : un simple lien vers l'article d'origine, affiché
+// sur la page /tribunes d'Agôn. Appelé aux mêmes endroits que runAutoPublishPipeline (tick
+// auto et déclenchement manuel), donc à chaque lancement du pipeline veille mixte.
+async function publishOpinionItemsToAgon() {
+  const sessionsFile = path.join(__dirname, "sessions-mixte.json");
+  if (!fs.existsSync(sessionsFile)) return;
+  let sessions;
+  try { sessions = JSON.parse(fs.readFileSync(sessionsFile, "utf8")); } catch { return; }
+  if (!sessions.length) return;
+
+  const latestSession = sessions[0];
+  const opinionItems = Array.isArray(latestSession.opinionItems) ? latestSession.opinionItems : [];
+  if (!opinionItems.length) return;
+
+  const sentLinks = loadSentOpinionLinks();
+  const newItems = opinionItems.filter(item => item.link && !sentLinks.has(item.link));
+  if (!newItems.length) {
+    console.log("[opinion-articles] Rien de nouveau à envoyer vers Agôn.");
+    return;
+  }
+
+  try {
+    const response = await fetch(`${AGON_URL}/api/veille/opinion-articles`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ items: newItems })
+    });
+    if (!response.ok) {
+      console.error(`[opinion-articles] Échec envoi vers Agôn : HTTP ${response.status}`);
+      return;
+    }
+    newItems.forEach(item => sentLinks.add(item.link));
+    saveSentOpinionLinks(sentLinks);
+    console.log(`[opinion-articles] ${newItems.length} article(s) de presse d'opinion envoyé(s) vers Agôn.`);
+  } catch (err) {
+    console.error("[opinion-articles] Erreur envoi vers Agôn :", err.message);
+  }
 }
 
 function normalizeSentToAgonKey(value) {
@@ -5224,13 +5288,17 @@ app.post("/api/auto-collect-tick", requireMixteAuth, async (req, res) => {
 
     // Publication auto une fois la collecte réellement terminée, en tâche de fond :
     // ne pas faire attendre la réponse HTTP (GitHub Actions a un --max-time de 60s).
+    // publishOpinionItemsToAgon() est indépendant du réglage auto-publish (débats) : la presse
+    // d'opinion n'a pas de fiche débat à générer, donc pas de raison de la conditionner à ça.
     const autoPub = loadAutoPublishConfig();
-    if (autoPub.enabled) {
-      waitForVeilleMixteIdle().then((finished) => {
-        if (finished) return runAutoPublishPipeline();
+    waitForVeilleMixteIdle().then(async (finished) => {
+      if (!finished) {
         console.warn("[auto-collect-tick] Délai d'attente dépassé, auto-publish annulé.");
-      }).catch((err) => console.error("[auto-collect-tick] Erreur auto-publish :", err.message));
-    }
+        return;
+      }
+      if (autoPub.enabled) await runAutoPublishPipeline();
+      await publishOpinionItemsToAgon();
+    }).catch((err) => console.error("[auto-collect-tick] Erreur auto-publish :", err.message));
   } catch (err) {
     res.status(500).json({ triggered: false, error: err.message });
   }
@@ -5469,13 +5537,12 @@ async function runAutoPublishPipeline() {
   const sessionLabel = latestSession.generatedAtLabel || "";
   const diagnostics = createAutoPublishDiagnostics();
   activeAutoPublishDiagnostics = diagnostics;
-  const maxSources = Math.max(...allSubjects.map(s => Number(s.sourceCount) || 0), 1);
   const top10 = allSubjects
     .slice()
     .sort((a, b) => {
-      const rA = (Number(a.sourceCount) / maxSources) * 0.50 + (Number(a.debateScore) / 10) * 0.50;
-      const rB = (Number(b.sourceCount) / maxSources) * 0.50 + (Number(b.debateScore) / 10) * 0.50;
-      return rB - rA;
+      const srcDiff = (Number(b.sourceCount) || 0) - (Number(a.sourceCount) || 0);
+      if (srcDiff !== 0) return srcDiff;
+      return (Number(b.debateScore) || 0) - (Number(a.debateScore) || 0);
     })
     .slice(0, 10);
 

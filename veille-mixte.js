@@ -39,6 +39,14 @@ const HOURS_BACK_YOUTUBE = 168;
 
 const SIMILARITY_THRESHOLD = 0.52;
 const MIN_SHARED_KEYWORDS = 2;
+// Repli utilisé quand le titre seul ne matche pas assez (score sous SIMILARITY_THRESHOLD) :
+// certains médias d'opinion (Causeur, Atlantico...) titrent avec un angle édito plutôt qu'un
+// résumé factuel, donc leur titre seul ressemble peu au titre factuel des autres médias sur le
+// même évènement — même quand leur chapô/résumé en parle explicitement. On retente alors la
+// comparaison de mots-clés en incluant le résumé, avec un seuil plus strict (3 au lieu de 2)
+// pour compenser l'absence de contrainte sur le score de similarité brute.
+const STRONG_SHARED_KEYWORDS = 3;
+const SUMMARY_MATCH_CHARS = 400;
 const MIN_DISTINCT_SOURCES = 2;
 
 const UPDATE_INTERVAL_MINUTES = 720;
@@ -573,7 +581,10 @@ function getKeywords(text) {
     "societe", "sport", "culture", "invite", "invites", "interview",
     "pourquoi", "comment", "quand", "voici", "bilan", "point", "zoom",
     "retour", "suite", "apres", "alors", "aussi", "encore", "toujours",
-    "vraiment", "enfin", "moins", "plus", "bien", "meme", "autre", "autres"
+    "vraiment", "enfin", "moins", "plus", "bien", "meme", "autre", "autres",
+    "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche",
+    "janvier", "fevrier", "mars", "avril", "mai", "juin", "juillet", "aout",
+    "septembre", "octobre", "novembre", "decembre"
   ]);
 
   return cleanText(text)
@@ -986,12 +997,26 @@ function groupContentsBySubject(contents) {
       ? hasConflictingProperNouns(content.title, bestGroup.subject)
       : false;
 
-    if (
+    let matched =
       bestGroup &&
       bestScore >= SIMILARITY_THRESHOLD &&
       sharedKeywords >= MIN_SHARED_KEYWORDS &&
-      !conflicting
-    ) {
+      !conflicting;
+
+    // Repli résumé : le titre seul ne matche pas (cas fréquent pour les médias d'opinion,
+    // dont le titre est un angle édito plutôt qu'un résumé factuel de l'évènement), mais le
+    // chapô/résumé de l'article, lui, partage clairement le sujet avec le groupe pressenti.
+    if (!matched && bestGroup) {
+      const candidateText = `${content.title} ${(content.summary || "").slice(0, SUMMARY_MATCH_CHARS)}`;
+      const strongSharedKeywords = countSharedKeywords(candidateText, bestGroup.subject);
+      const strongConflicting = hasConflictingProperNouns(candidateText, bestGroup.subject);
+
+      if (strongSharedKeywords >= STRONG_SHARED_KEYWORDS && !strongConflicting) {
+        matched = true;
+      }
+    }
+
+    if (matched) {
       bestGroup.contents.push(content);
 
       if (content.comparableText.length > bestGroup.referenceText.length) {
@@ -1049,6 +1074,42 @@ function filterMultiSourceSubjects(groups, minSources = MIN_DISTINCT_SOURCES) {
 
       return b.contentCount - a.contentCount;
     });
+}
+
+// Sources marquées "opinionOnly" dans medias.json : tribunes/analyses/médias indépendants
+// dont les articles n'ont, par nature, presque jamais de second média qui les reprend
+// (contrairement à une dépêche factuelle). Sans ça, filterMultiSourceSubjects les jette
+// silencieusement au moindre passage sous minSources — voir loadOpinionSourceNames().
+function loadOpinionSourceNames(sourceFile = MEDIA_FILE) {
+  try {
+    const medias = JSON.parse(fs.readFileSync(sourceFile, "utf8"));
+    return new Set(medias.filter(m => m.opinionOnly === true).map(m => m.nom));
+  } catch (error) {
+    console.error("Erreur de lecture des sources d'opinion :", error.message);
+    return new Set();
+  }
+}
+
+// Repêche, parmi les groupes qui n'ont pas atteint minSources (donc jetés par
+// filterMultiSourceSubjects), les contenus venant d'un média d'opinion — pour les montrer
+// dans un flux dédié plutôt que de les perdre. On ne réutilise jamais un groupe qui a déjà
+// atteint minSources : ces contenus-là sont déjà visibles dans les sujets normaux.
+function extractOpinionItems(groups, minSources, opinionSourceNames) {
+  if (!opinionSourceNames || opinionSourceNames.size === 0) return [];
+
+  const items = [];
+  for (const group of groups) {
+    const sources = new Set(group.contents.map(content => content.source));
+    if (sources.size >= minSources) continue;
+
+    for (const content of group.contents) {
+      if (opinionSourceNames.has(content.source)) {
+        items.push(content);
+      }
+    }
+  }
+
+  return items.sort((a, b) => new Date(b.date) - new Date(a.date));
 }
 
 function fallbackAiAnalysis(subject, arenaMode = "positions") {
@@ -5131,6 +5192,13 @@ function buildVeilleStylesHtml() {
     .cr-name { color: #111; font-weight: 500; white-space: nowrap; padding-right: 8px; }
     .cr-detail { color: #6b7280; }
 
+    .opinion-section { margin: 20px 0; border: 1px solid #e5e7eb; border-radius: 8px; background: #fafafa; }
+    .opinion-section summary { padding: 10px 14px; cursor: pointer; font-weight: 600; color: #374151; user-select: none; }
+    .opinion-section summary:hover { color: #111; }
+    .opinion-list { list-style: none; margin: 0; padding: 0 14px 14px; display: grid; gap: 10px; }
+    .opinion-list .content-item { border: 1px solid #e5e7eb; border-radius: 6px; padding: 10px 12px; background: #fff; font-size: 0.85rem; }
+    .opinion-summary { margin: 6px 0 0; color: #4b5563; font-size: 0.82rem; }
+
     .filter-bar {
       display: flex;
       gap: 10px;
@@ -7031,6 +7099,39 @@ function buildSubjectCardHtml(subject, ctx) {
 	      `;
 }
 
+// Carte simplifiée pour un article de presse d'opinion à source unique (cf.
+// extractOpinionItems) : pas de checkbox/sélection ni de bouton Agôn, ces articles ne
+// passent pas par le pipeline de débat (une seule source = rien à confronter).
+function buildOpinionItemCardHtml(item) {
+  const date = dayjs(item.date).format("DD/MM/YYYY HH:mm");
+  const orientationGroup = getOrientationGroup(item.orientation);
+  const orientationTag = item.orientation
+    ? `<span class="source-tag ${orientationGroup}">${escapeHtml(item.orientation)}</span>`
+    : "";
+  const summary = String(item.summary || "").trim();
+
+  return `
+    <li class="content-item opinion-item" data-orientation="${escapeHtml(item.orientation)}">
+      <strong>${escapeHtml(item.source)}</strong> ${orientationTag}
+      <br>
+      <a href="${escapeHtml(item.link)}" target="_blank" rel="noopener noreferrer">${escapeHtml(item.title)}</a>
+      <br>
+      <small>Publié le ${escapeHtml(date)}</small>
+      ${summary ? `<p class="opinion-summary">${escapeHtml(summary.slice(0, 220))}${summary.length > 220 ? "…" : ""}</p>` : ""}
+    </li>
+  `;
+}
+
+function buildOpinionSectionHtml(opinionItems) {
+  if (!Array.isArray(opinionItems) || !opinionItems.length) return "";
+  return `
+    <details class="opinion-section">
+      <summary>Presse d'opinion (${opinionItems.length} article${opinionItems.length > 1 ? "s" : ""} à source unique, hors sujets ci-dessus)</summary>
+      <ul class="opinion-list">${opinionItems.map(buildOpinionItemCardHtml).join("")}</ul>
+    </details>
+  `;
+}
+
 function generateHtml(sessions) {
   const generatedAt = dayjs().format("DD/MM/YYYY HH:mm:ss");
 
@@ -7126,6 +7227,7 @@ function generateHtml(sessions) {
             ? subjectBlocks
             : `<div class="empty">Aucun sujet commun détecté pendant cette session.</div>`
         }
+        ${buildOpinionSectionHtml(session.opinionItems)}
       </section>
     `;
   }).join("");
@@ -7452,6 +7554,10 @@ async function runWatchSession(minSources = MIN_DISTINCT_SOURCES) {
 
   console.log(`${rawSubjects.length} sujet(s) repris par plusieurs sources.`);
 
+  const opinionItems = extractOpinionItems(groups, minSources, loadOpinionSourceNames());
+
+  console.log(`${opinionItems.length} article(s) de presse d'opinion à source unique conservé(s) à part.`);
+
   setProgress(4, "Déduplication IA", "");
   const deduplication = await deduplicateSubjectsWithAI(rawSubjects);
   const dedupedSubjects = deduplication.subjects;
@@ -7490,7 +7596,8 @@ async function runWatchSession(minSources = MIN_DISTINCT_SOURCES) {
     deduplication: deduplication.mergeResult,
     aiEnabled: Boolean(openai),
     collectReport: { articles: articlesReport, youtube: videosReport },
-    subjects: analyzedSubjects
+    subjects: analyzedSubjects,
+    opinionItems
   };
 
   const sessions = loadSessions();

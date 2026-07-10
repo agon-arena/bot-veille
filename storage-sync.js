@@ -18,6 +18,7 @@ const FILES_TO_SYNC = [
   "sessions-mixte.json",
   "saved-subjects.json",
   "sent-to-agon.json",
+  "sent-opinions-to-agon.json",
   "certamen-sessions.json",
   "veille-mixte.json",
   "auto-collect-config.json",

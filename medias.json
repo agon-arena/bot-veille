@@ -12,277 +12,332 @@
   {
     "nom": "Mediapart",
     "orientation": "gauche / investigation",
-    "rss": "https://www.mediapart.fr/articles/feed"
+    "rss": "https://www.mediapart.fr/articles/feed",
+    "opinionOnly": true
   },
   {
     "nom": "Politis",
     "orientation": "gauche",
-    "rss": "https://www.politis.fr/feed/"
+    "rss": "https://www.politis.fr/feed/",
+    "opinionOnly": true
   },
   {
     "nom": "Basta!",
     "orientation": "gauche / écologie sociale",
-    "rss": "https://basta.media/spip.php?page=backend"
+    "rss": "https://basta.media/spip.php?page=backend",
+    "opinionOnly": true
   },
   {
     "nom": "Reporterre",
     "orientation": "écologie / gauche",
-    "rss": "https://reporterre.net/spip.php?page=backend"
+    "rss": "https://reporterre.net/spip.php?page=backend",
+    "opinionOnly": true
   },
   {
     "nom": "Alternatives économiques",
     "orientation": "gauche / économie",
-    "rss": "https://www.alternatives-economiques.fr/rss.xml"
+    "rss": "https://www.alternatives-economiques.fr/rss.xml",
+    "opinionOnly": true
   },
   {
     "nom": "Le Courrier International",
     "orientation": "gauche / international",
-    "rss": "https://www.courrierinternational.com/feed/all/rss.xml"
+    "rss": "https://www.courrierinternational.com/feed/all/rss.xml",
+    "opinionOnly": true
   },
   {
     "nom": "Le Monde diplomatique",
     "orientation": "gauche / international / analyse",
-    "rss": "https://www.monde-diplomatique.fr/spip.php?page=backend"
+    "rss": "https://www.monde-diplomatique.fr/spip.php?page=backend",
+    "opinionOnly": true
   },
   {
     "nom": "Le Média",
     "orientation": "gauche",
-    "rss": "https://api.lemediatv.fr/rss.xml"
+    "rss": "https://api.lemediatv.fr/rss.xml",
+    "opinionOnly": true
   },
   {
     "nom": "Blast",
     "orientation": "gauche / critique sociale",
-    "rss": "https://api.blast-info.fr/rss.xml"
+    "rss": "https://api.blast-info.fr/rss.xml",
+    "opinionOnly": true
   },
   {
     "nom": "Arrêt sur images",
     "orientation": "critique médias / gauche",
-    "rss": "https://api.arretsurimages.net/api/public/rss/all-content"
+    "rss": "https://api.arretsurimages.net/api/public/rss/all-content",
+    "opinionOnly": true
   },
   {
     "nom": "Acrimed",
     "orientation": "critique médias / gauche",
-    "rss": "https://www.acrimed.org/spip.php?page=backend"
+    "rss": "https://www.acrimed.org/spip.php?page=backend",
+    "opinionOnly": true
   },
   {
     "nom": "AOC",
     "orientation": "analyse / idées",
-    "rss": "https://aoc.media/feed/"
+    "rss": "https://aoc.media/feed/",
+    "opinionOnly": true
   },
   {
     "nom": "Attac",
     "orientation": "gauche / altermondialiste",
-    "rss": "https://france.attac.org/spip.php?page=backend"
+    "rss": "https://france.attac.org/spip.php?page=backend",
+    "opinionOnly": true
   },
   {
     "nom": "Au Poste",
     "orientation": "gauche / entretiens",
-    "rss": "https://auposte.media/emissions.xml"
+    "rss": "https://auposte.media/emissions.xml",
+    "opinionOnly": true
   },
   {
     "nom": "Bondy Blog",
     "orientation": "société / quartiers populaires",
-    "rss": "https://www.bondyblog.fr/feed/"
+    "rss": "https://www.bondyblog.fr/feed/",
+    "opinionOnly": true
   },
   {
     "nom": "Bon Pote",
     "orientation": "écologie",
-    "rss": "https://bonpote.com/feed/"
+    "rss": "https://bonpote.com/feed/",
+    "opinionOnly": true
   },
   {
     "nom": "Cerveaux non disponibles",
     "orientation": "gauche radicale",
-    "rss": "https://cerveauxnondisponibles.net/feed/"
+    "rss": "https://cerveauxnondisponibles.net/feed/",
+    "opinionOnly": true
   },
   {
     "nom": "Contre Attaque",
     "orientation": "gauche radicale",
-    "rss": "https://contre-attaque.net/feed/"
+    "rss": "https://contre-attaque.net/feed/",
+    "opinionOnly": true
   },
   {
     "nom": "Disclose",
     "orientation": "investigation",
-    "rss": "https://disclose.ngo/feed/"
+    "rss": "https://disclose.ngo/feed/",
+    "opinionOnly": true
   },
   {
     "nom": "Extinction Rebellion France",
     "orientation": "écologie militante",
-    "rss": "https://extinctionrebellion.fr/feed.xml"
+    "rss": "https://extinctionrebellion.fr/feed.xml",
+    "opinionOnly": true
   },
   {
     "nom": "Fakir",
     "orientation": "gauche sociale",
-    "rss": "https://piaille.fr/@fakir.rss"
+    "rss": "https://piaille.fr/@fakir.rss",
+    "opinionOnly": true
   },
   {
     "nom": "Forbidden Stories",
     "orientation": "investigation",
-    "rss": "https://forbiddenstories.org/fr/feed/"
+    "rss": "https://forbiddenstories.org/fr/feed/",
+    "opinionOnly": true
   },
   {
     "nom": "Frustration",
     "orientation": "gauche / société",
-    "rss": "https://frustrationmagazine.fr/feed.xml"
+    "rss": "https://frustrationmagazine.fr/feed.xml",
+    "opinionOnly": true
   },
   {
     "nom": "Là-bas si j'y suis",
     "orientation": "gauche",
-    "rss": "https://la-bas.org/spip.php?page=backend"
+    "rss": "https://la-bas.org/spip.php?page=backend",
+    "opinionOnly": true
   },
   {
     "nom": "L'Âge de faire",
     "orientation": "écologie / société",
-    "rss": "https://lagedefaire-lejournal.fr/feed/"
+    "rss": "https://lagedefaire-lejournal.fr/feed/",
+    "opinionOnly": true
   },
   {
     "nom": "L'Insoumission",
     "orientation": "gauche radicale",
-    "rss": "https://linsoumission.fr/feed/"
+    "rss": "https://linsoumission.fr/feed/",
+    "opinionOnly": true
   },
   {
     "nom": "La Horde",
     "orientation": "gauche / antifascisme",
-    "rss": "https://lahorde.info/spip.php?page=backend"
+    "rss": "https://lahorde.info/spip.php?page=backend",
+    "opinionOnly": true
   },
   {
     "nom": "La Relève et La Peste",
     "orientation": "écologie / société",
-    "rss": "https://lareleveetlapeste.fr/feed/"
+    "rss": "https://lareleveetlapeste.fr/feed/",
+    "opinionOnly": true
   },
   {
     "nom": "Le Canard enchaîné",
     "orientation": "satire / investigation",
-    "rss": "https://www.lecanardenchaine.fr/rss/index.xml"
+    "rss": "https://www.lecanardenchaine.fr/rss/index.xml",
+    "opinionOnly": true
   },
   {
     "nom": "Le Journal des Briques",
     "orientation": "presse indépendante",
-    "rss": "https://lejournaldesbriques.fr/feed"
+    "rss": "https://lejournaldesbriques.fr/feed",
+    "opinionOnly": true
   },
   {
     "nom": "Le Libertaire",
     "orientation": "libertaire",
-    "rss": "https://le-libertaire.net/feed"
+    "rss": "https://le-libertaire.net/feed",
+    "opinionOnly": true
   },
   {
     "nom": "Le Monde diplomatique — blog",
     "orientation": "analyse",
-    "rss": "https://blog.mondediplo.net/spip.php?page=backend&id_rubrique=6"
+    "rss": "https://blog.mondediplo.net/spip.php?page=backend&id_rubrique=6",
+    "opinionOnly": true
   },
   {
     "nom": "Le Poing",
     "orientation": "presse indépendante",
-    "rss": "https://lepoing.net/feed"
+    "rss": "https://lepoing.net/feed",
+    "opinionOnly": true
   },
   {
     "nom": "Le Ravi",
     "orientation": "presse indépendante",
-    "rss": "https://www.leravi.org/feed/"
+    "rss": "https://www.leravi.org/feed/",
+    "opinionOnly": true
   },
   {
     "nom": "Le Tangue",
     "orientation": "La Réunion / satirique",
-    "rss": "https://www.letangue.re/feed/"
+    "rss": "https://www.letangue.re/feed/",
+    "opinionOnly": true
   },
   {
     "nom": "Les Économistes Atterrés",
     "orientation": "économie / gauche",
-    "rss": "https://www.atterres.org/feed/"
+    "rss": "https://www.atterres.org/feed/",
+    "opinionOnly": true
   },
   {
     "nom": "Les Jours",
     "orientation": "investigation",
-    "rss": "https://lesjours.fr/rss.xml"
+    "rss": "https://lesjours.fr/rss.xml",
+    "opinionOnly": true
   },
   {
     "nom": "Lundi matin",
     "orientation": "gauche radicale / idées",
-    "rss": "https://lundi.am/spip.php?page=backend"
+    "rss": "https://lundi.am/spip.php?page=backend",
+    "opinionOnly": true
   },
   {
     "nom": "Le Vent Se Lève",
     "orientation": "souverainisme / gauche",
-    "rss": "https://lvsl.fr/feed/"
+    "rss": "https://lvsl.fr/feed/",
+    "opinionOnly": true
   },
   {
     "nom": "Médiacités",
     "orientation": "investigation locale",
-    "rss": "https://www.mediacites.fr/feed/"
+    "rss": "https://www.mediacites.fr/feed/",
+    "opinionOnly": true
   },
   {
     "nom": "Mediatico",
     "orientation": "économie sociale",
-    "rss": "https://mediatico.fr/feed/"
+    "rss": "https://mediatico.fr/feed/",
+    "opinionOnly": true
   },
   {
     "nom": "Mr Mondialisation",
     "orientation": "écologie / société",
-    "rss": "https://mrmondialisation.org/feed/"
+    "rss": "https://mrmondialisation.org/feed/",
+    "opinionOnly": true
   },
   {
     "nom": "Multinationales.org",
     "orientation": "gauche / économie / multinationales",
-    "rss": "https://multinationales.org/fr/page/backend"
+    "rss": "https://multinationales.org/fr/page/backend",
+    "opinionOnly": true
   },
   {
     "nom": "Off Investigation",
     "orientation": "investigation",
-    "rss": "https://www.off-investigation.fr/feed/"
+    "rss": "https://www.off-investigation.fr/feed/",
+    "opinionOnly": true
   },
   {
     "nom": "Paris Luttes Info",
     "orientation": "gauche / militant / local",
-    "rss": "https://paris-luttes.info/spip.php?page=backend"
+    "rss": "https://paris-luttes.info/spip.php?page=backend",
+    "opinionOnly": true
   },
   {
     "nom": "Radio Parleur",
     "orientation": "gauche / social / mouvements sociaux",
-    "rss": "https://radioparleur.net/feed/"
+    "rss": "https://radioparleur.net/feed/",
+    "opinionOnly": true
   },
   {
     "nom": "Rapports de Force",
     "orientation": "gauche / social / syndicats",
-    "rss": "https://rapportsdeforce.fr/feed"
+    "rss": "https://rapportsdeforce.fr/feed",
+    "opinionOnly": true
   },
   {
     "nom": "Regards",
     "orientation": "gauche / société",
-    "rss": "https://regards.fr/feed/"
+    "rss": "https://regards.fr/feed/",
+    "opinionOnly": true
   },
   {
     "nom": "Ballast",
     "orientation": "gauche / idées",
-    "rss": "https://www.revue-ballast.fr/feed/"
+    "rss": "https://www.revue-ballast.fr/feed/",
+    "opinionOnly": true
   },
   {
     "nom": "Rue89 Bordeaux",
     "orientation": "gauche / local indépendant",
-    "rss": "https://rue89bordeaux.com/feed/"
+    "rss": "https://rue89bordeaux.com/feed/",
+    "opinionOnly": true
   },
   {
     "nom": "Rue89 Lyon",
     "orientation": "local / indépendant",
-    "rss": "https://www.rue89lyon.fr/feed/"
+    "rss": "https://www.rue89lyon.fr/feed/",
+    "opinionOnly": true
   },
   {
     "nom": "Rue89 Strasbourg",
     "orientation": "local / indépendant",
-    "rss": "https://www.rue89strasbourg.com/feed"
+    "rss": "https://www.rue89strasbourg.com/feed",
+    "opinionOnly": true
   },
   {
     "nom": "Splann!",
     "orientation": "investigation Bretagne",
-    "rss": "https://splann.org/feed/"
+    "rss": "https://splann.org/feed/",
+    "opinionOnly": true
   },
   {
     "nom": "StreetPress",
     "orientation": "gauche / société / jeunesse / enquête",
-    "rss": "https://www.streetpress.com/rss.xml"
+    "rss": "https://www.streetpress.com/rss.xml",
+    "opinionOnly": true
   },
   {
     "nom": "Thinkerview",
     "orientation": "entretiens / géopolitique",
-    "rss": "https://www.thinkerview.com/feed/"
+    "rss": "https://www.thinkerview.com/feed/",
+    "opinionOnly": true
   },
   {
     "nom": "Le Monde",
@@ -467,7 +522,8 @@
   {
     "nom": "Valeurs actuelles",
     "orientation": "droite / conservateur",
-    "rss": "https://www.valeursactuelles.com/feed"
+    "rss": "https://www.valeursactuelles.com/feed",
+    "opinionOnly": true
   },
   {
     "nom": "Marianne",
@@ -482,12 +538,14 @@
   {
     "nom": "Causeur",
     "orientation": "droite / souverainiste",
-    "rss": "https://www.causeur.fr/feed"
+    "rss": "https://www.causeur.fr/feed",
+    "opinionOnly": true
   },
   {
     "nom": "Atlantico",
     "orientation": "droite / libéral-conservateur",
-    "rss": "https://rss.atlantico.fr/"
+    "rss": "https://rss.atlantico.fr/",
+    "opinionOnly": true
   },
   {
     "nom": "CNews — France",
@@ -502,12 +560,14 @@
   {
     "nom": "Contrepoints — Culture",
     "orientation": "droite",
-    "rss": "https://contrepoints.org/thematique/culture/feed/"
+    "rss": "https://contrepoints.org/thematique/culture/feed/",
+    "opinionOnly": true
   },
   {
     "nom": "Contrepoints — International / Afrique",
     "orientation": "droite",
-    "rss": "https://contrepoints.org/thematique/international/afrique/feed/"
+    "rss": "https://contrepoints.org/thematique/international/afrique/feed/",
+    "opinionOnly": true
   },
   {
     "nom": "Capital",
@@ -523,7 +583,8 @@
   {
     "nom": "Boulevard Voltaire",
     "orientation": "droite",
-    "rss": "https://www.bvoltaire.fr/feed/"
+    "rss": "https://www.bvoltaire.fr/feed/",
+    "opinionOnly": true
   },
   {
     "nom": "Frontières",
@@ -538,6 +599,132 @@
     "stripTitleSuffixPattern": "\\s+-\\s+frontieresmedia\\.fr$",
     "excludeTitlePatterns": [
       "^(Nos abonnements|Faire un don|Les magazines|Frontières)$"
-    ]
+    ],
+    "opinionOnly": true
+  },
+  {
+    "nom": "L'Internaute",
+    "orientation": "généraliste",
+    "rss": "https://www.linternaute.com/rss/"
+  },
+  {
+    "nom": "L'Alsace",
+    "orientation": "généraliste / régional",
+    "rss": "https://www.lalsace.fr/rss"
+  },
+  {
+    "nom": "Dernières Nouvelles d'Alsace",
+    "orientation": "généraliste / régional",
+    "rss": "https://www.dna.fr/rss"
+  },
+  {
+    "nom": "L'Est Républicain",
+    "orientation": "généraliste / régional",
+    "rss": "https://www.estrepublicain.fr/rss"
+  },
+  {
+    "nom": "Le Journal de Saône-et-Loire",
+    "orientation": "généraliste / régional",
+    "rss": "https://www.lejsl.com/rss"
+  },
+  {
+    "nom": "Le Journal de la Haute-Marne",
+    "orientation": "généraliste / régional",
+    "rss": "https://jhm.fr/feed/"
+  },
+  {
+    "nom": "La Charente Libre",
+    "orientation": "généraliste / régional",
+    "rss": "https://www.charentelibre.fr/rss.xml"
+  },
+  {
+    "nom": "Konbini",
+    "orientation": "généraliste",
+    "rss": "https://www.konbini.com/feed/"
+  },
+  {
+    "nom": "Le JDD",
+    "orientation": "droite",
+    "rss": "https://www.lejdd.fr/rss.xml"
+  },
+  {
+    "nom": "ICI (France Bleu)",
+    "orientation": "généraliste",
+    "rss": "https://www.ici.fr/rss/a-la-une.xml"
+  },
+  {
+    "nom": "LCP - Assemblée Nationale",
+    "orientation": "généraliste / politique",
+    "rss": "https://lcp.fr/rss-actualites.xml"
+  },
+  {
+    "nom": "Challenges",
+    "orientation": "généraliste / économie",
+    "rss": "https://www.challenges.fr/rss.xml"
+  },
+  {
+    "nom": "L'Incorrect",
+    "orientation": "droite / catholique conservateur",
+    "rss": "https://lincorrect.org/feed/",
+    "opinionOnly": true
+  },
+  {
+    "nom": "Europe 1",
+    "orientation": "centre-droit / radio généraliste",
+    "rss": "https://www.europe1.fr/rss.xml"
+  },
+  {
+    "nom": "Sud Radio",
+    "orientation": "droite / radio populaire",
+    "rss": "https://www.sudradio.fr/feed",
+    "opinionOnly": true
+  },
+  {
+    "nom": "France Soir",
+    "orientation": "droite / complotiste-covido-sceptique",
+    "rss": "https://www.francesoir.fr/rss.xml",
+    "opinionOnly": true
+  },
+  {
+    "nom": "Le Salon Beige",
+    "orientation": "droite / catholique traditionaliste",
+    "rss": "https://lesalonbeige.fr/feed/",
+    "opinionOnly": true
+  },
+  {
+    "nom": "Breizh-info",
+    "orientation": "droite / identitaire régionaliste",
+    "rss": "https://www.breizh-info.com/feed/",
+    "opinionOnly": true
+  },
+  {
+    "nom": "OJIM",
+    "orientation": "droite / critique médias",
+    "rss": "https://www.ojim.fr/feed/",
+    "opinionOnly": true
+  },
+  {
+    "nom": "Polémia",
+    "orientation": "droite / identitaire, nouvelle droite",
+    "rss": "https://www.polemia.com/feed/",
+    "opinionOnly": true
+  },
+  {
+    "nom": "TV Libertés",
+    "orientation": "droite / identitaire",
+    "rss": "https://www.tvlibertes.com/feed",
+    "opinionOnly": true
+  },
+  {
+    "nom": "Revue Éléments",
+    "orientation": "droite / nouvelle droite, intellectuelle",
+    "rss": "https://www.revue-elements.com/feed",
+    "opinionOnly": true
+  },
+  {
+    "nom": "Réinformation.tv",
+    "orientation": "droite / identitaire, réinformation",
+    "rss": "https://reinformation.tv/feed",
+    "opinionOnly": true
   }
 ]
