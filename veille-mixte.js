@@ -1106,37 +1106,33 @@ function filterMultiSourceSubjects(groups, minSources = MIN_DISTINCT_SOURCES) {
     });
 }
 
-// Sources marquées "opinionOnly" dans medias.json : tribunes/analyses/médias indépendants
-// dont les articles n'ont, par nature, presque jamais de second média qui les reprend
-// (contrairement à une dépêche factuelle). Sans ça, filterMultiSourceSubjects les jette
-// silencieusement au moindre passage sous minSources — voir loadOpinionSourceNames().
-function loadOpinionSourceNames(sourceFile = MEDIA_FILE) {
+// Sujets déjà envoyés vers Agôn comme débat (sent-to-agon.json, tenu à jour par
+// server.js) — sert à ne pas republier dans Tribunes un sujet devenu une arène.
+// Comparaison sur le titre nettoyé (cf. normalizeSentToAgonKey côté server.js, même
+// logique que cleanText ici) : les deux systèmes vivent dans des process séparés
+// (veille-mixte.js sur le port 3002, server.js sur le 3000) mais partagent le fichier.
+function loadPublishedSubjectKeys() {
+  const filePath = path.join(__dirname, "sent-to-agon.json");
   try {
-    const medias = JSON.parse(fs.readFileSync(sourceFile, "utf8"));
-    return new Set(medias.filter(m => m.opinionOnly === true).map(m => m.nom));
+    if (!fs.existsSync(filePath)) return new Set();
+    const items = JSON.parse(fs.readFileSync(filePath, "utf8"));
+    return new Set(items.map(item => cleanText(item.subject || "")).filter(Boolean));
   } catch (error) {
-    console.error("Erreur de lecture des sources d'opinion :", error.message);
+    console.error("Erreur de lecture de sent-to-agon.json :", error.message);
     return new Set();
   }
 }
 
-// Repêche, parmi les groupes qui n'ont pas atteint minSources (donc jetés par
-// filterMultiSourceSubjects), les contenus venant d'un média d'opinion — pour les montrer
-// dans un flux dédié plutôt que de les perdre. On ne réutilise jamais un groupe qui a déjà
-// atteint minSources : ces contenus-là sont déjà visibles dans les sujets normaux.
-function extractOpinionItems(groups, minSources, opinionSourceNames) {
-  if (!opinionSourceNames || opinionSourceNames.size === 0) return [];
-
+// Repêche tous les contenus (articles + vidéos, tous médias confondus) dont le sujet n'a
+// pas déjà été publié comme débat sur Agôn — pour le flux "Tribunes", qui affiche tout ce
+// qui n'est pas (encore) devenu une arène, article par article plutôt que groupé par sujet.
+// L'onglet Général y montre tout ; les onglets Gauche/Droite filtrent ensuite côté client
+// sur le champ orientation de chaque contenu (cf. tribunes.html).
+function extractOpinionItems(groups, publishedSubjectKeys) {
   const items = [];
   for (const group of groups) {
-    const sources = new Set(group.contents.map(content => content.source));
-    if (sources.size >= minSources) continue;
-
-    for (const content of group.contents) {
-      if (opinionSourceNames.has(content.source)) {
-        items.push(content);
-      }
-    }
+    if (publishedSubjectKeys.has(cleanText(group.subject))) continue;
+    items.push(...group.contents);
   }
 
   return items.sort((a, b) => new Date(b.date) - new Date(a.date));
@@ -7584,9 +7580,9 @@ async function runWatchSession(minSources = MIN_DISTINCT_SOURCES) {
 
   console.log(`${rawSubjects.length} sujet(s) repris par plusieurs sources.`);
 
-  const opinionItems = extractOpinionItems(groups, minSources, loadOpinionSourceNames());
+  const opinionItems = extractOpinionItems(groups, loadPublishedSubjectKeys());
 
-  console.log(`${opinionItems.length} article(s) de presse d'opinion à source unique conservé(s) à part.`);
+  console.log(`${opinionItems.length} article(s) retenus pour Tribunes (hors sujets déjà publiés sur Agôn).`);
 
   setProgress(4, "Déduplication IA", "");
   const deduplication = await deduplicateSubjectsWithAI(rawSubjects);
