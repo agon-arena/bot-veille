@@ -568,6 +568,36 @@ function cleanText(text) {
     .trim();
 }
 
+const HTML_NAMED_ENTITIES = {
+  "&amp;": "&", "&lt;": "<", "&gt;": ">", "&quot;": '"', "&#039;": "'", "&apos;": "'",
+  "&nbsp;": " ", "&hellip;": "\u2026", "&mdash;": "\u2014", "&ndash;": "\u2013",
+  "&rsquo;": "\u2019", "&lsquo;": "\u2018", "&ldquo;": "\u201c", "&rdquo;": "\u201d"
+};
+
+// Certains flux RSS (WordPress notamment) mettent du HTML brut dans leur
+// description, parfois echappe deux fois (balises et entites non decodees,
+// ex: "&#8211;", "&amp;lt;p&amp;gt;") : le parseur XML laisse ca tel quel
+// puisque c'est dans une section CDATA. Sans ce nettoyage, ces resumes
+// ressortent avec des balises/entites visibles partout ou ils sont affiches
+// (dashboard veille, page Tribunes d'Agon...).
+function decodeHtmlEntitiesOnce(text) {
+  return String(text || "")
+    .replace(/&#(\d+);/g, (_, code) => String.fromCodePoint(Number(code)))
+    .replace(/&#x([0-9a-fA-F]+);/g, (_, code) => String.fromCodePoint(parseInt(code, 16)))
+    .replace(/&[a-zA-Z]+;/g, (entity) => HTML_NAMED_ENTITIES[entity] || entity);
+}
+
+function stripHtmlAndDecodeEntities(text) {
+  // Deux passes : un flux double-echappe revele de nouvelles balises/entites
+  // apres un premier decodage (ex: "&amp;lt;p&amp;gt;" -> "<p>" seulement au 2e passage).
+  let result = decodeHtmlEntitiesOnce(String(text || ""));
+  result = decodeHtmlEntitiesOnce(result);
+  return result
+    .replace(/<[^>]*>/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
 function getKeywords(text) {
   const stopWords = new Set([
     "avec", "dans", "pour", "sur", "aux", "des", "les", "une", "est", "sont",
@@ -886,7 +916,7 @@ async function collectArticles(lastSessionCutoff = null, knownSources = new Set(
         const title = normalizeFeedItemTitle(rawTitle, media);
         if (shouldSkipFeedItemTitle(rawTitle, media) || shouldSkipFeedItemTitle(title, media)) { skipped++; continue; }
         if (isRoundupTitle(title)) { skipped++; continue; }
-        const summary = item.contentSnippet || item.content || item.summary || "";
+        const summary = stripHtmlAndDecodeEntities(item.contentSnippet || item.content || item.summary || "");
         contents.push({ type: "article", source: media.nom, orientation: media.orientation || "", title, link: item.link || "", date: date.toISOString(), summary, thumbnail: "", comparableText: cleanText(title) });
         kept++;
       }
@@ -940,7 +970,7 @@ async function collectYouTubeVideos(lastSessionCutoff = null, knownSources = new
         if (!isNewSource && !isFreshSinceLastSession(date, lastSessionCutoff)) { skipped++; continue; }
         const title = item.title || "Sans titre";
         if (isRoundupTitle(title)) { skipped++; continue; }
-        const summary = item.contentSnippet || item.content || item.summary || "";
+        const summary = stripHtmlAndDecodeEntities(item.contentSnippet || item.content || item.summary || "");
         const link = item.link || "";
         const videoId = extractYouTubeVideoId(link);
         contents.push({ type: "youtube", source: channel.nom, orientation: channel.orientation || "", title, link, date: date.toISOString(), summary, thumbnail: videoId ? `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg` : "", comparableText: cleanText(title) });
