@@ -5266,7 +5266,10 @@ app.post("/api/auto-collect-tick", requireMixteAuth, async (req, res) => {
   }
   const nowMin = timeToMinutes(getReunionTimeHHMM());
   const today = getReunionDateStr();
-  const TOLERANCE_MIN = 20;
+  // 40 min (au lieu de 20) : le 10/07/2026, GitHub Actions a sauté tous les ticks
+  // entre 12h36 et 15h19 UTC (cron */15 non garanti sous charge côté GitHub), ratant
+  // entièrement le créneau de 18h00 Réunion faute de marge suffisante.
+  const TOLERANCE_MIN = 40;
   const due = config.times.find(t => {
     const tMin = timeToMinutes(t);
     return nowMin >= tMin && nowMin - tMin < TOLERANCE_MIN;

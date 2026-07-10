@@ -2,9 +2,14 @@ name: Collecte automatique bot veille
 
 on:
   schedule:
-    # Vérification toutes les 15 min : la collecte ne se déclenche réellement
-    # que si l'heure configurée dans l'admin (onglet "Collecte auto") est atteinte.
-    - cron: '*/15 * * * *'
+    # Vérification toutes les 5 min (au lieu de 15) : GitHub ne garantit pas
+    # l'exécution exacte des cron schedule et peut sauter des occurrences sous
+    # charge (cf. incident du 10/07/2026 : aucun run entre 12h36 et 15h19 UTC,
+    # créneau de 18h00 Réunion entièrement raté). Repo public → minutes gratuites
+    # illimitées, augmenter la fréquence ne coûte rien. La collecte elle-même ne
+    # se déclenche réellement que si l'heure configurée (± tolérance côté serveur)
+    # est atteinte.
+    - cron: '*/5 * * * *'
   workflow_dispatch:  # déclenchement manuel depuis l'onglet Actions
 
 jobs:
