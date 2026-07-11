@@ -718,5 +718,115 @@
     "runAt": "2026-07-06T08:26:57.516Z",
     "status": "done",
     "attempts": 0
+  },
+  {
+    "debateId": 1537,
+    "question": "Présomption légitime défense police : protection ou risque d'abus ?",
+    "positionA": "non, ça donne trop de pouvoirs",
+    "positionB": "oui, faut protéger les policiers",
+    "id": "1537-1783498704665-5zfnwu",
+    "runAt": "2026-07-08T08:28:24.665Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1538,
+    "question": "Confier des enfants placés à des personnes fichées terroristes : oui ou non ?",
+    "positionA": "oui, la réinsertion est possible",
+    "positionB": "non, c'est trop risqué pour les enfants",
+    "id": "1538-1783498704665-rbq8ot",
+    "runAt": "2026-07-08T08:28:24.665Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1539,
+    "question": "Marine Le Pen doit-elle pouvoir se présenter malgré sa condamnation ?",
+    "positionA": "non, une condamnation doit interdire la candidature",
+    "positionB": "oui, la justice a déjà tranché sur son cas",
+    "id": "1539-1783498704665-7byq7t",
+    "runAt": "2026-07-08T08:28:24.665Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1540,
+    "question": "Qui doit prendre la responsabilité de calmer la crise Iran-USA ?",
+    "positionA": "l'Iran a raison de riposter face aux agressions",
+    "positionB": "les USA doivent imposer leur force pour la sécurité",
+    "id": "1540-1783498704665-zudxlo",
+    "runAt": "2026-07-08T08:28:24.665Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1588,
+    "question": "Le PS doit-il ouvrir la primaire de la gauche à tous ou la réserver aux militants ?",
+    "positionA": "oui, faut élargir pour rassembler la gauche",
+    "positionB": "non, c'est aux militants de décider seuls",
+    "id": "1588-1783585158554-qntzno",
+    "runAt": "2026-07-09T08:29:18.554Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1589,
+    "question": "Peut-on expulser rapidement les squatteurs face aux victimes en grande détresse ?",
+    "positionA": "non, faut pas précipiter l'expulsion",
+    "positionB": "oui, faut protéger les propriétaires vite",
+    "id": "1589-1783585158554-9e6hug",
+    "runAt": "2026-07-09T08:29:18.554Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1590,
+    "question": "Le gouvernement a-t-il raison de renforcer la loi sur la légitime défense policière ?",
+    "positionA": "non, ça ouvre trop la porte aux abus",
+    "positionB": "oui, la police doit pouvoir se défendre",
+    "id": "1590-1783585158554-edkh08",
+    "runAt": "2026-07-09T08:29:18.554Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1591,
+    "question": "Le ministère de la Justice doit-il totalement réformer la prison de Condé-sur-Sarthe ?",
+    "positionA": "oui, faut agir vite pour stopper les abus",
+    "positionB": "non, la prison a besoin d'ordre strict",
+    "id": "1591-1783585158554-vubtrx",
+    "runAt": "2026-07-09T08:29:18.554Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1592,
+    "question": "Les élus locaux doivent-ils bloquer les datacenters pour protéger l'environnement ?",
+    "positionA": "oui, faut protéger nos ressources naturelles",
+    "positionB": "non, datacenters indispensables pour le progrès",
+    "id": "1592-1783585158554-4mapt6",
+    "runAt": "2026-07-09T08:29:18.554Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1593,
+    "question": "Macron a-t-il raison de proposer Buffet comme Défenseur des droits ?",
+    "positionA": "oui, il faut un défenseur indépendant",
+    "positionB": "non, ses positions fragilisent l'institution",
+    "id": "1593-1783585158554-tbvxu1",
+    "runAt": "2026-07-09T08:29:18.554Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1594,
+    "question": "La décision de Marine Le Pen de se présenter malgré sa condamnation est-elle acceptable ?",
+    "positionA": "non, une condamnation doit exclure un candidat",
+    "positionB": "oui, la justice n'empêche pas la démocratie",
+    "id": "1594-1783585158554-68mubr",
+    "runAt": "2026-07-09T08:29:18.554Z",
+    "status": "done",
+    "attempts": 0
   }
 ]

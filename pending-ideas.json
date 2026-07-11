@@ -4228,5 +4228,1885 @@
     "runAt": "2026-07-07T14:35:11.733Z",
     "status": "done",
     "attempts": 0
+  },
+  {
+    "debateId": 1502,
+    "question": "Réautoriser temporairement la location des F/G avec contrat travaux ?",
+    "positionA": "Priorité à la protection des locataires",
+    "positionB": "Priorité au logement disponible",
+    "id": "1502-1783488573433-bi63dm",
+    "runAt": "2026-07-08T05:39:33.432Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1503,
+    "question": "Réautoriser temporairement la location des F/G avec contrat travaux ?",
+    "positionA": "Priorité à la protection des locataires",
+    "positionB": "Priorité au logement disponible",
+    "id": "1503-1783488573433-iysffd",
+    "runAt": "2026-07-08T05:39:33.432Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1504,
+    "question": "Prioriser une loi nationale rapide ou attendre une harmonisation européenne ?",
+    "positionA": "Loi nationale rapide",
+    "positionB": "Attendre harmonisation UE",
+    "id": "1504-1783488573433-uavp66",
+    "runAt": "2026-07-08T05:39:33.432Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1505,
+    "question": "Faut-il imposer un quota d'investissement de 20 % sur ces genres ?",
+    "positionA": "Imposer le quota pour la diversité",
+    "positionB": "Préserver liberté éditoriale des plateformes",
+    "id": "1505-1783488573433-uufkgj",
+    "runAt": "2026-07-08T05:39:33.432Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1506,
+    "question": "Microsoft supprime 3 200 postes chez Xbox dans le cadre d’un plan de réductions d’emplois",
+    "positionA": "",
+    "positionB": "",
+    "id": "1506-1783488573433-sx3k5k",
+    "runAt": "2026-07-08T05:39:33.432Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1507,
+    "question": "Faut-il restreindre l'accès ou contraindre l'algorithme de YouTube ?",
+    "positionA": "Restreindre l'accès des mineurs",
+    "positionB": "Contraindre l'algorithme pour médias",
+    "id": "1507-1783488573433-6oh45k",
+    "runAt": "2026-07-08T05:39:33.432Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1508,
+    "question": "Menaces sur l'avenir des semi‑conducteurs européens : une note alerte sur les risques",
+    "positionA": "",
+    "positionB": "",
+    "id": "1508-1783488573433-deovb6",
+    "runAt": "2026-07-08T05:39:33.432Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1509,
+    "question": "Admettre ou restreindre la candidature d'une personne condamnée ?",
+    "positionA": "Priorité à la liberté de choix des électeurs",
+    "positionB": "Priorité à la préservation de la confiance institutionnelle",
+    "id": "1509-1783488573433-7kv9ba",
+    "runAt": "2026-07-08T05:39:33.432Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1510,
+    "question": "Faut-il intensifier les coupes pour atteindre 5% ou lever le pied ?",
+    "positionA": "Assouplir l'effort",
+    "positionB": "Intensifier les économies",
+    "id": "1510-1783488573433-stxj8x",
+    "runAt": "2026-07-08T05:39:33.432Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1511,
+    "question": "Priorité : sanctions à la hiérarchie ou réformes préventives ?",
+    "positionA": "Sanctions et responsabilités",
+    "positionB": "Réformes opérationnelles et formation",
+    "id": "1511-1783488573433-kybb0l",
+    "runAt": "2026-07-08T05:39:33.432Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1512,
+    "question": "Comment remettre la victime au centre de la narration judiciaire et médiatique ?",
+    "positionA": "Prioriser la nomination et la mémoire de la victime",
+    "positionB": "Préserver la focalisation sur la procédure et la défense",
+    "id": "1512-1783488573433-3yu61k",
+    "runAt": "2026-07-08T05:39:33.432Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1513,
+    "question": "« L’Écologie des sentiments » : une comédie romantique au ton vintage",
+    "positionA": "",
+    "positionB": "",
+    "id": "1513-1783488573433-w8o7vf",
+    "runAt": "2026-07-08T05:39:33.432Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1514,
+    "question": "Priorité : sanctions à la hiérarchie ou réformes préventives ?",
+    "positionA": "Sanctions et responsabilités",
+    "positionB": "Réformes opérationnelles et formation",
+    "id": "1514-1783488573433-g8gyg1",
+    "runAt": "2026-07-08T05:39:33.432Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1515,
+    "question": "Faut-il réformer le statut des contrôleurs aériens ?",
+    "positionA": "Conserver le statut de fonctionnaire",
+    "positionB": "Réformer le statut pour plus de flexibilité",
+    "id": "1515-1783488573433-jqnu7r",
+    "runAt": "2026-07-08T05:39:33.432Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1516,
+    "question": "Sanction politique immédiate ou recours judiciaire transfrontalier ?",
+    "positionA": "Sanctions politiques rapides",
+    "positionB": "Faire confiance à la justice",
+    "id": "1516-1783488573433-absce7",
+    "runAt": "2026-07-08T05:39:33.432Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1517,
+    "question": "Une candidate condamnée mais pourvoyant en cassation doit-elle être politiquement disqualifiée ?",
+    "positionA": "Disqualifier politiquement la candidate",
+    "positionB": "Laisser la candidature se dérouler",
+    "id": "1517-1783488573433-zodfg5",
+    "runAt": "2026-07-08T05:39:33.432Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1518,
+    "question": "Prince Harry et Elton John perdent leur procès pour atteinte à la vie privée contre le Daily Mail",
+    "positionA": "",
+    "positionB": "",
+    "id": "1518-1783488573433-woikf2",
+    "runAt": "2026-07-08T05:39:33.432Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1519,
+    "question": "Admettre ou restreindre la candidature d'une personne condamnée ?",
+    "positionA": "Priorité à la liberté de choix des électeurs",
+    "positionB": "Priorité à la préservation de la confiance institutionnelle",
+    "id": "1519-1783488573433-jhg3ne",
+    "runAt": "2026-07-08T05:39:33.432Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1520,
+    "question": "Faut-il prioriser efficacité procédurale ou protection des garanties et données ?",
+    "positionA": "prioriser l'efficacité procédurale",
+    "positionB": "prioriser garanties et protection des données",
+    "id": "1520-1783488573433-1j0bae",
+    "runAt": "2026-07-08T05:39:33.432Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1521,
+    "question": "Un animateur relaxé pour agressions sexuelles sur neuf enfants de maternelle",
+    "positionA": "",
+    "positionB": "",
+    "id": "1521-1783488573433-iov2ch",
+    "runAt": "2026-07-08T05:39:33.432Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1522,
+    "question": "Frappes croisées entre États-Unis et Gardiens de la Révolution après attaques en mer d'Ormuz",
+    "positionA": "",
+    "positionB": "",
+    "id": "1522-1783488573433-l8kh7m",
+    "runAt": "2026-07-08T05:39:33.432Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1523,
+    "question": "Le procès pour apologie du terrorisme de l’eurodéputée Rima Hassan renvoyé à octobre 2026",
+    "positionA": "",
+    "positionB": "",
+    "id": "1523-1783488573433-k23rud",
+    "runAt": "2026-07-08T05:39:33.432Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1524,
+    "question": "Répondre fermement au nom de l'État ou privilégier la désescalade diplomatique ?",
+    "positionA": "Poursuivre et sanctionner fermement",
+    "positionB": "Privilégier la désescalade diplomatique",
+    "id": "1524-1783488573433-ds9ki3",
+    "runAt": "2026-07-08T05:39:33.432Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1525,
+    "question": "Faut-il prioriser efficacité procédurale ou protection des garanties et données ?",
+    "positionA": "prioriser l'efficacité procédurale",
+    "positionB": "prioriser garanties et protection des données",
+    "id": "1525-1783488573433-ryhbu2",
+    "runAt": "2026-07-08T05:39:33.432Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1526,
+    "question": "Maintien de l'ordre : fermeté ou désescalade ?",
+    "positionA": "Priorité à la désescalade",
+    "positionB": "Priorité à la fermeté",
+    "id": "1526-1783488573433-4b0lc5",
+    "runAt": "2026-07-08T05:39:33.432Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1527,
+    "question": "Droit de se représenter vs préservation de l'enquête parlementaire ?",
+    "positionA": "Prioriser verdict électoral",
+    "positionB": "Prioriser déroulement de l'enquête",
+    "id": "1527-1783488573433-5zdk7m",
+    "runAt": "2026-07-08T05:39:33.432Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1528,
+    "question": "Casino : deux plans de restructuration opposés proposés par Kretinsky et les créanciers",
+    "positionA": "",
+    "positionB": "",
+    "id": "1528-1783488573433-qzu1gt",
+    "runAt": "2026-07-08T05:39:33.432Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1529,
+    "question": "Faut-il poursuivre des ripostes militaires ou viser la désescalade ?",
+    "positionA": "Poursuivre ripostes militaires",
+    "positionB": "Prioriser la désescalade",
+    "id": "1529-1783488573433-hsi282",
+    "runAt": "2026-07-08T05:39:33.432Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1530,
+    "question": "Droit de se représenter vs préservation de l'enquête parlementaire ?",
+    "positionA": "Prioriser verdict électoral",
+    "positionB": "Prioriser déroulement de l'enquête",
+    "id": "1530-1783488573433-32qe10",
+    "runAt": "2026-07-08T05:39:33.432Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1531,
+    "question": "Faut-il poursuivre des ripostes militaires ou viser la désescalade ?",
+    "positionA": "Poursuivre ripostes militaires",
+    "positionB": "Prioriser la désescalade",
+    "id": "1531-1783488573433-wyxx36",
+    "runAt": "2026-07-08T05:39:33.432Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1532,
+    "question": "Canicule : 67 départements en vigilance orange, fortes chaleurs généralisées",
+    "positionA": "",
+    "positionB": "",
+    "id": "1532-1783488573433-mcfxco",
+    "runAt": "2026-07-08T05:39:33.432Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1533,
+    "question": "Les États-Unis frappent l'Iran et rétablissent des sanctions pétrolières après des attaques dans le…",
+    "positionA": "",
+    "positionB": "",
+    "id": "1533-1783488573433-psgpik",
+    "runAt": "2026-07-08T05:39:33.432Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1534,
+    "question": "Présumer la légitimité des tirs policiers nuit-elle à l'impartialité des enquêtes ?",
+    "positionA": "priorité à l'accès à la preuve pour victimes",
+    "positionB": "protection procedurale des forces",
+    "id": "1534-1783488573433-k2wxu3",
+    "runAt": "2026-07-08T05:39:33.432Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1535,
+    "question": "Une candidate condamnée mais en cassation peut-elle conduire une campagne équitable ?",
+    "positionA": "Prioriser contraintes judiciaires",
+    "positionB": "Prioriser droit de se présenter",
+    "id": "1535-1783488573433-28732g",
+    "runAt": "2026-07-08T05:39:33.432Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1536,
+    "question": "Une candidate condamnée mais en cassation peut-elle conduire une campagne équitable ?",
+    "positionA": "Prioriser contraintes judiciaires",
+    "positionB": "Prioriser droit de se présenter",
+    "id": "1536-1783488573433-omryv2",
+    "runAt": "2026-07-08T05:39:33.432Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1541,
+    "question": "Faut-il lever des dérogations au RGPD et à l'AI Act pour déployer l'IA dans les services publics ?",
+    "positionA": "Lever des dérogations pour accélérer le déploiement de l'IA",
+    "positionB": "Maintenir la régulation stricte pour protéger les données",
+    "id": "1541-1783520695651-ai888c",
+    "runAt": "2026-07-08T14:34:55.557Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1542,
+    "question": "Faut-il remettre en liberté Hicham Harb malgré les liens entre extradition et reconnaissance palestinienne ?",
+    "positionA": "priorité aux garanties juridiques",
+    "positionB": "priorité à la tenue du procès et mémoire des victimes",
+    "id": "1542-1783520695652-q3y56j",
+    "runAt": "2026-07-08T14:34:55.557Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1543,
+    "question": "Faut-il contraindre Meta à négocier et rémunérer la presse française ?",
+    "positionA": "Imposer à Meta de négocier et de payer",
+    "positionB": "Préserver la liberté opérationnelle de Meta",
+    "id": "1543-1783520695652-r944k9",
+    "runAt": "2026-07-08T14:34:55.557Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1544,
+    "question": "Marine Le Pen doit-elle maintenir sa candidature malgré sa condamnation en appel ?",
+    "positionA": "Maintenir la candidature",
+    "positionB": "Renoncer ou suspendre la candidature",
+    "id": "1544-1783520695652-kjityq",
+    "runAt": "2026-07-08T14:34:55.557Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1545,
+    "question": "Faut-il revaloriser le point d’indice pour tous, ou privilégier les mesures ciblées proposées par Bercy ?",
+    "positionA": "Revalorisation générale du point",
+    "positionB": "Mesures ciblées et promotions",
+    "id": "1545-1783520695652-obzl98",
+    "runAt": "2026-07-08T14:34:55.557Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1546,
+    "question": "Faut-il remettre en liberté Hicham Harb malgré les liens entre extradition et reconnaissance palestinienne ?",
+    "positionA": "priorité aux garanties juridiques",
+    "positionB": "priorité à la tenue du procès et mémoire des victimes",
+    "id": "1546-1783520695652-81jyus",
+    "runAt": "2026-07-08T14:34:55.557Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1547,
+    "question": "La Russie déploie la 50e brigade de drones « Varyag » sur le front ukrainien",
+    "positionA": "",
+    "positionB": "",
+    "id": "1547-1783520695652-z3v03v",
+    "runAt": "2026-07-08T14:34:55.557Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1548,
+    "question": "Faut-il confirmer François-Noël Buffet comme Défenseur des droits malgré ses positions anti-mariage pour tous ",
+    "positionA": "Refuser pour préserver crédibilité égalité",
+    "positionB": "Confirmer pour pluralité politique",
+    "id": "1548-1783520695652-admr20",
+    "runAt": "2026-07-08T14:34:55.557Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1549,
+    "question": "Faut-il confirmer François-Noël Buffet comme Défenseur des droits malgré ses positions anti-mariage pour tous ",
+    "positionA": "Refuser pour préserver crédibilité égalité",
+    "positionB": "Confirmer pour pluralité politique",
+    "id": "1549-1783520695652-cgp1ni",
+    "runAt": "2026-07-08T14:34:55.557Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1550,
+    "question": "Que Choisir Ensemble alerte sur des crèmes solaires non conformes vendues sur Temu, Shein et AliExp…",
+    "positionA": "",
+    "positionB": "",
+    "id": "1550-1783520695652-4asbo2",
+    "runAt": "2026-07-08T14:34:55.557Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1551,
+    "question": "Marine Le Pen condamnée en appel, démarrage de campagne à La Flèche aux côtés de Jordan Bardella",
+    "positionA": "",
+    "positionB": "",
+    "id": "1551-1783520695652-zykw9p",
+    "runAt": "2026-07-08T14:34:55.557Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1552,
+    "question": "Faut-il présumer légale l'usage d'armes par policiers/gendarmes ?",
+    "positionA": "Maintien de la charge habituelle de preuve",
+    "positionB": "Présomption de légalité",
+    "id": "1552-1783520695652-axuwuk",
+    "runAt": "2026-07-08T14:34:55.557Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1553,
+    "question": "Faut-il présumer légale l'usage d'armes par policiers/gendarmes ?",
+    "positionA": "Maintien de la charge habituelle de preuve",
+    "positionB": "Présomption de légalité",
+    "id": "1553-1783520695652-dskbek",
+    "runAt": "2026-07-08T14:34:55.557Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1554,
+    "question": "Faut-il autoriser la fabrication de Patriot pour l'Ukraine aux États-Unis ?",
+    "positionA": "autoriser la production",
+    "positionB": "refuser ou retarder l'autorisation",
+    "id": "1554-1783520695652-ccd5fo",
+    "runAt": "2026-07-08T14:34:55.557Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1555,
+    "question": "Faut-il privilégier sanctions punitives ou prévention/dialogue avant France–Maroc ?",
+    "positionA": "Prévention et dialogue apaisant",
+    "positionB": "Sanctions punitives immédiates",
+    "id": "1555-1783520695652-1aiq1p",
+    "runAt": "2026-07-08T14:34:55.557Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1556,
+    "question": "Après les frappes réciproques USA‑Iran, faut‑il relancer les négociations ou les rompre ?",
+    "positionA": "Relancer les négociations",
+    "positionB": "Rompre et durcir la pression",
+    "id": "1556-1783520695652-finznm",
+    "runAt": "2026-07-08T14:34:55.557Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1557,
+    "question": "Après les frappes réciproques USA‑Iran, faut‑il relancer les négociations ou les rompre ?",
+    "positionA": "Relancer les négociations",
+    "positionB": "Rompre et durcir la pression",
+    "id": "1557-1783520695652-7jpm8e",
+    "runAt": "2026-07-08T14:34:55.557Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1558,
+    "question": "Faut-il que la Cour de cassation statue avant le premier tour sur la condamnation de Marine Le Pen ?",
+    "positionA": "Statuer avant le premier tour",
+    "positionB": "Laisser trancher après l'élection",
+    "id": "1558-1783520695652-jmccn7",
+    "runAt": "2026-07-08T14:34:55.557Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1559,
+    "question": "Faut-il que la Cour de cassation statue avant le premier tour sur la condamnation de Marine Le Pen ?",
+    "positionA": "Statuer avant le premier tour",
+    "positionB": "Laisser trancher après l'élection",
+    "id": "1559-1783520695652-tqalkc",
+    "runAt": "2026-07-08T14:34:55.557Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1560,
+    "question": "Faut‑il privilégier des filtres et scores automatiques ou des mesures d'accompagnement souples ?",
+    "positionA": "Filtres et scores automatiques",
+    "positionB": "Accompagnement et options souples",
+    "id": "1560-1783574766690-k6ytll",
+    "runAt": "2026-07-09T05:36:06.688Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1561,
+    "question": "Faut-il instaurer une présomption de légitime défense pour policiers et gendarmes ?",
+    "positionA": "Préserver les garanties judiciaires",
+    "positionB": "Renforcer la protection des forces",
+    "id": "1561-1783574766690-fu9rkj",
+    "runAt": "2026-07-09T05:36:06.688Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1562,
+    "question": "Le Parti socialiste vote sur le mode de désignation de son candidat à la présidentielle",
+    "positionA": "",
+    "positionB": "",
+    "id": "1562-1783574766690-i9jb1e",
+    "runAt": "2026-07-09T05:36:06.688Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1563,
+    "question": "Aurore Bergé présente en Conseil des ministres un projet de loi contre le racisme et l’antisémitisme",
+    "positionA": "",
+    "positionB": "",
+    "id": "1563-1783574766690-2m7s3g",
+    "runAt": "2026-07-09T05:36:06.688Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1564,
+    "question": "La mairie de Vaulx-en-Velin doit-elle garder le drapeau palestinien en attendant le recours ?",
+    "positionA": "Maintenir l'affichage en soutien",
+    "positionB": "Respecter la décision judiciaire",
+    "id": "1564-1783574766690-mq6uet",
+    "runAt": "2026-07-09T05:36:06.688Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1565,
+    "question": "Sénat maintient l’interdiction des réseaux sociaux pour les moins de 15 ans",
+    "positionA": "",
+    "positionB": "",
+    "id": "1565-1783574766690-1xtmes",
+    "runAt": "2026-07-09T05:36:06.688Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1566,
+    "question": "Pourvoi de Marine Le Pen renvoyé devant l'assemblée plénière de la Cour de cassation",
+    "positionA": "",
+    "positionB": "",
+    "id": "1566-1783574766690-e9qaah",
+    "runAt": "2026-07-09T05:36:06.688Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1567,
+    "question": "La Guaira : gestion difficile des victimes après le double séisme du 24 juin",
+    "positionA": "",
+    "positionB": "",
+    "id": "1567-1783574766690-31angi",
+    "runAt": "2026-07-09T05:36:06.688Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1568,
+    "question": "Faut-il adopter le texte d'aide à mourir malgré la saisine annoncée de Gérard Larcher ?",
+    "positionA": "Adopter le texte sans nouveaux amendements",
+    "positionB": "Respecter l'alerte du Sénat et renforcer garde-fous",
+    "id": "1568-1783574766690-6ftwcg",
+    "runAt": "2026-07-09T05:36:06.688Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1569,
+    "question": "Incendies début juillet 2026 : près de 7 800 ha brûlés en huit jours en France",
+    "positionA": "",
+    "positionB": "",
+    "id": "1569-1783574766690-o1wx8w",
+    "runAt": "2026-07-09T05:36:06.688Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1570,
+    "question": "Carton jaune de Michael Olise contre le Paraguay confirmé par la FIFA",
+    "positionA": "",
+    "positionB": "",
+    "id": "1570-1783574766690-x6ey72",
+    "runAt": "2026-07-09T05:36:06.688Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1571,
+    "question": "Faut-il valider la nomination de François-Noël Buffet au Défenseur des droits ?",
+    "positionA": "valider la nomination",
+    "positionB": "rejeter la nomination",
+    "id": "1571-1783574766690-l0twnb",
+    "runAt": "2026-07-09T05:36:06.688Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1572,
+    "question": "Faut-il renforcer d'urgence financements et règles climatiques en France ?",
+    "positionA": "Renforcer d'urgence financements et règles",
+    "positionB": "Privilégier prudence budgétaire et gradualité",
+    "id": "1572-1783574766690-ie5y3p",
+    "runAt": "2026-07-09T05:36:06.688Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1573,
+    "question": "La mairie de Vaulx-en-Velin doit-elle garder le drapeau palestinien en attendant le recours ?",
+    "positionA": "Maintenir l'affichage en soutien",
+    "positionB": "Respecter la décision judiciaire",
+    "id": "1573-1783574766690-plgs25",
+    "runAt": "2026-07-09T05:36:06.688Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1574,
+    "question": "Marine Le Pen doit-elle mener la campagne du RN malgré sa condamnation ?",
+    "positionA": "Maintenir Le Pen",
+    "positionB": "Passer la main au dauphin",
+    "id": "1574-1783574766690-829wwx",
+    "runAt": "2026-07-09T05:36:06.688Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1575,
+    "question": "Marine Le Pen doit-elle mener la campagne du RN malgré sa condamnation ?",
+    "positionA": "Maintenir Le Pen",
+    "positionB": "Passer la main au dauphin",
+    "id": "1575-1783574766690-yl53yd",
+    "runAt": "2026-07-09T05:36:06.688Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1576,
+    "question": "Relaxation d’un animateur périscolaire à Paris pour agressions sexuelles, le parquet interjette app…",
+    "positionA": "",
+    "positionB": "",
+    "id": "1576-1783574766690-v8u2f1",
+    "runAt": "2026-07-09T05:36:06.688Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1577,
+    "question": "Faut-il sanctionner publiquement les propos de Trump et le geste d’Erdogan pour défendre la cohésion de l’OTAN",
+    "positionA": "sanctionner publiquement",
+    "positionB": "éviter la confrontation publique",
+    "id": "1577-1783574766690-o4aqx0",
+    "runAt": "2026-07-09T05:36:06.688Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1578,
+    "question": "Faut-il soutenir la production de missiles Patriot en Ukraine ou privilégier des livraisons et soutien externe",
+    "positionA": "Produire localement sous licence",
+    "positionB": "Maintenir livraisons externes",
+    "id": "1578-1783574766690-zmaroh",
+    "runAt": "2026-07-09T05:36:06.688Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1579,
+    "question": "Olav Kooij remporte la 5e étape du Tour de France entre Lannemezan et Pau",
+    "positionA": "",
+    "positionB": "",
+    "id": "1579-1783574766690-go75r3",
+    "runAt": "2026-07-09T05:36:06.688Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1580,
+    "question": "Faut-il poursuivre les frappes américaines en Iran ou cesser pour éviter l'escalade au Golfe ?",
+    "positionA": "Poursuivre les frappes",
+    "positionB": "Cesser pour désescalader",
+    "id": "1580-1783574766690-8xkt00",
+    "runAt": "2026-07-09T05:36:06.688Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1581,
+    "question": "Faut-il soutenir la production de missiles Patriot en Ukraine ou privilégier des livraisons et soutien externe",
+    "positionA": "Produire localement sous licence",
+    "positionB": "Maintenir livraisons externes",
+    "id": "1581-1783574766690-w218f2",
+    "runAt": "2026-07-09T05:36:06.688Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1582,
+    "question": "Faut-il sanctionner publiquement les propos de Trump et le geste d’Erdogan pour défendre la cohésion de l’OTAN",
+    "positionA": "sanctionner publiquement",
+    "positionB": "éviter la confrontation publique",
+    "id": "1582-1783574766690-kcsczv",
+    "runAt": "2026-07-09T05:36:06.688Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1583,
+    "question": "Faut-il poursuivre les frappes américaines en Iran ou cesser pour éviter l'escalade au Golfe ?",
+    "positionA": "Poursuivre les frappes",
+    "positionB": "Cesser pour désescalader",
+    "id": "1583-1783574766690-gmprd3",
+    "runAt": "2026-07-09T05:36:06.688Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1584,
+    "question": "Faut-il répondre aux menaces et frappes iraniennes par une surenchère militaire américaine ou par la poursuite",
+    "positionA": "Surenchère militaire",
+    "positionB": "Poursuite des négociations",
+    "id": "1584-1783574766690-t5hxww",
+    "runAt": "2026-07-09T05:36:06.688Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1585,
+    "question": "Faut-il répondre aux menaces et frappes iraniennes par une surenchère militaire américaine ou par la poursuite",
+    "positionA": "Surenchère militaire",
+    "positionB": "Poursuite des négociations",
+    "id": "1585-1783574766690-ct3ndq",
+    "runAt": "2026-07-09T05:36:06.688Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1586,
+    "question": "Faut-il laisser Marine Le Pen candidate en 2027 malgré sa condamnation ?",
+    "positionA": "Permettre la candidature",
+    "positionB": "Contester moralement sa participation",
+    "id": "1586-1783574766690-atzmtu",
+    "runAt": "2026-07-09T05:36:06.688Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1587,
+    "question": "Faut-il laisser Marine Le Pen candidate en 2027 malgré sa condamnation ?",
+    "positionA": "Permettre la candidature",
+    "positionB": "Contester moralement sa participation",
+    "id": "1587-1783574766690-7xdszm",
+    "runAt": "2026-07-09T05:36:06.688Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1595,
+    "question": "Faut-il accélérer et durcir les procédures d'asile pour réduire les 1,85 Md€ de 2025 ?",
+    "positionA": "Maintenir garanties et délais actuels",
+    "positionB": "Accélérer et durcir procédures",
+    "id": "1595-1783607207434-kththn",
+    "runAt": "2026-07-09T14:36:47.428Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1596,
+    "question": "Contrôle fiscal : nouveau dispositif pour vérifier les terminaux de paiement dans les bars et resta…",
+    "positionA": "",
+    "positionB": "",
+    "id": "1596-1783607207512-gg7hoi",
+    "runAt": "2026-07-09T14:36:47.428Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1597,
+    "question": "Faut‑il dépénaliser le délit de non‑représentation d'enfant après le rapport sur l'inceste ?",
+    "positionA": "Dépénaliser pour protéger les parents‑protecteurs",
+    "positionB": "Conserver le délit pour garantir l'exécution des visites",
+    "id": "1597-1783607207512-zxaroc",
+    "runAt": "2026-07-09T14:36:47.428Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1598,
+    "question": "Faut-il consolider le partenariat de la France avec Ahmed al-Charaa à Damas ou l'éviter ?",
+    "positionA": "Consolider le partenariat",
+    "positionB": "Éviter le partenariat",
+    "id": "1598-1783607207512-4lcatg",
+    "runAt": "2026-07-09T14:36:47.428Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1599,
+    "question": "Faut-il accélérer et durcir les procédures d'asile pour réduire les 1,85 Md€ de 2025 ?",
+    "positionA": "Maintenir garanties et délais actuels",
+    "positionB": "Accélérer et durcir procédures",
+    "id": "1599-1783607207512-79ue4o",
+    "runAt": "2026-07-09T14:36:47.428Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1600,
+    "question": "Faut‑il dépénaliser le délit de non‑représentation d'enfant après le rapport sur l'inceste ?",
+    "positionA": "Dépénaliser pour protéger les parents‑protecteurs",
+    "positionB": "Conserver le délit pour garantir l'exécution des visites",
+    "id": "1600-1783607207512-k4fd8j",
+    "runAt": "2026-07-09T14:36:47.428Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1601,
+    "question": "Le RN doit-il lancer Jordan Bardella candidat ou le garder comme dauphin/option de Premier ministre ?",
+    "positionA": "Lancer Bardella candidat",
+    "positionB": "Garder Bardella dauphin ou Premier ministre",
+    "id": "1601-1783607207512-u90sje",
+    "runAt": "2026-07-09T14:36:47.428Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1602,
+    "question": "Faut-il maintenir la rencontre CESE–députés le 15 juillet malgré la polémique ?",
+    "positionA": "Maintenir la rencontre",
+    "positionB": "Reporter ou annuler la rencontre",
+    "id": "1602-1783607207512-ecqgz3",
+    "runAt": "2026-07-09T14:36:47.428Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1603,
+    "question": "Faut-il autoriser les préfectures à suspendre préventivement le permis pour usage répété de stupéfiants ?",
+    "positionA": "Prévention rapide et stricte",
+    "positionB": "Protection des droits individuels",
+    "id": "1603-1783607207512-gz0kao",
+    "runAt": "2026-07-09T14:36:47.428Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1604,
+    "question": "Faut-il présenter France–Maroc comme symbole de diversité liée à l'immigration ou comme simple unité nationale",
+    "positionA": "Insister sur la diversité et les diasporas",
+    "positionB": "Insister sur l'unité nationale sans focaliser l'origine",
+    "id": "1604-1783607207512-5djzda",
+    "runAt": "2026-07-09T14:36:47.428Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1605,
+    "question": "La Commission européenne demande à la France de revoir sa loi sur l'accès des mineurs aux réseaux s…",
+    "positionA": "",
+    "positionB": "",
+    "id": "1605-1783607207512-nrzotj",
+    "runAt": "2026-07-09T14:36:47.428Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1606,
+    "question": "Faut-il construire la production de missiles Patriot en Ukraine ou la confier à l'étranger ?",
+    "positionA": "Produire en Ukraine",
+    "positionB": "Produire à l'étranger",
+    "id": "1606-1783607207512-rr7a0q",
+    "runAt": "2026-07-09T14:36:47.428Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1607,
+    "question": "Faut-il durcir la surveillance et les sanctions d'Arcom contre CNews ou protéger l'indépendance éditoriale ?",
+    "positionA": "Renforcer contrôle et sanctions",
+    "positionB": "Prioriser indépendance éditoriale",
+    "id": "1607-1783607207512-858vih",
+    "runAt": "2026-07-09T14:36:47.428Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1608,
+    "question": "Faut-il construire la production de missiles Patriot en Ukraine ou la confier à l'étranger ?",
+    "positionA": "Produire en Ukraine",
+    "positionB": "Produire à l'étranger",
+    "id": "1608-1783607207512-paq2w6",
+    "runAt": "2026-07-09T14:36:47.428Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1609,
+    "question": "Décès d’un adolescent à Narbonne : hommages et questionnements autour de l’Aide sociale à l’enfance",
+    "positionA": "",
+    "positionB": "",
+    "id": "1609-1783607207512-woaub5",
+    "runAt": "2026-07-09T14:36:47.428Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1610,
+    "question": "Faut-il prioriser la décarbonation accélérée ou l'adaptation immédiate face aux alertes du HCC ?",
+    "positionA": "Prioriser la décarbonation",
+    "positionB": "Prioriser l'adaptation immédiate",
+    "id": "1610-1783607207512-q0x1p2",
+    "runAt": "2026-07-09T14:36:47.428Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1611,
+    "question": "Faut-il valider la nomination de François-Noël Buffet comme Défenseur des droits ?",
+    "positionA": "Confirmer la nomination",
+    "positionB": "Rejeter la nomination",
+    "id": "1611-1783607207512-ic3e8r",
+    "runAt": "2026-07-09T14:36:47.428Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1612,
+    "question": "Faut-il valider la nomination de François-Noël Buffet comme Défenseur des droits ?",
+    "positionA": "Confirmer la nomination",
+    "positionB": "Rejeter la nomination",
+    "id": "1612-1783607207512-vuyubq",
+    "runAt": "2026-07-09T14:36:47.428Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1613,
+    "question": "Faut-il présumer la légitime défense des policiers après un tir ou préserver l'enquête systématique ?",
+    "positionA": "Maintien d'enquêtes indépendantes",
+    "positionB": "Présomption pour les forces de l'ordre",
+    "id": "1613-1783607207512-0icybb",
+    "runAt": "2026-07-09T14:36:47.428Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1614,
+    "question": "Faut-il prioriser la décarbonation accélérée ou l'adaptation immédiate face aux alertes du HCC ?",
+    "positionA": "Prioriser la décarbonation",
+    "positionB": "Prioriser l'adaptation immédiate",
+    "id": "1614-1783607207512-lrzive",
+    "runAt": "2026-07-09T14:36:47.428Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1615,
+    "question": "Faut-il présumer la légitime défense des policiers après un tir ou préserver l'enquête systématique ?",
+    "positionA": "Maintien d'enquêtes indépendantes",
+    "positionB": "Présomption pour les forces de l'ordre",
+    "id": "1615-1783607207512-7dvjdh",
+    "runAt": "2026-07-09T14:36:47.428Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1616,
+    "question": "Faut-il privilégier l'action judiciaire et la fermeté diplomatique contre le Paraguay, ou la désescalade ?",
+    "positionA": "fermeté judiciaire et diplomatique",
+    "positionB": "désescalade diplomatique et réponses non-pénales",
+    "id": "1616-1783607207512-j7xin8",
+    "runAt": "2026-07-09T14:36:47.428Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1617,
+    "question": "Faut-il privilégier l'action judiciaire et la fermeté diplomatique contre le Paraguay, ou la désescalade ?",
+    "positionA": "fermeté judiciaire et diplomatique",
+    "positionB": "désescalade diplomatique et réponses non-pénales",
+    "id": "1617-1783607207512-nfy98y",
+    "runAt": "2026-07-09T14:36:47.428Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1618,
+    "question": "Mort de la chanteuse galloise Bonnie Tyler à 75 ans",
+    "positionA": "",
+    "positionB": "",
+    "id": "1618-1783607207512-2jb3bb",
+    "runAt": "2026-07-09T14:36:47.428Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1619,
+    "question": "Faut-il accepter que Marine Le Pen reste candidate malgré sa condamnation en appel ?",
+    "positionA": "Maintenir sa candidature",
+    "positionB": "Empêcher sa participation",
+    "id": "1619-1783607207512-fpugvv",
+    "runAt": "2026-07-09T14:36:47.428Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1620,
+    "question": "Faut-il accepter que Marine Le Pen reste candidate malgré sa condamnation en appel ?",
+    "positionA": "Maintenir sa candidature",
+    "positionB": "Empêcher sa participation",
+    "id": "1620-1783607207512-bv00zp",
+    "runAt": "2026-07-09T14:36:47.428Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1621,
+    "question": "Faut-il confirmer la candidature de Marine Le Pen malgré la procédure judiciaire en cours ?",
+    "positionA": "Maintenir la candidature",
+    "positionB": "Restreindre ou suspendre la candidature",
+    "id": "1621-1783661217815-m3ge8h",
+    "runAt": "2026-07-10T05:36:57.722Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1622,
+    "question": "Rapport 2025 du SSMSI : hausse des violences physiques et sexuelles en France",
+    "positionA": "",
+    "positionB": "",
+    "id": "1622-1783661217815-dtkh7b",
+    "runAt": "2026-07-10T05:36:57.722Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1623,
+    "question": "Multiplication de contenus générés par IA et lancement de Muse par Meta sur les réseaux",
+    "positionA": "",
+    "positionB": "",
+    "id": "1623-1783661217815-q11g5i",
+    "runAt": "2026-07-10T05:36:57.722Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1624,
+    "question": "Bouygues Telecom prépare la reprise de SFR Business pour concurrencer Orange",
+    "positionA": "",
+    "positionB": "",
+    "id": "1624-1783661217815-aved8i",
+    "runAt": "2026-07-10T05:36:57.722Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1625,
+    "question": "Les réseaux sociaux dominent la croissance du marché français de la publicité digitale au 1er semes…",
+    "positionA": "",
+    "positionB": "",
+    "id": "1625-1783661217815-io7nha",
+    "runAt": "2026-07-10T05:36:57.722Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1626,
+    "question": "Airbus renforce son partenariat avec Mistral pour intégrer l'IA dans ses activités",
+    "positionA": "",
+    "positionB": "",
+    "id": "1626-1783661217815-jqc66b",
+    "runAt": "2026-07-10T05:36:57.722Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1627,
+    "question": "Nouvelle-Calédonie : les 54 élus du Congrès se réunissent pour élire leurs instances",
+    "positionA": "",
+    "positionB": "",
+    "id": "1627-1783661217815-8rcsem",
+    "runAt": "2026-07-10T05:36:57.722Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1628,
+    "question": "Recrutement enseignant : 24 000 candidats admis aux concours pour la rentrée 2026",
+    "positionA": "",
+    "positionB": "",
+    "id": "1628-1783661217815-megp2e",
+    "runAt": "2026-07-10T05:36:57.722Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1629,
+    "question": "Rhône placé en vigilance jaune pollution, mesures recommandées ce vendredi",
+    "positionA": "",
+    "positionB": "",
+    "id": "1629-1783661217815-j1cyfu",
+    "runAt": "2026-07-10T05:36:57.722Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1630,
+    "question": "La Cour des comptes critique la gestion des algues vertes en Bretagne",
+    "positionA": "",
+    "positionB": "",
+    "id": "1630-1783661217815-x1l81o",
+    "runAt": "2026-07-10T05:36:57.722Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1631,
+    "question": "L’Assemblée doit-elle débattre et contester la présomption de légitime défense accordée aux policiers ?",
+    "positionA": "Maintenir garanties judiciaires",
+    "positionB": "Défendre la présomption",
+    "id": "1631-1783661217815-5y6cbn",
+    "runAt": "2026-07-10T05:36:57.722Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1632,
+    "question": "Faut-il autoriser la reprise des investigations sur les sources de Disclose dans l'affaire Sirli ?",
+    "positionA": "Prioriser l'enquête judiciaire",
+    "positionB": "Prioriser la protection des sources",
+    "id": "1632-1783661217815-42gfng",
+    "runAt": "2026-07-10T05:36:57.722Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1633,
+    "question": "Faut-il autoriser la reprise des investigations sur les sources de Disclose dans l'affaire Sirli ?",
+    "positionA": "Prioriser l'enquête judiciaire",
+    "positionB": "Prioriser la protection des sources",
+    "id": "1633-1783661217815-essovn",
+    "runAt": "2026-07-10T05:36:57.722Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1634,
+    "question": "L’Assemblée doit-elle débattre et contester la présomption de légitime défense accordée aux policiers ?",
+    "positionA": "Maintenir garanties judiciaires",
+    "positionB": "Défendre la présomption",
+    "id": "1634-1783661217815-wnqoqk",
+    "runAt": "2026-07-10T05:36:57.722Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1635,
+    "question": "La droite sénatoriale doit‑elle bloquer la loi fin de vie via le Conseil constitutionnel ?",
+    "positionA": "Bloquer la loi tant que des garde‑fous ne sont pas ajoutés",
+    "positionB": "Respecter le vote et laisser la loi entrer en vigueur",
+    "id": "1635-1783661217815-l4kors",
+    "runAt": "2026-07-10T05:36:57.722Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1636,
+    "question": "Les délégations doivent-elles rapatrier ou laisser les revolvers offerts par Erdogan ?",
+    "positionA": "Rapatrier les revolvers",
+    "positionB": "Laisser les revolvers en Turquie",
+    "id": "1636-1783661217815-1ljyf4",
+    "runAt": "2026-07-10T05:36:57.722Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1637,
+    "question": "Les délégations doivent-elles rapatrier ou laisser les revolvers offerts par Erdogan ?",
+    "positionA": "Rapatrier les revolvers",
+    "positionB": "Laisser les revolvers en Turquie",
+    "id": "1637-1783661217815-rzj8m1",
+    "runAt": "2026-07-10T05:36:57.722Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1638,
+    "question": "Multiplication d'incendies en France : mobilisation des pompiers et impacts sur les sinistrés",
+    "positionA": "",
+    "positionB": "",
+    "id": "1638-1783661217815-tmmny3",
+    "runAt": "2026-07-10T05:36:57.722Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1639,
+    "question": "Le PS opte pour une primaire fermée pour la présidentielle 2027, défaite pour Olivier Faure",
+    "positionA": "",
+    "positionB": "",
+    "id": "1639-1783661217815-29os7l",
+    "runAt": "2026-07-10T05:36:57.722Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1640,
+    "question": "Le sénateur LR de Paris Francis Szpiner mis en examen pour corruption passive",
+    "positionA": "",
+    "positionB": "",
+    "id": "1640-1783661217815-2cqm8a",
+    "runAt": "2026-07-10T05:36:57.722Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1641,
+    "question": "Face à l'alerte d'Israël sur un projet iranien contre Trump, faut-il intensifier les frappes contre l'Iran ou ",
+    "positionA": "Intensifier frappes",
+    "positionB": "Privilégier la retenue",
+    "id": "1641-1783661217815-9za915",
+    "runAt": "2026-07-10T05:36:57.722Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1642,
+    "question": "La tapisserie de Bayeux transférée vers le British Museum, départ depuis le Calvados",
+    "positionA": "",
+    "positionB": "",
+    "id": "1642-1783661217815-ls8ob2",
+    "runAt": "2026-07-10T05:36:57.722Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1643,
+    "question": "Faut-il que Marine Le Pen poursuive une campagne offensive dès l'été malgré l'incertitude judiciaire ?",
+    "positionA": "maintenir campagne offensive",
+    "positionB": "temporiser et réduire visibilité",
+    "id": "1643-1783661217815-zic1ei",
+    "runAt": "2026-07-10T05:36:57.722Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1644,
+    "question": "Faut-il que Marine Le Pen poursuive une campagne offensive dès l'été malgré l'incertitude judiciaire ?",
+    "positionA": "maintenir campagne offensive",
+    "positionB": "temporiser et réduire visibilité",
+    "id": "1644-1783661217815-4ullo5",
+    "runAt": "2026-07-10T05:36:57.722Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1645,
+    "question": "Tadej Pogacar remporte la 6e étape du Tour de France entre Pau et Gavarnie-Gèdre et bat le record a…",
+    "positionA": "",
+    "positionB": "",
+    "id": "1645-1783661217815-tvu4e0",
+    "runAt": "2026-07-10T05:36:57.722Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1646,
+    "question": "Vigilance rouge canicule étendue à 24 départements, dont Paris et l’Ouest",
+    "positionA": "",
+    "positionB": "",
+    "id": "1646-1783661217815-ri1n7w",
+    "runAt": "2026-07-10T05:36:57.722Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1647,
+    "question": "Vigilance rouge canicule étendue à 24 départements, dont Paris et l’Ouest",
+    "positionA": "",
+    "positionB": "",
+    "id": "1647-1783661217815-isllx4",
+    "runAt": "2026-07-10T05:36:57.722Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1648,
+    "question": "Coupe du monde 2026 : la France bat le Maroc 2-0 et rejoint les demi-finales",
+    "positionA": "",
+    "positionB": "",
+    "id": "1648-1783661217815-gfeyq8",
+    "runAt": "2026-07-10T05:36:57.722Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1649,
+    "question": "Coupe du monde 2026 : la France bat le Maroc 2-0 et rejoint les demi-finales",
+    "positionA": "",
+    "positionB": "",
+    "id": "1649-1783661217815-wgck0z",
+    "runAt": "2026-07-10T05:36:57.722Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1652,
+    "question": "Célébrations et incidents après France–Maroc : rassemblements et interpellations en plusieurs villes",
+    "positionA": "",
+    "positionB": "",
+    "id": "1652-1783700126246-ou9ir8",
+    "runAt": "2026-07-10T16:25:26.243Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1653,
+    "question": "Faut-il financer 1% du PIB pour la culture via une contribution accrue des très hauts revenus ?",
+    "positionA": "Financer la culture par hausse des contributions",
+    "positionB": "Protéger la base fiscale et limiter la dépense",
+    "id": "1653-1783700126246-5ht2ii",
+    "runAt": "2026-07-10T16:25:26.243Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1654,
+    "question": "Les partis centristes doivent-ils s'unir pour soutenir un seul candidat face à Marine Le Pen ?",
+    "positionA": "Unir les partis centristes",
+    "positionB": "Conserver offres politiques séparées",
+    "id": "1654-1783700126246-bq7e3p",
+    "runAt": "2026-07-10T16:25:26.243Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1655,
+    "question": "Trump a demandé la révision du carton rouge de Balogun, la FIFA annule la suspension",
+    "positionA": "",
+    "positionB": "",
+    "id": "1655-1783700126246-k9rgoy",
+    "runAt": "2026-07-10T16:25:26.243Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1656,
+    "question": "Faut-il maintenir la présomption de légitime défense pour policiers et gendarmes adoptée par l'Assemblée ?",
+    "positionA": "Renforcer le contrôle judiciaire",
+    "positionB": "Protéger les forces de l’ordre",
+    "id": "1656-1783700126246-9pmecv",
+    "runAt": "2026-07-10T16:25:26.243Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1657,
+    "question": "Faut-il obliger Meta à modifier Instagram et Facebook pour limiter les interfaces addictives ?",
+    "positionA": "Imposer modifications structurelles",
+    "positionB": "Préserver design et personnalisation",
+    "id": "1657-1783700126246-tky4vc",
+    "runAt": "2026-07-10T16:25:26.243Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1658,
+    "question": "Comment les États-Unis doivent-ils répondre à l'alerte israélienne sur un projet iranien visant Trump ?",
+    "positionA": "Réponse militaire ou coercitive immédiate",
+    "positionB": "Vérification diplomatie et mesures défensives",
+    "id": "1658-1783700126246-coq6yz",
+    "runAt": "2026-07-10T16:25:26.243Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1659,
+    "question": "Hublot brisé en vol sur un Ryanair entre Thessalonique et Memmingen, un passager partiellement aspi…",
+    "positionA": "",
+    "positionB": "",
+    "id": "1659-1783700126246-082v48",
+    "runAt": "2026-07-10T16:25:26.243Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1660,
+    "question": "La tapisserie de Bayeux prêtée au British Museum pour une exposition d’un an à Londres",
+    "positionA": "",
+    "positionB": "",
+    "id": "1660-1783700126246-x4t9wm",
+    "runAt": "2026-07-10T16:25:26.243Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1661,
+    "question": "Aulnoye-Aymeries : une adolescente de 17 ans décède après une chute d’un camion",
+    "positionA": "",
+    "positionB": "",
+    "id": "1661-1783700126246-ppo3y7",
+    "runAt": "2026-07-10T16:25:26.243Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1662,
+    "question": "Le PS doit-il maintenir la primaire fermée qui exclut les sympathisants extérieurs ?",
+    "positionA": "Garder la primaire fermée",
+    "positionB": "Ouvrir la primaire aux sympathisants",
+    "id": "1662-1783700126246-5chm9h",
+    "runAt": "2026-07-10T16:25:26.243Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1663,
+    "question": "Après la condamnation de Lakhdar Matoug, comment prendre en charge les trois enfants ?",
+    "positionA": "Placement et protection immédiate",
+    "positionB": "Accompagnement familial durable",
+    "id": "1663-1783700126246-8v85k5",
+    "runAt": "2026-07-10T16:25:26.243Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1664,
+    "question": "La tapisserie de Bayeux prêtée au British Museum pour une exposition d’un an à Londres",
+    "positionA": "",
+    "positionB": "",
+    "id": "1664-1783700126246-dg1o76",
+    "runAt": "2026-07-10T16:25:26.243Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1665,
+    "question": "La France se qualifie pour les demi‑finales de la Coupe du monde après sa victoire contre le Maroc",
+    "positionA": "",
+    "positionB": "",
+    "id": "1665-1783700126246-7p8bpc",
+    "runAt": "2026-07-10T16:25:26.243Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1666,
+    "question": "Le PS doit-il maintenir la primaire fermée qui exclut les sympathisants extérieurs ?",
+    "positionA": "Garder la primaire fermée",
+    "positionB": "Ouvrir la primaire aux sympathisants",
+    "id": "1666-1783700126246-0drae7",
+    "runAt": "2026-07-10T16:25:26.243Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1667,
+    "question": "Incendie près d'Almería en Andalousie : au moins 12 morts et de nombreux disparus",
+    "positionA": "",
+    "positionB": "",
+    "id": "1667-1783700126246-y3u4x4",
+    "runAt": "2026-07-10T16:25:26.243Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1668,
+    "question": "Faut-il poursuivre les frappes américaines contre l'Iran ou privilégier la désescalade ?",
+    "positionA": "Poursuivre les frappes",
+    "positionB": "Privilégier la désescalade",
+    "id": "1668-1783700126246-wkmuhp",
+    "runAt": "2026-07-10T16:25:26.243Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1669,
+    "question": "Canicule : neuf départements de l’ouest en vigilance rouge, plan Orsec déclenché",
+    "positionA": "",
+    "positionB": "",
+    "id": "1669-1783700126246-xuoxrz",
+    "runAt": "2026-07-10T16:25:26.243Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1670,
+    "question": "Incendie près d'Almería en Andalousie : au moins 12 morts et de nombreux disparus",
+    "positionA": "",
+    "positionB": "",
+    "id": "1670-1783700126246-zxgm2j",
+    "runAt": "2026-07-10T16:25:26.243Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1671,
+    "question": "Tour de France 2026 : Tim Merlier vainqueur de la 7e étape Hagetmau-Bordeaux",
+    "positionA": "",
+    "positionB": "",
+    "id": "1671-1783700126246-ix3tp6",
+    "runAt": "2026-07-10T16:25:26.243Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1672,
+    "question": "Faut-il permettre à Marine Le Pen, condamnée en appel, de conserver sa candidature 2027 ?",
+    "positionA": "Préserver la liberté de candidature",
+    "positionB": "Prioriser l'égalité devant la loi",
+    "id": "1672-1783700126246-5y7lzf",
+    "runAt": "2026-07-10T16:25:26.243Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1673,
+    "question": "Incendie près d'Almería : au moins 11 morts, évacuations et dizaines de disparus",
+    "positionA": "",
+    "positionB": "",
+    "id": "1673-1783700126246-pjra20",
+    "runAt": "2026-07-10T16:25:26.243Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1674,
+    "question": "Canicule : plan Orsec « chaleurs extrêmes » déclenché, neuf départements en vigilance rouge",
+    "positionA": "",
+    "positionB": "",
+    "id": "1674-1783700126246-xf5oku",
+    "runAt": "2026-07-10T16:25:26.243Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1675,
+    "question": "Canicule : neuf départements de l’ouest en vigilance rouge, plan Orsec déclenché",
+    "positionA": "",
+    "positionB": "",
+    "id": "1675-1783700126246-go8l7z",
+    "runAt": "2026-07-10T16:25:26.243Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1676,
+    "question": "Faut-il permettre à Marine Le Pen, condamnée en appel, de conserver sa candidature 2027 ?",
+    "positionA": "Préserver la liberté de candidature",
+    "positionB": "Prioriser l'égalité devant la loi",
+    "id": "1676-1783700126246-al969w",
+    "runAt": "2026-07-10T16:25:26.243Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1677,
+    "question": "Décès d'une adolescente à Aulnoye-Aymeries après les célébrations France-Maroc en Coupe du monde 20…",
+    "positionA": "",
+    "positionB": "",
+    "id": "1677-1783700126246-6qvysl",
+    "runAt": "2026-07-10T16:25:26.243Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1678,
+    "question": "Faut-il appliquer la condamnation de Marine Le Pen avant la présidentielle ou préserver sa liberté de campagne",
+    "positionA": "Appliquer la condamnation avant 2027",
+    "positionB": "Préserver liberté de campagne",
+    "id": "1678-1783700126246-b1y9qa",
+    "runAt": "2026-07-10T16:25:26.243Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1679,
+    "question": "Waterstones et Barnes & Noble affichent une croissance et préparent une introduction en Bourse",
+    "positionA": "",
+    "positionB": "",
+    "id": "1679-1783747319816-3z3hsg",
+    "runAt": "2026-07-11T05:31:59.814Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1680,
+    "question": "Faut‑il privilégier la rapidité ou l'examen approfondi des 750 plaintes en Moselle ?",
+    "positionA": "priorité à la rapidité",
+    "positionB": "priorité à l'approfondissement",
+    "id": "1680-1783747319816-zczw5e",
+    "runAt": "2026-07-11T05:31:59.814Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1681,
+    "question": "La relance par la cour d’appel de la traque des sources de Disclose doit-elle primer sur le secret des sources",
+    "positionA": "prioriser l'enquête judiciaire",
+    "positionB": "préserver le secret des sources",
+    "id": "1681-1783747319816-yvfjww",
+    "runAt": "2026-07-11T05:31:59.814Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1682,
+    "question": "Faut-il rétablir rapidement une EAC indépendante ou permettre sa reconstitution sous contrôle présidentiel ?",
+    "positionA": "Rétablir EAC indépendante",
+    "positionB": "Reconfigurer sous contrôle présidentiel",
+    "id": "1682-1783747319816-k52iyi",
+    "runAt": "2026-07-11T05:31:59.814Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1683,
+    "question": "La tapisserie de Bayeux arrivée au British Museum pour une exposition d'un an à Londres",
+    "positionA": "",
+    "positionB": "",
+    "id": "1683-1783747319816-7d6dvk",
+    "runAt": "2026-07-11T05:31:59.814Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1684,
+    "question": "Faut-il laisser Marine Le Pen continuer sa campagne malgré sa condamnation ?",
+    "positionA": "Demander retrait ou limite",
+    "positionB": "Laisser candidater",
+    "id": "1684-1783747319816-mug67t",
+    "runAt": "2026-07-11T05:31:59.814Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1685,
+    "question": "Victor Wembanyama prolonge de cinq ans avec les San Antonio Spurs",
+    "positionA": "",
+    "positionB": "",
+    "id": "1685-1783747319816-2m67yi",
+    "runAt": "2026-07-11T05:31:59.814Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1686,
+    "question": "Un animateur périscolaire condamné à Paris pour agressions sexuelles sur une fillette",
+    "positionA": "",
+    "positionB": "",
+    "id": "1686-1783747319816-mtezwh",
+    "runAt": "2026-07-11T05:31:59.814Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1687,
+    "question": "Jannik Sinner bat Novak Djokovic en trois sets et affrontera Alexander Zverev en finale à Wimbledon",
+    "positionA": "",
+    "positionB": "",
+    "id": "1687-1783747319816-uvr5d6",
+    "runAt": "2026-07-11T05:31:59.814Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1688,
+    "question": "Jannik Sinner bat Novak Djokovic en trois sets et affrontera Alexander Zverev en finale à Wimbledon",
+    "positionA": "",
+    "positionB": "",
+    "id": "1688-1783747319816-5tp66p",
+    "runAt": "2026-07-11T05:31:59.814Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1689,
+    "question": "Faut-il laisser Marine Le Pen continuer sa campagne malgré sa condamnation ?",
+    "positionA": "Demander retrait ou limite",
+    "positionB": "Laisser candidater",
+    "id": "1689-1783747319816-vj3k0q",
+    "runAt": "2026-07-11T05:31:59.814Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1690,
+    "question": "Le Parti socialiste organise une primaire fermée pour la présidentielle 2027 en octobre",
+    "positionA": "",
+    "positionB": "",
+    "id": "1690-1783747319816-7icysg",
+    "runAt": "2026-07-11T05:31:59.814Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1691,
+    "question": "Incendie près de Los Gallardos (Andalousie) : au moins 12 morts",
+    "positionA": "",
+    "positionB": "",
+    "id": "1691-1783747319816-mmgsf5",
+    "runAt": "2026-07-11T05:31:59.814Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1692,
+    "question": "Le ministère de la Justice doit-il totalement réformer la prison de Condé-sur-Sarthe ?",
+    "positionA": "oui, faut agir vite pour stopper les abus",
+    "positionB": "non, la prison a besoin d'ordre strict",
+    "id": "1692-1783747319816-zyevyp",
+    "runAt": "2026-07-11T05:31:59.814Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1693,
+    "question": "Faut‑il maintenir les pourparlers à Oman malgré la reprise des hostilités en Ormuz ?",
+    "positionA": "Maintenir les négociations",
+    "positionB": "Geler les pourparlers pour réponse ferme",
+    "id": "1693-1783747319816-9wltoi",
+    "runAt": "2026-07-11T05:31:59.814Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1694,
+    "question": "Le Parti socialiste organise une primaire fermée pour la présidentielle 2027 en octobre",
+    "positionA": "",
+    "positionB": "",
+    "id": "1694-1783747319816-nq727s",
+    "runAt": "2026-07-11T05:31:59.814Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1695,
+    "question": "Une nouvelle plainte pour viol vise Patrick Bruel, déposée le 24 juin à Nanterre",
+    "positionA": "",
+    "positionB": "",
+    "id": "1695-1783747319816-vyc7w7",
+    "runAt": "2026-07-11T05:31:59.814Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1696,
+    "question": "L'Espagne qualifiée pour les demi‑finales de la Coupe du monde 2026 après sa victoire contre la Bel…",
+    "positionA": "",
+    "positionB": "",
+    "id": "1696-1783747319816-4r36yu",
+    "runAt": "2026-07-11T05:31:59.814Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1697,
+    "question": "Tim Merlier s'impose à Bordeaux lors de la 7e étape du Tour de France 2026",
+    "positionA": "",
+    "positionB": "",
+    "id": "1697-1783747319816-9jmds6",
+    "runAt": "2026-07-11T05:31:59.814Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1698,
+    "question": "Faut‑il maintenir les pourparlers à Oman malgré la reprise des hostilités en Ormuz ?",
+    "positionA": "Maintenir les négociations",
+    "positionB": "Geler les pourparlers pour réponse ferme",
+    "id": "1698-1783747319816-4doll5",
+    "runAt": "2026-07-11T05:31:59.814Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1699,
+    "question": "Une nouvelle plainte pour viol vise Patrick Bruel, déposée le 24 juin à Nanterre",
+    "positionA": "",
+    "positionB": "",
+    "id": "1699-1783747319816-2pdce3",
+    "runAt": "2026-07-11T05:31:59.814Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1700,
+    "question": "L'Espagne qualifiée pour les demi‑finales de la Coupe du monde 2026 après sa victoire contre la Bel…",
+    "positionA": "",
+    "positionB": "",
+    "id": "1700-1783747319816-563j21",
+    "runAt": "2026-07-11T05:31:59.814Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1701,
+    "question": "Canicule en France : plan Orsec déclenché et 24 départements en vigilance rouge",
+    "positionA": "",
+    "positionB": "",
+    "id": "1701-1783747319816-5zm6e8",
+    "runAt": "2026-07-11T05:31:59.814Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1702,
+    "question": "Canicule en France : plan Orsec déclenché et 24 départements en vigilance rouge",
+    "positionA": "",
+    "positionB": "",
+    "id": "1702-1783747319816-bjx5mw",
+    "runAt": "2026-07-11T05:31:59.814Z",
+    "status": "done",
+    "attempts": 0
   }
 ]
