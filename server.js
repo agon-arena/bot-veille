@@ -349,22 +349,40 @@ async function publishOpinionItemsToAgon() {
     return;
   }
 
-  try {
-    const response = await fetch(`${AGON_URL}/api/veille/opinion-articles`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ items: newItems })
-    });
-    if (!response.ok) {
-      console.error(`[opinion-articles] Échec envoi vers Agôn : HTTP ${response.status}`);
-      return;
+  // Envoi par lots : Agôn plafonne le corps des requêtes à 100kb (express.json({limit:"100kb"})
+  // côté SUPABASE copie 3/server.js) ; un seul POST dépasse cette limite dès que plusieurs
+  // centaines d'articles s'accumulent (incident du 10/07/2026 : 2733 articles, ~2 Mo, HTTP 413
+  // systématique — sent-opinions-to-agon.json n'étant jamais écrit faute d'envoi réussi, chaque
+  // cycle retentait le même envoi complet en boucle). Persistance après chaque lot pour ne pas
+  // reperdre les lots déjà envoyés si un lot suivant échoue. Délai entre lots pour rester sous
+  // la limite de 20 req/min de la route (rateLimit "veille-opinion-articles" côté Agôn).
+  const BATCH_SIZE = 100;
+  const DELAY_BETWEEN_BATCHES_MS = 3500;
+  let totalSent = 0;
+  for (let i = 0; i < newItems.length; i += BATCH_SIZE) {
+    const batch = newItems.slice(i, i + BATCH_SIZE);
+    try {
+      const response = await fetch(`${AGON_URL}/api/veille/opinion-articles`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ items: batch })
+      });
+      if (!response.ok) {
+        console.error(`[opinion-articles] Échec envoi lot ${Math.floor(i / BATCH_SIZE) + 1} vers Agôn : HTTP ${response.status}`);
+        break;
+      }
+      batch.forEach(item => sentLinks.add(item.link));
+      saveSentOpinionLinks(sentLinks);
+      totalSent += batch.length;
+    } catch (err) {
+      console.error("[opinion-articles] Erreur envoi vers Agôn :", err.message);
+      break;
     }
-    newItems.forEach(item => sentLinks.add(item.link));
-    saveSentOpinionLinks(sentLinks);
-    console.log(`[opinion-articles] ${newItems.length} article(s) de presse d'opinion envoyé(s) vers Agôn.`);
-  } catch (err) {
-    console.error("[opinion-articles] Erreur envoi vers Agôn :", err.message);
+    if (i + BATCH_SIZE < newItems.length) {
+      await new Promise(resolve => setTimeout(resolve, DELAY_BETWEEN_BATCHES_MS));
+    }
   }
+  console.log(`[opinion-articles] ${totalSent}/${newItems.length} article(s) de presse d'opinion envoyé(s) vers Agôn.`);
 }
 
 function normalizeSentToAgonKey(value) {
@@ -6147,6 +6165,14 @@ async function classifyAndPublishPending() {
 app.post("/api/auto-publish/run", requireMixteAuth, async (req, res) => {
   res.json({ ok: true });
   runAutoPublishPipeline().catch(err => console.error("[auto-publish/run] Erreur :", err.message));
+});
+
+// Pendant manuel de l'envoi presse d'opinion normalement déclenché après chaque
+// refresh (tick auto ou scheduler interne) : utile pour relancer un cycle raté
+// sans repasser par une collecte complète.
+app.post("/api/opinion/run", requireMixteAuth, async (req, res) => {
+  res.json({ ok: true });
+  publishOpinionItemsToAgon().catch(err => console.error("[opinion/run] Erreur :", err.message));
 });
 
 app.get("/api/auto-publish", (req, res) => {
