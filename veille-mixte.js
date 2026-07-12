@@ -2449,7 +2449,10 @@ Critères pour ne pas fusionner :
 - fusion trop large qui ferait perdre la précision du sujet.
 
 Seuil de confiance :
-ne propose une fusion que si la confiance est supérieure ou égale à 0.8.
+ne propose une fusion que si la confiance est supérieure ou égale à 0.7. (Abaissé de 0.8 à 0.7
+le 12/07/2026 : des doublons bien réels mais aux détails divergents, ex. un même incendie
+rapporté avec un bilan de 11 puis 12 morts selon les sources, restaient sous 0.8 et repartaient
+en génération séparée au lieu d'être fusionnés en amont.)
 
 Concision (OBLIGATOIRE, la réponse est parsée automatiquement et ne doit pas être tronquée) :
 - chaque "reason" fait une seule phrase courte (15 mots maximum) ;
