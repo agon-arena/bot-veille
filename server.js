@@ -5848,8 +5848,12 @@ const PUBLISH_RATE_LIMIT_DELAY_MS = 5000;
 // et passe confirmed=true dès 0.65) : des doublons bien réels mais reformulés selon
 // le camp politique (ex. arènes 1574/1586 sur Le Pen, 1580/1584 sur les frappes en
 // Iran, mêmes actus scorées à 0.7 par l'IA) passaient sous ce seuil et étaient
-// republiés en double au lieu d'être fusionnés.
-const VEILLE_SIMILARITY_MERGE_THRESHOLD = 0.75;
+// republiés en double au lieu d'être fusionnés. Rebaissé de 0.75 à 0.68 le 12/07/2026
+// après une nouvelle récidive du même symptôme (arènes 1730/1744 sur Le Pen,
+// 1743/1777 sur l'Iran/Ormuz) : 0.75 restait au-dessus du score réel de doublons
+// confirmés par l'IA elle-même, laissant passer les reformulations les plus proches
+// du plancher confirmed=true (0.65).
+const VEILLE_SIMILARITY_MERGE_THRESHOLD = 0.68;
 
 function scheduleOnePendingIdea(item) {
   const delay = Math.max(0, new Date(item.runAt).getTime() - Date.now());
