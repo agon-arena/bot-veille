@@ -60,6 +60,18 @@ const AUTO_PIPELINES_ENABLED = (() => {
 // Les modèles gpt-5 ignorent temperature (l'API la refuse) et raisonnent avant de
 // répondre : effort minimal, sinon les tokens de raisonnement — facturés en sortie —
 // annulent une partie du gain de prix sur une tâche de rédaction guidée.
+// Mesure réelle (au lieu d'estimer) de la conso par appel IA, pour prioriser les
+// leviers de coût sur des chiffres et non des suppositions. response.model est repris
+// tel que renvoyé par l'API plutôt que retracké manuellement par site d'appel : plus
+// fiable, notamment pour les appels via buildArticleModelRequest (modèle configurable).
+function logAiUsage(label, response) {
+  const u = (response && response.usage) || {};
+  const inputTokens = u.input_tokens ?? u.prompt_tokens ?? 0;
+  const outputTokens = u.output_tokens ?? u.completion_tokens ?? 0;
+  const model = (response && response.model) || "?";
+  console.log(`[ai-usage] ${label} | ${model} | in=${inputTokens} out=${outputTokens}`);
+}
+
 function buildArticleModelRequest(request) {
   const options = { ...request, model: ARTICLE_AI_MODEL };
   if (/^gpt-5/.test(ARTICLE_AI_MODEL)) {
@@ -1306,6 +1318,7 @@ Réponds uniquement en texte brut.`;
       temperature: 0.35,
       max_output_tokens: 1500
     });
+    logAiUsage("resume-factuel", response);
     const text = String(response.output_text || "").trim();
     if (!text) throw new Error("Réponse vide de l'IA pour le résumé.");
     return cutTextAtSentenceEnd(text, 1800);
@@ -1421,6 +1434,7 @@ Réponds uniquement en JSON valide, sans balises markdown.`;
     temperature: 0.5,
     max_output_tokens: 900
   }));
+  logAiUsage("analyse-debat", response);
 
   let parsed = {};
   try {
@@ -1499,6 +1513,7 @@ Réponds uniquement en JSON valide, sans balises markdown.`;
       temperature: 0.4,
       max_output_tokens: 200
     });
+    logAiUsage("align-positions", response);
     const parsed = safeJsonParse(response.output_text || "");
     if (parsed.hasPoliticalOrientation && parsed.leftPosition && parsed.rightPosition) {
       return {
@@ -1728,6 +1743,7 @@ Réponds uniquement en JSON valide, sans balises markdown.`;
     temperature: 0.35,
     max_output_tokens: 2000
   }));
+  logAiUsage("article-style", response);
 
   const rawText = String(response.output_text || "").trim();
   if (!rawText) throw new Error("Réponse vide de l'IA pour l'article final.");
@@ -2007,6 +2023,7 @@ Réponds uniquement en JSON valide, sans balises markdown.`;
       temperature: 0.45,
       max_output_tokens: 2200
     });
+    logAiUsage("finalisation-article", finalisationResponse);
     const parsed = safeJsonParse(String(finalisationResponse.output_text || "").trim());
     const finalQuestion = limitDebateQuestion(parsed.debateQuestion || base.debateQuestion);
     const finalLatinQuestion = normalizeLatinQuestion(parsed.latinQuestion || "")
@@ -2137,6 +2154,7 @@ Réponds uniquement en JSON valide, sans balises markdown.`;
     max_output_tokens: 2000
   }));
 
+  logAiUsage("arene-libre", response);
   const rawText = String(response.output_text || "").trim();
   if (!rawText) throw new Error("Réponse vide de l'IA pour l'article factuel.");
 
@@ -2254,6 +2272,7 @@ Réponds uniquement en JSON valide, sans balises markdown.`;
       temperature: 0.4,
       max_output_tokens: 120
     });
+    logAiUsage("devise-latine", response);
 
     const parsed = safeJsonParse(String(response.output_text || "").trim());
     const latinMotto = normalizeLatinQuestion(parsed.latinMotto || "") || fallbackMotto;
@@ -2576,6 +2595,7 @@ Contraintes :
       temperature: 0.2,
       max_output_tokens: 900
     });
+    logAiUsage("suggestion-lien", response);
     const parsed = JSON.parse(String(response.output_text || "{}").match(/\{[\s\S]*\}/)?.[0] || "{}");
     const matchedStory = compactStories.find((story) => story.story_id === parsed.matched_story_id) || null;
     const fallbackMatchedStory = compactStories.find((story) => story.story_id === fallback.matched_story_id) || null;
@@ -5716,6 +5736,7 @@ Réponds en JSON : { "ideas": [ { "qualite": "bonne" ou "moyenne" ou "mauvaise",
       temperature: 1,
       max_completion_tokens: 3000
     });
+    logAiUsage("idees-ia", response);
     const parsed = JSON.parse(response.choices[0].message.content);
     ideas = parsed.ideas;
     if (!Array.isArray(ideas) || !ideas.length) throw new Error("Format invalide");

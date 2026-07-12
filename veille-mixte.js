@@ -37,6 +37,17 @@ const API_PORT = 3002;
 const HOURS_BACK_ARTICLES = 24;
 const HOURS_BACK_YOUTUBE = 168;
 
+// Mesure réelle (au lieu d'estimer) de la conso par appel IA, pour prioriser les
+// leviers de coût sur des chiffres et non des suppositions. response.model est repris
+// tel que renvoyé par l'API plutôt que retracké manuellement par site d'appel.
+function logAiUsage(label, response) {
+  const u = (response && response.usage) || {};
+  const inputTokens = u.input_tokens ?? u.prompt_tokens ?? 0;
+  const outputTokens = u.output_tokens ?? u.completion_tokens ?? 0;
+  const model = (response && response.model) || "?";
+  console.log(`[ai-usage] ${label} | ${model} | in=${inputTokens} out=${outputTokens}`);
+}
+
 const SIMILARITY_THRESHOLD = 0.52;
 const MIN_SHARED_KEYWORDS = 2;
 // Repli utilisé quand le titre seul ne matche pas assez (score sous SIMILARITY_THRESHOLD) :
@@ -1589,6 +1600,7 @@ Réponds uniquement en JSON valide, sans texte autour :
       temperature: 0.1,
       max_output_tokens: 200
     });
+    logAiUsage("theme-agon", response);
     const parsed = safeJsonParse(response.output_text);
     return { agonTheme: normalizeAgonTheme(parsed.agonTheme) };
   } catch (error) {
@@ -1687,6 +1699,7 @@ ${sourceSection}
       // aussi court.
       max_output_tokens: 300
     });
+    logAiUsage("tags-sujet", response);
 
     const parsed = safeJsonParse(response.output_text);
     const candidates = [
@@ -1791,6 +1804,7 @@ ${JSON.stringify(compactContents, null, 2)}
       temperature: 0.2,
       max_output_tokens: 1500
     });
+    logAiUsage("analyze-sujet", response);
 
     const text = response.output_text;
     const parsed = safeJsonParse(text);
@@ -1908,6 +1922,7 @@ ${JSON.stringify(compactContentsForScoring(subject), null, 2)}
       temperature: 0.2,
       max_output_tokens: 2000
     });
+    logAiUsage("score-unitaire", response);
 
     const parsed = safeJsonParse(response.output_text);
     const selectedLinks = applyExcludedLinks(subject, parsed.excludedLinks);
@@ -1958,6 +1973,7 @@ Règles :
       temperature: 0.1,
       max_output_tokens: 2000
     });
+    logAiUsage("verif-sources", response);
     const parsed = safeJsonParse(response.output_text);
     return applyExcludedLinks(subject, parsed.excludedLinks);
   } catch (error) {
@@ -2180,6 +2196,7 @@ ${JSON.stringify(payload, null, 2)}
     temperature: 0.2,
     max_output_tokens: 2500
   });
+  logAiUsage("score-lot", response);
   if (response.status === "incomplete") throw new Error("réponse tronquée (max_output_tokens)");
 
   const parsed = safeJsonParse(response.output_text);
@@ -2505,6 +2522,7 @@ Format JSON attendu :
       temperature: 0.1,
       max_output_tokens: 6000
     });
+    logAiUsage("dedup", response);
     if (response.status === "incomplete") {
       console.warn("Déduplication IA : réponse tronquée (max_output_tokens), nouvelle tentative avec budget doublé.");
       response = await openai.responses.create({
@@ -2513,6 +2531,7 @@ Format JSON attendu :
         temperature: 0.1,
         max_output_tokens: 12000
       });
+      logAiUsage("dedup-retry", response);
       if (response.status === "incomplete") throw new Error("réponse encore tronquée après retry (max_output_tokens)");
     }
     const parsed = safeJsonParse(response.output_text);
@@ -7925,6 +7944,7 @@ Ne force jamais un débat. Si le sujet ne s'y prête pas, réponds "avoid".`;
       temperature: 0.9,
       max_output_tokens: 600
     });
+    logAiUsage("certamen-analyze", response);
     const parsed = safeJsonParse(response.output_text || "");
     const allowedDecisions = new Set(["arena", "understand", "reformulate", "avoid"]);
     const allowedRisks = new Set(["low", "medium", "high"]);
@@ -8015,6 +8035,7 @@ Réponds uniquement en JSON valide, sans balises markdown.`;
       temperature: 0.4,
       max_output_tokens: 200
     });
+    logAiUsage("certamen-align-positions", response);
     const parsed = safeJsonParse(response.output_text || "");
     if (parsed.hasPoliticalOrientation && parsed.leftPosition && parsed.rightPosition) {
       return {
