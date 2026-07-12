@@ -1305,7 +1305,10 @@ ${JSON.stringify({
     title: item.title,
     type: item.sourceKind,
     date: item.date,
-    text: item.fullText.slice(0, 6000)
+    // 4000 (au lieu de 6000, 12/07/2026) : le résumé final ne fait que 1000-1500 car.,
+    // 6000 par source (jusqu'à 4 sources, donc 24 000 car. en entrée) était large sans
+    // gain observé — à surveiller via [ai-usage] resume-factuel si la qualité baisse.
+    text: item.fullText.slice(0, 4000)
   }))
 }, null, 2)}
 
