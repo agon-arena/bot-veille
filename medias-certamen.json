@@ -286,12 +286,12 @@
   },
   {
     "nom": "Le Monde",
-    "orientation": "centre-gauche / généraliste",
+    "orientation": "généraliste",
     "rss": "https://www.lemonde.fr/rss/une.xml"
   },
   {
     "nom": "L'Obs",
-    "orientation": "centre-gauche",
+    "orientation": "généraliste",
     "rss": "https://www.nouvelobs.com/rss.xml"
   },
   {
@@ -306,7 +306,7 @@
   },
   {
     "nom": "France Inter",
-    "orientation": "service public / centre-gauche",
+    "orientation": "généraliste",
     "rss": "https://www.radiofrance.fr/franceinter/rss"
   },
   {

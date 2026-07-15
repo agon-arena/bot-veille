@@ -12,6 +12,8 @@ const { renderAutoCollectMixteWidgetHtml } = require("./auto-collect-mixte-widge
 const { renderCertamenPublishWidgetHtml } = require("./certamen-publish-widget");
 const { MAX_CHECKED_SUBJECTS } = require("./certamen-checked-subjects");
 const { cleanCertamenGeneratedText } = require("./certamen-text-cleanup");
+const { isRoundupTitle } = require("./recap-filter");
+const { enforceTitleLimit } = require("./title-limit");
 
 const apiApp = express();
 apiApp.use(express.json({ limit: "2mb" }));
@@ -882,22 +884,6 @@ function extractYouTubeVideoId(link) {
   return "";
 }
 
-const ROUNDUP_TITLE_PATTERNS = [
-  /ce qu['’]?(il|on) (faut|sait)/i,
-  /l['’]essentiel (de|du|des|à retenir)/i,
-  /\ben bref\b/i,
-  /faits marquants/i,
-  /r[ée]sum[ée] de la (journ[ée]e|semaine|soir[ée]e)/i,
-  /retour sur (la|le|les) (journ[ée]e|semaine)/i,
-  /toute l['’]actualit[ée]/i,
-  /revue de presse/i
-];
-
-function isRoundupTitle(title) {
-  const text = String(title || "");
-  return ROUNDUP_TITLE_PATTERNS.some((pattern) => pattern.test(text));
-}
-
 async function collectArticles(lastSessionCutoff = null, knownSources = new Set(), sourceFile = MEDIA_FILE) {
   const medias = JSON.parse(fs.readFileSync(sourceFile, "utf8"));
   const contents = [];
@@ -1142,8 +1128,14 @@ function loadPublishedSubjectKeys() {
 function extractOpinionItems(groups, publishedSubjectKeys) {
   const items = [];
   for (const group of groups) {
-    if (publishedSubjectKeys.has(cleanText(group.subject))) continue;
-    items.push(...group.contents);
+    const subjectKey = cleanText(group.subject);
+    if (publishedSubjectKeys.has(subjectKey)) continue;
+    // subjectKey accompagne chaque article : publishOpinionItemsToAgon
+    // (server.js) ré-exclut au moment de l'envoi les sujets publiés
+    // entre-temps — cette extraction a lieu à la construction de la session,
+    // AVANT que le pipeline auto-publish ne publie le top 10 de cette même
+    // session, sans quoi leurs articles filaient quand même vers Autres actus.
+    items.push(...group.contents.map(content => ({ ...content, subjectKey })));
   }
 
   return items.sort((a, b) => new Date(b.date) - new Date(a.date));
@@ -1777,6 +1769,7 @@ Ne crée jamais une autre thématique.
 
 Pour "excludedLinks" :
 - toutes les sources sont gardées par défaut : renvoie uniquement les URLs des contenus qui ne parlent pas du tout du sujet principal ;
+- exclus aussi les contenus de type récapitulatif multi-sujets (revue de presse, "l'essentiel de la journée", brèves groupées, journal télévisé, sommaire ou fil d'actualités) : un contenu qui enchaîne plusieurs actualités sans lien entre elles ne doit jamais servir de source, même si l'une de ses actualités correspond au sujet ;
 - exclus uniquement les sources qui traitent d'un sujet réellement différent ou sans lien avec cette affaire/cet événement, même si elles concernent les mêmes acteurs, le même pays ou la même institution ;
 - si le sujet est une affaire ou un feuilleton d'actualité qui regroupe plusieurs rebondissements (auditions, propositions de loi, réactions politiques, gardes à vue, mesures annoncées, etc.), ne renvoie pas les sources qui couvrent un de ces rebondissements : elles parlent bien du sujet ;
 - en cas de doute, ne renvoie pas la source : l'exclusion est réservée aux hors-sujet manifestes ;
@@ -1881,6 +1874,7 @@ Exemples de scores hauts : "Immigration : une réforme contestée", "Budget : l'
 
 Pour "excludedLinks" :
 - toutes les sources sont gardées par défaut : renvoie uniquement les URLs des contenus qui ne parlent pas du tout du sujet principal ;
+- exclus aussi les contenus de type récapitulatif multi-sujets (revue de presse, "l'essentiel de la journée", brèves groupées, journal télévisé, sommaire ou fil d'actualités) : un contenu qui enchaîne plusieurs actualités sans lien entre elles ne doit jamais servir de source, même si l'une de ses actualités correspond au sujet ;
 - exclus uniquement les sources qui traitent d'un sujet réellement différent ou sans lien avec cette affaire/cet événement, même si elles concernent les mêmes acteurs, le même pays ou la même institution ;
 - si le sujet est une affaire ou un feuilleton d'actualité qui regroupe plusieurs rebondissements (auditions, propositions de loi, réactions politiques, gardes à vue, mesures annoncées, etc.), ne renvoie pas les sources qui couvrent un de ces rebondissements : elles parlent bien du sujet ;
 - en cas de doute, ne renvoie pas la source : l'exclusion est réservée aux hors-sujet manifestes ;
@@ -1960,6 +1954,7 @@ Réponds uniquement en JSON valide :
 
 Règles :
 - toutes les sources sont gardées par défaut : renvoie uniquement les URLs des contenus qui ne parlent pas du tout du sujet principal ;
+- exclus aussi les contenus de type récapitulatif multi-sujets (revue de presse, "l'essentiel de la journée", brèves groupées, journal télévisé, sommaire ou fil d'actualités) : un contenu qui enchaîne plusieurs actualités sans lien entre elles ne doit jamais servir de source, même si l'une de ses actualités correspond au sujet ;
 - exclus uniquement les sources qui traitent d'un sujet réellement différent ou sans lien avec cette affaire/cet événement, même si elles concernent les mêmes acteurs, le même pays ou la même institution ;
 - si le sujet est une affaire ou un feuilleton d'actualité qui regroupe plusieurs rebondissements (auditions, propositions de loi, réactions politiques, gardes à vue, mesures annoncées, etc.), ne renvoie pas les sources qui couvrent un de ces rebondissements : elles parlent bien du sujet ;
 - en cas de doute, ne renvoie pas la source : l'exclusion est réservée aux hors-sujet manifestes ;
@@ -7885,7 +7880,7 @@ Réponds uniquement en JSON valide :
   "debatePotentialScore": entier de 0 à 10,
   "editorialDecision": "arena" | "understand" | "reformulate" | "avoid",
   "reason": "explication courte (max 120 caractères)",
-  "suggestedQuestion": "question Agôn (max 98 caractères, espaces et tirets compris)",
+  "suggestedQuestion": "question Agôn (max 70 caractères, espaces et tirets compris — c'est un titre, reste court)",
   "positionA": "camp A (max 55 caractères)",
   "positionB": "camp B (max 55 caractères)",
   "theme": "thème exact parmi : ${AGON_THEMES.join(" / ")}",
@@ -7951,7 +7946,7 @@ Ne force jamais un débat. Si le sujet ne s'y prête pas, réponds "avoid".`;
     const isDebatable = parsed.isDebatable === true;
     const editorialDecision = allowedDecisions.has(String(parsed.editorialDecision || ""))
       ? parsed.editorialDecision : "avoid";
-    const suggestedQuestion = limitDebateQuestionText(cleanCertamenGeneratedText(parsed.suggestedQuestion || ""));
+    const suggestedQuestion = await enforceTitleLimit(openai, limitDebateQuestionText(cleanCertamenGeneratedText(parsed.suggestedQuestion || "")), { logUsage: logAiUsage });
     let positionA = cleanCertamenGeneratedText(parsed.positionA || "").slice(0, 55);
     let positionB = cleanCertamenGeneratedText(parsed.positionB || "").slice(0, 55);
 

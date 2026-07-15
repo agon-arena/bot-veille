@@ -346,7 +346,7 @@
   },
   {
     "nom": "L'Obs",
-    "orientation": "centre-gauche",
+    "orientation": "généraliste",
     "rss": "https://www.nouvelobs.com/rss.xml"
   },
   {
@@ -361,7 +361,7 @@
   },
   {
     "nom": "France Inter",
-    "orientation": "service public / centre-gauche",
+    "orientation": "généraliste",
     "rss": "https://www.radiofrance.fr/franceinter/rss"
   },
   {
@@ -670,7 +670,7 @@
   },
   {
     "nom": "Europe 1",
-    "orientation": "centre-droit / radio généraliste",
+    "orientation": "droite",
     "rss": "https://www.europe1.fr/rss.xml"
   },
   {

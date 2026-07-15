@@ -12,6 +12,8 @@ const { publishReadyCertamenPayloadsToAgon, publishSelectedCertamenSubjectsToAgo
 const { resumeCertamenPendingIdeasOnStartup } = require("./certamen-ideas-seed");
 const { renderCertamenPublishWidgetHtml } = require("./certamen-publish-widget");
 const { enqueueIdeaJob } = require("./idea-post-queue");
+const { isRoundupTitle } = require("./recap-filter");
+const { enforceTitleLimit } = require("./title-limit");
 
 const express = require("express");
 const path = require("path");
@@ -338,6 +340,45 @@ function saveSentOpinionLinks(linksSet) {
   fs.writeFileSync(SENT_OPINIONS_TO_AGON_FILE, JSON.stringify(trimmed, null, 2), "utf8");
 }
 
+// Copie conforme de cleanText (veille-mixte.js) : les deux processus n'ont pas
+// de module partagé, et les clés de sujet doivent se normaliser exactement
+// pareil des deux côtés. À garder synchronisés.
+function cleanSubjectKeyText(text) {
+  return String(text || "")
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^\p{L}\p{N}\s]/gu, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+// Retrait à la source : quand un sujet devient une arène Agôn, ses articles
+// déjà partis vers Autres actus (runs précédents, avant publication du sujet)
+// sont retirés de la table opinion_articles. Fire-and-forget : un échec ici ne
+// doit pas faire échouer la publication de l'arène.
+async function removeOpinionArticlesFromAgon(links, subjectTitle = "") {
+  const safeLinks = [...new Set((links || []).map(l => String(l || "").trim()).filter(Boolean))];
+  if (!safeLinks.length) return;
+  try {
+    const response = await fetch(`${AGON_URL}/api/veille/opinion-articles/remove`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ links: safeLinks })
+    });
+    if (!response.ok) {
+      console.warn(`[opinion-articles] Retrait refusé par Agôn (HTTP ${response.status}) pour "${String(subjectTitle).slice(0, 60)}"`);
+      return;
+    }
+    const data = await response.json().catch(() => ({}));
+    if (Number(data.removed) > 0) {
+      console.log(`[opinion-articles] ${data.removed} article(s) retiré(s) d'Autres actus (sujet publié : "${String(subjectTitle).slice(0, 60)}")`);
+    }
+  } catch (err) {
+    console.warn("[opinion-articles] Erreur retrait vers Agôn :", err.message);
+  }
+}
+
 // Pousse vers Agôn les articles de presse d'opinion à source unique de la dernière session
 // (cf. extractOpinionItems côté veille-mixte.js). Contrairement à publishMixteSubjectToAgon,
 // pas de génération IA ni de fiche débat : un simple lien vers l'article d'origine, affiché
@@ -354,8 +395,26 @@ async function publishOpinionItemsToAgon() {
   const opinionItems = Array.isArray(latestSession.opinionItems) ? latestSession.opinionItems : [];
   if (!opinionItems.length) return;
 
+  // Ré-exclusion au moment de l'envoi : les opinionItems de la session ont été
+  // extraits AVANT que runAutoPublishPipeline ne publie le top 10 de cette même
+  // session — on écarte donc ici les articles dont le sujet (subjectKey posé
+  // par extractOpinionItems côté veille-mixte.js) vient d'être publié en arène.
+  const publishedSubjectKeys = new Set(
+    loadSentToAgonItems().map(item => cleanSubjectKeyText(item.subject)).filter(Boolean)
+  );
+  const unpublishedItems = opinionItems.filter(
+    item => !item.subjectKey || !publishedSubjectKeys.has(item.subjectKey)
+  );
+  const skippedAsPublished = opinionItems.length - unpublishedItems.length;
+  if (skippedAsPublished > 0) {
+    console.log(`[opinion-articles] ${skippedAsPublished} article(s) écarté(s) : sujet publié en arène sur Agôn.`);
+  }
+
   const sentLinks = loadSentOpinionLinks();
-  const newItems = opinionItems.filter(item => item.link && !sentLinks.has(item.link));
+  const newItems = unpublishedItems
+    .filter(item => item.link && !sentLinks.has(item.link))
+    // subjectKey est un champ interne au bot : on ne l'envoie pas à Agôn.
+    .map(({ subjectKey, ...item }) => item);
   if (!newItems.length) {
     console.log("[opinion-articles] Rien de nouveau à envoyer vers Agôn.");
     return;
@@ -1136,10 +1195,20 @@ function logAutoPublishDiagnostics(label, diagnostics) {
 
 // ── Sélection des sources exploitables pour le résumé factuel ───────────────
 async function selectFactualSources(allContents) {
-  const articles = allContents.filter(c => c.type !== "youtube");
-  const videos = allContents.filter(c => c.type === "youtube");
+  // Dernier rempart contre les articles récap multi-sujets : la collecte les filtre
+  // déjà, mais les sujets hérités d'anciennes sessions ou fusionnés peuvent encore
+  // en contenir. Un récap utilisé comme texte source polluerait le résumé factuel
+  // avec des actualités sans lien — on l'écarte avant même de télécharger son texte.
+  const recapContents = allContents.filter(c => isRoundupTitle(c.title));
+  for (const recap of recapContents) {
+    console.log(`[résumé factuel] IGNORÉ ${recap.type === "youtube" ? "vidéo" : "article"} "${String(recap.title).slice(0, 60)}" — récap multi-sujets`);
+  }
+  const usableContents = allContents.filter(c => !isRoundupTitle(c.title));
+  const articles = usableContents.filter(c => c.type !== "youtube");
+  const videos = usableContents.filter(c => c.type === "youtube");
 
   const stats = {
+    recapExcluded: recapContents.length,
     articlesChecked: articles.length,
     articlesUsed: 0,
     articlesIgnored: 0,
@@ -1198,7 +1267,7 @@ async function selectFactualSources(allContents) {
     }
   }
 
-  console.log(`[résumé factuel] ${stats.articlesUsed} article(s) complet(s), ${stats.videosUsed} vidéo(s) (transcription), ${stats.articlesIgnored + stats.videosIgnored} source(s) ignorée(s)`);
+  console.log(`[résumé factuel] ${stats.articlesUsed} article(s) complet(s), ${stats.videosUsed} vidéo(s) (transcription), ${stats.articlesIgnored + stats.videosIgnored} source(s) ignorée(s), ${stats.recapExcluded} récap(s) multi-sujets écarté(s)`);
   recordFactualSourceDiagnostics(stats);
 
   if (usable.length === 0) {
@@ -1260,6 +1329,7 @@ Règles absolues :
 - Si une information est absente, incertaine ou contradictoire, ne pas l'ajouter.
 - Si les sources sont peu nombreuses, reste proportionnellement prudent dans l'ampleur des conclusions.
 - Pour les transcriptions vidéo : n'utilise que ce qui est dit explicitement ; distingue les faits rapportés des opinions ou commentaires exprimés.
+- Si une source s'avère être un récapitulatif multi-sujets (revue de presse, brèves groupées, fil d'actualités enchaînant des sujets sans lien) : n'utilise que les passages qui concernent le sujet indiqué et ignore totalement le reste ; le résumé doit porter sur un seul et unique sujet.
 
 Important :
 Le résumé doit rester factuel, neutre et strictement fondé sur les informations présentes dans les sources.
@@ -1413,7 +1483,7 @@ Réponds uniquement en JSON :
   "debatePotential": "fort | moyen | faible",
   "debateAngle": "enjeu réel en une phrase, max 180 caractères",
   "narrativeTension": "pourquoi le choix est difficile, avec deux risques opposés",
-  "debateQuestion": "question Agôn, max 80 caractères",
+  "debateQuestion": "question Agôn, max 70 caractères",
   "positionA": "camp A, max 55 caractères",
   "positionB": "camp B, max 55 caractères",
   "editorialDecision": "arena | understand | reformulate | avoid"
@@ -1451,7 +1521,7 @@ Réponds uniquement en JSON valide, sans balises markdown.`;
     ? parsed.possibleBiases.map((item) => String(item || "").trim()).filter(Boolean).slice(0, 4)
     : [];
 
-  const debateQuestion = limitDebateQuestion(String(parsed.debateQuestion || "").trim());
+  const debateQuestion = limitDebateQuestion(await enforceTitleLimit(openai, String(parsed.debateQuestion || "").trim(), { logUsage: logAiUsage }));
   let positionA = String(parsed.positionA || "").trim().slice(0, 55);
   let positionB = String(parsed.positionB || "").trim().slice(0, 55);
 
@@ -1768,7 +1838,7 @@ Réponds uniquement en JSON valide, sans balises markdown.`;
     // Pas de coupe ici : l'article passe ensuite par enforceFinalArticleQuestion
     // (finition + endpoint), seul point qui applique la limite proprement.
     article: String(parsed.article || summary).trim(),
-    debateQuestion: limitDebateQuestion(parsed.debateQuestion || debateQuestion),
+    debateQuestion: limitDebateQuestion(await enforceTitleLimit(openai, parsed.debateQuestion || debateQuestion, { logUsage: logAiUsage })),
     positionA: String(parsed.positionA || positionA).replace(/\s+/g, " ").trim(),
     positionB: String(parsed.positionB || positionB).replace(/\s+/g, " ").trim()
   };
@@ -1827,7 +1897,7 @@ Contraintes strictes :
 - article : objectif 700 à 1000 caractères.
 - article : jamais plus de 1200 caractères, signature comprise.
 - latinQuestion : obligatoire, jamais vide.
-- debateQuestion : maximum 80 caractères, espaces, apostrophes, accents, tirets et point d'interrogation final compris.
+- debateQuestion : maximum 70 caractères, espaces, apostrophes, accents, tirets et point d'interrogation final compris. C'est un titre : plus elle est courte et percutante, mieux c'est.
 - positionA : maximum 55 caractères, espaces compris.
 - positionB : maximum 55 caractères, espaces compris.
 
@@ -1992,7 +2062,7 @@ Vérification obligatoire avant de répondre :
 8. Le deuxième paragraphe contient un retour à la ligne entre l'énoncé des options et l'explication de l'enjeu commun.
 9. Il y a une ligne vide entre latinQuestion et debateQuestion.
 10. Il y a une ligne vide entre debateQuestion et la signature.
-11. debateQuestion fait 80 caractères maximum.
+11. debateQuestion fait 70 caractères maximum.
 12. positionA et positionB font 55 caractères maximum.
 13. article se termine par une signature autorisée, seule sur la dernière ligne.
 14. Tout chiffre, mesure, dispositif, proposition ou acteur cité dans debateQuestion apparaît et est expliqué dans le corps de l'article avant la question.
@@ -2028,7 +2098,7 @@ Réponds uniquement en JSON valide, sans balises markdown.`;
     });
     logAiUsage("finalisation-article", finalisationResponse);
     const parsed = safeJsonParse(String(finalisationResponse.output_text || "").trim());
-    const finalQuestion = limitDebateQuestion(parsed.debateQuestion || base.debateQuestion);
+    const finalQuestion = limitDebateQuestion(await enforceTitleLimit(openai, parsed.debateQuestion || base.debateQuestion, { logUsage: logAiUsage }));
     const finalLatinQuestion = normalizeLatinQuestion(parsed.latinQuestion || "")
       || extractLatinQuestionFromArticle(parsed.article || "")
       || buildFallbackLatinQuestion({
@@ -2100,9 +2170,9 @@ TITRE FACTUEL (champ "title") :
 * Interdit les titres qui parlent du sujet sans le nommer, du type "une affaire relance les inquiétudes autour de…", "reste un facteur de tension autour de…", "suscite des interrogations sur…" : ces formulations cachent le fait précis derrière une tournure vague.
 * Jamais une question.
 * Jamais une formulation binaire ou orientée débat.
-* Maximum 90 caractères.
+* Maximum 70 caractères : c'est un titre, il doit rester court. Si tout ne tient pas, garde l'acteur et le fait, sacrifie les détails secondaires.
 Exemples valables :
-- "Violences après la finale du PSG : Paris annonce des réparations pour les commerçants"
+- "Après les violences de la finale, Paris indemnisera les commerçants"
 - "Un enseignant mis en examen pour agression sur mineurs à Lyon"
 - "L'intelligence artificielle testée dans plusieurs lycées franciliens"
 - "Les loyers parisiens atteignent un nouveau record"
@@ -2178,7 +2248,7 @@ Réponds uniquement en JSON valide, sans balises markdown.`;
 
   return {
     article: assembleArticleWithinLimit(articleLines.join("\n\n"), [articleSignature]),
-    debateQuestion: limitStoryText(parsed.title || subject, 100)
+    debateQuestion: await enforceTitleLimit(openai, parsed.title || subject, { logUsage: logAiUsage })
   };
 }
 
@@ -5554,6 +5624,9 @@ async function publishMixteSubjectToAgon(subj, { sessionLabel, politicalGroup = 
 
   const publishedItem = { subject: subjectTitle, sessionLabel, question, positionA, positionB, theme, resume, sources, links, storySelection, keywords, politicalOrientation, arenaMode, politicalGroup, publishStatus: "queued", sentAt: new Date().toISOString() };
   upsertSentToAgonItem(publishedItem);
+  // Le sujet est désormais une arène : ses articles n'ont plus leur place dans
+  // Autres actus (fire-and-forget, sans bloquer la publication).
+  removeOpinionArticlesFromAgon((contents || []).map(c => c.link), subjectTitle);
   console.log(`[auto-publish] ✓ Envoyé (${politicalGroup}) : "${subjectTitle.slice(0, 60)}"`);
   return publishedItem;
 }

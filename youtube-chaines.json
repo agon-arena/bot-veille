@@ -130,31 +130,31 @@
   },
   {
     "nom": "Le Monde",
-    "orientation": "centre-gauche / généraliste",
+    "orientation": "généraliste",
     "url": "https://www.youtube.com/@lemondefr",
     "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCYpRDnhk5H8h16jpS84uqsA"
   },
   {
     "nom": "Le Monde : Les moments forts de l'actu : youtube",
-    "orientation": "centre-gauche / généraliste",
+    "orientation": "généraliste",
     "url": "https://www.youtube.com/playlist?list=PLFuK0VAIne9JMqU6qoNAU8kgFBDnYVeRE",
     "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PLFuK0VAIne9JMqU6qoNAU8kgFBDnYVeRE"
   },
   {
     "nom": "Le Monde : Mappemonde : youtube",
-    "orientation": "centre-gauche / généraliste",
+    "orientation": "généraliste",
     "url": "https://www.youtube.com/playlist?list=PLFuK0VAIne9LhQy5THa8YrrZbyWaIRqPc",
     "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PLFuK0VAIne9LhQy5THa8YrrZbyWaIRqPc"
   },
   {
     "nom": "Le Monde : Nos dernières explications : youtube",
-    "orientation": "centre-gauche / généraliste",
+    "orientation": "généraliste",
     "url": "https://www.youtube.com/playlist?list=PLFuK0VAIne9IPAKprnmkgM7aP45qQwEGe",
     "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PLFuK0VAIne9IPAKprnmkgM7aP45qQwEGe"
   },
   {
     "nom": "Le Monde : OSINT - Enquêtes vidéo open source : youtube",
-    "orientation": "centre-gauche / généraliste",
+    "orientation": "généraliste",
     "url": "https://www.youtube.com/playlist?list=PLFuK0VAIne9LVg-1mTFeGvisVBWdGLelc",
     "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PLFuK0VAIne9LVg-1mTFeGvisVBWdGLelc"
   },
@@ -166,61 +166,61 @@
   },
   {
     "nom": "France Inter",
-    "orientation": "service public / centre-gauche",
+    "orientation": "généraliste",
     "url": "https://www.youtube.com/@franceinter",
     "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCJldRgT_D7Am-ErRHQZ90uw"
   },
   {
     "nom": "France Inter : infos : youtube",
-    "orientation": "service public / centre-gauche",
+    "orientation": "généraliste",
     "url": "https://www.youtube.com/playlist?list=PL43OynbWaTMKEbGOJqSBwddnVgK31qUG0",
     "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PL43OynbWaTMKEbGOJqSBwddnVgK31qUG0"
   },
   {
     "nom": "France Inter : Le débat du 7/10 : youtube",
-    "orientation": "service public / centre-gauche",
+    "orientation": "généraliste",
     "url": "https://www.youtube.com/playlist?list=PL43OynbWaTMK5iS5F--GDXzk0gH2XxdRX",
     "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PL43OynbWaTMK5iS5F--GDXzk0gH2XxdRX"
   },
   {
     "nom": "France Inter : Les reportages de France Inter : youtube",
-    "orientation": "service public / centre-gauche",
+    "orientation": "généraliste",
     "url": "https://www.youtube.com/playlist?list=PL43OynbWaTMK5OauwuzHhGqXdeZDRrFyD",
     "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PL43OynbWaTMK5OauwuzHhGqXdeZDRrFyD"
   },
   {
     "nom": "L'Obs",
-    "orientation": "centre-gauche",
+    "orientation": "généraliste",
     "url": "https://www.youtube.com/@lenouvelobs",
     "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCvG0OKqvCFMYTiJ1Rnd5XBQ"
   },
   {
     "nom": "Le NouvelObs : international : youtube",
-    "orientation": "centre-gauche",
+    "orientation": "généraliste",
     "url": "https://www.youtube.com/playlist?list=PLx11EXmJoLVY_qIRwFQLycaO1JgVL0PuP",
     "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PLx11EXmJoLVY_qIRwFQLycaO1JgVL0PuP"
   },
   {
     "nom": "Le NouvelObs : Les conférences de l'Obs : youtube",
-    "orientation": "centre-gauche",
+    "orientation": "généraliste",
     "url": "https://www.youtube.com/playlist?list=PLx11EXmJoLVYshHRpapVkK1GxmCSpj3X8",
     "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PLx11EXmJoLVYshHRpapVkK1GxmCSpj3X8"
   },
   {
     "nom": "Le NouvelObs : Oncle Obs : youtube",
-    "orientation": "centre-gauche",
+    "orientation": "généraliste",
     "url": "https://www.youtube.com/playlist?list=PLx11EXmJoLVZcG7VQCTW6bDvKQGPXq-uo",
     "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PLx11EXmJoLVZcG7VQCTW6bDvKQGPXq-uo"
   },
   {
     "nom": "Le NouvelObs : youtube",
-    "orientation": "centre-gauche",
+    "orientation": "généraliste",
     "url": "https://www.youtube.com/channel/UC1ObaaFz4XHVPN2T5IFsU4w",
     "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UC1ObaaFz4XHVPN2T5IFsU4w"
   },
   {
     "nom": "Europe 1",
-    "orientation": "radio / droite-centre-droit",
+    "orientation": "droite",
     "url": "https://www.youtube.com/@Europe1",
     "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCIMGfEAERXjmWwQeg15BFsg"
   },
@@ -370,7 +370,7 @@
     "nom": "RFI",
     "orientation": "international / service public",
     "url": "https://www.youtube.com/@RFI_Fr",
-    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCWdBTMcseI5WsM8krLREydg"
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCm4fSpMpPIZ9z6KHoezLUAg"
   },
   {
     "nom": "Euronews France",
