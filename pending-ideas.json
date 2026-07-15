@@ -6108,5 +6108,1565 @@
     "runAt": "2026-07-11T05:31:59.814Z",
     "status": "done",
     "attempts": 0
+  },
+  {
+    "debateId": 1709,
+    "question": "Faut-il que la droite, la gauche et le centre misent sur la mobilisation de leur socle ou sur l'élargissement ",
+    "positionA": "Mobiliser le socle",
+    "positionB": "Chercher l'élargissement au centre",
+    "id": "1709-1783780011708-odqrgw",
+    "runAt": "2026-07-11T14:36:51.705Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1710,
+    "question": "Le tribunal administratif annule l’élection des adjoints de Bally Bagayoko à Saint-Denis",
+    "positionA": "",
+    "positionB": "",
+    "id": "1710-1783780011708-201hyr",
+    "runAt": "2026-07-11T14:36:51.705Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1711,
+    "question": "Faut-il opposer la mise en accusation de l'influence américaine à la recherche de compromis régionaux ?",
+    "positionA": "Accentuer la dénonciation de l'influence US",
+    "positionB": "Prioriser le dialogue et les compromis régionaux",
+    "id": "1711-1783780011708-u0nfid",
+    "runAt": "2026-07-11T14:36:51.705Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1712,
+    "question": "La Commission européenne met en cause le design de Facebook et Instagram de Meta",
+    "positionA": "",
+    "positionB": "",
+    "id": "1712-1783780011708-jthrlo",
+    "runAt": "2026-07-11T14:36:51.705Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1713,
+    "question": "Faut-il maintenir la présomption de légitime défense pour les policiers adoptée par l'Assemblée ?",
+    "positionA": "Supprimer ou limiter la présomption",
+    "positionB": "Conserver la présomption",
+    "id": "1713-1783780011708-1594kc",
+    "runAt": "2026-07-11T14:36:51.705Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1714,
+    "question": "Faut-il limiter l'utilisation par OpenAI d'anciens salariés Apple et de leurs documents ?",
+    "positionA": "Restreindre usages et recrutements",
+    "positionB": "Préserver mobilité et usage limité",
+    "id": "1714-1783780011708-wiv65y",
+    "runAt": "2026-07-11T14:36:51.705Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1715,
+    "question": "France–Espagne : demi‑finale de la Coupe du monde 2026 à Arlington le 14 juillet",
+    "positionA": "",
+    "positionB": "",
+    "id": "1715-1783780011708-putsop",
+    "runAt": "2026-07-11T14:36:51.705Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1716,
+    "question": "32 personnes interpellées depuis le début de l'été pour des départs de feu dans 22 départements",
+    "positionA": "",
+    "positionB": "",
+    "id": "1716-1783780011708-qcwh7z",
+    "runAt": "2026-07-11T14:36:51.705Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1717,
+    "question": "Canicule et sécheresse : annulations et reports de feux d'artifice et bals du 14-Juillet en France",
+    "positionA": "",
+    "positionB": "",
+    "id": "1717-1783780011708-xtgtcv",
+    "runAt": "2026-07-11T14:36:51.705Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1718,
+    "question": "France–Espagne : demi‑finale de la Coupe du monde 2026 à Arlington le 14 juillet",
+    "positionA": "",
+    "positionB": "",
+    "id": "1718-1783780011708-2ccaci",
+    "runAt": "2026-07-11T14:36:51.705Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1719,
+    "question": "Faut-il privilégier une primaire ouverte pour rassembler la gauche ou une primaire fermée par le PS ?",
+    "positionA": "Primaire ouverte et large",
+    "positionB": "Primaire fermée pilotée par le PS",
+    "id": "1719-1783780011708-j5adu1",
+    "runAt": "2026-07-11T14:36:51.705Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1720,
+    "question": "Un homme de 21 ans tué au couteau dans le XVIIIe arrondissement de Paris",
+    "positionA": "",
+    "positionB": "",
+    "id": "1720-1783780011708-4qawoj",
+    "runAt": "2026-07-11T14:36:51.705Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1721,
+    "question": "Faut-il privilégier une primaire ouverte pour rassembler la gauche ou une primaire fermée par le PS ?",
+    "positionA": "Primaire ouverte et large",
+    "positionB": "Primaire fermée pilotée par le PS",
+    "id": "1721-1783780011708-jkpapl",
+    "runAt": "2026-07-11T14:36:51.705Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1722,
+    "question": "Coupe du monde 2026 : les quarts de finale et leurs enjeux sportifs",
+    "positionA": "",
+    "positionB": "",
+    "id": "1722-1783780011708-gp2pdp",
+    "runAt": "2026-07-11T14:36:51.705Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1723,
+    "question": "Pitbull réunit 22 141 fans avec de faux crânes chauves à Londres",
+    "positionA": "",
+    "positionB": "",
+    "id": "1723-1783780011708-4o79my",
+    "runAt": "2026-07-11T14:36:51.705Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1724,
+    "question": "La tour Eiffel, le Louvre et le musée d’Orsay avancent leur fermeture pendant la canicule à Paris",
+    "positionA": "",
+    "positionB": "",
+    "id": "1724-1783780011708-th7n3x",
+    "runAt": "2026-07-11T14:36:51.705Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1725,
+    "question": "Coupe du monde 2026 : les quarts de finale et leurs enjeux sportifs",
+    "positionA": "",
+    "positionB": "",
+    "id": "1725-1783780011708-j6kwxp",
+    "runAt": "2026-07-11T14:36:51.705Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1726,
+    "question": "Parcoursup : 126 652 candidats toujours sans proposition après la phase principale",
+    "positionA": "",
+    "positionB": "",
+    "id": "1726-1783780011708-is6c5o",
+    "runAt": "2026-07-11T14:36:51.705Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1727,
+    "question": "Faut-il privilégier le dialogue avec l'Iran ou répondre par la fermeté après les menaces contre Trump ?",
+    "positionA": "Privilégier le dialogue",
+    "positionB": "Répondre par la fermeté",
+    "id": "1727-1783780011708-uo4i3l",
+    "runAt": "2026-07-11T14:36:51.705Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1728,
+    "question": "Parcoursup : 126 652 candidats toujours sans proposition après la phase principale",
+    "positionA": "",
+    "positionB": "",
+    "id": "1728-1783780011708-t6q7si",
+    "runAt": "2026-07-11T14:36:51.705Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1729,
+    "question": "Bouchons record sur les routes françaises lors des départs en vacances sous canicule",
+    "positionA": "",
+    "positionB": "",
+    "id": "1729-1783780011708-dxmpxv",
+    "runAt": "2026-07-11T14:36:51.705Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1730,
+    "question": "La candidature de Marine Le Pen doit-elle être maintenue malgré sa condamnation ?",
+    "positionA": "Maintenir la candidature",
+    "positionB": "Demander un remplacement",
+    "id": "1730-1783780011708-nxdrb8",
+    "runAt": "2026-07-11T14:36:51.705Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1731,
+    "question": "Bouchons record sur les routes françaises lors des départs en vacances sous canicule",
+    "positionA": "",
+    "positionB": "",
+    "id": "1731-1783780011708-m59w2c",
+    "runAt": "2026-07-11T14:36:51.705Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1732,
+    "question": "Faut-il privilégier le dialogue avec l'Iran ou répondre par la fermeté après les menaces contre Trump ?",
+    "positionA": "Privilégier le dialogue",
+    "positionB": "Répondre par la fermeté",
+    "id": "1732-1783780011708-s0g62e",
+    "runAt": "2026-07-11T14:36:51.705Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1733,
+    "question": "La candidature de Marine Le Pen doit-elle être maintenue malgré sa condamnation ?",
+    "positionA": "Maintenir la candidature",
+    "positionB": "Demander un remplacement",
+    "id": "1733-1783780011708-uljlv1",
+    "runAt": "2026-07-11T14:36:51.705Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1745,
+    "question": "L'Arabie saoudite lance à Paris l'Esports World Cup dotée de 75 millions de dollars",
+    "positionA": "",
+    "positionB": "",
+    "id": "1745-1783882076635-gj6lae",
+    "runAt": "2026-07-12T18:57:56.633Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1746,
+    "question": "70 000 policiers et gendarmes mobilisés pour le 14-Juillet et la demi-finale France–Espagne, selon…",
+    "positionA": "",
+    "positionB": "",
+    "id": "1746-1783882076635-c7we0k",
+    "runAt": "2026-07-12T18:57:56.633Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1747,
+    "question": "Rassemblement d'opposants à Oisy-le-Verger contre le lancement des travaux du Canal Seine‑Nord Euro…",
+    "positionA": "",
+    "positionB": "",
+    "id": "1747-1783882076635-o9zau1",
+    "runAt": "2026-07-12T18:57:56.633Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1748,
+    "question": "Van der Poel gagne la 9e étape du Tour de France 2026 entre Malemort et Ussel",
+    "positionA": "",
+    "positionB": "",
+    "id": "1748-1783882076635-r7rosw",
+    "runAt": "2026-07-12T18:57:56.633Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1749,
+    "question": "Van der Poel gagne la 9e étape du Tour de France 2026 entre Malemort et Ussel",
+    "positionA": "",
+    "positionB": "",
+    "id": "1749-1783882076635-rhfkm8",
+    "runAt": "2026-07-12T18:57:56.633Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1750,
+    "question": "Neuvième étape du Tour de France 2026 raccourcie entre Malemort et Ussel en raison de la canicule",
+    "positionA": "",
+    "positionB": "",
+    "id": "1750-1783882076635-tzi3wp",
+    "runAt": "2026-07-12T18:57:56.633Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1751,
+    "question": "Découverte d'un véhicule armé et évacuation rue Henry Dunant à Sarcelles",
+    "positionA": "",
+    "positionB": "",
+    "id": "1751-1783882076635-ebo49c",
+    "runAt": "2026-07-12T18:57:56.633Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1752,
+    "question": "Faut-il transformer l'appel de Macron en obligations nationales ou en initiatives locales volontaires ?",
+    "positionA": "Obligations nationales",
+    "positionB": "Initiatives locales volontaires",
+    "id": "1752-1783882076635-xwy3jl",
+    "runAt": "2026-07-12T18:57:56.633Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1753,
+    "question": "L'alliance Ciotti‑RN peut‑elle rassembler au‑delà du RN pour gagner en 2027 ?",
+    "positionA": "Chercher un élargissement modéré",
+    "positionB": "Consolider l'alliance des droites",
+    "id": "1753-1783882076635-1i2fyf",
+    "runAt": "2026-07-12T18:57:56.633Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1754,
+    "question": "Faut-il poursuivre et sanctionner publiquement Mariano Rajoy ou privilégier la désescalade diplomatique ?",
+    "positionA": "sanction publique",
+    "positionB": "désescalade diplomatique",
+    "id": "1754-1783882076635-l0a2rg",
+    "runAt": "2026-07-12T18:57:56.633Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1755,
+    "question": "Coupe du monde 2026 : l'Angleterre bat la Norvège 2-1 après prolongation à Miami",
+    "positionA": "",
+    "positionB": "",
+    "id": "1755-1783882076635-sn0m4s",
+    "runAt": "2026-07-12T18:57:56.633Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1756,
+    "question": "Aix-en-Provence : un homme interpellé après le viol d'une étudiante",
+    "positionA": "",
+    "positionB": "",
+    "id": "1756-1783882076635-hi82n6",
+    "runAt": "2026-07-12T18:57:56.633Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1757,
+    "question": "Dix ans après l’attentat de Nice : commémorations et enquêtes en cours",
+    "positionA": "",
+    "positionB": "",
+    "id": "1757-1783882076635-6p4m6l",
+    "runAt": "2026-07-12T18:57:56.633Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1758,
+    "question": "Faut-il poursuivre et sanctionner publiquement Mariano Rajoy ou privilégier la désescalade diplomatique ?",
+    "positionA": "sanction publique",
+    "positionB": "désescalade diplomatique",
+    "id": "1758-1783882076635-5472xt",
+    "runAt": "2026-07-12T18:57:56.633Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1759,
+    "question": "Faut-il transformer l'appel de Macron en obligations nationales ou en initiatives locales volontaires ?",
+    "positionA": "Obligations nationales",
+    "positionB": "Initiatives locales volontaires",
+    "id": "1759-1783882076635-u3g4vo",
+    "runAt": "2026-07-12T18:57:56.633Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1760,
+    "question": "Faut-il inciter ou obliger les communes à apposer les noms des Justes ?",
+    "positionA": "Apposer les noms des Justes partout pour garantir transmission",
+    "positionB": "Laisser aux communes la décision selon leurs contraintes",
+    "id": "1760-1783882076635-6aum61",
+    "runAt": "2026-07-12T18:57:56.633Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1761,
+    "question": "Décès du sénateur Lindsey Graham, annoncé après un arrêt cardiaque à son domicile",
+    "positionA": "",
+    "positionB": "",
+    "id": "1761-1783882076635-kb4fdw",
+    "runAt": "2026-07-12T18:57:56.633Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1762,
+    "question": "Aix-en-Provence : un homme interpellé après le viol d'une étudiante",
+    "positionA": "",
+    "positionB": "",
+    "id": "1762-1783882076635-g6zbbl",
+    "runAt": "2026-07-12T18:57:56.633Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1763,
+    "question": "Décès du sénateur républicain Lindsey Graham à 71 ans",
+    "positionA": "",
+    "positionB": "",
+    "id": "1763-1783882076635-48z103",
+    "runAt": "2026-07-12T18:57:56.633Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1764,
+    "question": "Aix-en-Provence : un homme arrêté après le viol d'une étudiante, quelques semaines après sa libérat…",
+    "positionA": "",
+    "positionB": "",
+    "id": "1764-1783882076635-7rqyzk",
+    "runAt": "2026-07-12T18:57:56.633Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1765,
+    "question": "Argentine et Angleterre en demi‑finales de la Coupe du monde 2026",
+    "positionA": "",
+    "positionB": "",
+    "id": "1765-1783882076635-3i7y50",
+    "runAt": "2026-07-12T18:57:56.633Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1766,
+    "question": "Argentine et Angleterre en demi‑finales de la Coupe du monde 2026",
+    "positionA": "",
+    "positionB": "",
+    "id": "1766-1783882076635-74v5w2",
+    "runAt": "2026-07-12T18:57:56.633Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1767,
+    "question": "Argentine et Angleterre qualifiées pour les demi-finales de la Coupe du monde 2026",
+    "positionA": "",
+    "positionB": "",
+    "id": "1767-1783882076635-sju4zt",
+    "runAt": "2026-07-12T18:57:56.633Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1768,
+    "question": "L'alliance Ciotti‑RN peut‑elle rassembler au‑delà du RN pour gagner en 2027 ?",
+    "positionA": "Chercher un élargissement modéré",
+    "positionB": "Consolider l'alliance des droites",
+    "id": "1768-1783882076635-ah8md0",
+    "runAt": "2026-07-12T18:57:56.633Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1769,
+    "question": "Dix ans après l’attentat de Nice : commémorations et enquêtes en cours",
+    "positionA": "",
+    "positionB": "",
+    "id": "1769-1783882076635-hbuaok",
+    "runAt": "2026-07-12T18:57:56.633Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1770,
+    "question": "La coalition Le Pen–UDR doit-elle viser l'élargissement au-delà du RN ou rester centrée sur la droite unie ?",
+    "positionA": "Chercher l'élargissement",
+    "positionB": "Rester sur la droite unie",
+    "id": "1770-1783882076635-05phs5",
+    "runAt": "2026-07-12T18:57:56.633Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1771,
+    "question": "Dix ans après l'attentat de Nice : marches et commémorations sur la Promenade des Anglais",
+    "positionA": "",
+    "positionB": "",
+    "id": "1771-1783882076635-n7358t",
+    "runAt": "2026-07-12T18:57:56.633Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1772,
+    "question": "Canicule en France le 12 juillet 2026 : vigilance rouge, impacts sur le Tour et feux d’artifice",
+    "positionA": "",
+    "positionB": "",
+    "id": "1772-1783882076635-j14xie",
+    "runAt": "2026-07-12T18:57:56.633Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1773,
+    "question": "Faut-il contraindre l'Iran à rouvrir librement le détroit d'Ormuz ou accepter son couloir contrôlé ?",
+    "positionA": "Imposer la libre circulation",
+    "positionB": "Accepter un couloir sous contrôle iranien",
+    "id": "1773-1783882076635-5zqtd8",
+    "runAt": "2026-07-12T18:57:56.633Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1774,
+    "question": "Canicule en France le 12 juillet 2026 : vigilance rouge, impacts sur le Tour et feux d’artifice",
+    "positionA": "",
+    "positionB": "",
+    "id": "1774-1783882076635-6byai6",
+    "runAt": "2026-07-12T18:57:56.633Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1775,
+    "question": "Canicule : vigilance renforcée, impacts sur le Tour de France et annulations de feux d'artifice",
+    "positionA": "",
+    "positionB": "",
+    "id": "1775-1783882076636-c05hjy",
+    "runAt": "2026-07-12T18:57:56.633Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1776,
+    "question": "Faut-il contraindre l'Iran à rouvrir librement le détroit d'Ormuz ou accepter son couloir contrôlé ?",
+    "positionA": "Imposer la libre circulation",
+    "positionB": "Accepter un couloir sous contrôle iranien",
+    "id": "1776-1783882076636-g54ige",
+    "runAt": "2026-07-12T18:57:56.633Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1777,
+    "question": "Faut-il forcer la réouverture de l'Ormuz par pression militaire ou négocier avec l'Iran ?",
+    "positionA": "pression militaire internationale",
+    "positionB": "négociation diplomatique",
+    "id": "1777-1783882076636-tadzfd",
+    "runAt": "2026-07-12T18:57:56.633Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1778,
+    "question": "Faut‑il fonder les garanties à l’Ukraine sur une force multinationale ou sur des accords bilatéraux ?",
+    "positionA": "Force multinationale partagée",
+    "positionB": "Accords bilatéraux et surveillance",
+    "id": "1778-1783921703967-k9gnm2",
+    "runAt": "2026-07-13T05:58:23.963Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1779,
+    "question": "Sandrine Rousseau prise à partie par des agriculteurs lors d’un barbecue à Couthures-sur-Garonne",
+    "positionA": "",
+    "positionB": "",
+    "id": "1779-1783921703967-9epgsk",
+    "runAt": "2026-07-13T05:58:23.963Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1780,
+    "question": "Pogacar remet en cause le calendrier du Tour après l’adaptation d’une étape en Corrèze",
+    "positionA": "",
+    "positionB": "",
+    "id": "1780-1783921703967-mhozev",
+    "runAt": "2026-07-13T05:58:23.963Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1781,
+    "question": "Faut-il privilégier symboles publics (statues, rebaptisations) ou actions concrètes contre l'antisémitisme ?",
+    "positionA": "priorité aux symboles publics",
+    "positionB": "priorité aux actions concrètes",
+    "id": "1781-1783921703967-sxzlbf",
+    "runAt": "2026-07-13T05:58:23.963Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1782,
+    "question": "Dix ans après l’attentat du 14‑Juillet à Nice : enquête et commémorations liées aux victimes",
+    "positionA": "",
+    "positionB": "",
+    "id": "1782-1783921703967-0yrxwe",
+    "runAt": "2026-07-13T05:58:23.963Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1783,
+    "question": "Wimbledon : Kristina Mladenovic et Guo Hanyu sacrées en double dames",
+    "positionA": "",
+    "positionB": "",
+    "id": "1783-1783921703967-o3cnph",
+    "runAt": "2026-07-13T05:58:23.963Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1784,
+    "question": "Faut-il assouplir temporairement les limites de rejet d'eau des centrales durant la canicule ?",
+    "positionA": "Assouplissement temporaire pour le réseau",
+    "positionB": "Respect strict des limites environnementales",
+    "id": "1784-1783921703967-4nx0k4",
+    "runAt": "2026-07-13T05:58:23.963Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1785,
+    "question": "Incendie en forêt de Fontainebleau : 800 hectares brûlés et évacuations autour du Vaudoué",
+    "positionA": "",
+    "positionB": "",
+    "id": "1785-1783921703967-egwg78",
+    "runAt": "2026-07-13T05:58:23.963Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1786,
+    "question": "Zelensky : prioriser un gouvernement axé sur renforcement militaire ou sur diplomatie et reconstruction ?",
+    "positionA": "Gouvernement axé défense",
+    "positionB": "Gouvernement axé diplomatie/énergie",
+    "id": "1786-1783921703967-guj6to",
+    "runAt": "2026-07-13T05:58:23.963Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1787,
+    "question": "Faut-il unifier le RN autour de la candidature Le Pen ou préserver la ligne distincte de Bardella ?",
+    "positionA": "Unifier le RN autour de Le Pen",
+    "positionB": "Maintenir la ligne autonome de Bardella",
+    "id": "1787-1783921703967-8iabcd",
+    "runAt": "2026-07-13T05:58:23.963Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1788,
+    "question": "Incendie en forêt de Fontainebleau : 800 hectares brûlés et évacuations autour du Vaudoué",
+    "positionA": "",
+    "positionB": "",
+    "id": "1788-1783921703967-n42jg4",
+    "runAt": "2026-07-13T05:58:23.963Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1789,
+    "question": "Faut-il unifier le RN autour de la candidature Le Pen ou préserver la ligne distincte de Bardella ?",
+    "positionA": "Unifier le RN autour de Le Pen",
+    "positionB": "Maintenir la ligne autonome de Bardella",
+    "id": "1789-1783921703967-cunk87",
+    "runAt": "2026-07-13T05:58:23.963Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1790,
+    "question": "Incendie en Andalousie : bilan porté à 13 morts, une Française portée disparue",
+    "positionA": "",
+    "positionB": "",
+    "id": "1790-1783921703967-f3dv73",
+    "runAt": "2026-07-13T05:58:23.963Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1791,
+    "question": "Coupe du monde 2026 : France — Espagne mardi 14 juillet à Dallas, incertitudes médicales et arbitra…",
+    "positionA": "",
+    "positionB": "",
+    "id": "1791-1783921703967-fqdf5o",
+    "runAt": "2026-07-13T05:58:23.963Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1792,
+    "question": "Sarcelles : découverte d'armes dans une voiture près d'une synagogue, le parquet antiterroriste ouv…",
+    "positionA": "",
+    "positionB": "",
+    "id": "1792-1783921703967-undn7o",
+    "runAt": "2026-07-13T05:58:23.963Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1793,
+    "question": "Incendie dans un bar de la banlieue nord de Bangkok : au moins 27 morts",
+    "positionA": "",
+    "positionB": "",
+    "id": "1793-1783921703967-8grb6k",
+    "runAt": "2026-07-13T05:58:23.963Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1794,
+    "question": "Faut-il sanctionner publiquement Mariano Rajoy avant la demi-finale France‑Espagne ?",
+    "positionA": "sanction publique et claire",
+    "positionB": "éviter d'amplifier la polémique",
+    "id": "1794-1783921703967-9djcbg",
+    "runAt": "2026-07-13T05:58:23.963Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1795,
+    "question": "Jannik Sinner conserve son titre à Wimbledon en battant Alexander Zverev",
+    "positionA": "",
+    "positionB": "",
+    "id": "1795-1783921703967-iqaw1k",
+    "runAt": "2026-07-13T05:58:23.963Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1796,
+    "question": "Sarcelles : découverte d'armes dans une voiture près d'une synagogue, le parquet antiterroriste ouv…",
+    "positionA": "",
+    "positionB": "",
+    "id": "1796-1783921703967-log0ve",
+    "runAt": "2026-07-13T05:58:23.963Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1797,
+    "question": "Faut-il sanctionner publiquement Mariano Rajoy avant la demi-finale France‑Espagne ?",
+    "positionA": "sanction publique et claire",
+    "positionB": "éviter d'amplifier la polémique",
+    "id": "1797-1783921703967-j62zfj",
+    "runAt": "2026-07-13T05:58:23.963Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1798,
+    "question": "Mathieu Van der Poel remporte la 9e étape du Tour de France entre Malemort et Ussel",
+    "positionA": "",
+    "positionB": "",
+    "id": "1798-1783921703967-m5i7nd",
+    "runAt": "2026-07-13T05:58:23.963Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1799,
+    "question": "Jannik Sinner conserve son titre à Wimbledon en battant Alexander Zverev",
+    "positionA": "",
+    "positionB": "",
+    "id": "1799-1783921703967-7n06t6",
+    "runAt": "2026-07-13T05:58:23.963Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1800,
+    "question": "Mathieu Van der Poel remporte la 9e étape du Tour de France entre Malemort et Ussel",
+    "positionA": "",
+    "positionB": "",
+    "id": "1800-1783921703967-eyvh1e",
+    "runAt": "2026-07-13T05:58:23.963Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1801,
+    "question": "Faut-il intervenir militairement pour garantir le passage dans le détroit d'Ormuz ?",
+    "positionA": "Intervenir pour garantir le passage",
+    "positionB": "Éviter l'intervention militaire",
+    "id": "1801-1783921703967-9r2467",
+    "runAt": "2026-07-13T05:58:23.963Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1802,
+    "question": "Faut-il intervenir militairement pour garantir le passage dans le détroit d'Ormuz ?",
+    "positionA": "Intervenir pour garantir le passage",
+    "positionB": "Éviter l'intervention militaire",
+    "id": "1802-1783921703967-7l7qdx",
+    "runAt": "2026-07-13T05:58:23.963Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1811,
+    "question": "Décès de l'acteur néo-zélandais Sam Neill à Sydney le 13 juillet 2026",
+    "positionA": "",
+    "positionB": "",
+    "id": "1811-1783953925514-m4k4wb",
+    "runAt": "2026-07-13T14:55:25.427Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1812,
+    "question": "Le défilé QR-codisé et européen du 14‑Juillet doit-il privilégier la mise en scène internationale ou l'accès p",
+    "positionA": "Prioriser la mise en scène internationale",
+    "positionB": "Prioriser l'accès public et la proximité",
+    "id": "1812-1783953925514-mydo5z",
+    "runAt": "2026-07-13T14:55:25.427Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1813,
+    "question": "Sur ÇA IRA !, débat sur le rôle des créateurs de contenu dans la présidentielle 2027",
+    "positionA": "",
+    "positionB": "",
+    "id": "1813-1783953925514-14g5rq",
+    "runAt": "2026-07-13T14:55:25.427Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1814,
+    "question": "Sarcelles : ouverture d'une enquête du parquet antiterroriste après la découverte d'armes dans une…",
+    "positionA": "",
+    "positionB": "",
+    "id": "1814-1783953925514-wokhon",
+    "runAt": "2026-07-13T14:55:25.427Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1815,
+    "question": "Faut‑il refonder la Ve République en une Ire République écologique ?",
+    "positionA": "Refondation constitutionnelle",
+    "positionB": "Préserver institutions actuelles",
+    "id": "1815-1783953925514-c5rcmp",
+    "runAt": "2026-07-13T14:55:25.427Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1816,
+    "question": "France–Espagne : demi‑finale de Coupe du monde à Dallas avec focalisation sur Lamine Yamal",
+    "positionA": "",
+    "positionB": "",
+    "id": "1816-1783953925514-87zqri",
+    "runAt": "2026-07-13T14:55:25.427Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1817,
+    "question": "Faut-il annuler les coupes budgétaires qui frappent le spectacle vivant ?",
+    "positionA": "Annuler les coupes",
+    "positionB": "Maintenir les coupes",
+    "id": "1817-1783953925514-1z42fa",
+    "runAt": "2026-07-13T14:55:25.427Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1818,
+    "question": "Incendie à Los Gallardos (Andalousie) : treize morts dont une Française confirmés",
+    "positionA": "",
+    "positionB": "",
+    "id": "1818-1783953925514-pm91s6",
+    "runAt": "2026-07-13T14:55:25.427Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1819,
+    "question": "Dixième anniversaire de l'attentat de Nice : une minute de silence annoncée avant France‑Espagne",
+    "positionA": "",
+    "positionB": "",
+    "id": "1819-1783953925514-tnn2hf",
+    "runAt": "2026-07-13T14:55:25.427Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1820,
+    "question": "Tour de France 2026 : Pogacar domine après une première semaine marquée par la chaleur",
+    "positionA": "",
+    "positionB": "",
+    "id": "1820-1783953925514-u4xclu",
+    "runAt": "2026-07-13T14:55:25.427Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1821,
+    "question": "Faut-il sanctionner publiquement Rajoy strictement ou privilégier le désamorçage avant France–Espagne ?",
+    "positionA": "Sanction publique et condamnation ferme",
+    "positionB": "Prioriser le désamorçage et éviter l'escalade",
+    "id": "1821-1783953925514-8iz8d2",
+    "runAt": "2026-07-13T14:55:25.427Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1822,
+    "question": "Dixième anniversaire de l'attentat de Nice : une minute de silence annoncée avant France‑Espagne",
+    "positionA": "",
+    "positionB": "",
+    "id": "1822-1783953925514-o29mp6",
+    "runAt": "2026-07-13T14:55:25.427Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1823,
+    "question": "Incendie à Los Gallardos (Andalousie) : treize morts dont une Française confirmés",
+    "positionA": "",
+    "positionB": "",
+    "id": "1823-1783953925514-7wo7g8",
+    "runAt": "2026-07-13T14:55:25.427Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1824,
+    "question": "Macron réunit à Paris la « coalition des volontaires pour l’Ukraine » en présence de Zelensky",
+    "positionA": "",
+    "positionB": "",
+    "id": "1824-1783953925514-9olqj6",
+    "runAt": "2026-07-13T14:55:25.427Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1825,
+    "question": "Commission européenne : projet d'interdiction d'accès aux réseaux sociaux pour les moins de 13 ans",
+    "positionA": "",
+    "positionB": "",
+    "id": "1825-1783953925514-7xngsr",
+    "runAt": "2026-07-13T14:55:25.427Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1826,
+    "question": "Faut-il sanctionner publiquement Rajoy strictement ou privilégier le désamorçage avant France–Espagne ?",
+    "positionA": "Sanction publique et condamnation ferme",
+    "positionB": "Prioriser le désamorçage et éviter l'escalade",
+    "id": "1826-1783953925514-5aki13",
+    "runAt": "2026-07-13T14:55:25.427Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1827,
+    "question": "Faut-il accélérer le renforcement militaire européen malgré le risque d'alimenter un nationalisme intérieur ?",
+    "positionA": "Accélérer renforcement militaire",
+    "positionB": "Limiter rythme pour éviter dérives",
+    "id": "1827-1783953925514-hlpsea",
+    "runAt": "2026-07-13T14:55:25.427Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1828,
+    "question": "Faut-il appliquer l'inéligibilité ou permettre la candidature de Marine Le Pen en 2027 ?",
+    "positionA": "Appliquer l'inéligibilité",
+    "positionB": "Permettre la candidature",
+    "id": "1828-1783953925514-xf1ggk",
+    "runAt": "2026-07-13T14:55:25.427Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1829,
+    "question": "Faut-il accélérer le renforcement militaire européen malgré le risque d'alimenter un nationalisme intérieur ?",
+    "positionA": "Accélérer renforcement militaire",
+    "positionB": "Limiter rythme pour éviter dérives",
+    "id": "1829-1783953925514-l1a455",
+    "runAt": "2026-07-13T14:55:25.427Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1830,
+    "question": "Faut-il appliquer l'inéligibilité ou permettre la candidature de Marine Le Pen en 2027 ?",
+    "positionA": "Appliquer l'inéligibilité",
+    "positionB": "Permettre la candidature",
+    "id": "1830-1783953925514-nrl5ll",
+    "runAt": "2026-07-13T14:55:25.427Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1831,
+    "question": "Faut-il accepter que les États-Unis prennent le contrôle du détroit d'Ormuz ?",
+    "positionA": "Refuser l'ingérence américaine et privilégier une gestion locale",
+    "positionB": "Accepter le contrôle américain pour garantir la sécurité",
+    "id": "1831-1783953925514-57upt6",
+    "runAt": "2026-07-13T14:55:25.427Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1832,
+    "question": "Faut-il accepter que les États-Unis prennent le contrôle du détroit d'Ormuz ?",
+    "positionA": "Refuser l'ingérence américaine et privilégier une gestion locale",
+    "positionB": "Accepter le contrôle américain pour garantir la sécurité",
+    "id": "1832-1783953925514-w9nban",
+    "runAt": "2026-07-13T14:55:25.427Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1833,
+    "question": "Incendie majeur en forêt de Fontainebleau : 800 hectares brûlés et mobilisation de secours",
+    "positionA": "",
+    "positionB": "",
+    "id": "1833-1783953925514-eagtc9",
+    "runAt": "2026-07-13T14:55:25.427Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1834,
+    "question": "Incendie majeur en forêt de Fontainebleau : 800 hectares brûlés et mobilisation de secours",
+    "positionA": "",
+    "positionB": "",
+    "id": "1834-1783953925514-savr6p",
+    "runAt": "2026-07-13T14:55:25.427Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1843,
+    "question": "Faut-il concentrer les moyens sur les dossiers urgents issus du réexamen des 88 000 plaintes, ou traiter exhau",
+    "positionA": "Priorité aux dossiers urgents",
+    "positionB": "Examen exhaustif de tous les dossiers",
+    "id": "1843-1784040723485-fk893z",
+    "runAt": "2026-07-14T15:02:03.484Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1844,
+    "question": "Trois spécialistes publient une sélection de jeux vidéo pour l'été",
+    "positionA": "",
+    "positionB": "",
+    "id": "1844-1784040723485-wv8m7f",
+    "runAt": "2026-07-14T15:02:03.484Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1845,
+    "question": "Le tribunal administratif de Paris annule l'obligation du QR code pour le défilé du 14-Juillet",
+    "positionA": "",
+    "positionB": "",
+    "id": "1845-1784040723485-oogkio",
+    "runAt": "2026-07-14T15:02:03.484Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1846,
+    "question": "Incendie majeur en forêt de Fontainebleau : 2 450 hectares partis en fumée",
+    "positionA": "",
+    "positionB": "",
+    "id": "1846-1784040723485-s2a9nw",
+    "runAt": "2026-07-14T15:02:03.484Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1847,
+    "question": "Marine Le Pen à Nice le 14 juillet : exploiter les symboles républicains ou éviter la récupération ?",
+    "positionA": "Instrumentaliser les symboles républicains",
+    "positionB": "Éviter la récupération politique",
+    "id": "1847-1784040723485-jpi4vp",
+    "runAt": "2026-07-14T15:02:03.484Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1848,
+    "question": "Faut‑il organiser la minute de silence pour Nice avant France‑Espagne à la Coupe du monde ?",
+    "positionA": "Commémoration internationale",
+    "positionB": "Priorité aux cérémonies locales",
+    "id": "1848-1784040723485-4if6i0",
+    "runAt": "2026-07-14T15:02:03.484Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1849,
+    "question": "Emmanuel Macron préside son dernier défilé du 14-Juillet sur les Champs-Élysées",
+    "positionA": "",
+    "positionB": "",
+    "id": "1849-1784040723485-fzrakp",
+    "runAt": "2026-07-14T15:02:03.484Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1850,
+    "question": "Olivier Rousteing nommé directeur artistique de la maison Paco Rabanne",
+    "positionA": "",
+    "positionB": "",
+    "id": "1850-1784040723485-t55vpr",
+    "runAt": "2026-07-14T15:02:03.484Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1851,
+    "question": "Faut-il soutenir les sanctions UE/Royaume-Uni contre la Russie ou coopérer avec les États-Unis pour limiter la",
+    "positionA": "Soutenir sanctions et appui à la CPI pour justice internationale",
+    "positionB": "Coopérer avec les États-Unis pour limiter le rôle de la CPI",
+    "id": "1851-1784040723485-sprzyn",
+    "runAt": "2026-07-14T15:02:03.484Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1852,
+    "question": "Emmanuel Macron préside son dernier défilé du 14-Juillet sur les Champs-Élysées",
+    "positionA": "",
+    "positionB": "",
+    "id": "1852-1784040723485-1llnud",
+    "runAt": "2026-07-14T15:02:03.484Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1853,
+    "question": "Faut-il restreindre et surveiller davantage les opérations de l’ICE après la mort à Biddeford ?",
+    "positionA": "Renforcer contrôle et transparence",
+    "positionB": "Préserver latitude opérationnelle",
+    "id": "1853-1784040723485-piap6u",
+    "runAt": "2026-07-14T15:02:03.484Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1854,
+    "question": "Faut-il maintenir le blocus et la taxe US sur Ormuz, ou revenir à un cadre international négocié ?",
+    "positionA": "Pression navale et taxe US",
+    "positionB": "Cadre international négocié",
+    "id": "1854-1784040723485-kjdwez",
+    "runAt": "2026-07-14T15:02:03.484Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1855,
+    "question": "Promotion du 14-Juillet 2026 : Natalie Portman et Christine Lagarde distinguées",
+    "positionA": "",
+    "positionB": "",
+    "id": "1855-1784040723485-ddg6uc",
+    "runAt": "2026-07-14T15:02:03.484Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1856,
+    "question": "Épidémie d’Ebola en RD Congo : près de 2 000 cas et grève des agents de santé",
+    "positionA": "",
+    "positionB": "",
+    "id": "1856-1784040723485-18s87s",
+    "runAt": "2026-07-14T15:02:03.484Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1857,
+    "question": "Faut-il maintenir le blocus et la taxe US sur Ormuz, ou revenir à un cadre international négocié ?",
+    "positionA": "Pression navale et taxe US",
+    "positionB": "Cadre international négocié",
+    "id": "1857-1784040723485-6ezkqk",
+    "runAt": "2026-07-14T15:02:03.484Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1858,
+    "question": "Ukraine : juin 2026, mois le plus meurtrier pour les civils depuis avril 2022 selon l’ONU",
+    "positionA": "",
+    "positionB": "",
+    "id": "1858-1784040723485-9j0fvc",
+    "runAt": "2026-07-14T15:02:03.484Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1859,
+    "question": "Tour de France 2026 : Richard Carapaz en tête lors de la 10e étape Aurillac–Le Lioran",
+    "positionA": "",
+    "positionB": "",
+    "id": "1859-1784040723485-xlgd70",
+    "runAt": "2026-07-14T15:02:03.484Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1860,
+    "question": "Défilé du 14-Juillet 2026 sur les Champs-Élysées : hommage à l’Ukraine et participation internation…",
+    "positionA": "",
+    "positionB": "",
+    "id": "1860-1784040723485-bs8e42",
+    "runAt": "2026-07-14T15:02:03.484Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1861,
+    "question": "Défilé du 14-Juillet 2026 sur les Champs-Élysées : hommage à l’Ukraine et participation internation…",
+    "positionA": "",
+    "positionB": "",
+    "id": "1861-1784040723485-apv07n",
+    "runAt": "2026-07-14T15:02:03.484Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1862,
+    "question": "Dix ans après l’attentat de Nice : cérémonie nationale et hommages aux victimes",
+    "positionA": "",
+    "positionB": "",
+    "id": "1862-1784040723485-oafyxt",
+    "runAt": "2026-07-14T15:02:03.484Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1863,
+    "question": "France–Espagne en demi‑finale de la Coupe du monde à Dallas le 14 juillet 2026",
+    "positionA": "",
+    "positionB": "",
+    "id": "1863-1784040723485-qjapuv",
+    "runAt": "2026-07-14T15:02:03.484Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1864,
+    "question": "Dix ans après l’attentat de Nice : cérémonie nationale et hommages aux victimes",
+    "positionA": "",
+    "positionB": "",
+    "id": "1864-1784040723485-9diqfe",
+    "runAt": "2026-07-14T15:02:03.484Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1865,
+    "question": "France–Espagne en demi‑finale de la Coupe du monde à Dallas le 14 juillet 2026",
+    "positionA": "",
+    "positionB": "",
+    "id": "1865-1784040723485-xapo09",
+    "runAt": "2026-07-14T15:02:03.484Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1866,
+    "question": "Incendie en forêt de Fontainebleau : plus de 2 000 hectares brûlés et deux foyers identifiés",
+    "positionA": "",
+    "positionB": "",
+    "id": "1866-1784040723485-g0iyas",
+    "runAt": "2026-07-14T15:02:03.484Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1867,
+    "question": "Incendie en forêt de Fontainebleau : plus de 2 000 hectares brûlés et deux foyers identifiés",
+    "positionA": "",
+    "positionB": "",
+    "id": "1867-1784040723485-ebwap1",
+    "runAt": "2026-07-14T15:02:03.484Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1868,
+    "question": "Faut-il durcir la répression ou préserver des garde-fous aux libertés ?",
+    "positionA": "Renforcer la répression",
+    "positionB": "Préserver libertés et limites",
+    "id": "1868-1784094299467-1jf2sf",
+    "runAt": "2026-07-15T05:54:59.380Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1869,
+    "question": "Faut-il laisser la mouvance « nouvelle France » transformer la France ou défendre l'héritage républicain ?",
+    "positionA": "Accepter transformation décoloniale",
+    "positionB": "Défendre héritage républicain",
+    "id": "1869-1784094299467-uq7vsb",
+    "runAt": "2026-07-15T05:54:59.380Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1870,
+    "question": "Météo-France place 49 départements en vigilance jaune orages ce mercredi",
+    "positionA": "",
+    "positionB": "",
+    "id": "1870-1784094299467-ey8e3g",
+    "runAt": "2026-07-15T05:54:59.380Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1871,
+    "question": "France–Espagne à Arlington : demi-finale de la Coupe du monde 2026 jouée à l'AT&T Stadium",
+    "positionA": "",
+    "positionB": "",
+    "id": "1871-1784094299467-qs7jto",
+    "runAt": "2026-07-15T05:54:59.380Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1872,
+    "question": "Faut-il résister à la campagne américaine visant à démanteler la CPI ?",
+    "positionA": "Défendre la CPI",
+    "positionB": "Soutenir l'affaiblissement de la CPI",
+    "id": "1872-1784094299467-0xb6ut",
+    "runAt": "2026-07-15T05:54:59.380Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1873,
+    "question": "France–Espagne à Arlington : demi-finale de la Coupe du monde 2026 jouée à l'AT&T Stadium",
+    "positionA": "",
+    "positionB": "",
+    "id": "1873-1784094299467-3hvmiw",
+    "runAt": "2026-07-15T05:54:59.380Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1874,
+    "question": "Faut-il exiger l'exécution immédiate des condamnations civiles contre Trump ou tolérer la suspension en appel ",
+    "positionA": "Exécution immédiate",
+    "positionB": "Suspension en attendant recours",
+    "id": "1874-1784094299467-mncr6c",
+    "runAt": "2026-07-15T05:54:59.380Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1875,
+    "question": "Faut-il traiter la demi-finale Angleterre–Argentine comme un simple match ou reconnaître la charge historique ",
+    "positionA": "Neutraliser l’événement sportif",
+    "positionB": "Reconnaître la dimension historique",
+    "id": "1875-1784094299467-4k0u9z",
+    "runAt": "2026-07-15T05:54:59.380Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1876,
+    "question": "Vigilance rouge canicule levée, vigilance orange et risques d'orages maintenus en France",
+    "positionA": "",
+    "positionB": "",
+    "id": "1876-1784094299467-dvn3bg",
+    "runAt": "2026-07-15T05:54:59.380Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1877,
+    "question": "Faut‑il maintenir les frappes et le blocus américains ou relancer les négociations pour sauvegarder le cessez‑",
+    "positionA": "Maintenir frappes et blocus",
+    "positionB": "Relancer négociations et préserver l'accord",
+    "id": "1877-1784094299467-2x4fxg",
+    "runAt": "2026-07-15T05:54:59.380Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1878,
+    "question": "Christopher Nolan adapte L’Odyssée avec Matt Damon en Ulysse, sortie le 15 juillet 2026",
+    "positionA": "",
+    "positionB": "",
+    "id": "1878-1784094299467-b7lwt7",
+    "runAt": "2026-07-15T05:54:59.380Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1879,
+    "question": "Tour de France 2026 : étape 11 Vichy–Nevers, parcours plat et arrivée près du parc des expositions",
+    "positionA": "",
+    "positionB": "",
+    "id": "1879-1784094299467-1qv1k0",
+    "runAt": "2026-07-15T05:54:59.380Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1880,
+    "question": "Incendies à Fontainebleau : deux feux fixés après 48 heures, enquêtes en cours",
+    "positionA": "",
+    "positionB": "",
+    "id": "1880-1784094299467-t7z7td",
+    "runAt": "2026-07-15T05:54:59.380Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1881,
+    "question": "Faut‑il maintenir les frappes et le blocus américains ou relancer les négociations pour sauvegarder le cessez‑",
+    "positionA": "Maintenir frappes et blocus",
+    "positionB": "Relancer négociations et préserver l'accord",
+    "id": "1881-1784094299467-km8smf",
+    "runAt": "2026-07-15T05:54:59.380Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1882,
+    "question": "Faut-il privilégier des garde-fous stricts ou faciliter l'accès au droit à l'aide à mourir ?",
+    "positionA": "Garde-fous stricts",
+    "positionB": "Faciliter l'accès",
+    "id": "1882-1784094299467-mibo9s",
+    "runAt": "2026-07-15T05:54:59.380Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1883,
+    "question": "Christopher Nolan adapte L’Odyssée avec Matt Damon en Ulysse, sortie le 15 juillet 2026",
+    "positionA": "",
+    "positionB": "",
+    "id": "1883-1784094299467-nn4y1w",
+    "runAt": "2026-07-15T05:54:59.380Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1884,
+    "question": "Dixième anniversaire de l’attentat du 14-Juillet à Nice : commémorations sur la place Masséna",
+    "positionA": "",
+    "positionB": "",
+    "id": "1884-1784094299467-m6nciv",
+    "runAt": "2026-07-15T05:54:59.380Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1885,
+    "question": "Tour de France 2026 : Tadej Pogacar vainqueur en solitaire de la 10e étape Aurillac–Le Lioran",
+    "positionA": "",
+    "positionB": "",
+    "id": "1885-1784094299467-ofz57d",
+    "runAt": "2026-07-15T05:54:59.380Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1886,
+    "question": "Tour de France 2026 : Tadej Pogacar vainqueur en solitaire de la 10e étape Aurillac–Le Lioran",
+    "positionA": "",
+    "positionB": "",
+    "id": "1886-1784094299467-lthc1b",
+    "runAt": "2026-07-15T05:54:59.380Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1887,
+    "question": "Dixième anniversaire de l’attentat du 14-Juillet à Nice : commémorations sur la place Masséna",
+    "positionA": "",
+    "positionB": "",
+    "id": "1887-1784094299467-yba597",
+    "runAt": "2026-07-15T05:54:59.380Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1888,
+    "question": "Incendies à Fontainebleau : deux feux fixés après 48 heures, enquêtes en cours",
+    "positionA": "",
+    "positionB": "",
+    "id": "1888-1784094299467-2q0oko",
+    "runAt": "2026-07-15T05:54:59.380Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1889,
+    "question": "Faut-il privilégier des garde-fous stricts ou faciliter l'accès au droit à l'aide à mourir ?",
+    "positionA": "Garde-fous stricts",
+    "positionB": "Faciliter l'accès",
+    "id": "1889-1784094299467-7xdcib",
+    "runAt": "2026-07-15T05:54:59.380Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1890,
+    "question": "Coupe du monde 2026 : la France battue 2-0 par l'Espagne en demi-finale à Dallas",
+    "positionA": "",
+    "positionB": "",
+    "id": "1890-1784094299467-c2wstk",
+    "runAt": "2026-07-15T05:54:59.380Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1891,
+    "question": "Coupe du monde 2026 : la France battue 2-0 par l'Espagne en demi-finale à Dallas",
+    "positionA": "",
+    "positionB": "",
+    "id": "1891-1784094299467-tsnr33",
+    "runAt": "2026-07-15T05:54:59.380Z",
+    "status": "done",
+    "attempts": 0
   }
 ]

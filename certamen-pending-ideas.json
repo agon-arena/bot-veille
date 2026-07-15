@@ -828,5 +828,305 @@
     "runAt": "2026-07-09T08:29:18.554Z",
     "status": "done",
     "attempts": 0
+  },
+  {
+    "debateId": 1704,
+    "question": "La police doit-elle pouvoir utiliser plus facilement les armes létales ?",
+    "positionA": "non, y'a trop d'abus et de violences",
+    "positionB": "oui, faut protéger les forces de l’ordre",
+    "id": "1704-1783757845592-1cah76",
+    "runAt": "2026-07-11T08:27:25.591Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1705,
+    "question": "Le gouvernement doit-il renforcer ses mesures face aux nouvelles canicules ?",
+    "positionA": "oui, faut agir plus vite et plus fort",
+    "positionB": "non, les efforts actuels suffisent",
+    "id": "1705-1783757845592-q8539z",
+    "runAt": "2026-07-11T08:27:25.591Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1706,
+    "question": "Marine Le Pen va-t-elle trop loin en défiant la justice ?",
+    "positionA": "oui, c’est un danger pour l’État de droit",
+    "positionB": "non, elle défend la démocratie face aux élites",
+    "id": "1706-1783757845592-z7e41g",
+    "runAt": "2026-07-11T08:27:25.591Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1707,
+    "question": "La France doit-elle accorder l'asile au lanceur d'alerte centrafricain ?",
+    "positionA": "oui faut protéger les lanceurs d'alerte",
+    "positionB": "non l'asile doit être réservé aux vrais réfugiés",
+    "id": "1707-1783757845592-d2c4xe",
+    "runAt": "2026-07-11T08:27:25.591Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1708,
+    "question": "Peut-on négocier la paix avec l’Iran malgré ses menaces d’assassinat ?",
+    "positionA": "oui, la diplomatie reste possible",
+    "positionB": "non, faut répondre fermement aux menaces",
+    "id": "1708-1783757845592-jefey6",
+    "runAt": "2026-07-11T08:27:25.591Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1735,
+    "question": "Gustavo Petro a-t-il raison de douter des résultats électoraux ?",
+    "positionA": "oui, il doit garantir la paix avant tout",
+    "positionB": "non, il faut respecter le vote clair",
+    "id": "1735-1783844148713-agxrhy",
+    "runAt": "2026-07-12T08:25:48.712Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1736,
+    "question": "Peut-on sauver la démocratie face à la montée du pouvoir perso ?",
+    "positionA": "oui, faut renforcer les partis et institutions",
+    "positionB": "non, la personnalisation est inévitable et efficace",
+    "id": "1736-1783844148713-cszbu5",
+    "runAt": "2026-07-12T08:25:48.712Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1737,
+    "question": "Irlande du Nord : un référendum sur la réunification, oui ou non ?",
+    "positionA": "oui, faut réunifier l'île d'Irlande",
+    "positionB": "non, l'Irlande du Nord doit rester au Royaume-Uni",
+    "id": "1737-1783844148713-1ql9po",
+    "runAt": "2026-07-12T08:25:48.712Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1738,
+    "question": "Le gouvernement a-t-il raison de réformer la justice en sacrifiant l'égalité ?",
+    "positionA": "non, elle creuse les inégalités",
+    "positionB": "oui, la réforme modernise la justice",
+    "id": "1738-1783844148713-9wuxn7",
+    "runAt": "2026-07-12T08:25:48.712Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1739,
+    "question": "La décision de Macron de lancer la loi fin de vie est-elle légitime ?",
+    "positionA": "oui, c'est un progrès nécessaire",
+    "positionB": "non, ça pose trop de risques éthiques",
+    "id": "1739-1783844148713-zag9sk",
+    "runAt": "2026-07-12T08:25:48.712Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1740,
+    "question": "L'extrême droite doit-elle diriger une région en Allemagne ?",
+    "positionA": "non, ça menace la démocratie",
+    "positionB": "oui, c’est le choix démocratique",
+    "id": "1740-1783844148713-k1ygy0",
+    "runAt": "2026-07-12T08:25:48.712Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1741,
+    "question": "Trump contrôle les élections : protéger la démocratie ou garantir l'ordre ?",
+    "positionA": "non, c’est une prise de pouvoir inacceptable",
+    "positionB": "oui, il faut sécuriser les élections avant tout",
+    "id": "1741-1783844148713-bh5zyt",
+    "runAt": "2026-07-12T08:25:48.712Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1742,
+    "question": "L'Etat doit-il maintenir la présomption de légitime défense pour la police ?",
+    "positionA": "non, ça ouvre la porte aux abus",
+    "positionB": "oui, c'est essentiel pour la sécurité",
+    "id": "1742-1783844148713-j363xa",
+    "runAt": "2026-07-12T08:25:48.712Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1743,
+    "question": "La fermeture du détroit d'Ormuz : pression légitime ou menace dangereuse ?",
+    "positionA": "oui, l'Iran défend sa souveraineté",
+    "positionB": "non, c’est un chantage inacceptable",
+    "id": "1743-1783844148713-uzqc3r",
+    "runAt": "2026-07-12T08:25:48.712Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1744,
+    "question": "Marine Le Pen a-t-elle raison de maintenir sa candidature malgré sa condamnation ?",
+    "positionA": "non, une condamnation doit disqualifier",
+    "positionB": "oui, la justice n'empêche pas la démocratie",
+    "id": "1744-1783844148713-3fn6l4",
+    "runAt": "2026-07-12T08:25:48.712Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1803,
+    "question": "Marine Le Pen condamnée : doit-elle pouvoir se présenter à la présidentielle ?",
+    "positionA": "non, la condamnation doit l'empêcher",
+    "positionB": "oui, la justice est séparée de la politique",
+    "id": "1803-1783930641820-gc7jxj",
+    "runAt": "2026-07-13T08:27:21.820Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1804,
+    "question": "Qui doit agir en priorité contre les féminicides au Sénégal ?",
+    "positionA": "l'État doit prendre des mesures strictes",
+    "positionB": "les citoyens doivent changer les mentalités d'abord",
+    "id": "1804-1783930641821-3pamp2",
+    "runAt": "2026-07-13T08:27:21.820Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1805,
+    "question": "Qui doit mieux lutter contre le négationnisme chez les jeunes ?",
+    "positionA": "l'école doit faire plus",
+    "positionB": "les familles et médias aussi doivent agir",
+    "id": "1805-1783930641821-qeh6wn",
+    "runAt": "2026-07-13T08:27:21.820Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1806,
+    "question": "la justice doit-elle réviser les règles sur la détention provisoire des mineurs ?",
+    "positionA": "non, les droits des mineurs passent avant",
+    "positionB": "oui, faut protéger la société d'abord",
+    "id": "1806-1783930641821-ox4eyn",
+    "runAt": "2026-07-13T08:27:21.820Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1807,
+    "question": "L'Église doit-elle ouvrir les ministères ordonnés aux femmes ?",
+    "positionA": "oui, l'égalité doit s'imposer partout",
+    "positionB": "non, la tradition religieuse prime",
+    "id": "1807-1783930641821-kivsrn",
+    "runAt": "2026-07-13T08:27:21.820Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1808,
+    "question": "La décision de l'Assemblée sur la légitime défense des forces de l'ordre est-elle juste ?",
+    "positionA": "non, ça rend les forces de l'ordre intouchables",
+    "positionB": "oui, faut protéger les policiers sur le terrain",
+    "id": "1808-1783930641821-zogfhz",
+    "runAt": "2026-07-13T08:27:21.820Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1809,
+    "question": "Les violences xénophobes en Afrique du Sud menacent-elles la cohésion sociale ?",
+    "positionA": "oui, la colère menace la paix du pays",
+    "positionB": "non, c'est un appel à régler l'immigration",
+    "id": "1809-1783930641821-btkcay",
+    "runAt": "2026-07-13T08:27:21.820Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1810,
+    "question": "Les frappes dans le détroit d'Ormuz menacent-elles la stabilité mondiale ?",
+    "positionA": "oui, ça peut embraser la région et le monde",
+    "positionB": "non, c'est une défense nécessaire face à l'Iran",
+    "id": "1810-1783930641821-d8lwrs",
+    "runAt": "2026-07-13T08:27:21.820Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1836,
+    "question": "Procédures baillons contre ONG sur plantations Bolloré : défense ou intimidation ?",
+    "positionA": "non, c’est pour réduire la parole des ONG",
+    "positionB": "oui, ces procédures protègent l'entreprise",
+    "id": "1836-1784017108160-rgg394",
+    "runAt": "2026-07-14T08:28:28.160Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1837,
+    "question": "Macron a-t-il raison de relancer le dialogue avec Damas malgré la guerre ?",
+    "positionA": "non, ça légitime un régime contesté",
+    "positionB": "oui, c’est vital pour stabiliser la région",
+    "id": "1837-1784017108160-i49yoq",
+    "runAt": "2026-07-14T08:28:28.160Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1838,
+    "question": "La décision de Jean-Philippe Tanguy est-elle une bonne solution pour les prisons ?",
+    "positionA": "non, c’est irrespectueux et inefficace",
+    "positionB": "oui, faut vite créer des places en prison",
+    "id": "1838-1784017108160-82k77t",
+    "runAt": "2026-07-14T08:28:28.160Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1839,
+    "question": "Les écologistes vont-ils trop loin avec leur Ire République écologique et citoyenne ?",
+    "positionA": "oui, c'est essentiel pour l'avenir",
+    "positionB": "non, c'est un changement risqué",
+    "id": "1839-1784017108160-9zccnt",
+    "runAt": "2026-07-14T08:28:28.160Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1840,
+    "question": "La CPI doit-elle poursuivre les responsables en RDC malgré les pressions US ?",
+    "positionA": "oui, la justice internationale doit agir",
+    "positionB": "non, ça nuit à la souveraineté nationale",
+    "id": "1840-1784017108160-9jboal",
+    "runAt": "2026-07-14T08:28:28.160Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1841,
+    "question": "La justice doit-elle privilégier la parole des enfants dans les enquêtes ?",
+    "positionA": "oui, leur parole doit guider l'enquête",
+    "positionB": "non, faut rester prudent et vérifier",
+    "id": "1841-1784017108160-ev53bd",
+    "runAt": "2026-07-14T08:28:28.160Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1842,
+    "question": "La décision de Bardella d'unir les droites extrêmes est-elle dangereuse ?",
+    "positionA": "oui, ça menace la démocratie",
+    "positionB": "non, c'est une coalition légitime",
+    "id": "1842-1784017108160-v2jfld",
+    "runAt": "2026-07-14T08:28:28.160Z",
+    "status": "done",
+    "attempts": 0
   }
 ]
