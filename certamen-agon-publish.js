@@ -28,6 +28,36 @@ const { cleanCertamenGeneratedText } = require("./certamen-text-cleanup");
 
 const openai = process.env.OPENAI_API_KEY ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY }) : null;
 
+// Modèle du contrôle de doublon intra-session (isDuplicateOfBatchSubjects) : classification
+// pure et fail-open (une erreur laisse publier plutôt que de bloquer), donc un bon candidat
+// pour gpt-5-nano (5× moins cher que gpt-4o-mini, cf. veille-mixte.js/SCORING_AI_MODEL même
+// jour). Contrairement à checkCertamenPositionAlignment (garde-fou explicite, Certamen
+// publie sans relecture humaine) qui reste sur gpt-4o-mini : l'enjeu d'une erreur n'est pas
+// le même. Retour arrière : DEDUP_AI_MODEL=gpt-4o-mini dans .env.
+const DEDUP_AI_MODEL = (process.env.DEDUP_AI_MODEL || "gpt-5-nano").trim();
+
+// Les modèles gpt-5 ignorent temperature (l'API la refuse) et raisonnent avant de répondre :
+// effort minimal, sinon les tokens de raisonnement (facturés en sortie) mangent le gain de
+// prix sur une tâche de classification aussi courte.
+function buildDedupModelRequest(request) {
+  const options = { ...request, model: DEDUP_AI_MODEL };
+  if (/^gpt-5/.test(DEDUP_AI_MODEL)) {
+    delete options.temperature;
+    options.reasoning = { effort: "minimal" };
+  }
+  return options;
+}
+
+// Ce fichier n'avait pas de logging usage (contrairement à server.js/veille-mixte.js,
+// cf. couts-api-openai) : ajouté pour mesurer le coût réel du test gpt-5-nano.
+function logAiUsage(label, response) {
+  const u = (response && response.usage) || {};
+  const inputTokens = u.input_tokens ?? u.prompt_tokens ?? 0;
+  const outputTokens = u.output_tokens ?? u.completion_tokens ?? 0;
+  const model = (response && response.model) || "?";
+  console.log(`[ai-usage] ${label} | ${model} | in=${inputTokens} out=${outputTokens}`);
+}
+
 const AGON_URL = (process.env.AGON_URL || "http://localhost:3001").trim();
 const SENT_TO_AGON_FILE = path.join(__dirname, "sent-to-agon.json");
 const MAX_PUBLISH_SUBJECTS = 10;
@@ -453,14 +483,13 @@ async function isDuplicateOfBatchSubjects(payload, publishedInBatch) {
   ].join("\n");
 
   try {
-    const response = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
-      messages: [{ role: "user", content: prompt }],
-      response_format: { type: "json_object" },
-      max_tokens: 120,
-      temperature: 0
-    });
-    const parsed = JSON.parse(response.choices[0].message.content);
+    const response = await openai.responses.create(buildDedupModelRequest({
+      input: prompt,
+      temperature: 0,
+      max_output_tokens: 120
+    }));
+    logAiUsage("certamen-dedup-lot", response);
+    const parsed = JSON.parse(response.output_text);
     if (parsed?.duplicate !== true) return false;
 
     const matched = publishedInBatch[Number(parsed.matchedIndex) - 1] || null;

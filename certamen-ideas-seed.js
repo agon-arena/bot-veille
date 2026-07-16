@@ -12,6 +12,41 @@ const { enqueueIdeaJob } = require("./idea-post-queue");
 
 const openai = process.env.OPENAI_API_KEY ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY }) : null;
 
+// Même knob que generateAndPostIdeas côté veille mixte (server.js) — un seul
+// IDEAS_AI_MODEL dans .env couvre les deux pipelines. Test gpt-5-nano le 16/07/2026 :
+// risque connu de ton "IA" à vérifier sur les idées réellement publiées ; retour
+// arrière : IDEAS_AI_MODEL=gpt-4o-mini dans .env.
+const IDEAS_AI_MODEL = (process.env.IDEAS_AI_MODEL || "gpt-5-nano").trim();
+
+function buildIdeasModelRequest(request) {
+  const options = { ...request, model: IDEAS_AI_MODEL };
+  if (/^gpt-5/.test(IDEAS_AI_MODEL)) {
+    delete options.temperature;
+    options.reasoning = { effort: "minimal" };
+  }
+  return options;
+}
+
+function safeJsonParse(text) {
+  try {
+    return JSON.parse(text);
+  } catch (error) {
+    const match = String(text || "").match(/\{[\s\S]*\}/);
+    if (match) return JSON.parse(match[0]);
+    throw error;
+  }
+}
+
+// Ce fichier n'avait pas de logging usage (contrairement à server.js/veille-mixte.js,
+// cf. couts-api-openai) : ajouté pour mesurer le coût réel du test gpt-5-nano.
+function logAiUsage(label, response) {
+  const u = (response && response.usage) || {};
+  const inputTokens = u.input_tokens ?? u.prompt_tokens ?? 0;
+  const outputTokens = u.output_tokens ?? u.completion_tokens ?? 0;
+  const model = (response && response.model) || "?";
+  console.log(`[ai-usage] ${label} | ${model} | in=${inputTokens} out=${outputTokens}`);
+}
+
 const PENDING_IDEAS_FILE = path.join(__dirname, "certamen-pending-ideas.json");
 const IDEAS_DELAY_MS = 10 * 60 * 1000; // même délai que la veille mixte
 const MAX_IDEA_ATTEMPTS = 3;
@@ -86,14 +121,13 @@ Réponds en JSON : { "ideas": [ { "qualite": "bonne" ou "moyenne" ou "mauvaise",
 
   let ideas;
   try {
-    const response = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
-      messages: [{ role: "user", content: prompt }],
-      response_format: { type: "json_object" },
+    const response = await openai.responses.create(buildIdeasModelRequest({
+      input: prompt,
       temperature: 1.1,
-      max_tokens: 2500
-    });
-    const parsed = JSON.parse(response.choices[0].message.content);
+      max_output_tokens: 2500
+    }));
+    logAiUsage("certamen-idees-ia", response);
+    const parsed = safeJsonParse(response.output_text);
     ideas = parsed.ideas;
     if (!Array.isArray(ideas) || !ideas.length) throw new Error("Format invalide");
   } catch (err) {

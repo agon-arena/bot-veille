@@ -1591,12 +1591,11 @@ Réponds uniquement en JSON valide, sans texte autour :
 { "agonTheme": "une thématique Agôn exacte" }`;
 
   try {
-    const response = await openai.responses.create({
-      model: "gpt-4o-mini",
+    const response = await openai.responses.create(buildScoringModelRequest({
       input: prompt,
       temperature: 0.1,
       max_output_tokens: 200
-    });
+    }));
     logAiUsage("theme-agon", response);
     const parsed = safeJsonParse(response.output_text);
     return { agonTheme: normalizeAgonTheme(parsed.agonTheme) };
@@ -1796,12 +1795,11 @@ ${JSON.stringify(compactContents, null, 2)}
 
 
   try {
-    const response = await openai.responses.create({
-      model: SCORING_AI_MODEL,
+    const response = await openai.responses.create(buildScoringModelRequest({
       input: prompt,
       temperature: 0.2,
       max_output_tokens: 1500
-    });
+    }));
     logAiUsage("analyze-sujet", response);
 
     const text = response.output_text;
@@ -1833,9 +1831,25 @@ ${JSON.stringify(compactContents, null, 2)}
   }
 }
 
-// Modèle des appels de scoring (classification pure) — gpt-4o-mini est ~2,7×
-// moins cher que gpt-4.1-mini en entrée et suffit pour noter un potentiel de débat.
-const SCORING_AI_MODEL = "gpt-4o-mini";
+// Modèle des appels de scoring (classification pure : score, controverse, thème,
+// liens à exclure) — gpt-4o-mini est ~2,7× moins cher que gpt-4.1-mini en entrée et
+// suffit pour noter un potentiel de débat. Test gpt-5-nano (16/07/2026) : 5× moins
+// cher que gpt-4o-mini sur ces tâches de pure classification à faible enjeu (une
+// erreur n'a pas d'impact irréversible, contrairement aux idées IA ou à Certamen qui
+// publie sans relecture) ; retour arrière : SCORING_AI_MODEL=gpt-4o-mini dans .env.
+const SCORING_AI_MODEL = (process.env.SCORING_AI_MODEL || "gpt-5-nano").trim();
+
+// Les modèles gpt-5 ignorent temperature (l'API la refuse) et raisonnent avant de
+// répondre : effort minimal, sinon les tokens de raisonnement — facturés en sortie —
+// annulent une partie du gain de prix sur une tâche de classification aussi courte.
+function buildScoringModelRequest(request) {
+  const options = { ...request, model: SCORING_AI_MODEL };
+  if (/^gpt-5/.test(SCORING_AI_MODEL)) {
+    delete options.temperature;
+    options.reasoning = { effort: "minimal" };
+  }
+  return options;
+}
 
 // Plafonds des prompts de scoring/vérification : la fusion inter-sessions fait grossir
 // les sujets feuilletons (jusqu'à 327 contenus observés le 06/07/2026), et chaque appel
@@ -1915,12 +1929,11 @@ ${JSON.stringify(compactContentsForScoring(subject), null, 2)}
 `;
 
   try {
-    const response = await openai.responses.create({
-      model: SCORING_AI_MODEL,
+    const response = await openai.responses.create(buildScoringModelRequest({
       input: prompt,
       temperature: 0.2,
       max_output_tokens: 2000
-    });
+    }));
     logAiUsage("score-unitaire", response);
 
     const parsed = safeJsonParse(response.output_text);
@@ -2190,12 +2203,11 @@ Sujets à analyser :
 ${JSON.stringify(payload, null, 2)}
 `;
 
-  const response = await openai.responses.create({
-    model: SCORING_AI_MODEL,
+  const response = await openai.responses.create(buildScoringModelRequest({
     input: prompt,
     temperature: 0.2,
     max_output_tokens: 2500
-  });
+  }));
   logAiUsage("score-lot", response);
   if (response.status === "incomplete") throw new Error("réponse tronquée (max_output_tokens)");
 

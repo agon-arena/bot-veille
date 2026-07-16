@@ -43,6 +43,21 @@ let autoCollectTimers = [];
 // ARTICLE_AI_MODEL=gpt-4o dans .env puis relancer start.js.
 const ARTICLE_AI_MODEL = (process.env.ARTICLE_AI_MODEL || "gpt-5-mini").trim();
 
+// Modèle des idées IA (generateAndPostIdeas, faux commentaires citoyens). Passé à
+// gpt-5-nano en test le 16/07/2026 — risque connu : le ton peut redevenir "IA" (déjà
+// le point surveillé lors du passage gpt-5-mini→gpt-4o-mini du 5 juillet), à vérifier
+// sur les idées réellement publiées ; retour arrière : IDEAS_AI_MODEL=gpt-4o-mini dans .env.
+const IDEAS_AI_MODEL = (process.env.IDEAS_AI_MODEL || "gpt-5-nano").trim();
+
+function buildIdeasModelRequest(request) {
+  const options = { ...request, model: IDEAS_AI_MODEL };
+  if (/^gpt-5/.test(IDEAS_AI_MODEL)) {
+    delete options.temperature;
+    options.reasoning = { effort: "minimal" };
+  }
+  return options;
+}
+
 // Qui exécute les pipelines automatiques (collecte programmée, tick GitHub Actions,
 // auto-publish, reprise des idées en attente) : l'instance Render uniquement — elle est
 // allumée en permanence, là où le Mac peut être éteint ou hors ligne aux heures de
@@ -5802,18 +5817,13 @@ Réponds en JSON : { "ideas": [ { "qualite": "bonne" ou "moyenne" ou "mauvaise",
 
   let ideas;
   try {
-    // gpt-4o-mini : la sortie coûte 0,60 $/M contre 2 $/M en gpt-5-mini, et ces
-    // faux commentaires sont le 2e poste de dépense (~2 800 tokens de sortie par
-    // débat publié). Pas de reasoning_effort ici : paramètre propre aux gpt-5.
-    const response = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
-      messages: [{ role: "user", content: prompt }],
-      response_format: { type: "json_object" },
+    const response = await openai.responses.create(buildIdeasModelRequest({
+      input: prompt,
       temperature: 1,
-      max_completion_tokens: 3000
-    });
+      max_output_tokens: 3000
+    }));
     logAiUsage("idees-ia", response);
-    const parsed = JSON.parse(response.choices[0].message.content);
+    const parsed = safeJsonParse(response.output_text);
     ideas = parsed.ideas;
     if (!Array.isArray(ideas) || !ideas.length) throw new Error("Format invalide");
   } catch (err) {
