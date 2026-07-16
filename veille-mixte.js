@@ -63,7 +63,12 @@ const SUMMARY_MATCH_CHARS = 400;
 const MIN_DISTINCT_SOURCES = 2;
 
 const UPDATE_INTERVAL_MINUTES = 720;
-const MAX_SESSIONS_TO_KEEP = 12;
+// Abaissé de 12 à 6 (16/07/2026) : sessions-mixte.json pesait 22 Mo pour 12 sessions
+// (chaque session archive tout le contenu collecté, jusqu'à 1.7 Mo pièce) — un poids
+// reparsé à chaque loadSessions() (7 appels dans ce fichier) qui a contribué au crash
+// OOM (limite 512MB) de l'instance Render. 6 sessions = 3-4 jours d'historique, largement
+// suffisant pour la fraîcheur/dédup inter-session qui ne regarde que sessions[0].
+const MAX_SESSIONS_TO_KEEP = 6;
 const MAX_SUBJECTS_TO_ANALYZE_WITH_AI = 25;
 // Les sessions réelles collectent entre 100 et 195 sujets bruts (contenus multi-sources)
 // avant déduplication : un plafond de 80 laissait 20 à 115 sujets par session ne jamais
@@ -688,6 +693,15 @@ function isRecent(date, hoursBack) {
   return date.isAfter(dayjs().subtract(hoursBack, "hour"));
 }
 
+// Après une panne longue (crash, instance down), la session précédente peut dater de
+// bien plus que l'écart habituel de 9-15h entre deux collectes. Sans plafond, le premier
+// run au redémarrage rouvrirait toute la fenêtre manquée et collecterait un volume
+// largement hors norme (l'expérience montre déjà 1000-2700 contenus / 100-195 sujets
+// pour un écart normal) — au redémarrage précisément quand la mémoire est déjà le facteur
+// limitant (cf. incident OOM du 16/07/2026). On borne donc le rattrapage à une fenêtre
+// récente normale plutôt que de remonter jusqu'à la dernière session réussie.
+const MAX_CATCHUP_HOURS = 20;
+
 function getLastSessionCutoff() {
   const sessions = loadSessions();
   if (!Array.isArray(sessions) || !sessions.length) {
@@ -700,7 +714,12 @@ function getLastSessionCutoff() {
   }
 
   const parsed = dayjs(lastGeneratedAt);
-  return parsed.isValid() ? parsed : null;
+  if (!parsed.isValid()) {
+    return null;
+  }
+
+  const earliestAllowed = dayjs().subtract(MAX_CATCHUP_HOURS, "hour");
+  return parsed.isBefore(earliestAllowed) ? earliestAllowed : parsed;
 }
 
 function getPreviousSessionSources() {
