@@ -726,5 +726,165 @@
     "orientation": "droite / identitaire, réinformation",
     "rss": "https://reinformation.tv/feed",
     "opinionOnly": true
+  },
+  {
+    "nom": "Le Monde – Le Fil Good",
+    "orientation": "nouvelles positives",
+    "rss": "https://www.lemonde.fr/le-fil-good/rss_full.xml"
+  },
+  {
+    "nom": "Kaizen Magazine",
+    "orientation": "nouvelles positives",
+    "rss": "https://www.kaizen-magazine.com/feed/"
+  },
+  {
+    "nom": "Global Goodness",
+    "orientation": "nouvelles positives",
+    "rss": "https://globalgoodness.ca/feed/"
+  },
+  {
+    "nom": "L'Optimisme",
+    "orientation": "nouvelles positives",
+    "rss": "https://loptimisme.com/feed/"
+  },
+  {
+    "nom": "L'Optimisme – Réflexions positives",
+    "orientation": "nouvelles positives",
+    "rss": "https://loptimisme.com/categorie/inspirations-positives/reflexions-a-partager/feed/"
+  },
+  {
+    "nom": "France 3 Régions – Auvergne-Rhône-Alpes",
+    "orientation": "actualités régionales",
+    "rss": "https://france3-regions.franceinfo.fr/auvergne-rhone-alpes/actu/rss"
+  },
+  {
+    "nom": "France 3 Régions – Bourgogne-Franche-Comté",
+    "orientation": "actualités régionales",
+    "rss": "https://france3-regions.franceinfo.fr/bourgogne-franche-comte/actu/rss"
+  },
+  {
+    "nom": "France 3 Régions – Bretagne",
+    "orientation": "actualités régionales",
+    "rss": "https://france3-regions.franceinfo.fr/bretagne/actu/rss"
+  },
+  {
+    "nom": "France 3 Régions – Centre-Val de Loire",
+    "orientation": "actualités régionales",
+    "rss": "https://france3-regions.franceinfo.fr/centre-val-de-loire/actu/rss"
+  },
+  {
+    "nom": "France 3 Régions – Corse",
+    "orientation": "actualités régionales",
+    "rss": "https://france3-regions.franceinfo.fr/corse/actu/rss"
+  },
+  {
+    "nom": "France 3 Régions – Grand Est",
+    "orientation": "actualités régionales",
+    "rss": "https://france3-regions.franceinfo.fr/grand-est/actu/rss"
+  },
+  {
+    "nom": "France 3 Régions – Hauts-de-France",
+    "orientation": "actualités régionales",
+    "rss": "https://france3-regions.franceinfo.fr/hauts-de-france/actu/rss"
+  },
+  {
+    "nom": "France 3 Régions – Île-de-France",
+    "orientation": "actualités régionales",
+    "rss": "https://france3-regions.franceinfo.fr/paris-ile-de-france/actu/rss"
+  },
+  {
+    "nom": "France 3 Régions – Normandie",
+    "orientation": "actualités régionales",
+    "rss": "https://france3-regions.franceinfo.fr/normandie/actu/rss"
+  },
+  {
+    "nom": "France 3 Régions – Nouvelle-Aquitaine",
+    "orientation": "actualités régionales",
+    "rss": "https://france3-regions.franceinfo.fr/nouvelle-aquitaine/actu/rss"
+  },
+  {
+    "nom": "France 3 Régions – Occitanie",
+    "orientation": "actualités régionales",
+    "rss": "https://france3-regions.franceinfo.fr/occitanie/actu/rss"
+  },
+  {
+    "nom": "France 3 Régions – Pays de la Loire",
+    "orientation": "actualités régionales",
+    "rss": "https://france3-regions.franceinfo.fr/pays-de-la-loire/actu/rss"
+  },
+  {
+    "nom": "France 3 Régions – Provence-Alpes-Côte d'Azur",
+    "orientation": "actualités régionales",
+    "rss": "https://france3-regions.franceinfo.fr/provence-alpes-cote-d-azur/actu/rss"
+  },
+  {
+    "nom": "actu.fr – Béarn (Pyrénées-Atlantiques)",
+    "orientation": "actualités régionales",
+    "rss": "https://actu.fr/bearn/rss.xml"
+  },
+  {
+    "nom": "actu.fr – Bordeaux",
+    "orientation": "actualités régionales",
+    "rss": "https://actu.fr/bordeaux/rss.xml"
+  },
+  {
+    "nom": "actu.fr – Chartres",
+    "orientation": "actualités régionales",
+    "rss": "https://actu.fr/chartres/rss.xml"
+  },
+  {
+    "nom": "actu.fr – Dijon",
+    "orientation": "actualités régionales",
+    "rss": "https://actu.fr/dijon/rss.xml"
+  },
+  {
+    "nom": "actu.fr – Essonne",
+    "orientation": "actualités régionales",
+    "rss": "https://actu.fr/essonne/rss.xml"
+  },
+  {
+    "nom": "actu.fr – Toulouse",
+    "orientation": "actualités régionales",
+    "rss": "https://actu.fr/toulouse/rss.xml"
+  },
+  {
+    "nom": "actu.fr – Lille",
+    "orientation": "actualités régionales",
+    "rss": "https://actu.fr/lille/rss.xml"
+  },
+  {
+    "nom": "actu.fr – Nantes",
+    "orientation": "actualités régionales",
+    "rss": "https://actu.fr/nantes/rss.xml"
+  },
+  {
+    "nom": "actu.fr – Strasbourg",
+    "orientation": "actualités régionales",
+    "rss": "https://actu.fr/strasbourg/rss.xml"
+  },
+  {
+    "nom": "actu.fr – Grenoble",
+    "orientation": "actualités régionales",
+    "rss": "https://actu.fr/grenoble/rss.xml"
+  },
+  {
+    "nom": "actu.fr – Nice",
+    "orientation": "actualités régionales",
+    "rss": "https://actu.fr/nice/rss.xml"
+  },
+  {
+    "nom": "actu.fr – Rennes",
+    "orientation": "actualités régionales",
+    "rss": "https://actu.fr/rennes/rss.xml"
+  },
+  {
+    "nom": "actu.fr – Marseille",
+    "orientation": "actualités régionales",
+    "rss": "https://actu.fr/marseille/rss.xml"
+  },
+  {
+    "nom": "actu.fr – Lyon",
+    "orientation": "actualités régionales",
+    "rss": "https://actu.fr/lyon/rss.xml"
   }
 ]

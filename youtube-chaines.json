@@ -1148,5 +1148,11 @@
     "url": "https://www.youtube.com/playlist?list=PL_3P3xgnwTL0URgHrMBOd7rYePTCzCa8a",
     "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PL_3P3xgnwTL0URgHrMBOd7rYePTCzCa8a",
     "opinionOnly": true
+  },
+  {
+    "nom": "France 3 Toutes Régions",
+    "orientation": "actualités régionales",
+    "url": "https://www.youtube.com/@France3ToutesRegions",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCn_smTYmROafIdN_Ykomy8w"
   }
 ]
