@@ -8541,6 +8541,21 @@ function renderMixteHtmlFromHistory() {
   console.log(`veille-mixte.html régénéré (${existingSessions.length} session(s)).`);
 }
 
+// Régénère certamen.html depuis les sessions déjà en cache (certamen-sessions.json), sans
+// relancer de collecte. Utile après un simple changement de template/widget (ex: réglages
+// jour par jour de l'auto-collecte) : évite d'attendre la fin d'une collecte juste pour
+// voir le nouveau HTML.
+function renderCertamenHtmlFromHistory() {
+  const existingSessions = loadCertamenSessions().slice(0, CERTAMEN_MAX_SESSIONS);
+  fs.writeFileSync(CERTAMEN_OUTPUT_HTML, generateCertamenHtml(existingSessions), "utf8");
+  console.log(`certamen.html régénéré (${existingSessions.length} session(s)).`);
+}
+
+if (process.argv.includes("--render-certamen-html")) {
+  renderCertamenHtmlFromHistory();
+  process.exit(0);
+}
+
 if (process.argv.includes("--render-html")) {
   renderMixteHtmlFromHistory();
   process.exit(0);

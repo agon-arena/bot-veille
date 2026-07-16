@@ -1128,5 +1128,135 @@
     "runAt": "2026-07-14T08:28:28.160Z",
     "status": "done",
     "attempts": 0
+  },
+  {
+    "debateId": 1892,
+    "question": "Cette Coupe du monde menace-t-elle la passion des supporters ?",
+    "positionA": "oui, la politique et l'argent gâchent tout",
+    "positionB": "non, c’est toujours un moment de fête",
+    "id": "1892-1784103534855-ecx85i",
+    "runAt": "2026-07-15T08:28:54.854Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1893,
+    "question": "Jordan Bardella doit-il former un gouvernement d’union nationale ?",
+    "positionA": "oui, ça renforce le dialogue politique",
+    "positionB": "non, ça dilue les responsabilités",
+    "id": "1893-1784103534855-t5koa9",
+    "runAt": "2026-07-15T08:28:54.854Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1894,
+    "question": "Qui doit financer l’enjeu du vieillissement en Europe ?",
+    "positionA": "La solidarité intergénérationnelle est prioritaire",
+    "positionB": "Chacun doit gérer sa retraite et sa santé perso",
+    "id": "1894-1784103534855-oofj1t",
+    "runAt": "2026-07-15T08:28:54.854Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1895,
+    "question": "L'Assemblée a-t-elle eu raison d'instaurer une présomption de légitime défense ?",
+    "positionA": "non, ça ouvre un permis de tuer",
+    "positionB": "oui, ça protège nos policiers",
+    "id": "1895-1784103534855-09im6r",
+    "runAt": "2026-07-15T08:28:54.854Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1896,
+    "question": "Les États-Unis ont-ils raison de frapper en Iran pour sécuriser Ormuz ?",
+    "positionA": "non, ça aggrave les tensions et le risque de guerre",
+    "positionB": "oui, ils doivent protéger les routes stratégiques",
+    "id": "1896-1784103534855-pbrwzl",
+    "runAt": "2026-07-15T08:28:54.854Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1897,
+    "question": "Marine Le Pen a-t-elle raison de maintenir sa candidature malgré ?",
+    "positionA": "non, une condamnation doit interdire la candidature",
+    "positionB": "oui, chacun a le droit de se présenter",
+    "id": "1897-1784103534855-lrlonf",
+    "runAt": "2026-07-15T08:28:54.854Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1898,
+    "question": "Le Parlement doit-il garantir un droit à l'aide à mourir ?",
+    "positionA": "oui, c’est un droit fondamental",
+    "positionB": "non, ça porte atteinte à la vie",
+    "id": "1898-1784103534855-vaefha",
+    "runAt": "2026-07-15T08:28:54.854Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1924,
+    "question": "Jusqu'où le Sénat doit-il surveiller les ingérences intérieures ?",
+    "positionA": "oui, faut encadrer pour éviter la désinfo",
+    "positionB": "non, ça menace la liberté d'expression",
+    "id": "1924-1784189897045-98n8ak",
+    "runAt": "2026-07-16T08:40:39.470Z",
+    "status": "done",
+    "attempts": 2
+  },
+  {
+    "debateId": 1925,
+    "question": "Les affaires judiciaires aident ou freinent la campagne Le Pen ?",
+    "positionA": "non, ça discrédite sa candidature",
+    "positionB": "oui, ça montre sa transparence",
+    "id": "1925-1784189897046-kzqqym",
+    "runAt": "2026-07-16T08:28:17.045Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1926,
+    "question": "Qui doit se présenter face à Le Pen en 2027 ?",
+    "positionA": "un candidat de gauche pour contrer Le Pen",
+    "positionB": "un candidat centriste pour rassembler les voix",
+    "id": "1926-1784189897046-m7ddx6",
+    "runAt": "2026-07-16T08:28:17.045Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1927,
+    "question": "Le Défenseur des droits doit-il représenter toutes les minorités ?",
+    "positionA": "oui, il doit protéger sans compromis",
+    "positionB": "non, il peut avoir des limites personnelles",
+    "id": "1927-1784189897046-kv2msc",
+    "runAt": "2026-07-16T08:28:17.045Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1928,
+    "question": "Qui doit être prioritaire dans le réexamen des plaintes pédocriminelles ?",
+    "positionA": "donner la priorité aux victimes récentes",
+    "positionB": "traiter d'abord les dossiers les plus anciens",
+    "id": "1928-1784189897046-08dx9k",
+    "runAt": "2026-07-16T08:28:17.045Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1929,
+    "question": "Pourquoi pas un droit à l’aide à mourir pour tous les malades ?",
+    "positionA": "oui, chacun doit décider de sa fin de vie",
+    "positionB": "non, c’est trop risqué et moralement douteux",
+    "id": "1929-1784189897046-pymk07",
+    "runAt": "2026-07-16T08:28:17.045Z",
+    "status": "done",
+    "attempts": 0
   }
 ]

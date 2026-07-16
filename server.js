@@ -5363,15 +5363,21 @@ app.get("/api/auto-collect-certamen", (req, res) => {
 });
 
 app.post("/api/auto-collect-certamen", (req, res) => {
-  const { enabled, times } = req.body || {};
-  if (typeof enabled !== "boolean" || !Array.isArray(times) || times.length < 1 || times.length > 4) {
+  const { enabled, entries } = req.body || {};
+  if (typeof enabled !== "boolean" || !Array.isArray(entries) || entries.length < 1 || entries.length > 4) {
     return res.status(400).json({ ok: false, error: "Paramètres invalides" });
   }
   const validTime = /^([01]\d|2[0-3]):[0-5]\d$/;
-  if (times.some(t => !validTime.test(t))) {
-    return res.status(400).json({ ok: false, error: "Format d'heure invalide (HH:MM attendu)" });
+  const validDay = (d) => Number.isInteger(d) && d >= 0 && d <= 6;
+  for (const entry of entries) {
+    if (!entry || !validTime.test(entry.time)) {
+      return res.status(400).json({ ok: false, error: "Format d'heure invalide (HH:MM attendu)" });
+    }
+    if (!Array.isArray(entry.days) || !entry.days.length || !entry.days.every(validDay)) {
+      return res.status(400).json({ ok: false, error: "Jours invalides (0-6 attendu)" });
+    }
   }
-  const config = { enabled, times };
+  const config = { enabled, entries };
   try {
     saveAutoCollectCertamenConfig(config);
     if (AUTO_PIPELINES_ENABLED) scheduleAutoCollectCertamen(config, onCertamenAutoCollectFinished);

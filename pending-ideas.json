@@ -7668,5 +7668,255 @@
     "runAt": "2026-07-15T05:54:59.380Z",
     "status": "done",
     "attempts": 0
+  },
+  {
+    "debateId": 1899,
+    "question": "La loi ASE élargie est‑elle une réforme utile ou un fourre‑tout ?",
+    "positionA": "Texte large et rapide",
+    "positionB": "Texte recentré et structuré",
+    "id": "1899-1784187479261-5nlg1p",
+    "runAt": "2026-07-16T07:47:59.258Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1900,
+    "question": "Girondins de Bordeaux exclus des compétitions nationales, décision confirmée",
+    "positionA": "",
+    "positionB": "",
+    "id": "1900-1784187479262-yzxnhd",
+    "runAt": "2026-07-16T07:47:59.258Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1901,
+    "question": "Faut-il appliquer strictement les conditions du texte Macron-Loi fin de vie ?",
+    "positionA": "Appliquer strictement le texte",
+    "positionB": "Renforcer garanties et contrôles",
+    "id": "1901-1784187479262-6kiobp",
+    "runAt": "2026-07-16T07:47:59.258Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1902,
+    "question": "Faut-il créer un observatoire pour traquer les « ingérences intérieures » ?",
+    "positionA": "Préserver strictement la liberté d'expression",
+    "positionB": "Renforcer la surveillance nationale",
+    "id": "1902-1784187479262-ue7kul",
+    "runAt": "2026-07-16T07:47:59.258Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1903,
+    "question": "Faut-il durcir le projet Ripost ou privilégier garanties et limites ?",
+    "positionA": "Favoriser limites et garanties",
+    "positionB": "Renforcer pouvoirs et sanctions",
+    "id": "1903-1784187479262-6s2uyd",
+    "runAt": "2026-07-16T07:47:59.258Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1904,
+    "question": "Sécheresse exceptionnelle en France : débits bas et cours d'eau asséchés",
+    "positionA": "",
+    "positionB": "",
+    "id": "1904-1784187479262-ullt47",
+    "runAt": "2026-07-16T07:47:59.258Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1905,
+    "question": "Faut‑il isoler et remplacer immédiatement le directeur de Sainte‑Marie‑Bastide ?",
+    "positionA": "Isolation et remplacement immédiats",
+    "positionB": "Maintenir prudence en attendant l'instruction",
+    "id": "1905-1784187479262-8ymtdb",
+    "runAt": "2026-07-16T07:47:59.258Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1906,
+    "question": "Christopher Nolan et Fountain O proposent deux versions contrastées d'Ulysse",
+    "positionA": "",
+    "positionB": "",
+    "id": "1906-1784187479262-pig9zq",
+    "runAt": "2026-07-16T07:47:59.258Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1907,
+    "question": "L'Iran revendique des frappes contre bases américaines au Moyen-Orient",
+    "positionA": "",
+    "positionB": "",
+    "id": "1907-1784187479262-d0yg96",
+    "runAt": "2026-07-16T07:47:59.258Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1908,
+    "question": "Parquet général ne forme pas de pourvoi en cassation dans l'affaire RN",
+    "positionA": "",
+    "positionB": "",
+    "id": "1908-1784187479262-b2vm6k",
+    "runAt": "2026-07-16T07:47:59.258Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1909,
+    "question": "Faut-il confirmer François‑Noël Buffet comme Défenseur des droits ?",
+    "positionA": "Confirmer pour indépendance",
+    "positionB": "Refuser pour préserver impartialité",
+    "id": "1909-1784187479262-02m61d",
+    "runAt": "2026-07-16T07:47:59.258Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1910,
+    "question": "Tour de France 2026 : 12e étape Nevers–Chalon-sur-Saône et mesures locales",
+    "positionA": "",
+    "positionB": "",
+    "id": "1910-1784187479262-8tvkc5",
+    "runAt": "2026-07-16T07:47:59.258Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1911,
+    "question": "Faut-il confirmer François‑Noël Buffet comme Défenseur des droits ?",
+    "positionA": "Confirmer pour indépendance",
+    "positionB": "Refuser pour préserver impartialité",
+    "id": "1911-1784187479262-6b4mtc",
+    "runAt": "2026-07-16T07:47:59.258Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1912,
+    "question": "Tour de France 2026 : 12e étape Nevers–Chalon-sur-Saône et mesures locales",
+    "positionA": "",
+    "positionB": "",
+    "id": "1912-1784187479262-2dgz4z",
+    "runAt": "2026-07-16T07:47:59.258Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1913,
+    "question": "Faut-il limiter l'influence d'Elon Musk sur la campagne Le Pen ?",
+    "positionA": "Restreindre l'influence pour garantir l'égalité",
+    "positionB": "Préserver la liberté d'expression sans restriction",
+    "id": "1913-1784187479262-oera0o",
+    "runAt": "2026-07-16T07:47:59.258Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1914,
+    "question": "Faut-il limiter l'influence d'Elon Musk sur la campagne Le Pen ?",
+    "positionA": "Restreindre l'influence pour garantir l'égalité",
+    "positionB": "Préserver la liberté d'expression sans restriction",
+    "id": "1914-1784187479262-5t2p4k",
+    "runAt": "2026-07-16T07:47:59.258Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1915,
+    "question": "Faut-il maintenir le réexamen d'urgence des 85 000 plaintes ?",
+    "positionA": "Maintenir l'effort d'urgence",
+    "positionB": "Revenir à la gestion ordinaire",
+    "id": "1915-1784187479262-dmuu2s",
+    "runAt": "2026-07-16T07:47:59.258Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1916,
+    "question": "Jérôme Barella mis en examen pour meurtre et viol de la collégienne Lyhanna",
+    "positionA": "",
+    "positionB": "",
+    "id": "1916-1784187479262-0mi35i",
+    "runAt": "2026-07-16T07:47:59.258Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1917,
+    "question": "La France éliminée par l'Espagne (2-0) en demi-finale à Dallas",
+    "positionA": "",
+    "positionB": "",
+    "id": "1917-1784187479262-3682ur",
+    "runAt": "2026-07-16T07:47:59.258Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1918,
+    "question": "La France éliminée par l'Espagne (2-0) en demi-finale à Dallas",
+    "positionA": "",
+    "positionB": "",
+    "id": "1918-1784187479262-000w91",
+    "runAt": "2026-07-16T07:47:59.258Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1919,
+    "question": "Après l’adoption du droit à l’aide à mourir, faut-il prioriser ?",
+    "positionA": "prioriser déploiement du droit",
+    "positionB": "prioriser renforcement soins palliatifs",
+    "id": "1919-1784187479262-pi222t",
+    "runAt": "2026-07-16T07:47:59.258Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1920,
+    "question": "Argentine bat l'Angleterre 2-1 et file en finale contre l'Espagne",
+    "positionA": "",
+    "positionB": "",
+    "id": "1920-1784187479262-bms1bl",
+    "runAt": "2026-07-16T07:47:59.258Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1921,
+    "question": "Deux jeunes mis en examen après les incendies de la forêt de Fontainebleau",
+    "positionA": "",
+    "positionB": "",
+    "id": "1921-1784187479262-jlxld8",
+    "runAt": "2026-07-16T07:47:59.258Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1922,
+    "question": "Après l’adoption du droit à l’aide à mourir, faut-il prioriser ?",
+    "positionA": "prioriser déploiement du droit",
+    "positionB": "prioriser renforcement soins palliatifs",
+    "id": "1922-1784187479262-0qm8oh",
+    "runAt": "2026-07-16T07:47:59.258Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1923,
+    "question": "Deux jeunes mis en examen après les incendies de la forêt de Fontainebleau",
+    "positionA": "",
+    "positionB": "",
+    "id": "1923-1784187479262-cd558x",
+    "runAt": "2026-07-16T07:47:59.258Z",
+    "status": "done",
+    "attempts": 0
   }
 ]

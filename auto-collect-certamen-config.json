@@ -1,6 +1,13 @@
 {
   "enabled": true,
-  "times": [
-    "12:00"
+  "entries": [
+    {
+      "time": "12:00",
+      "days": [
+        2,
+        4,
+        6
+      ]
+    }
   ]
 }
