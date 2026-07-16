@@ -438,32 +438,55 @@ async function publishOpinionItemsToAgon() {
   // Envoi par lots : Agôn plafonne le corps des requêtes à 100kb (express.json({limit:"100kb"})
   // côté SUPABASE copie 3/server.js) ; un seul POST dépasse cette limite dès que plusieurs
   // centaines d'articles s'accumulent (incident du 10/07/2026 : 2733 articles, ~2 Mo, HTTP 413
-  // systématique — sent-opinions-to-agon.json n'étant jamais écrit faute d'envoi réussi, chaque
-  // cycle retentait le même envoi complet en boucle). Persistance après chaque lot pour ne pas
-  // reperdre les lots déjà envoyés si un lot suivant échoue. Délai entre lots pour rester sous
-  // la limite de 20 req/min de la route (rateLimit "veille-opinion-articles" côté Agôn).
+  // systématique). Persistance après chaque lot pour ne pas reperdre les lots déjà envoyés.
+  // Délai entre lots pour rester sous la limite de 20 req/min de la route
+  // ("veille-opinion-articles" côté Agôn).
+  //
+  // 16/07/2026 : jusqu'ici, l'échec d'UN SEUL lot abandonnait tout le reste de l'envoi
+  // (`break`). Les lots suivent l'ordre du tri par date décroissante d'extractOpinionItems
+  // (le plus récent d'abord), donc un abandon en cours de route sacrifie systématiquement
+  // les articles/vidéos les plus anciens de la session — ex. Glupatate (chaîne à faible
+  // volume, opinionOnly), jamais retrouvé en base malgré un flux qui fonctionne, parce que
+  // sa vidéo la plus récente tombait après le lot 17 qui avait fait 413. Un lot qui échoue
+  // ne doit plus bloquer les suivants ; et un 413 spécifiquement se redécoupe en deux plutôt
+  // que d'abandonner ce lot (un lot de 100 peut dépasser 100kb si ses articles sont plus
+  // verbeux que la moyenne, même sous le plafond de comptage).
   const BATCH_SIZE = 100;
   const DELAY_BETWEEN_BATCHES_MS = 3500;
-  let totalSent = 0;
-  for (let i = 0; i < newItems.length; i += BATCH_SIZE) {
-    const batch = newItems.slice(i, i + BATCH_SIZE);
+  const MIN_SPLIT_BATCH_SIZE = 5;
+
+  async function sendOpinionBatch(batch, label) {
     try {
       const response = await fetch(`${AGON_URL}/api/veille/opinion-articles`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ items: batch })
       });
-      if (!response.ok) {
-        console.error(`[opinion-articles] Échec envoi lot ${Math.floor(i / BATCH_SIZE) + 1} vers Agôn : HTTP ${response.status}`);
-        break;
+      if (response.ok) {
+        batch.forEach(item => sentLinks.add(item.link));
+        saveSentOpinionLinks(sentLinks);
+        return batch.length;
       }
-      batch.forEach(item => sentLinks.add(item.link));
-      saveSentOpinionLinks(sentLinks);
-      totalSent += batch.length;
+      if (response.status === 413 && batch.length > MIN_SPLIT_BATCH_SIZE) {
+        console.warn(`[opinion-articles] HTTP 413 sur ${label} (${batch.length} article(s)), redécoupage en deux...`);
+        const mid = Math.ceil(batch.length / 2);
+        const sentA = await sendOpinionBatch(batch.slice(0, mid), `${label}a`);
+        await new Promise(resolve => setTimeout(resolve, DELAY_BETWEEN_BATCHES_MS));
+        const sentB = await sendOpinionBatch(batch.slice(mid), `${label}b`);
+        return sentA + sentB;
+      }
+      console.error(`[opinion-articles] Échec envoi ${label} (${batch.length} article(s)) vers Agôn : HTTP ${response.status}`);
+      return 0;
     } catch (err) {
-      console.error("[opinion-articles] Erreur envoi vers Agôn :", err.message);
-      break;
+      console.error(`[opinion-articles] Erreur envoi ${label} vers Agôn :`, err.message);
+      return 0;
     }
+  }
+
+  let totalSent = 0;
+  for (let i = 0; i < newItems.length; i += BATCH_SIZE) {
+    const batch = newItems.slice(i, i + BATCH_SIZE);
+    totalSent += await sendOpinionBatch(batch, `lot ${Math.floor(i / BATCH_SIZE) + 1}`);
     if (i + BATCH_SIZE < newItems.length) {
       await new Promise(resolve => setTimeout(resolve, DELAY_BETWEEN_BATCHES_MS));
     }
@@ -2210,8 +2233,11 @@ ARTICLE FACTUEL (champ "article") — structure obligatoire :
 8. Ligne vide.
 9. Une signature seule sur la dernière ligne, choisie parmi : J.L Grasso / F. Glorennec / T. Guyomarch / M. Guillot / P. Ratsky.
 
+Cette structure en 4 paragraphes décrit uniquement l'ENCHAÎNEMENT du texte, jamais des titres à afficher : n'écris JAMAIS les mots "Accroche", "Faits", "Contexte et enjeux" ou "Conclusion" (ni aucune variante, avec ou sans deux-points, gras ou majuscules) en tête de paragraphe. Chaque paragraphe commence directement par sa phrase, sans étiquette ni rubrique.
+
 INTERDICTIONS STRICTES POUR L'ARTICLE :
 * Aucune phrase interrogative, nulle part dans le texte.
+* Aucun label de section ("Accroche :", "Faits :", "Contexte et enjeux :", "Conclusion :", etc.) au début d'un paragraphe.
 * Pas de formulations du type : "La question est donc de savoir si…", "Faut-il…", "Deux visions s'opposent…", "D'un côté… de l'autre…".
 * Pas d'opposition artificielle entre deux camps ou deux positions.
 * Pas de devise ni de formule latine.
@@ -2255,7 +2281,7 @@ Réponds uniquement en JSON valide, sans balises markdown.`;
 
   const articleLines = String(parsed.article || summary)
     .split(/\n+/)
-    .map((line) => line.trim())
+    .map((line) => line.trim().replace(/^\*{0,2}(accroche|faits?|contexte(?:\s+et\s+enjeux)?|enjeux|conclusion)\s*:?\*{0,2}\s*/i, ""))
     .filter(Boolean);
   const articleSignature = articleLines.length && AGON_ARTICLE_SIGNATURES.has(articleLines[articleLines.length - 1])
     ? articleLines.pop()
