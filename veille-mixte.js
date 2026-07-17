@@ -728,13 +728,22 @@ function isFreshSinceLastSession(date, lastSessionCutoff) {
   return date.isAfter(lastSessionCutoff);
 }
 
+// Cache mémoire du tableau parsé : sessions-mixte.json pèse plusieurs Mo et
+// loadSessions() est appelée à plusieurs reprises au sein d'un même cycle de
+// collecte (jusqu'à 6 fois) — sans cache, chaque appel reparse tout le fichier,
+// ce qui a contribué au crash OOM de l'instance Render (limite 512MB, 17/07/2026).
+// Invalidé/resynchronisé par saveSessions(), seule écrivaine du fichier dans ce process.
+let sessionsCache = null;
+
 function loadSessions() {
+  if (sessionsCache) return sessionsCache;
   if (!fs.existsSync(HISTORY_FILE)) {
     return [];
   }
 
   try {
-    return JSON.parse(fs.readFileSync(HISTORY_FILE, "utf8"));
+    sessionsCache = JSON.parse(fs.readFileSync(HISTORY_FILE, "utf8"));
+    return sessionsCache;
   } catch (error) {
     console.error("Erreur de lecture de l'historique mixte :", error.message);
     return [];
@@ -743,6 +752,7 @@ function loadSessions() {
 
 function saveSessions(sessions) {
   fs.writeFileSync(HISTORY_FILE, JSON.stringify(sessions, null, 2), "utf8");
+  sessionsCache = sessions;
 }
 
 function loadSavedSubjects() {
