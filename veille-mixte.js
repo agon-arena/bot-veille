@@ -38,6 +38,16 @@ const API_PORT = 3002;
 
 const HOURS_BACK_ARTICLES = 24;
 const HOURS_BACK_YOUTUBE = 168;
+// Sources à faible fréquence de publication (blogs "nouvelles positives", titres régionaux
+// actu.fr peu actifs) : avec 2 collectes/jour, le filtre isFreshSinceLastSession (fenêtre de
+// quelques heures depuis la session précédente) les excluait presque toujours même quand
+// HOURS_BACK_ARTICLES suffisait — cf. session du 18/07/2026 où Kaizen/Global Goodness/
+// L'Optimisme ressortaient à 0 malgré un flux OK. Ces catégories sont donc exemptées de ce
+// filtre (traitées comme toujours "nouvelles") et utilisent cette fenêtre plus large à la
+// place. Pas de risque de doublon publié : publishOpinionItemsToAgon() déduplique déjà par
+// URL exacte (sent-opinions-to-agon.json) avant tout envoi vers Agôn.
+const HOURS_BACK_LOW_FREQUENCY = 48;
+const LOW_FREQUENCY_ORIENTATIONS = ["nouvelles positives", "actualités régionales"];
 
 // Mesure réelle (au lieu d'estimer) de la conso par appel IA, pour prioriser les
 // leviers de coût sur des chiffres et non des suppositions. response.model est repris
@@ -918,12 +928,13 @@ async function collectArticles(lastSessionCutoff = null, knownSources = new Set(
       console.log(`Article — lecture de ${media.nom}...`);
       const { feed, usedFallback, candidate } = await fetchMediaFeed(media);
       const isNewSource = knownSources.size > 0 && !knownSources.has(media.nom);
+      const isLowFrequency = LOW_FREQUENCY_ORIENTATIONS.includes(media.orientation || "");
       let kept = 0, skipped = 0;
 
       for (const item of feed.items || []) {
         const date = getItemDate(item);
-        if (!isRecent(date, HOURS_BACK_ARTICLES)) { skipped++; continue; }
-        if (!isNewSource && !isFreshSinceLastSession(date, lastSessionCutoff)) { skipped++; continue; }
+        if (!isRecent(date, isLowFrequency ? HOURS_BACK_LOW_FREQUENCY : HOURS_BACK_ARTICLES)) { skipped++; continue; }
+        if (!isNewSource && !isLowFrequency && !isFreshSinceLastSession(date, lastSessionCutoff)) { skipped++; continue; }
         const rawTitle = item.title || "Sans titre";
         const title = normalizeFeedItemTitle(rawTitle, media);
         if (shouldSkipFeedItemTitle(rawTitle, media) || shouldSkipFeedItemTitle(title, media)) { skipped++; continue; }
