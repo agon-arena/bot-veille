@@ -191,8 +191,8 @@
   {
     "nom": "L'Obs",
     "orientation": "généraliste",
-    "url": "https://www.youtube.com/@lenouvelobs",
-    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCvG0OKqvCFMYTiJ1Rnd5XBQ"
+    "url": "https://www.youtube.com/channel/UC1ObaaFz4XHVPN2T5IFsU4w",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UC1ObaaFz4XHVPN2T5IFsU4w"
   },
   {
     "nom": "Le NouvelObs : international : youtube",
@@ -211,12 +211,6 @@
     "orientation": "généraliste",
     "url": "https://www.youtube.com/playlist?list=PLx11EXmJoLVZcG7VQCTW6bDvKQGPXq-uo",
     "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PLx11EXmJoLVZcG7VQCTW6bDvKQGPXq-uo"
-  },
-  {
-    "nom": "Le NouvelObs : youtube",
-    "orientation": "généraliste",
-    "url": "https://www.youtube.com/channel/UC1ObaaFz4XHVPN2T5IFsU4w",
-    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UC1ObaaFz4XHVPN2T5IFsU4w"
   },
   {
     "nom": "Europe 1",
@@ -276,8 +270,8 @@
   {
     "nom": "Le Figaro : actualité : youtube",
     "orientation": "droite",
-    "url": "https://www.youtube.com/playlist?list=PLf31fciWnw6JjkVXJ_Ev-rDqIybzr6z6m",
-    "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PLf31fciWnw6JjkVXJ_Ev-rDqIybzr6z6m"
+    "url": "https://www.youtube.com/channel/UCH7MCAS6yjjMYhOnbpv1HIA",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCH7MCAS6yjjMYhOnbpv1HIA"
   },
   {
     "nom": "Le Figaro : L'opinion : youtube",
@@ -569,20 +563,14 @@
   {
     "nom": "C à vous",
     "orientation": "débat / service public",
-    "url": "https://www.youtube.com/@CaVousFrance5",
-    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCzMZUE_W7iorKjQWUxhsuBg"
-  },
-  {
-    "nom": "C à vous : youtube",
-    "orientation": "débat / service public",
     "url": "https://www.youtube.com/channel/UCejTWYquMXD_MFHRZiqo_Aw",
     "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCejTWYquMXD_MFHRZiqo_Aw"
   },
   {
     "nom": "Stade 2",
     "orientation": "sport / service public",
-    "url": "https://www.youtube.com/@stade2officiel",
-    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCHc-VZKrIkbSQ1b5swP3lZg"
+    "url": "https://www.youtube.com/playlist?list=PLYXOi0ZKJEKIk2qGjwqUm6I0ogFnxetcJ",
+    "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PLYXOi0ZKJEKIk2qGjwqUm6I0ogFnxetcJ"
   },
   {
     "nom": "Konbini News",

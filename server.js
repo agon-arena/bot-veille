@@ -1480,7 +1480,7 @@ Pour les sujets sans décision collective directe (fait divers, accident, catast
 RÈGLE DE CLARTÉ IMMÉDIATE DE LA QUESTION :
 debateQuestion doit rester une vraie question opposant deux camps, mais le lecteur doit aussi comprendre immédiatement de quelle actualité elle parle, sans avoir besoin de lire le résumé factuel : nomme l'acteur, le lieu, l'événement ou la mesure concernée. N'écris jamais un dilemme abstrait détaché du fait, qui pourrait s'appliquer telle quelle à n'importe quelle actualité similaire.
 Exemple insuffisant : "Faut-il privilégier la fermeté ou l'accompagnement ?" — ce dilemme ne dit pas de quelle actualité il s'agit.
-Exemple valable : "Faut-il durcir les sanctions contre les auteurs des violences après la finale du PSG, ou privilégier l'accompagnement ?" — garde le dilemme tout en nommant le fait précis.
+Exemple valable : "La justice doit-elle durcir les sanctions contre les auteurs des violences après la finale du PSG, ou privilégier l'accompagnement ?" — garde le dilemme tout en nommant le fait précis.
 
 RÈGLE D'ANCRAGE FACTUEL DE LA QUESTION :
 debateAngle, narrativeTension et debateQuestion ne doivent désigner aucune mesure, chiffre, dispositif, proposition ou acteur qui n'apparaît pas explicitement dans le résumé factuel.
@@ -2014,9 +2014,9 @@ Question Agôn :
 - La question finale ne doit pas contenir une justification qui avantage un camp.
 - Éviter les formulations du type :
   "Faut-il faire X pour protéger / contenir / défendre / empêcher… ?"
-- Préférer :
-  "Faut-il choisir X ou Y ?"
-  "La France doit-elle soutenir X ?"
+- Varie l'ouverture d'une question à l'autre, ne commence pas systématiquement par "Faut-il" :
+  "X doit-il/elle faire A ou B ?"
+  "Peut-on encore justifier X ?"
   "Faut-il autoriser X malgré Y ?"
 - Éviter les questions molles comme :
   "Faut-il s'inquiéter ?"
