@@ -7676,6 +7676,17 @@ async function runWatchSession(minSources = MIN_DISTINCT_SOURCES) {
 
   const limitedSessions = sessions.slice(0, MAX_SESSIONS_TO_KEEP);
 
+  // N'archive le détail complet des opinionItems que pour la session la plus récente :
+  // generateHtml() les rend pour les MAX_SESSIONS_TO_KEEP sessions gardées (dont la plupart
+  // masquées en CSS, jamais consultées sans clic manuel sur un vieil onglet), alors qu'ils
+  // pesaient à eux seuls 9,2 Mo sur les 16 Mo de sessions-mixte.json — contributeur majeur
+  // du crash OOM Render (limite 512MB) du 17/07/2026.
+  limitedSessions.forEach((s, index) => {
+    if (index > 0 && Array.isArray(s.opinionItems) && s.opinionItems.length) {
+      s.opinionItems = [];
+    }
+  });
+
   saveSessions(limitedSessions);
 
   setProgress(6, "Génération de la page", "");
