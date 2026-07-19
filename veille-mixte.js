@@ -1164,7 +1164,20 @@ function extractOpinionItems(groups, publishedSubjectKeys) {
     items.push(...group.contents.map(content => ({ ...content, subjectKey })));
   }
 
-  return items.sort((a, b) => new Date(b.date) - new Date(a.date));
+  items.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+  // Dépêches republiées à l'identique par plusieurs médias (syndication EBRA,
+  // fils AFP, flux RSS qui se recoupent chez un même média) : un titre exact
+  // ne doit donner qu'un seul article dans Tribunes/Autres actus. On garde la
+  // publication la plus récente (le tri ci-dessus fait passer la première).
+  const seenTitleKeys = new Set();
+  return items.filter(item => {
+    const key = item.comparableText || cleanText(item.title);
+    if (!key) return true;
+    if (seenTitleKeys.has(key)) return false;
+    seenTitleKeys.add(key);
+    return true;
+  });
 }
 
 function fallbackAiAnalysis(subject, arenaMode = "positions") {
