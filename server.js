@@ -1717,6 +1717,10 @@ N'affiche jamais de rubriques comme : "Pourquoi ça fait parler", "Tension d'opi
 
 STYLE — ÉCRITURE JOURNALISTIQUE :
 * Phrases courtes, sujet-verbe-complément. Pas de propositions à rallonge avec plusieurs virgules.
+* Une seule idée par phrase. Jamais deux faits, deux chiffres ou deux acteurs entassés dans la même phrase : coupe en deux phrases.
+* Maximum une subordonnée par phrase. Pas d'enchaînements "qui… que… dont…".
+* Des verbes plutôt que des noms abstraits : "durcir la loi", pas "le durcissement du cadre légal" ; "décider", pas "la prise de décision".
+* Test de lecture : chaque phrase doit pouvoir se dire à voix haute d'un seul souffle. Si elle demande une reprise, elle est trop longue.
 * Mots concrets et quotidiens, jamais de vocabulaire abstrait ou académique.
 * Première phrase concrète : un fait, un acteur, un lieu ou une décision — jamais une idée abstraite.
 * Pas de ton administratif ni scolaire : pas de plan apparent, pas d'exposé d'options, pas de synthèse de dissertation.
@@ -1791,6 +1795,11 @@ DEUXIÈME PARAGRAPHE — MÉTHODE :
 * un précédent ou un chiffre déjà cité dans le résumé ;
 * une conséquence directe pour un groupe précis.
 À partir de ce seul point d'entrée, fais sentir la tension sans l'énoncer comme un plan ("il faut choisir entre X et Y") : montre-la à travers le fait lui-même.
+Ce paragraphe doit être encore plus simple et léger que le premier :
+* Phrases de 15 mots maximum en moyenne, jamais plus de 20. Si une phrase dépasse, coupe-la en deux.
+* Pas de phrase à deux virgules ou plus.
+* Pas d'ouverture en participe ou en incise ("S'appuyant sur…", "Face à…", "Alors que…", "Dans un contexte où…") : commence par le sujet.
+* Rythme parlé : la phrase la plus courte du paragraphe est souvent la meilleure.
 Interdit : résumer les deux camps, les nommer, les comparer phrase par phrase. Une seule idée développée vaut mieux que deux options mises en balance.
 Applique à chaque phrase le test générique déjà énoncé dans STYLE (reste-t-elle vraie sur n'importe quel autre débat ?) — il couvre aussi bien les schémas "X oppose Y" que "tandis que X… Y".
 
@@ -1830,6 +1839,7 @@ FORMULATIONS INTERDITES :
 DERNIÈRE PHRASE AVANT LA QUESTION :
 Elle doit apporter une idée précise liée au sujet :
 choix politique concret, risque identifiable, rapport de force, coût social, économique ou institutionnel.
+Elle doit être courte et directe : 15 mots maximum, une seule idée, sans virgule si possible.
 Elle ne doit jamais être une formule générique. Applique-lui le même test qu'au reste du paragraphe (ci-dessus).
 
 LONGUEUR :
@@ -1906,7 +1916,7 @@ ${buildCurrentDateContext()}
 
 Objectif :
 Ajouter une question latine courte et verrouiller la structure finale.
-Corrige uniquement les problèmes de structure, de longueur, de question latine, de question Agôn, de positions ou de signature.
+Corrige uniquement les problèmes de structure, de longueur, de question latine, de question Agôn, de positions, de signature — et la lourdeur des phrases (règle d'allègement ci-dessous).
 Ne réécris pas tout si ce n'est pas nécessaire.
 Conserve le fond, le ton et les faits du texte fourni.
 Ne rends pas le texte plus scolaire : ne remplace jamais une formulation concrète par une formule générale.
@@ -2057,6 +2067,12 @@ Style à préserver :
 - La question latine apporte la touche symbolique : il ne faut donc pas rendre tout l'article antique, pompeux ou théâtral.
 - Phrases courtes, mots concrets. Aucune trace de "langage IA" : pas de formule d'équilibre creuse, pas de conclusion vague qui pourrait s'appliquer à n'importe quel sujet.
 - Le deuxième paragraphe doit rester à 2-3 phrases : ne l'allonge jamais pour atteindre une longueur minimale, resserre plutôt le reste de l'article.
+
+Règle d'allègement — applique-la surtout au deuxième paragraphe et à la dernière phrase avant la question :
+- Si une phrase dépasse 20 mots, contient deux virgules ou plus, ou enchaîne des subordonnées ("qui… que… dont…"), coupe-la en deux phrases simples, sans changer les faits.
+- Remplace les tournures nominales lourdes par des verbes : "le durcissement de la loi" → "durcir la loi", "la mise en place de" → "mettre en place".
+- Supprime les ouvertures en participe ou en incise ("S'appuyant sur…", "Face à…", "Dans un contexte où…") : la phrase commence par son sujet.
+- La dernière phrase avant la question latine doit rester courte et directe : 15 mots maximum, une seule idée.
 
 Formulations interdites sauf nécessité factuelle forte :
 - "dans un contexte de tensions"
@@ -2234,6 +2250,13 @@ ARTICLE FACTUEL (champ "article") — structure obligatoire :
 9. Une signature seule sur la dernière ligne, choisie parmi : J.L Grasso / F. Glorennec / T. Guyomarch / M. Guillot / P. Ratsky.
 
 Cette structure en 4 paragraphes décrit uniquement l'ENCHAÎNEMENT du texte, jamais des titres à afficher : n'écris JAMAIS les mots "Accroche", "Faits", "Contexte et enjeux" ou "Conclusion" (ni aucune variante, avec ou sans deux-points, gras ou majuscules) en tête de paragraphe. Chaque paragraphe commence directement par sa phrase, sans étiquette ni rubrique.
+
+STYLE — LÉGÈRETÉ OBLIGATOIRE (surtout dans les deux derniers paragraphes) :
+* Phrases courtes, sujet-verbe-complément. Jamais plus de 20 mots par phrase.
+* Une seule idée par phrase. Pas de phrase à deux virgules ou plus.
+* Des verbes plutôt que des noms abstraits : "durcir la loi", pas "le durcissement du cadre légal".
+* Pas d'ouverture en participe ou en incise ("S'appuyant sur…", "Face à…", "Dans un contexte où…") : commence par le sujet.
+* La conclusion doit être simple et brève : 2 phrases maximum, mots de tous les jours, pas de formule solennelle.
 
 INTERDICTIONS STRICTES POUR L'ARTICLE :
 * Aucune phrase interrogative, nulle part dans le texte.
