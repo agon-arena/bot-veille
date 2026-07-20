@@ -1792,7 +1792,7 @@ Critères pour debateScore — sois exigeant, la note haute se mérite :
 - 8 à 10 : vrai sujet clivant, politique ou polémique — désaccord explicite dans les contenus : réforme contestée, décision gouvernementale critiquée, opposition majorité/opposition, polémique publique, tension de valeurs nommée (liberté/sécurité, écologie/économie, justice/coût, souveraineté/Europe…), avec deux positions clairement possibles.
 
 Favorise fortement : débat politique, polémique, controverse, désaccord public, réforme contestée, décision gouvernementale critiquée, opposition majorité/opposition, tensions entre valeurs (liberté/sécurité, écologie/économie, justice/coût, souveraineté/Europe).
-Baisse fortement : faits divers, drames, accidents, meurtres, disparitions, catastrophes, sujets people, événements purement factuels, sujets de guerre uniquement factuels (attaque, bombardement, bilan, avancée militaire, morts, opération).
+Baisse fortement : faits divers, drames, accidents, meurtres, disparitions, catastrophes, sujets people, événements purement factuels, sujets de guerre uniquement factuels (attaque, bombardement, bilan, avancée militaire, morts, opération), décisions sportives internes (résultat, tactique, composition d'équipe, choix d'entraîneur).
 
 Règle essentielle : un sujet choquant ou triste n'est pas forcément débattable. Un fait divers ou une guerre ne mérite un bon score que si les contenus contiennent explicitement un vrai débat public plus large : justice, sécurité, récidive, politique pénale, intervention militaire, sanctions, livraison d'armes, reconnaissance d'un État, responsabilité d'un gouvernement, etc.
 Ne jamais inventer un clivage : si le titre ou les résumés ne montrent pas clairement un désaccord, mets un score bas.
@@ -1917,7 +1917,7 @@ const SCORING_RULES = `Critères pour debateScore — sois exigeant, la note hau
 - 8 à 10 : vrai sujet clivant, politique ou polémique — désaccord explicite dans les contenus : réforme contestée, décision gouvernementale critiquée, opposition majorité/opposition, polémique publique, tension de valeurs nommée (liberté/sécurité, écologie/économie, justice/coût, souveraineté/Europe…), avec deux positions clairement possibles
 
 Favorise fortement : débat politique, polémique, controverse, désaccord public, réforme contestée, décision gouvernementale critiquée, opposition majorité/opposition, tensions entre valeurs (liberté/sécurité, écologie/économie, justice/coût, souveraineté/Europe).
-Baisse fortement : faits divers, drames, accidents, meurtres, disparitions, catastrophes, sujets people, événements purement factuels, sujets de guerre uniquement factuels (attaque, bombardement, bilan, avancée militaire, morts, opération).
+Baisse fortement : faits divers, drames, accidents, meurtres, disparitions, catastrophes, sujets people, événements purement factuels, sujets de guerre uniquement factuels (attaque, bombardement, bilan, avancée militaire, morts, opération), décisions sportives internes (résultat, tactique, composition d'équipe, choix d'entraîneur).
 
 Règle essentielle : un sujet choquant ou triste n'est pas forcément débattable. Un fait divers ou une guerre ne mérite un bon score que si les contenus contiennent explicitement un vrai débat public plus large : justice, sécurité, récidive, politique pénale, intervention militaire, sanctions, livraison d'armes, reconnaissance d'un État, responsabilité d'un gouvernement, etc.
 Ne jamais inventer un clivage : si le titre ou les résumés ne montrent pas clairement un désaccord, mets un score bas.

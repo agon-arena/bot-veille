@@ -1465,7 +1465,7 @@ ${buildCurrentDateContext()}
 
 Le débat doit :
 * opposer deux positions raisonnables ;
-* porter sur un vrai choix collectif ;
+* porter sur un vrai choix collectif de société, jamais une décision sportive interne (résultat, tactique, composition d'équipe, choix d'entraîneur) : dans ce cas choisis "avoid" ;
 * éviter les évidences morales ;
 * rester concret et lié aux faits.
 
@@ -5593,8 +5593,10 @@ async function publishMixteSubjectToAgon(subj, { sessionLabel, politicalGroup = 
     const summary = await generateCompleteNarrativeContext({ subject: subjectTitle, contents, arenaMode }, null);
     question = ""; positionA = ""; positionB = ""; theme = ""; resume = summary; politicalOrientation = null;
 
-    if (arenaMode === "libre") {
-      const freeResult = await generateFreeArenaArticle({ subject: subjectTitle, summary, arenaMode });
+    // Bascule vers l'arène libre : partagée entre le cas "score < 8" et le cas
+    // "score >= 8 mais editorialDecision n'a pas confirmé un vrai débat" ci-dessous.
+    async function runFreeArena() {
+      const freeResult = await generateFreeArenaArticle({ subject: subjectTitle, summary, arenaMode: "libre" });
       question = limitDebateQuestion(freeResult.debateQuestion || subjectTitle);
       resume = freeResult.article || summary;
       try {
@@ -5604,23 +5606,39 @@ async function publishMixteSubjectToAgon(subj, { sessionLabel, politicalGroup = 
       } catch (mottoErr) {
         console.warn("[auto-publish] Devise latine ignorée :", mottoErr.message);
       }
+    }
+
+    if (arenaMode === "libre") {
+      await runFreeArena();
     } else {
       const mediaResult = await generateMediaAnalysis({ subject: subjectTitle, summary, contents, arenaMode });
-      question = limitDebateQuestion(mediaResult.debateQuestion || "");
-      positionA = String(mediaResult.positionA || "").trim();
-      positionB = String(mediaResult.positionB || "").trim();
-      politicalOrientation = mediaResult.politicalOrientation || null;
-      const styledResult = await generateStyledArticle({
-        subject: subjectTitle, summary, debateAngle: mediaResult.debateAngle || "", debateQuestion: question,
-        positionA, positionB, hasMediaContrast: false, mediaTreatment: "", mainIssue: mediaResult.mainIssue || "",
-        narrativeTension: mediaResult.narrativeTension || "", possibleBiases: Array.isArray(mediaResult.possibleBiases) ? mediaResult.possibleBiases : [],
-        debatePotential: mediaResult.debatePotential || "", editorialWarning: mediaResult.editorialWarning || "",
-        editorialDecision: mediaResult.editorialDecision || "", questionQuality: mediaResult.questionQuality || "", arenaMode
-      });
-      if (styledResult.debateQuestion) question = limitDebateQuestion(styledResult.debateQuestion);
-      if (styledResult.positionA) positionA = styledResult.positionA;
-      if (styledResult.positionB) positionB = styledResult.positionB;
-      if (styledResult.article) resume = styledResult.article;
+
+      // Le score n'est qu'une pré-estimation. generateMediaAnalysis essaie réellement
+      // de construire le débat (angle, tension, deux positions) et se prononce via
+      // editorialDecision. Si l'IA elle-même n'a pas trouvé de vrai débat ("understand",
+      // "reformulate", "avoid"), on ne force pas une arène à positions artificielle :
+      // on bascule en arène libre plutôt que de publier un faux débat.
+      if (mediaResult.editorialDecision && mediaResult.editorialDecision !== "arena") {
+        console.log(`[auto-publish] Score ${score} suggérait "positions" mais l'IA ne confirme pas de vrai débat (verdict : ${mediaResult.editorialDecision}) : bascule en arène libre pour "${subjectTitle.slice(0, 60)}"`);
+        arenaMode = "libre";
+        await runFreeArena();
+      } else {
+        question = limitDebateQuestion(mediaResult.debateQuestion || "");
+        positionA = String(mediaResult.positionA || "").trim();
+        positionB = String(mediaResult.positionB || "").trim();
+        politicalOrientation = mediaResult.politicalOrientation || null;
+        const styledResult = await generateStyledArticle({
+          subject: subjectTitle, summary, debateAngle: mediaResult.debateAngle || "", debateQuestion: question,
+          positionA, positionB, hasMediaContrast: false, mediaTreatment: "", mainIssue: mediaResult.mainIssue || "",
+          narrativeTension: mediaResult.narrativeTension || "", possibleBiases: Array.isArray(mediaResult.possibleBiases) ? mediaResult.possibleBiases : [],
+          debatePotential: mediaResult.debatePotential || "", editorialWarning: mediaResult.editorialWarning || "",
+          editorialDecision: mediaResult.editorialDecision || "", questionQuality: mediaResult.questionQuality || "", arenaMode
+        });
+        if (styledResult.debateQuestion) question = limitDebateQuestion(styledResult.debateQuestion);
+        if (styledResult.positionA) positionA = styledResult.positionA;
+        if (styledResult.positionB) positionB = styledResult.positionB;
+        if (styledResult.article) resume = styledResult.article;
+      }
     }
 
     resume = ensureArticleOpeningSentenceBreak(resume);
