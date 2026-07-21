@@ -886,5 +886,10 @@
     "nom": "actu.fr – Lyon",
     "orientation": "actualités régionales",
     "rss": "https://actu.fr/lyon/rss.xml"
+  },
+  {
+    "nom": "Imaz Press Réunion",
+    "orientation": "actualités régionales",
+    "rss": "https://imazpress.com/feed/"
   }
 ]
