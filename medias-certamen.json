@@ -81,7 +81,7 @@
   },
   {
     "nom": "Bondy Blog",
-    "orientation": "société / quartiers populaires",
+    "orientation": "gauche / société / quartiers populaires",
     "rss": "https://www.bondyblog.fr/feed/"
   },
   {
@@ -156,7 +156,7 @@
   },
   {
     "nom": "Le Journal des Briques",
-    "orientation": "presse indépendante",
+    "orientation": "gauche / presse indépendante",
     "rss": "https://lejournaldesbriques.fr/feed"
   },
   {
@@ -166,17 +166,17 @@
   },
   {
     "nom": "Le Monde diplomatique — blog",
-    "orientation": "analyse",
+    "orientation": "gauche / international / analyse",
     "rss": "https://blog.mondediplo.net/spip.php?page=backend&id_rubrique=6"
   },
   {
     "nom": "Le Poing",
-    "orientation": "presse indépendante",
+    "orientation": "gauche / presse indépendante",
     "rss": "https://lepoing.net/feed"
   },
   {
     "nom": "Le Ravi",
-    "orientation": "presse indépendante",
+    "orientation": "gauche / presse indépendante",
     "rss": "https://www.leravi.org/feed/"
   },
   {
@@ -261,12 +261,12 @@
   },
   {
     "nom": "Rue89 Lyon",
-    "orientation": "local / indépendant",
+    "orientation": "gauche / local indépendant",
     "rss": "https://www.rue89lyon.fr/feed/"
   },
   {
     "nom": "Rue89 Strasbourg",
-    "orientation": "local / indépendant",
+    "orientation": "gauche / local indépendant",
     "rss": "https://www.rue89strasbourg.com/feed"
   },
   {
@@ -286,12 +286,12 @@
   },
   {
     "nom": "Le Monde",
-    "orientation": "généraliste",
+    "orientation": "centre-gauche / société",
     "rss": "https://www.lemonde.fr/rss/une.xml"
   },
   {
     "nom": "L'Obs",
-    "orientation": "généraliste",
+    "orientation": "centre-gauche / société",
     "rss": "https://www.nouvelobs.com/rss.xml"
   },
   {

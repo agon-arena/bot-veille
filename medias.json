@@ -95,7 +95,7 @@
   },
   {
     "nom": "Bondy Blog",
-    "orientation": "société / quartiers populaires",
+    "orientation": "gauche / société / quartiers populaires",
     "rss": "https://www.bondyblog.fr/feed/",
     "opinionOnly": true
   },
@@ -185,7 +185,7 @@
   },
   {
     "nom": "Le Journal des Briques",
-    "orientation": "presse indépendante",
+    "orientation": "gauche / presse indépendante",
     "rss": "https://lejournaldesbriques.fr/feed",
     "opinionOnly": true
   },
@@ -197,19 +197,19 @@
   },
   {
     "nom": "Le Monde diplomatique — blog",
-    "orientation": "analyse",
+    "orientation": "gauche / international / analyse",
     "rss": "https://blog.mondediplo.net/spip.php?page=backend&id_rubrique=6",
     "opinionOnly": true
   },
   {
     "nom": "Le Poing",
-    "orientation": "presse indépendante",
+    "orientation": "gauche / presse indépendante",
     "rss": "https://lepoing.net/feed",
     "opinionOnly": true
   },
   {
     "nom": "Le Ravi",
-    "orientation": "presse indépendante",
+    "orientation": "gauche / presse indépendante",
     "rss": "https://www.leravi.org/feed/",
     "opinionOnly": true
   },
@@ -311,13 +311,13 @@
   },
   {
     "nom": "Rue89 Lyon",
-    "orientation": "local / indépendant",
+    "orientation": "gauche / local indépendant",
     "rss": "https://www.rue89lyon.fr/feed/",
     "opinionOnly": true
   },
   {
     "nom": "Rue89 Strasbourg",
-    "orientation": "local / indépendant",
+    "orientation": "gauche / local indépendant",
     "rss": "https://www.rue89strasbourg.com/feed",
     "opinionOnly": true
   },
@@ -341,12 +341,12 @@
   },
   {
     "nom": "Le Monde",
-    "orientation": "généraliste",
+    "orientation": "centre-gauche / société",
     "rss": "https://www.lemonde.fr/rss/une.xml"
   },
   {
     "nom": "L'Obs",
-    "orientation": "généraliste",
+    "orientation": "centre-gauche / société",
     "rss": "https://www.nouvelobs.com/rss.xml"
   },
   {
@@ -659,7 +659,7 @@
   },
   {
     "nom": "Challenges",
-    "orientation": "généraliste / économie",
+    "orientation": "centre-droit / économie",
     "rss": "https://www.challenges.fr/rss.xml"
   },
   {

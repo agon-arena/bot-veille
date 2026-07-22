@@ -1785,19 +1785,15 @@ Tu dois répondre uniquement en JSON valide avec ces champs :
   "agonTheme": "une thématique Agôn exacte"
 }
 
-Critères pour debateScore — sois exigeant, la note haute se mérite :
-- 0 à 3 : sujet factuel, pas débattable — fait divers, drame, accident, meurtre, disparition, catastrophe, sujet people, événement purement factuel, guerre racontée seulement par ses faits (attaque, bombardement, bilan, avancée militaire, morts, opération) ;
-- 4 à 5 : débat faible ou forcé — un désaccord est imaginable mais le titre et les contenus ne le montrent pas ;
-- 6 à 7 : débat possible — une décision publique, une réforme, une loi ou une controverse est présente, avec deux positions envisageables ;
-- 8 à 10 : vrai sujet clivant, politique ou polémique — désaccord explicite dans les contenus : réforme contestée, décision gouvernementale critiquée, opposition majorité/opposition, polémique publique, tension de valeurs nommée (liberté/sécurité, écologie/économie, justice/coût, souveraineté/Europe…), avec deux positions clairement possibles.
+Critères pour debateScore — sois exigeant, la note haute se mérite. En cas de doute entre deux niveaux, choisis le plus bas.
+- 0 à 3 : sujet factuel, pas débattable — fait divers, drame, accident, meurtre, disparition, catastrophe, sujet people, événement purement factuel, guerre racontée seulement par ses faits (attaque, bombardement, bilan, avancée militaire, morts, opération), décision sportive interne (résultat, tactique, composition, choix d'entraîneur) ;
+- 4 à 5 : pas d'enjeu politique nommé — soit aucun désaccord explicite dans les contenus, soit un désaccord existe mais reste people, sportif, personnel ou commercial (clash, polémique de célébrité) sans portée politique ni décision publique ;
+- 6 à 7 : enjeu politique ou décision publique explicitement contesté — réforme, loi, politique gouvernementale contestée par au moins un camp nommé dans les contenus, sans que les deux positions soient pleinement développées ;
+- 8 à 10 : clivage politique explicite et développé — deux positions nommées s'opposent clairement dans les contenus sur une décision publique, une réforme ou une tension de valeurs (liberté/sécurité, écologie/économie, justice/coût, souveraineté/Europe…).
 
-Favorise fortement : débat politique, polémique, controverse, désaccord public, réforme contestée, décision gouvernementale critiquée, opposition majorité/opposition, tensions entre valeurs (liberté/sécurité, écologie/économie, justice/coût, souveraineté/Europe).
-Baisse fortement : faits divers, drames, accidents, meurtres, disparitions, catastrophes, sujets people, événements purement factuels, sujets de guerre uniquement factuels (attaque, bombardement, bilan, avancée militaire, morts, opération), décisions sportives internes (résultat, tactique, composition d'équipe, choix d'entraîneur).
+Règle essentielle : seuls les enjeux politiques et les décisions publiques méritent un score haut. Un sujet choquant, triste ou simplement polémique n'est pas automatiquement débattable — le score ne monte que si les contenus nomment explicitement un désaccord politique ou institutionnel, jamais parce que le sujet pourrait théoriquement en avoir un. Un fait divers ou une guerre reste bas sauf si les contenus posent explicitement un débat public plus large (justice, sécurité, récidive, politique pénale, intervention militaire, sanctions, livraison d'armes, reconnaissance d'un État, responsabilité d'un gouvernement…) porté par un camp identifié.
 
-Règle essentielle : un sujet choquant ou triste n'est pas forcément débattable. Un fait divers ou une guerre ne mérite un bon score que si les contenus contiennent explicitement un vrai débat public plus large : justice, sécurité, récidive, politique pénale, intervention militaire, sanctions, livraison d'armes, reconnaissance d'un État, responsabilité d'un gouvernement, etc.
-Ne jamais inventer un clivage : si le titre ou les résumés ne montrent pas clairement un désaccord, mets un score bas.
-
-Exemples de scores bas : "Le corps d'une adolescente retrouvé", "Trois morts dans un accident", "Bombardements en Ukraine", "Incendie dans un immeuble".
+Exemples de scores bas : "Le corps d'une adolescente retrouvé", "Trois morts dans un accident", "Bombardements en Ukraine", "Incendie dans un immeuble", "Clash entre deux influenceurs".
 Exemples de scores hauts : "Immigration : une réforme contestée", "Budget : l'opposition dénonce des coupes", "Sécurité : faut-il étendre la vidéosurveillance ?", "Ukraine : la livraison d'armes divise les alliés".
 
 Pour le champ "agonTheme", choisis uniquement une valeur exacte dans cette liste :
@@ -1910,19 +1906,15 @@ function compactContentsForScoring(subject) {
 // Règles partagées entre le scoring unitaire et le scoring par lot. Elles ouvrent
 // le prompt (partie statique) pour que le cache automatique d'OpenAI s'applique
 // d'un appel au suivant ; les données variables vont en fin de prompt.
-const SCORING_RULES = `Critères pour debateScore — sois exigeant, la note haute se mérite :
-- 0 à 3 : sujet factuel, pas débattable — fait divers, drame, accident, meurtre, disparition, catastrophe, sujet people, événement purement factuel, guerre racontée seulement par ses faits (attaque, bombardement, bilan, avancée militaire, morts, opération)
-- 4 à 5 : débat faible ou forcé — un désaccord est imaginable mais le titre et les contenus ne le montrent pas
-- 6 à 7 : débat possible — une décision publique, une réforme, une loi ou une controverse est présente, avec deux positions envisageables
-- 8 à 10 : vrai sujet clivant, politique ou polémique — désaccord explicite dans les contenus : réforme contestée, décision gouvernementale critiquée, opposition majorité/opposition, polémique publique, tension de valeurs nommée (liberté/sécurité, écologie/économie, justice/coût, souveraineté/Europe…), avec deux positions clairement possibles
+const SCORING_RULES = `Critères pour debateScore — sois exigeant, la note haute se mérite. En cas de doute entre deux niveaux, choisis le plus bas.
+- 0 à 3 : sujet factuel, pas débattable — fait divers, drame, accident, meurtre, disparition, catastrophe, sujet people, événement purement factuel, guerre racontée seulement par ses faits (attaque, bombardement, bilan, avancée militaire, morts, opération), décision sportive interne (résultat, tactique, composition, choix d'entraîneur)
+- 4 à 5 : pas d'enjeu politique nommé — soit aucun désaccord explicite dans les contenus, soit un désaccord existe mais reste people, sportif, personnel ou commercial (clash, polémique de célébrité) sans portée politique ni décision publique
+- 6 à 7 : enjeu politique ou décision publique explicitement contesté — réforme, loi, politique gouvernementale contestée par au moins un camp nommé dans les contenus, sans que les deux positions soient pleinement développées
+- 8 à 10 : clivage politique explicite et développé — deux positions nommées s'opposent clairement dans les contenus sur une décision publique, une réforme ou une tension de valeurs (liberté/sécurité, écologie/économie, justice/coût, souveraineté/Europe…)
 
-Favorise fortement : débat politique, polémique, controverse, désaccord public, réforme contestée, décision gouvernementale critiquée, opposition majorité/opposition, tensions entre valeurs (liberté/sécurité, écologie/économie, justice/coût, souveraineté/Europe).
-Baisse fortement : faits divers, drames, accidents, meurtres, disparitions, catastrophes, sujets people, événements purement factuels, sujets de guerre uniquement factuels (attaque, bombardement, bilan, avancée militaire, morts, opération), décisions sportives internes (résultat, tactique, composition d'équipe, choix d'entraîneur).
+Règle essentielle : seuls les enjeux politiques et les décisions publiques méritent un score haut. Un sujet choquant, triste ou simplement polémique n'est pas automatiquement débattable — le score ne monte que si les contenus nomment explicitement un désaccord politique ou institutionnel, jamais parce que le sujet pourrait théoriquement en avoir un. Un fait divers ou une guerre reste bas sauf si les contenus posent explicitement un débat public plus large (justice, sécurité, récidive, politique pénale, intervention militaire, sanctions, livraison d'armes, reconnaissance d'un État, responsabilité d'un gouvernement…) porté par un camp identifié.
 
-Règle essentielle : un sujet choquant ou triste n'est pas forcément débattable. Un fait divers ou une guerre ne mérite un bon score que si les contenus contiennent explicitement un vrai débat public plus large : justice, sécurité, récidive, politique pénale, intervention militaire, sanctions, livraison d'armes, reconnaissance d'un État, responsabilité d'un gouvernement, etc.
-Ne jamais inventer un clivage : si le titre ou les résumés ne montrent pas clairement un désaccord, mets un score bas.
-
-Exemples de scores bas : "Le corps d'une adolescente retrouvé", "Trois morts dans un accident", "Bombardements en Ukraine", "Incendie dans un immeuble".
+Exemples de scores bas : "Le corps d'une adolescente retrouvé", "Trois morts dans un accident", "Bombardements en Ukraine", "Incendie dans un immeuble", "Clash entre deux influenceurs".
 Exemples de scores hauts : "Immigration : une réforme contestée", "Budget : l'opposition dénonce des coupes", "Sécurité : faut-il étendre la vidéosurveillance ?", "Ukraine : la livraison d'armes divise les alliés".
 
 Pour "excludedLinks" :
