@@ -1587,6 +1587,55 @@ Réponds uniquement en JSON valide, sans balises markdown.`;
   };
 }
 
+// Second regard indépendant sur le débat produit par generateMediaAnalysis. editorialDecision
+// est déclaré par le même appel qui vient d'inventer la question : il n'a aucune raison de se
+// contredire une fois qu'il a trouvé une question qui "sonne bien" — incident du 20 juil 2026,
+// une parade de victoire sportive (Espagne championne du monde) transformée en débat "apolitique
+// ou pas" à partir d'un détail périphérique (le message sur la casquette d'un joueur). Plutôt que
+// d'empiler une règle par catégorie de faux débat repérée (sport, fait divers, people...), cet
+// appel ne reçoit que le résumé factuel et la question/positions déjà générées — pas le
+// raisonnement qui y a mené — et vérifie uniquement l'alignement avec le fait principal.
+async function verifyDebateAlignment({ summary, debateQuestion, positionA, positionB }) {
+  if (!openai || !debateQuestion) return { verdict: "aligned", reason: "" };
+
+  const prompt = `Tu es un relecteur éditorial strict pour Agôn.
+
+Voici le résumé factuel d'une actualité, puis une question de débat qui en a été tirée (avec ses deux positions).
+
+Résumé factuel :
+${summary}
+
+Question de débat produite :
+${debateQuestion}
+Position A : ${positionA || "(vide)"}
+Position B : ${positionB || "(vide)"}
+
+Ta seule tâche : dire si cette question de débat porte directement sur le fait principal du résumé, ou si elle a été construite à partir d'un détail secondaire, périphérique ou anecdotique (un geste individuel isolé, une déclaration marginale, un élément de contexte) qui ne représente pas un vrai choix collectif de société posé par cette actualité.
+
+Sois strict : un détail réellement isolé (un message sur un vêtement, une réaction individuelle pendant un événement par ailleurs uniquement festif ou factuel) ne suffit pas à fonder un débat, même si la question semble bien formulée.
+
+Réponds uniquement en JSON :
+{
+  "verdict": "aligned" | "peripheral",
+  "reason": "une phrase expliquant ton verdict"
+}`;
+
+  try {
+    const response = await openai.responses.create(buildArticleModelRequest({
+      input: prompt,
+      temperature: 0.2,
+      max_output_tokens: 300
+    }));
+    logAiUsage("verif-alignement-debat", response);
+    const parsed = safeJsonParse(response.output_text || "");
+    const verdict = parsed.verdict === "peripheral" ? "peripheral" : "aligned";
+    return { verdict, reason: String(parsed.reason || "").trim() };
+  } catch (error) {
+    console.error("Erreur IA (vérification alignement débat) :", error.message);
+    return { verdict: "aligned", reason: "" };
+  }
+}
+
 async function alignPositionsByPolitics({ debateQuestion, positionA, positionB }) {
   if (!openai || !debateQuestion || !positionA || !positionB) {
     return { positionA, positionB };
@@ -5618,8 +5667,16 @@ async function publishMixteSubjectToAgon(subj, { sessionLabel, politicalGroup = 
       // editorialDecision. Si l'IA elle-même n'a pas trouvé de vrai débat ("understand",
       // "reformulate", "avoid"), on ne force pas une arène à positions artificielle :
       // on bascule en arène libre plutôt que de publier un faux débat.
+      const alignmentCheck = mediaResult.editorialDecision === "arena"
+        ? await verifyDebateAlignment({ summary, debateQuestion: mediaResult.debateQuestion, positionA: mediaResult.positionA, positionB: mediaResult.positionB })
+        : { verdict: "aligned", reason: "" };
+
       if (mediaResult.editorialDecision && mediaResult.editorialDecision !== "arena") {
         console.log(`[auto-publish] Score ${score} suggérait "positions" mais l'IA ne confirme pas de vrai débat (verdict : ${mediaResult.editorialDecision}) : bascule en arène libre pour "${subjectTitle.slice(0, 60)}"`);
+        arenaMode = "libre";
+        await runFreeArena();
+      } else if (alignmentCheck.verdict === "peripheral") {
+        console.log(`[auto-publish] Vérification indépendante : débat construit sur un détail secondaire (${alignmentCheck.reason}) : bascule en arène libre pour "${subjectTitle.slice(0, 60)}"`);
         arenaMode = "libre";
         await runFreeArena();
       } else {
