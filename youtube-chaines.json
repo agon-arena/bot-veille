@@ -741,12 +741,6 @@
     "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UC9GGzAhhvhJO1hL10-BcgNA"
   },
   {
-    "nom": "i-télé : youtube",
-    "orientation": "info continue",
-    "url": "https://www.youtube.com/channel/UCXKJrYczY2_fJEZgFPGY0HQ",
-    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCXKJrYczY2_fJEZgFPGY0HQ"
-  },
-  {
     "nom": "ici : youtube",
     "orientation": "service public / local",
     "url": "https://www.youtube.com/channel/UC5WjQI_NY-PODOQ3kTewebA",
@@ -837,253 +831,241 @@
     "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCtyZ1cGRbRnTGKok6RU9CwA"
   },
   {
-    "nom": "TV5 : youtube",
-    "orientation": "francophonie / international",
-    "url": "https://www.youtube.com/channel/UCJsZHPR1jqKu-soDmKNMBFg",
-    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCJsZHPR1jqKu-soDmKNMBFg"
-  },
-  {
     "nom": "VUFranceTV : youtube",
     "orientation": "service public / archive",
     "url": "https://www.youtube.com/channel/UCqt99sKYNTxqlHtzV9weUYA",
     "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCqt99sKYNTxqlHtzV9weUYA"
   },
   {
-    "nom": "Chaîne YouTube UCGC07JMeg-0hxVqdaUXOYIQ",
+    "nom": "AFPS 21 - Association France Palestine Solidarité",
     "orientation": "généraliste / neutre",
     "url": "https://www.youtube.com/channel/UCGC07JMeg-0hxVqdaUXOYIQ",
     "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCGC07JMeg-0hxVqdaUXOYIQ"
   },
   {
-    "nom": "Chaîne YouTube UC9gcw8-7IzzaosI4c0KCP0g",
+    "nom": "Cash Investigation - France Télévisions",
     "orientation": "généraliste / neutre",
     "url": "https://www.youtube.com/channel/UC9gcw8-7IzzaosI4c0KCP0g",
     "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UC9gcw8-7IzzaosI4c0KCP0g"
   },
   {
-    "nom": "Playlist YouTube PLS7ViFDG-8cjH7sruWlJ6zzSns4EviwKD",
+    "nom": "Chroniques de Françafrique : GUINÉE (playlist)",
     "orientation": "généraliste / neutre",
     "url": "https://www.youtube.com/playlist?list=PLS7ViFDG-8cjH7sruWlJ6zzSns4EviwKD",
     "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PLS7ViFDG-8cjH7sruWlJ6zzSns4EviwKD"
   },
   {
-    "nom": "Chaîne YouTube UCQ1BSknkRJGjVspmT_WejYA",
+    "nom": "Chroniques de Françafrique",
     "orientation": "généraliste / neutre",
     "url": "https://www.youtube.com/channel/UCQ1BSknkRJGjVspmT_WejYA",
     "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCQ1BSknkRJGjVspmT_WejYA"
   },
   {
-    "nom": "Chaîne YouTube UCQcas4dulTzVUrAo0fMfWWg",
-    "orientation": "généraliste / neutre",
-    "url": "https://www.youtube.com/channel/UCQcas4dulTzVUrAo0fMfWWg",
-    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCQcas4dulTzVUrAo0fMfWWg"
-  },
-  {
-    "nom": "Chaîne YouTube UC76pM1Auet3YolJ5vYLeINQ",
+    "nom": "Disclose",
     "orientation": "généraliste / neutre",
     "url": "https://www.youtube.com/channel/UC76pM1Auet3YolJ5vYLeINQ",
     "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UC76pM1Auet3YolJ5vYLeINQ"
   },
   {
-    "nom": "Chaîne YouTube UCCauEjHzPXxGer8af3u4x5g",
+    "nom": "Envoyé Spécial",
     "orientation": "généraliste / neutre",
     "url": "https://www.youtube.com/channel/UCCauEjHzPXxGer8af3u4x5g",
     "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCCauEjHzPXxGer8af3u4x5g"
   },
   {
-    "nom": "Chaîne YouTube UC4M0_pdWJeWRrHigdXOJ0AQ",
+    "nom": "AVRE (Explore Media)",
     "orientation": "généraliste / neutre",
     "url": "https://www.youtube.com/channel/UC4M0_pdWJeWRrHigdXOJ0AQ",
     "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UC4M0_pdWJeWRrHigdXOJ0AQ"
   },
   {
-    "nom": "Chaîne YouTube UCDvIeLuH5wmndQ55cXeKtXw",
+    "nom": "Fakir TV",
     "orientation": "généraliste / neutre",
     "url": "https://www.youtube.com/channel/UCDvIeLuH5wmndQ55cXeKtXw",
     "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCDvIeLuH5wmndQ55cXeKtXw"
   },
   {
-    "nom": "Chaîne YouTube UCCLNdYtCSae8WgQCfciLIpQ",
+    "nom": "librepenseefrance1",
     "orientation": "généraliste / neutre",
     "url": "https://www.youtube.com/channel/UCCLNdYtCSae8WgQCfciLIpQ",
     "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCCLNdYtCSae8WgQCfciLIpQ"
   },
   {
-    "nom": "Chaîne YouTube UCHCwlzgXqqjrNxfVOmLsU5w",
+    "nom": "Frustration magazine",
     "orientation": "généraliste / neutre",
     "url": "https://www.youtube.com/channel/UCHCwlzgXqqjrNxfVOmLsU5w",
     "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCHCwlzgXqqjrNxfVOmLsU5w"
   },
   {
-    "nom": "Chaîne YouTube UC7sXGI8p8PvKosLWagkK9wQ",
+    "nom": "Heu?reka",
     "orientation": "généraliste / neutre",
     "url": "https://www.youtube.com/channel/UC7sXGI8p8PvKosLWagkK9wQ",
     "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UC7sXGI8p8PvKosLWagkK9wQ"
   },
   {
-    "nom": "Chaîne YouTube UCMAT1VA7o6bD6qnpBBZ_New",
+    "nom": "Là-bas si j'y suis",
     "orientation": "généraliste / neutre",
     "url": "https://www.youtube.com/channel/UCMAT1VA7o6bD6qnpBBZ_New",
     "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCMAT1VA7o6bD6qnpBBZ_New"
   },
   {
-    "nom": "Chaîne YouTube UCRAbwEqGDnUBt_gPOkplGBA",
+    "nom": "L'instant détox",
     "orientation": "généraliste / neutre",
     "url": "https://www.youtube.com/channel/UCRAbwEqGDnUBt_gPOkplGBA",
     "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCRAbwEqGDnUBt_gPOkplGBA"
   },
   {
-    "nom": "Chaîne YouTube UCq-8pBMM3I40QlrhM9ExXJQ",
+    "nom": "La Tronche en Biais",
     "orientation": "généraliste / neutre",
     "url": "https://www.youtube.com/channel/UCq-8pBMM3I40QlrhM9ExXJQ",
     "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCq-8pBMM3I40QlrhM9ExXJQ"
   },
   {
-    "nom": "Chaîne YouTube UC9hHeywcPBnLglqnQRaNShQ",
+    "nom": "Le Fil d'Actu - Officiel",
     "orientation": "généraliste / neutre",
     "url": "https://www.youtube.com/channel/UC9hHeywcPBnLglqnQRaNShQ",
     "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UC9hHeywcPBnLglqnQRaNShQ"
   },
   {
-    "nom": "Chaîne YouTube UCVqaxIdcM0EpQ2QSzKHvqeg",
+    "nom": "Amis du Monde diplomatique",
     "orientation": "généraliste / neutre",
     "url": "https://www.youtube.com/channel/UCVqaxIdcM0EpQ2QSzKHvqeg",
     "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCVqaxIdcM0EpQ2QSzKHvqeg"
   },
   {
-    "nom": "Chaîne YouTube UCL95UhlTaJ5YNJczY5I-X5A",
+    "nom": "Les Goguettes",
     "orientation": "généraliste / neutre",
     "url": "https://www.youtube.com/channel/UCL95UhlTaJ5YNJczY5I-X5A",
     "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCL95UhlTaJ5YNJczY5I-X5A"
   },
   {
-    "nom": "Chaîne YouTube UCq-CfAlGjCuXyBVTzQgWYRg",
+    "nom": "LES INCORRECTIBLES",
     "orientation": "généraliste / neutre",
     "url": "https://www.youtube.com/channel/UCq-CfAlGjCuXyBVTzQgWYRg",
     "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCq-CfAlGjCuXyBVTzQgWYRg"
   },
   {
-    "nom": "Chaîne YouTube UC2PAw2DM5hDTO-6CS7JjZMQ",
+    "nom": "Line Press",
     "orientation": "généraliste / neutre",
     "url": "https://www.youtube.com/channel/UC2PAw2DM5hDTO-6CS7JjZMQ",
     "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UC2PAw2DM5hDTO-6CS7JjZMQ"
   },
   {
-    "nom": "Chaîne YouTube UC6bn_ABjeTwbJFGFMQbZFlw",
+    "nom": "Loopsider",
     "orientation": "généraliste / neutre",
     "url": "https://www.youtube.com/channel/UC6bn_ABjeTwbJFGFMQbZFlw",
     "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UC6bn_ABjeTwbJFGFMQbZFlw"
   },
   {
-    "nom": "Chaîne YouTube UCcZsA3n_gUHsv1WBI3iFdow",
+    "nom": "Mathieu Burgalassi",
     "orientation": "généraliste / neutre",
     "url": "https://www.youtube.com/channel/UCcZsA3n_gUHsv1WBI3iFdow",
     "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCcZsA3n_gUHsv1WBI3iFdow"
   },
   {
-    "nom": "Playlist YouTube PL0H7ONNEUnnszBeVGyANOrNQKh6hhKGKN",
+    "nom": "Mediapart : À l'air libre (playlist)",
     "orientation": "généraliste / neutre",
     "url": "https://www.youtube.com/playlist?list=PL0H7ONNEUnnszBeVGyANOrNQKh6hhKGKN",
     "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PL0H7ONNEUnnszBeVGyANOrNQKh6hhKGKN"
   },
   {
-    "nom": "Playlist YouTube PL0H7ONNEUnnuPYjufRNlcTN5DpZfn9UXS",
+    "nom": "Mediapart : Abonnez-vous, l'émission Twitch de Mediapart (playlist)",
     "orientation": "généraliste / neutre",
     "url": "https://www.youtube.com/playlist?list=PL0H7ONNEUnnuPYjufRNlcTN5DpZfn9UXS",
     "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PL0H7ONNEUnnuPYjufRNlcTN5DpZfn9UXS"
   },
   {
-    "nom": "Playlist YouTube PL0H7ONNEUnnsCnhhDtyOHwrNbX7ziCkan",
+    "nom": "Mediapart : La chronique de Waly Dia (playlist)",
     "orientation": "généraliste / neutre",
     "url": "https://www.youtube.com/playlist?list=PL0H7ONNEUnnsCnhhDtyOHwrNbX7ziCkan",
     "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PL0H7ONNEUnnsCnhhDtyOHwrNbX7ziCkan"
   },
   {
-    "nom": "Chaîne YouTube UCZFvhyex564XUhyhaekkg7g",
+    "nom": "Motus & Langue Pendue",
     "orientation": "généraliste / neutre",
     "url": "https://www.youtube.com/channel/UCZFvhyex564XUhyhaekkg7g",
     "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCZFvhyex564XUhyhaekkg7g"
   },
   {
-    "nom": "Chaîne YouTube UCgy0wnJan4JwrssP_BZPq3A",
+    "nom": "neo - Sacrés Français",
     "orientation": "généraliste / neutre",
     "url": "https://www.youtube.com/channel/UCgy0wnJan4JwrssP_BZPq3A",
     "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCgy0wnJan4JwrssP_BZPq3A"
   },
   {
-    "nom": "Chaîne YouTube UCbbmy1wFvL1Xq0G9I-mLtQg",
+    "nom": "PaduTeam",
     "orientation": "généraliste / neutre",
     "url": "https://www.youtube.com/channel/UCbbmy1wFvL1Xq0G9I-mLtQg",
     "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCbbmy1wFvL1Xq0G9I-mLtQg"
   },
   {
-    "nom": "Playlist YouTube PL9wDNu3ZrVQ5iAj77ot9CnDYWnZbbcc5v",
+    "nom": "Radio Nova : Aymeric Lompret dans \"La dernière\" (playlist)",
     "orientation": "généraliste / neutre",
     "url": "https://www.youtube.com/playlist?list=PL9wDNu3ZrVQ5iAj77ot9CnDYWnZbbcc5v",
     "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PL9wDNu3ZrVQ5iAj77ot9CnDYWnZbbcc5v"
   },
   {
-    "nom": "Playlist YouTube PL9wDNu3ZrVQ5NtNHF1dYQa0MdB2YYWoCF",
+    "nom": "Radio Nova : Guillaume Meurice dans \"La dernière\" (playlist)",
     "orientation": "généraliste / neutre",
     "url": "https://www.youtube.com/playlist?list=PL9wDNu3ZrVQ5NtNHF1dYQa0MdB2YYWoCF",
     "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PL9wDNu3ZrVQ5NtNHF1dYQa0MdB2YYWoCF"
   },
   {
-    "nom": "Playlist YouTube PL9wDNu3ZrVQ5hRncHFA91UR3_1XlNZApX",
+    "nom": "Radio Nova : Juliette Arnaud dans \"La dernière\" (playlist)",
     "orientation": "généraliste / neutre",
     "url": "https://www.youtube.com/playlist?list=PL9wDNu3ZrVQ5hRncHFA91UR3_1XlNZApX",
     "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PL9wDNu3ZrVQ5hRncHFA91UR3_1XlNZApX"
   },
   {
-    "nom": "Playlist YouTube PL9wDNu3ZrVQ4N-MrQP2hNlPgpt7KOW-2E",
+    "nom": "Radio Nova : La dernière (playlist)",
     "orientation": "généraliste / neutre",
     "url": "https://www.youtube.com/playlist?list=PL9wDNu3ZrVQ4N-MrQP2hNlPgpt7KOW-2E",
     "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PL9wDNu3ZrVQ4N-MrQP2hNlPgpt7KOW-2E"
   },
   {
-    "nom": "Playlist YouTube PL9wDNu3ZrVQ6y2SYIfOLTgDpjSbBxi-AE",
+    "nom": "Radio Nova : Les extraits de \"La dernière\" (playlist)",
     "orientation": "généraliste / neutre",
     "url": "https://www.youtube.com/playlist?list=PL9wDNu3ZrVQ6y2SYIfOLTgDpjSbBxi-AE",
     "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PL9wDNu3ZrVQ6y2SYIfOLTgDpjSbBxi-AE"
   },
   {
-    "nom": "Playlist YouTube PL9wDNu3ZrVQ5LgBk-IdeAf-bLLBGzivCl",
+    "nom": "Radio Nova : Les invité.e.s humour de \"La dernière\" (playlist)",
     "orientation": "généraliste / neutre",
     "url": "https://www.youtube.com/playlist?list=PL9wDNu3ZrVQ5LgBk-IdeAf-bLLBGzivCl",
     "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PL9wDNu3ZrVQ5LgBk-IdeAf-bLLBGzivCl"
   },
   {
-    "nom": "Playlist YouTube PL9wDNu3ZrVQ4DktiNgLclEUeAjUtkLtFR",
+    "nom": "Radio Nova : Pierre-Emmanuel Barré dans \"La dernière\" (playlist)",
     "orientation": "généraliste / neutre",
     "url": "https://www.youtube.com/playlist?list=PL9wDNu3ZrVQ4DktiNgLclEUeAjUtkLtFR",
     "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PL9wDNu3ZrVQ4DktiNgLclEUeAjUtkLtFR"
   },
   {
-    "nom": "Chaîne YouTube UC45NsEyqTGMtOeEM-UvlTuQ",
+    "nom": "Regards (chaîne secondaire)",
     "orientation": "généraliste / neutre",
     "url": "https://www.youtube.com/channel/UC45NsEyqTGMtOeEM-UvlTuQ",
     "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UC45NsEyqTGMtOeEM-UvlTuQ"
   },
   {
-    "nom": "Chaîne YouTube UCTFpJ5uRFY25i23Vd_--s8w",
+    "nom": "Reservoir Apps",
     "orientation": "généraliste / neutre",
     "url": "https://www.youtube.com/channel/UCTFpJ5uRFY25i23Vd_--s8w",
     "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCTFpJ5uRFY25i23Vd_--s8w"
   },
   {
-    "nom": "Chaîne YouTube UCmbhrKMU_X7Gi47bZEEajEQ",
+    "nom": "StreetPress",
     "orientation": "généraliste / neutre",
     "url": "https://www.youtube.com/channel/UCmbhrKMU_X7Gi47bZEEajEQ",
     "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCmbhrKMU_X7Gi47bZEEajEQ"
   },
   {
-    "nom": "Chaîne YouTube UC0cT8BZdFUmC0vgr1XS7aPA",
+    "nom": "Tatiana Ventôse",
     "orientation": "généraliste / neutre",
     "url": "https://www.youtube.com/channel/UC0cT8BZdFUmC0vgr1XS7aPA",
     "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UC0cT8BZdFUmC0vgr1XS7aPA"
   },
   {
-    "nom": "Chaîne YouTube UCojmN0_VgImHjZ7326rReDQ",
+    "nom": "UJFP",
     "orientation": "généraliste / neutre",
     "url": "https://www.youtube.com/channel/UCojmN0_VgImHjZ7326rReDQ",
     "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCojmN0_VgImHjZ7326rReDQ"
