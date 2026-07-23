@@ -1914,8 +1914,14 @@ const SCORING_RULES = `Critères pour debateScore — sois exigeant, la note hau
 
 Règle essentielle : seuls les enjeux politiques et les décisions publiques méritent un score haut. Un sujet choquant, triste ou simplement polémique n'est pas automatiquement débattable — le score ne monte que si les contenus nomment explicitement un désaccord politique ou institutionnel, jamais parce que le sujet pourrait théoriquement en avoir un. Un fait divers ou une guerre reste bas sauf si les contenus posent explicitement un débat public plus large (justice, sécurité, récidive, politique pénale, intervention militaire, sanctions, livraison d'armes, reconnaissance d'un État, responsabilité d'un gouvernement…) porté par un camp identifié.
 
-Exemples de scores bas : "Le corps d'une adolescente retrouvé", "Trois morts dans un accident", "Bombardements en Ukraine", "Incendie dans un immeuble", "Clash entre deux influenceurs".
+Exemples de scores bas : "Le corps d'une adolescente retrouvé", "Trois morts dans un accident", "Bombardements en Ukraine", "Incendie dans un immeuble", "Clash entre deux influenceurs", "Une lettre revendiquant un incendie signée par un groupe criminel" (menace ou revendication ≠ débat politique tant qu'aucun camp ne conteste une décision publique).
 Exemples de scores hauts : "Immigration : une réforme contestée", "Budget : l'opposition dénonce des coupes", "Sécurité : faut-il étendre la vidéosurveillance ?", "Ukraine : la livraison d'armes divise les alliés".
+
+Preuve obligatoire pour tout score ≥ 6 (champs "campA"/"quoteA"/"campB"/"quoteB") :
+- "campA" nomme l'acteur ou le camp qui conteste explicitement une décision/politique publique, et "quoteA" est une citation copiée MOT POUR MOT depuis le champ "title" ou "summary" d'un des contenus fournis, prouvant cette contestation. Une citation reformulée, résumée ou inventée ne compte pas.
+- si tu ne peux pas produire une "quoteA" copiée verbatim d'un contenu fourni, le sujet ne peut pas dépasser 3 : n'écris pas un score de 6+ "au cas où", baisse-le.
+- pour un score de 8 à 10, fournis en plus "campB" et "quoteB" de la même façon (citation verbatim du camp adverse) ; sans second camp cité verbatim, plafonne à 7.
+- si le score est ≤ 5, laisse "campA"/"quoteA"/"campB"/"quoteB" à null.
 
 Pour "excludedLinks" :
 - toutes les sources sont gardées par défaut : renvoie uniquement les URLs des contenus qui ne parlent pas du tout du sujet principal ;
@@ -1925,6 +1931,42 @@ Pour "excludedLinks" :
 - en cas de doute, ne renvoie pas la source : l'exclusion est réservée aux hors-sujet manifestes ;
 - si toutes les sources parlent du sujet, renvoie une liste vide ;
 - n'invente jamais d'URL ; utilise uniquement les valeurs exactes du champ "link" dans les contenus.`;
+
+// Le modèle peut déclarer un score haut sans preuve réelle (ex: fait divers avec
+// menace/revendication prise pour un "clivage fort"). Plutôt que d'empiler des
+// exemples au prompt à chaque nouveau cas, on vérifie en code que les citations
+// existent verbatim dans les contenus fournis, et on plafonne sinon.
+function normalizeForQuoteCheck(s) {
+  return String(s || "")
+    .toLowerCase()
+    .normalize("NFD").replace(/[̀-ͯ]/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function quoteFoundInContents(quote, contents) {
+  const q = normalizeForQuoteCheck(quote);
+  if (q.length < 8) return false; // trop court pour constituer une vraie citation
+  const haystack = contents.map(c => normalizeForQuoteCheck(`${c.title || ""} ${c.summary || ""}`)).join(" \n ");
+  return haystack.includes(q);
+}
+
+function enforceEvidenceBasedScore(subject, row) {
+  const score = Number.isInteger(row.debateScore) ? row.debateScore : 0;
+  if (score < 6) return row;
+  const contents = compactContentsForScoring(subject);
+  const campAOk = String(row.campA || "").trim().length > 0 && quoteFoundInContents(row.quoteA, contents);
+  if (!campAOk) {
+    return { ...row, debateScore: Math.min(score, 3), controversyLevel: "faible" };
+  }
+  if (score >= 8) {
+    const campBOk = String(row.campB || "").trim().length > 0 && quoteFoundInContents(row.quoteB, contents);
+    if (!campBOk) {
+      return { ...row, debateScore: Math.min(score, 7), controversyLevel: row.controversyLevel === "très fort" ? "fort" : row.controversyLevel };
+    }
+  }
+  return row;
+}
 
 async function analyzeOneScoreWithAI(subject) {
   if (!openai) {
@@ -1939,6 +1981,10 @@ Tu dois répondre uniquement en JSON valide avec ces champs :
 {
   "debateScore": nombre entier de 0 à 10,
   "controversyLevel": "faible" | "moyen" | "fort" | "très fort",
+  "campA": "acteur/camp qui conteste, ou null si score <= 5",
+  "quoteA": "citation verbatim d'un contenu fourni prouvant la contestation, ou null",
+  "campB": "camp adverse, ou null si score < 8",
+  "quoteB": "citation verbatim du camp adverse, ou null",
   "excludedLinks": ["URLs des seuls contenus qui ne parlent pas du tout du sujet"]
 }
 
@@ -1964,9 +2010,17 @@ ${JSON.stringify(compactContentsForScoring(subject), null, 2)}
 
     const parsed = safeJsonParse(response.output_text);
     const selectedLinks = applyExcludedLinks(subject, parsed.excludedLinks);
-    return {
+    const verified = enforceEvidenceBasedScore(subject, {
       debateScore: Number.isInteger(parsed.debateScore) ? parsed.debateScore : 0,
       controversyLevel: parsed.controversyLevel || "faible",
+      campA: parsed.campA,
+      quoteA: parsed.quoteA,
+      campB: parsed.campB,
+      quoteB: parsed.quoteB
+    });
+    return {
+      debateScore: verified.debateScore,
+      controversyLevel: verified.controversyLevel,
       selectedLinks
     };
   } catch (error) {
@@ -2217,7 +2271,7 @@ Analyse chaque sujet de veille de la liste et évalue son potentiel.
 Tu dois répondre uniquement en JSON valide avec cette structure :
 {
   "subjects": [
-    { "id": 0, "debateScore": nombre entier de 0 à 10, "controversyLevel": "faible" | "moyen" | "fort" | "très fort", "excludedLinks": ["URLs des seuls contenus qui ne parlent pas du tout du sujet"] }
+    { "id": 0, "debateScore": nombre entier de 0 à 10, "controversyLevel": "faible" | "moyen" | "fort" | "très fort", "campA": "acteur/camp qui conteste, ou null si score <= 5", "quoteA": "citation verbatim d'un contenu de CE sujet, ou null", "campB": "camp adverse, ou null si score < 8", "quoteB": "citation verbatim du camp adverse, ou null", "excludedLinks": ["URLs des seuls contenus qui ne parlent pas du tout du sujet"] }
   ]
 }
 Rends exactement un objet par sujet fourni, dans le même ordre, en reprenant son "id" exact.
@@ -2232,7 +2286,7 @@ ${JSON.stringify(payload, null, 2)}
   const response = await openai.responses.create(buildScoringModelRequest({
     input: prompt,
     temperature: 0.2,
-    max_output_tokens: 2500
+    max_output_tokens: 3200
   }));
   logAiUsage("score-lot", response);
   if (response.status === "incomplete") throw new Error("réponse tronquée (max_output_tokens)");
@@ -2246,9 +2300,10 @@ ${JSON.stringify(payload, null, 2)}
     if (!row || !Number.isInteger(row.debateScore)) {
       throw new Error(`sujet ${index} absent ou invalide dans la réponse du lot`);
     }
+    const verified = enforceEvidenceBasedScore(subject, row);
     return {
-      debateScore: row.debateScore,
-      controversyLevel: row.controversyLevel || "faible",
+      debateScore: verified.debateScore,
+      controversyLevel: verified.controversyLevel || "faible",
       selectedLinks: applyExcludedLinks(subject, row.excludedLinks)
     };
   });
