@@ -129,6 +129,13 @@
     "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UC9x4Iyu-D257P0P-VDRwSzw"
   },
   {
+    "nom": "Donel Jack'sman",
+    "orientation": "gauche",
+    "url": "https://www.youtube.com/@doneljacksman9552",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCEIm9JvgIMT-yqYykCoVehQ",
+    "opinionOnly": true
+  },
+  {
     "nom": "Le Monde",
     "orientation": "généraliste",
     "url": "https://www.youtube.com/@lemondefr",
