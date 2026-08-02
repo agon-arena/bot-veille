@@ -5818,11 +5818,9 @@ async function runAutoPublishPipeline() {
   const sentSubjectsByGroup = new Set(
     publishedSentItems.flatMap(i => getSentToAgonGroupKeys(i, i.politicalGroup))
   );
-  const sentSubjects = new Set(
-    publishedSentItems.flatMap(i => getSentToAgonKeyCandidates(i))
-  );
-  // Permet aux lots gauche/droite de réutiliser l'article d'un sujet déjà publié (top 10,
-  // run précédent, ou l'autre lot traité juste avant dans ce même run) sans repasser par l'IA.
+  // Permet aux lots gauche/droite/général de réutiliser l'article d'un sujet déjà publié
+  // (top 10, run précédent, ou un autre lot traité juste avant dans ce même run) sans
+  // repasser par l'IA.
   const sentItemsByTitle = new Map();
   sentItems.forEach((item) => {
     getSentToAgonKeyCandidates(item).forEach((key) => {
@@ -5831,15 +5829,22 @@ async function runAutoPublishPipeline() {
   });
   let sentCount = 0;
 
+  // Lot "Général" (mixed) : même logique de réutilisation que les lots gauche/droite
+  // ci-dessous (dédoublonnage par groupe via sentSubjectsByGroup, pas par sujet toutes
+  // orientations confondues) — avant ce correctif, un sujet déjà publié dans un AUTRE
+  // groupe était entièrement sauté ici (jamais de variante générale créée), et quand ce
+  // lot publiait effectivement, c'était toujours via un appel IA complet même si le sujet
+  // avait déjà été rédigé ailleurs. Un même sujet publié dans les 3 groupes ne coûte
+  // désormais qu'une seule génération IA au lieu de trois.
   for (const subj of top10) {
-    const subjectKey = normalizeSentToAgonKey(subj.subject);
-    if (sentSubjects.has(subjectKey)) {
-      console.log(`[auto-publish] Déjà envoyé : ${subj.subject.slice(0, 60)}`);
+    const groupKey = buildSentToAgonGroupKey(subj.subject, "mixed");
+    if (sentSubjectsByGroup.has(groupKey)) {
+      console.log(`[auto-publish] Déjà envoyé (général) : ${subj.subject.slice(0, 60)}`);
       continue;
     }
     try {
-      const published = await publishMixteSubjectToAgon(subj, { sessionLabel });
-      sentSubjects.add(subjectKey);
+      const reuseFrom = sentItemsByTitle.get(normalizeSentToAgonKey(subj.subject)) || null;
+      const published = await publishMixteSubjectToAgon(subj, { sessionLabel, reuseFrom });
       getSentToAgonGroupKeys(published, published.politicalGroup).forEach((key) => sentSubjectsByGroup.add(key));
       getSentToAgonKeyCandidates(published).forEach((key) => sentItemsByTitle.set(key, published));
       sentCount++;
@@ -6243,11 +6248,19 @@ async function classifyAndPublishPending() {
       }
 
       // Tentative de fusion automatique. Un échec de check-similar (rate-limit 429
-      // notamment) ne doit plus être ignoré en silence : sans cette vérification,
-      // le sujet est publié sans fusion et peut créer un doublon dans son groupe.
+      // notamment, ou erreur réseau) ne doit plus déboucher sur une publication sans
+      // filet : testé empiriquement le 27/07/2026 sur un vrai doublon ("Van der Poel",
+      // arènes #2434/#2435, même groupe mixed, 22s d'écart) — check-similar aurait
+      // correctement détecté la quasi-identité (score mesuré 0.7, au-dessus du seuil
+      // 0.68), donc l'échec de cet appel (pas un seuil mal réglé) est la cause la plus
+      // probable du doublon. Sur échec, on laisse désormais le sujet en attente
+      // (checkSimilarOk=false → continue plus bas, avant l'appel /publish) plutôt que de
+      // le publier sans protection : il reste dans veille_pending et sera retenté au
+      // prochain passage planifié, sans perte.
       // Si un /merge précédent avait déjà posé linkedDebateId (tentative antérieure
       // dont seul le /publish avait échoué), inutile de repasser par check-similar.
       let autoMergedDebateId = String(item.linkedDebateId || "").trim();
+      let checkSimilarOk = true;
       if (autoMergedDebateId) {
         console.log(`[auto-publish] Reprise d'une fusion déjà posée (arène ${autoMergedDebateId}) : "${String(item.question || "").slice(0, 50)}"`);
       }
@@ -6267,9 +6280,9 @@ async function classifyAndPublishPending() {
             }
           }
           if (!simRes.ok) {
-            console.warn(`[auto-publish] check-similar indisponible (HTTP ${simRes.status}) pour "${String(item.question || "").slice(0, 60)}" — publication sans tentative de fusion`);
-          }
-          if (simRes.ok) {
+            checkSimilarOk = false;
+            console.warn(`[auto-publish] check-similar indisponible (HTTP ${simRes.status}) pour "${String(item.question || "").slice(0, 60)}" — sujet laissé en attente, retenté au prochain passage plutôt que publié sans protection anti-doublon`);
+          } else {
             const { similar } = await simRes.json().catch(() => ({}));
             const best = (similar || []).find(s => s.confirmed === true && s.score >= VEILLE_SIMILARITY_MERGE_THRESHOLD);
             if (best) {
@@ -6290,8 +6303,10 @@ async function classifyAndPublishPending() {
           }
         }
       } catch (mergeErr) {
-        console.warn("[auto-publish] Erreur vérification fusion :", mergeErr.message);
+        checkSimilarOk = false;
+        console.warn("[auto-publish] Erreur vérification fusion, sujet laissé en attente :", mergeErr.message);
       }
+      if (!checkSimilarOk) continue;
 
       let r, body = "";
       for (let attempt = 1; attempt <= PUBLISH_RATE_LIMIT_RETRIES; attempt += 1) {
