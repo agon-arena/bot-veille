@@ -275,8 +275,10 @@ const AGON_THEMES = [
   "Sciences - technologie",
   "Climat - environnement",
   "Justice - faits divers",
-  "Culture - modes",
+  "Culture - arts",
+  "Histoire",
   "Philosophie - sciences sociales",
+  "Langues et Lettres",
   "Médias - divertissements",
   "Sports - loisirs",
   "Santé - bien-être",
@@ -288,7 +290,7 @@ const AGON_THEME_ALIASES = {
   "Politique, économie et relations internationales": "Politique",
   "Société, éducation et justice": "Société - éducation",
   "Sciences, technologies et environnement": "Sciences - technologie",
-  "Culture, modes et médias": "Culture - modes",
+  "Culture, modes et médias": "Culture - arts",
   "Santé, corps et bien-être": "Santé - bien-être",
   "Sport, loisirs et passions": "Sports - loisirs",
   "Espace jeunes (collégiens - lycéens)": "Espace jeunes",
@@ -296,7 +298,8 @@ const AGON_THEME_ALIASES = {
   "Société / éducation": "Société - éducation",
   "Sciences et technologie": "Sciences - technologie",
   "Justice / faits divers": "Justice - faits divers",
-  "Culture - tendances": "Culture - modes",
+  "Culture - tendances": "Culture - arts",
+  "Culture - modes": "Culture - arts",
   "Vie personnelle et modes de vie": "Vie personnelle - modes de vie"
 };
 

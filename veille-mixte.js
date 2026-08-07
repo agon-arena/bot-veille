@@ -114,8 +114,10 @@ const AGON_THEMES = [
   "Sciences - technologie",
   "Climat - environnement",
   "Justice - faits divers",
-  "Culture - modes",
+  "Culture - arts",
+  "Histoire",
   "Philosophie - sciences sociales",
+  "Langues et Lettres",
   "Médias - divertissements",
   "Sports - loisirs",
   "Santé - bien-être",
@@ -127,7 +129,7 @@ const AGON_THEME_ALIASES = {
   "Politique, économie et relations internationales": "Politique",
   "Société, éducation et justice": "Société - éducation",
   "Sciences, technologies et environnement": "Sciences - technologie",
-  "Culture, modes et médias": "Culture - modes",
+  "Culture, modes et médias": "Culture - arts",
   "Santé, corps et bien-être": "Santé - bien-être",
   "Sport, loisirs et passions": "Sports - loisirs",
   "Espace jeunes (collégiens - lycéens)": "Espace jeunes",
@@ -135,7 +137,8 @@ const AGON_THEME_ALIASES = {
   "Société / éducation": "Société - éducation",
   "Sciences et technologie": "Sciences - technologie",
   "Justice / faits divers": "Justice - faits divers",
-  "Culture - tendances": "Culture - modes",
+  "Culture - tendances": "Culture - arts",
+  "Culture - modes": "Culture - arts",
   "Vie personnelle et modes de vie": "Vie personnelle - modes de vie"
 };
 
@@ -5593,6 +5596,47 @@ function buildVeilleStylesHtml() {
       box-shadow: 0 0 0 2px rgba(17,17,17,0.08), 0 2px 8px rgba(0,0,0,0.04);
     }
 
+    .subject-summary {
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .subject-summary-title {
+      font-weight: 600;
+    }
+
+    .subject-summary-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.85rem;
+      color: #666;
+      flex-wrap: wrap;
+    }
+
+    .ai-score-mini {
+      font-weight: 600;
+      color: #111;
+    }
+
+    .ai-score-mini.pending {
+      font-weight: 400;
+      color: #999;
+    }
+
+    .badge-mini {
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: #f0f0f0;
+    }
+
+    .badge-mini.saved { background: #fff4d6; }
+    .badge-mini.sent { background: #dcf5e3; }
+
     .subject h3 {
       margin-top: 14px;
       font-size: 1.25rem;
@@ -7240,6 +7284,41 @@ function buildSubjectCardHtml(subject, ctx) {
 	      `;
 }
 
+// Carte résumé (titre, score, compteur de sources) pour les sujets des sessions autres
+// que la plus récente : ces sessions restent masquées en CSS (.hidden-session) tant
+// qu'on ne clique pas sur leur onglet, mais buildSubjectCardHtml() embarquait pour
+// chacune la liste complète des sources/contenus + un blob JSON par sujet — l'essentiel
+// du poids des ~26 Mo de veille-mixte.html régénérés à chaque cycle de collecte, et
+// contributeur majeur du crash OOM Render (limite 512MB) du 05/08/2026. Même principe
+// que buildOpinionItemCardHtml plus bas : une carte allégée, sans contenus ni checkbox.
+function buildSubjectSummaryCardHtml(subject, ctx) {
+  const savedTitles = (ctx && ctx.savedTitles) || new Set();
+  const sentKeys = (ctx && ctx.sentKeys) || new Set();
+  const ai = subject.ai || {};
+  const scoreAnalyzed = subject.scoreAnalyzed === true;
+  const debateScore = scoreAnalyzed ? (Number(subject.debateScore) || 0) : null;
+  const isSaved = savedTitles.has(subject.subject);
+  const sentKey = String(ai.debateQuestion || subject.subject || "").trim();
+  const isSent = sentKeys.has(sentKey) || sentKeys.has(String(subject.subject || "").trim());
+  const sourceCount = Array.isArray(subject.sources) ? subject.sources.length : (subject.sourceCount || 0);
+
+  return `
+    <section class="subject subject-summary">
+      <div class="subject-summary-title">${escapeHtml(subject.subject)}</div>
+      <div class="subject-summary-meta">
+        ${
+          debateScore !== null
+            ? `<span class="ai-score-mini">${escapeHtml(String(debateScore))}/10 · ${escapeHtml(subject.controversyLevel || "")}</span>`
+            : `<span class="ai-score-mini pending">Analyse IA non effectuée</span>`
+        }
+        <span class="source-count-mini">${sourceCount} source(s)</span>
+        ${isSaved ? `<span class="badge-mini saved">★ Enregistré</span>` : ""}
+        ${isSent ? `<span class="badge-mini sent">✓ Envoyé</span>` : ""}
+      </div>
+    </section>
+  `;
+}
+
 // Carte simplifiée pour un article de presse d'opinion à source unique (cf.
 // extractOpinionItems) : pas de checkbox/sélection ni de bouton Agôn, ces articles ne
 // passent pas par le pipeline de débat (une seule source = rien à confronter).
@@ -7342,9 +7421,16 @@ function generateHtml(sessions) {
       (session.deduplication?.mergeGroups || []).map((group) => [String(group?.keepSubjectId || ""), group])
     );
 
-    const subjectBlocks = subjects.map(subject => buildSubjectCardHtml(subject, { savedTitles, sentKeys, mergeGroupByKeepId })).join("");
-
     const isLatest = index === 0;
+
+    // Seule la session la plus récente est visible sans clic (cf. .hidden-session
+    // ci-dessous) : les précédentes n'ont besoin que d'un résumé, pas des cartes
+    // complètes (voir commentaire sur buildSubjectSummaryCardHtml).
+    const subjectBlocks = subjects.map(subject =>
+      isLatest
+        ? buildSubjectCardHtml(subject, { savedTitles, sentKeys, mergeGroupByKeepId })
+        : buildSubjectSummaryCardHtml(subject, { savedTitles, sentKeys })
+    ).join("");
 
     return `
       <section
