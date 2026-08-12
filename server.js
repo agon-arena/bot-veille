@@ -107,9 +107,30 @@ function savePendingIdeas(items) {
   fs.writeFileSync(PENDING_IDEAS_FILE, JSON.stringify(items, null, 2), "utf8");
 }
 
+const AUTO_COLLECT_ALL_DAYS = [0, 1, 2, 3, 4, 5, 6]; // 0 = dimanche, comme Date#getUTCDay()
+
+// Ancien format ({ times: [...] }) : chaque heure tournait tous les jours. Migré à la volée
+// en { entries: [{ time, days }] }, même logique que certamen-auto-collect.js.
+function migrateAutoCollectConfig(config) {
+  const base = { enabled: !!config.enabled };
+  if (config.minSources) base.minSources = config.minSources;
+  if (config.lastRun) base.lastRun = config.lastRun;
+  if (Array.isArray(config.entries) && config.entries.length) {
+    base.entries = config.entries;
+    return base;
+  }
+  const times = Array.isArray(config.times) && config.times.length ? config.times : ["08:00"];
+  base.entries = times.map((t) => ({ time: t, days: AUTO_COLLECT_ALL_DAYS.slice() }));
+  return base;
+}
+
 function loadAutoCollectConfig() {
-  try { return JSON.parse(fs.readFileSync(AUTO_COLLECT_FILE, "utf8")); }
-  catch { return { enabled: false, times: ["08:00"] }; }
+  try { return migrateAutoCollectConfig(JSON.parse(fs.readFileSync(AUTO_COLLECT_FILE, "utf8"))); }
+  catch { return { enabled: false, entries: [{ time: "08:00", days: AUTO_COLLECT_ALL_DAYS.slice() }] }; }
+}
+
+function getReunionWeekday() {
+  return new Date(Date.now() + REUNION_UTC_OFFSET_HOURS * 60 * 60 * 1000).getUTCDay();
 }
 
 function getReunionTimeHHMM() {
@@ -207,21 +228,29 @@ async function waitForVeilleMixteIdle(maxWaitMs = 25 * 60 * 1000, pollIntervalMs
   return false;
 }
 
-function scheduleOneAutoCollect(timeStr) {
+// Prochaine occurrence de h:m heure de la Réunion parmi les jours autorisés, indépendamment
+// du fuseau horaire local du process (ex: UTC sur Render). Même logique que
+// nextAutoCollectCertamenInstant dans certamen-auto-collect.js.
+function nextAutoCollectInstant(timeStr, days, now) {
   const [h, m] = timeStr.split(":").map(Number);
+  const reunionNow = new Date(now.getTime() + REUNION_UTC_OFFSET_HOURS * 60 * 60 * 1000);
+  const y = reunionNow.getUTCFullYear(), mo = reunionNow.getUTCMonth(), d = reunionNow.getUTCDate();
+  for (let dayOffset = 0; dayOffset < 14; dayOffset++) {
+    const weekday = new Date(Date.UTC(y, mo, d + dayOffset)).getUTCDay();
+    if (!days.includes(weekday)) continue;
+    const candidate = new Date(Date.UTC(y, mo, d + dayOffset, h - REUNION_UTC_OFFSET_HOURS, m, 0, 0));
+    // Marge de 60s : setTimeout peut sonner quelques ms avant l'heure cible ; sans marge,
+    // la reprogrammation retombe sur la même occurrence → double collecte (cf. incident
+    // Certamen du 05/07/2026).
+    if (candidate.getTime() - now.getTime() >= 60 * 1000) return candidate;
+  }
+  return new Date(now.getTime() + 24 * 60 * 60 * 1000);
+}
+
+function scheduleOneAutoCollect(entry) {
+  const { time: timeStr, days } = entry;
   const now = new Date();
-  // Calcule la prochaine occurrence de h:m heure de la Réunion, indépendamment
-  // du fuseau horaire local du process (ex: UTC sur Render).
-  let next = new Date(Date.UTC(
-    now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(),
-    h - REUNION_UTC_OFFSET_HOURS, m, 0, 0
-  ));
-  // Boucle (pas un simple +24h) car la date UTC et la date Réunion peuvent
-  // différer de plus d'un jour de décalage pour les heures 00h-03h59 Réunion.
-  // Marge de 60s : setTimeout peut sonner quelques ms avant l'heure cible ; sans marge,
-  // la reprogrammation retombe sur la même occurrence → double collecte (cf. incident
-  // Certamen du 05/07/2026).
-  while (next.getTime() - now.getTime() < 60 * 1000) next = new Date(next.getTime() + 24 * 60 * 60 * 1000);
+  const next = nextAutoCollectInstant(timeStr, days, now);
   const delay = next - now;
   const timer = setTimeout(async () => {
     autoCollectTimers = autoCollectTimers.filter(t => t !== timer);
@@ -245,20 +274,21 @@ function scheduleOneAutoCollect(timeStr) {
       } catch (err) {
         console.error(`[auto-collect] Erreur: ${err.message}`);
       }
-      scheduleOneAutoCollect(timeStr);
+      scheduleOneAutoCollect(entry);
     }
   }, delay);
   autoCollectTimers.push(timer);
   const nextDate = new Date(Date.now() + delay);
-  console.log(`[auto-collect] Prochaine collecte ${timeStr} → ${nextDate.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}`);
+  console.log(`[auto-collect] Prochaine collecte ${timeStr} (jours ${days.join(",")}) → ${nextDate.toLocaleDateString("fr-FR")} à ${nextDate.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}`);
 }
 
 function scheduleAutoCollect(config) {
   autoCollectTimers.forEach(t => clearTimeout(t));
   autoCollectTimers = [];
   if (!AUTO_PIPELINES_ENABLED) return;
-  if (!config.enabled || !Array.isArray(config.times) || !config.times.length) return;
-  config.times.forEach(t => scheduleOneAutoCollect(t));
+  const cfg = migrateAutoCollectConfig(config);
+  if (!cfg.enabled || !Array.isArray(cfg.entries) || !cfg.entries.length) return;
+  cfg.entries.forEach(entry => scheduleOneAutoCollect(entry));
 }
 
 const AGON_STORIES_FILE = process.env.AGON_STORIES_FILE
@@ -5469,15 +5499,21 @@ app.get("/api/auto-collect", (req, res) => {
 });
 
 app.post("/api/auto-collect", (req, res) => {
-  const { enabled, times } = req.body || {};
-  if (typeof enabled !== "boolean" || !Array.isArray(times) || times.length < 1 || times.length > 4) {
+  const { enabled, entries } = req.body || {};
+  if (typeof enabled !== "boolean" || !Array.isArray(entries) || entries.length < 1 || entries.length > 4) {
     return res.status(400).json({ ok: false, error: "Paramètres invalides" });
   }
   const validTime = /^([01]\d|2[0-3]):[0-5]\d$/;
-  if (times.some(t => !validTime.test(t))) {
-    return res.status(400).json({ ok: false, error: "Format d'heure invalide (HH:MM attendu)" });
+  const validDay = (d) => Number.isInteger(d) && d >= 0 && d <= 6;
+  for (const entry of entries) {
+    if (!entry || !validTime.test(entry.time)) {
+      return res.status(400).json({ ok: false, error: "Format d'heure invalide (HH:MM attendu)" });
+    }
+    if (!Array.isArray(entry.days) || !entry.days.length || !entry.days.every(validDay)) {
+      return res.status(400).json({ ok: false, error: "Jours invalides (0-6 attendu)" });
+    }
   }
-  const config = { enabled, times };
+  const config = { enabled, entries };
   try {
     fs.writeFileSync(AUTO_COLLECT_FILE, JSON.stringify(config, null, 2), "utf8");
     scheduleAutoCollect(config);
@@ -5494,21 +5530,23 @@ app.post("/api/auto-collect-tick", requireMixteAuth, async (req, res) => {
     return res.json({ triggered: false, reason: "auto pipelines disabled on this instance" });
   }
   const config = loadAutoCollectConfig();
-  if (!config.enabled || !Array.isArray(config.times) || !config.times.length) {
+  if (!config.enabled || !Array.isArray(config.entries) || !config.entries.length) {
     return res.json({ triggered: false, reason: "disabled" });
   }
   const nowMin = timeToMinutes(getReunionTimeHHMM());
   const today = getReunionDateStr();
+  const todayWeekday = getReunionWeekday();
   // 40 min (au lieu de 20) : le 10/07/2026, GitHub Actions a sauté tous les ticks
   // entre 12h36 et 15h19 UTC (cron */15 non garanti sous charge côté GitHub), ratant
   // entièrement le créneau de 18h00 Réunion faute de marge suffisante.
   const TOLERANCE_MIN = 40;
-  const due = config.times.find(t => {
-    const tMin = timeToMinutes(t);
+  const due = config.entries.find(e => {
+    if (!Array.isArray(e.days) || !e.days.includes(todayWeekday)) return false;
+    const tMin = timeToMinutes(e.time);
     return nowMin >= tMin && nowMin - tMin < TOLERANCE_MIN;
   });
   if (!due) return res.json({ triggered: false, reason: "no time due" });
-  const runKey = `${today}_${due}`;
+  const runKey = `${today}_${due.time}`;
   if (config.lastRun === runKey) {
     return res.json({ triggered: false, reason: "already run" });
   }
@@ -5520,7 +5558,7 @@ app.post("/api/auto-collect-tick", requireMixteAuth, async (req, res) => {
     });
     config.lastRun = runKey;
     fs.writeFileSync(AUTO_COLLECT_FILE, JSON.stringify(config, null, 2), "utf8");
-    res.json({ triggered: true, time: due });
+    res.json({ triggered: true, time: due.time });
 
     // Publication auto une fois la collecte réellement terminée, en tâche de fond :
     // ne pas faire attendre la réponse HTTP (GitHub Actions a un --max-time de 60s).
