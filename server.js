@@ -77,16 +77,17 @@ const AUTO_PIPELINES_ENABLED = (() => {
 // Les modèles gpt-5 ignorent temperature (l'API la refuse) et raisonnent avant de
 // répondre : effort minimal, sinon les tokens de raisonnement — facturés en sortie —
 // annulent une partie du gain de prix sur une tâche de rédaction guidée.
-// Mesure réelle (au lieu d'estimer) de la conso par appel IA, pour prioriser les
-// leviers de coût sur des chiffres et non des suppositions. response.model est repris
-// tel que renvoyé par l'API plutôt que retracké manuellement par site d'appel : plus
-// fiable, notamment pour les appels via buildArticleModelRequest (modèle configurable).
-function logAiUsage(label, response) {
-  const u = (response && response.usage) || {};
-  const inputTokens = u.input_tokens ?? u.prompt_tokens ?? 0;
-  const outputTokens = u.output_tokens ?? u.completion_tokens ?? 0;
-  const model = (response && response.model) || "?";
-  console.log(`[ai-usage] ${label} | ${model} | in=${inputTokens} out=${outputTokens}`);
+//
+// Instrumentation IA centralisée dans ai-usage-tracker.js (phase 1 d'optimisation,
+// 22/08/2026) : un seul point de calcul de coût/persistance pour les 24 sites d'appel du
+// bot, au lieu d'une fonction logAiUsage dupliquée par fichier. trackAi() mesure la
+// latence réelle et le succès/échec de chaque appel (withAiUsage), en plus des tokens
+// déjà suivis avant cette phase.
+const { withAiUsage, featureForLabel, setProcessName, computeStats } = require("./ai-usage-tracker");
+setProcessName("server");
+
+function trackAi(label, fn, extra = {}) {
+  return withAiUsage({ feature: featureForLabel(label), label, ...extra }, fn);
 }
 
 function buildArticleModelRequest(request) {
@@ -1456,13 +1457,12 @@ ${JSON.stringify({
 Réponds uniquement en texte brut.`;
 
   try {
-    const response = await openai.responses.create({
+    const response = await trackAi("resume-factuel", () => openai.responses.create({
       model: "gpt-4.1-mini",
       input: prompt,
       temperature: 0.35,
       max_output_tokens: 1500
-    });
-    logAiUsage("resume-factuel", response);
+    }), { sourceType: "mixte_generation" });
     const text = String(response.output_text || "").trim();
     if (!text) throw new Error("Réponse vide de l'IA pour le résumé.");
     return cutTextAtSentenceEnd(text, 1800);
@@ -1573,12 +1573,11 @@ ${sourcesTitlesSection}
 
 Réponds uniquement en JSON valide, sans balises markdown.`;
 
-  const response = await openai.responses.create(buildArticleModelRequest({
+  const response = await trackAi("analyse-debat", () => openai.responses.create(buildArticleModelRequest({
     input: prompt,
     temperature: 0.5,
     max_output_tokens: 900
-  }));
-  logAiUsage("analyse-debat", response);
+  })), { sourceType: "mixte_generation" });
 
   let parsed = {};
   try {
@@ -1592,7 +1591,7 @@ Réponds uniquement en JSON valide, sans balises markdown.`;
     ? parsed.possibleBiases.map((item) => String(item || "").trim()).filter(Boolean).slice(0, 4)
     : [];
 
-  const debateQuestion = limitDebateQuestion(await enforceTitleLimit(openai, String(parsed.debateQuestion || "").trim(), { logUsage: logAiUsage }));
+  const debateQuestion = limitDebateQuestion(await enforceTitleLimit(openai, String(parsed.debateQuestion || "").trim(), { sourceType: "mixte_generation" }));
   let positionA = String(parsed.positionA || "").trim().slice(0, 55);
   let positionB = String(parsed.positionB || "").trim().slice(0, 55);
 
@@ -1654,12 +1653,11 @@ Réponds uniquement en JSON :
 }`;
 
   try {
-    const response = await openai.responses.create(buildArticleModelRequest({
+    const response = await trackAi("verif-alignement-debat", () => openai.responses.create(buildArticleModelRequest({
       input: prompt,
       temperature: 0.2,
       max_output_tokens: 300
-    }));
-    logAiUsage("verif-alignement-debat", response);
+    })), { sourceType: "mixte_generation" });
     const parsed = safeJsonParse(response.output_text || "");
     const verdict = parsed.verdict === "peripheral" ? "peripheral" : "aligned";
     return { verdict, reason: String(parsed.reason || "").trim() };
@@ -1700,13 +1698,12 @@ Si hasPoliticalOrientation est false, leftPosition et rightPosition sont des cha
 Réponds uniquement en JSON valide, sans balises markdown.`;
 
   try {
-    const response = await openai.responses.create({
+    const response = await trackAi("align-positions", () => openai.responses.create({
       model: "gpt-4.1-mini",
       input: prompt,
       temperature: 0.4,
       max_output_tokens: 200
-    });
-    logAiUsage("align-positions", response);
+    }), { sourceType: "mixte_generation" });
     const parsed = safeJsonParse(response.output_text || "");
     if (parsed.hasPoliticalOrientation && parsed.leftPosition && parsed.rightPosition) {
       return {
@@ -1941,12 +1938,11 @@ ${inputJson}
 
 Réponds uniquement en JSON valide, sans balises markdown.`;
 
-  const response = await openai.responses.create(buildArticleModelRequest({
+  const response = await trackAi("article-style", () => openai.responses.create(buildArticleModelRequest({
     input: prompt,
     temperature: 0.35,
     max_output_tokens: 2000
-  }));
-  logAiUsage("article-style", response);
+  })), { sourceType: "mixte_generation" });
 
   const rawText = String(response.output_text || "").trim();
   if (!rawText) throw new Error("Réponse vide de l'IA pour l'article final.");
@@ -1968,7 +1964,7 @@ Réponds uniquement en JSON valide, sans balises markdown.`;
     // Pas de coupe ici : l'article passe ensuite par enforceFinalArticleQuestion
     // (finition + endpoint), seul point qui applique la limite proprement.
     article: String(parsed.article || summary).trim(),
-    debateQuestion: limitDebateQuestion(await enforceTitleLimit(openai, parsed.debateQuestion || debateQuestion, { logUsage: logAiUsage })),
+    debateQuestion: limitDebateQuestion(await enforceTitleLimit(openai, parsed.debateQuestion || debateQuestion, { sourceType: "mixte_generation" })),
     positionA: String(parsed.positionA || positionA).replace(/\s+/g, " ").trim(),
     positionB: String(parsed.positionB || positionB).replace(/\s+/g, " ").trim()
   };
@@ -2226,15 +2222,14 @@ ${JSON.stringify(base, null, 2)}
 
 Réponds uniquement en JSON valide, sans balises markdown.`;
 
-    const finalisationResponse = await openai.responses.create({
+    const finalisationResponse = await trackAi("finalisation-article", () => openai.responses.create({
       model: "gpt-4.1-mini",
       input: promptFinalisation,
       temperature: 0.45,
       max_output_tokens: 2200
-    });
-    logAiUsage("finalisation-article", finalisationResponse);
+    }), { sourceType: "mixte_generation" });
     const parsed = safeJsonParse(String(finalisationResponse.output_text || "").trim());
-    const finalQuestion = limitDebateQuestion(await enforceTitleLimit(openai, parsed.debateQuestion || base.debateQuestion, { logUsage: logAiUsage }));
+    const finalQuestion = limitDebateQuestion(await enforceTitleLimit(openai, parsed.debateQuestion || base.debateQuestion, { sourceType: "mixte_generation" }));
     const finalLatinQuestion = normalizeLatinQuestion(parsed.latinQuestion || "")
       || extractLatinQuestionFromArticle(parsed.article || "")
       || buildFallbackLatinQuestion({
@@ -2367,13 +2362,12 @@ ${summary}
 
 Réponds uniquement en JSON valide, sans balises markdown.`;
 
-  const response = await openai.responses.create(buildArticleModelRequest({
+  const response = await trackAi("arene-libre", () => openai.responses.create(buildArticleModelRequest({
     input: prompt,
     temperature: 0.35,
     max_output_tokens: 2000
-  }));
+  })), { sourceType: "mixte_generation" });
 
-  logAiUsage("arene-libre", response);
   const rawText = String(response.output_text || "").trim();
   if (!rawText) throw new Error("Réponse vide de l'IA pour l'article factuel.");
 
@@ -2394,7 +2388,7 @@ Réponds uniquement en JSON valide, sans balises markdown.`;
 
   return {
     article: assembleArticleWithinLimit(articleLines.join("\n\n"), [articleSignature]),
-    debateQuestion: await enforceTitleLimit(openai, parsed.title || subject, { logUsage: logAiUsage })
+    debateQuestion: await enforceTitleLimit(openai, parsed.title || subject, { sourceType: "mixte_generation" })
   };
 }
 
@@ -2485,13 +2479,12 @@ Réponds uniquement en JSON valide avec cette structure :
 Réponds uniquement en JSON valide, sans balises markdown.`;
 
   try {
-    const response = await openai.responses.create({
+    const response = await trackAi("devise-latine", () => openai.responses.create({
       model: "gpt-4.1-mini",
       input: prompt,
       temperature: 0.4,
       max_output_tokens: 120
-    });
-    logAiUsage("devise-latine", response);
+    }), { sourceType: "mixte_generation" });
 
     const parsed = safeJsonParse(String(response.output_text || "").trim());
     const latinMotto = normalizeLatinQuestion(parsed.latinMotto || "") || fallbackMotto;
@@ -2808,13 +2801,12 @@ Contraintes :
 `;
 
   try {
-    const response = await openai.responses.create({
+    const response = await trackAi("suggestion-lien", () => openai.responses.create({
       model: "gpt-4.1-mini",
       input: prompt,
       temperature: 0.2,
       max_output_tokens: 900
-    });
-    logAiUsage("suggestion-lien", response);
+    }), { sourceType: "subject_selection" });
     const parsed = JSON.parse(String(response.output_text || "{}").match(/\{[\s\S]*\}/)?.[0] || "{}");
     const matchedStory = compactStories.find((story) => story.story_id === parsed.matched_story_id) || null;
     const fallbackMatchedStory = compactStories.find((story) => story.story_id === fallback.matched_story_id) || null;
@@ -2967,6 +2959,21 @@ app.post("/mixte-login", (req, res) => {
     return res.redirect(redirect || "/mixte");
   }
   res.redirect("/mixte?err=1");
+});
+
+// Statistiques d'usage IA agrégées depuis ai-usage.jsonl (écrit par ce process ET par
+// veille-mixte.js, même fichier partagé) — endpoint minimaliste demandé par l'audit du
+// 22/08/2026 pour lire de vrais chiffres de production sans dashboard dédié. Même
+// mécanisme d'accès que le reste de la veille mixte (cookie ou ?token=MIXTE_PASSWORD),
+// réponse JSON plutôt que la page de login HTML de requireMixteAuth.
+app.get("/api/ai-usage-stats", (req, res) => {
+  if (MIXTE_PASSWORD && getMixteCookie(req) !== MIXTE_PASSWORD && req.query.token !== MIXTE_PASSWORD) {
+    return res.status(401).json({ error: "unauthorized" });
+  }
+  const hoursParam = Number(req.query.hours);
+  const hours = Number.isFinite(hoursParam) && hoursParam > 0 ? hoursParam : 24;
+  const stats = computeStats({ sinceMs: hours * 60 * 60 * 1000 });
+  res.json({ windowHours: hours, ...stats });
 });
 
 const VEILLE_MIXTE_HTML = path.join(__dirname, "veille-mixte.html");
@@ -5993,12 +6000,11 @@ Réponds en JSON : { "ideas": [ { "qualite": "bonne" ou "moyenne" ou "mauvaise",
 
   let ideas;
   try {
-    const response = await openai.responses.create(buildIdeasModelRequest({
+    const response = await trackAi("idees-ia", () => openai.responses.create(buildIdeasModelRequest({
       input: prompt,
       temperature: 1,
       max_output_tokens: 3000
-    }));
-    logAiUsage("idees-ia", response);
+    })), { sourceType: "mixte_idees" });
     const parsed = safeJsonParse(response.output_text);
     ideas = parsed.ideas;
     if (!Array.isArray(ideas) || !ideas.length) throw new Error("Format invalide");

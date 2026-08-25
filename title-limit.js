@@ -40,12 +40,14 @@ function cutTitleAtWordBoundary(text, max = TITLE_HARD_MAX) {
   return polishTitleEnding(cut);
 }
 
+const { withAiUsage, featureForLabel } = require("./ai-usage-tracker");
+
 async function enforceTitleLimit(openaiClient, text, options = {}) {
   const {
     max = TITLE_HARD_MAX,
     target = TITLE_TARGET_LENGTH,
-    logUsage,
-    label = "raccourci-titre"
+    label = "raccourci-titre",
+    sourceType
   } = options;
 
   const value = String(text || "").replace(/\s+/g, " ").trim();
@@ -61,13 +63,15 @@ Ne reformule pas au-delà du nécessaire et n'ajoute aucune information. La phra
 Réponds uniquement avec le titre raccourci, sans guillemets ni commentaire.
 
 Titre : ${value}`;
-      const response = await openaiClient.responses.create({
-        model: "gpt-4o-mini",
-        input: prompt,
-        temperature: 0.2,
-        max_output_tokens: 120
-      });
-      if (typeof logUsage === "function") logUsage(label, response);
+      const response = await withAiUsage(
+        { feature: featureForLabel(label), label, sourceType },
+        () => openaiClient.responses.create({
+          model: "gpt-4o-mini",
+          input: prompt,
+          temperature: 0.2,
+          max_output_tokens: 120
+        })
+      );
       const shortened = polishTitleEnding(
         String(response.output_text || "")
           .replace(/^["'«\s]+|["'»\s]+$/g, "")

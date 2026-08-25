@@ -37,14 +37,13 @@ function safeJsonParse(text) {
   }
 }
 
-// Ce fichier n'avait pas de logging usage (contrairement à server.js/veille-mixte.js,
-// cf. couts-api-openai) : ajouté pour mesurer le coût réel du test gpt-5-nano.
-function logAiUsage(label, response) {
-  const u = (response && response.usage) || {};
-  const inputTokens = u.input_tokens ?? u.prompt_tokens ?? 0;
-  const outputTokens = u.output_tokens ?? u.completion_tokens ?? 0;
-  const model = (response && response.model) || "?";
-  console.log(`[ai-usage] ${label} | ${model} | in=${inputTokens} out=${outputTokens}`);
+// Instrumentation IA centralisée dans ai-usage-tracker.js (phase 1 d'optimisation,
+// 22/08/2026) — ce fichier tourne dans le process server.js (require("./certamen-ideas-seed")
+// en tête de server.js), donc setProcessName() n'est pas rappelé ici.
+const { withAiUsage, featureForLabel } = require("./ai-usage-tracker");
+
+function trackAi(label, fn, extra = {}) {
+  return withAiUsage({ feature: featureForLabel(label), label, ...extra }, fn);
 }
 
 const PENDING_IDEAS_FILE = path.join(__dirname, "certamen-pending-ideas.json");
@@ -121,12 +120,11 @@ Réponds en JSON : { "ideas": [ { "qualite": "bonne" ou "moyenne" ou "mauvaise",
 
   let ideas;
   try {
-    const response = await openai.responses.create(buildIdeasModelRequest({
+    const response = await trackAi("certamen-idees-ia", () => openai.responses.create(buildIdeasModelRequest({
       input: prompt,
       temperature: 1.1,
       max_output_tokens: 2500
-    }));
-    logAiUsage("certamen-idees-ia", response);
+    })), { sourceType: "certamen_idees" });
     const parsed = safeJsonParse(response.output_text);
     ideas = parsed.ideas;
     if (!Array.isArray(ideas) || !ideas.length) throw new Error("Format invalide");

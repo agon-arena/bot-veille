@@ -48,14 +48,14 @@ function buildDedupModelRequest(request) {
   return options;
 }
 
-// Ce fichier n'avait pas de logging usage (contrairement à server.js/veille-mixte.js,
-// cf. couts-api-openai) : ajouté pour mesurer le coût réel du test gpt-5-nano.
-function logAiUsage(label, response) {
-  const u = (response && response.usage) || {};
-  const inputTokens = u.input_tokens ?? u.prompt_tokens ?? 0;
-  const outputTokens = u.output_tokens ?? u.completion_tokens ?? 0;
-  const model = (response && response.model) || "?";
-  console.log(`[ai-usage] ${label} | ${model} | in=${inputTokens} out=${outputTokens}`);
+// Instrumentation IA centralisée dans ai-usage-tracker.js (phase 1 d'optimisation,
+// 22/08/2026) — ce fichier tourne dans le process server.js (require("./certamen-agon-publish")
+// en tête de server.js), donc setProcessName() n'est pas rappelé ici : le process est déjà
+// nommé "server" au démarrage de server.js.
+const { withAiUsage, featureForLabel } = require("./ai-usage-tracker");
+
+function trackAi(label, fn, extra = {}) {
+  return withAiUsage({ feature: featureForLabel(label), label, ...extra }, fn);
 }
 
 const AGON_URL = (process.env.AGON_URL || "http://localhost:3001").trim();
@@ -254,13 +254,13 @@ async function checkCertamenPositionAlignment(existingOptionA, existingOptionB, 
   ].join("\n");
 
   try {
-    const response = await openai.chat.completions.create({
+    const response = await trackAi("certamen-position-alignment", () => openai.chat.completions.create({
       model: "gpt-4o-mini",
       messages: [{ role: "user", content: prompt }],
       response_format: { type: "json_object" },
       max_tokens: 180,
       temperature: 0
-    });
+    }), { sourceType: "certamen_merge_guard" });
     const parsed = JSON.parse(response.choices[0].message.content);
     return ["coherent", "inverted", "ambiguous"].includes(parsed?.verdict) ? parsed.verdict : "ambiguous";
   } catch (err) {
@@ -483,12 +483,11 @@ async function isDuplicateOfBatchSubjects(payload, publishedInBatch) {
   ].join("\n");
 
   try {
-    const response = await openai.responses.create(buildDedupModelRequest({
+    const response = await trackAi("certamen-dedup-lot", () => openai.responses.create(buildDedupModelRequest({
       input: prompt,
       temperature: 0,
       max_output_tokens: 120
-    }));
-    logAiUsage("certamen-dedup-lot", response);
+    })), { sourceType: "certamen_publish_guard", itemsProcessed: publishedInBatch.length });
     const parsed = JSON.parse(response.output_text);
     if (parsed?.duplicate !== true) return false;
 

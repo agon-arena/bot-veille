@@ -1,0 +1,1364 @@
+{
+  "generatedAt": "2026-08-23T06:53:10.217Z",
+  "corpusFile": "/Users/kevinbruyat/Desktop/bot veille/certamen-experiment-corpus-1787466348730.json",
+  "corpusSize": 36,
+  "exp3ReportFile": "/Users/kevinbruyat/Desktop/bot veille/certamen-separated-experiment-1787466965096.json",
+  "passI": {
+    "tag": "certamen_sep_I",
+    "latencyMs": 135701,
+    "calls": 86,
+    "inputTokens": 54229,
+    "outputTokens": 5022,
+    "cost": 0.029727,
+    "retained": 25,
+    "rejected": 11
+  },
+  "passJ": {
+    "tag": "certamen_sep_J_strict_prompt",
+    "calls": 25,
+    "inputTokens": 28202,
+    "outputTokens": 1543,
+    "cost": 0.01375,
+    "candidatesCovered": 25
+  },
+  "comparisons": {
+    "G_vs_H": {
+      "levelCounts": {
+        "0": 33,
+        "1": 0,
+        "2": 3,
+        "3": 0
+      },
+      "instabilityRate": 0.083,
+      "level3": []
+    },
+    "G_vs_I": {
+      "levelCounts": {
+        "0": 32,
+        "1": 0,
+        "2": 2,
+        "3": 2
+      },
+      "instabilityRate": 0.111,
+      "level3": [
+        {
+          "index": 12,
+          "subject": "« Il y a peut-être des ovnis dans la zone » : au « triangle de la Burle », les crashs d’avion posent question",
+          "a": {
+            "decision": "reformulate",
+            "score": 6,
+            "risk": "low",
+            "theme": "Sciences - technologie",
+            "question": "Qui doit enquêter sur les crashs dans le triangle de la Burle ?",
+            "reason": "Sujet intrigant mais manque d'enjeu collectif clair et positions claires à défendre"
+          },
+          "b": {
+            "decision": "avoid",
+            "score": 3,
+            "risk": "low",
+            "theme": "Sciences - technologie",
+            "question": "« Il y a peut-être des ovnis dans la zone » : au « triangle de la Burle », les crashs d’avion posent question",
+            "reason": "Sujet trop spéculatif et peu ancré dans un enjeu collectif clair"
+          }
+        },
+        {
+          "index": 35,
+          "subject": "«Il y a ce que l'on appelle l'usure du pouvoir...» : #Télématin ne cesse de changer d'animateurs",
+          "a": {
+            "decision": "reformulate",
+            "score": 6,
+            "risk": "low",
+            "theme": "Médias - divertissements",
+            "question": "France 2 doit-elle stabiliser les animateurs de Télématin ?",
+            "reason": "Sujet intéressant mais question trop vague et peu clivante en l'état"
+          },
+          "b": {
+            "decision": "avoid",
+            "score": 3,
+            "risk": "low",
+            "theme": "Médias - divertissements",
+            "question": "«Il y a ce que l'on appelle l'usure du pouvoir...» : #Télématin ne cesse de changer d'animateurs",
+            "reason": "Sujet trop spécifique et peu d'enjeu collectif clair ou clivant"
+          }
+        }
+      ]
+    },
+    "H_vs_I": {
+      "levelCounts": {
+        "0": 31,
+        "1": 0,
+        "2": 3,
+        "3": 2
+      },
+      "instabilityRate": 0.139,
+      "level3": [
+        {
+          "index": 12,
+          "subject": "« Il y a peut-être des ovnis dans la zone » : au « triangle de la Burle », les crashs d’avion posent question",
+          "a": {
+            "decision": "reformulate",
+            "score": 6,
+            "risk": "low",
+            "theme": "Sciences - technologie",
+            "question": "Pourquoi pas enquêter sur les ovnis dans le triangle de la Burle ?",
+            "reason": "Sujet intrigant mais manque d'enjeu collectif clair et positions claires à défendre"
+          },
+          "b": {
+            "decision": "avoid",
+            "score": 3,
+            "risk": "low",
+            "theme": "Sciences - technologie",
+            "question": "« Il y a peut-être des ovnis dans la zone » : au « triangle de la Burle », les crashs d’avion posent question",
+            "reason": "Sujet trop spéculatif et peu ancré dans un enjeu collectif clair"
+          }
+        },
+        {
+          "index": 35,
+          "subject": "«Il y a ce que l'on appelle l'usure du pouvoir...» : #Télématin ne cesse de changer d'animateurs",
+          "a": {
+            "decision": "reformulate",
+            "score": 5,
+            "risk": "low",
+            "theme": "Médias - divertissements",
+            "question": "Peut-on changer souvent d’animateurs sur Télématin ?",
+            "reason": "Sujet trop léger et peu d'enjeux collectifs clairs, à reformuler pour débat sur médias et renouvellement."
+          },
+          "b": {
+            "decision": "avoid",
+            "score": 3,
+            "risk": "low",
+            "theme": "Médias - divertissements",
+            "question": "«Il y a ce que l'on appelle l'usure du pouvoir...» : #Télématin ne cesse de changer d'animateurs",
+            "reason": "Sujet trop spécifique et peu d'enjeu collectif clair ou clivant"
+          }
+        }
+      ]
+    }
+  },
+  "stability": {
+    "stableCount": 30,
+    "stableRate": 0.833,
+    "crossingCount": 2
+  },
+  "unstableCandidates": [
+    {
+      "index": 2,
+      "subject": "Présidentielle 2027 : Jean-Luc Mélenchon et alliances à gauche",
+      "decisions": {
+        "G": "reformulate",
+        "H": "arena",
+        "I": "reformulate"
+      },
+      "scores": {
+        "G": 7,
+        "H": 7,
+        "I": 7
+      },
+      "agreement": "2/3 identiques",
+      "crossesBoundary": false
+    },
+    {
+      "index": 4,
+      "subject": "\"Il n'y a que des mauvaises solutions\": les militants écologistes désemparés pour la présidentielle",
+      "decisions": {
+        "G": "reformulate",
+        "H": "reformulate",
+        "I": "arena"
+      },
+      "scores": {
+        "G": 7,
+        "H": 7,
+        "I": 7
+      },
+      "agreement": "2/3 identiques",
+      "crossesBoundary": false
+    },
+    {
+      "index": 6,
+      "subject": "Aux journées d’été des Verts, l’intervention d’Olivier Faure court-circuitée par un débat en coulisses sur une alliance avec LFI",
+      "decisions": {
+        "G": "arena",
+        "H": "reformulate",
+        "I": "arena"
+      },
+      "scores": {
+        "G": 7,
+        "H": 7,
+        "I": 7
+      },
+      "agreement": "2/3 identiques",
+      "crossesBoundary": false
+    },
+    {
+      "index": 12,
+      "subject": "« Il y a peut-être des ovnis dans la zone » : au « triangle de la Burle », les crashs d’avion posent question",
+      "decisions": {
+        "G": "reformulate",
+        "H": "reformulate",
+        "I": "avoid"
+      },
+      "scores": {
+        "G": 6,
+        "H": 6,
+        "I": 3
+      },
+      "agreement": "2/3 identiques",
+      "crossesBoundary": true
+    },
+    {
+      "index": 29,
+      "subject": "Drones illégaux : \"L’hôpital s’adapte à la délinquance, on marche sur la tête\"",
+      "decisions": {
+        "G": "reformulate",
+        "H": "arena",
+        "I": "arena"
+      },
+      "scores": {
+        "G": 7,
+        "H": 7,
+        "I": 7
+      },
+      "agreement": "2/3 identiques",
+      "crossesBoundary": false
+    },
+    {
+      "index": 35,
+      "subject": "«Il y a ce que l'on appelle l'usure du pouvoir...» : #Télématin ne cesse de changer d'animateurs",
+      "decisions": {
+        "G": "reformulate",
+        "H": "reformulate",
+        "I": "avoid"
+      },
+      "scores": {
+        "G": 6,
+        "H": 5,
+        "I": 3
+      },
+      "agreement": "2/3 identiques",
+      "crossesBoundary": true
+    }
+  ],
+  "truncation": {
+    "positionsChecked": 50,
+    "oldTruncatedCount": 2,
+    "oldMidWordCutCount": 2,
+    "examples": [
+      {
+        "subject": "Présidentielle 2027 : Raphaël Glucksmann officialise sa candidature",
+        "position": "B",
+        "raw": "Non, il manquera d'impact face aux leaders déjà installés",
+        "oldSlice": "Non, il manquera d'impact face aux leaders déjà install",
+        "safeTruncate": "Non, il manquera d'impact face aux leaders déjà"
+      },
+      {
+        "subject": "\"À Ceuta, rien ne garantit la sécurité des jeunes filles !\" (R.Stainville)",
+        "position": "A",
+        "raw": "oui, la sécurité des jeunes filles doit être prioritaire",
+        "oldSlice": "oui, la sécurité des jeunes filles doit être prioritair",
+        "safeTruncate": "oui, la sécurité des jeunes filles doit être"
+      }
+    ]
+  },
+  "lengthComparison": {
+    "promptActuel_I": {
+      "count": 50,
+      "over55": 2,
+      "avg": 44.9,
+      "max": 57
+    },
+    "promptRenforce_J": {
+      "count": 50,
+      "over55": 0,
+      "avg": 46.1,
+      "max": 55
+    }
+  },
+  "formDiversity": {
+    "G": {
+      "Qui doit X": 5,
+      "Doit-il/elle": 7,
+      "Autre": 9,
+      "A raison de": 2,
+      "Jusqu'où X": 3,
+      "Peut-on": 1
+    },
+    "H": {
+      "Autre": 4,
+      "A raison de": 3,
+      "Doit-il/elle": 7,
+      "Menace/va trop loin": 2,
+      "Option ou option": 3,
+      "Jusqu'où X": 4,
+      "Pourquoi pas": 1,
+      "Peut-on": 2,
+      "Qui doit X": 1
+    },
+    "I": {
+      "Doit-il/elle": 8,
+      "Menace/va trop loin": 4,
+      "Peut-on": 2,
+      "Option ou option": 1,
+      "Jusqu'où X": 2,
+      "Qui doit X": 1,
+      "A raison de": 1,
+      "Autre": 6
+    }
+  },
+  "costStats": {
+    "perPass": {
+      "G": 0.031078,
+      "H": 0.030946,
+      "I": 0.029727
+    },
+    "mean": 0.030583,
+    "min": 0.029727,
+    "max": 0.031078,
+    "judgmentMean": 0.012401,
+    "creativeMean": 0.013695,
+    "downstreamMean": 0.004488
+  },
+  "labelBreakdown": {
+    "G": {
+      "judgment": {
+        "calls": 36,
+        "batches": 0,
+        "itemsProcessed": 36,
+        "inputTokens": 21054,
+        "outputTokens": 2489,
+        "cost": 0.012404000000000004,
+        "avgBatchSize": null
+      },
+      "creative": {
+        "calls": 27,
+        "batches": 0,
+        "itemsProcessed": 27,
+        "inputTokens": 28124,
+        "outputTokens": 1737,
+        "cost": 0.014028799999999998,
+        "avgBatchSize": null
+      },
+      "alignPositions": {
+        "calls": 27,
+        "batches": 0,
+        "itemsProcessed": 27,
+        "inputTokens": 7377,
+        "outputTokens": 1059,
+        "cost": 0.0046452,
+        "avgBatchSize": null
+      },
+      "titleLimit": {
+        "calls": 0,
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "cost": 0
+      }
+    },
+    "H": {
+      "judgment": {
+        "calls": 36,
+        "batches": 0,
+        "itemsProcessed": 36,
+        "inputTokens": 21054,
+        "outputTokens": 2516,
+        "cost": 0.012447199999999999,
+        "avgBatchSize": null
+      },
+      "creative": {
+        "calls": 27,
+        "batches": 0,
+        "itemsProcessed": 27,
+        "inputTokens": 28136,
+        "outputTokens": 1690,
+        "cost": 0.013958400000000001,
+        "avgBatchSize": null
+      },
+      "alignPositions": {
+        "calls": 27,
+        "batches": 0,
+        "itemsProcessed": 27,
+        "inputTokens": 7346,
+        "outputTokens": 1001,
+        "cost": 0.00454,
+        "avgBatchSize": null
+      },
+      "titleLimit": {
+        "calls": 0,
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "cost": 0
+      }
+    },
+    "I": {
+      "judgment": {
+        "calls": 36,
+        "batches": 0,
+        "itemsProcessed": 36,
+        "inputTokens": 21054,
+        "outputTokens": 2456,
+        "cost": 0.0123512,
+        "avgBatchSize": null
+      },
+      "creative": {
+        "calls": 25,
+        "batches": 0,
+        "itemsProcessed": 25,
+        "inputTokens": 26361,
+        "outputTokens": 1595,
+        "cost": 0.0130964,
+        "avgBatchSize": null
+      },
+      "alignPositions": {
+        "calls": 25,
+        "batches": 0,
+        "itemsProcessed": 25,
+        "inputTokens": 6814,
+        "outputTokens": 971,
+        "cost": 0.0042792,
+        "avgBatchSize": null
+      },
+      "titleLimit": {
+        "calls": 0,
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "cost": 0
+      }
+    }
+  },
+  "productionShapeCheck": {
+    "expectedKeys": [
+      "isDebatable",
+      "debatePotentialScore",
+      "editorialDecision",
+      "reason",
+      "suggestedQuestion",
+      "positionA",
+      "positionB",
+      "theme",
+      "risk",
+      "politicalOrientation"
+    ],
+    "actualKeys": [
+      "isDebatable",
+      "debatePotentialScore",
+      "editorialDecision",
+      "reason",
+      "suggestedQuestion",
+      "positionA",
+      "positionB",
+      "theme",
+      "risk",
+      "politicalOrientation"
+    ],
+    "missing": [],
+    "extra": [],
+    "compatible": true
+  },
+  "fullResultsI": [
+    {
+      "index": 0,
+      "subject": "Présidentielle 2027 : Edouard Philippe à Mayotte sur l'immigration et la politique",
+      "result": {
+        "isDebatable": true,
+        "debatePotentialScore": 8,
+        "editorialDecision": "arena",
+        "reason": "Immigration à Mayotte oppose clairement deux visions politiques et sociales fortes.",
+        "suggestedQuestion": "Edouard Philippe doit-il suspendre immigration à Mayotte ?",
+        "positionA": "non, c’est de la démagogie inutile",
+        "positionB": "oui, faut stopper l'immigration clandestine",
+        "theme": "Politique",
+        "risk": "medium",
+        "politicalOrientation": {
+          "isPolitical": true,
+          "positionA": "left",
+          "positionB": "right"
+        },
+        "_diagnostics": {
+          "rawQuestion": "Edouard Philippe doit-il suspendre immigration à Mayotte ?",
+          "rawPositionA": "oui, faut stopper l'immigration clandestine",
+          "rawPositionB": "non, c’est de la démagogie inutile",
+          "safePositionA": "oui, faut stopper l'immigration clandestine",
+          "safePositionB": "non, c’est de la démagogie inutile"
+        }
+      }
+    },
+    {
+      "index": 1,
+      "subject": "Présidentielle 2027 : Raphaël Glucksmann officialise sa candidature",
+      "result": {
+        "isDebatable": true,
+        "debatePotentialScore": 6,
+        "editorialDecision": "reformulate",
+        "reason": "Candidature annoncée, mais débat direct sur elle manque d'oppositions claires",
+        "suggestedQuestion": "Raphaël Glucksmann doit-il peser en 2027 face à l’extrême droite ?",
+        "positionA": "Oui, il incarne une alternative sociale-démocrate forte",
+        "positionB": "Non, il manquera d'impact face aux leaders déjà install",
+        "theme": "Politique",
+        "risk": "low",
+        "politicalOrientation": {
+          "isPolitical": true,
+          "positionA": "left",
+          "positionB": "right"
+        },
+        "_diagnostics": {
+          "rawQuestion": "Raphaël Glucksmann doit-il peser en 2027 face à l’extrême droite ?",
+          "rawPositionA": "Oui, il incarne une alternative sociale-démocrate forte",
+          "rawPositionB": "Non, il manquera d'impact face aux leaders déjà installés",
+          "safePositionA": "Oui, il incarne une alternative sociale-démocrate forte",
+          "safePositionB": "Non, il manquera d'impact face aux leaders déjà"
+        }
+      }
+    },
+    {
+      "index": 2,
+      "subject": "Présidentielle 2027 : Jean-Luc Mélenchon et alliances à gauche",
+      "result": {
+        "isDebatable": true,
+        "debatePotentialScore": 7,
+        "editorialDecision": "reformulate",
+        "reason": "Sujet intéressant mais manque une question claire et clivante pour un débat fort",
+        "suggestedQuestion": "Mélenchon va-t-il trop loin en voulant rassembler toute gauche ?",
+        "positionA": "oui, il faut une gauche unie pour gagner",
+        "positionB": "non, la diversité des candidatures est un atout",
+        "theme": "Politique",
+        "risk": "medium",
+        "politicalOrientation": {
+          "isPolitical": false,
+          "positionA": null,
+          "positionB": null
+        },
+        "_diagnostics": {
+          "rawQuestion": "Mélenchon va-t-il trop loin en voulant rassembler toute gauche ?",
+          "rawPositionA": "oui, il faut une gauche unie pour gagner",
+          "rawPositionB": "non, la diversité des candidatures est un atout",
+          "safePositionA": "oui, il faut une gauche unie pour gagner",
+          "safePositionB": "non, la diversité des candidatures est un atout"
+        }
+      }
+    },
+    {
+      "index": 3,
+      "subject": "Au Mali, \"l'excision n'est pas condamnée, elle continue à perdurer\", alertent des associations",
+      "result": {
+        "isDebatable": true,
+        "debatePotentialScore": 7,
+        "editorialDecision": "reformulate",
+        "reason": "Sujet sensible et tragique, nécessite reformulation pour éviter exploitation et clarifier débat",
+        "suggestedQuestion": "Peut-on tolérer l'absence de loi contre l'excision au Mali ?",
+        "positionA": "Non, il faut protéger les droits des filles",
+        "positionB": "Oui, la tradition doit être respectée",
+        "theme": "Société - éducation",
+        "risk": "high",
+        "politicalOrientation": {
+          "isPolitical": true,
+          "positionA": "left",
+          "positionB": "right"
+        },
+        "_diagnostics": {
+          "rawQuestion": "Peut-on tolérer l'absence de loi contre l'excision au Mali ?",
+          "rawPositionA": "Oui, la tradition doit être respectée",
+          "rawPositionB": "Non, il faut protéger les droits des filles",
+          "safePositionA": "Oui, la tradition doit être respectée",
+          "safePositionB": "Non, il faut protéger les droits des filles"
+        }
+      }
+    },
+    {
+      "index": 4,
+      "subject": "\"Il n'y a que des mauvaises solutions\": les militants écologistes désemparés pour la présidentielle",
+      "result": {
+        "isDebatable": true,
+        "debatePotentialScore": 7,
+        "editorialDecision": "arena",
+        "reason": "Opposition claire sur choix politique et stratégies écologistes pour la présidentielle",
+        "suggestedQuestion": "La stratégie écolo pour la présidentielle : unité ou division ?",
+        "positionA": "oui, faut s'unir malgré les compromis",
+        "positionB": "non, mieux vaut rester fidèle à nos idées",
+        "theme": "Politique",
+        "risk": "medium",
+        "politicalOrientation": {
+          "isPolitical": false,
+          "positionA": null,
+          "positionB": null
+        },
+        "_diagnostics": {
+          "rawQuestion": "La stratégie écolo pour la présidentielle : unité ou division ?",
+          "rawPositionA": "oui, faut s'unir malgré les compromis",
+          "rawPositionB": "non, mieux vaut rester fidèle à nos idées",
+          "safePositionA": "oui, faut s'unir malgré les compromis",
+          "safePositionB": "non, mieux vaut rester fidèle à nos idées"
+        }
+      }
+    },
+    {
+      "index": 5,
+      "subject": "Tensions commerciales entre États-Unis et Canada : droits de douane et ripostes",
+      "result": {
+        "isDebatable": true,
+        "debatePotentialScore": 7,
+        "editorialDecision": "arena",
+        "reason": "Opposition claire sur la gestion des droits de douane entre deux pays voisins",
+        "suggestedQuestion": "Jusqu'où Ottawa doit-il riposter aux droits de douane US ?",
+        "positionA": "Oui à la riposte pour défendre l'économie canadienne",
+        "positionB": "Non, faut éviter une guerre commerciale destructrice",
+        "theme": "International",
+        "risk": "medium",
+        "politicalOrientation": {
+          "isPolitical": true,
+          "positionA": "left",
+          "positionB": "right"
+        },
+        "_diagnostics": {
+          "rawQuestion": "Jusqu'où Ottawa doit-il riposter aux droits de douane US ?",
+          "rawPositionA": "Oui à la riposte pour défendre l'économie canadienne",
+          "rawPositionB": "Non, faut éviter une guerre commerciale destructrice",
+          "safePositionA": "Oui à la riposte pour défendre l'économie canadienne",
+          "safePositionB": "Non, faut éviter une guerre commerciale destructrice"
+        }
+      }
+    },
+    {
+      "index": 6,
+      "subject": "Aux journées d’été des Verts, l’intervention d’Olivier Faure court-circuitée par un débat en coulisses sur une alliance avec LFI",
+      "result": {
+        "isDebatable": true,
+        "debatePotentialScore": 7,
+        "editorialDecision": "arena",
+        "reason": "Alliance PS-Verts-LFI divise sur stratégie politique et priorités écologiques",
+        "suggestedQuestion": "L’alliance PS-Verts-LFI va-t-elle trop loin en 2027 ?",
+        "positionA": "oui, faut un front uni pour peser fort",
+        "positionB": "non, l’alliance brouille trop les priorités écologiques",
+        "theme": "Politique",
+        "risk": "medium",
+        "politicalOrientation": {
+          "isPolitical": true,
+          "positionA": "left",
+          "positionB": "right"
+        },
+        "_diagnostics": {
+          "rawQuestion": "L’alliance PS-Verts-LFI va-t-elle trop loin en 2027 ?",
+          "rawPositionA": "oui, faut un front uni pour peser fort",
+          "rawPositionB": "non, l’alliance brouille trop les priorités écologiques",
+          "safePositionA": "oui, faut un front uni pour peser fort",
+          "safePositionB": "non, l’alliance brouille trop les priorités écologiques"
+        }
+      }
+    },
+    {
+      "index": 7,
+      "subject": "TikTok et préservatifs non conformes : amendes et rappels sanitaires",
+      "result": {
+        "isDebatable": true,
+        "debatePotentialScore": 7,
+        "editorialDecision": "reformulate",
+        "reason": "Sujet mêle deux thèmes distincts sans lien clair, question à clarifier",
+        "suggestedQuestion": "Qui doit garantir la sécurité des préservatifs vendus ?",
+        "positionA": "les fabricants doivent être plus contrôlés",
+        "positionB": "les consommateurs doivent rester vigilants",
+        "theme": "Santé - bien-être",
+        "risk": "medium",
+        "politicalOrientation": {
+          "isPolitical": true,
+          "positionA": "left",
+          "positionB": "right"
+        },
+        "_diagnostics": {
+          "rawQuestion": "Qui doit garantir la sécurité des préservatifs vendus ?",
+          "rawPositionA": "les fabricants doivent être plus contrôlés",
+          "rawPositionB": "les consommateurs doivent rester vigilants",
+          "safePositionA": "les fabricants doivent être plus contrôlés",
+          "safePositionB": "les consommateurs doivent rester vigilants"
+        }
+      }
+    },
+    {
+      "index": 8,
+      "subject": "Présidentielle 2027 : Sandrine Rousseau prône une alliance entre les écologistes et LFI car \"la candidature de Marine Tondelier ne décolle pas dans les sondages\"",
+      "result": {
+        "isDebatable": true,
+        "debatePotentialScore": 7,
+        "editorialDecision": "arena",
+        "reason": "Alliance écologistes-LFI divise sur stratégie et impact électoral",
+        "suggestedQuestion": "Sandrine Rousseau doit-elle unir les écologistes à LFI ?",
+        "positionA": "oui, c'est la meilleure stratégie pour peser en 2027",
+        "positionB": "non, les écologistes doivent garder leur indépendance",
+        "theme": "Politique",
+        "risk": "low",
+        "politicalOrientation": {
+          "isPolitical": false,
+          "positionA": null,
+          "positionB": null
+        },
+        "_diagnostics": {
+          "rawQuestion": "Sandrine Rousseau doit-elle unir les écologistes à LFI ?",
+          "rawPositionA": "oui, c'est la meilleure stratégie pour peser en 2027",
+          "rawPositionB": "non, les écologistes doivent garder leur indépendance",
+          "safePositionA": "oui, c'est la meilleure stratégie pour peser en 2027",
+          "safePositionB": "non, les écologistes doivent garder leur indépendance"
+        }
+      }
+    },
+    {
+      "index": 9,
+      "subject": "Présidentielles 2027 : Edouard Philippe envisage un rassemblement de la droite et du centre entre « novembre et février »",
+      "result": {
+        "isDebatable": true,
+        "debatePotentialScore": 7,
+        "editorialDecision": "arena",
+        "reason": "Question claire sur l'union politique avec enjeux et positions opposables.",
+        "suggestedQuestion": "Édouard Philippe doit-il imposer un rassemblement droite-centre ?",
+        "positionA": "non, ça étouffe les ambitions et la diversité",
+        "positionB": "oui, c’est essentiel pour battre la gauche",
+        "theme": "Politique",
+        "risk": "low",
+        "politicalOrientation": {
+          "isPolitical": true,
+          "positionA": "left",
+          "positionB": "right"
+        },
+        "_diagnostics": {
+          "rawQuestion": "Édouard Philippe doit-il imposer un rassemblement droite-centre ?",
+          "rawPositionA": "oui, c’est essentiel pour battre la gauche",
+          "rawPositionB": "non, ça étouffe les ambitions et la diversité",
+          "safePositionA": "oui, c’est essentiel pour battre la gauche",
+          "safePositionB": "non, ça étouffe les ambitions et la diversité"
+        }
+      }
+    },
+    {
+      "index": 10,
+      "subject": "Lecornu écrit aux parlementaires pour leur demander d’adopter un budget",
+      "result": {
+        "isDebatable": true,
+        "debatePotentialScore": 7,
+        "editorialDecision": "arena",
+        "reason": "Opposition claire entre adopter un budget maintenant ou attendre, enjeu collectif réel",
+        "suggestedQuestion": "Lecornu a-t-il raison de demander d’adopter vite le budget ?",
+        "positionA": "oui, il faut éviter le désordre au plus vite",
+        "positionB": "non, mieux vaut attendre la présidentielle pour décider",
+        "theme": "Politique",
+        "risk": "low",
+        "politicalOrientation": {
+          "isPolitical": false,
+          "positionA": null,
+          "positionB": null
+        },
+        "_diagnostics": {
+          "rawQuestion": "Lecornu a-t-il raison de demander d’adopter vite le budget ?",
+          "rawPositionA": "oui, il faut éviter le désordre au plus vite",
+          "rawPositionB": "non, mieux vaut attendre la présidentielle pour décider",
+          "safePositionA": "oui, il faut éviter le désordre au plus vite",
+          "safePositionB": "non, mieux vaut attendre la présidentielle pour décider"
+        }
+      }
+    },
+    {
+      "index": 11,
+      "subject": "En France, rentrée politique à huit mois de la présidentielle",
+      "result": {
+        "isDebatable": true,
+        "debatePotentialScore": 7,
+        "editorialDecision": "reformulate",
+        "reason": "Sujet trop large et peu clivant sans question précise à débattre",
+        "suggestedQuestion": "LFI doit-elle s'unir avec Glucksmann pour 2027 ?",
+        "positionA": "oui, l'union renforce la gauche",
+        "positionB": "non, ils doivent rester distincts",
+        "theme": "Politique",
+        "risk": "low",
+        "politicalOrientation": {
+          "isPolitical": false,
+          "positionA": null,
+          "positionB": null
+        },
+        "_diagnostics": {
+          "rawQuestion": "LFI doit-elle s'unir avec Glucksmann pour 2027 ?",
+          "rawPositionA": "oui, l'union renforce la gauche",
+          "rawPositionB": "non, ils doivent rester distincts",
+          "safePositionA": "oui, l'union renforce la gauche",
+          "safePositionB": "non, ils doivent rester distincts"
+        }
+      }
+    },
+    {
+      "index": 12,
+      "subject": "« Il y a peut-être des ovnis dans la zone » : au « triangle de la Burle », les crashs d’avion posent question",
+      "result": {
+        "isDebatable": false,
+        "debatePotentialScore": 3,
+        "editorialDecision": "avoid",
+        "reason": "Sujet trop spéculatif et peu ancré dans un enjeu collectif clair",
+        "suggestedQuestion": "« Il y a peut-être des ovnis dans la zone » : au « triangle de la Burle », les crashs d’avion posent question",
+        "positionA": "",
+        "positionB": "",
+        "theme": "Sciences - technologie",
+        "risk": "low",
+        "politicalOrientation": {
+          "isPolitical": false,
+          "positionA": null,
+          "positionB": null
+        },
+        "_diagnostics": null
+      }
+    },
+    {
+      "index": 13,
+      "subject": "Un nouvel incendie fait deux blessés légers dans une paillote restaurant en Corse",
+      "result": {
+        "isDebatable": false,
+        "debatePotentialScore": 2,
+        "editorialDecision": "avoid",
+        "reason": "Sujet trop factuel et tragédie récente, peu d'oppositions claires à débattre",
+        "suggestedQuestion": "Un nouvel incendie fait deux blessés légers dans une paillote restaurant en Corse",
+        "positionA": "",
+        "positionB": "",
+        "theme": "Justice - faits divers",
+        "risk": "medium",
+        "politicalOrientation": {
+          "isPolitical": false,
+          "positionA": null,
+          "positionB": null
+        },
+        "_diagnostics": null
+      }
+    },
+    {
+      "index": 14,
+      "subject": "« Aucun signe d’acte criminel » : Brian Hickerson, le compagnon d’Hayden Panettiere, s’exprime pour la première fois depuis son décès",
+      "result": {
+        "isDebatable": false,
+        "debatePotentialScore": 2,
+        "editorialDecision": "avoid",
+        "reason": "Sujet trop sensible et centré sur un décès sans enjeu collectif clair",
+        "suggestedQuestion": "« Aucun signe d’acte criminel » : Brian Hickerson, le compagnon d’Hayden Panettiere, s’exprime pour la première fois depuis son décès",
+        "positionA": "",
+        "positionB": "",
+        "theme": "Justice - faits divers",
+        "risk": "high",
+        "politicalOrientation": {
+          "isPolitical": false,
+          "positionA": null,
+          "positionB": null
+        },
+        "_diagnostics": null
+      }
+    },
+    {
+      "index": 15,
+      "subject": "« C’est un coach qui aime les rapports vrais, sans artifice » : Dino Toppmöller, la nouvelle touche humaine du RC Lens",
+      "result": {
+        "isDebatable": false,
+        "debatePotentialScore": 2,
+        "editorialDecision": "avoid",
+        "reason": "Portrait d'un coach sans enjeu collectif ni opposition claire",
+        "suggestedQuestion": "« C’est un coach qui aime les rapports vrais, sans artifice » : Dino Toppmöller, la nouvelle touche humaine du RC Lens",
+        "positionA": "",
+        "positionB": "",
+        "theme": "Sports - loisirs",
+        "risk": "low",
+        "politicalOrientation": {
+          "isPolitical": false,
+          "positionA": null,
+          "positionB": null
+        },
+        "_diagnostics": null
+      }
+    },
+    {
+      "index": 16,
+      "subject": "Lens-Auxerre : à quelle heure et sur quelle chaîne TV voir le match de la première journée de Ligue 1 ?",
+      "result": {
+        "isDebatable": false,
+        "debatePotentialScore": 1,
+        "editorialDecision": "avoid",
+        "reason": "Sujet purement informatif sans enjeu collectif ni opposition de valeurs",
+        "suggestedQuestion": "Lens-Auxerre : à quelle heure et sur quelle chaîne TV voir le match de la première journée de Ligue 1 ?",
+        "positionA": "",
+        "positionB": "",
+        "theme": "Sports - loisirs",
+        "risk": "low",
+        "politicalOrientation": {
+          "isPolitical": false,
+          "positionA": null,
+          "positionB": null
+        },
+        "_diagnostics": null
+      }
+    },
+    {
+      "index": 17,
+      "subject": "« J’assume d’être hors-la-loi ! » : en Charente-Maritime, ce maire veut faire bouger les lignes sur la gestion de l’eau",
+      "result": {
+        "isDebatable": true,
+        "debatePotentialScore": 8,
+        "editorialDecision": "arena",
+        "reason": "Opposition claire sur légalité vs urgence écologique, enjeu collectif fort et accessible.",
+        "suggestedQuestion": "Jusqu'où un maire peut-il enfreindre la loi pour l'eau ?",
+        "positionA": "oui, la défense de l'eau justifie la désobéissance",
+        "positionB": "non, la loi doit être respectée malgré l'urgence",
+        "theme": "Climat - environnement",
+        "risk": "medium",
+        "politicalOrientation": {
+          "isPolitical": true,
+          "positionA": "left",
+          "positionB": "right"
+        },
+        "_diagnostics": {
+          "rawQuestion": "Jusqu'où un maire peut-il enfreindre la loi pour l'eau ?",
+          "rawPositionA": "oui, la défense de l'eau justifie la désobéissance",
+          "rawPositionB": "non, la loi doit être respectée malgré l'urgence",
+          "safePositionA": "oui, la défense de l'eau justifie la désobéissance",
+          "safePositionB": "non, la loi doit être respectée malgré l'urgence"
+        }
+      }
+    },
+    {
+      "index": 18,
+      "subject": "Lilia Hassaine, Thélyson Orélien, Caryl Férey… Notre sélection livres de la semaine",
+      "result": {
+        "isDebatable": false,
+        "debatePotentialScore": 2,
+        "editorialDecision": "avoid",
+        "reason": "Sélection livres hebdomadaire sans enjeu collectif ni opposition claire",
+        "suggestedQuestion": "Lilia Hassaine, Thélyson Orélien, Caryl Férey… Notre sélection livres de la semaine",
+        "positionA": "",
+        "positionB": "",
+        "theme": "Langues et Lettres",
+        "risk": "low",
+        "politicalOrientation": {
+          "isPolitical": false,
+          "positionA": null,
+          "positionB": null
+        },
+        "_diagnostics": null
+      }
+    },
+    {
+      "index": 19,
+      "subject": "« Le cahier des charges est très contraint » : à Ouistreham, le projet de vendre 13 parcelles à la pointe du Siège déçoit",
+      "result": {
+        "isDebatable": true,
+        "debatePotentialScore": 6,
+        "editorialDecision": "reformulate",
+        "reason": "Sujet local avec enjeux d'aménagement, mais question trop technique et peu clivante",
+        "suggestedQuestion": "la mairie de Ouistreham doit-elle assouplir le cahier des charges ?",
+        "positionA": "non, faut protéger l’environnement local",
+        "positionB": "oui, trop de contraintes freinent les projets",
+        "theme": "Politique",
+        "risk": "low",
+        "politicalOrientation": {
+          "isPolitical": true,
+          "positionA": "left",
+          "positionB": "right"
+        },
+        "_diagnostics": {
+          "rawQuestion": "la mairie de Ouistreham doit-elle assouplir le cahier des charges ?",
+          "rawPositionA": "oui, trop de contraintes freinent les projets",
+          "rawPositionB": "non, faut protéger l’environnement local",
+          "safePositionA": "oui, trop de contraintes freinent les projets",
+          "safePositionB": "non, faut protéger l’environnement local"
+        }
+      }
+    },
+    {
+      "index": 20,
+      "subject": "Michel Sadelain, le pionnier des cellules tueuses de cancers : « Mes ancêtres n’étaient pas gaulois mais… »",
+      "result": {
+        "isDebatable": false,
+        "debatePotentialScore": 2,
+        "editorialDecision": "avoid",
+        "reason": "Sujet centré sur une biographie sans opposition claire ni enjeu collectif fort",
+        "suggestedQuestion": "Michel Sadelain, le pionnier des cellules tueuses de cancers : « Mes ancêtres n’étaient pas gaulois mais… »",
+        "positionA": "",
+        "positionB": "",
+        "theme": "Santé - bien-être",
+        "risk": "low",
+        "politicalOrientation": {
+          "isPolitical": false,
+          "positionA": null,
+          "positionB": null
+        },
+        "_diagnostics": null
+      }
+    },
+    {
+      "index": 21,
+      "subject": "VIDÉO. Antoine Griezmann inscrit un doublé et offre la victoire à Orlando, Lionel Messi marque mais perd avec Miami",
+      "result": {
+        "isDebatable": false,
+        "debatePotentialScore": 2,
+        "editorialDecision": "avoid",
+        "reason": "Résultat sportif sans enjeu collectif ni opposition de valeurs claire",
+        "suggestedQuestion": "VIDÉO. Antoine Griezmann inscrit un doublé et offre la victoire à Orlando, Lionel Messi marque mais perd avec Miami",
+        "positionA": "",
+        "positionB": "",
+        "theme": "Sports - loisirs",
+        "risk": "low",
+        "politicalOrientation": {
+          "isPolitical": false,
+          "positionA": null,
+          "positionB": null
+        },
+        "_diagnostics": null
+      }
+    },
+    {
+      "index": 22,
+      "subject": "REPORTAGE. « C’est tellement pratique comme endroit » : les espaces de loisirs « indoors » séduisent les parents",
+      "result": {
+        "isDebatable": true,
+        "debatePotentialScore": 6,
+        "editorialDecision": "reformulate",
+        "reason": "Sujet intéressant mais manque d'opposition claire, à reformuler pour clarté et clivage",
+        "suggestedQuestion": "La montée des loisirs indoors est-elle bénéfique aux parents ?",
+        "positionA": "oui, c’est pratique et ça occupe bien les enfants",
+        "positionB": "non, ça coûte cher et ce n’est pas vraiment relaxant",
+        "theme": "Sports - loisirs",
+        "risk": "low",
+        "politicalOrientation": {
+          "isPolitical": false,
+          "positionA": null,
+          "positionB": null
+        },
+        "_diagnostics": {
+          "rawQuestion": "La montée des loisirs indoors est-elle bénéfique aux parents ?",
+          "rawPositionA": "oui, c’est pratique et ça occupe bien les enfants",
+          "rawPositionB": "non, ça coûte cher et ce n’est pas vraiment relaxant",
+          "safePositionA": "oui, c’est pratique et ça occupe bien les enfants",
+          "safePositionB": "non, ça coûte cher et ce n’est pas vraiment relaxant"
+        }
+      }
+    },
+    {
+      "index": 23,
+      "subject": "Gymnastique. Le Qatar recrute une jeune pépite sarthoise âgée de 11 ans, la France ne digère pas",
+      "result": {
+        "isDebatable": true,
+        "debatePotentialScore": 7,
+        "editorialDecision": "arena",
+        "reason": "Conflit entre patriotisme sportif et liberté individuelle d'entraînement.",
+        "suggestedQuestion": "Le départ d’une gymnaste vers le Qatar menace-t-il la France ?",
+        "positionA": "non, c’est son choix d’avenir perso",
+        "positionB": "oui, ça affaiblit le sport français",
+        "theme": "Sports - loisirs",
+        "risk": "low",
+        "politicalOrientation": {
+          "isPolitical": true,
+          "positionA": "left",
+          "positionB": "right"
+        },
+        "_diagnostics": {
+          "rawQuestion": "Le départ d’une gymnaste vers le Qatar menace-t-il la France ?",
+          "rawPositionA": "oui, ça affaiblit le sport français",
+          "rawPositionB": "non, c’est son choix d’avenir perso",
+          "safePositionA": "oui, ça affaiblit le sport français",
+          "safePositionB": "non, c’est son choix d’avenir perso"
+        }
+      }
+    },
+    {
+      "index": 24,
+      "subject": "🏛️ Le ministre de l’Intérieur s’occupe personnellement de ses opposants",
+      "result": {
+        "isDebatable": true,
+        "debatePotentialScore": 7,
+        "editorialDecision": "reformulate",
+        "reason": "Sujet politique clivant mais manque de clarté et contexte pour débat équilibré",
+        "suggestedQuestion": "Le ministre de l’Intérieur doit-il gérer lui-même ses opposants ?",
+        "positionA": "non, ça menace la démocratie et la neutralité",
+        "positionB": "oui, c’est un devoir de vigilance politique",
+        "theme": "Politique",
+        "risk": "medium",
+        "politicalOrientation": {
+          "isPolitical": true,
+          "positionA": "left",
+          "positionB": "right"
+        },
+        "_diagnostics": {
+          "rawQuestion": "Le ministre de l’Intérieur doit-il gérer lui-même ses opposants ?",
+          "rawPositionA": "oui, c’est un devoir de vigilance politique",
+          "rawPositionB": "non, ça menace la démocratie et la neutralité",
+          "safePositionA": "oui, c’est un devoir de vigilance politique",
+          "safePositionB": "non, ça menace la démocratie et la neutralité"
+        }
+      }
+    },
+    {
+      "index": 25,
+      "subject": "Epstein en France : nouveaux noms, nouveaux documents, mêmes silences",
+      "result": {
+        "isDebatable": true,
+        "debatePotentialScore": 7,
+        "editorialDecision": "reformulate",
+        "reason": "Sujet sensible et complexe, nécessite une question claire et équilibrée",
+        "suggestedQuestion": "La justice française doit-elle rouvrir l’enquête Epstein ?",
+        "positionA": "oui, faut lever les silences sur ces affaires",
+        "positionB": "non, ça risque de raviver inutilement de vieux dossiers",
+        "theme": "Justice - faits divers",
+        "risk": "medium",
+        "politicalOrientation": {
+          "isPolitical": true,
+          "positionA": "left",
+          "positionB": "right"
+        },
+        "_diagnostics": {
+          "rawQuestion": "La justice française doit-elle rouvrir l’enquête Epstein ?",
+          "rawPositionA": "oui, faut lever les silences sur ces affaires",
+          "rawPositionB": "non, ça risque de raviver inutilement de vieux dossiers",
+          "safePositionA": "oui, faut lever les silences sur ces affaires",
+          "safePositionB": "non, ça risque de raviver inutilement de vieux dossiers"
+        }
+      }
+    },
+    {
+      "index": 26,
+      "subject": "Ce qu'ils nous préparent pour la rentrée est effrayant...",
+      "result": {
+        "isDebatable": false,
+        "debatePotentialScore": 2,
+        "editorialDecision": "avoid",
+        "reason": "Titre vague et alarmiste sans contenu clair ni débat possible",
+        "suggestedQuestion": "Ce qu'ils nous préparent pour la rentrée est effrayant...",
+        "positionA": "",
+        "positionB": "",
+        "theme": "Société - éducation",
+        "risk": "medium",
+        "politicalOrientation": {
+          "isPolitical": false,
+          "positionA": null,
+          "positionB": null
+        },
+        "_diagnostics": null
+      }
+    },
+    {
+      "index": 27,
+      "subject": "\"À Ceuta, rien ne garantit la sécurité des jeunes filles !\" (R.Stainville)",
+      "result": {
+        "isDebatable": true,
+        "debatePotentialScore": 7,
+        "editorialDecision": "reformulate",
+        "reason": "Sujet sensible et complexe, nécessite reformulation pour clarifier débat et éviter exploitation",
+        "suggestedQuestion": "Les autorités de Ceuta doivent-elles mieux protéger les filles ?",
+        "positionA": "oui, la sécurité des jeunes filles doit être prioritair",
+        "positionB": "non, la situation est trop complexe pour agir vite",
+        "theme": "Justice - faits divers",
+        "risk": "high",
+        "politicalOrientation": {
+          "isPolitical": true,
+          "positionA": "left",
+          "positionB": "right"
+        },
+        "_diagnostics": {
+          "rawQuestion": "Les autorités de Ceuta doivent-elles mieux protéger les filles ?",
+          "rawPositionA": "oui, la sécurité des jeunes filles doit être prioritaire",
+          "rawPositionB": "non, la situation est trop complexe pour agir vite",
+          "safePositionA": "oui, la sécurité des jeunes filles doit être",
+          "safePositionB": "non, la situation est trop complexe pour agir vite"
+        }
+      }
+    },
+    {
+      "index": 28,
+      "subject": "Léa Salamé se retire du 20h : \"C’est parfaitement hypocrite et ridicule\" (Françoise Laborde)",
+      "result": {
+        "isDebatable": true,
+        "debatePotentialScore": 6,
+        "editorialDecision": "reformulate",
+        "reason": "Sujet médiatique avec débat sur hypocrisie et responsabilité, mais manque clarté et enjeu collectif fort",
+        "suggestedQuestion": "La décision de Léa Salamé de quitter le 20h est-elle hypocrite ?",
+        "positionA": "oui, c’est une fuite loin des responsabilités",
+        "positionB": "non, elle agit en accord avec ses valeurs",
+        "theme": "Médias - divertissements",
+        "risk": "medium",
+        "politicalOrientation": {
+          "isPolitical": false,
+          "positionA": null,
+          "positionB": null
+        },
+        "_diagnostics": {
+          "rawQuestion": "La décision de Léa Salamé de quitter le 20h est-elle hypocrite ?",
+          "rawPositionA": "oui, c’est une fuite loin des responsabilités",
+          "rawPositionB": "non, elle agit en accord avec ses valeurs",
+          "safePositionA": "oui, c’est une fuite loin des responsabilités",
+          "safePositionB": "non, elle agit en accord avec ses valeurs"
+        }
+      }
+    },
+    {
+      "index": 29,
+      "subject": "Drones illégaux : \"L’hôpital s’adapte à la délinquance, on marche sur la tête\"",
+      "result": {
+        "isDebatable": true,
+        "debatePotentialScore": 7,
+        "editorialDecision": "arena",
+        "reason": "Opposition entre sécurité publique et liberté d'usage des drones, enjeu collectif réel.",
+        "suggestedQuestion": "Peut-on vraiment sécuriser les hôpitaux contre les drones illégaux ?",
+        "positionA": "non, ça restreint trop les libertés des utilisateurs",
+        "positionB": "oui, il faut renforcer la sécurité à tout prix",
+        "theme": "Justice - faits divers",
+        "risk": "medium",
+        "politicalOrientation": {
+          "isPolitical": true,
+          "positionA": "left",
+          "positionB": "right"
+        },
+        "_diagnostics": {
+          "rawQuestion": "Peut-on vraiment sécuriser les hôpitaux contre les drones illégaux ?",
+          "rawPositionA": "oui, il faut renforcer la sécurité à tout prix",
+          "rawPositionB": "non, ça restreint trop les libertés des utilisateurs",
+          "safePositionA": "oui, il faut renforcer la sécurité à tout prix",
+          "safePositionB": "non, ça restreint trop les libertés des utilisateurs"
+        }
+      }
+    },
+    {
+      "index": 30,
+      "subject": "\"Maintenant la devise de la République c’est ‘je t’emmerde’ !\" (Gilbert Collard)",
+      "result": {
+        "isDebatable": true,
+        "debatePotentialScore": 6,
+        "editorialDecision": "reformulate",
+        "reason": "Sujet polémique mais formulation trop provocante et peu claire pour un débat constructif",
+        "suggestedQuestion": "Les propos de Gilbert Collard menacent-ils l'image républicaine ?",
+        "positionA": "oui, ça dégrade le respect et l'unité",
+        "positionB": "non, c'est une liberté d'expression légitime",
+        "theme": "Politique",
+        "risk": "medium",
+        "politicalOrientation": {
+          "isPolitical": true,
+          "positionA": "left",
+          "positionB": "right"
+        },
+        "_diagnostics": {
+          "rawQuestion": "Les propos de Gilbert Collard menacent-ils l'image républicaine ?",
+          "rawPositionA": "oui, ça dégrade le respect et l'unité",
+          "rawPositionB": "non, c'est une liberté d'expression légitime",
+          "safePositionA": "oui, ça dégrade le respect et l'unité",
+          "safePositionB": "non, c'est une liberté d'expression légitime"
+        }
+      }
+    },
+    {
+      "index": 31,
+      "subject": "Loi Ripost : \"C’est logique que ce soit censuré, c’est n’importe quoi !\" (Jean-Pierre Colombiès)",
+      "result": {
+        "isDebatable": true,
+        "debatePotentialScore": 7,
+        "editorialDecision": "reformulate",
+        "reason": "Sujet clivant mais manque de contexte clair et formulation trop vague",
+        "suggestedQuestion": "Loi Ripost : qui doit décider de la censure ?",
+        "positionA": "oui, censure nécessaire pour éviter les abus",
+        "positionB": "non, la censure limite trop la liberté d'expression",
+        "theme": "Politique",
+        "risk": "medium",
+        "politicalOrientation": {
+          "isPolitical": true,
+          "positionA": "left",
+          "positionB": "right"
+        },
+        "_diagnostics": {
+          "rawQuestion": "Loi Ripost : qui doit décider de la censure ?",
+          "rawPositionA": "oui, censure nécessaire pour éviter les abus",
+          "rawPositionB": "non, la censure limite trop la liberté d'expression",
+          "safePositionA": "oui, censure nécessaire pour éviter les abus",
+          "safePositionB": "non, la censure limite trop la liberté d'expression"
+        }
+      }
+    },
+    {
+      "index": 32,
+      "subject": "Viols à Ceuta : Où sont les féministes ?",
+      "result": {
+        "isDebatable": true,
+        "debatePotentialScore": 6,
+        "editorialDecision": "reformulate",
+        "reason": "Sujet sensible et polémique, nécessite reformulation pour éviter exploitation à chaud",
+        "suggestedQuestion": "Viols à Ceuta : les féministes sont-elles absentes ?",
+        "positionA": "oui, elles doivent dénoncer partout",
+        "positionB": "non, elles choisissent leurs combats",
+        "theme": "Justice - faits divers",
+        "risk": "high",
+        "politicalOrientation": {
+          "isPolitical": true,
+          "positionA": "left",
+          "positionB": "right"
+        },
+        "_diagnostics": {
+          "rawQuestion": "Viols à Ceuta : les féministes sont-elles absentes ?",
+          "rawPositionA": "oui, elles doivent dénoncer partout",
+          "rawPositionB": "non, elles choisissent leurs combats",
+          "safePositionA": "oui, elles doivent dénoncer partout",
+          "safePositionB": "non, elles choisissent leurs combats"
+        }
+      }
+    },
+    {
+      "index": 33,
+      "subject": "Crise Ceuta : \"Les habitants vivent une situation cauchemardesque, ils ne sortent plus dans la rue\"",
+      "result": {
+        "isDebatable": true,
+        "debatePotentialScore": 7,
+        "editorialDecision": "arena",
+        "reason": "Conflit migratoire à Ceuta oppose sécurité et accueil, enjeu collectif clair.",
+        "suggestedQuestion": "La crise migratoire à Ceuta menace-t-elle la sécurité locale ?",
+        "positionA": "non, faut plus d'accueil et d'aide aux migrants",
+        "positionB": "oui, il faut renforcer les contrôles aux frontières",
+        "theme": "International",
+        "risk": "medium",
+        "politicalOrientation": {
+          "isPolitical": true,
+          "positionA": "left",
+          "positionB": "right"
+        },
+        "_diagnostics": {
+          "rawQuestion": "La crise migratoire à Ceuta menace-t-elle la sécurité locale ?",
+          "rawPositionA": "oui, il faut renforcer les contrôles aux frontières",
+          "rawPositionB": "non, faut plus d'accueil et d'aide aux migrants",
+          "safePositionA": "oui, il faut renforcer les contrôles aux frontières",
+          "safePositionB": "non, faut plus d'accueil et d'aide aux migrants"
+        }
+      }
+    },
+    {
+      "index": 34,
+      "subject": "Un deuxième homme traqué par Georges Bilello vient d'être condamné",
+      "result": {
+        "isDebatable": false,
+        "debatePotentialScore": 2,
+        "editorialDecision": "avoid",
+        "reason": "Sujet trop factuel et spécifique, sans opposition claire ni enjeu collectif évident",
+        "suggestedQuestion": "Un deuxième homme traqué par Georges Bilello vient d'être condamné",
+        "positionA": "",
+        "positionB": "",
+        "theme": "Justice - faits divers",
+        "risk": "low",
+        "politicalOrientation": {
+          "isPolitical": false,
+          "positionA": null,
+          "positionB": null
+        },
+        "_diagnostics": null
+      }
+    },
+    {
+      "index": 35,
+      "subject": "«Il y a ce que l'on appelle l'usure du pouvoir...» : #Télématin ne cesse de changer d'animateurs",
+      "result": {
+        "isDebatable": false,
+        "debatePotentialScore": 3,
+        "editorialDecision": "avoid",
+        "reason": "Sujet trop spécifique et peu d'enjeu collectif clair ou clivant",
+        "suggestedQuestion": "«Il y a ce que l'on appelle l'usure du pouvoir...» : #Télématin ne cesse de changer d'animateurs",
+        "positionA": "",
+        "positionB": "",
+        "theme": "Médias - divertissements",
+        "risk": "low",
+        "politicalOrientation": {
+          "isPolitical": false,
+          "positionA": null,
+          "positionB": null
+        },
+        "_diagnostics": null
+      }
+    }
+  ]
+}

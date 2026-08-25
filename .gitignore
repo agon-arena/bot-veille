@@ -20,3 +20,8 @@ veille-mixte.json
 
 .env
 bot-veille.log
+ai-usage.jsonl
+certamen-batch-benchmark-*.json
+certamen-temp-batch-experiment-*.json
+certamen-separated-experiment-*.json
+certamen-experiment-corpus-*.json

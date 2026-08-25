@@ -49,15 +49,17 @@ const HOURS_BACK_YOUTUBE = 168;
 const HOURS_BACK_LOW_FREQUENCY = 48;
 const LOW_FREQUENCY_ORIENTATIONS = ["nouvelles positives", "actualités régionales"];
 
-// Mesure réelle (au lieu d'estimer) de la conso par appel IA, pour prioriser les
-// leviers de coût sur des chiffres et non des suppositions. response.model est repris
-// tel que renvoyé par l'API plutôt que retracké manuellement par site d'appel.
-function logAiUsage(label, response) {
-  const u = (response && response.usage) || {};
-  const inputTokens = u.input_tokens ?? u.prompt_tokens ?? 0;
-  const outputTokens = u.output_tokens ?? u.completion_tokens ?? 0;
-  const model = (response && response.model) || "?";
-  console.log(`[ai-usage] ${label} | ${model} | in=${inputTokens} out=${outputTokens}`);
+// Instrumentation IA centralisée dans ai-usage-tracker.js (phase 1 d'optimisation,
+// 22/08/2026) — voir server.js pour le même point d'entrée. trackAi() mesure la latence
+// réelle et le succès/échec de chaque appel, en plus des tokens déjà suivis avant cette phase.
+const {
+  withAiUsage, featureForLabel, setProcessName,
+  setRunTag, recordsForRunTag, summarizeRecords
+} = require("./ai-usage-tracker");
+setProcessName("veille-mixte");
+
+function trackAi(label, fn, extra = {}) {
+  return withAiUsage({ feature: featureForLabel(label), label, ...extra }, fn);
 }
 
 const SIMILARITY_THRESHOLD = 0.52;
@@ -1628,12 +1630,11 @@ Réponds uniquement en JSON valide, sans texte autour :
 { "agonTheme": "une thématique Agôn exacte" }`;
 
   try {
-    const response = await openai.responses.create(buildScoringModelRequest({
+    const response = await trackAi("theme-agon", () => openai.responses.create(buildScoringModelRequest({
       input: prompt,
       temperature: 0.1,
       max_output_tokens: 200
-    }));
-    logAiUsage("theme-agon", response);
+    })), { sourceType: "mixte_on_demand" });
     const parsed = safeJsonParse(response.output_text);
     return { agonTheme: normalizeAgonTheme(parsed.agonTheme) };
   } catch (error) {
@@ -1722,7 +1723,7 @@ ${sourceSection}
 `;
 
   try {
-    const response = await openai.responses.create({
+    const response = await trackAi("tags-sujet", () => openai.responses.create({
       model: "gpt-4.1-mini",
       input: prompt,
       temperature: 0.15,
@@ -1731,8 +1732,7 @@ ${sourceSection}
       // d'"Indemnité") — la marge supplémentaire coûte peu sur un appel
       // aussi court.
       max_output_tokens: 300
-    });
-    logAiUsage("tags-sujet", response);
+    }), { sourceType: "mixte_on_demand" });
 
     const parsed = safeJsonParse(response.output_text);
     const candidates = [
@@ -1828,12 +1828,11 @@ ${JSON.stringify(compactContents, null, 2)}
 
 
   try {
-    const response = await openai.responses.create(buildScoringModelRequest({
+    const response = await trackAi("analyze-sujet", () => openai.responses.create(buildScoringModelRequest({
       input: prompt,
       temperature: 0.2,
       max_output_tokens: 1500
-    }));
-    logAiUsage("analyze-sujet", response);
+    })), { sourceType: "mixte_on_demand" });
 
     const text = response.output_text;
     const parsed = safeJsonParse(text);
@@ -2004,12 +2003,11 @@ ${JSON.stringify(compactContentsForScoring(subject), null, 2)}
 `;
 
   try {
-    const response = await openai.responses.create(buildScoringModelRequest({
+    const response = await trackAi("score-unitaire", () => openai.responses.create(buildScoringModelRequest({
       input: prompt,
       temperature: 0.2,
       max_output_tokens: 2000
-    }));
-    logAiUsage("score-unitaire", response);
+    })), { sourceType: "mixte_scoring_fallback" });
 
     const parsed = safeJsonParse(response.output_text);
     const selectedLinks = applyExcludedLinks(subject, parsed.excludedLinks);
@@ -2063,13 +2061,12 @@ Règles :
 - n'invente jamais d'URL ; utilise uniquement les valeurs exactes du champ "link" dans les contenus.`;
 
   try {
-    const response = await openai.responses.create({
+    const response = await trackAi("verif-sources", () => openai.responses.create({
       model: "gpt-4.1-mini",
       input: prompt,
       temperature: 0.1,
       max_output_tokens: 2000
-    });
-    logAiUsage("verif-sources", response);
+    }), { sourceType: "mixte_on_demand" });
     const parsed = safeJsonParse(response.output_text);
     return applyExcludedLinks(subject, parsed.excludedLinks);
   } catch (error) {
@@ -2286,12 +2283,11 @@ Sujets à analyser :
 ${JSON.stringify(payload, null, 2)}
 `;
 
-  const response = await openai.responses.create(buildScoringModelRequest({
+  const response = await trackAi("score-lot", () => openai.responses.create(buildScoringModelRequest({
     input: prompt,
     temperature: 0.2,
     max_output_tokens: 3200
-  }));
-  logAiUsage("score-lot", response);
+  })), { sourceType: "mixte_scoring", batchSize: batch.length, itemsProcessed: batch.length });
   if (response.status === "incomplete") throw new Error("réponse tronquée (max_output_tokens)");
 
   const parsed = safeJsonParse(response.output_text);
@@ -2612,22 +2608,20 @@ Format JSON attendu :
     // faisait silencieusement retomber la session à 0 fusion (sessions Certamen des 2 et
     // 3 juillet 2026, doublon sondages 1251/1254) : budget large, et un unique retry avec
     // budget doublé si l'API signale explicitement une réponse incomplète.
-    let response = await openai.responses.create({
+    let response = await trackAi("dedup", () => openai.responses.create({
       model: "gpt-4.1-mini",
       input: prompt,
       temperature: 0.1,
       max_output_tokens: 6000
-    });
-    logAiUsage("dedup", response);
+    }), { sourceType: "deduplication", itemsProcessed: candidates.length });
     if (response.status === "incomplete") {
       console.warn("Déduplication IA : réponse tronquée (max_output_tokens), nouvelle tentative avec budget doublé.");
-      response = await openai.responses.create({
+      response = await trackAi("dedup-retry", () => openai.responses.create({
         model: "gpt-4.1-mini",
         input: prompt,
         temperature: 0.1,
         max_output_tokens: 12000
-      });
-      logAiUsage("dedup-retry", response);
+      }), { sourceType: "deduplication", itemsProcessed: candidates.length });
       if (response.status === "incomplete") throw new Error("réponse encore tronquée après retry (max_output_tokens)");
     }
     const parsed = safeJsonParse(response.output_text);
@@ -8025,7 +8019,12 @@ function pickCertamenQuestionForms(count = 3) {
   return shuffled.slice(0, count);
 }
 
-async function analyzeCertamenSubjectWithAI(subject) {
+// `options.temperature` : réservé au harnais d'expérimentation (§ runCertamenTemperatureBatchExperiment)
+// pour isoler l'effet de la température de l'effet du batching, SANS toucher au comportement
+// de production — tous les appelants existants n'ayant jamais passé ce paramètre, la valeur
+// par défaut (0.9) reste strictement celle utilisée en production.
+async function analyzeCertamenSubjectWithAI(subject, options = {}) {
+  const temperature = Number.isFinite(options.temperature) ? options.temperature : 0.9;
   if (!openai) {
     return {
       isDebatable: subject._certamenMarkers > 0,
@@ -8128,20 +8127,19 @@ Règles pour editorialDecision :
 Ne force jamais un débat. Si le sujet ne s'y prête pas, réponds "avoid".`;
 
   try {
-    const response = await openai.responses.create({
+    const response = await trackAi("certamen-analyze", () => openai.responses.create({
       model: "gpt-4.1-mini",
       input: prompt,
-      temperature: 0.9,
+      temperature,
       max_output_tokens: 600
-    });
-    logAiUsage("certamen-analyze", response);
+    }), { sourceType: options.sourceType || "certamen_unit_fallback", batchSize: 1, itemsProcessed: 1 });
     const parsed = safeJsonParse(response.output_text || "");
     const allowedDecisions = new Set(["arena", "understand", "reformulate", "avoid"]);
     const allowedRisks = new Set(["low", "medium", "high"]);
     const isDebatable = parsed.isDebatable === true;
     const editorialDecision = allowedDecisions.has(String(parsed.editorialDecision || ""))
       ? parsed.editorialDecision : "avoid";
-    const suggestedQuestion = await enforceTitleLimit(openai, limitDebateQuestionText(cleanCertamenGeneratedText(parsed.suggestedQuestion || "")), { logUsage: logAiUsage });
+    const suggestedQuestion = await enforceTitleLimit(openai, limitDebateQuestionText(cleanCertamenGeneratedText(parsed.suggestedQuestion || "")), { sourceType: "certamen_pipeline" });
     let positionA = cleanCertamenGeneratedText(parsed.positionA || "").slice(0, 55);
     let positionB = cleanCertamenGeneratedText(parsed.positionB || "").slice(0, 55);
 
@@ -8187,6 +8185,2060 @@ Ne force jamais un débat. Si le sujet ne s'y prête pas, réponds "avoid".`;
   }
 }
 
+// Phase 1 d'optimisation (22/08/2026) : analyzeCertamenSubjectWithAI ci-dessus était
+// appelée une fois par candidat (jusqu'à 120 appels séquentiels/session, inefficacité
+// structurelle mesurée dans l'audit IA du 22/08/2026). Batching sur le modèle éprouvé de
+// analyzeScoreBatchWithAI (mêmes tailles de lot, même stratégie de repli) : mêmes critères
+// métier, même schéma de sortie par candidat, même post-traitement (raccourci de titre,
+// alignement politique conditionnel) — seul le nombre d'appels change. La version unitaire
+// reste inchangée et sert de repli si un lot échoue deux fois de suite.
+const CERTAMEN_BATCH_SIZE = 8;
+const CERTAMEN_BATCH_MAX_CONTENT_CHARS = 26000;
+
+// Le benchmark du 22/08/2026 sur 120 candidats réels (certamen-batch-benchmark-*.json) a
+// mesuré un vrai gain de coût (-35 %, calls -47 %) mais aussi 89 divergences de sélection,
+// dont 11 faux négatifs sur des sujets sensibles (guerre Iran/USA, propos de Ben Gvir,
+// frappes en Ukraine...) et un faux positif d'escalade injustifiée (fait divers "chats
+// disparus" passé d'avoid/score 3 à arena/score 7). Conformément à la consigne "ne force
+// pas la migration si la sélection se dégrade" : runCertamenSession reste par défaut sur
+// le pipeline unitaire (comportement de production inchangé) tant que ces divergences
+// n'ont pas été relues par un humain. CERTAMEN_BATCH_ANALYZE=on dans .env active le
+// pipeline batch une fois cette revue faite.
+const CERTAMEN_BATCH_ANALYZE_ENABLED = String(process.env.CERTAMEN_BATCH_ANALYZE || "").trim().toLowerCase() === "on";
+
+// ==================== ARCHITECTURE SÉPARÉE — ACTIVATION CONTRÔLÉE (23/08/2026) ====================
+// Suite validée des expériences 1-4 : jugement unitaire temp 0.2 → si retenu, créativité
+// unitaire temp 0.9 (prompt renforcé sur la limite de 55 caractères) → troncature sûre →
+// post-traitement inchangé (raccourci de titre, alignement politique). Désactivée par
+// défaut : runCertamenSession se comporte STRICTEMENT comme avant tant que
+// CERTAMEN_SEPARATED_ANALYZE n'est pas explicitement mis à "on". Aucun modèle, critère
+// éditorial, seuil, source ou cadence n'est modifié par cette section — uniquement la façon
+// dont l'appel IA de jugement/créativité est découpé.
+const CERTAMEN_SEPARATED_ANALYZE_ENABLED = String(process.env.CERTAMEN_SEPARATED_ANALYZE || "").trim().toLowerCase() === "on";
+
+// Mode comparatif (§7) : fait tourner l'AUTRE pipeline (celui qui n'alimente pas la
+// publication) uniquement pour mesure, sur un petit échantillon de candidats en tête de
+// session — jamais utilisé pour `analyzed`/`debatables`, donc aucun risque de double
+// publication. Désactivé par défaut.
+const CERTAMEN_SEPARATED_COMPARE_ENABLED = String(process.env.CERTAMEN_SEPARATED_COMPARE || "").trim().toLowerCase() === "on";
+const CERTAMEN_COMPARE_SAMPLE_SIZE = (() => {
+  const env = Number(process.env.CERTAMEN_COMPARE_SAMPLE_SIZE);
+  return Number.isFinite(env) && env > 0 ? Math.round(env) : 10;
+})();
+
+// Orchestrateur de production : reprend exactement les deux étapes validées
+// (analyzeCertamenJudgmentOnly puis, si retenu, generateCertamenCreativeStrict avec le
+// prompt renforcé), avec la troncature sûre au lieu du .slice(0,55) destructif et le même
+// post-traitement (raccourci de titre, alignement politique) que le pipeline actuel. Ne
+// throw jamais : si le jugement échoue, il retombe sur son propre repli "avoid" sûr (comme
+// aujourd'hui) ; si la créativité échoue APRÈS un jugement retenu, le jugement n'est jamais
+// perdu — `creativeFailed: true` signale à l'appelant de mettre le candidat en file
+// d'attente (persistAndScheduleCertamenCreative) plutôt que de publier un contenu
+// incomplet ou de repayer un nouveau jugement.
+async function analyzeCertamenSubjectSeparatedProduction(subject, options = {}) {
+  const judgmentTemperature = Number.isFinite(options.judgmentTemperature) ? options.judgmentTemperature : 0.2;
+  const creativeTemperature = Number.isFinite(options.creativeTemperature) ? options.creativeTemperature : 0.9;
+  const sourceType = options.sourceType || "certamen_production";
+
+  const judgment = await analyzeCertamenJudgmentOnly(subject, { temperature: judgmentTemperature, sourceType });
+
+  if (judgment.editorialDecision === "avoid") {
+    return {
+      certamen: {
+        isDebatable: judgment.isDebatable,
+        debatePotentialScore: judgment.debatePotentialScore,
+        editorialDecision: judgment.editorialDecision,
+        reason: judgment.reason,
+        suggestedQuestion: subject.subject,
+        positionA: "",
+        positionB: "",
+        theme: judgment.theme,
+        risk: judgment.risk,
+        politicalOrientation: { isPolitical: false, positionA: null, positionB: null }
+      },
+      creativeFailed: false
+    };
+  }
+
+  try {
+    const creative = await generateCertamenCreativeStrict(subject, judgment, {
+      temperature: creativeTemperature,
+      sourceType,
+      label: "certamen-creative-generation",
+      throwOnError: true
+    });
+
+    const suggestedQuestion = await enforceTitleLimit(
+      openai,
+      limitDebateQuestionText(cleanCertamenGeneratedText(creative.suggestedQuestion || "")),
+      { sourceType: "certamen_pipeline" }
+    );
+    let positionA = truncateCertamenPositionSafely(cleanCertamenGeneratedText(creative.positionA || ""), 55);
+    let positionB = truncateCertamenPositionSafely(cleanCertamenGeneratedText(creative.positionB || ""), 55);
+
+    let politicalOrientation = { isPolitical: false, positionA: null, positionB: null };
+    if (positionA && positionB) {
+      const aligned = await alignCertamenPositionsByPolitics({ debateQuestion: suggestedQuestion, positionA, positionB });
+      positionA = aligned.positionA;
+      positionB = aligned.positionB;
+      politicalOrientation = aligned.politicalOrientation;
+    }
+
+    return {
+      certamen: {
+        isDebatable: judgment.isDebatable,
+        debatePotentialScore: judgment.debatePotentialScore,
+        editorialDecision: judgment.editorialDecision,
+        reason: judgment.reason,
+        suggestedQuestion,
+        positionA,
+        positionB,
+        theme: judgment.theme,
+        risk: judgment.risk,
+        politicalOrientation
+      },
+      creativeFailed: false
+    };
+  } catch (error) {
+    console.warn(`[certamen-separated] Créativité en échec pour "${subject.subject}" (jugement conservé) :`, error.message);
+    return { certamen: null, creativeFailed: true, judgment, subject };
+  }
+}
+
+// --- File d'attente de créativité différée (§5-6) ---------------------------------------
+// Même patron que persistAndScheduleCertamenIdeas/scheduleOneCertamenPendingIdea
+// (certamen-ideas-seed.js) : persistance JSON simple, tentatives espacées, reprise après
+// redémarrage, plafond de tentatives puis abandon loggé (jamais de publication automatique
+// d'un contenu incomplet). Certamen n'étant pas urgent, aucun retry agressif n'est nécessaire.
+const CERTAMEN_PENDING_CREATIVE_FILE = path.join(__dirname, "certamen-pending-creative.json");
+const CERTAMEN_CREATIVE_RETRY_DELAY_MS = 20 * 60 * 1000; // 20 min entre tentatives
+const CERTAMEN_CREATIVE_MAX_ATTEMPTS = 3;
+
+function loadCertamenPendingCreative() {
+  try { return JSON.parse(fs.readFileSync(CERTAMEN_PENDING_CREATIVE_FILE, "utf8")); }
+  catch { return []; }
+}
+
+function saveCertamenPendingCreative(items) {
+  fs.writeFileSync(CERTAMEN_PENDING_CREATIVE_FILE, JSON.stringify(items, null, 2), "utf8");
+}
+
+// Corps d'une tentative, extrait de scheduleOneCertamenPendingCreative pour rester
+// appelable directement (sans passer par un vrai setTimeout) — nécessaire pour des tests
+// déterministes du retry différé.
+async function runOneCertamenPendingCreativeAttempt(itemId) {
+  const items = loadCertamenPendingCreative();
+  const match = items.find((i) => i.id === itemId && i.status === "pending");
+  if (!match) return;
+
+  // Sujet reconstitué à partir des seules données minimales persistées (pas de gros
+  // contenu dupliqué : compactContents est déjà la version compacte envoyée au modèle).
+  const pseudoSubject = { subject: match.subject, sources: match.sources, contents: match.compactContents };
+
+  let result = null;
+  try {
+    const creative = await generateCertamenCreativeStrict(pseudoSubject, match.judgment, {
+      temperature: 0.9,
+      sourceType: "certamen_creative_retry",
+      label: "certamen-creative-retry",
+      throwOnError: true
+    });
+    const suggestedQuestion = await enforceTitleLimit(
+      openai,
+      limitDebateQuestionText(cleanCertamenGeneratedText(creative.suggestedQuestion || "")),
+      { sourceType: "certamen_pipeline" }
+    );
+    let positionA = truncateCertamenPositionSafely(cleanCertamenGeneratedText(creative.positionA || ""), 55);
+    let positionB = truncateCertamenPositionSafely(cleanCertamenGeneratedText(creative.positionB || ""), 55);
+    let politicalOrientation = { isPolitical: false, positionA: null, positionB: null };
+    if (positionA && positionB) {
+      const aligned = await alignCertamenPositionsByPolitics({ debateQuestion: suggestedQuestion, positionA, positionB });
+      positionA = aligned.positionA;
+      positionB = aligned.positionB;
+      politicalOrientation = aligned.politicalOrientation;
+    }
+    result = { suggestedQuestion, positionA, positionB, politicalOrientation };
+  } catch (err) {
+    console.warn(`[certamen-creative-retry] Échec pour "${match.subject}" :`, err.message);
+  }
+
+  const itemsAfter = loadCertamenPendingCreative();
+  const matchAfter = itemsAfter.find((i) => i.id === itemId);
+  if (!matchAfter) return;
+
+  if (result) {
+    matchAfter.status = "done";
+    matchAfter.result = result;
+    saveCertamenPendingCreative(itemsAfter);
+    console.log(`[certamen-creative-retry] Créativité récupérée pour "${matchAfter.subject}" après ${matchAfter.attempts + 1} tentative(s) — voir ${CERTAMEN_PENDING_CREATIVE_FILE}.`);
+    return;
+  }
+
+  matchAfter.attempts = (matchAfter.attempts || 0) + 1;
+  if (matchAfter.attempts >= CERTAMEN_CREATIVE_MAX_ATTEMPTS) {
+    matchAfter.status = "failed";
+    saveCertamenPendingCreative(itemsAfter);
+    console.error(`[certamen-creative-retry] Abandon après ${matchAfter.attempts} tentative(s) pour "${matchAfter.subject}" — jugement conservé dans ${CERTAMEN_PENDING_CREATIVE_FILE}, aucune publication automatique d'un contenu incomplet.`);
+    return;
+  }
+
+  matchAfter.runAt = new Date(Date.now() + CERTAMEN_CREATIVE_RETRY_DELAY_MS).toISOString();
+  saveCertamenPendingCreative(itemsAfter);
+  console.warn(`[certamen-creative-retry] Nouvelle tentative (${matchAfter.attempts}/${CERTAMEN_CREATIVE_MAX_ATTEMPTS}) dans ${CERTAMEN_CREATIVE_RETRY_DELAY_MS / 60000} min pour "${matchAfter.subject}".`);
+  scheduleOneCertamenPendingCreative(matchAfter);
+}
+
+function scheduleOneCertamenPendingCreative(item) {
+  const delay = Math.max(0, new Date(item.runAt).getTime() - Date.now());
+  setTimeout(() => { runOneCertamenPendingCreativeAttempt(item.id); }, delay);
+}
+
+// subject : sujet complet (contents non compactés) ; judgment : résultat déjà validé de
+// analyzeCertamenJudgmentOnly. Ne stocke que le nécessaire pour régénérer (subject, sources,
+// contents déjà compactés à 6 éléments/300 caractères, jugement) — jamais l'objet subject
+// complet (marqueurs de préfiltre, historique de fusion, etc.).
+function persistAndScheduleCertamenCreative(subject, judgment, delayMs) {
+  const compactContents = (subject.contents || []).slice(0, 6).map(function(c) {
+    return { source: c.source, title: c.title, summary: (c.summary || "").slice(0, 300), type: c.type };
+  });
+  const item = {
+    id: `certamen-creative-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+    subject: subject.subject,
+    sources: subject.sources || [],
+    compactContents,
+    judgment: {
+      isDebatable: judgment.isDebatable,
+      debatePotentialScore: judgment.debatePotentialScore,
+      editorialDecision: judgment.editorialDecision,
+      reason: judgment.reason,
+      theme: judgment.theme,
+      risk: judgment.risk
+    },
+    status: "pending",
+    attempts: 0,
+    runAt: new Date(Date.now() + (Number.isFinite(delayMs) ? delayMs : CERTAMEN_CREATIVE_RETRY_DELAY_MS)).toISOString()
+  };
+  const items = loadCertamenPendingCreative();
+  items.push(item);
+  saveCertamenPendingCreative(items);
+  scheduleOneCertamenPendingCreative(item);
+  return item;
+}
+
+// À appeler au démarrage normal de veille-mixte.js (jamais dans les modes benchmark/
+// expérience) : reprend les créativités non régénérées après un redémarrage, comme
+// resumeCertamenPendingIdeasOnStartup() le fait déjà pour les idées Certamen côté server.js.
+function resumeCertamenPendingCreativeOnStartup() {
+  const items = loadCertamenPendingCreative();
+  const pending = items.filter((i) => i.status === "pending");
+  if (pending.length) {
+    console.log(`[certamen-creative-retry] Reprise de ${pending.length} créativité(s) en attente après redémarrage.`);
+    pending.forEach(scheduleOneCertamenPendingCreative);
+  }
+}
+
+// Mode comparatif (§7) : exécute l'autre pipeline en pur "shadow" (résultat jamais utilisé
+// pour analyzed/debatables), tagué séparément pour la mesure. Toute erreur y est avalée :
+// un échec du pipeline d'ombre ne doit jamais affecter la session réelle.
+async function runCertamenComparisonShadow(subject, primaryIsSeparated) {
+  const shadowTag = primaryIsSeparated ? "certamen_compare_unitaire" : "certamen_compare_separe";
+  setRunTag(shadowTag);
+  try {
+    if (primaryIsSeparated) {
+      await analyzeCertamenSubjectWithAI(subject, { sourceType: "certamen_compare" });
+    } else {
+      await analyzeCertamenSubjectSeparatedProduction(subject, { sourceType: "certamen_compare" });
+    }
+  } catch (error) {
+    console.warn(`[certamen-compare] Erreur pipeline de comparaison pour "${subject.subject}" (ignorée, sans effet sur la publication) :`, error.message);
+  } finally {
+    setRunTag(null);
+  }
+}
+// ==================== FIN ARCHITECTURE SÉPARÉE — ACTIVATION CONTRÔLÉE ====================
+
+// ==================== TESTS — ARCHITECTURE SÉPARÉE (§12) ====================
+// Suite de tests en process (même patron que test-ai-usage-tracker.js — pas de framework
+// dans ce projet), déclenchée uniquement par `node veille-mixte.js --certamen-separated-tests`.
+// N'appelle jamais le vrai réseau OpenAI : openai.responses.create est monkey-patché
+// temporairement puis restauré, pour rester déterministe et gratuit.
+
+function makeCertamenTestSubject(overrides) {
+  return Object.assign({
+    subject: "Sujet de test Certamen",
+    sources: ["Source Test"],
+    contents: [{ source: "Source Test", title: "Titre test", summary: "Résumé de test suffisamment long pour le prompt de jugement.", type: "article" }],
+    _certamenHasMarker: true,
+    _certamenScore: 5
+  }, overrides || {});
+}
+
+// behavior.judgment / behavior.creative / behavior.other : fonctions async(params) -> réponse
+// mockée. Dispatch par contenu du prompt (seul repère disponible côté mock, les deux
+// étapes appellent le même openai.responses.create).
+function installCertamenOpenAIMock(behavior) {
+  const original = openai.responses.create.bind(openai);
+  openai.responses.create = async function(params) {
+    const input = String(params.input || "");
+    if (/évaluer si cette actualité peut devenir une bonne arène/.test(input) && behavior.judgment) {
+      return behavior.judgment(params);
+    }
+    if (/formuler la question de débat/.test(input) && behavior.creative) {
+      return behavior.creative(params);
+    }
+    if (behavior.other) return behavior.other(params);
+    // Repli neutre (ex. alignement politique, raccourci de titre) : JSON vide valide,
+    // laisse le code appelant retomber sur ses propres valeurs par défaut sans erreur.
+    return { model: "gpt-4.1-mini-mock", output_text: "{}", usage: { input_tokens: 5, output_tokens: 5 } };
+  };
+  return function restore() { openai.responses.create = original; };
+}
+
+function snapshotCertamenPendingCreativeFile() {
+  try { return fs.readFileSync(CERTAMEN_PENDING_CREATIVE_FILE, "utf8"); } catch { return null; }
+}
+function restoreCertamenPendingCreativeFile(snapshot) {
+  if (snapshot === null) { try { fs.unlinkSync(CERTAMEN_PENDING_CREATIVE_FILE); } catch (_) {} }
+  else fs.writeFileSync(CERTAMEN_PENDING_CREATIVE_FILE, snapshot, "utf8");
+}
+
+async function runCertamenSeparatedTests() {
+  const assert = require("assert");
+  let passed = 0;
+  let failed = 0;
+
+  async function test(name, fn) {
+    try {
+      await fn();
+      passed += 1;
+      console.log(`✓ ${name}`);
+    } catch (error) {
+      failed += 1;
+      console.error(`✗ ${name}`);
+      console.error(`  ${error.message}`);
+    }
+  }
+
+  console.log("=== Tests architecture séparée Certamen ===");
+
+  await test("truncateCertamenPositionSafely : ne coupe jamais au milieu d'un mot", () => {
+    const r = truncateCertamenPositionSafely("les écologistes doivent garder leur propre candidature ici", 55);
+    assert.ok(r.length <= 55);
+    assert.ok(!/[a-zà-ÿ]$/.test(r) || / /.test(r), "coupe suspecte");
+    assert.strictEqual(/candida$/.test(r), false, "ne doit jamais couper 'candidature' en 'candida'");
+  });
+
+  await test("truncateCertamenPositionSafely : déterministe et sans ellipse", () => {
+    const text = "oui, c'est la seule chance d'avoir un poids fort en 2027";
+    const a = truncateCertamenPositionSafely(text, 55);
+    const b = truncateCertamenPositionSafely(text, 55);
+    assert.strictEqual(a, b);
+    assert.ok(!a.includes("…"));
+    assert.ok(a.length <= 55);
+  });
+
+  await test("truncateCertamenPositionSafely : texte déjà court inchangé", () => {
+    assert.strictEqual(truncateCertamenPositionSafely("court", 55), "court");
+  });
+
+  if (!openai) {
+    console.log("OPENAI_API_KEY absent — tests nécessitant un mock d'appel IA sautés.");
+  } else {
+    await test("flag OFF (CERTAMEN_SEPARATED_ANALYZE non défini) : comportement par défaut", () => {
+      assert.strictEqual(CERTAMEN_SEPARATED_ANALYZE_ENABLED, false, "doit être désactivé par défaut dans cet environnement de test");
+    });
+
+    await test("jugement avoid : aucun appel créatif déclenché", async () => {
+      const subject = makeCertamenTestSubject();
+      let creativeCalls = 0;
+      const restore = installCertamenOpenAIMock({
+        judgment: async () => ({
+          model: "gpt-4.1-mini-mock",
+          output_text: JSON.stringify({ isDebatable: false, debatePotentialScore: 2, editorialDecision: "avoid", reason: "test", theme: "Politique", risk: "low" }),
+          usage: { input_tokens: 20, output_tokens: 10 }
+        }),
+        creative: async () => { creativeCalls += 1; throw new Error("ne doit jamais être appelé pour un avoid"); }
+      });
+      try {
+        const result = await analyzeCertamenSubjectSeparatedProduction(subject, { sourceType: "certamen_test" });
+        assert.strictEqual(result.certamen.editorialDecision, "avoid");
+        assert.strictEqual(creativeCalls, 0);
+        assert.strictEqual(result.creativeFailed, false);
+      } finally { restore(); }
+    });
+
+    await test("jugement retenu : créativité appelée, objet final complet", async () => {
+      const subject = makeCertamenTestSubject();
+      let creativeCalls = 0;
+      const restore = installCertamenOpenAIMock({
+        judgment: async () => ({
+          model: "gpt-4.1-mini-mock",
+          output_text: JSON.stringify({ isDebatable: true, debatePotentialScore: 7, editorialDecision: "arena", reason: "test", theme: "Politique", risk: "medium" }),
+          usage: { input_tokens: 20, output_tokens: 10 }
+        }),
+        creative: async () => {
+          creativeCalls += 1;
+          return {
+            model: "gpt-4.1-mini-mock",
+            output_text: JSON.stringify({ suggestedQuestion: "Faut-il tester ce pipeline ?", positionA: "oui il faut tester", positionB: "non ce n'est pas nécessaire" }),
+            usage: { input_tokens: 30, output_tokens: 15 }
+          };
+        }
+      });
+      try {
+        const result = await analyzeCertamenSubjectSeparatedProduction(subject, { sourceType: "certamen_test" });
+        assert.strictEqual(creativeCalls, 1);
+        assert.strictEqual(result.creativeFailed, false);
+        assert.strictEqual(result.certamen.editorialDecision, "arena");
+        assert.ok(result.certamen.suggestedQuestion.length > 0);
+        assert.ok(result.certamen.positionA.length > 0);
+        assert.ok(result.certamen.positionB.length > 0);
+        // Compatibilité avec le format attendu par runCertamenSession (mêmes clés que
+        // analyzeCertamenSubjectWithAI).
+        const expectedKeys = ["isDebatable", "debatePotentialScore", "editorialDecision", "reason", "suggestedQuestion", "positionA", "positionB", "theme", "risk", "politicalOrientation"];
+        expectedKeys.forEach(function(k) { assert.ok(k in result.certamen, `clé manquante : ${k}`); });
+      } finally { restore(); }
+    });
+
+    await test("créativité en échec : jugement jamais perdu, certamen=null, creativeFailed=true", async () => {
+      const subject = makeCertamenTestSubject();
+      const restore = installCertamenOpenAIMock({
+        judgment: async () => ({
+          model: "gpt-4.1-mini-mock",
+          output_text: JSON.stringify({ isDebatable: true, debatePotentialScore: 7, editorialDecision: "arena", reason: "test", theme: "Politique", risk: "medium" }),
+          usage: { input_tokens: 20, output_tokens: 10 }
+        }),
+        creative: async () => { throw new Error("panne API simulée"); }
+      });
+      try {
+        const result = await analyzeCertamenSubjectSeparatedProduction(subject, { sourceType: "certamen_test" });
+        assert.strictEqual(result.creativeFailed, true);
+        assert.strictEqual(result.certamen, null);
+        assert.strictEqual(result.judgment.editorialDecision, "arena");
+        assert.strictEqual(result.judgment.debatePotentialScore, 7);
+      } finally { restore(); }
+    });
+
+    await test("file d'attente : item minimal, pas de gros contenu dupliqué", async () => {
+      const snap = snapshotCertamenPendingCreativeFile();
+      try {
+        const subject = makeCertamenTestSubject({ contents: [{ source: "S", title: "T", summary: "x".repeat(1000), type: "article" }] });
+        const judgment = { isDebatable: true, debatePotentialScore: 7, editorialDecision: "arena", reason: "r", theme: "Politique", risk: "medium" };
+        const item = persistAndScheduleCertamenCreative(subject, judgment, 24 * 60 * 60 * 1000);
+        const stored = loadCertamenPendingCreative().find(function(i) { return i.id === item.id; });
+        assert.ok(stored, "item non trouvé après persistAndScheduleCertamenCreative");
+        assert.strictEqual(stored.status, "pending");
+        assert.strictEqual(stored.attempts, 0);
+        assert.ok(stored.compactContents[0].summary.length <= 300, "le résumé doit rester compacté, pas le contenu brut");
+        assert.strictEqual(stored.judgment.editorialDecision, "arena");
+      } finally { restoreCertamenPendingCreativeFile(snap); }
+    });
+
+    await test("retry différé réussi : status -> done, résultat complet", async () => {
+      const snap = snapshotCertamenPendingCreativeFile();
+      try {
+        const subject = makeCertamenTestSubject();
+        const judgment = { isDebatable: true, debatePotentialScore: 7, editorialDecision: "arena", reason: "r", theme: "Politique", risk: "medium" };
+        const item = persistAndScheduleCertamenCreative(subject, judgment, 24 * 60 * 60 * 1000);
+        const restore = installCertamenOpenAIMock({
+          creative: async () => ({
+            model: "gpt-4.1-mini-mock",
+            output_text: JSON.stringify({ suggestedQuestion: "Une question test ?", positionA: "oui", positionB: "non" }),
+            usage: { input_tokens: 10, output_tokens: 5 }
+          })
+        });
+        try {
+          await runOneCertamenPendingCreativeAttempt(item.id);
+        } finally { restore(); }
+        const stored = loadCertamenPendingCreative().find(function(i) { return i.id === item.id; });
+        assert.strictEqual(stored.status, "done");
+        assert.ok(stored.result && stored.result.suggestedQuestion);
+      } finally { restoreCertamenPendingCreativeFile(snap); }
+    });
+
+    await test("plafond de retry : abandon propre après CERTAMEN_CREATIVE_MAX_ATTEMPTS échecs", async () => {
+      const snap = snapshotCertamenPendingCreativeFile();
+      try {
+        const subject = makeCertamenTestSubject();
+        const judgment = { isDebatable: true, debatePotentialScore: 7, editorialDecision: "arena", reason: "r", theme: "Politique", risk: "medium" };
+        const item = persistAndScheduleCertamenCreative(subject, judgment, 24 * 60 * 60 * 1000);
+        const restore = installCertamenOpenAIMock({ creative: async () => { throw new Error("échec simulé"); } });
+        try {
+          for (let i = 0; i < CERTAMEN_CREATIVE_MAX_ATTEMPTS; i++) {
+            await runOneCertamenPendingCreativeAttempt(item.id);
+          }
+        } finally { restore(); }
+        const stored = loadCertamenPendingCreative().find(function(i) { return i.id === item.id; });
+        assert.strictEqual(stored.status, "failed");
+        assert.strictEqual(stored.attempts, CERTAMEN_CREATIVE_MAX_ATTEMPTS);
+      } finally { restoreCertamenPendingCreativeFile(snap); }
+    });
+
+    await test("reprise après redémarrage : un item 'pending' écrit hors process est repris", async () => {
+      const snap = snapshotCertamenPendingCreativeFile();
+      try {
+        const item = {
+          id: "test-resume-" + Date.now(),
+          subject: "Sujet de reprise test",
+          sources: ["Source"],
+          compactContents: [{ source: "Source", title: "Titre", summary: "résumé court", type: "article" }],
+          judgment: { isDebatable: true, debatePotentialScore: 7, editorialDecision: "arena", reason: "r", theme: "Politique", risk: "medium" },
+          status: "pending",
+          attempts: 0,
+          runAt: new Date(Date.now() - 1000).toISOString()
+        };
+        saveCertamenPendingCreative([item]);
+        const restore = installCertamenOpenAIMock({
+          creative: async () => ({
+            model: "gpt-4.1-mini-mock",
+            output_text: JSON.stringify({ suggestedQuestion: "Question reprise ?", positionA: "oui", positionB: "non" }),
+            usage: { input_tokens: 10, output_tokens: 5 }
+          })
+        });
+        try {
+          resumeCertamenPendingCreativeOnStartup();
+          await new Promise(function(resolve) { setTimeout(resolve, 500); });
+        } finally { restore(); }
+        const stored = loadCertamenPendingCreative().find(function(i) { return i.id === item.id; });
+        assert.strictEqual(stored.status, "done");
+      } finally { restoreCertamenPendingCreativeFile(snap); }
+    });
+
+    await test("mode comparatif : le pipeline d'ombre ne renvoie rien d'exploitable (pas de double publication)", async () => {
+      const subject = makeCertamenTestSubject();
+      const restore = installCertamenOpenAIMock({
+        judgment: async () => ({
+          model: "gpt-4.1-mini-mock",
+          output_text: JSON.stringify({ isDebatable: true, debatePotentialScore: 7, editorialDecision: "arena", reason: "test", theme: "Politique", risk: "medium" }),
+          usage: { input_tokens: 10, output_tokens: 5 }
+        }),
+        creative: async () => ({
+          model: "gpt-4.1-mini-mock",
+          output_text: JSON.stringify({ suggestedQuestion: "Q ?", positionA: "oui", positionB: "non" }),
+          usage: { input_tokens: 10, output_tokens: 5 }
+        })
+      });
+      try {
+        const shadowReturn = await runCertamenComparisonShadow(subject, true);
+        assert.strictEqual(shadowReturn, undefined, "le shadow ne doit jamais renvoyer un objet qu'un appelant pourrait publier par erreur");
+      } finally { restore(); }
+    });
+  }
+
+  await test("aucun nouveau modèle introduit pour Certamen (jugement/créativité restent sur gpt-4.1-mini)", () => {
+    const source = fs.readFileSync(path.join(__dirname, "veille-mixte.js"), "utf8");
+    function extractFunctionSource(fnName) {
+      const start = source.indexOf(`async function ${fnName}(`);
+      assert.ok(start >= 0, `fonction ${fnName} introuvable`);
+      const nextFn = source.indexOf("\nasync function ", start + 1);
+      const nextFn2 = source.indexOf("\nfunction ", start + 1);
+      const end = [nextFn, nextFn2].filter(function(n) { return n > start; }).sort(function(a, b) { return a - b; })[0] || source.length;
+      return source.slice(start, end);
+    }
+    ["analyzeCertamenJudgmentOnly", "generateCertamenCreativeStrict", "analyzeCertamenSubjectWithAI"].forEach(function(fnName) {
+      const body = extractFunctionSource(fnName);
+      assert.ok(body.includes('"gpt-4.1-mini"'), `${fnName} devrait utiliser gpt-4.1-mini, comme le pipeline actuel`);
+    });
+  });
+
+  console.log(`\n${passed} test(s) réussi(s), ${failed} échec(s).`);
+  if (failed > 0) process.exitCode = 1;
+}
+// ==================== FIN TESTS — ARCHITECTURE SÉPARÉE ====================
+
+// Un seul appel IA pour plusieurs candidats, corrélés par un id déterministe (position
+// dans le lot) présent à la fois dans l'entrée et exigé dans la sortie — jamais par le
+// seul ordre de la réponse, pour rester robuste à un modèle qui réordonnerait légèrement.
+// `options.temperature` : même réserve que analyzeCertamenSubjectWithAI ci-dessus — jamais
+// passé par le code de production, uniquement par le harnais d'expérimentation.
+async function analyzeCertamenSubjectsBatchWithAI(batch, options = {}) {
+  const temperature = Number.isFinite(options.temperature) ? options.temperature : 0.9;
+  const payload = batch.map(function(subject, index) {
+    return {
+      id: index,
+      subject: subject.subject,
+      sources: subject.sources || [],
+      contents: (subject.contents || []).slice(0, 6).map(function(c) {
+        return {
+          source: c.source,
+          title: c.title,
+          summary: (c.summary || "").slice(0, 300),
+          type: c.type
+        };
+      }),
+      // Tirage indépendant par candidat (comme dans la version unitaire, un tirage par
+      // appel) : préserve la variété des formes de question à l'intérieur d'un même lot,
+      // plutôt qu'un tirage unique partagé par les 8 candidats du lot.
+      questionForms: pickCertamenQuestionForms(3)
+    };
+  });
+
+  const prompt = `Tu es un éditeur pour Agôn, une plateforme de débat public.
+
+Ta mission : évaluer, POUR CHAQUE sujet de la liste fournie, s'il peut devenir une bonne arène Agôn. Évalue chaque sujet indépendamment des autres.
+
+Critères d'un bon sujet Agôn :
+- deux positions défendables ;
+- question non évidente ;
+- enjeu collectif réel ;
+- sujet compréhensible sans expertise ;
+- pas seulement informatif ;
+- pas une tragédie exploitée à chaud ;
+- opposition de valeurs, de responsabilités, de solutions ou de priorités.
+
+STYLE pour suggestedQuestion et positionA/positionB, pour tous les sujets :
+Écris comme un vrai utilisateur d'Agôn : clair, direct, naturel, pas comme un assistant.
+Le français doit rester globalement correct, mais pas trop scolaire.
+La plupart des questions doivent être propres. Parfois, environ 1 fois sur 5, tu peux laisser une petite imperfection naturelle : minuscule en début de phrase, accent secondaire oublié, tournure orale.
+Tu peux garder un style oral léger dans les positions ("oui", "non", "faut"), avec parfois une petite faute légère, mais sans fautes grossières.
+
+À éviter absolument :
+* fautes visibles dans la question ("faut t'il", "lextrme", "pouvouir", mots oubliés) ;
+* accents manquants sur les mots importants ;
+* conjugaisons ou accords cassés ;
+* ponctuation doublée ou absence de point d'interrogation pour suggestedQuestion.
+
+Règles pour suggestedQuestion, pour chaque sujet :
+- question concrète et débattable ;
+- ancrée dans le sujet précis ;
+- mentionne si possible l'acteur, le dispositif, le lieu ou la décision au coeur du sujet ;
+- évite les formulations génériques qui pourraient s'appliquer à dix autres articles ;
+- FORME IMPOSÉE : formule la question selon l'une des formes listées dans "questionForms" DE CE SUJET, dans l'ordre de préférence donné ;
+- INTERDIT de commencer par "Faut-il" sauf si aucune des formes de ce sujet ne peut convenir ET que le sujet porte sur une interdiction, une obligation ou une réforme à trancher ;
+- pas de question évidente ("faut-il éviter les accidents ?") ;
+- les deux camps doivent sembler défendables.
+
+Règles pour positionA/positionB, pour chaque sujet :
+- étiquettes de camp courtes, directes, parfois passionnées ;
+- pas d'arguments longs, pas de "car", "pour que", "afin de" ;
+- symétriques et défendables.
+
+Règles pour editorialDecision, pour chaque sujet :
+- "arena" : peut devenir une arène Agôn immédiatement ;
+- "understand" : intéressant mais pas vraiment clivant ;
+- "reformulate" : potentiel mais question trop évidente ou fragile ;
+- "avoid" : trop sensible, tragique ou peu débattable.
+
+Ne force jamais un débat. Si un sujet ne s'y prête pas, réponds "avoid" pour ce sujet uniquement — ça n'affecte pas les autres.
+
+Tu dois répondre uniquement en JSON valide avec cette structure :
+{
+  "subjects": [
+    {
+      "id": 0,
+      "isDebatable": true/false,
+      "debatePotentialScore": entier de 0 à 10,
+      "editorialDecision": "arena" | "understand" | "reformulate" | "avoid",
+      "reason": "explication courte (max 120 caractères)",
+      "suggestedQuestion": "question Agôn (max 70 caractères, espaces et tirets compris — c'est un titre, reste court)",
+      "positionA": "camp A (max 55 caractères)",
+      "positionB": "camp B (max 55 caractères)",
+      "theme": "thème exact parmi : ${AGON_THEMES.join(" / ")}",
+      "risk": "low" | "medium" | "high"
+    }
+  ]
+}
+Rends exactement un objet par sujet fourni, dans le même ordre, en reprenant son "id" exact.
+
+Sujets à analyser :
+${JSON.stringify(payload, null, 2)}
+
+Réponds uniquement en JSON valide, sans balises markdown.`;
+
+  const response = await trackAi("certamen-analyze-batch", () => openai.responses.create({
+    model: "gpt-4.1-mini",
+    input: prompt,
+    temperature,
+    max_output_tokens: 2600
+  }), { sourceType: options.sourceType || "certamen_batch", batchSize: batch.length, itemsProcessed: batch.length });
+
+  if (response.status === "incomplete") throw new Error("réponse tronquée (max_output_tokens)");
+
+  const parsed = safeJsonParse(response.output_text || "");
+  const rows = Array.isArray(parsed.subjects) ? parsed.subjects : [];
+  const byId = new Map(rows.map(function(row) { return [Number(row.id), row]; }));
+
+  const allowedDecisions = new Set(["arena", "understand", "reformulate", "avoid"]);
+  const allowedRisks = new Set(["low", "medium", "high"]);
+
+  const results = [];
+  for (let index = 0; index < batch.length; index++) {
+    const row = byId.get(index);
+    if (!row || typeof row.editorialDecision !== "string") {
+      throw new Error(`sujet ${index} absent ou invalide dans la réponse du lot Certamen`);
+    }
+
+    const editorialDecision = allowedDecisions.has(row.editorialDecision) ? row.editorialDecision : "avoid";
+    // Post-traitement identique à la version unitaire : raccourci de titre puis, seulement
+    // pour les candidats retenus, alignement politique (même appel, même condition).
+    const suggestedQuestion = await enforceTitleLimit(
+      openai,
+      limitDebateQuestionText(cleanCertamenGeneratedText(row.suggestedQuestion || "")),
+      { sourceType: "certamen_pipeline" }
+    );
+    let positionA = cleanCertamenGeneratedText(row.positionA || "").slice(0, 55);
+    let positionB = cleanCertamenGeneratedText(row.positionB || "").slice(0, 55);
+
+    let politicalOrientation = { isPolitical: false, positionA: null, positionB: null };
+    if (editorialDecision !== "avoid" && positionA && positionB) {
+      const aligned = await alignCertamenPositionsByPolitics({ debateQuestion: suggestedQuestion, positionA, positionB });
+      positionA = aligned.positionA;
+      positionB = aligned.positionB;
+      politicalOrientation = aligned.politicalOrientation;
+    }
+
+    results.push({
+      isDebatable: row.isDebatable === true,
+      debatePotentialScore: Number.isFinite(Number(row.debatePotentialScore))
+        ? Math.max(0, Math.min(10, Number(row.debatePotentialScore))) : 0,
+      editorialDecision,
+      reason: String(row.reason || "").slice(0, 200),
+      suggestedQuestion,
+      positionA,
+      positionB,
+      theme: normalizeAgonTheme(row.theme),
+      risk: allowedRisks.has(String(row.risk || "")) ? row.risk : "medium",
+      politicalOrientation
+    });
+  }
+  return results;
+}
+
+// Découpe les candidats en lots (8 par défaut, comme le scoring veille mixte, sauf si le
+// budget de caractères est dépassé avant) et orchestre le repli en cas d'échec : un lot en
+// échec est retenté une fois, puis, si l'échec persiste, chaque candidat de CE lot repasse
+// par la version unitaire inchangée (analyzeCertamenSubjectWithAI) — jamais toute la
+// session. Retourne un tableau {subject, certamen} dans le même ordre que `candidates`.
+async function analyzeCertamenSubjectsWithAI(candidates, onProgress, options = {}) {
+  const batchSize = Number.isFinite(options.batchSize) ? options.batchSize : CERTAMEN_BATCH_SIZE;
+  const temperature = Number.isFinite(options.temperature) ? options.temperature : 0.9;
+  const batches = [];
+  let current = [];
+  let currentChars = 0;
+  for (const subject of candidates) {
+    const chars = JSON.stringify((subject.contents || []).slice(0, 6)).length;
+    if (current.length && (current.length >= batchSize || currentChars + chars > CERTAMEN_BATCH_MAX_CONTENT_CHARS)) {
+      batches.push(current);
+      current = [];
+      currentChars = 0;
+    }
+    current.push(subject);
+    currentChars += chars;
+  }
+  if (current.length) batches.push(current);
+
+  const results = [];
+  let done = 0;
+  for (const batch of batches) {
+    let certamenResults;
+    try {
+      certamenResults = await analyzeCertamenSubjectsBatchWithAI(batch, { temperature, sourceType: options.sourceType });
+    } catch (firstError) {
+      console.warn(`Certamen IA : lot en échec (${firstError.message}), nouvelle tentative du même lot.`);
+      try {
+        certamenResults = await analyzeCertamenSubjectsBatchWithAI(batch, { temperature, sourceType: options.sourceType });
+      } catch (secondError) {
+        console.warn(`Certamen IA : lot en échec après retry (${secondError.message}), repli sujet par sujet.`);
+        certamenResults = [];
+        for (const subject of batch) {
+          certamenResults.push(await analyzeCertamenSubjectWithAI(subject, { temperature, sourceType: options.sourceType }));
+        }
+      }
+    }
+    batch.forEach(function(subject, i) {
+      results.push({ subject: subject, certamen: certamenResults[i] });
+    });
+    done += batch.length;
+    if (typeof onProgress === "function") onProgress(done, candidates.length);
+  }
+  return results;
+}
+
+// Seuil au-delà duquel un écart de debatePotentialScore entre les deux pipelines est
+// considéré comme "significatif" plutôt que du simple bruit de génération (temperature 0.9
+// des deux côtés : deux exécutions du même pipeline unitaire diffèrent déjà un peu entre
+// elles — voir la mise en garde dans le rapport de benchmark).
+const CERTAMEN_BENCHMARK_SIGNIFICANT_SCORE_DELTA = 3;
+
+// Harnais de comparaison ancien (unitaire) / nouveau (batch) pipeline Certamen, sur EXACTEMENT
+// le même corpus de candidats (une seule collecte + préfiltrage, réutilisés pour les deux
+// pipelines — aucun des deux ne mute `subject`). Lancé uniquement via
+// `node veille-mixte.js --certamen-batch-benchmark` (jamais en production). Fait de vrais
+// appels OpenAI des deux côtés (coût réel, non estimé) et lit les coûts/tokens/latences
+// réels dans ai-usage.jsonl via des run_tag dédiés, plutôt que de les recalculer à part.
+async function runCertamenBatchBenchmark() {
+  console.log("=== Benchmark Certamen : pipeline unitaire vs pipeline batch (même corpus) ===");
+
+  const { contents: articles } = await collectArticles(null, new Set(), MEDIA_FILE_CERTAMEN);
+  const { contents: videos } = await collectYouTubeVideos(null, new Set(), CHANNELS_FILE_CERTAMEN);
+  const contents = [...articles, ...videos];
+  console.log(`Benchmark : ${contents.length} contenu(s) collecté(s).`);
+
+  const groups = groupContentsBySubject(contents);
+  const rawSubjects = filterMultiSourceSubjects(groups, 1);
+  const deduplication = await deduplicateSubjectsWithAI(rawSubjects);
+  const dedupedSubjects = deduplication.subjects;
+  const prefiltered = certamenPrefilter(dedupedSubjects);
+  const sortedCandidates = prefiltered.slice().sort(function(a, b) {
+    const aHasMarker = a._certamenHasMarker ? 1 : 0;
+    const bHasMarker = b._certamenHasMarker ? 1 : 0;
+    if (aHasMarker !== bHasMarker) return bHasMarker - aHasMarker;
+    return (b._certamenScore || 0) - (a._certamenScore || 0);
+  });
+  const candidates = sortedCandidates.slice(0, MAX_CERTAMEN_SUBJECTS_FOR_AI);
+  console.log(`Benchmark : ${candidates.length} candidat(s) retenu(s) comme corpus commun (limite ${MAX_CERTAMEN_SUBJECTS_FOR_AI}).`);
+
+  if (!candidates.length) {
+    console.log("Benchmark : aucun candidat disponible après collecte/préfiltrage, arrêt.");
+    return null;
+  }
+
+  console.log(`Benchmark : pipeline unitaire (ancien) — ${candidates.length} appel(s) séquentiel(s)...`);
+  const oldTag = `bench-unit-${Date.now()}`;
+  setRunTag(oldTag);
+  const oldStart = Date.now();
+  const oldResults = [];
+  for (const subject of candidates) {
+    oldResults.push(await analyzeCertamenSubjectWithAI(subject));
+  }
+  const oldLatencyTotalMs = Date.now() - oldStart;
+  setRunTag(null);
+
+  console.log(`Benchmark : pipeline batch (nouveau) — lots de ${CERTAMEN_BATCH_SIZE}...`);
+  const newTag = `bench-batch-${Date.now()}`;
+  setRunTag(newTag);
+  const newStart = Date.now();
+  const newAnalysis = await analyzeCertamenSubjectsWithAI(candidates);
+  const newResults = newAnalysis.map(function(entry) { return entry.certamen; });
+  const newLatencyTotalMs = Date.now() - newStart;
+  setRunTag(null);
+
+  const oldUsage = summarizeRecords(recordsForRunTag(oldTag));
+  const newUsage = summarizeRecords(recordsForRunTag(newTag));
+
+  const divergences = [];
+  candidates.forEach(function(subject, i) {
+    const o = oldResults[i];
+    const n = newResults[i];
+    const sameDecision = o.editorialDecision === n.editorialDecision;
+    const scoreDelta = Math.abs((o.debatePotentialScore || 0) - (n.debatePotentialScore || 0));
+    const themeChanged = o.theme !== n.theme;
+    const riskChanged = o.risk !== n.risk;
+    if (sameDecision && scoreDelta === 0 && !themeChanged && !riskChanged) return;
+
+    let severity = "mineure";
+    if (o.editorialDecision === "avoid" && n.editorialDecision !== "avoid") severity = "faux_positif_batch";
+    else if (o.editorialDecision !== "avoid" && n.editorialDecision === "avoid") severity = "faux_negatif_batch";
+    else if (scoreDelta >= CERTAMEN_BENCHMARK_SIGNIFICANT_SCORE_DELTA) severity = "score_significatif";
+
+    divergences.push({
+      subject: subject.subject,
+      unitaire: { editorialDecision: o.editorialDecision, score: o.debatePotentialScore, theme: o.theme, risk: o.risk, question: o.suggestedQuestion },
+      batch: { editorialDecision: n.editorialDecision, score: n.debatePotentialScore, theme: n.theme, risk: n.risk, question: n.suggestedQuestion },
+      scoreDelta,
+      severity
+    });
+  });
+
+  const oldRetained = oldResults.filter(function(r) { return r.editorialDecision !== "avoid"; }).length;
+  const newRetained = newResults.filter(function(r) { return r.editorialDecision !== "avoid"; }).length;
+
+  const report = {
+    generatedAt: new Date().toISOString(),
+    candidateCount: candidates.length,
+    batchSize: CERTAMEN_BATCH_SIZE,
+    unitaire: {
+      calls: oldUsage.totals.calls,
+      inputTokens: oldUsage.totals.inputTokens,
+      outputTokens: oldUsage.totals.outputTokens,
+      cachedTokens: oldUsage.totals.cachedTokens,
+      cost: oldUsage.totals.costKnown ? Number(oldUsage.totals.cost.toFixed(6)) : null,
+      latencyTotalMs: oldLatencyTotalMs,
+      retained: oldRetained,
+      rejected: candidates.length - oldRetained
+    },
+    batch: {
+      calls: newUsage.totals.calls,
+      batches: Math.ceil(candidates.length / CERTAMEN_BATCH_SIZE),
+      inputTokens: newUsage.totals.inputTokens,
+      outputTokens: newUsage.totals.outputTokens,
+      cachedTokens: newUsage.totals.cachedTokens,
+      cost: newUsage.totals.costKnown ? Number(newUsage.totals.cost.toFixed(6)) : null,
+      latencyTotalMs: newLatencyTotalMs,
+      retained: newRetained,
+      rejected: candidates.length - newRetained
+    },
+    divergenceCount: divergences.length,
+    caveat: "certamen-analyze tourne à temperature=0.9 des deux côtés : une partie de la divergence mesurée est du bruit intrinsèque de génération, pas uniquement un effet du batching — non isolé ici (ça aurait demandé une 3e passe unitaire de référence, donc un coût encore plus élevé).",
+    divergences
+  };
+
+  const reportPath = path.join(__dirname, `certamen-batch-benchmark-${Date.now()}.json`);
+  fs.writeFileSync(reportPath, JSON.stringify(report, null, 2), "utf8");
+
+  console.log("=== Résultat benchmark ===");
+  console.log(JSON.stringify({ unitaire: report.unitaire, batch: report.batch, divergenceCount: report.divergenceCount }, null, 2));
+  console.log(`Rapport complet écrit dans ${reportPath}`);
+  return report;
+}
+
+// ==================== EXPÉRIENCE 2 : bruit unitaire, batch 8 vs 4, température ====================
+// Suite du benchmark ci-dessus (22/08/2026). Objectif : isoler l'effet du batching de la
+// variabilité naturelle du modèle (temperature=0.9 des deux côtés dans le premier benchmark
+// rendait cette distinction impossible), tester batch 4 comme alternative à batch 8, et
+// tester une température plus basse SANS jamais y toucher en production (paramètre
+// `options.temperature`/`options.batchSize`, jamais utilisé par runCertamenSession).
+
+function certamenIsRetained(decision) {
+  return !!decision && decision !== "avoid";
+}
+
+// Niveaux de divergence demandés : 0 = texte/thème différent mais décision + score proches ;
+// 1 = score qui bouge sans changer de décision ; 2 = décision différente entre deux niveaux
+// "retenus" (arena/understand/reformulate) ; 3 = franchissement de la frontière retenu ↔ avoid,
+// la seule catégorie qui affecte réellement quels sujets Certamen voit passer.
+function certamenDivergenceLevel(a, b) {
+  const aRet = certamenIsRetained(a && a.editorialDecision);
+  const bRet = certamenIsRetained(b && b.editorialDecision);
+  if (aRet !== bRet) return 3;
+  if ((a && a.editorialDecision) !== (b && b.editorialDecision)) return 2;
+  const scoreDelta = Math.abs((a && a.debatePotentialScore || 0) - (b && b.debatePotentialScore || 0));
+  if (scoreDelta >= 2) return 1;
+  return 0;
+}
+
+function compareCertamenPasses(candidates, resultsA, resultsB) {
+  const levelCounts = { 0: 0, 1: 0, 2: 0, 3: 0 };
+  const level3 = [];
+  candidates.forEach(function(subject, i) {
+    const a = resultsA[i];
+    const b = resultsB[i];
+    const level = certamenDivergenceLevel(a, b);
+    levelCounts[level] += 1;
+    if (level === 3) {
+      level3.push({
+        index: i,
+        subject: subject.subject,
+        a: { decision: a.editorialDecision, score: a.debatePotentialScore, risk: a.risk, theme: a.theme, question: a.suggestedQuestion, reason: a.reason },
+        b: { decision: b.editorialDecision, score: b.debatePotentialScore, risk: b.risk, theme: b.theme, question: b.suggestedQuestion, reason: b.reason }
+      });
+    }
+  });
+  return { levelCounts, level3, total: candidates.length, instabilityRate: (levelCounts[2] + levelCounts[3]) / candidates.length };
+}
+
+// Corpus fixe stratifié (fort/moyen/faible signal éditorial d'après le préfiltre
+// déterministe déjà en place) plutôt qu'un simple top-N : garantit la diversité demandée
+// (politique, géopolitique, société, sujets sensibles ET sujets légers) sans avoir à
+// deviner une taxonomie de mots-clés séparée — le tri existant (_certamenHasMarker puis
+// _certamenScore) sert déjà de proxy raisonnable pour ce spectre.
+function selectStratifiedCertamenCorpus(sortedCandidates, targetSize) {
+  const n = sortedCandidates.length;
+  const per = Math.max(1, Math.floor(targetSize / 3));
+  const top = sortedCandidates.slice(0, per);
+  const bottom = sortedCandidates.slice(Math.max(0, n - per));
+  const middleStart = Math.max(per, Math.floor(n / 2 - per / 2));
+  const middle = sortedCandidates.slice(middleStart, middleStart + per);
+
+  const seen = new Set();
+  const picked = [];
+  for (const subject of [...top, ...middle, ...bottom]) {
+    if (!seen.has(subject)) {
+      seen.add(subject);
+      picked.push(subject);
+    }
+  }
+  return picked.slice(0, targetSize);
+}
+
+async function runCertamenExperimentPass(def, candidates) {
+  setRunTag(def.tag);
+  const startedAt = Date.now();
+  let results;
+  if (def.kind === "unit") {
+    results = [];
+    for (const subject of candidates) {
+      results.push(await analyzeCertamenSubjectWithAI(subject, { temperature: def.temperature, sourceType: "certamen_experiment" }));
+    }
+  } else {
+    const analysis = await analyzeCertamenSubjectsWithAI(candidates, null, {
+      batchSize: def.batchSize,
+      temperature: def.temperature,
+      sourceType: "certamen_experiment"
+    });
+    results = analysis.map(function(entry) { return entry.certamen; });
+  }
+  const latencyMs = Date.now() - startedAt;
+  setRunTag(null);
+  const usage = summarizeRecords(recordsForRunTag(def.tag));
+  return { tag: def.tag, kind: def.kind, temperature: def.temperature, batchSize: def.batchSize || null, results, latencyMs, usage };
+}
+
+// Choix documenté de la "température basse" : 0.2, pas 0. certamen-analyze mélange dans le
+// même appel un JUGEMENT (score, decision, risk — ce qu'on veut stabiliser) et une tâche
+// partiellement créative (formulation de suggestedQuestion — cf. §06 du rapport) ; à 0, le
+// risque est de figer aussi la formulation sur des tournures répétitives sans que ça
+// renseigne vraiment sur la stabilité du jugement, qui est ce qu'on cherche à isoler ici.
+// 0.2 réduit fortement l'aléatoire tout en laissant un peu d'air à la formulation.
+const CERTAMEN_EXPERIMENT_LOW_TEMPERATURE = 0.2;
+
+async function runCertamenTemperatureBatchExperiment() {
+  console.log("=== Expérience Certamen : bruit unitaire, batch 8 vs 4, température ===");
+
+  const { contents: articles } = await collectArticles(null, new Set(), MEDIA_FILE_CERTAMEN);
+  const { contents: videos } = await collectYouTubeVideos(null, new Set(), CHANNELS_FILE_CERTAMEN);
+  const contents = [...articles, ...videos];
+  console.log(`Expérience : ${contents.length} contenu(s) collecté(s).`);
+
+  const groups = groupContentsBySubject(contents);
+  const rawSubjects = filterMultiSourceSubjects(groups, 1);
+  const deduplication = await deduplicateSubjectsWithAI(rawSubjects);
+  const dedupedSubjects = deduplication.subjects;
+  const prefiltered = certamenPrefilter(dedupedSubjects);
+  const sortedCandidates = prefiltered.slice().sort(function(a, b) {
+    const aHasMarker = a._certamenHasMarker ? 1 : 0;
+    const bHasMarker = b._certamenHasMarker ? 1 : 0;
+    if (aHasMarker !== bHasMarker) return bHasMarker - aHasMarker;
+    return (b._certamenScore || 0) - (a._certamenScore || 0);
+  });
+
+  const CORPUS_TARGET = 36;
+  const candidates = selectStratifiedCertamenCorpus(sortedCandidates, Math.min(CORPUS_TARGET, sortedCandidates.length));
+  console.log(`Expérience : corpus fixe de ${candidates.length} candidats (stratifié fort/moyen/faible signal), réutilisé à l'identique pour les 6 passes.`);
+
+  if (candidates.length < 10) {
+    console.log("Expérience : corpus trop petit après collecte/préfiltrage, arrêt.");
+    return null;
+  }
+
+  const passesDef = [
+    { key: "A", tag: "certamen_unit_09_A", kind: "unit", temperature: 0.9 },
+    { key: "B", tag: "certamen_unit_09_B", kind: "unit", temperature: 0.9 },
+    { key: "C", tag: "certamen_batch8_09", kind: "batch", temperature: 0.9, batchSize: 8 },
+    { key: "D", tag: "certamen_batch4_09", kind: "batch", temperature: 0.9, batchSize: 4 },
+    { key: "E", tag: "certamen_unit_lowtemp", kind: "unit", temperature: CERTAMEN_EXPERIMENT_LOW_TEMPERATURE },
+    { key: "F", tag: "certamen_batch4_lowtemp", kind: "batch", temperature: CERTAMEN_EXPERIMENT_LOW_TEMPERATURE, batchSize: 4 }
+  ];
+
+  const passes = {};
+  for (const def of passesDef) {
+    console.log(`Expérience : passe ${def.key} (${def.tag}) — ${def.kind}${def.batchSize ? " batch " + def.batchSize : ""}, temp ${def.temperature}...`);
+    passes[def.key] = await runCertamenExperimentPass(def, candidates);
+    console.log(`Expérience : passe ${def.key} terminée — ${passes[def.key].usage.totals.calls} appel(s), ${passes[def.key].latencyMs} ms.`);
+  }
+
+  const comparisons = {};
+  function addComparison(name, keyA, keyB) {
+    comparisons[name] = compareCertamenPasses(candidates, passes[keyA].results, passes[keyB].results);
+  }
+  addComparison("A_vs_B_bruit_unitaire", "A", "B");
+  addComparison("A_vs_C_batch8", "A", "C");
+  addComparison("B_vs_C_batch8", "B", "C");
+  addComparison("A_vs_D_batch4", "A", "D");
+  addComparison("B_vs_D_batch4", "B", "D");
+  addComparison("A_vs_E_lowtemp_unit", "A", "E");
+  addComparison("B_vs_E_lowtemp_unit", "B", "E");
+  addComparison("E_vs_F_batch4_lowtemp", "E", "F");
+  addComparison("D_vs_F_effet_temp_sur_batch4", "D", "F");
+
+  // Simulation Architecture "D + seconde passe ciblée" (§07-09 de la demande) : on part de D
+  // (batch 4, temp 0.9 — le réglage courant) et on réutilise, SANS appel API supplémentaire,
+  // le résultat déjà calculé par la passe A (unitaire, même température) pour tout candidat
+  // dont D déclenche un critère de doute. Règle documentée, pas un seuil métier changé.
+  function needsSecondPass(certamen, subject) {
+    if (!certamen) return false;
+    if (certamen.risk === "high") return true;
+    if (certamen.theme === "Politique" || certamen.theme === "International") return true;
+    if (certamen.editorialDecision === "avoid" && subject._certamenHasMarker) return true;
+    const score = certamen.debatePotentialScore || 0;
+    if (score >= 5 && score <= 7) return true;
+    return false;
+  }
+
+  const hybridTriggered = [];
+  const hybridResults = candidates.map(function(subject, i) {
+    const first = passes.D.results[i];
+    if (needsSecondPass(first, subject)) {
+      hybridTriggered.push(i);
+      return passes.A.results[i];
+    }
+    return first;
+  });
+
+  const aAnalyzeRecords = recordsForRunTag(passes.A.tag).filter(function(r) { return r.label === "certamen-analyze"; });
+  const triggeredARecords = hybridTriggered.map(function(i) { return aAnalyzeRecords[i]; }).filter(Boolean);
+  const secondPassUsage = summarizeRecords(triggeredARecords);
+
+  const hybridUsage = {
+    calls: passes.D.usage.totals.calls + secondPassUsage.totals.calls,
+    inputTokens: passes.D.usage.totals.inputTokens + secondPassUsage.totals.inputTokens,
+    outputTokens: passes.D.usage.totals.outputTokens + secondPassUsage.totals.outputTokens,
+    cachedTokens: passes.D.usage.totals.cachedTokens + secondPassUsage.totals.cachedTokens,
+    cost: (passes.D.usage.totals.cost || 0) + (secondPassUsage.totals.cost || 0),
+    triggeredCount: hybridTriggered.length,
+    triggeredShare: Number((hybridTriggered.length / candidates.length).toFixed(3))
+  };
+
+  const hybridVsA = compareCertamenPasses(candidates, passes.A.results, hybridResults);
+  const hybridVsB = compareCertamenPasses(candidates, passes.B.results, hybridResults);
+  const dVsAforHybridBaseline = comparisons.A_vs_D_batch4;
+
+  function architectureRow(usageTotals, comparisonVsA) {
+    return {
+      calls: usageTotals.calls,
+      inputTokens: usageTotals.inputTokens,
+      outputTokens: usageTotals.outputTokens,
+      cost: typeof usageTotals.cost === "number" ? Number(usageTotals.cost.toFixed(6)) : null,
+      level0: comparisonVsA ? comparisonVsA.levelCounts[0] : null,
+      level1: comparisonVsA ? comparisonVsA.levelCounts[1] : null,
+      level2: comparisonVsA ? comparisonVsA.levelCounts[2] : null,
+      level3: comparisonVsA ? comparisonVsA.levelCounts[3] : null
+    };
+  }
+
+  const architectures = {
+    A_unitaire_reference: architectureRow(passes.A.usage.totals, null),
+    B_unitaire_bruit_naturel: architectureRow(passes.B.usage.totals, comparisons.A_vs_B_bruit_unitaire),
+    C_batch8: architectureRow(passes.C.usage.totals, comparisons.A_vs_C_batch8),
+    D_batch4: architectureRow(passes.D.usage.totals, dVsAforHybridBaseline),
+    D_plus_seconde_passe_ciblee: architectureRow(hybridUsage, hybridVsA)
+  };
+
+  const report = {
+    generatedAt: new Date().toISOString(),
+    corpusSize: candidates.length,
+    lowTemperature: CERTAMEN_EXPERIMENT_LOW_TEMPERATURE,
+    passes: Object.fromEntries(Object.entries(passes).map(function(entry) {
+      const key = entry[0];
+      const p = entry[1];
+      return [key, {
+        tag: p.tag, kind: p.kind, temperature: p.temperature, batchSize: p.batchSize,
+        latencyMs: p.latencyMs,
+        calls: p.usage.totals.calls,
+        inputTokens: p.usage.totals.inputTokens,
+        outputTokens: p.usage.totals.outputTokens,
+        cachedTokens: p.usage.totals.cachedTokens,
+        cost: p.usage.totals.costKnown ? Number(p.usage.totals.cost.toFixed(6)) : null,
+        retained: p.results.filter(function(r) { return certamenIsRetained(r.editorialDecision); }).length,
+        rejected: p.results.filter(function(r) { return !certamenIsRetained(r.editorialDecision); }).length
+      }];
+    })),
+    comparisons: Object.fromEntries(Object.entries(comparisons).map(function(entry) {
+      const key = entry[0];
+      const c = entry[1];
+      return [key, { levelCounts: c.levelCounts, instabilityRate: Number(c.instabilityRate.toFixed(3)), level3: c.level3 }];
+    })),
+    hybrid: {
+      rule: "risk=high OU theme in {Politique, International} OU (editorialDecision=avoid ET marqueur déterministe présent) OU debatePotentialScore entre 5 et 7 inclus",
+      triggeredCount: hybridTriggered.length,
+      triggeredShare: hybridUsage.triggeredShare,
+      triggeredIndices: hybridTriggered,
+      usage: hybridUsage,
+      vsA: { levelCounts: hybridVsA.levelCounts, instabilityRate: Number(hybridVsA.instabilityRate.toFixed(3)), level3: hybridVsA.level3 },
+      vsB: { levelCounts: hybridVsB.levelCounts, instabilityRate: Number(hybridVsB.instabilityRate.toFixed(3)), level3: hybridVsB.level3 }
+    },
+    architectures,
+    candidates: candidates.map(function(s, i) {
+      return { index: i, subject: s.subject, hasMarker: !!s._certamenHasMarker, score: s._certamenScore || 0 };
+    })
+  };
+
+  const reportPath = path.join(__dirname, `certamen-temp-batch-experiment-${Date.now()}.json`);
+  fs.writeFileSync(reportPath, JSON.stringify(report, null, 2), "utf8");
+
+  console.log("=== Résultat expérience ===");
+  console.log(JSON.stringify({ passes: report.passes, architectures: report.architectures, hybridTriggeredCount: hybridTriggered.length }, null, 2));
+  console.log(`Rapport complet écrit dans ${reportPath}`);
+  return report;
+}
+
+// ==================== FIN EXPÉRIENCE 2 ====================
+
+// ==================== EXPÉRIENCE 3 : séparation jugement / créativité ====================
+// Suite des expériences 1 et 2 (22-23/08/2026). Teste l'hypothèse évoquée en conclusion de
+// l'expérience 2 (§06 du rapport) : séparer le jugement éditorial (température basse,
+// stable) de la génération créative de la question/positions (température plus élevée,
+// utile seulement aux sujets retenus). Strictement unitaire (1 candidat/appel) des deux
+// côtés — aucun batching dans cette expérience (demande explicite). Rien n'est activé en
+// production : ces fonctions ne sont appelées par aucun code de production, uniquement par
+// runCertamenSeparatedArchitectureExperiment ci-dessous.
+
+// Étape 1 : jugement seul. Mêmes critères éditoriaux mot pour mot que
+// analyzeCertamenSubjectWithAI (aucune règle changée), sans suggestedQuestion/positionA/B.
+async function analyzeCertamenJudgmentOnly(subject, options = {}) {
+  const temperature = Number.isFinite(options.temperature) ? options.temperature : 0.2;
+  if (!openai) {
+    return {
+      isDebatable: subject._certamenMarkers > 0,
+      debatePotentialScore: subject._certamenMarkers > 0 ? 5 : 2,
+      editorialDecision: subject._certamenMarkers > 0 ? "reformulate" : "avoid",
+      reason: "Analyse IA non disponible.",
+      theme: AGON_THEMES[0],
+      risk: "medium"
+    };
+  }
+
+  const compactContents = (subject.contents || []).slice(0, 6).map(function(c) {
+    return { source: c.source, title: c.title, summary: (c.summary || "").slice(0, 300), type: c.type };
+  });
+
+  const prompt = `Tu es un éditeur pour Agôn, une plateforme de débat public.
+
+Ta mission : évaluer si cette actualité peut devenir une bonne arène Agôn.
+
+Critères d'un bon sujet Agôn :
+- deux positions défendables ;
+- question non évidente ;
+- enjeu collectif réel ;
+- sujet compréhensible sans expertise ;
+- pas seulement informatif ;
+- pas une tragédie exploitée à chaud ;
+- opposition de valeurs, de responsabilités, de solutions ou de priorités.
+
+Sujet :
+${subject.subject}
+
+Sources (${(subject.sources || []).join(", ")}) :
+${JSON.stringify(compactContents, null, 2)}
+
+Réponds uniquement en JSON valide :
+{
+  "isDebatable": true/false,
+  "debatePotentialScore": entier de 0 à 10,
+  "editorialDecision": "arena" | "understand" | "reformulate" | "avoid",
+  "reason": "explication courte (max 120 caractères)",
+  "theme": "thème exact parmi : ${AGON_THEMES.join(" / ")}",
+  "risk": "low" | "medium" | "high"
+}
+
+Règles pour editorialDecision :
+- "arena" : peut devenir une arène Agôn immédiatement ;
+- "understand" : intéressant mais pas vraiment clivant ;
+- "reformulate" : potentiel mais question trop évidente ou fragile ;
+- "avoid" : trop sensible, tragique ou peu débattable.
+
+Ne force jamais un débat. Si le sujet ne s'y prête pas, réponds "avoid".`;
+
+  try {
+    const response = await trackAi("certamen-judgment", () => openai.responses.create({
+      model: "gpt-4.1-mini",
+      input: prompt,
+      temperature,
+      max_output_tokens: 300
+    }), { sourceType: options.sourceType || "certamen_experiment_separated", batchSize: 1, itemsProcessed: 1 });
+    const parsed = safeJsonParse(response.output_text || "");
+    const allowedDecisions = new Set(["arena", "understand", "reformulate", "avoid"]);
+    const allowedRisks = new Set(["low", "medium", "high"]);
+    return {
+      isDebatable: parsed.isDebatable === true,
+      debatePotentialScore: Number.isFinite(Number(parsed.debatePotentialScore))
+        ? Math.max(0, Math.min(10, Number(parsed.debatePotentialScore))) : 0,
+      editorialDecision: allowedDecisions.has(String(parsed.editorialDecision || "")) ? parsed.editorialDecision : "avoid",
+      reason: String(parsed.reason || "").slice(0, 200),
+      theme: normalizeAgonTheme(parsed.theme),
+      risk: allowedRisks.has(String(parsed.risk || "")) ? parsed.risk : "medium"
+    };
+  } catch (error) {
+    console.error(`Erreur IA Certamen (jugement) pour "${subject.subject}" :`, error.message);
+    return {
+      isDebatable: false,
+      debatePotentialScore: 0,
+      editorialDecision: "avoid",
+      reason: "Erreur d'analyse IA.",
+      theme: AGON_THEMES[0],
+      risk: "medium"
+    };
+  }
+}
+
+// Étape 2 : génération créative seule, appelée uniquement pour un sujet déjà retenu (jamais
+// pour "avoid"). Même STYLE et mêmes règles de forme de question mot pour mot que
+// analyzeCertamenSubjectWithAI, y compris le tirage indépendant de pickCertamenQuestionForms.
+async function generateCertamenCreative(subject, judgment, options = {}) {
+  const temperature = Number.isFinite(options.temperature) ? options.temperature : 0.9;
+  const fallback = { suggestedQuestion: subject.subject, positionA: "Pour", positionB: "Contre" };
+  if (!openai) return fallback;
+
+  const compactContents = (subject.contents || []).slice(0, 6).map(function(c) {
+    return { source: c.source, title: c.title, summary: (c.summary || "").slice(0, 300), type: c.type };
+  });
+
+  const prompt = `Tu es un éditeur pour Agôn, une plateforme de débat public.
+
+Ce sujet a déjà été retenu comme débattable par une étape d'analyse éditoriale précédente (décision : ${judgment.editorialDecision}, thème : ${judgment.theme}, raison : ${judgment.reason}).
+
+Ta mission ici : formuler la question de débat et les deux positions opposées, à partir du sujet et des sources ci-dessous.
+
+Sujet :
+${subject.subject}
+
+Sources (${(subject.sources || []).join(", ")}) :
+${JSON.stringify(compactContents, null, 2)}
+
+STYLE pour suggestedQuestion et positionA/positionB :
+Écris comme un vrai utilisateur d'Agôn : clair, direct, naturel, pas comme un assistant.
+Le français doit rester globalement correct, mais pas trop scolaire.
+La plupart des questions doivent être propres. Parfois, environ 1 fois sur 5, tu peux laisser une petite imperfection naturelle : minuscule en début de phrase, accent secondaire oublié, tournure orale.
+Tu peux garder un style oral léger dans les positions ("oui", "non", "faut"), avec parfois une petite faute légère, mais sans fautes grossières.
+
+À éviter absolument :
+* fautes visibles dans la question ("faut t'il", "lextrme", "pouvouir", mots oubliés) ;
+* accents manquants sur les mots importants ;
+* conjugaisons ou accords cassés ;
+* ponctuation doublée ou absence de point d'interrogation pour suggestedQuestion.
+
+Exemples de bon rendu :
+* suggestedQuestion: "La justice est-elle trop laxiste face à la récidive ?"
+* positionA: "oui, il faut protéger les victimes"
+* positionB: "non, la prison ne règle pas tout"
+Exemples acceptables de petites imperfections rares :
+* suggestedQuestion: "faut-il limiter les pouvoirs du président ?"
+* positionA: "oui faut éviter les abus"
+* positionB: "non, ça bloque l'action"
+
+Règles pour suggestedQuestion :
+- question concrète et débattable ;
+- ancrée dans le sujet précis ;
+- mentionne si possible l'acteur, le dispositif, le lieu ou la décision au coeur du sujet ;
+- évite les formulations génériques qui pourraient s'appliquer à dix autres articles ;
+- FORME IMPOSÉE : formule la question selon l'une de ces formes, dans cet ordre de préférence :
+${pickCertamenQuestionForms(3).map((form, i) => `  ${i + 1}. ${form}`).join("\n")}
+- INTERDIT de commencer par "Faut-il" sauf si aucune des formes ci-dessus ne peut convenir ET que le sujet porte sur une interdiction, une obligation ou une réforme à trancher ;
+- pas de question évidente ("faut-il éviter les accidents ?") ;
+- les deux camps doivent sembler défendables.
+
+Règles pour positionA/positionB :
+- étiquettes de camp courtes, directes, parfois passionnées ;
+- pas d'arguments longs, pas de "car", "pour que", "afin de" ;
+- symétriques et défendables.
+
+Réponds uniquement en JSON valide :
+{
+  "suggestedQuestion": "question Agôn (max 70 caractères, espaces et tirets compris — c'est un titre, reste court)",
+  "positionA": "camp A (max 55 caractères)",
+  "positionB": "camp B (max 55 caractères)"
+}`;
+
+  try {
+    const response = await trackAi("certamen-creative-generation", () => openai.responses.create({
+      model: "gpt-4.1-mini",
+      input: prompt,
+      temperature,
+      max_output_tokens: 300
+    }), { sourceType: options.sourceType || "certamen_experiment_separated", batchSize: 1, itemsProcessed: 1 });
+    const parsed = safeJsonParse(response.output_text || "");
+    return {
+      suggestedQuestion: String(parsed.suggestedQuestion || "").trim() || fallback.suggestedQuestion,
+      positionA: String(parsed.positionA || "").trim() || fallback.positionA,
+      positionB: String(parsed.positionB || "").trim() || fallback.positionB
+    };
+  } catch (error) {
+    console.error(`Erreur IA Certamen (créativité) pour "${subject.subject}" :`, error.message);
+    return fallback;
+  }
+}
+
+// Orchestrateur : étape 1 puis, seulement si retenu, étape 2 — avec exactement le même
+// post-traitement que analyzeCertamenSubjectWithAI (raccourci de titre, alignement
+// politique conditionnel), non modifié.
+async function analyzeCertamenSubjectSeparated(subject, options = {}) {
+  const judgmentTemperature = Number.isFinite(options.judgmentTemperature) ? options.judgmentTemperature : 0.2;
+  const creativeTemperature = Number.isFinite(options.creativeTemperature) ? options.creativeTemperature : 0.9;
+  const sourceType = options.sourceType || "certamen_experiment_separated";
+
+  const judgment = await analyzeCertamenJudgmentOnly(subject, { temperature: judgmentTemperature, sourceType });
+
+  if (judgment.editorialDecision === "avoid") {
+    return {
+      isDebatable: judgment.isDebatable,
+      debatePotentialScore: judgment.debatePotentialScore,
+      editorialDecision: judgment.editorialDecision,
+      reason: judgment.reason,
+      suggestedQuestion: subject.subject,
+      positionA: "",
+      positionB: "",
+      theme: judgment.theme,
+      risk: judgment.risk,
+      politicalOrientation: { isPolitical: false, positionA: null, positionB: null }
+    };
+  }
+
+  const creative = await generateCertamenCreative(subject, judgment, { temperature: creativeTemperature, sourceType });
+
+  const suggestedQuestion = await enforceTitleLimit(
+    openai,
+    limitDebateQuestionText(cleanCertamenGeneratedText(creative.suggestedQuestion || "")),
+    { sourceType: "certamen_pipeline" }
+  );
+  let positionA = cleanCertamenGeneratedText(creative.positionA || "").slice(0, 55);
+  let positionB = cleanCertamenGeneratedText(creative.positionB || "").slice(0, 55);
+
+  let politicalOrientation = { isPolitical: false, positionA: null, positionB: null };
+  if (positionA && positionB) {
+    const aligned = await alignCertamenPositionsByPolitics({ debateQuestion: suggestedQuestion, positionA, positionB });
+    positionA = aligned.positionA;
+    positionB = aligned.positionB;
+    politicalOrientation = aligned.politicalOrientation;
+  }
+
+  return {
+    isDebatable: judgment.isDebatable,
+    debatePotentialScore: judgment.debatePotentialScore,
+    editorialDecision: judgment.editorialDecision,
+    reason: judgment.reason,
+    suggestedQuestion,
+    positionA,
+    positionB,
+    theme: judgment.theme,
+    risk: judgment.risk,
+    politicalOrientation
+  };
+}
+
+async function runCertamenSeparatedPass(def, candidates) {
+  setRunTag(def.tag);
+  const startedAt = Date.now();
+  const results = [];
+  for (const subject of candidates) {
+    results.push(await analyzeCertamenSubjectSeparated(subject, {
+      judgmentTemperature: def.judgmentTemperature,
+      creativeTemperature: def.creativeTemperature,
+      sourceType: "certamen_experiment_separated"
+    }));
+  }
+  const latencyMs = Date.now() - startedAt;
+  setRunTag(null);
+  const usage = summarizeRecords(recordsForRunTag(def.tag));
+  return { tag: def.tag, results, latencyMs, usage };
+}
+
+async function runCertamenSeparatedArchitectureExperiment() {
+  console.log("=== Expérience Certamen 3 : séparation jugement / créativité ===");
+
+  const { contents: articles } = await collectArticles(null, new Set(), MEDIA_FILE_CERTAMEN);
+  const { contents: videos } = await collectYouTubeVideos(null, new Set(), CHANNELS_FILE_CERTAMEN);
+  const contents = [...articles, ...videos];
+  console.log(`Expérience 3 : ${contents.length} contenu(s) collecté(s).`);
+
+  const groups = groupContentsBySubject(contents);
+  const rawSubjects = filterMultiSourceSubjects(groups, 1);
+  const deduplication = await deduplicateSubjectsWithAI(rawSubjects);
+  const dedupedSubjects = deduplication.subjects;
+  const prefiltered = certamenPrefilter(dedupedSubjects);
+  const sortedCandidates = prefiltered.slice().sort(function(a, b) {
+    const aHasMarker = a._certamenHasMarker ? 1 : 0;
+    const bHasMarker = b._certamenHasMarker ? 1 : 0;
+    if (aHasMarker !== bHasMarker) return bHasMarker - aHasMarker;
+    return (b._certamenScore || 0) - (a._certamenScore || 0);
+  });
+
+  const CORPUS_TARGET = 36;
+  const candidates = selectStratifiedCertamenCorpus(sortedCandidates, Math.min(CORPUS_TARGET, sortedCandidates.length));
+  console.log(`Expérience 3 : corpus de ${candidates.length} candidats (même méthode de stratification que l'expérience 2).`);
+
+  // Le corpus de l'expérience 2 n'a pas été persisté avec son contenu complet (seuls les
+  // titres l'ont été, dans son rapport JSON) : impossible de le rejouer à l'identique un
+  // jour plus tard (le contenu RSS a changé entretemps). Ce corpus-ci EST persisté
+  // intégralement, pour permettre une vraie réutilisation lors d'une future expérience.
+  const corpusPath = path.join(__dirname, `certamen-experiment-corpus-${Date.now()}.json`);
+  fs.writeFileSync(corpusPath, JSON.stringify(candidates, null, 2), "utf8");
+  console.log(`Expérience 3 : corpus persisté dans ${corpusPath} (réutilisable pour une expérience future).`);
+
+  if (candidates.length < 10) {
+    console.log("Expérience 3 : corpus trop petit après collecte/préfiltrage, arrêt.");
+    return null;
+  }
+
+  // A2/B2/E2 : le pipeline actuel (mono-appel) rejoué sur CE corpus (pas celui de
+  // l'expérience 2, dont le contenu complet n'a pas été conservé) — indispensable pour une
+  // comparaison indexée valide avec G/H sur exactement les mêmes sujets.
+  const referencePassesDef = [
+    { key: "A2", tag: "certamen_unit_09_A2", kind: "unit", temperature: 0.9 },
+    { key: "B2", tag: "certamen_unit_09_B2", kind: "unit", temperature: 0.9 },
+    { key: "E2", tag: "certamen_unit_lowtemp_E2", kind: "unit", temperature: CERTAMEN_EXPERIMENT_LOW_TEMPERATURE }
+  ];
+  const refPasses = {};
+  for (const def of referencePassesDef) {
+    console.log(`Expérience 3 : passe ${def.key} (${def.tag}) — pipeline actuel, temp ${def.temperature}...`);
+    refPasses[def.key] = await runCertamenExperimentPass(def, candidates);
+    console.log(`Expérience 3 : passe ${def.key} terminée — ${refPasses[def.key].usage.totals.calls} appel(s).`);
+  }
+
+  // G/H : architecture séparée, deux passes identiques pour mesurer sa propre stabilité.
+  const separatedPassesDef = [
+    { key: "G", tag: "certamen_sep_G", judgmentTemperature: CERTAMEN_EXPERIMENT_LOW_TEMPERATURE, creativeTemperature: 0.9 },
+    { key: "H", tag: "certamen_sep_H", judgmentTemperature: CERTAMEN_EXPERIMENT_LOW_TEMPERATURE, creativeTemperature: 0.9 }
+  ];
+  const sepPasses = {};
+  for (const def of separatedPassesDef) {
+    console.log(`Expérience 3 : passe ${def.key} (${def.tag}) — architecture séparée, jugement temp ${def.judgmentTemperature}, créativité temp ${def.creativeTemperature}...`);
+    sepPasses[def.key] = await runCertamenSeparatedPass(def, candidates);
+    console.log(`Expérience 3 : passe ${def.key} terminée — ${sepPasses[def.key].usage.totals.calls} appel(s).`);
+  }
+
+  const allResults = {
+    A2: refPasses.A2.results, B2: refPasses.B2.results, E2: refPasses.E2.results,
+    G: sepPasses.G.results, H: sepPasses.H.results
+  };
+
+  const comparisons = {};
+  function addComparison(name, keyA, keyB) {
+    comparisons[name] = compareCertamenPasses(candidates, allResults[keyA], allResults[keyB]);
+  }
+  addComparison("A2_vs_B2_bruit_pipeline_actuel", "A2", "B2");
+  addComparison("G_vs_H_bruit_pipeline_separe", "G", "H");
+  addComparison("A2_vs_G", "A2", "G");
+  addComparison("B2_vs_G", "B2", "G");
+  addComparison("A2_vs_H", "A2", "H");
+  addComparison("B2_vs_H", "B2", "H");
+  addComparison("E2_vs_G_effet_separation_a_temp_egale", "E2", "G");
+  addComparison("E2_vs_H_effet_separation_a_temp_egale", "E2", "H");
+
+  // Coûts détaillés par label pour G et H (jugement vs créativité vs post-traitement).
+  function labelBreakdown(tag) {
+    const byLabel = summarizeRecords(recordsForRunTag(tag)).byLabel;
+    return {
+      judgment: byLabel["certamen-judgment"] || { calls: 0, inputTokens: 0, outputTokens: 0, cost: 0 },
+      creative: byLabel["certamen-creative-generation"] || { calls: 0, inputTokens: 0, outputTokens: 0, cost: 0 },
+      alignPositions: byLabel["certamen-align-positions"] || { calls: 0, inputTokens: 0, outputTokens: 0, cost: 0 },
+      titleLimit: byLabel["raccourci-titre"] || { calls: 0, inputTokens: 0, outputTokens: 0, cost: 0 }
+    };
+  }
+
+  const gBreakdown = labelBreakdown("certamen_sep_G");
+  const hBreakdown = labelBreakdown("certamen_sep_H");
+
+  function retainedCount(results) {
+    return results.filter(function(r) { return certamenIsRetained(r.editorialDecision); }).length;
+  }
+
+  const economics = {
+    pipelineActuel: {
+      label: "A2 (référence, temp 0.9, appel unique)",
+      calls: refPasses.A2.usage.totals.calls,
+      inputTokens: refPasses.A2.usage.totals.inputTokens,
+      outputTokens: refPasses.A2.usage.totals.outputTokens,
+      costTotal: Number((refPasses.A2.usage.totals.cost || 0).toFixed(6)),
+      retained: retainedCount(refPasses.A2.results),
+      avoid: candidates.length - retainedCount(refPasses.A2.results)
+    },
+    pipelineSepare: {
+      label: "G (jugement temp 0.2 + créativité temp 0.9, deux appels)",
+      calls: sepPasses.G.usage.totals.calls,
+      inputTokens: sepPasses.G.usage.totals.inputTokens,
+      outputTokens: sepPasses.G.usage.totals.outputTokens,
+      costJudgment: Number((gBreakdown.judgment.cost || 0).toFixed(6)),
+      costCreative: Number((gBreakdown.creative.cost || 0).toFixed(6)),
+      costDownstream: Number(((gBreakdown.alignPositions.cost || 0) + (gBreakdown.titleLimit.cost || 0)).toFixed(6)),
+      costTotal: Number((sepPasses.G.usage.totals.cost || 0).toFixed(6)),
+      retained: retainedCount(sepPasses.G.results),
+      avoid: candidates.length - retainedCount(sepPasses.G.results),
+      judgmentCalls: gBreakdown.judgment.calls,
+      creativeCalls: gBreakdown.creative.calls
+    }
+  };
+
+  const report = {
+    generatedAt: new Date().toISOString(),
+    corpusSize: candidates.length,
+    corpusFile: corpusPath,
+    lowTemperature: CERTAMEN_EXPERIMENT_LOW_TEMPERATURE,
+    passes: Object.fromEntries(
+      Object.entries(Object.assign({}, refPasses, sepPasses)).map(function(entry) {
+        const key = entry[0];
+        const p = entry[1];
+        return [key, {
+          tag: p.tag,
+          latencyMs: p.latencyMs,
+          calls: p.usage.totals.calls,
+          inputTokens: p.usage.totals.inputTokens,
+          outputTokens: p.usage.totals.outputTokens,
+          cost: p.usage.totals.costKnown ? Number(p.usage.totals.cost.toFixed(6)) : null,
+          retained: retainedCount(p.results),
+          rejected: candidates.length - retainedCount(p.results)
+        }];
+      })
+    ),
+    comparisons: Object.fromEntries(Object.entries(comparisons).map(function(entry) {
+      const key = entry[0];
+      const c = entry[1];
+      return [key, { levelCounts: c.levelCounts, instabilityRate: Number(c.instabilityRate.toFixed(3)), level3: c.level3 }];
+    })),
+    labelBreakdown: { G: gBreakdown, H: hBreakdown },
+    economics,
+    candidates: candidates.map(function(s, i) {
+      return { index: i, subject: s.subject, hasMarker: !!s._certamenHasMarker, score: s._certamenScore || 0 };
+    }),
+    fullResultsForQualityReview: candidates.map(function(s, i) {
+      return { index: i, subject: s.subject, A2: allResults.A2[i], G: allResults.G[i], H: allResults.H[i] };
+    })
+  };
+
+  const reportPath = path.join(__dirname, `certamen-separated-experiment-${Date.now()}.json`);
+  fs.writeFileSync(reportPath, JSON.stringify(report, null, 2), "utf8");
+
+  console.log("=== Résultat expérience 3 ===");
+  console.log(JSON.stringify({
+    passes: report.passes,
+    comparisons: Object.fromEntries(Object.entries(report.comparisons).map(function(e) {
+      return [e[0], { levelCounts: e[1].levelCounts, instabilityRate: e[1].instabilityRate }];
+    })),
+    economics: report.economics
+  }, null, 2));
+  console.log(`Rapport complet écrit dans ${reportPath}`);
+  return report;
+}
+
+// ==================== FIN EXPÉRIENCE 3 ====================
+
+// ==================== EXPÉRIENCE 4 : validation finale de l'architecture séparée ====================
+// Suite des expériences 1-3 (22-23/08/2026). Troisième passe (I) de l'architecture séparée
+// pour confirmer la stabilité G/H/I sur le MÊME corpus persisté que l'expérience 3 (aucune
+// nouvelle collecte), correction expérimentale de la troncature des positions, test d'un
+// prompt créatif plus explicite sur la limite de 55 caractères, coût moyen sur 3 passes, et
+// vérification de compatibilité avec le format attendu par runCertamenSession. Rien n'est
+// activé en production : ces fonctions ne sont appelées par aucun code de production,
+// uniquement par runCertamenSeparatedValidationExperiment ci-dessous.
+
+// Réduction à 55 caractères qui ne coupe jamais au milieu d'un mot : recule jusqu'au dernier
+// espace avant la limite, retire la ponctuation résiduelle en fin de coupe, sans ellipse,
+// comportement déterministe. Utilisée uniquement dans le chemin expérimental (§4 de la
+// demande) — ne remplace pas le .slice(0, 55) du pipeline testé jusqu'ici tant que cette
+// fonction n'a pas été validée.
+function truncateCertamenPositionSafely(text, max = 55) {
+  const value = String(text || "").replace(/\s+/g, " ").trim();
+  if (value.length <= max) return value;
+  let cut = value.slice(0, max);
+  const lastSpace = cut.lastIndexOf(" ");
+  if (lastSpace > 0) cut = cut.slice(0, lastSpace);
+  return cut.replace(/[.,;:!?…\-–—]+$/, "").trim();
+}
+
+// Variante diagnostique de analyzeCertamenSubjectSeparated : mêmes deux appels (jugement
+// puis, si retenu, créativité), même résultat "officiel" avec la même méthode de troncature
+// que G/H (pour rester directement comparable) — mais conserve en plus le texte brut avant
+// troncature dans `_diagnostics`, nécessaire pour évaluer la troncature sans provoquer un
+// appel créatif supplémentaire (qui introduirait son propre bruit et fausserait la mesure).
+async function analyzeCertamenSubjectSeparatedWithDiagnostics(subject, options = {}) {
+  const judgmentTemperature = Number.isFinite(options.judgmentTemperature) ? options.judgmentTemperature : 0.2;
+  const creativeTemperature = Number.isFinite(options.creativeTemperature) ? options.creativeTemperature : 0.9;
+  const sourceType = options.sourceType || "certamen_experiment_separated";
+
+  const judgment = await analyzeCertamenJudgmentOnly(subject, { temperature: judgmentTemperature, sourceType });
+
+  if (judgment.editorialDecision === "avoid") {
+    return {
+      isDebatable: judgment.isDebatable,
+      debatePotentialScore: judgment.debatePotentialScore,
+      editorialDecision: judgment.editorialDecision,
+      reason: judgment.reason,
+      suggestedQuestion: subject.subject,
+      positionA: "",
+      positionB: "",
+      theme: judgment.theme,
+      risk: judgment.risk,
+      politicalOrientation: { isPolitical: false, positionA: null, positionB: null },
+      _diagnostics: null
+    };
+  }
+
+  const creative = await generateCertamenCreative(subject, judgment, { temperature: creativeTemperature, sourceType });
+  const rawQuestion = cleanCertamenGeneratedText(creative.suggestedQuestion || "");
+  const rawPositionA = cleanCertamenGeneratedText(creative.positionA || "");
+  const rawPositionB = cleanCertamenGeneratedText(creative.positionB || "");
+
+  // Champ "officiel" : même méthode que analyzeCertamenSubjectSeparated (.slice(0,55)),
+  // pour rester comparable aux passes G/H déjà exécutées.
+  const suggestedQuestion = await enforceTitleLimit(openai, rawQuestion, { sourceType: "certamen_pipeline" });
+  let positionA = rawPositionA.slice(0, 55);
+  let positionB = rawPositionB.slice(0, 55);
+
+  let politicalOrientation = { isPolitical: false, positionA: null, positionB: null };
+  if (positionA && positionB) {
+    const aligned = await alignCertamenPositionsByPolitics({ debateQuestion: suggestedQuestion, positionA, positionB });
+    positionA = aligned.positionA;
+    positionB = aligned.positionB;
+    politicalOrientation = aligned.politicalOrientation;
+  }
+
+  return {
+    isDebatable: judgment.isDebatable,
+    debatePotentialScore: judgment.debatePotentialScore,
+    editorialDecision: judgment.editorialDecision,
+    reason: judgment.reason,
+    suggestedQuestion,
+    positionA,
+    positionB,
+    theme: judgment.theme,
+    risk: judgment.risk,
+    politicalOrientation,
+    _diagnostics: {
+      rawQuestion,
+      rawPositionA,
+      rawPositionB,
+      safePositionA: truncateCertamenPositionSafely(rawPositionA, 55),
+      safePositionB: truncateCertamenPositionSafely(rawPositionB, 55)
+    }
+  };
+}
+
+// Variante du prompt de créativité (étape 2) avec une contrainte de longueur explicite
+// ajoutée (§5 de la demande) — même STYLE, mêmes règles de forme de question, seule la
+// consigne de longueur change. Label distinct ("...-strict") pour ne jamais mélanger ses
+// coûts avec ceux de generateCertamenCreative dans les moyennes G/H/I.
+async function generateCertamenCreativeStrict(subject, judgment, options = {}) {
+  const temperature = Number.isFinite(options.temperature) ? options.temperature : 0.9;
+  const fallback = { suggestedQuestion: subject.subject, positionA: "Pour", positionB: "Contre" };
+  if (!openai) return fallback;
+
+  const compactContents = (subject.contents || []).slice(0, 6).map(function(c) {
+    return { source: c.source, title: c.title, summary: (c.summary || "").slice(0, 300), type: c.type };
+  });
+
+  const prompt = `Tu es un éditeur pour Agôn, une plateforme de débat public.
+
+Ce sujet a déjà été retenu comme débattable par une étape d'analyse éditoriale précédente (décision : ${judgment.editorialDecision}, thème : ${judgment.theme}, raison : ${judgment.reason}).
+
+Ta mission ici : formuler la question de débat et les deux positions opposées, à partir du sujet et des sources ci-dessous.
+
+Sujet :
+${subject.subject}
+
+Sources (${(subject.sources || []).join(", ")}) :
+${JSON.stringify(compactContents, null, 2)}
+
+STYLE pour suggestedQuestion et positionA/positionB :
+Écris comme un vrai utilisateur d'Agôn : clair, direct, naturel, pas comme un assistant.
+Le français doit rester globalement correct, mais pas trop scolaire.
+La plupart des questions doivent être propres. Parfois, environ 1 fois sur 5, tu peux laisser une petite imperfection naturelle : minuscule en début de phrase, accent secondaire oublié, tournure orale.
+Tu peux garder un style oral léger dans les positions ("oui", "non", "faut"), avec parfois une petite faute légère, mais sans fautes grossières.
+
+À éviter absolument :
+* fautes visibles dans la question ("faut t'il", "lextrme", "pouvouir", mots oubliés) ;
+* accents manquants sur les mots importants ;
+* conjugaisons ou accords cassés ;
+* ponctuation doublée ou absence de point d'interrogation pour suggestedQuestion.
+
+Exemples de bon rendu :
+* suggestedQuestion: "La justice est-elle trop laxiste face à la récidive ?"
+* positionA: "oui, il faut protéger les victimes"
+* positionB: "non, la prison ne règle pas tout"
+Exemples acceptables de petites imperfections rares :
+* suggestedQuestion: "faut-il limiter les pouvoirs du président ?"
+* positionA: "oui faut éviter les abus"
+* positionB: "non, ça bloque l'action"
+
+Règles pour suggestedQuestion :
+- question concrète et débattable ;
+- ancrée dans le sujet précis ;
+- mentionne si possible l'acteur, le dispositif, le lieu ou la décision au coeur du sujet ;
+- évite les formulations génériques qui pourraient s'appliquer à dix autres articles ;
+- FORME IMPOSÉE : formule la question selon l'une de ces formes, dans cet ordre de préférence :
+${pickCertamenQuestionForms(3).map((form, i) => `  ${i + 1}. ${form}`).join("\n")}
+- INTERDIT de commencer par "Faut-il" sauf si aucune des formes ci-dessus ne peut convenir ET que le sujet porte sur une interdiction, une obligation ou une réforme à trancher ;
+- pas de question évidente ("faut-il éviter les accidents ?") ;
+- les deux camps doivent sembler défendables.
+
+Règles pour positionA/positionB :
+- étiquettes de camp courtes, directes, parfois passionnées ;
+- pas d'arguments longs, pas de "car", "pour que", "afin de" ;
+- symétriques et défendables.
+
+CONTRAINTE DE LONGUEUR (stricte) :
+positionA et positionB doivent chacune tenir naturellement en 55 caractères maximum, espaces compris. Ne produis jamais une phrase qui nécessiterait d'être coupée après coup : choisis directement une étiquette de camp courte et complète qui tient dans cette limite, plutôt qu'une phrase plus longue à réduire ensuite.
+
+Réponds uniquement en JSON valide :
+{
+  "suggestedQuestion": "question Agôn (max 70 caractères, espaces et tirets compris — c'est un titre, reste court)",
+  "positionA": "camp A (max 55 caractères)",
+  "positionB": "camp B (max 55 caractères)"
+}`;
+
+  try {
+    // `options.label` : par défaut "certamen-creative-generation-strict" (comportement
+    // historique de l'expérience 4, inchangé). La production (§8 de la demande) passe
+    // "certamen-creative-generation" pour l'appel normal et "certamen-creative-retry" pour
+    // une tentative différée — mêmes deux labels demandés, mesurables séparément.
+    const response = await trackAi(options.label || "certamen-creative-generation-strict", () => openai.responses.create({
+      model: "gpt-4.1-mini",
+      input: prompt,
+      temperature,
+      max_output_tokens: 300
+    }), { sourceType: options.sourceType || "certamen_experiment_separated", batchSize: 1, itemsProcessed: 1 });
+    const parsed = safeJsonParse(response.output_text || "");
+    return {
+      suggestedQuestion: String(parsed.suggestedQuestion || "").trim() || fallback.suggestedQuestion,
+      positionA: String(parsed.positionA || "").trim() || fallback.positionA,
+      positionB: String(parsed.positionB || "").trim() || fallback.positionB
+    };
+  } catch (error) {
+    console.error(`Erreur IA Certamen (créativité stricte) pour "${subject.subject}" :`, error.message);
+    // `options.throwOnError` : par défaut false (comportement historique — repli silencieux
+    // sur `fallback`, utilisé par les expériences 3-4). La production (§5 de la demande) a
+    // besoin de distinguer un vrai succès d'un échec pour ne jamais publier un contenu
+    // incomplet ni perdre le jugement déjà validé — elle passe donc throwOnError:true.
+    if (options.throwOnError) throw error;
+    return fallback;
+  }
+}
+
+function certamenQuestionFormLabel(q) {
+  const s = String(q || "").toLowerCase();
+  if (/^qui doit/.test(s)) return "Qui doit X";
+  if (/^jusqu.où/.test(s)) return "Jusqu'où X";
+  if (/a-t-il raison|a-t-elle raison/.test(s)) return "A raison de";
+  if (/doit-il|doit-elle/.test(s)) return "Doit-il/elle";
+  if (/^peut-on/.test(s)) return "Peut-on";
+  if (/menace-t-il|menace-t-elle|va-t-il trop loin|va-t-elle trop loin/.test(s)) return "Menace/va trop loin";
+  if (/pourquoi pas/.test(s)) return "Pourquoi pas";
+  if (/faut-il/.test(s)) return "Faut-il";
+  if (/:.*\?/.test(String(q || "")) && / ou /.test(s)) return "Option ou option";
+  return "Autre";
+}
+
+function certamenFormDistribution(results) {
+  const dist = {};
+  results.forEach(function(r) {
+    if (!certamenIsRetained(r.editorialDecision)) return;
+    const f = certamenQuestionFormLabel(r.suggestedQuestion);
+    dist[f] = (dist[f] || 0) + 1;
+  });
+  return dist;
+}
+
+function certamenPassLabelBreakdown(tagName) {
+  const byLabel = summarizeRecords(recordsForRunTag(tagName)).byLabel;
+  return {
+    judgment: byLabel["certamen-judgment"] || { calls: 0, inputTokens: 0, outputTokens: 0, cost: 0 },
+    creative: byLabel["certamen-creative-generation"] || { calls: 0, inputTokens: 0, outputTokens: 0, cost: 0 },
+    alignPositions: byLabel["certamen-align-positions"] || { calls: 0, inputTokens: 0, outputTokens: 0, cost: 0 },
+    titleLimit: byLabel["raccourci-titre"] || { calls: 0, inputTokens: 0, outputTokens: 0, cost: 0 }
+  };
+}
+
+function certamenBreakdownTotalCost(b) {
+  return (b.judgment.cost || 0) + (b.creative.cost || 0) + (b.alignPositions.cost || 0) + (b.titleLimit.cost || 0);
+}
+
+async function runCertamenSeparatedValidationExperiment() {
+  console.log("=== Expérience Certamen 4 : validation finale de l'architecture séparée ===");
+
+  // Corpus : réutilisation STRICTE du corpus persisté par l'expérience 3 — aucune nouvelle
+  // collecte, comme demandé.
+  const corpusPath = path.join(__dirname, "certamen-experiment-corpus-1787466348730.json");
+  if (!fs.existsSync(corpusPath)) {
+    console.error(`Expérience 4 : corpus introuvable (${corpusPath}) — impossible de continuer sans reconstruire un nouveau corpus, ce qui n'est pas demandé.`);
+    return null;
+  }
+  const candidates = JSON.parse(fs.readFileSync(corpusPath, "utf8"));
+  console.log(`Expérience 4 : corpus réutilisé tel quel (${candidates.length} candidats) depuis ${corpusPath}.`);
+
+  const exp3Path = path.join(__dirname, "certamen-separated-experiment-1787466965096.json");
+  const exp3 = JSON.parse(fs.readFileSync(exp3Path, "utf8"));
+  const resultsG = exp3.fullResultsForQualityReview.map(function(e) { return e.G; });
+  const resultsH = exp3.fullResultsForQualityReview.map(function(e) { return e.H; });
+  if (resultsG.length !== candidates.length) {
+    console.error(`Expérience 4 : corpus (${candidates.length}) et résultats G/H de l'expérience 3 (${resultsG.length}) désalignés — arrêt.`);
+    return null;
+  }
+
+  // --- Passe I : 3e passe de l'architecture séparée, identique à G/H + diagnostics ---
+  const tagI = "certamen_sep_I";
+  setRunTag(tagI);
+  const startedAtI = Date.now();
+  const resultsI = [];
+  for (const subject of candidates) {
+    resultsI.push(await analyzeCertamenSubjectSeparatedWithDiagnostics(subject, {
+      judgmentTemperature: CERTAMEN_EXPERIMENT_LOW_TEMPERATURE,
+      creativeTemperature: 0.9,
+      sourceType: "certamen_experiment_separated"
+    }));
+  }
+  const latencyI = Date.now() - startedAtI;
+  setRunTag(null);
+  const usageI = summarizeRecords(recordsForRunTag(tagI));
+  console.log(`Expérience 4 : passe I terminée — ${usageI.totals.calls} appel(s), ${latencyI} ms.`);
+
+  // --- Passe J : prompt créatif renforcé, jugement RÉUTILISÉ de I (aucun nouvel appel de
+  // jugement) — isole strictement l'effet du prompt sur la longueur des positions.
+  const retainedIndices = [];
+  candidates.forEach(function(s, i) { if (certamenIsRetained(resultsI[i].editorialDecision)) retainedIndices.push(i); });
+  console.log(`Expérience 4 : passe J (prompt créatif renforcé) sur ${retainedIndices.length} candidat(s) retenu(s) par I...`);
+  const tagJ = "certamen_sep_J_strict_prompt";
+  setRunTag(tagJ);
+  const rawJByIndex = new Map();
+  for (const i of retainedIndices) {
+    const subject = candidates[i];
+    const judgmentFromI = {
+      editorialDecision: resultsI[i].editorialDecision,
+      theme: resultsI[i].theme,
+      risk: resultsI[i].risk,
+      reason: resultsI[i].reason
+    };
+    const creative = await generateCertamenCreativeStrict(subject, judgmentFromI, { temperature: 0.9, sourceType: "certamen_experiment_separated" });
+    rawJByIndex.set(i, {
+      rawQuestion: cleanCertamenGeneratedText(creative.suggestedQuestion || ""),
+      rawPositionA: cleanCertamenGeneratedText(creative.positionA || ""),
+      rawPositionB: cleanCertamenGeneratedText(creative.positionB || "")
+    });
+  }
+  setRunTag(null);
+  const usageJ = summarizeRecords(recordsForRunTag(tagJ));
+  console.log(`Expérience 4 : passe J terminée — ${usageJ.totals.calls} appel(s).`);
+
+  // --- Comparaisons G/H/I ---
+  const comparisons = {};
+  comparisons.G_vs_H = compareCertamenPasses(candidates, resultsG, resultsH);
+  comparisons.G_vs_I = compareCertamenPasses(candidates, resultsG, resultsI);
+  comparisons.H_vs_I = compareCertamenPasses(candidates, resultsH, resultsI);
+
+  // --- Synthèse de stabilité sur 3 runs (par candidat) ---
+  const stability = candidates.map(function(s, i) {
+    const decisions = [resultsG[i].editorialDecision, resultsH[i].editorialDecision, resultsI[i].editorialDecision];
+    const retainedFlags = decisions.map(certamenIsRetained);
+    const crossesBoundary = retainedFlags.some(Boolean) && retainedFlags.some(function(v) { return !v; });
+    const uniqueDecisions = new Set(decisions).size;
+    const agreement = uniqueDecisions === 1 ? "3/3 identiques" : (uniqueDecisions === 2 ? "2/3 identiques" : "3 décisions différentes");
+    return {
+      index: i,
+      subject: s.subject,
+      decisions: { G: decisions[0], H: decisions[1], I: decisions[2] },
+      scores: { G: resultsG[i].debatePotentialScore, H: resultsH[i].debatePotentialScore, I: resultsI[i].debatePotentialScore },
+      agreement,
+      crossesBoundary
+    };
+  });
+  const stableCount = stability.filter(function(s) { return s.agreement === "3/3 identiques"; }).length;
+  const crossingCount = stability.filter(function(s) { return s.crossesBoundary; }).length;
+  const unstableCandidates = stability.filter(function(s) { return s.agreement !== "3/3 identiques"; });
+  console.log(`Expérience 4 : ${stableCount}/${candidates.length} candidats stables sur les 3 runs (${crossingCount} avec au moins un franchissement retenu/avoid).`);
+
+  // --- Diagnostics de troncature (passe I) ---
+  const truncation = { positionsChecked: 0, oldTruncatedCount: 0, oldMidWordCutCount: 0, examples: [] };
+  resultsI.forEach(function(r, i) {
+    if (!r._diagnostics) return;
+    [["A", r._diagnostics.rawPositionA, r._diagnostics.safePositionA], ["B", r._diagnostics.rawPositionB, r._diagnostics.safePositionB]]
+      .forEach(function(entry) {
+        const label = entry[0];
+        const raw = entry[1];
+        const safe = entry[2];
+        truncation.positionsChecked += 1;
+        if (raw.length > 55) {
+          truncation.oldTruncatedCount += 1;
+          const oldCut = raw.slice(0, 55);
+          const midWordCut = raw[55] !== undefined && raw[55] !== " " && raw[54] !== " ";
+          if (midWordCut) {
+            truncation.oldMidWordCutCount += 1;
+            truncation.examples.push({ subject: candidates[i].subject, position: label, raw, oldSlice: oldCut, safeTruncate: safe });
+          }
+        }
+      });
+  });
+
+  // --- Longueur brute avant réduction : prompt actuel (I) vs prompt renforcé (J) ---
+  function lengthStats(lengths) {
+    return {
+      count: lengths.length,
+      over55: lengths.filter(function(l) { return l > 55; }).length,
+      avg: lengths.length ? Number((lengths.reduce(function(a, b) { return a + b; }, 0) / lengths.length).toFixed(1)) : null,
+      max: lengths.length ? Math.max.apply(null, lengths) : null
+    };
+  }
+  const lengthsI = [];
+  resultsI.forEach(function(r) {
+    if (!r._diagnostics) return;
+    lengthsI.push(r._diagnostics.rawPositionA.length, r._diagnostics.rawPositionB.length);
+  });
+  const lengthsJ = [];
+  rawJByIndex.forEach(function(v) { lengthsJ.push(v.rawPositionA.length, v.rawPositionB.length); });
+  const lengthComparison = { promptActuel_I: lengthStats(lengthsI), promptRenforce_J: lengthStats(lengthsJ) };
+
+  // --- Diversité des formes de question, G/H/I ---
+  const formDiversity = { G: certamenFormDistribution(resultsG), H: certamenFormDistribution(resultsH), I: certamenFormDistribution(resultsI) };
+
+  // --- Coût moyen G/H/I ---
+  const breakdownG = certamenPassLabelBreakdown("certamen_sep_G");
+  const breakdownH = certamenPassLabelBreakdown("certamen_sep_H");
+  const breakdownI = certamenPassLabelBreakdown(tagI);
+  const costs = [certamenBreakdownTotalCost(breakdownG), certamenBreakdownTotalCost(breakdownH), certamenBreakdownTotalCost(breakdownI)];
+  const costStats = {
+    perPass: { G: Number(costs[0].toFixed(6)), H: Number(costs[1].toFixed(6)), I: Number(costs[2].toFixed(6)) },
+    mean: Number((costs.reduce(function(a, b) { return a + b; }, 0) / 3).toFixed(6)),
+    min: Number(Math.min.apply(null, costs).toFixed(6)),
+    max: Number(Math.max.apply(null, costs).toFixed(6)),
+    judgmentMean: Number((((breakdownG.judgment.cost || 0) + (breakdownH.judgment.cost || 0) + (breakdownI.judgment.cost || 0)) / 3).toFixed(6)),
+    creativeMean: Number((((breakdownG.creative.cost || 0) + (breakdownH.creative.cost || 0) + (breakdownI.creative.cost || 0)) / 3).toFixed(6)),
+    downstreamMean: Number(((
+      ((breakdownG.alignPositions.cost || 0) + (breakdownG.titleLimit.cost || 0)) +
+      ((breakdownH.alignPositions.cost || 0) + (breakdownH.titleLimit.cost || 0)) +
+      ((breakdownI.alignPositions.cost || 0) + (breakdownI.titleLimit.cost || 0))
+    ) / 3).toFixed(6))
+  };
+
+  // --- Vérification de compatibilité avec le format attendu par runCertamenSession ---
+  const expectedKeys = ["isDebatable", "debatePotentialScore", "editorialDecision", "reason", "suggestedQuestion", "positionA", "positionB", "theme", "risk", "politicalOrientation"];
+  const sample = resultsI.find(function(r) { return certamenIsRetained(r.editorialDecision); });
+  const actualKeys = sample ? Object.keys(sample).filter(function(k) { return k !== "_diagnostics"; }) : [];
+  const productionShapeCheck = {
+    expectedKeys,
+    actualKeys,
+    missing: expectedKeys.filter(function(k) { return !actualKeys.includes(k); }),
+    extra: actualKeys.filter(function(k) { return !expectedKeys.includes(k); }),
+    compatible: expectedKeys.every(function(k) { return actualKeys.includes(k); }) && actualKeys.every(function(k) { return expectedKeys.includes(k); })
+  };
+
+  const report = {
+    generatedAt: new Date().toISOString(),
+    corpusFile: corpusPath,
+    corpusSize: candidates.length,
+    exp3ReportFile: exp3Path,
+    passI: {
+      tag: tagI, latencyMs: latencyI,
+      calls: usageI.totals.calls, inputTokens: usageI.totals.inputTokens, outputTokens: usageI.totals.outputTokens,
+      cost: usageI.totals.costKnown ? Number(usageI.totals.cost.toFixed(6)) : null,
+      retained: retainedIndices.length, rejected: candidates.length - retainedIndices.length
+    },
+    passJ: {
+      tag: tagJ, calls: usageJ.totals.calls, inputTokens: usageJ.totals.inputTokens, outputTokens: usageJ.totals.outputTokens,
+      cost: usageJ.totals.costKnown ? Number(usageJ.totals.cost.toFixed(6)) : null,
+      candidatesCovered: retainedIndices.length
+    },
+    comparisons: Object.fromEntries(Object.entries(comparisons).map(function(entry) {
+      return [entry[0], { levelCounts: entry[1].levelCounts, instabilityRate: Number(entry[1].instabilityRate.toFixed(3)), level3: entry[1].level3 }];
+    })),
+    stability: { stableCount, stableRate: Number((stableCount / candidates.length).toFixed(3)), crossingCount },
+    unstableCandidates,
+    truncation,
+    lengthComparison,
+    formDiversity,
+    costStats,
+    labelBreakdown: { G: breakdownG, H: breakdownH, I: breakdownI },
+    productionShapeCheck,
+    fullResultsI: candidates.map(function(s, i) { return { index: i, subject: s.subject, result: resultsI[i] }; })
+  };
+
+  const reportPath = path.join(__dirname, `certamen-separated-validation-${Date.now()}.json`);
+  fs.writeFileSync(reportPath, JSON.stringify(report, null, 2), "utf8");
+
+  console.log("=== Résultat expérience 4 ===");
+  console.log(JSON.stringify({
+    passI: report.passI,
+    passJ: report.passJ,
+    comparisons: Object.fromEntries(Object.entries(report.comparisons).map(function(e) {
+      return [e[0], { levelCounts: e[1].levelCounts, instabilityRate: e[1].instabilityRate }];
+    })),
+    stability: report.stability,
+    truncation: report.truncation,
+    lengthComparison: report.lengthComparison,
+    costStats: report.costStats,
+    productionShapeCheck: report.productionShapeCheck
+  }, null, 2));
+  console.log(`Rapport complet écrit dans ${reportPath}`);
+  return report;
+}
+
+// ==================== FIN EXPÉRIENCE 4 ====================
+
 // Identique à alignPositionsByPolitics() de server.js (même prompt, mêmes règles) —
 // dupliqué ici car veille-mixte.js et server.js sont deux process Node séparés.
 async function alignCertamenPositionsByPolitics({ debateQuestion, positionA, positionB }) {
@@ -8219,13 +10271,12 @@ Si hasPoliticalOrientation est false, leftPosition et rightPosition sont des cha
 Réponds uniquement en JSON valide, sans balises markdown.`;
 
   try {
-    const response = await openai.responses.create({
+    const response = await trackAi("certamen-align-positions", () => openai.responses.create({
       model: "gpt-4.1-mini",
       input: prompt,
       temperature: 0.4,
       max_output_tokens: 200
-    });
-    logAiUsage("certamen-align-positions", response);
+    }), { sourceType: "certamen_pipeline" });
     const parsed = safeJsonParse(response.output_text || "");
     if (parsed.hasPoliticalOrientation && parsed.leftPosition && parsed.rightPosition) {
       return {
@@ -8597,19 +10648,13 @@ async function runCertamenSession() {
   console.log(`Certamen : ${candidates.length} sujet(s) envoyés à l'IA sur limite ${limit}.`);
 
   setCertamenProgress(4, "Analyse IA Certamen", `0 / ${candidates.length}`);
-  const analyzed = [];
-
-  for (let i = 0; i < candidates.length; i++) {
-    const subject = candidates[i];
-    setCertamenProgress(4, "Analyse IA Certamen", `${i + 1} / ${candidates.length}`);
-    console.log(`Certamen IA : ${subject.subject}`);
-    const certamen = await analyzeCertamenSubjectWithAI(subject);
-    // Champs au format des sujets veille mixte : permet de réutiliser telles quelles
-    // les cartes d'arène, la génération IA et la persistance (/save-update). subjectId
-    // n'est volontairement pas réécrit ici : il provient de deduplicateSubjectsWithAI()
-    // (via ensureSubjectIds) et doit rester stable pour que mergeGroupByKeepId (affichage
-    // du bandeau "Sujets fusionnés ici par l'IA") retrouve le bon sujet.
-    analyzed.push(Object.assign({}, subject, {
+  // Champs au format des sujets veille mixte : permet de réutiliser telles quelles les
+  // cartes d'arène, la génération IA et la persistance (/save-update). subjectId n'est
+  // volontairement pas réécrit ici : il provient de deduplicateSubjectsWithAI() (via
+  // ensureSubjectIds) et doit rester stable pour que mergeGroupByKeepId (affichage du
+  // bandeau "Sujets fusionnés ici par l'IA") retrouve le bon sujet.
+  function toAnalyzedSubject(subject, certamen) {
+    return Object.assign({}, subject, {
       certamen,
       mergedSubjectTitles: subject.mergedSubjectTitles || [],
       scoreAnalyzed: true,
@@ -8617,7 +10662,60 @@ async function runCertamenSession() {
       controversyLevel: certamenRiskToControversyLevel(certamen.risk),
       aiAnalyzed: false,
       ai: null
-    }));
+    });
+  }
+
+  const analyzed = [];
+  // Précédence : séparé > lot > unitaire. Si CERTAMEN_SEPARATED_ANALYZE est désactivé (par
+  // défaut), ce bloc entier est ignoré et le comportement reste STRICTEMENT celui d'avant
+  // cette phase (branches lot/unitaire ci-dessous, non modifiées).
+  if (CERTAMEN_SEPARATED_ANALYZE_ENABLED) {
+    console.log(`Certamen : ${candidates.length} sujet(s) envoyés à l'analyse séparée (jugement temp 0.2 + créativité temp 0.9, CERTAMEN_SEPARATED_ANALYZE=on).`);
+    let queuedForRetry = 0;
+    for (let i = 0; i < candidates.length; i++) {
+      const subject = candidates[i];
+      setCertamenProgress(4, "Analyse IA Certamen", `${i + 1} / ${candidates.length}`);
+      console.log(`Certamen IA (séparé) : ${subject.subject}`);
+
+      const result = await analyzeCertamenSubjectSeparatedProduction(subject, { sourceType: "certamen_production" });
+
+      if (CERTAMEN_SEPARATED_COMPARE_ENABLED && i < CERTAMEN_COMPARE_SAMPLE_SIZE) {
+        await runCertamenComparisonShadow(subject, true);
+      }
+
+      if (result.creativeFailed) {
+        persistAndScheduleCertamenCreative(subject, result.judgment);
+        queuedForRetry += 1;
+        console.warn(`[certamen-separated] "${subject.subject}" : jugement retenu conservé, créativité mise en file d'attente (certamen-pending-creative.json) — absent de cette session.`);
+        continue;
+      }
+
+      analyzed.push(toAnalyzedSubject(subject, result.certamen));
+    }
+    if (queuedForRetry > 0) {
+      console.log(`Certamen : ${queuedForRetry} sujet(s) en attente de créativité (retry différé), non inclus dans cette session.`);
+    }
+  } else if (CERTAMEN_BATCH_ANALYZE_ENABLED) {
+    console.log(`Certamen : ${candidates.length} sujet(s) envoyés à l'analyse IA par lots de ${CERTAMEN_BATCH_SIZE} (CERTAMEN_BATCH_ANALYZE=on).`);
+    const analysis = await analyzeCertamenSubjectsWithAI(candidates, function(done, total) {
+      setCertamenProgress(4, "Analyse IA Certamen", `${done} / ${total}`);
+    });
+    analysis.forEach(function(entry) {
+      analyzed.push(toAnalyzedSubject(entry.subject, entry.certamen));
+    });
+  } else {
+    for (let i = 0; i < candidates.length; i++) {
+      const subject = candidates[i];
+      setCertamenProgress(4, "Analyse IA Certamen", `${i + 1} / ${candidates.length}`);
+      console.log(`Certamen IA : ${subject.subject}`);
+      const certamen = await analyzeCertamenSubjectWithAI(subject);
+
+      if (CERTAMEN_SEPARATED_COMPARE_ENABLED && i < CERTAMEN_COMPARE_SAMPLE_SIZE) {
+        await runCertamenComparisonShadow(subject, false);
+      }
+
+      analyzed.push(toAnalyzedSubject(subject, certamen));
+    }
   }
 
   const debatables = analyzed
@@ -8739,19 +10837,71 @@ if (process.argv.includes("--render-html")) {
   process.exit(0);
 }
 
-if (!fs.existsSync(OUTPUT_HTML)) {
-  const existingSessions = loadSessions();
-  if (existingSessions.length > 0) {
-    renderMixteHtmlFromHistory();
+if (process.argv.includes("--certamen-batch-benchmark")) {
+  // Mode isolé (cf. runCertamenBatchBenchmark) : ne démarre jamais le serveur API local,
+  // exactement comme --render-html/--render-certamen-html ci-dessus.
+  runCertamenBatchBenchmark()
+    .then(() => process.exit(0))
+    .catch((err) => {
+      console.error("Erreur benchmark Certamen :", err);
+      process.exit(1);
+    });
+} else if (process.argv.includes("--certamen-temp-batch-experiment")) {
+  // Mode isolé (cf. runCertamenTemperatureBatchExperiment) : idem, ne démarre jamais le
+  // serveur API local.
+  runCertamenTemperatureBatchExperiment()
+    .then(() => process.exit(0))
+    .catch((err) => {
+      console.error("Erreur expérience Certamen :", err);
+      process.exit(1);
+    });
+} else if (process.argv.includes("--certamen-separated-experiment")) {
+  // Mode isolé (cf. runCertamenSeparatedArchitectureExperiment) : idem, ne démarre jamais
+  // le serveur API local.
+  runCertamenSeparatedArchitectureExperiment()
+    .then(() => process.exit(0))
+    .catch((err) => {
+      console.error("Erreur expérience Certamen (séparation) :", err);
+      process.exit(1);
+    });
+} else if (process.argv.includes("--certamen-separated-validation")) {
+  // Mode isolé (cf. runCertamenSeparatedValidationExperiment) : idem, ne démarre jamais le
+  // serveur API local.
+  runCertamenSeparatedValidationExperiment()
+    .then(() => process.exit(0))
+    .catch((err) => {
+      console.error("Erreur validation Certamen (séparation) :", err);
+      process.exit(1);
+    });
+} else if (process.argv.includes("--certamen-separated-tests")) {
+  // Mode isolé (cf. runCertamenSeparatedTests) : idem, ne démarre jamais le serveur API
+  // local. Ne fait aucun appel réseau réel (openai.responses.create est mocké).
+  runCertamenSeparatedTests()
+    .then(() => process.exit(process.exitCode || 0))
+    .catch((err) => {
+      console.error("Erreur tests Certamen (séparation) :", err);
+      process.exit(1);
+    });
+} else {
+  if (!fs.existsSync(OUTPUT_HTML)) {
+    const existingSessions = loadSessions();
+    if (existingSessions.length > 0) {
+      renderMixteHtmlFromHistory();
+    }
   }
+
+  // Reprend les créativités Certamen non régénérées après un redémarrage — sans effet si
+  // certamen-pending-creative.json n'existe pas encore ou ne contient rien de "pending"
+  // (cas normal tant que CERTAMEN_SEPARATED_ANALYZE n'a jamais été activé).
+  resumeCertamenPendingCreativeOnStartup();
+
+  const localApiServer = apiApp.listen(API_PORT, "127.0.0.1", () => {
+    console.log(`API mixte lancée sur 127.0.0.1:${API_PORT}`);
+  });
+
+  localApiServer.on("error", (error) => {
+    console.error("Erreur API mixte locale :", error.message);
+  });
+
+  console.log("Bot veille prêt — collecte manuelle uniquement (bouton Mise à jour).");
 }
-
-const localApiServer = apiApp.listen(API_PORT, "127.0.0.1", () => {
-  console.log(`API mixte lancée sur 127.0.0.1:${API_PORT}`);
-});
-
-localApiServer.on("error", (error) => {
-  console.error("Erreur API mixte locale :", error.message);
-});
-
-console.log("Bot veille prêt — collecte manuelle uniquement (bouton Mise à jour).");

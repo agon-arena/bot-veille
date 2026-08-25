@@ -1258,5 +1258,715 @@
     "runAt": "2026-07-16T08:28:17.045Z",
     "status": "done",
     "attempts": 0
+  },
+  {
+    "debateId": 1979,
+    "question": "Pourquoi pas revoir à la baisse les aides publiques aux entreprises ?",
+    "positionA": "non, ces aides sont vitales pour l'économie",
+    "positionB": "oui, on gaspille l'argent public inutilement",
+    "id": "1979-1784362616600-5migh2",
+    "runAt": "2026-07-18T08:26:56.598Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1980,
+    "question": "L'Allemagne doit-elle participer aux exercices nucléaires français ?",
+    "positionA": "non, ça augmente les tensions et risques",
+    "positionB": "oui, pour renforcer la sécurité européenne",
+    "id": "1980-1784362616600-vrm7l6",
+    "runAt": "2026-07-18T08:26:56.598Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1981,
+    "question": "Jusqu'où justifier les frappes américaines en Iran ?",
+    "positionA": "non, ça ne fait qu'aggraver le conflit",
+    "positionB": "oui, c'est une défense légitime des intérêts",
+    "id": "1981-1784362616600-e5vd11",
+    "runAt": "2026-07-18T08:26:56.598Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1982,
+    "question": "La présomption de légitime défense pour la police : protection ou impunité ?",
+    "positionA": "non, ça risque d'ouvrir trop d'abus",
+    "positionB": "oui, faut mieux protéger les policiers",
+    "id": "1982-1784362616600-v97tge",
+    "runAt": "2026-07-18T08:26:56.598Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1983,
+    "question": "Zelensky a-t-il raison de limoger le ministre de la Défense ?",
+    "positionA": "oui, fallait trancher pour l'efficacité",
+    "positionB": "non, c'est un coup dur pour l'unité nationale",
+    "id": "1983-1784362616600-lszfjq",
+    "runAt": "2026-07-18T08:26:56.598Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 1984,
+    "question": "Jusqu'où aller dans la durée de peine pour viols sur mineurs en série ?",
+    "positionA": "non, perpétuité c’est excessif et inefficace",
+    "positionB": "oui, perpétuité pour protéger les enfants",
+    "id": "1984-1784362616600-xviaxj",
+    "runAt": "2026-07-18T08:26:56.598Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 2207,
+    "question": "Les USA doivent-ils développer le nucléaire civil en Arabie saoudite ?",
+    "positionA": "non, ça risque d'aggraver le conflit régional",
+    "positionB": "oui, c'est une coopération utile et sûre",
+    "id": "2207-1784794674788-m893kf",
+    "runAt": "2026-07-23T08:27:54.786Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 2208,
+    "question": "La fronde anti-IA : frein utile ou frein au progrès ?",
+    "positionA": "oui, faut freiner l’IA pour protéger nos valeurs",
+    "positionB": "non, l’IA est une chance à saisir sans trop bloquer",
+    "id": "2208-1784794674788-tasn71",
+    "runAt": "2026-07-23T08:27:54.786Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 2209,
+    "question": "Lecornu a-t-il raison d'augmenter les franchises médicales ?",
+    "positionA": "non, ça pénalise les plus fragiles",
+    "positionB": "oui, faut mieux gérer les dépenses de santé",
+    "id": "2209-1784794674788-3q0fr6",
+    "runAt": "2026-07-23T08:27:54.786Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 2210,
+    "question": "Le bloc central doit-il céder à l'extrême droite sur la sécurité ?",
+    "positionA": "non, céder c'est trahir les valeurs démocratiques",
+    "positionB": "oui, faut durcir pour protéger les citoyens",
+    "id": "2210-1784794674788-sq12h4",
+    "runAt": "2026-07-23T08:27:54.786Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 2211,
+    "question": "Interdiction des réseaux sociaux aux moins de 15 ans : protection ou atteinte ?",
+    "positionA": "oui, faut protéger les enfants",
+    "positionB": "non, c’est trop restrictif et inefficace",
+    "id": "2211-1784794674788-2z4r5e",
+    "runAt": "2026-07-23T08:27:54.786Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 2212,
+    "question": "Le transfert des dauphins de Marineland est-il justifié ou scandaleux ?",
+    "positionA": "non, c’est une maltraitance inutile",
+    "positionB": "oui, c’est mieux pour leur bien-être",
+    "id": "2212-1784794674788-7nd13a",
+    "runAt": "2026-07-23T08:27:54.786Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 2213,
+    "question": "Donald Trump doit-il poursuivre les frappes en Iran ?",
+    "positionA": "non, ça coûte trop cher et déstabilise",
+    "positionB": "oui, c'est nécessaire pour la sécurité",
+    "id": "2213-1784794674788-c7lroa",
+    "runAt": "2026-07-23T08:27:54.786Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 2316,
+    "question": "Le Parlement va-t-il trop loin en réintroduisant l'acétamipride ?",
+    "positionA": "oui, c'est un risque inutile pour la santé",
+    "positionB": "non, c'est nécessaire pour soutenir l'agriculture",
+    "id": "2316-1784967312043-vazano",
+    "runAt": "2026-07-25T08:25:12.041Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 2317,
+    "question": "Sophie Straat va-t-elle trop loin avec sa demande aux hommes blancs ?",
+    "positionA": "non, c'est un acte de justice sociale",
+    "positionB": "oui, c'est excluant et injuste",
+    "id": "2317-1784967312043-njl23s",
+    "runAt": "2026-07-25T08:25:12.041Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 2318,
+    "question": "Macron a-t-il raison de mobiliser l'armée contre les incendies ?",
+    "positionA": "non, faut plus compter sur la solidarité européenne",
+    "positionB": "oui, l'armée est nécessaire pour agir vite",
+    "id": "2318-1784967312043-pdmu8u",
+    "runAt": "2026-07-25T08:25:12.041Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 2319,
+    "question": "Kaïs Saïed a-t-il raison de suspendre le Parlement en Tunisie ?",
+    "positionA": "oui, il faut agir face au chaos politique",
+    "positionB": "non, ça ferme la porte à la démocratie",
+    "id": "2319-1784967312043-m6ezz9",
+    "runAt": "2026-07-25T08:25:12.041Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 2320,
+    "question": "Trump doit-il intensifier les frappes militaires contre l'Iran ?",
+    "positionA": "non, ça va enflammer la région encore plus",
+    "positionB": "oui, faut agir fort contre la menace iranienne",
+    "id": "2320-1784967312043-g58up0",
+    "runAt": "2026-07-25T08:25:12.041Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 2489,
+    "question": "Agnès Ledig a-t-elle raison de rendre sa Légion d’honneur ?",
+    "positionA": "oui, c’est un geste juste contre la loi pesticide",
+    "positionB": "non, c’est une réaction excessive qui divise",
+    "id": "2489-1785226883008-nu4703",
+    "runAt": "2026-07-28T08:31:23.007Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 2490,
+    "question": "Renault a-t-il raison de nier sa complicité dans le Dieselgate ?",
+    "positionA": "non, Renault doit assumer sa responsabilité",
+    "positionB": "oui, faut laisser la défense s'exprimer",
+    "id": "2490-1785226883008-0o4lbu",
+    "runAt": "2026-07-28T08:31:23.007Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 2491,
+    "question": "La décision de Macron est-elle à la hauteur face aux incendies ?",
+    "positionA": "non, c’est plus de discours que d’actions",
+    "positionB": "oui, faut rassembler pour agir vite",
+    "id": "2491-1785226883008-9hrbjm",
+    "runAt": "2026-07-28T08:31:23.007Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 2492,
+    "question": "étiquetage IA UE : utile transparence ou trop lourd ?",
+    "positionA": "oui, faut que l'info soit claire",
+    "positionB": "non, ça va freiner l'innovation",
+    "id": "2492-1785226883008-09qywl",
+    "runAt": "2026-07-28T08:31:23.007Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 2493,
+    "question": "Johnson & Johnson a-t-il raison de payer 5,5 Mds$ pour clore le dossier talc ?",
+    "positionA": "non, ça cache une responsabilité grave",
+    "positionB": "oui, faut tourner la page et éviter un long procès",
+    "id": "2493-1785226883008-yqk5x5",
+    "runAt": "2026-07-28T08:31:23.007Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 2494,
+    "question": "Le gouvernement doit-il organiser une réunion transpartisane sur les incendies ?",
+    "positionA": "oui, il faut une coordination politique urgente",
+    "positionB": "non, ça risque de ralentir l'action efficace",
+    "id": "2494-1785226883008-sv9e5w",
+    "runAt": "2026-07-28T08:31:23.007Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 2495,
+    "question": "SOS Racisme doit-elle pousser l'État à sanctionner les boîtes discrimantes ?",
+    "positionA": "oui, faut punir pour faire changer les mentalités",
+    "positionB": "non, ça va tuer la vie nocturne inutilement",
+    "id": "2495-1785226883008-3r2sh0",
+    "runAt": "2026-07-28T08:31:23.007Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 2496,
+    "question": "Retrait du Tchad de la CPI : souveraineté ou affaiblissement ?",
+    "positionA": "non, la justice internationale doit primer",
+    "positionB": "oui, chaque pays doit garder sa souveraineté",
+    "id": "2496-1785226883008-e0x97a",
+    "runAt": "2026-07-28T08:31:23.007Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 2523,
+    "question": "Les Etats-Unis doivent-ils bloquer les recherches virales risquées ?",
+    "positionA": "oui, vaut mieux prévenir les risques",
+    "positionB": "non, faut pas freiner la science",
+    "id": "2523-1785399606065-5hfnmj",
+    "runAt": "2026-07-30T08:30:06.063Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 2524,
+    "question": "La justice a-t-elle raison de classer des plaintes sans enquête ?",
+    "positionA": "non, chaque plainte mérite un vrai suivi",
+    "positionB": "oui, faut pas tout enquêter à tout prix",
+    "id": "2524-1785399606065-p8eb7o",
+    "runAt": "2026-07-30T08:30:06.063Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 2525,
+    "question": "Peut-on laisser les banques financer les campagnes présidentielles ?",
+    "positionA": "non, l’état doit garantir l’indépendance",
+    "positionB": "oui, le privé peut aider si c'est encadré",
+    "id": "2525-1785399606065-tvzc8r",
+    "runAt": "2026-07-30T08:30:06.063Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 2526,
+    "question": "La monoculture du pin maritime : préserver ou diversifier la forêt ?",
+    "positionA": "non, faut diversifier pour éviter les catastrophes",
+    "positionB": "oui, faut garder la monoculture pour l'économie",
+    "id": "2526-1785399606065-mnslfa",
+    "runAt": "2026-07-30T08:30:06.063Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 2527,
+    "question": "Doctolib a-t-il raison d'utiliser nos données santé pour la recherche ?",
+    "positionA": "oui, ça peut améliorer les soins",
+    "positionB": "non, ça menace notre vie privée",
+    "id": "2527-1785399606065-wxw5s1",
+    "runAt": "2026-07-30T08:30:06.063Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 2528,
+    "question": "Qui doit sauver l’usine Fibre Excellence à Tarascon ?",
+    "positionA": "l’État doit intervenir pour préserver les emplois",
+    "positionB": "le marché doit décider sans aides publiques",
+    "id": "2528-1785399606065-9s3k31",
+    "runAt": "2026-07-30T08:30:06.063Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 2529,
+    "question": "Infantino doit-il ouvrir la Coupe du monde aux investisseurs privés ?",
+    "positionA": "non, faut pas vendre notre sport",
+    "positionB": "oui, ça peut faire grandir le foot",
+    "id": "2529-1785399606065-yd9vtw",
+    "runAt": "2026-07-30T08:30:06.063Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 2555,
+    "question": "Jusqu'où laisser la Fifa privatiser la Coupe du monde ?",
+    "positionA": "non, faut garder le contrôle public et collectif",
+    "positionB": "oui, faut ouvrir au privé pour booster le foot",
+    "id": "2555-1785572356941-17u54g",
+    "runAt": "2026-08-01T08:29:16.936Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 2556,
+    "question": "L'UDI doit-elle soutenir un candidat clair ou favoriser un large rassemblement ?",
+    "positionA": "oui faut choisir un candidat clair",
+    "positionB": "non, mieux vaut un rassemblement large",
+    "id": "2556-1785572356941-nvo5dw",
+    "runAt": "2026-08-01T08:29:16.936Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 2557,
+    "question": "Qui doit garantir la sécurité des enfants placés en foyer ?",
+    "positionA": "la hiérarchie doit mieux encadrer",
+    "positionB": "faut plus de moyens pour le personnel",
+    "id": "2557-1785572356941-dhcnun",
+    "runAt": "2026-08-01T08:37:09.086Z",
+    "status": "done",
+    "attempts": 1
+  },
+  {
+    "debateId": 2558,
+    "question": "L’État a-t-il raison de mettre fin à l’hébergement d’urgence à Marseille ?",
+    "positionA": "non, faut assurer un vrai toit aux familles d'abord",
+    "positionB": "oui, faut pas encourager la rue comme solution",
+    "id": "2558-1785572356941-5xecaw",
+    "runAt": "2026-08-01T08:29:16.936Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 2559,
+    "question": "L’Etat en Gironde doit-il revoir sa gestion des feux ou pas ?",
+    "positionA": "oui, l’Etat a mal géré la crise",
+    "positionB": "non, c’était un accident hors norme",
+    "id": "2559-1785572356941-reqbh4",
+    "runAt": "2026-08-01T08:29:16.936Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 2560,
+    "question": "L’Éducation nationale doit-elle investir plus contre les cyberattaques ?",
+    "positionA": "oui, faut protéger les données à tout prix",
+    "positionB": "non, faut pas gaspiller l'argent public",
+    "id": "2560-1785572356941-lylwy2",
+    "runAt": "2026-08-01T08:29:16.936Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 2562,
+    "question": "Le Sénat va-t-il trop loin en bloquant le rapport sur la souffrance au travail ?",
+    "positionA": "oui, c’est une censure inadmissible",
+    "positionB": "non, faut garder du recul avant de publier",
+    "id": "2562-1785572356941-1sdwkv",
+    "runAt": "2026-08-01T08:29:16.936Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 2563,
+    "question": "Projet delphinarium Beauval : protection animale ou captivité inutile ?",
+    "positionA": "non, faut arrêter la captivité des animaux marins",
+    "positionB": "oui, c’est important pour la sauvegarde des cétacés",
+    "id": "2563-1785572356941-kha6ia",
+    "runAt": "2026-08-01T08:29:16.936Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 2565,
+    "question": "L'UE doit-elle suspendre l'Espagne de Schengen après Ceuta ?",
+    "positionA": "non, faut rester solidaires et éviter l'exclusion",
+    "positionB": "oui, faut protéger les frontières européennes",
+    "id": "2565-1785572356941-4siwj8",
+    "runAt": "2026-08-01T08:29:16.936Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 2665,
+    "question": "Pourquoi pas un vrai débat sur l'immigration avant 2027 ?",
+    "positionA": "non, l'immigration est une chance à valoriser",
+    "positionB": "oui, faut mieux contrôler les flux migratoires",
+    "id": "2665-1785831561141-v9j497",
+    "runAt": "2026-08-04T08:29:21.141Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 2666,
+    "question": "La poussée de Le Pen chez les retraités est-elle un tournant politique ?",
+    "positionA": "non, c’est un phénomène passager",
+    "positionB": "oui, c’est un vrai changement durable",
+    "id": "2666-1785831561141-eo5d0h",
+    "runAt": "2026-08-04T08:29:21.141Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 2667,
+    "question": "Barbara Butch doit-elle continuer à s'exprimer en concert ?",
+    "positionA": "non, faut respecter les sensibilités du public",
+    "positionB": "oui, faut protéger la liberté d'expression",
+    "id": "2667-1785831561141-44w2dd",
+    "runAt": "2026-08-04T08:29:21.141Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 2668,
+    "question": "Marine Tondelier pousse-t-elle trop loin l'ISF climatique ?",
+    "positionA": "non, il faut agir fort contre les privilèges",
+    "positionB": "oui, ce serait un excès pénalisant",
+    "id": "2668-1785831561141-qudsjr",
+    "runAt": "2026-08-04T08:29:21.141Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 2669,
+    "question": "Peut-on vraiment réguler l’intelligence artificielle en Europe ?",
+    "positionA": "oui, l'Europe doit imposer des règles strictes",
+    "positionB": "non, ça freine l’innovation et c’est irréaliste",
+    "id": "2669-1785831561141-3n9mtm",
+    "runAt": "2026-08-04T08:29:21.141Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 2670,
+    "question": "Peut-on durcir le contrôle des investissements étrangers en France ?",
+    "positionA": "oui, faut protéger nos secteurs stratégiques",
+    "positionB": "non, ça freine l’économie et l’innovation",
+    "id": "2670-1785831561141-ig5nn8",
+    "runAt": "2026-08-04T08:29:21.141Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 2671,
+    "question": "Trump a-t-il raison d'imposer ces nouveaux droits de douane ?",
+    "positionA": "Non, ça nuit aux consommateurs et au commerce",
+    "positionB": "Oui, faut protéger l'industrie américaine",
+    "id": "2671-1785831561141-uhkutb",
+    "runAt": "2026-08-04T08:29:21.141Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 2672,
+    "question": "Crise migratoire à Ceuta :urgence sécuritaire ou solidarité d'abord ?",
+    "positionA": "non, faut protéger les migrants solidaires",
+    "positionB": "oui, faut sécuriser les frontières à tout prix",
+    "id": "2672-1785831561141-0nqudt",
+    "runAt": "2026-08-04T08:29:21.141Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 2691,
+    "question": "Gabriel Attal doit-il demander un plafonnement des prix du carburant ?",
+    "positionA": "oui, faut protéger le pouvoir d'achat",
+    "positionB": "non, le marché doit rester libre",
+    "id": "2691-1786004390872-39g2at",
+    "runAt": "2026-08-06T08:29:50.788Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 2692,
+    "question": "Peut-on interdire la chasse dans les zones incendiées ?",
+    "positionA": "oui, faut protéger la faune en détresse",
+    "positionB": "non, la chasse reste un droit à respecter",
+    "id": "2692-1786004390872-7n9b63",
+    "runAt": "2026-08-06T08:29:50.788Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 2693,
+    "question": "Qui doit protéger les filles face aux mariages forcés en Irak ?",
+    "positionA": "l’état doit intervenir fermement",
+    "positionB": "la famille doit garder son autorité",
+    "id": "2693-1786004390872-twihd1",
+    "runAt": "2026-08-06T08:29:50.788Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 2694,
+    "question": "La France a-t-elle raison de sanctionner Israël ?",
+    "positionA": "oui, la France doit agir contre les dérives",
+    "positionB": "non, faut garder le dialogue ouvert",
+    "id": "2694-1786004390872-ohuk30",
+    "runAt": "2026-08-06T08:29:50.788Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 2695,
+    "question": "La décision de Paris d'étendre sa dissuasion nucléaire est-elle justifiée ?",
+    "positionA": "non, ça aggrave les tensions",
+    "positionB": "oui, c'est vital pour la sécurité",
+    "id": "2695-1786004390872-hxvswr",
+    "runAt": "2026-08-06T08:29:50.788Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 2696,
+    "question": "Peut-on vendre librement des terres argentines aux étrangers ?",
+    "positionA": "non, faut protéger nos terres nationales",
+    "positionB": "oui, ça attire des investissements utiles",
+    "id": "2696-1786004390872-oms24n",
+    "runAt": "2026-08-06T08:29:50.788Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 2697,
+    "question": "Qui doit décider des projets industriels après des incendies ?",
+    "positionA": "la priorité c'est de protéger l'environnement",
+    "positionB": "l'État doit soutenir l'économie locale",
+    "id": "2697-1786004390872-liwhr6",
+    "runAt": "2026-08-06T08:29:50.788Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 2734,
+    "question": "La métropole de Rouen doit-elle faire plus pour stopper BASF ?",
+    "positionA": "oui, faut protéger la Seine et la santé publique",
+    "positionB": "non, BASF apporte aussi des emplois locaux",
+    "id": "2734-1786177052130-swqrb0",
+    "runAt": "2026-08-08T08:27:32.127Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 2735,
+    "question": "Peut-on interdire le burkini sur les plages de Mandelieu ?",
+    "positionA": "non, c’est une atteinte à la liberté religieuse",
+    "positionB": "oui, faut protéger la laïcité sur les plages",
+    "id": "2735-1786177052130-2t7wgt",
+    "runAt": "2026-08-08T08:27:32.127Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 2736,
+    "question": "Jusqu'où tolérer les contestations féminines en Iran ?",
+    "positionA": "oui à la lutte pour plus de libertés",
+    "positionB": "non, faut préserver l'ordre pour la stabilité",
+    "id": "2736-1786177052130-t5khec",
+    "runAt": "2026-08-08T08:27:32.127Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 2737,
+    "question": "Peut-on expulser les migrants pour arrêter les violences à Thetford ?",
+    "positionA": "non, expulser crée plus de tensions",
+    "positionB": "oui, faut protéger les habitants d'abord",
+    "id": "2737-1786177052130-alykfv",
+    "runAt": "2026-08-08T08:27:32.127Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 2738,
+    "question": "Qui doit garantir la paix au Moyen-Orient après l'alliance Saoud-Turquie ?",
+    "positionA": "non, ça risque plutôt d'enflammer le conflit",
+    "positionB": "oui, cette alliance protège la région",
+    "id": "2738-1786177052130-3cgx0c",
+    "runAt": "2026-08-08T08:27:32.127Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 2739,
+    "question": "Le gouvernement doit-il renforcer la loi contre les ingérences étrangères ?",
+    "positionA": "non, ça peut limiter nos libertés",
+    "positionB": "oui, il faut durcir la législation",
+    "id": "2739-1786177052130-wp2c38",
+    "runAt": "2026-08-08T08:27:32.127Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 2740,
+    "question": "La France doit-elle sanctionner Israël dans ce conflit ?",
+    "positionA": "oui, la France doit agir contre Israël",
+    "positionB": "non, sanctionner n’aidera pas",
+    "id": "2740-1786177052130-qex98u",
+    "runAt": "2026-08-08T08:27:32.127Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 2820,
+    "question": "L214 a-t-elle raison de dénoncer cet élevage porcin ?",
+    "positionA": "oui, faut défendre le bien-être animal",
+    "positionB": "non, faut pas cracher sur toute l'élevage",
+    "id": "2820-1786436294611-advuoa",
+    "runAt": "2026-08-11T08:28:14.523Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 2821,
+    "question": "La gauche va-t-elle trop loin avec son rejet de l'IA ?",
+    "positionA": "non, l'IA est une chance à maîtriser",
+    "positionB": "oui, l'IA menace nos valeurs et libertés",
+    "id": "2821-1786436294611-kje42j",
+    "runAt": "2026-08-11T08:28:14.523Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 2822,
+    "question": "Meta doit-elle être responsable de l'addiction des enfants ?",
+    "positionA": "oui, Meta doit protéger les mineurs",
+    "positionB": "non, c'est la responsabilité des parents",
+    "id": "2822-1786436294611-b7pxg1",
+    "runAt": "2026-08-11T08:28:14.523Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 2823,
+    "question": "Édouard Philippe va-t-il trop loin avec son verrou Schengen ?",
+    "positionA": "non, ça ferme la porte aux réfugiés",
+    "positionB": "oui, faut protéger nos frontières d'abord",
+    "id": "2823-1786436294611-ifx6y4",
+    "runAt": "2026-08-11T08:28:14.523Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 2824,
+    "question": "Gabriel Attal doit-il alerter sur les ingérences russes via deepfakes ?",
+    "positionA": "oui, ça menace vraiment notre démocratie",
+    "positionB": "non, c’est exagéré, Attal fait de la politique",
+    "id": "2824-1786436294611-eooyc1",
+    "runAt": "2026-08-11T08:28:14.523Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 2825,
+    "question": "L’Espagne va-t-elle trop loin avec la rétention des migrants à Ceuta ?",
+    "positionA": "oui, faut protéger les droits des migrants",
+    "positionB": "non, faut sécuriser la frontière et les expulsions",
+    "id": "2825-1786436294611-aj6hdu",
+    "runAt": "2026-08-11T08:28:14.523Z",
+    "status": "done",
+    "attempts": 0
+  },
+  {
+    "debateId": 2826,
+    "question": "Le traitement des violences sexuelles sur mineurs est-il efficace ?",
+    "positionA": "oui, le gouvernement fait ce qu'il peut",
+    "positionB": "non, les autorités ont failli gravement",
+    "id": "2826-1786436294611-on17wv",
+    "runAt": "2026-08-11T08:28:14.523Z",
+    "status": "done",
+    "attempts": 0
   }
 ]
