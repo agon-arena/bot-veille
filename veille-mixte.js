@@ -3478,15 +3478,14 @@ function buildSubjectInteractionScriptHtml(opts = {}) {
         .filter(Boolean);
 
       if (opts.arenaMode === "libre") {
-        // Arène libre : pas de question de débat dans le corps — structure [...corps, devise latine ?, signature]
-        if (parts.length < 2) {
-          return parts.map(function(p) { return "<p>" + escapeHtmlClient(p) + "</p>"; }).join("");
+        // Arène libre : pas de question de débat dans le corps — structure [...corps, devise latine ?] (plus de signature)
+        if (parts.length < 1) {
+          return "";
         }
-        const signature = parts[parts.length - 1];
-        const mottoCandidate = parts.length >= 3 ? parts[parts.length - 2] : "";
+        const mottoCandidate = parts.length >= 2 ? parts[parts.length - 1] : "";
         const hasMotto = !!mottoCandidate && looksLikeLatinLineClient(mottoCandidate);
         const motto = hasMotto ? mottoCandidate : "";
-        const bodyParts = parts.slice(0, parts.length - (hasMotto ? 2 : 1));
+        const bodyParts = parts.slice(0, parts.length - (hasMotto ? 1 : 0));
         const formattedBodyParts = splitArticleOpeningSentenceParts(bodyParts);
         const lastBodyIndex = formattedBodyParts.length - 1;
         const bodyHtml = formattedBodyParts.map(function(p, idx) {
@@ -3495,25 +3494,22 @@ function buildSubjectInteractionScriptHtml(opts = {}) {
           return cssClass ? '<p class="' + cssClass + '">' + escapeHtmlClient(p) + "</p>" : "<p>" + escapeHtmlClient(p) + "</p>";
         }).join("");
         return bodyHtml
-          + (motto ? '<p class="article-latin-question">' + escapeHtmlClient(motto) + "</p>" : "")
-          + '<p class="article-signature">' + escapeHtmlClient(signature) + "</p>";
+          + (motto ? '<p class="article-latin-question">' + escapeHtmlClient(motto) + "</p>" : "");
       }
 
-      if (parts.length < 3) {
+      if (parts.length < 2) {
         return parts.map(function(p) { return "<p>" + escapeHtmlClient(p) + "</p>"; }).join("");
       }
-      const signature = parts[parts.length - 1];
-      const question = parts[parts.length - 2];
-      const latinCandidate = parts.length >= 4 ? parts[parts.length - 3] : "";
+      const question = parts[parts.length - 1];
+      const latinCandidate = parts.length >= 3 ? parts[parts.length - 2] : "";
       const hasLatinQuestion = !!latinCandidate && looksLikeLatinLineClient(latinCandidate);
       const latinQuestion = hasLatinQuestion ? latinCandidate : "";
-      const bodyParts = parts.slice(0, parts.length - (hasLatinQuestion ? 3 : 2));
+      const bodyParts = parts.slice(0, parts.length - (hasLatinQuestion ? 2 : 1));
       const formattedBodyParts = splitArticleOpeningSentenceParts(bodyParts);
       const bodyHtml = formattedBodyParts.map(function(p) { return "<p>" + escapeHtmlClient(p) + "</p>"; }).join("");
       return bodyHtml
         + (latinQuestion ? '<p class="article-latin-question">' + escapeHtmlClient(latinQuestion) + "</p>" : "")
-        + '<p class="article-debate-question">' + escapeHtmlClient(question) + "</p>"
-        + '<p class="article-signature">' + escapeHtmlClient(signature) + "</p>";
+        + '<p class="article-debate-question">' + escapeHtmlClient(question) + "</p>";
     }
 
     function getDefinitiveArticleButtonLabel(button, state) {

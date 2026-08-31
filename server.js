@@ -708,6 +708,10 @@ function buildCurrentDateContext() {
   return `Date actuelle : ${currentDateLabel}. Nous sommes en ${new Date().getFullYear()}. N'évoque jamais une autre année comme si elle était récente ou actuelle (ta connaissance s'arrête avant cette date, mais le contexte ci-dessus est réel et à jour).`;
 }
 
+// Ancienne liste de signatures d'auteurs fictifs (J.L Grasso, F. Glorennec, T.
+// Guyomarch, M. Guillot, P. Ratsky) affichées en fin d'article. Conservée pour
+// repérer et retirer une signature qui traînerait encore dans un texte généré
+// avant ce changement ; plus jamais ajoutée à un nouvel article.
 const AGON_ARTICLE_SIGNATURE_LIST = [
   "J.L Grasso",
   "F. Glorennec",
@@ -716,11 +720,9 @@ const AGON_ARTICLE_SIGNATURE_LIST = [
   "P. Ratsky"
 ];
 const AGON_ARTICLE_SIGNATURES = new Set(AGON_ARTICLE_SIGNATURE_LIST);
-let agonArticleSignatureCursor = Math.floor(Math.random() * AGON_ARTICLE_SIGNATURE_LIST.length) - 1;
 
 function getNextAgonArticleSignature() {
-  agonArticleSignatureCursor = (agonArticleSignatureCursor + 1) % AGON_ARTICLE_SIGNATURE_LIST.length;
-  return AGON_ARTICLE_SIGNATURE_LIST[agonArticleSignatureCursor];
+  return "";
 }
 
 function looksLikeLatinQuestionLine(line) {
@@ -1842,20 +1844,15 @@ STRUCTURE OBLIGATOIRE :
 4. Ligne vide.
 5. Deuxième paragraphe : l'enjeu et la tension entre les options.
 6. Ligne vide.
-7. La question Agôn seule sur une ligne.
-8. Ligne vide.
-9. La signature seule sur la toute dernière ligne.
-
-SIGNATURE :
-Choisir une seule signature parmi :
-J.L Grasso / F. Glorennec / T. Guyomarch / M. Guillot / P. Ratsky
+7. La question Agôn seule sur une ligne, en toute dernière ligne de l'article.
 
 RÈGLES ABSOLUES :
 * Ne rien inventer.
 * Ne pas ajouter de fait absent du résumé factuel.
 * L'article ne doit contenir qu'une seule question : la question Agôn finale.
 * Aucune autre phrase interrogative ne doit apparaître.
-* La question Agôn doit apparaître une seule fois, seule sur sa ligne, juste avant la signature.
+* La question Agôn doit apparaître une seule fois, seule sur sa ligne.
+* Ne jamais signer l'article ni ajouter un nom d'auteur, réel ou inventé.
 * Ne pas écrire de titre dans le champ article.
 * Ne pas transformer l'article en revue de presse.
 * Ne pas afficher les positions dans l'article.
@@ -2019,9 +2016,9 @@ Principe central :
 tu peux améliorer la fluidité, la structure, la devise latine et la clarté, mais tu ne dois jamais compléter les faits.
 
 Contraintes strictes :
-- article : minimum 550 caractères, signature comprise. Si le texte fourni est trop court, resserre plutôt la formulation ; n'ajoute jamais une phrase pour atteindre une taille.
+- article : minimum 550 caractères. Si le texte fourni est trop court, resserre plutôt la formulation ; n'ajoute jamais une phrase pour atteindre une taille.
 - article : objectif 700 à 1000 caractères.
-- article : jamais plus de 1200 caractères, signature comprise.
+- article : jamais plus de 1200 caractères.
 - latinQuestion : obligatoire, jamais vide.
 - debateQuestion : maximum 70 caractères, espaces, apostrophes, accents, tirets et point d'interrogation final compris. C'est un titre : plus elle est courte et percutante, mieux c'est.
 - positionA : maximum 55 caractères, espaces compris.
@@ -2036,15 +2033,12 @@ Structure obligatoire du champ article :
 6. Ligne vide.
 7. Question latine très courte, sans point d'interrogation.
 8. Ligne vide.
-9. Question Agôn définitive seule sur une ligne.
-10. Ligne vide.
-11. Signature seule sur la toute dernière ligne.
+9. Question Agôn définitive seule sur une ligne, en toute dernière ligne de l'article.
 
 Vérification prioritaire des sauts de ligne :
 - Il doit obligatoirement y avoir une ligne vide juste après la première phrase.
 - Il doit obligatoirement y avoir une ligne vide entre le premier paragraphe et le deuxième paragraphe.
 - Il doit obligatoirement y avoir une ligne vide entre la question latine et la question Agôn.
-- Il doit obligatoirement y avoir une ligne vide entre la question Agôn et la signature.
 - Si un de ces sauts de ligne est absent, corrige article.
 - La première phrase ne doit pas être un titre séparé, mais une accroche intégrée.
 
@@ -2126,13 +2120,8 @@ Positions :
 - Si une position dépasse 55 caractères ou ressemble à un argument, corrige-la.
 
 Signature :
-- article doit toujours se terminer par une signature.
-- La signature doit être seule sur la toute dernière ligne.
-- Choisir un seul nom parmi cette liste :
-  J.L Grasso / F. Glorennec / T. Guyomarch / M. Guillot / P. Ratsky
-- Ne jamais inventer d'autre nom.
-- Ne jamais expliquer le choix du nom.
-- Ne pas mettre de tiret avant la signature.
+- article ne doit jamais se terminer par une signature ni un nom d'auteur.
+- article doit se terminer par la question Agôn, seule sur la toute dernière ligne.
 
 Style à préserver :
 - Ton éditorial sobre, tendu et vivant.
@@ -2179,7 +2168,7 @@ Règles absolues :
 - Ne pas afficher les positions dans l'article.
 - Ne pas écrire de titre séparé dans le champ article.
 - Ne pas ajouter de rubrique du type "Pourquoi ça fait parler", "Tension d'opinion", "Biais" ou "Enjeu".
-- La question latine, la question Agôn et la signature doivent respecter exactement la structure demandée.
+- La question latine et la question Agôn doivent respecter exactement la structure demandée.
 - L'article ne doit contenir qu'une seule et unique question : la question Agôn finale. Aucune autre phrase interrogative ne doit apparaître dans l'article, ni dans l'accroche, ni dans le premier paragraphe, ni dans le deuxième paragraphe.
 - La phrase avant la question latine doit être affirmative.
 
@@ -2193,14 +2182,13 @@ Vérification obligatoire avant de répondre :
 7. Il y a une ligne vide entre le premier paragraphe et le deuxième paragraphe.
 8. Le deuxième paragraphe contient un retour à la ligne entre l'énoncé des options et l'explication de l'enjeu commun.
 9. Il y a une ligne vide entre latinQuestion et debateQuestion.
-10. Il y a une ligne vide entre debateQuestion et la signature.
-11. debateQuestion fait 70 caractères maximum.
-12. positionA et positionB font 55 caractères maximum.
-13. article se termine par une signature autorisée, seule sur la dernière ligne.
-14. Tout chiffre, mesure, dispositif, proposition ou acteur cité dans debateQuestion apparaît et est expliqué dans le corps de l'article avant la question.
-15. debateQuestion ne contient aucune information, chiffre, mesure ou acteur absent du corps de l'article — la question ne doit jamais sembler tomber du ciel.
-16. Si la condition 14 ou 15 échoue : reformule debateQuestion pour qu'elle découle directement de ce qui est expliqué dans le corps, OU ajoute une phrase de transition factuelle dans le deuxième paragraphe expliquant la mesure ou le chiffre concerné (sans inventer de fait nouveau), OU si rien de tout cela n'est possible, ramène la question au niveau de généralité que couvre réellement le corps de l'article.
-17. Si une condition échoue, corrige le JSON avant de répondre.
+10. debateQuestion fait 70 caractères maximum.
+11. positionA et positionB font 55 caractères maximum.
+12. article se termine par la question Agôn, seule sur la dernière ligne, sans signature ni nom d'auteur.
+13. Tout chiffre, mesure, dispositif, proposition ou acteur cité dans debateQuestion apparaît et est expliqué dans le corps de l'article avant la question.
+14. debateQuestion ne contient aucune information, chiffre, mesure ou acteur absent du corps de l'article — la question ne doit jamais sembler tomber du ciel.
+15. Si la condition 13 ou 14 échoue : reformule debateQuestion pour qu'elle découle directement de ce qui est expliqué dans le corps, OU ajoute une phrase de transition factuelle dans le deuxième paragraphe expliquant la mesure ou le chiffre concerné (sans inventer de fait nouveau), OU si rien de tout cela n'est possible, ramène la question au niveau de généralité que couvre réellement le corps de l'article.
+16. Si une condition échoue, corrige le JSON avant de répondre.
 
 JSON attendu uniquement :
 {
@@ -2322,9 +2310,9 @@ ARTICLE FACTUEL (champ "article") — structure obligatoire :
 4. Ligne vide.
 5. Un paragraphe de mise en contexte présentant les enjeux ou conséquences générales, sans les présenter comme un choix entre deux camps.
 6. Ligne vide.
-7. Une conclusion sobre qui ouvre la réflexion sans poser de question ni orienter vers une position.
-8. Ligne vide.
-9. Une signature seule sur la dernière ligne, choisie parmi : J.L Grasso / F. Glorennec / T. Guyomarch / M. Guillot / P. Ratsky.
+7. Une conclusion sobre qui ouvre la réflexion sans poser de question ni orienter vers une position, en tout dernier paragraphe de l'article.
+
+Ne jamais signer l'article ni ajouter un nom d'auteur, réel ou inventé, en fin de texte.
 
 Cette structure en 4 paragraphes décrit uniquement l'ENCHAÎNEMENT du texte, jamais des titres à afficher : n'écris JAMAIS les mots "Accroche", "Faits", "Contexte et enjeux" ou "Conclusion" (ni aucune variante, avec ou sans deux-points, gras ou majuscules) en tête de paragraphe. Chaque paragraphe commence directement par sa phrase, sans étiquette ni rubrique.
 
@@ -2345,7 +2333,7 @@ INTERDICTIONS STRICTES POUR L'ARTICLE :
 * Le texte doit ouvrir une discussion libre, pas enfermer le lecteur dans deux positions.
 
 LONGUEUR :
-Article : 900 à 1300 caractères, signature comprise. Une devise latine sera insérée ensuite avant la signature : ne dépasse jamais 1300 caractères.
+Article : 900 à 1300 caractères. Une devise latine sera insérée ensuite en toute fin d'article : ne dépasse jamais 1300 caractères.
 
 SORTIE :
 Réponds uniquement en JSON valide :
