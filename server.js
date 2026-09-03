@@ -190,9 +190,9 @@ async function runAutoPublishCertamenPipeline() {
     return;
   }
   _autoPublishCertamenRunning = true;
-  console.log("[auto-publish-certamen] Démarrage de la publication des sujets ready...");
+  console.log("[auto-publish-certamen] Démarrage de la publication des sujets ready (espacée d'1h)...");
   try {
-    const result = await publishReadyCertamenPayloadsToAgon({});
+    const result = await publishReadyCertamenPayloadsToAgon({ spaced: true });
     console.log(`[auto-publish-certamen] ${result.publishedCount}/${result.readyCount} sujet(s) publiés sur Agôn`);
     console.log(
       `[diagnostic collecte] auto-publish Certamen — ` +

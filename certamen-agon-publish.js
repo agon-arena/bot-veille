@@ -77,6 +77,13 @@ const BETWEEN_CALLS_DELAY_MS = 1500;
 const RATE_LIMIT_RETRIES = 2;
 const RATE_LIMIT_RETRY_DELAY_MS = 15 * 1000;
 
+// Espacement demandé (31/08/2026) pour le seul pipeline automatique (collecte programmée →
+// auto-publish, cf. runAutoPublishCertamenPipeline dans server.js) : les arènes communauté
+// d'un même lot ne doivent pas toutes apparaître au même moment. Ne s'applique volontairement
+// pas aux déclenchements manuels admin (/certamen/publish-ready, /certamen/publish-selected),
+// dont l'appelant attend une réponse HTTP synchrone.
+const AUTO_PIPELINE_BETWEEN_DEBATES_DELAY_MS = 8 * 60 * 60 * 1000;
+
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
@@ -505,17 +512,22 @@ async function isDuplicateOfBatchSubjects(payload, publishedInBatch) {
 }
 
 // Publie une liste de payloads déjà validés, en respectant la limite Agôn de 5
-// requêtes/60s sur /api/debates, puis programme les idées IA + voix groupées. Renvoie un
-// tableau d'outcomes dans le même ordre que `payloads`.
-async function publishPayloadsBatch(payloads) {
-  const ideasEntries = [];
+// requêtes/60s sur /api/debates (sauf en mode `spaced`, où l'espacement demandé est de
+// toute façon largement au-dessus), puis programme les idées IA + voix de chaque arène
+// 10 minutes après sa propre publication. Renvoie un tableau d'outcomes dans le même ordre
+// que `payloads`.
+async function publishPayloadsBatch(payloads, { spaced = false } = {}) {
   const outcomes = [];
   const publishedInBatch = [];
 
   for (let i = 0; i < payloads.length; i += 1) {
     if (i > 0) {
-      // Pause longue toutes les 5 publications, pause courte sinon.
-      await sleep(i % RATE_LIMIT_BATCH_SIZE === 0 ? RATE_LIMIT_WINDOW_PAUSE_MS : BETWEEN_CALLS_DELAY_MS);
+      if (spaced) {
+        await sleep(AUTO_PIPELINE_BETWEEN_DEBATES_DELAY_MS);
+      } else {
+        // Pause longue toutes les 5 publications, pause courte sinon.
+        await sleep(i % RATE_LIMIT_BATCH_SIZE === 0 ? RATE_LIMIT_WINDOW_PAUSE_MS : BETWEEN_CALLS_DELAY_MS);
+      }
     }
 
     const payload = payloads[i];
@@ -524,16 +536,16 @@ async function publishPayloadsBatch(payloads) {
       continue;
     }
 
+    const ideasEntries = [];
     const outcome = await publishOnePayloadAndRecord(payload, ideasEntries);
     if ((outcome.ok && !outcome.skipped) || outcome.receivedByAgon) {
       publishedInBatch.push({ subject: payload.subject, question: payload.question });
     }
+    if (ideasEntries.length) {
+      console.log(`[certamen-publish] Idées IA + voix programmées dans 10 minutes pour l'arène ${ideasEntries[0].debateId}`);
+      persistAndScheduleCertamenIdeas(ideasEntries);
+    }
     outcomes.push(outcome);
-  }
-
-  if (ideasEntries.length) {
-    console.log(`[certamen-publish] Idées IA + voix programmées dans 10 minutes pour ${ideasEntries.length} arène(s)`);
-    persistAndScheduleCertamenIdeas(ideasEntries);
   }
 
   // Pas de notification push pour Certamen, contrairement à la veille mixte — demande
@@ -566,7 +578,7 @@ async function publishReadyCertamenPayloadsToAgon(options = {}) {
     return result;
   }
 
-  const outcomes = await publishPayloadsBatch(readyPayloads);
+  const outcomes = await publishPayloadsBatch(readyPayloads, { spaced: !!options.spaced });
   outcomes.forEach((outcome, i) => {
     const payload = readyPayloads[i];
     result.results.push({ subject: payload.subject, ...outcome });
