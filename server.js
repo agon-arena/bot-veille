@@ -16,6 +16,7 @@ const { isRoundupTitle } = require("./recap-filter");
 const { enforceTitleLimit } = require("./title-limit");
 
 const express = require("express");
+const compression = require("compression");
 const path = require("path");
 const fs = require("fs");
 const OpenAI = require("openai");
@@ -24,6 +25,7 @@ const { extractFromHtml } = require("@extractus/article-extractor");
 const { fetchTranscript } = require("youtube-transcript");
 
 const app = express();
+app.use(compression());
 app.use(express.json());
 
 const PORT = process.env.PORT || 3000;
@@ -3282,6 +3284,22 @@ app.get("/sessions-mixte.json", requireMixteAuth, (req, res) => {
   res.sendFile(filePath);
 });
 
+app.get("/api/sessions-mixte/last-timestamp", requireMixteAuth, (req, res) => {
+  const filePath = path.join(__dirname, "sessions-mixte.json");
+
+  if (!fs.existsSync(filePath)) {
+    return res.status(404).json({ ok: false, generatedAt: null });
+  }
+
+  try {
+    const sessions = JSON.parse(fs.readFileSync(filePath, "utf8") || "[]");
+    const generatedAt = Array.isArray(sessions) && sessions.length > 0 ? sessions[0].generatedAt : null;
+    res.json({ ok: true, generatedAt });
+  } catch (err) {
+    res.status(500).json({ ok: false, generatedAt: null, error: err.message });
+  }
+});
+
 app.get("/api/saved-subjects", requireMixteAuth, (req, res) => {
   try {
     const filePath = path.join(__dirname, "saved-subjects.json");
@@ -3770,9 +3788,14 @@ app.get("/saved", requireMixteAuth, (req, res) => {
 });
 
 app.get("/sent-to-agon", requireMixteAuth, (req, res) => {
-  const sent = loadSentToAgonItems()
+  const allSent = loadSentToAgonItems()
     .slice()
     .sort((a, b) => new Date(b.sentAt || 0).getTime() - new Date(a.sentAt || 0).getTime());
+
+  const PAGE_SIZE = 100;
+  const pageCount = Math.max(1, Math.ceil(allSent.length / PAGE_SIZE));
+  const page = Math.min(pageCount, Math.max(1, parseInt(req.query.page, 10) || 1));
+  const sent = allSent.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
   function esc(t) {
     return String(t || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
@@ -3845,8 +3868,12 @@ app.get("/sent-to-agon", requireMixteAuth, (req, res) => {
     <a href="/admin">⚙ Admin</a>
   </div>
   <h1>Articles envoyés vers Agôn</h1>
-  <p class="intro">${sent.length} article(s) déjà envoyé(s) vers Agôn.</p>
+  <p class="intro">${allSent.length} article(s) déjà envoyé(s) vers Agôn — page ${page}/${pageCount}.</p>
   ${sent.length ? itemsHtml : '<p class="empty">Aucun article envoyé vers Agôn pour le moment.</p>'}
+  ${pageCount > 1 ? `<div class="nav">
+    ${page > 1 ? `<a href="/sent-to-agon?page=${page - 1}">← Page précédente</a>` : ""}
+    ${page < pageCount ? `<a href="/sent-to-agon?page=${page + 1}">Page suivante →</a>` : ""}
+  </div>` : ""}
 </body>
 </html>`);
 });

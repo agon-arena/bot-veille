@@ -12,6 +12,8 @@ certamen-sessions.json
 storage-sync-state.json
 veille-mixte.html
 veille-mixte.json
+certamen.html
+sessions-mixte.json
 *.backup.js
 *.before-tabs.js
 *.save

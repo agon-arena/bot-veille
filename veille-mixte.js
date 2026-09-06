@@ -14,6 +14,7 @@ const { MAX_CHECKED_SUBJECTS } = require("./certamen-checked-subjects");
 const { cleanCertamenGeneratedText } = require("./certamen-text-cleanup");
 const { isRoundupTitle } = require("./recap-filter");
 const { enforceTitleLimit } = require("./title-limit");
+const certamenComparisonStore = require("./certamen-comparison-store");
 
 const apiApp = express();
 apiApp.use(express.json({ limit: "2mb" }));
@@ -7621,9 +7622,9 @@ function generateHtml(sessions) {
       renderProgress({ stepIndex: 0, stepTotal: 6, step: "Démarrage…", detail: "" });
 
       try {
-        var r0 = await fetch("/sessions-mixte.json");
+        var r0 = await fetch("/api/sessions-mixte/last-timestamp");
         var s0 = await r0.json();
-        if (s0.length > 0) ptrBaseTimestamp = s0[0].generatedAt;
+        if (s0.generatedAt) ptrBaseTimestamp = s0.generatedAt;
       } catch (e) {}
 
       var minSourcesVal = Number(document.getElementById("min-sources-select")?.value) || 2;
@@ -8433,23 +8434,120 @@ function resumeCertamenPendingCreativeOnStartup() {
   }
 }
 
+// Met le résultat brut d'un des deux pipelines Certamen sous une forme commune, pour que la
+// comparaison (§ télémétrie du 06/09/2026) puisse traiter primary et shadow de façon
+// symétrique quel que soit le pipeline réellement actif. `pipelineIsSeparated` indique le
+// format du résultat brut à décoder :
+// - séparé : forme { certamen, creativeFailed, judgment } de analyzeCertamenSubjectSeparatedProduction
+//   (si creativeFailed, certamen est null : on retombe sur les seuls champs du jugement,
+//   question/positions absentes, et success=false pour signaler l'absence de résultat complet) ;
+// - unitaire : l'objet certamen plat renvoyé directement par analyzeCertamenSubjectWithAI.
+// callError : erreur effectivement levée par l'appel (aucune des deux fonctions ci-dessus ne
+// throw en pratique — elles ont leur propre repli "avoid" — mais ce paramètre couvre le cas
+// défensif où l'appel échouerait quand même, ex. erreur inattendue hors try/catch interne).
+function normalizeCertamenPipelineOutcome(pipelineIsSeparated, rawResult, callError) {
+  const empty = {
+    success: false, error: null,
+    editorialDecision: null, debatePotentialScore: null, theme: null, risk: null,
+    isDebatable: null, suggestedQuestion: null, positionA: null, positionB: null
+  };
+
+  if (callError) {
+    return Object.assign({}, empty, { error: String(callError.message || callError).slice(0, 300) });
+  }
+
+  if (pipelineIsSeparated) {
+    if (!rawResult || rawResult.creativeFailed) {
+      const j = (rawResult && rawResult.judgment) || {};
+      return Object.assign({}, empty, {
+        error: "creative_failed_queued_for_retry",
+        editorialDecision: j.editorialDecision ?? null,
+        debatePotentialScore: Number.isFinite(j.debatePotentialScore) ? j.debatePotentialScore : null,
+        theme: j.theme ?? null,
+        risk: j.risk ?? null,
+        isDebatable: j.isDebatable ?? null
+      });
+    }
+    const c = rawResult.certamen || {};
+    return {
+      success: true, error: null,
+      editorialDecision: c.editorialDecision ?? null,
+      debatePotentialScore: Number.isFinite(c.debatePotentialScore) ? c.debatePotentialScore : null,
+      theme: c.theme ?? null,
+      risk: c.risk ?? null,
+      isDebatable: c.isDebatable ?? null,
+      suggestedQuestion: c.suggestedQuestion ?? null,
+      positionA: c.positionA ?? null,
+      positionB: c.positionB ?? null
+    };
+  }
+
+  const c = rawResult || {};
+  return {
+    success: true, error: null,
+    editorialDecision: c.editorialDecision ?? null,
+    debatePotentialScore: Number.isFinite(c.debatePotentialScore) ? c.debatePotentialScore : null,
+    theme: c.theme ?? null,
+    risk: c.risk ?? null,
+    isDebatable: c.isDebatable ?? null,
+    suggestedQuestion: c.suggestedQuestion ?? null,
+    positionA: c.positionA ?? null,
+    positionB: c.positionB ?? null
+  };
+}
+
 // Mode comparatif (§7) : exécute l'autre pipeline en pur "shadow" (résultat jamais utilisé
 // pour analyzed/debatables), tagué séparément pour la mesure. Toute erreur y est avalée :
 // un échec du pipeline d'ombre ne doit jamais affecter la session réelle.
-async function runCertamenComparisonShadow(subject, primaryIsSeparated) {
+//
+// Télémétrie (06/09/2026) : `primaryOutcome` est le résultat DÉJÀ calculé par runCertamenSession
+// pour ce même candidat (jamais rejoué ici — un seul appel IA primary par candidat, comme
+// avant). La fonction capture le résultat du pipeline d'ombre en interne, écrit la comparaison
+// primary+shadow dans Supabase (certamen_pipeline_comparisons, cf. certamen-comparison-store.js),
+// puis jette ce résultat : elle continue de renvoyer `undefined` dans tous les cas, exactement
+// comme avant cette modification, pour que runCertamenSession ne puisse jamais l'utiliser par
+// erreur pour publier quoi que ce soit (garantie vérifiée par le test "le pipeline d'ombre ne
+// renvoie rien d'exploitable" ci-dessous).
+async function runCertamenComparisonShadow(subject, primaryIsSeparated, primaryOutcome, meta) {
   const shadowTag = primaryIsSeparated ? "certamen_compare_unitaire" : "certamen_compare_separe";
+  const compareMeta = meta || {};
   setRunTag(shadowTag);
+  let shadowOutcome;
   try {
     if (primaryIsSeparated) {
-      await analyzeCertamenSubjectWithAI(subject, { sourceType: "certamen_compare" });
+      const shadowResult = await analyzeCertamenSubjectWithAI(subject, { sourceType: "certamen_compare" });
+      shadowOutcome = normalizeCertamenPipelineOutcome(false, shadowResult, null);
     } else {
-      await analyzeCertamenSubjectSeparatedProduction(subject, { sourceType: "certamen_compare" });
+      const shadowResult = await analyzeCertamenSubjectSeparatedProduction(subject, { sourceType: "certamen_compare" });
+      shadowOutcome = normalizeCertamenPipelineOutcome(true, shadowResult, null);
     }
   } catch (error) {
     console.warn(`[certamen-compare] Erreur pipeline de comparaison pour "${subject.subject}" (ignorée, sans effet sur la publication) :`, error.message);
+    shadowOutcome = normalizeCertamenPipelineOutcome(!primaryIsSeparated, null, error);
   } finally {
     setRunTag(null);
   }
+
+  try {
+    await certamenComparisonStore.recordCertamenComparison({
+      sessionGeneratedAt: compareMeta.sessionGeneratedAt || null,
+      candidateIndex: Number.isFinite(compareMeta.candidateIndex) ? compareMeta.candidateIndex : null,
+      subjectId: subject.subjectId || null,
+      subjectTitle: (subject.subject || "").slice(0, 500),
+      sourceUrl: (subject.contents && subject.contents[0] && subject.contents[0].link) || null,
+      primaryPipeline: primaryIsSeparated ? "separated" : "unitary",
+      shadowPipeline: primaryIsSeparated ? "unitary" : "separated",
+      runTag: shadowTag,
+      primary: primaryOutcome || normalizeCertamenPipelineOutcome(primaryIsSeparated, null, new Error("primaryOutcome manquant")),
+      shadow: shadowOutcome
+    });
+  } catch (persistError) {
+    // Ne doit jamais arriver (recordCertamenComparison est déjà défensive de bout en bout),
+    // mais double sécurité explicite : une erreur de télémétrie ne doit jamais remonter ici.
+    console.warn(`[certamen-compare] Échec (ignoré) de la persistance de comparaison pour "${subject.subject}" :`, persistError.message);
+  }
+
+  return undefined;
 }
 // ==================== FIN ARCHITECTURE SÉPARÉE — ACTIVATION CONTRÔLÉE ====================
 
@@ -8700,9 +8798,17 @@ async function runCertamenSeparatedTests() {
       } finally { restoreCertamenPendingCreativeFile(snap); }
     });
 
+    // Monkey-patch du même style que installCertamenOpenAIMock : jamais de vrai appel
+    // Supabase pendant les tests, capture des arguments pour assertion.
+    function installCertamenComparisonStoreMock(fn) {
+      const original = certamenComparisonStore.recordCertamenComparison;
+      certamenComparisonStore.recordCertamenComparison = fn;
+      return function restore() { certamenComparisonStore.recordCertamenComparison = original; };
+    }
+
     await test("mode comparatif : le pipeline d'ombre ne renvoie rien d'exploitable (pas de double publication)", async () => {
       const subject = makeCertamenTestSubject();
-      const restore = installCertamenOpenAIMock({
+      const restoreOpenAI = installCertamenOpenAIMock({
         judgment: async () => ({
           model: "gpt-4.1-mini-mock",
           output_text: JSON.stringify({ isDebatable: true, debatePotentialScore: 7, editorialDecision: "arena", reason: "test", theme: "Politique", risk: "medium" }),
@@ -8714,10 +8820,92 @@ async function runCertamenSeparatedTests() {
           usage: { input_tokens: 10, output_tokens: 5 }
         })
       });
+      const restoreStore = installCertamenComparisonStoreMock(async () => {});
       try {
-        const shadowReturn = await runCertamenComparisonShadow(subject, true);
+        const primaryOutcome = normalizeCertamenPipelineOutcome(false, {
+          isDebatable: true, debatePotentialScore: 6, editorialDecision: "understand", reason: "r",
+          suggestedQuestion: "Primary ?", positionA: "a", positionB: "b", theme: "Politique", risk: "low"
+        }, null);
+        const shadowReturn = await runCertamenComparisonShadow(subject, true, primaryOutcome, {
+          sessionGeneratedAt: new Date().toISOString(), candidateIndex: 0
+        });
         assert.strictEqual(shadowReturn, undefined, "le shadow ne doit jamais renvoyer un objet qu'un appelant pourrait publier par erreur");
-      } finally { restore(); }
+      } finally { restoreOpenAI(); restoreStore(); }
+    });
+
+    await test("mode comparatif : persiste primary (déjà calculé, jamais rejoué) + shadow, sans toucher à analyzed/debatables", async () => {
+      const subject = makeCertamenTestSubject();
+      let judgmentCalls = 0;
+      const restoreOpenAI = installCertamenOpenAIMock({
+        judgment: async () => {
+          judgmentCalls += 1;
+          return {
+            model: "gpt-4.1-mini-mock",
+            output_text: JSON.stringify({ isDebatable: true, debatePotentialScore: 8, editorialDecision: "arena", reason: "shadow", theme: "Politique", risk: "high" }),
+            usage: { input_tokens: 10, output_tokens: 5 }
+          };
+        },
+        creative: async () => ({
+          model: "gpt-4.1-mini-mock",
+          output_text: JSON.stringify({ suggestedQuestion: "Shadow question ?", positionA: "pour", positionB: "contre" }),
+          usage: { input_tokens: 10, output_tokens: 5 }
+        })
+      });
+      let recorded = null;
+      const restoreStore = installCertamenComparisonStoreMock(async (entry) => { recorded = entry; });
+      try {
+        // Résultat "primary" déjà calculé par runCertamenSession, jamais rejoué ici (aucun
+        // mock ne doit répondre à un jugement "avoid" pour prouver l'absence de second appel).
+        const primaryOutcome = normalizeCertamenPipelineOutcome(false, {
+          isDebatable: false, debatePotentialScore: 2, editorialDecision: "avoid", reason: "primary",
+          suggestedQuestion: "", positionA: "", positionB: "", theme: "Société - éducation", risk: "low"
+        }, null);
+
+        await runCertamenComparisonShadow(subject, false, primaryOutcome, {
+          sessionGeneratedAt: "2026-09-06T12:00:00.000Z", candidateIndex: 3
+        });
+
+        assert.strictEqual(judgmentCalls, 1, "le pipeline shadow doit être appelé une seule fois (aucun appel IA supplémentaire pour le primary)");
+        assert.ok(recorded, "recordCertamenComparison doit être appelé");
+        assert.strictEqual(recorded.primaryPipeline, "unitary");
+        assert.strictEqual(recorded.shadowPipeline, "separated");
+        assert.strictEqual(recorded.candidateIndex, 3);
+        assert.strictEqual(recorded.sessionGeneratedAt, "2026-09-06T12:00:00.000Z");
+        // Primary = exactement ce qui a été fourni (avoid, score 2) — pas rejoué avec le mock "arena".
+        assert.strictEqual(recorded.primary.editorialDecision, "avoid");
+        assert.strictEqual(recorded.primary.debatePotentialScore, 2);
+        // Shadow = résultat du pipeline d'ombre réellement exécuté (arena, score 8).
+        assert.strictEqual(recorded.shadow.editorialDecision, "arena");
+        assert.strictEqual(recorded.shadow.debatePotentialScore, 8);
+        assert.strictEqual(recorded.shadow.suggestedQuestion, "Shadow question ?");
+      } finally { restoreOpenAI(); restoreStore(); }
+    });
+
+    await test("mode comparatif : un échec de persistance Supabase n'affecte jamais le pipeline", async () => {
+      const subject = makeCertamenTestSubject();
+      const restoreOpenAI = installCertamenOpenAIMock({
+        judgment: async () => ({
+          model: "gpt-4.1-mini-mock",
+          output_text: JSON.stringify({ isDebatable: true, debatePotentialScore: 5, editorialDecision: "understand", reason: "r", theme: "Politique", risk: "medium" }),
+          usage: { input_tokens: 10, output_tokens: 5 }
+        }),
+        creative: async () => ({
+          model: "gpt-4.1-mini-mock",
+          output_text: JSON.stringify({ suggestedQuestion: "Q ?", positionA: "oui", positionB: "non" }),
+          usage: { input_tokens: 10, output_tokens: 5 }
+        })
+      });
+      const restoreStore = installCertamenComparisonStoreMock(async () => { throw new Error("Supabase indisponible (simulé)"); });
+      try {
+        const primaryOutcome = normalizeCertamenPipelineOutcome(false, {
+          isDebatable: true, debatePotentialScore: 4, editorialDecision: "reformulate", reason: "r",
+          suggestedQuestion: "Q", positionA: "a", positionB: "b", theme: "Politique", risk: "medium"
+        }, null);
+        const shadowReturn = await runCertamenComparisonShadow(subject, true, primaryOutcome, {
+          sessionGeneratedAt: new Date().toISOString(), candidateIndex: 0
+        });
+        assert.strictEqual(shadowReturn, undefined, "doit continuer à renvoyer undefined même si la persistance échoue");
+      } finally { restoreOpenAI(); restoreStore(); }
     });
   }
 
@@ -10676,7 +10864,11 @@ async function runCertamenSession() {
       const result = await analyzeCertamenSubjectSeparatedProduction(subject, { sourceType: "certamen_production" });
 
       if (CERTAMEN_SEPARATED_COMPARE_ENABLED && i < CERTAMEN_COMPARE_SAMPLE_SIZE) {
-        await runCertamenComparisonShadow(subject, true);
+        const primaryOutcome = normalizeCertamenPipelineOutcome(true, result, null);
+        await runCertamenComparisonShadow(subject, true, primaryOutcome, {
+          sessionGeneratedAt: startedAt.toISOString(),
+          candidateIndex: i
+        });
       }
 
       if (result.creativeFailed) {
@@ -10707,7 +10899,11 @@ async function runCertamenSession() {
       const certamen = await analyzeCertamenSubjectWithAI(subject);
 
       if (CERTAMEN_SEPARATED_COMPARE_ENABLED && i < CERTAMEN_COMPARE_SAMPLE_SIZE) {
-        await runCertamenComparisonShadow(subject, false);
+        const primaryOutcome = normalizeCertamenPipelineOutcome(false, certamen, null);
+        await runCertamenComparisonShadow(subject, false, primaryOutcome, {
+          sessionGeneratedAt: startedAt.toISOString(),
+          candidateIndex: i
+        });
       }
 
       analyzed.push(toAnalyzedSubject(subject, certamen));
