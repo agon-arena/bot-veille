@@ -46,14 +46,69 @@ function computeScoreDiff(primary, shadow) {
   return shadow.debatePotentialScore - primary.debatePotentialScore;
 }
 
-// entry : { sessionGeneratedAt, candidateIndex, subjectId, subjectTitle, sourceUrl,
-//           primaryPipeline, shadowPipeline, runTag, primary, shadow }
+// Agrège une liste d'enregistrements ai-usage-tracker (format ai-usage.jsonl : { model,
+// input_tokens, output_tokens, cached_tokens, estimated_cost, label, success, ... }) en un
+// résumé { model, totalInputTokens, totalOutputTokens, totalCachedTokens, totalCostUsd,
+// byLabel } — byLabel distingue judgment / creative-generation / creative-retry pour le
+// pipeline séparé (§ chantier 3, audit du 09/09/2026). Ne throw jamais : une entrée absente
+// ou mal formée est simplement ignorée, un tableau vide renvoie des totaux null (coût
+// "inconnu", pas "zéro").
+function aggregateCertamenUsageRecords(records) {
+  const safeRecords = Array.isArray(records) ? records.filter(Boolean) : [];
+  const byLabel = {};
+  let model = null;
+  let totalInputTokens = 0, totalOutputTokens = 0, totalCachedTokens = 0, totalCost = 0;
+  let costKnown = safeRecords.length > 0;
+
+  for (const r of safeRecords) {
+    if (!model && r.model) model = r.model;
+    const inTok = Number(r.input_tokens) || 0;
+    const outTok = Number(r.output_tokens) || 0;
+    const cacheTok = Number(r.cached_tokens) || 0;
+    totalInputTokens += inTok;
+    totalOutputTokens += outTok;
+    totalCachedTokens += cacheTok;
+    if (typeof r.estimated_cost === "number") totalCost += r.estimated_cost;
+    else if (r.success) costKnown = false;
+
+    const label = r.label || "?";
+    if (!byLabel[label]) byLabel[label] = { calls: 0, inputTokens: 0, outputTokens: 0, cachedTokens: 0, cost: 0, model: r.model || null };
+    byLabel[label].calls += 1;
+    byLabel[label].inputTokens += inTok;
+    byLabel[label].outputTokens += outTok;
+    byLabel[label].cachedTokens += cacheTok;
+    if (typeof r.estimated_cost === "number") byLabel[label].cost += r.estimated_cost;
+  }
+
+  return {
+    model,
+    totalInputTokens: safeRecords.length ? totalInputTokens : null,
+    totalOutputTokens: safeRecords.length ? totalOutputTokens : null,
+    totalCachedTokens: safeRecords.length ? totalCachedTokens : null,
+    totalCostUsd: (costKnown && safeRecords.length) ? Math.round(totalCost * 1e8) / 1e8 : null,
+    byLabel
+  };
+}
+
+// entry : { sessionGeneratedAt, candidateIndex, candidateRank, totalCandidates,
+//           sampleStratum, subjectId, subjectTitle, sourceUrl, primaryPipeline,
+//           shadowPipeline, runTag, primary, shadow, primaryUsageRecords, shadowUsageRecords }
+//
+// candidateRank/totalCandidates/sampleStratum et les champs *_usage_* sont apparus le
+// 09/09/2026 (chantiers 2 et 3) : colonnes ajoutées par la migration SQL fournie séparément
+// (voir rapport). Tant que cette migration n'a pas tourné, un premier insert avec ces
+// colonnes échoue (colonne inconnue) — on retombe alors sur `baseRow` (schéma d'origine, en
+// service depuis le 06/09/2026) pour ne jamais perdre la télémétrie de base déjà en place.
+// Ordre de déploiement donc sans importance pour Certamen (voir rapport, chantier 8).
 async function recordCertamenComparison(entry) {
   if (!supabase) return;
   try {
     const primary = (entry && entry.primary) || {};
     const shadow = (entry && entry.shadow) || {};
-    const row = {
+    const primaryUsage = aggregateCertamenUsageRecords(entry && entry.primaryUsageRecords);
+    const shadowUsage = aggregateCertamenUsageRecords(entry && entry.shadowUsageRecords);
+
+    const baseRow = {
       session_generated_at: entry.sessionGeneratedAt || null,
       candidate_index: Number.isFinite(entry.candidateIndex) ? entry.candidateIndex : null,
       subject_id: entry.subjectId || null,
@@ -89,13 +144,37 @@ async function recordCertamenComparison(entry) {
       score_diff: computeScoreDiff(primary, shadow)
     };
 
-    const { error } = await supabase.from(TABLE).insert(row);
+    const extendedRow = Object.assign({}, baseRow, {
+      candidate_rank: Number.isFinite(entry.candidateRank) ? entry.candidateRank : null,
+      total_candidates: Number.isFinite(entry.totalCandidates) ? entry.totalCandidates : null,
+      sample_stratum: entry.sampleStratum || null,
+
+      primary_model: primaryUsage.model,
+      primary_input_tokens: primaryUsage.totalInputTokens,
+      primary_output_tokens: primaryUsage.totalOutputTokens,
+      primary_cached_tokens: primaryUsage.totalCachedTokens,
+      primary_cost_usd: primaryUsage.totalCostUsd,
+      primary_usage_by_label: Object.keys(primaryUsage.byLabel).length ? primaryUsage.byLabel : null,
+
+      shadow_model: shadowUsage.model,
+      shadow_input_tokens: shadowUsage.totalInputTokens,
+      shadow_output_tokens: shadowUsage.totalOutputTokens,
+      shadow_cached_tokens: shadowUsage.totalCachedTokens,
+      shadow_cost_usd: shadowUsage.totalCostUsd,
+      shadow_usage_by_label: Object.keys(shadowUsage.byLabel).length ? shadowUsage.byLabel : null
+    });
+
+    const { error } = await supabase.from(TABLE).insert(extendedRow);
     if (error) {
-      console.warn("[certamen-comparison-store] Erreur insert Supabase (ignorée, sans effet sur Certamen) :", error.message);
+      console.warn("[certamen-comparison-store] Erreur insert Supabase avec colonnes étendues, repli sur le schéma de base (migration pas encore appliquée ?) :", error.message);
+      const fallback = await supabase.from(TABLE).insert(baseRow);
+      if (fallback.error) {
+        console.warn("[certamen-comparison-store] Erreur insert Supabase (ignorée, sans effet sur Certamen) :", fallback.error.message);
+      }
     }
   } catch (err) {
     console.warn("[certamen-comparison-store] Exception lors de la persistance (ignorée) :", err.message);
   }
 }
 
-module.exports = { recordCertamenComparison };
+module.exports = { recordCertamenComparison, aggregateCertamenUsageRecords };

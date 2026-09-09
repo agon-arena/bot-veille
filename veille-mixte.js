@@ -8223,6 +8223,118 @@ const CERTAMEN_COMPARE_SAMPLE_SIZE = (() => {
   return Number.isFinite(env) && env > 0 ? Math.round(env) : 10;
 })();
 
+// Échantillonnage stratifié du mode comparatif (audit du 09/09/2026) : l'ancien mécanisme
+// (`i < CERTAMEN_COMPARE_SAMPLE_SIZE` sur `candidates`, déjà trié par score décroissant) ne
+// comparait jamais que les meilleurs candidats d'une session — aucune chance d'observer un
+// franchissement retained↔avoid, un sujet faible ou un sujet sensible limite. Remplacé par un
+// tirage déterministe sur 3 strates du classement (haut ~0-25 %, milieu ~25-75 %, bas
+// ~75-100 %), réparti ~30/40/30 du volume — mêmes 10 comparaisons par session au total, juste
+// choisies différemment. Aucun Math.random : deux appels sur la même liste renvoient toujours
+// le même échantillon (reproductibilité demandée).
+function pickEvenlySpacedCertamenIndices(start, end, count) {
+  const length = end - start;
+  if (length <= 0 || count <= 0) return [];
+  if (count >= length) {
+    const all = [];
+    for (let i = start; i < end; i++) all.push(i);
+    return all;
+  }
+  const picked = [];
+  const seen = new Set();
+  for (let j = 0; j < count; j++) {
+    let idx = start + Math.floor((length * (j + 0.5)) / count);
+    idx = Math.min(end - 1, Math.max(start, idx));
+    if (!seen.has(idx)) { seen.add(idx); picked.push(idx); }
+  }
+  return picked;
+}
+
+// Renvoie jusqu'à `sampleSize` entrées `{ rank, stratum }` triées par rank croissant, rank
+// étant l'indice 0-based dans `candidates` (déjà trié par score décroissant/marqueur), et
+// stratum ∈ {"high","middle","low"}. Si `totalCount <= sampleSize`, renvoie tout le monde
+// (comportement inchangé pour les petites sessions, comme avant cette correction).
+function selectCertamenCompareSample(totalCount, sampleSize) {
+  if (!Number.isFinite(totalCount) || totalCount <= 0 || !Number.isFinite(sampleSize) || sampleSize <= 0) return [];
+
+  const highEnd = Math.round(totalCount * 0.25);
+  const lowStart = Math.round(totalCount * 0.75);
+  const stratumForRank = (rank) => (rank < highEnd ? "high" : (rank < lowStart ? "middle" : "low"));
+
+  if (totalCount <= sampleSize) {
+    const all = [];
+    for (let rank = 0; rank < totalCount; rank++) all.push({ rank, stratum: stratumForRank(rank) });
+    return all;
+  }
+
+  const highCount = Math.round(sampleSize * 0.3);
+  const lowCount = Math.round(sampleSize * 0.3);
+  const middleCount = Math.max(0, sampleSize - highCount - lowCount);
+
+  const highRanks = pickEvenlySpacedCertamenIndices(0, highEnd, highCount);
+  const middleRanks = pickEvenlySpacedCertamenIndices(highEnd, lowStart, middleCount);
+  const lowRanks = pickEvenlySpacedCertamenIndices(lowStart, totalCount, lowCount);
+
+  const used = new Set([...highRanks, ...middleRanks, ...lowRanks]);
+  const combined = [
+    ...highRanks.map((rank) => ({ rank, stratum: "high" })),
+    ...middleRanks.map((rank) => ({ rank, stratum: "middle" })),
+    ...lowRanks.map((rank) => ({ rank, stratum: "low" }))
+  ];
+
+  // Filet de sécurité (liste juste au-dessus de sampleSize, strate trop étroite pour fournir
+  // son quota) : complète depuis les rangs encore libres pour toujours atteindre
+  // min(sampleSize, totalCount) éléments — jamais plus, jamais de doublon.
+  if (combined.length < sampleSize) {
+    for (let rank = 0; rank < totalCount && combined.length < sampleSize; rank++) {
+      if (!used.has(rank)) {
+        used.add(rank);
+        combined.push({ rank, stratum: stratumForRank(rank) });
+      }
+    }
+  }
+
+  return combined.sort((a, b) => a.rank - b.rank);
+}
+
+// Map<rank, { stratum, orderInSample }> — orderInSample (0-based, dans l'ordre d'exécution
+// réel, croissant par rank) sert de nouvel identifiant `candidate_index` côté télémétrie ;
+// `rank` (position réelle dans `candidates`) est persisté séparément sous `candidate_rank`.
+function buildCertamenCompareSampleMap(totalCount, sampleSize) {
+  const sample = selectCertamenCompareSample(totalCount, sampleSize);
+  const map = new Map();
+  sample.forEach((entry, orderInSample) => map.set(entry.rank, { stratum: entry.stratum, orderInSample }));
+  return map;
+}
+
+// Capture best-effort des enregistrements ai-usage-tracker écrits PENDANT l'exécution de
+// `fn`, via un tag temporaire unique (jamais persisté tel quel dans Supabase — seulement
+// utilisé pour filtrer ai-usage.jsonl juste après l'appel, dans le même process, avant tout
+// redémarrage éventuel). Ne change rien au comportement de fn : setRunTag ne fait qu'ajouter
+// un champ `run_tag` aux lignes déjà écrites par trackAi. Fail-safe : si la lecture échoue,
+// renvoie un tableau vide plutôt que de propager — la comparaison reste possible, seulement
+// sans coût associé (§ chantier 3, audit du 09/09/2026).
+async function captureCertamenUsageRecords(tag, fn) {
+  setRunTag(tag);
+  let result;
+  try {
+    result = await fn();
+  } finally {
+    setRunTag(null);
+  }
+  let usageRecords = [];
+  try {
+    usageRecords = recordsForRunTag(tag);
+  } catch (err) {
+    console.warn(`[certamen-compare] Lecture de la télémétrie d'usage impossible pour "${tag}" (ignorée) :`, err.message);
+  }
+  return { result, usageRecords };
+}
+let certamenUsageCaptureSeq = 0;
+function nextCertamenUsageTag(prefix) {
+  certamenUsageCaptureSeq += 1;
+  return `${prefix}__${Date.now()}__${certamenUsageCaptureSeq}`;
+}
+
 // Orchestrateur de production : reprend exactement les deux étapes validées
 // (analyzeCertamenJudgmentOnly puis, si retenu, generateCertamenCreativeStrict avec le
 // prompt renforcé), avec la troncature sûre au lieu du .slice(0,55) destructif et le même
@@ -8310,6 +8422,11 @@ async function analyzeCertamenSubjectSeparatedProduction(subject, options = {}) 
 const CERTAMEN_PENDING_CREATIVE_FILE = path.join(__dirname, "certamen-pending-creative.json");
 const CERTAMEN_CREATIVE_RETRY_DELAY_MS = 20 * 60 * 1000; // 20 min entre tentatives
 const CERTAMEN_CREATIVE_MAX_ATTEMPTS = 3;
+// Un résultat "done" trop ancien parle d'une actualité qui a eu le temps de se périmer —
+// on ne le republie jamais silencieusement passé ce délai (§ chantier 4, audit du
+// 09/09/2026). Certamen n'étant pas urgent, ce délai reste généreux (7 jours), largement
+// au-dessus de l'intervalle réel entre deux sessions de collecte (2 à 5 jours observés).
+const CERTAMEN_PENDING_CREATIVE_MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000;
 
 function loadCertamenPendingCreative() {
   try { return JSON.parse(fs.readFileSync(CERTAMEN_PENDING_CREATIVE_FILE, "utf8")); }
@@ -8366,6 +8483,7 @@ async function runOneCertamenPendingCreativeAttempt(itemId) {
   if (result) {
     matchAfter.status = "done";
     matchAfter.result = result;
+    matchAfter.doneAt = new Date().toISOString();
     saveCertamenPendingCreative(itemsAfter);
     console.log(`[certamen-creative-retry] Créativité récupérée pour "${matchAfter.subject}" après ${matchAfter.attempts + 1} tentative(s) — voir ${CERTAMEN_PENDING_CREATIVE_FILE}.`);
     return;
@@ -8432,6 +8550,81 @@ function resumeCertamenPendingCreativeOnStartup() {
     console.log(`[certamen-creative-retry] Reprise de ${pending.length} créativité(s) en attente après redémarrage.`);
     pending.forEach(scheduleOneCertamenPendingCreative);
   }
+}
+
+// Corrige la limitation identifiée par l'audit du 09/09/2026 (§ chantier 4) : un jugement
+// retenu dont la créativité n'a réussi qu'en différé (status "done") n'était jamais relu par
+// une session future — le candidat se perdait silencieusement dans
+// certamen-pending-creative.json. À appeler UNE FOIS en tête de runCertamenSession, quel que
+// soit le pipeline actif (séparé ou non — un résultat "done" est un jugement+créativité déjà
+// abouti, indépendant du flag courant).
+//
+// Idempotence : chaque item "done" repris ici est immédiatement marqué "consumed" — qu'il
+// soit ensuite réellement publié ou non (fusionné, écarté comme doublon...) n'a pas
+// d'importance, il ne peut de toute façon plus jamais être repris une seconde fois. Aucune
+// nouvelle logique anti-doublon n'est ajoutée : le candidat réinjecté suit exactement le même
+// chemin de publication que n'importe quel candidat "analyzed" normal, donc les garde-fous
+// déjà en place côté certamen-agon-publish.js (wasAlreadySentToAgon, findAlreadySentSource,
+// findMergeTargetForCertamenPayload) s'appliquent sans modification.
+//
+// Péremption : un "done" plus vieux que CERTAMEN_PENDING_CREATIVE_MAX_AGE_MS est marqué
+// "expired" plutôt que réinjecté (règle explicite demandée — jamais d'attente éternelle).
+//
+// Ne throw jamais : un fichier corrompu ou illisible ne doit jamais empêcher une session
+// Certamen de démarrer (loadCertamenPendingCreative renvoie déjà [] sur erreur de lecture).
+function consumeDoneCertamenPendingCreative() {
+  const items = loadCertamenPendingCreative();
+  const reinjected = [];
+  let changed = false;
+  const now = Date.now();
+
+  for (const item of items) {
+    if (item.status !== "done") continue;
+    changed = true;
+
+    const doneAtMs = item.doneAt ? new Date(item.doneAt).getTime() : NaN;
+    const isStale = !Number.isFinite(doneAtMs) || (now - doneAtMs) > CERTAMEN_PENDING_CREATIVE_MAX_AGE_MS;
+    if (isStale) {
+      item.status = "expired";
+      console.warn(`[certamen-creative-retry] Résultat différé périmé (>${Math.round(CERTAMEN_PENDING_CREATIVE_MAX_AGE_MS / 86400000)}j), abandonné sans publication : "${item.subject}"`);
+      continue;
+    }
+
+    const judgment = item.judgment || {};
+    const result = item.result || {};
+    reinjected.push({
+      pseudoSubject: {
+        subject: item.subject,
+        sources: item.sources || [],
+        contents: item.compactContents || [],
+        subjectId: `certamen-pending-${item.id}`,
+        mergedSubjectTitles: []
+      },
+      certamen: {
+        isDebatable: judgment.isDebatable,
+        debatePotentialScore: judgment.debatePotentialScore,
+        editorialDecision: judgment.editorialDecision,
+        reason: judgment.reason,
+        suggestedQuestion: result.suggestedQuestion,
+        positionA: result.positionA,
+        positionB: result.positionB,
+        theme: judgment.theme,
+        risk: judgment.risk,
+        politicalOrientation: result.politicalOrientation || { isPolitical: false, positionA: null, positionB: null }
+      }
+    });
+    item.status = "consumed";
+    item.consumedAt = new Date().toISOString();
+  }
+
+  if (changed) {
+    try { saveCertamenPendingCreative(items); }
+    catch (err) { console.warn("[certamen-creative-retry] Échec d'écriture après reprise des créativités différées (ignoré) :", err.message); }
+  }
+  if (reinjected.length) {
+    console.log(`Certamen : ${reinjected.length} créativité(s) différée(s) récupérée(s) d'une session précédente (aucun nouvel appel IA judgment/creative).`);
+  }
+  return reinjected;
 }
 
 // Met le résultat brut d'un des deux pipelines Certamen sous une forme commune, pour que la
@@ -8508,38 +8701,48 @@ function normalizeCertamenPipelineOutcome(pipelineIsSeparated, rawResult, callEr
 // comme avant cette modification, pour que runCertamenSession ne puisse jamais l'utiliser par
 // erreur pour publier quoi que ce soit (garantie vérifiée par le test "le pipeline d'ombre ne
 // renvoie rien d'exploitable" ci-dessous).
+// meta attendu : { sessionGeneratedAt, candidateIndex, candidateRank, totalCandidates,
+// sampleStratum, primaryUsageRecords } — les 4 derniers champs ajoutés par le chantier 2/3
+// de l'audit du 09/09/2026 (échantillonnage stratifié + coûts), tous optionnels et
+// rétrocompatibles (absents => colonnes null, comme avant cette correction).
 async function runCertamenComparisonShadow(subject, primaryIsSeparated, primaryOutcome, meta) {
-  const shadowTag = primaryIsSeparated ? "certamen_compare_unitaire" : "certamen_compare_separe";
+  const shadowLabel = primaryIsSeparated ? "certamen_compare_unitaire" : "certamen_compare_separe";
   const compareMeta = meta || {};
-  setRunTag(shadowTag);
+  const shadowUsageTag = nextCertamenUsageTag(shadowLabel);
   let shadowOutcome;
+  let shadowUsageRecords = [];
   try {
     if (primaryIsSeparated) {
-      const shadowResult = await analyzeCertamenSubjectWithAI(subject, { sourceType: "certamen_compare" });
-      shadowOutcome = normalizeCertamenPipelineOutcome(false, shadowResult, null);
+      const captured = await captureCertamenUsageRecords(shadowUsageTag, () => analyzeCertamenSubjectWithAI(subject, { sourceType: "certamen_compare" }));
+      shadowOutcome = normalizeCertamenPipelineOutcome(false, captured.result, null);
+      shadowUsageRecords = captured.usageRecords;
     } else {
-      const shadowResult = await analyzeCertamenSubjectSeparatedProduction(subject, { sourceType: "certamen_compare" });
-      shadowOutcome = normalizeCertamenPipelineOutcome(true, shadowResult, null);
+      const captured = await captureCertamenUsageRecords(shadowUsageTag, () => analyzeCertamenSubjectSeparatedProduction(subject, { sourceType: "certamen_compare" }));
+      shadowOutcome = normalizeCertamenPipelineOutcome(true, captured.result, null);
+      shadowUsageRecords = captured.usageRecords;
     }
   } catch (error) {
     console.warn(`[certamen-compare] Erreur pipeline de comparaison pour "${subject.subject}" (ignorée, sans effet sur la publication) :`, error.message);
     shadowOutcome = normalizeCertamenPipelineOutcome(!primaryIsSeparated, null, error);
-  } finally {
-    setRunTag(null);
   }
 
   try {
     await certamenComparisonStore.recordCertamenComparison({
       sessionGeneratedAt: compareMeta.sessionGeneratedAt || null,
       candidateIndex: Number.isFinite(compareMeta.candidateIndex) ? compareMeta.candidateIndex : null,
+      candidateRank: Number.isFinite(compareMeta.candidateRank) ? compareMeta.candidateRank : null,
+      totalCandidates: Number.isFinite(compareMeta.totalCandidates) ? compareMeta.totalCandidates : null,
+      sampleStratum: compareMeta.sampleStratum || null,
       subjectId: subject.subjectId || null,
       subjectTitle: (subject.subject || "").slice(0, 500),
       sourceUrl: (subject.contents && subject.contents[0] && subject.contents[0].link) || null,
       primaryPipeline: primaryIsSeparated ? "separated" : "unitary",
       shadowPipeline: primaryIsSeparated ? "unitary" : "separated",
-      runTag: shadowTag,
+      runTag: shadowLabel,
       primary: primaryOutcome || normalizeCertamenPipelineOutcome(primaryIsSeparated, null, new Error("primaryOutcome manquant")),
-      shadow: shadowOutcome
+      shadow: shadowOutcome,
+      primaryUsageRecords: compareMeta.primaryUsageRecords || [],
+      shadowUsageRecords
     });
   } catch (persistError) {
     // Ne doit jamais arriver (recordCertamenComparison est déjà défensive de bout en bout),
@@ -8633,6 +8836,90 @@ async function runCertamenSeparatedTests() {
 
   await test("truncateCertamenPositionSafely : texte déjà court inchangé", () => {
     assert.strictEqual(truncateCertamenPositionSafely("court", 55), "court");
+  });
+
+  // --- Chantier 1 (audit du 09/09/2026) : échantillonnage stratifié -----------------------
+  await test("échantillonnage stratifié : 120 candidats / sample 10 → exactement les rangs attendus", () => {
+    const sample = selectCertamenCompareSample(120, 10);
+    assert.strictEqual(sample.length, 10);
+    const ranks = sample.map((s) => s.rank);
+    assert.deepStrictEqual(ranks, [5, 15, 25, 37, 52, 67, 82, 95, 105, 115]);
+    assert.strictEqual(new Set(ranks).size, 10, "aucun doublon");
+    const strataCount = sample.reduce((acc, s) => { acc[s.stratum] = (acc[s.stratum] || 0) + 1; return acc; }, {});
+    assert.deepStrictEqual(strataCount, { high: 3, middle: 4, low: 3 });
+  });
+
+  await test("échantillonnage stratifié : déterministe (même liste → même résultat)", () => {
+    const a = selectCertamenCompareSample(120, 10);
+    const b = selectCertamenCompareSample(120, 10);
+    assert.deepStrictEqual(a, b);
+  });
+
+  await test("échantillonnage stratifié : 20 candidats → 10 rangs uniques couvrant toute la liste", () => {
+    const sample = selectCertamenCompareSample(20, 10);
+    const ranks = sample.map((s) => s.rank);
+    assert.strictEqual(ranks.length, 10);
+    assert.strictEqual(new Set(ranks).size, 10);
+    assert.ok(ranks.every((r) => r >= 0 && r < 20));
+    const strata = new Set(sample.map((s) => s.stratum));
+    assert.ok(strata.has("high") && strata.has("middle") && strata.has("low"), "les trois strates doivent être représentées");
+  });
+
+  await test("échantillonnage stratifié : 10 candidats (== sample size) → tous repris, strates présentes", () => {
+    const sample = selectCertamenCompareSample(10, 10);
+    assert.strictEqual(sample.length, 10);
+    assert.strictEqual(new Set(sample.map((s) => s.rank)).size, 10);
+    const strata = new Set(sample.map((s) => s.stratum));
+    assert.ok(strata.has("high") && strata.has("middle") && strata.has("low"));
+  });
+
+  await test("échantillonnage stratifié : 5 candidats (< sample size) → tous repris, aucun doublon", () => {
+    const sample = selectCertamenCompareSample(5, 10);
+    assert.strictEqual(sample.length, 5);
+    assert.deepStrictEqual(sample.map((s) => s.rank).sort((a, b) => a - b), [0, 1, 2, 3, 4]);
+  });
+
+  await test("échantillonnage stratifié : liste vide → échantillon vide, pas d'erreur", () => {
+    assert.deepStrictEqual(selectCertamenCompareSample(0, 10), []);
+  });
+
+  await test("buildCertamenCompareSampleMap : orderInSample croissant dans l'ordre des rangs", () => {
+    const map = buildCertamenCompareSampleMap(120, 10);
+    assert.strictEqual(map.size, 10);
+    assert.strictEqual(map.get(5).orderInSample, 0);
+    assert.strictEqual(map.get(115).orderInSample, 9);
+    assert.strictEqual(map.get(5).stratum, "high");
+    assert.strictEqual(map.get(115).stratum, "low");
+    assert.strictEqual(map.get(3), undefined, "un rang hors échantillon ne doit pas être dans la map");
+  });
+
+  // --- Chantier 3 (audit du 09/09/2026) : agrégation des coûts/tokens ---------------------
+  await test("aggregateCertamenUsageRecords : agrège tokens/coût et distingue judgment/creative", () => {
+    const records = [
+      { label: "certamen-judgment", model: "gpt-4.1-mini", input_tokens: 100, output_tokens: 20, cached_tokens: 10, estimated_cost: 0.0001, success: true },
+      { label: "certamen-creative-generation", model: "gpt-4.1-mini", input_tokens: 50, output_tokens: 30, cached_tokens: 0, estimated_cost: 0.00005, success: true }
+    ];
+    const agg = certamenComparisonStore.aggregateCertamenUsageRecords(records);
+    assert.strictEqual(agg.model, "gpt-4.1-mini");
+    assert.strictEqual(agg.totalInputTokens, 150);
+    assert.strictEqual(agg.totalOutputTokens, 50);
+    assert.strictEqual(agg.totalCachedTokens, 10);
+    assert.ok(Math.abs(agg.totalCostUsd - 0.00015) < 1e-9);
+    assert.ok(agg.byLabel["certamen-judgment"]);
+    assert.ok(agg.byLabel["certamen-creative-generation"]);
+    assert.strictEqual(agg.byLabel["certamen-judgment"].calls, 1);
+  });
+
+  await test("aggregateCertamenUsageRecords : liste vide ou absente → totaux null, jamais d'erreur", () => {
+    assert.deepStrictEqual(certamenComparisonStore.aggregateCertamenUsageRecords([]).totalCostUsd, null);
+    assert.deepStrictEqual(certamenComparisonStore.aggregateCertamenUsageRecords(undefined).totalInputTokens, null);
+    assert.deepStrictEqual(certamenComparisonStore.aggregateCertamenUsageRecords(null).byLabel, {});
+  });
+
+  await test("captureCertamenUsageRecords : renvoie le résultat de fn et un tableau vide si aucun enregistrement ne correspond au tag", async () => {
+    const { result, usageRecords } = await captureCertamenUsageRecords("tag-inexistant-" + Date.now(), async () => 42);
+    assert.strictEqual(result, 42);
+    assert.deepStrictEqual(usageRecords, []);
   });
 
   if (!openai) {
@@ -8906,6 +9193,117 @@ async function runCertamenSeparatedTests() {
         });
         assert.strictEqual(shadowReturn, undefined, "doit continuer à renvoyer undefined même si la persistance échoue");
       } finally { restoreOpenAI(); restoreStore(); }
+    });
+
+    await test("mode comparatif : rang/strate/taille totale et coûts primary+shadow sont bien transmis à la persistance", async () => {
+      const subject = makeCertamenTestSubject();
+      const restoreOpenAI = installCertamenOpenAIMock({
+        judgment: async () => ({
+          model: "gpt-4.1-mini-mock",
+          output_text: JSON.stringify({ isDebatable: true, debatePotentialScore: 8, editorialDecision: "arena", reason: "shadow", theme: "Politique", risk: "high" }),
+          usage: { input_tokens: 10, output_tokens: 5 }
+        }),
+        creative: async () => ({
+          model: "gpt-4.1-mini-mock",
+          output_text: JSON.stringify({ suggestedQuestion: "Shadow question ?", positionA: "pour", positionB: "contre" }),
+          usage: { input_tokens: 12, output_tokens: 6 }
+        })
+      });
+      let recorded = null;
+      const restoreStore = installCertamenComparisonStoreMock(async (entry) => { recorded = entry; });
+      try {
+        const primaryOutcome = normalizeCertamenPipelineOutcome(false, {
+          isDebatable: true, debatePotentialScore: 7, editorialDecision: "arena", reason: "primary",
+          suggestedQuestion: "Q", positionA: "a", positionB: "b", theme: "Politique", risk: "medium"
+        }, null);
+        await runCertamenComparisonShadow(subject, false, primaryOutcome, {
+          sessionGeneratedAt: "2026-09-09T08:00:00.000Z",
+          candidateIndex: 4,
+          candidateRank: 37,
+          totalCandidates: 120,
+          sampleStratum: "middle",
+          primaryUsageRecords: [
+            { label: "certamen-analyze", model: "gpt-4.1-mini-mock", input_tokens: 20, output_tokens: 8, cached_tokens: 0, estimated_cost: 0.00002, success: true }
+          ]
+        });
+        assert.ok(recorded);
+        assert.strictEqual(recorded.candidateIndex, 4);
+        assert.strictEqual(recorded.candidateRank, 37);
+        assert.strictEqual(recorded.totalCandidates, 120);
+        assert.strictEqual(recorded.sampleStratum, "middle");
+        assert.strictEqual(recorded.primaryUsageRecords.length, 1);
+        assert.ok(recorded.shadowUsageRecords.length >= 1, "les appels judgment+creative du shadow doivent être capturés");
+        const shadowLabels = recorded.shadowUsageRecords.map((r) => r.label);
+        assert.ok(shadowLabels.includes("certamen-judgment"));
+        assert.ok(shadowLabels.includes("certamen-creative-generation"));
+      } finally { restoreOpenAI(); restoreStore(); }
+    });
+
+    // --- Chantier 4 (audit du 09/09/2026) : réinjection des créativités différées "done" ---
+    await test("créativité différée : un 'done' récent est réinjecté sans nouvel appel IA, puis consommé", async () => {
+      const snap = snapshotCertamenPendingCreativeFile();
+      try {
+        const item = {
+          id: "test-done-" + Date.now(),
+          subject: "Sujet différé test",
+          sources: ["Source"],
+          compactContents: [{ source: "Source", title: "Titre", summary: "résumé", type: "article" }],
+          judgment: { isDebatable: true, debatePotentialScore: 7, editorialDecision: "arena", reason: "r", theme: "Politique", risk: "medium" },
+          status: "done",
+          attempts: 1,
+          doneAt: new Date().toISOString(),
+          result: { suggestedQuestion: "Question récupérée ?", positionA: "oui", positionB: "non", politicalOrientation: { isPolitical: false, positionA: null, positionB: null } }
+        };
+        saveCertamenPendingCreative([item]);
+
+        let creativeCalls = 0, judgmentCalls = 0;
+        const restore = installCertamenOpenAIMock({
+          judgment: async () => { judgmentCalls += 1; throw new Error("ne doit jamais être rappelé pour un 'done'"); },
+          creative: async () => { creativeCalls += 1; throw new Error("ne doit jamais être rappelé pour un 'done'"); }
+        });
+        let reinjected;
+        try {
+          reinjected = consumeDoneCertamenPendingCreative();
+        } finally { restore(); }
+
+        assert.strictEqual(creativeCalls, 0);
+        assert.strictEqual(judgmentCalls, 0);
+        assert.strictEqual(reinjected.length, 1);
+        assert.strictEqual(reinjected[0].certamen.suggestedQuestion, "Question récupérée ?");
+        assert.strictEqual(reinjected[0].certamen.editorialDecision, "arena");
+        assert.strictEqual(reinjected[0].pseudoSubject.subject, "Sujet différé test");
+
+        const storedAfter = loadCertamenPendingCreative().find((i) => i.id === item.id);
+        assert.strictEqual(storedAfter.status, "consumed", "un item repris doit être marqué consommé, jamais rejoué");
+
+        // Deuxième appel : plus rien à reprendre (idempotence — jamais publié deux fois).
+        const secondPass = consumeDoneCertamenPendingCreative();
+        assert.strictEqual(secondPass.length, 0);
+      } finally { restoreCertamenPendingCreativeFile(snap); }
+    });
+
+    await test("créativité différée : un 'done' périmé (>7j) est marqué expiré, jamais réinjecté", async () => {
+      const snap = snapshotCertamenPendingCreativeFile();
+      try {
+        const staleItem = {
+          id: "test-stale-" + Date.now(),
+          subject: "Sujet périmé test",
+          sources: ["Source"],
+          compactContents: [{ source: "Source", title: "Titre", summary: "résumé", type: "article" }],
+          judgment: { isDebatable: true, debatePotentialScore: 7, editorialDecision: "arena", reason: "r", theme: "Politique", risk: "medium" },
+          status: "done",
+          attempts: 1,
+          doneAt: new Date(Date.now() - (CERTAMEN_PENDING_CREATIVE_MAX_AGE_MS + 60 * 60 * 1000)).toISOString(),
+          result: { suggestedQuestion: "Question périmée ?", positionA: "oui", positionB: "non" }
+        };
+        saveCertamenPendingCreative([staleItem]);
+
+        const reinjected = consumeDoneCertamenPendingCreative();
+        assert.strictEqual(reinjected.length, 0, "un done périmé ne doit jamais être réinjecté");
+
+        const storedAfter = loadCertamenPendingCreative().find((i) => i.id === staleItem.id);
+        assert.strictEqual(storedAfter.status, "expired");
+      } finally { restoreCertamenPendingCreativeFile(snap); }
     });
   }
 
@@ -10850,6 +11248,26 @@ async function runCertamenSession() {
   }
 
   const analyzed = [];
+
+  // § chantier 4 (audit du 09/09/2026) : récupère les créativités différées abouties
+  // ("done") d'une session précédente avant de lancer la moindre analyse IA de cette
+  // session — aucun nouvel appel judgment/creative pour ces candidats-là. Indépendant du
+  // pipeline actif ci-dessous (séparé, lot ou unitaire).
+  try {
+    for (const item of consumeDoneCertamenPendingCreative()) {
+      analyzed.push(toAnalyzedSubject(item.pseudoSubject, item.certamen));
+    }
+  } catch (err) {
+    console.warn("[certamen-creative-retry] Erreur lors de la reprise des créativités différées (ignorée, sans effet sur la session) :", err.message);
+  }
+
+  // § chantiers 1-3 (audit du 09/09/2026) : échantillon stratifié calculé UNE FOIS sur la
+  // taille réelle de `candidates`, jamais dépendant du contenu (déterministe). `null` si le
+  // mode comparatif est désactivé — comportement de production totalement inchangé.
+  const compareSampleMap = CERTAMEN_SEPARATED_COMPARE_ENABLED
+    ? buildCertamenCompareSampleMap(candidates.length, CERTAMEN_COMPARE_SAMPLE_SIZE)
+    : null;
+
   // Précédence : séparé > lot > unitaire. Si CERTAMEN_SEPARATED_ANALYZE est désactivé (par
   // défaut), ce bloc entier est ignoré et le comportement reste STRICTEMENT celui d'avant
   // cette phase (branches lot/unitaire ci-dessous, non modifiées).
@@ -10861,13 +11279,28 @@ async function runCertamenSession() {
       setCertamenProgress(4, "Analyse IA Certamen", `${i + 1} / ${candidates.length}`);
       console.log(`Certamen IA (séparé) : ${subject.subject}`);
 
-      const result = await analyzeCertamenSubjectSeparatedProduction(subject, { sourceType: "certamen_production" });
+      const compareInfo = compareSampleMap && compareSampleMap.get(i);
+      let result, primaryUsageRecords = [];
+      if (compareInfo) {
+        const captured = await captureCertamenUsageRecords(
+          nextCertamenUsageTag("certamen_compare_primary"),
+          () => analyzeCertamenSubjectSeparatedProduction(subject, { sourceType: "certamen_production" })
+        );
+        result = captured.result;
+        primaryUsageRecords = captured.usageRecords;
+      } else {
+        result = await analyzeCertamenSubjectSeparatedProduction(subject, { sourceType: "certamen_production" });
+      }
 
-      if (CERTAMEN_SEPARATED_COMPARE_ENABLED && i < CERTAMEN_COMPARE_SAMPLE_SIZE) {
+      if (compareInfo) {
         const primaryOutcome = normalizeCertamenPipelineOutcome(true, result, null);
         await runCertamenComparisonShadow(subject, true, primaryOutcome, {
           sessionGeneratedAt: startedAt.toISOString(),
-          candidateIndex: i
+          candidateIndex: compareInfo.orderInSample,
+          candidateRank: i,
+          totalCandidates: candidates.length,
+          sampleStratum: compareInfo.stratum,
+          primaryUsageRecords
         });
       }
 
@@ -10896,13 +11329,29 @@ async function runCertamenSession() {
       const subject = candidates[i];
       setCertamenProgress(4, "Analyse IA Certamen", `${i + 1} / ${candidates.length}`);
       console.log(`Certamen IA : ${subject.subject}`);
-      const certamen = await analyzeCertamenSubjectWithAI(subject);
 
-      if (CERTAMEN_SEPARATED_COMPARE_ENABLED && i < CERTAMEN_COMPARE_SAMPLE_SIZE) {
+      const compareInfo = compareSampleMap && compareSampleMap.get(i);
+      let certamen, primaryUsageRecords = [];
+      if (compareInfo) {
+        const captured = await captureCertamenUsageRecords(
+          nextCertamenUsageTag("certamen_compare_primary"),
+          () => analyzeCertamenSubjectWithAI(subject)
+        );
+        certamen = captured.result;
+        primaryUsageRecords = captured.usageRecords;
+      } else {
+        certamen = await analyzeCertamenSubjectWithAI(subject);
+      }
+
+      if (compareInfo) {
         const primaryOutcome = normalizeCertamenPipelineOutcome(false, certamen, null);
         await runCertamenComparisonShadow(subject, false, primaryOutcome, {
           sessionGeneratedAt: startedAt.toISOString(),
-          candidateIndex: i
+          candidateIndex: compareInfo.orderInSample,
+          candidateRank: i,
+          totalCandidates: candidates.length,
+          sampleStratum: compareInfo.stratum,
+          primaryUsageRecords
         });
       }
 
