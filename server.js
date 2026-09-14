@@ -373,22 +373,41 @@ function saveSentToAgonItems(items) {
 // pas de "débat" ici. La table opinion_articles a de toute façon une contrainte UNIQUE sur link
 // côté Agôn (dédoublonnage garanti même si ce fichier est perdu) ; ce fichier n'est qu'une
 // optimisation pour éviter de renvoyer inutilement des centaines de liens déjà connus à chaque run.
+//
+// Scopé par session (sessionKey = generatedAt de la session veille-mixte) depuis le 14/09/2026 :
+// Agôn vide entièrement opinion_articles à chaque nouvelle session de débats
+// (purgeOpinionArticlesForNewSession, demande du 04/09/2026 : "Autres actus" doit repartir de
+// zéro à chaque nouvelle salve). Avant ce correctif, ce fichier gardait les liens "déjà envoyés"
+// indéfiniment d'une session à l'autre — comme les mêmes articles reviennent souvent dans la
+// fenêtre de fraîcheur 24-48h, le bot les considérait comme déjà envoyés et ne les renvoyait
+// jamais après une purge côté Agôn, qui restait donc vide en continu (repéré le 14/09/2026 :
+// plus rien de neuf dans opinion_articles depuis le 8 août). Un changement de sessionKey vide
+// la mémoire locale pour que le contenu de la session courante reparte intégralement vers Agôn,
+// au même rythme que sa purge.
 const SENT_OPINIONS_TO_AGON_MAX = 2000;
 
-function loadSentOpinionLinks() {
-  if (!fs.existsSync(SENT_OPINIONS_TO_AGON_FILE)) return new Set();
+function loadSentOpinionState() {
+  if (!fs.existsSync(SENT_OPINIONS_TO_AGON_FILE)) return { sessionKey: null, links: new Set() };
   try {
-    const links = JSON.parse(fs.readFileSync(SENT_OPINIONS_TO_AGON_FILE, "utf8"));
-    return new Set(Array.isArray(links) ? links : []);
+    const parsed = JSON.parse(fs.readFileSync(SENT_OPINIONS_TO_AGON_FILE, "utf8"));
+    if (Array.isArray(parsed)) {
+      // Ancien format (liste plate, avant le scoping par session) : traité comme
+      // "aucune session connue", remplacé dès le premier appel post-migration.
+      return { sessionKey: null, links: new Set(parsed) };
+    }
+    return {
+      sessionKey: parsed.sessionKey || null,
+      links: new Set(Array.isArray(parsed.links) ? parsed.links : [])
+    };
   } catch {
-    return new Set();
+    return { sessionKey: null, links: new Set() };
   }
 }
 
-function saveSentOpinionLinks(linksSet) {
+function saveSentOpinionState(sessionKey, linksSet) {
   const links = [...linksSet];
   const trimmed = links.length > SENT_OPINIONS_TO_AGON_MAX ? links.slice(-SENT_OPINIONS_TO_AGON_MAX) : links;
-  fs.writeFileSync(SENT_OPINIONS_TO_AGON_FILE, JSON.stringify(trimmed, null, 2), "utf8");
+  fs.writeFileSync(SENT_OPINIONS_TO_AGON_FILE, JSON.stringify({ sessionKey, links: trimmed }, null, 2), "utf8");
 }
 
 // Copie conforme de cleanText (veille-mixte.js) : les deux processus n'ont pas
@@ -443,6 +462,7 @@ async function publishOpinionItemsToAgon() {
   if (!sessions.length) return;
 
   const latestSession = sessions[0];
+  const sessionKey = latestSession.generatedAt || null;
   const opinionItems = Array.isArray(latestSession.opinionItems) ? latestSession.opinionItems : [];
   if (!opinionItems.length) return;
 
@@ -461,7 +481,10 @@ async function publishOpinionItemsToAgon() {
     console.log(`[opinion-articles] ${skippedAsPublished} article(s) écarté(s) : sujet publié en arène sur Agôn.`);
   }
 
-  const sentLinks = loadSentOpinionLinks();
+  const sentState = loadSentOpinionState();
+  // Nouvelle session (generatedAt différent) : Agôn vient de purger opinion_articles pour
+  // cette même transition, la mémoire locale des liens "déjà envoyés" n'a plus lieu d'être.
+  const sentLinks = sessionKey && sentState.sessionKey === sessionKey ? sentState.links : new Set();
   const newItems = unpublishedItems
     .filter(item => item.link && !sentLinks.has(item.link))
     // subjectKey est un champ interne au bot : on ne l'envoie pas à Agôn.
@@ -500,7 +523,7 @@ async function publishOpinionItemsToAgon() {
       });
       if (response.ok) {
         batch.forEach(item => sentLinks.add(item.link));
-        saveSentOpinionLinks(sentLinks);
+        saveSentOpinionState(sessionKey, sentLinks);
         return batch.length;
       }
       if (response.status === 413 && batch.length > MIN_SPLIT_BATCH_SIZE) {
