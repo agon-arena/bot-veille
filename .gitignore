@@ -7,6 +7,7 @@ seen-items.json
 auto-collect-config.json
 saved-subjects.json
 sent-to-agon.json
+sent-opinions-to-agon.json
 certamen-sessions.json
 .bot-veille-runtime.json
 storage-sync-state.json
