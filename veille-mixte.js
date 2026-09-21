@@ -8137,8 +8137,8 @@ Ne force jamais un débat. Si le sujet ne s'y prête pas, réponds "avoid".`;
     const editorialDecision = allowedDecisions.has(String(parsed.editorialDecision || ""))
       ? parsed.editorialDecision : "avoid";
     const suggestedQuestion = await enforceTitleLimit(openai, limitDebateQuestionText(cleanCertamenGeneratedText(parsed.suggestedQuestion || "")), { sourceType: "certamen_pipeline" });
-    let positionA = cleanCertamenGeneratedText(parsed.positionA || "").slice(0, 55);
-    let positionB = cleanCertamenGeneratedText(parsed.positionB || "").slice(0, 55);
+    let positionA = truncateCertamenPositionSafely(cleanCertamenGeneratedText(parsed.positionA || ""), 55);
+    let positionB = truncateCertamenPositionSafely(cleanCertamenGeneratedText(parsed.positionB || ""), 55);
 
     // Détection du clivage gauche/droite et réassignation positionA=gauche/positionB=droite,
     // seulement pour les sujets retenus (évite un appel IA superflu sur les ~120 candidats
@@ -8838,6 +8838,65 @@ async function runCertamenSeparatedTests() {
     assert.strictEqual(truncateCertamenPositionSafely("court", 55), "court");
   });
 
+  // --- Correctif troncature PRIMARY (audit du 21/09/2026) : plus aucune position coupée en
+  // plein mot. Cas purs de la fonction partagée, puis chemin unitaire actuel (plus bas).
+  await test("troncature position : <55 caractères strictement identique", () => {
+    ["oui, il faut agir vite", "non, c’est l’économie qui décide"].forEach(function(s) {
+      assert.ok(s.length < 55);
+      assert.strictEqual(truncateCertamenPositionSafely(s, 55), s);
+    });
+  });
+
+  await test("troncature position : exactement 55 caractères, aucune modification inutile", () => {
+    const s = "non, c’est nécessaire pour éviter l’inflation galopante";
+    assert.strictEqual(s.length, 55);
+    assert.strictEqual(truncateCertamenPositionSafely(s, 55), s);
+  });
+
+  await test("troncature position : >55 caractères raccourci proprement (≤55, préfixe, sans ellipse)", () => {
+    const s = "non, ils doivent respecter la discipline gouvernementale du parti";
+    assert.ok(s.length > 55);
+    const r = truncateCertamenPositionSafely(s, 55);
+    assert.ok(r.length <= 55);
+    assert.ok(s.startsWith(r), "le résultat doit être un préfixe du texte d'origine");
+    assert.ok(!r.includes("…"));
+    assert.strictEqual(r, "non, ils doivent respecter la discipline");
+  });
+
+  await test("troncature position : mot traversant la limite → retiré en entier, jamais coupé", () => {
+    // Cas réels relevés par l'audit du 21/09/2026 (positions PRIMARY coupées en plein mot).
+    const a = truncateCertamenPositionSafely("non, ils doivent respecter la discipline gouvernementale du parti", 55);
+    assert.ok(!a.includes("gouverne"), `mot coupé/résiduel : "${a}"`);
+    const b = truncateCertamenPositionSafely("non, faut pas surcharger le système avec trop de contraintes", 55);
+    assert.strictEqual(b, "non, faut pas surcharger le système avec trop de");
+    assert.ok(!/contra/.test(b), `mot coupé : "${b}"`);
+    // Propriété générale : le caractère suivant dans le texte d'origine est un espace.
+    [
+      "oui, faut défendre la vérité et combattre l’antisémitisme partout",
+      "ils doivent garder distance, c’est pas le principal bouleversement",
+      "non, leurs résultats sont spécifiques et peu exportables ailleurs"
+    ].forEach(function(s) {
+      const r = truncateCertamenPositionSafely(s, 55);
+      assert.ok(r.length <= 55);
+      assert.ok(s.startsWith(r));
+      assert.strictEqual(s[r.length], " ", `coupure en plein mot : "${r}" dans "${s}"`);
+    });
+  });
+
+  await test("troncature position : pas de ponctuation suspendue en fin de résultat", () => {
+    const r = truncateCertamenPositionSafely("non, ça restreint trop la liberté d’accès à internet, surtout aujourd’hui", 55);
+    assert.strictEqual(r, "non, ça restreint trop la liberté d’accès à internet");
+    assert.ok(!/[.,;:!?…\-–—]$/.test(r));
+  });
+
+  await test("troncature position : accents et apostrophes françaises restent propres", () => {
+    const a = truncateCertamenPositionSafely("non, l’économie française déterminera l’avenir des élèves d’aujourd’hui", 55);
+    assert.strictEqual(a, "non, l’économie française déterminera l’avenir des");
+    const b = truncateCertamenPositionSafely("oui, c’est l’occasion d’affirmer l’identité de l’État français demain", 55);
+    assert.strictEqual(b, "oui, c’est l’occasion d’affirmer l’identité de l’État");
+    [a, b].forEach(function(r) { assert.ok(!/[’']$/.test(r), `apostrophe pendante : "${r}"`); });
+  });
+
   // --- Chantier 1 (audit du 09/09/2026) : échantillonnage stratifié -----------------------
   await test("échantillonnage stratifié : 120 candidats / sample 10 → exactement les rangs attendus", () => {
     const sample = selectCertamenCompareSample(120, 10);
@@ -9305,7 +9364,93 @@ async function runCertamenSeparatedTests() {
         assert.strictEqual(storedAfter.status, "expired");
       } finally { restoreCertamenPendingCreativeFile(snap); }
     });
+
+    // --- Correctif troncature PRIMARY (audit du 21/09/2026) : chemin unitaire actuel -------
+    // Le prompt unitaire contient la même phrase que le jugement séparé : le mock `judgment`
+    // répond donc à analyzeCertamenSubjectWithAI ; l'alignement politique passe par `other`.
+    function mockUnitaryAnalysis(positionA, positionB, aligner) {
+      return installCertamenOpenAIMock({
+        judgment: async () => ({
+          model: "gpt-4.1-mini-mock",
+          output_text: JSON.stringify({
+            isDebatable: true, debatePotentialScore: 7, editorialDecision: "arena", reason: "test",
+            suggestedQuestion: "Faut-il tester cette troncature ?", positionA, positionB,
+            theme: "Politique", risk: "medium"
+          }),
+          usage: { input_tokens: 20, output_tokens: 10 }
+        }),
+        other: async (params) => {
+          if (/Tu analyses une question de débat et ses deux positions/.test(String(params.input || ""))) {
+            return { model: "gpt-4.1-mini-mock", output_text: JSON.stringify(aligner), usage: { input_tokens: 5, output_tokens: 5 } };
+          }
+          return { model: "gpt-4.1-mini-mock", output_text: "{}", usage: { input_tokens: 5, output_tokens: 5 } };
+        }
+      });
+    }
+
+    await test("pipeline PRIMARY unitaire : positions >55 tronquées en mots entiers (jamais coupées)", async () => {
+      const restore = mockUnitaryAnalysis(
+        "non, ils doivent respecter la discipline gouvernementale du parti",
+        "non, faut pas surcharger le système avec trop de contraintes",
+        { hasPoliticalOrientation: false, leftPosition: "", rightPosition: "" }
+      );
+      try {
+        const result = await analyzeCertamenSubjectWithAI(makeCertamenTestSubject(), { sourceType: "certamen_test" });
+        assert.strictEqual(result.editorialDecision, "arena");
+        assert.strictEqual(result.positionA, "non, ils doivent respecter la discipline");
+        assert.strictEqual(result.positionB, "non, faut pas surcharger le système avec trop de");
+        assert.ok(result.positionA.length <= 55 && result.positionB.length <= 55);
+        assert.strictEqual(result.politicalOrientation.isPolitical, false);
+      } finally { restore(); }
+    });
+
+    await test("pipeline PRIMARY unitaire : positions courtes et exactement 55 caractères inchangées", async () => {
+      const exact = "non, c’est nécessaire pour éviter l’inflation galopante";
+      assert.strictEqual(exact.length, 55);
+      const restore = mockUnitaryAnalysis("oui, il faut agir vite", exact,
+        { hasPoliticalOrientation: false, leftPosition: "", rightPosition: "" });
+      try {
+        const result = await analyzeCertamenSubjectWithAI(makeCertamenTestSubject(), { sourceType: "certamen_test" });
+        assert.strictEqual(result.positionA, "oui, il faut agir vite");
+        assert.strictEqual(result.positionB, exact);
+      } finally { restore(); }
+    });
+
+    await test("pipeline PRIMARY unitaire : le réalignement politique ne recoupe pas en plein mot", async () => {
+      const restore = mockUnitaryAnalysis(
+        "oui, plus de régulation", "non, plus de liberté",
+        {
+          hasPoliticalOrientation: true,
+          leftPosition: "oui, il faut renforcer la régulation des plateformes numériques",
+          rightPosition: "non, la liberté d’expression doit primer sur toute forme de contrôle"
+        }
+      );
+      try {
+        const result = await analyzeCertamenSubjectWithAI(makeCertamenTestSubject(), { sourceType: "certamen_test" });
+        assert.strictEqual(result.politicalOrientation.isPolitical, true);
+        assert.strictEqual(result.positionA, "oui, il faut renforcer la régulation des plateformes");
+        assert.strictEqual(result.positionB, "non, la liberté d’expression doit primer sur toute");
+        assert.ok(!/nu$/.test(result.positionA) && !/form$/.test(result.positionB), "mot coupé après réalignement");
+      } finally { restore(); }
+    });
   }
+
+  await test("chemins PRIMARY (unitaire, lots, réalignement politique) : troncature sûre, plus de .slice(0, 55) destructif", () => {
+    const source = fs.readFileSync(path.join(__dirname, "veille-mixte.js"), "utf8");
+    function extractTopLevelFunction(fnName) {
+      let start = source.indexOf(`async function ${fnName}(`);
+      if (start < 0) start = source.indexOf(`function ${fnName}(`);
+      assert.ok(start >= 0, `fonction ${fnName} introuvable`);
+      const rest = source.slice(start + 1);
+      const m = rest.match(/\n(?:async function|function|const|let) /);
+      return source.slice(start, m ? start + 1 + m.index : source.length);
+    }
+    ["analyzeCertamenSubjectWithAI", "analyzeCertamenSubjectsBatchWithAI", "alignCertamenPositionsByPolitics"].forEach(function(fnName) {
+      const body = extractTopLevelFunction(fnName);
+      assert.ok(body.includes("truncateCertamenPositionSafely("), `${fnName} doit utiliser truncateCertamenPositionSafely`);
+      assert.ok(!/\.slice\(\s*0\s*,\s*55\s*\)/.test(body), `${fnName} contient encore un .slice(0, 55) destructif`);
+    });
+  });
 
   await test("aucun nouveau modèle introduit pour Certamen (jugement/créativité restent sur gpt-4.1-mini)", () => {
     const source = fs.readFileSync(path.join(__dirname, "veille-mixte.js"), "utf8");
@@ -9458,8 +9603,8 @@ Réponds uniquement en JSON valide, sans balises markdown.`;
       limitDebateQuestionText(cleanCertamenGeneratedText(row.suggestedQuestion || "")),
       { sourceType: "certamen_pipeline" }
     );
-    let positionA = cleanCertamenGeneratedText(row.positionA || "").slice(0, 55);
-    let positionB = cleanCertamenGeneratedText(row.positionB || "").slice(0, 55);
+    let positionA = truncateCertamenPositionSafely(cleanCertamenGeneratedText(row.positionA || ""), 55);
+    let positionB = truncateCertamenPositionSafely(cleanCertamenGeneratedText(row.positionB || ""), 55);
 
     let politicalOrientation = { isPolitical: false, positionA: null, positionB: null };
     if (editorialDecision !== "avoid" && positionA && positionB) {
@@ -10862,8 +11007,8 @@ Réponds uniquement en JSON valide, sans balises markdown.`;
     const parsed = safeJsonParse(response.output_text || "");
     if (parsed.hasPoliticalOrientation && parsed.leftPosition && parsed.rightPosition) {
       return {
-        positionA: String(parsed.leftPosition).trim().slice(0, 55),
-        positionB: String(parsed.rightPosition).trim().slice(0, 55),
+        positionA: truncateCertamenPositionSafely(String(parsed.leftPosition), 55),
+        positionB: truncateCertamenPositionSafely(String(parsed.rightPosition), 55),
         politicalOrientation: { isPolitical: true, positionA: "left", positionB: "right" }
       };
     }
