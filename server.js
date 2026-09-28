@@ -31,6 +31,15 @@ app.use(express.json());
 const PORT = process.env.PORT || 3000;
 const MIXTE_PASSWORD = process.env.MIXTE_PASSWORD || "";
 const AGON_URL = (process.env.AGON_URL || "http://localhost:3001").trim();
+// Jeton machine-à-machine attendu par Agôn (lib/bot-auth.js, S8 audit sécurité 4B) sur
+// /api/veille/receive, /api/veille/opinion-articles(/remove) et POST /api/debates
+// (arènes Certamen) : sans lui, Agôn répond 401 dès que VEILLE_BOT_TOKEN y est configuré.
+const VEILLE_BOT_TOKEN = (process.env.VEILLE_BOT_TOKEN || "").trim();
+function botAuthHeaders(extra = {}) {
+  return VEILLE_BOT_TOKEN
+    ? { ...extra, "Authorization": `Bearer ${VEILLE_BOT_TOKEN}` }
+    : { ...extra };
+}
 const SENT_TO_AGON_FILE = path.join(__dirname, "sent-to-agon.json");
 const SENT_OPINIONS_TO_AGON_FILE = path.join(__dirname, "sent-opinions-to-agon.json");
 const AUTO_COLLECT_FILE = path.join(__dirname, "auto-collect-config.json");
@@ -433,7 +442,7 @@ async function removeOpinionArticlesFromAgon(links, subjectTitle = "") {
   try {
     const response = await fetch(`${AGON_URL}/api/veille/opinion-articles/remove`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: botAuthHeaders({ "Content-Type": "application/json" }),
       body: JSON.stringify({ links: safeLinks })
     });
     if (!response.ok) {
@@ -518,7 +527,7 @@ async function publishOpinionItemsToAgon() {
     try {
       const response = await fetch(`${AGON_URL}/api/veille/opinion-articles`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: botAuthHeaders({ "Content-Type": "application/json" }),
         body: JSON.stringify({ items: batch })
       });
       if (response.ok) {
@@ -5287,7 +5296,7 @@ app.post("/send-to-agon", requireMixteAuth, async (req, res) => {
     try {
       r = await fetch(`${AGON_URL}/api/veille/receive`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: botAuthHeaders({ "Content-Type": "application/json" }),
         body: JSON.stringify({ question: normalizedQuestion, positionA, positionB, theme, resume: normalizedResume, sources, links: links || [], storySelection: storySelection || null, keywords: resolvedKeywords, politicalOrientation: politicalOrientation || null, arenaMode, politicalGroup }),
         signal: agonController.signal
       });
@@ -5844,7 +5853,7 @@ async function publishMixteSubjectToAgon(subj, { sessionLabel, politicalGroup = 
   try {
     r = await fetch(`${AGON_URL}/api/veille/receive`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: botAuthHeaders({ "Content-Type": "application/json" }),
       body: JSON.stringify({ question, positionA, positionB, theme, resume, sources, links, storySelection, keywords, politicalOrientation, arenaMode, politicalGroup }),
       signal: agonController.signal
     });

@@ -59,6 +59,14 @@ function trackAi(label, fn, extra = {}) {
 }
 
 const AGON_URL = (process.env.AGON_URL || "http://localhost:3001").trim();
+// Cf. server.js : jeton machine-à-machine attendu par Agôn (lib/bot-auth.js) sur POST
+// /api/debates quand creatorKey === CERTAMEN_CREATOR_KEY.
+const VEILLE_BOT_TOKEN = (process.env.VEILLE_BOT_TOKEN || "").trim();
+function botAuthHeaders(extra = {}) {
+  return VEILLE_BOT_TOKEN
+    ? { ...extra, "Authorization": `Bearer ${VEILLE_BOT_TOKEN}` }
+    : { ...extra };
+}
 const SENT_TO_AGON_FILE = path.join(__dirname, "sent-to-agon.json");
 const MAX_PUBLISH_SUBJECTS = 10;
 
@@ -336,7 +344,7 @@ async function publishOnePayloadToAgon(payload) {
   for (let attempt = 1; attempt <= 1 + RATE_LIMIT_RETRIES; attempt += 1) {
     const r = await fetch(`${AGON_URL}/api/debates`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: botAuthHeaders({ "Content-Type": "application/json" }),
       body: JSON.stringify(body)
     });
 
