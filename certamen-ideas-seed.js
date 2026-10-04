@@ -9,6 +9,13 @@ const path = require("path");
 const OpenAI = require("openai");
 const { AGON_URL, loginAgonAdminForCertamen } = require("./certamen-agon-admin-auth");
 const { enqueueIdeaJob } = require("./idea-post-queue");
+// Jeton machine-à-machine Agôn (cf. server.js) : envoyé sur POST /api/arguments.
+const VEILLE_BOT_TOKEN = (process.env.VEILLE_BOT_TOKEN || "").trim();
+function botAuthHeaders(extra = {}) {
+  return VEILLE_BOT_TOKEN
+    ? { ...extra, "Authorization": `Bearer ${VEILLE_BOT_TOKEN}` }
+    : { ...extra };
+}
 
 const openai = process.env.OPENAI_API_KEY ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY }) : null;
 
@@ -145,7 +152,7 @@ Réponds en JSON : { "ideas": [ { "qualite": "bonne" ou "moyenne" ou "mauvaise",
       try {
         const r = await fetch(`${AGON_URL}/api/arguments`, {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: botAuthHeaders({ "Content-Type": "application/json" }),
           body: JSON.stringify({
             debate_id: debateId,
             side: isPositions ? (idea.side || "A") : (Math.random() < 0.5 ? "A" : "B"),

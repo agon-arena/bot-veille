@@ -6072,7 +6072,7 @@ Réponds en JSON : { "ideas": [ { "qualite": "bonne" ou "moyenne" ou "mauvaise",
       try {
         const r = await fetch(`${AGON_URL}/api/arguments`, {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: botAuthHeaders({ "Content-Type": "application/json" }),
           body: JSON.stringify({
             debate_id: debateId,
             side: isPositions ? (idea.side || "A") : (Math.random() < 0.5 ? "A" : "B"),
