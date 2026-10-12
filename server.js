@@ -525,10 +525,14 @@ async function publishOpinionItemsToAgon() {
 
   async function sendOpinionBatch(batch, label) {
     try {
+      // sessionKey (generatedAt de la session mixte en cours, cf. plus haut dans cette fonction) :
+      // seule source de vérité désormais utilisée côté Agôn pour purger "Autres actus" une fois
+      // par session réelle — remplace l'ancienne inférence depuis l'activité de `debates`
+      // (correctif du 12/10/2026, cf. lib/opinion-articles-session.js côté Agôn).
       const response = await fetch(`${AGON_URL}/api/veille/opinion-articles`, {
         method: "POST",
         headers: botAuthHeaders({ "Content-Type": "application/json" }),
-        body: JSON.stringify({ items: batch })
+        body: JSON.stringify({ items: batch, sessionKey })
       });
       if (response.ok) {
         batch.forEach(item => sentLinks.add(item.link));
