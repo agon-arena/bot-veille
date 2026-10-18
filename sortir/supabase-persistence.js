@@ -7,7 +7,17 @@ const { ALGORITHM_VERSION, DECISIONS, compareActivities, mergeActivities, canoni
 const { ORCHESTRATOR_VERSION } = require("./ingestion-orchestrator");
 
 const DEFAULT_STALE_AFTER_MS = 7 * 24 * 60 * 60 * 1000;
+// Borne la taille des .in(...) envoyés à PostgREST (disparitions groupées) : évite une URL
+// démesurée si plusieurs milliers d'activités disparaissent dans un même run. La fréquence
+// réelle des disparitions ne justifie pas d'ajuster cette valeur avant mesure en conditions réelles.
+const DISAPPEARANCE_CHUNK_SIZE = 500;
 let ingestionQueue = Promise.resolve();
+
+function chunkIds(ids, size = DISAPPEARANCE_CHUNK_SIZE) {
+  const chunks = [];
+  for (let index = 0; index < ids.length; index += size) chunks.push(ids.slice(index, index + size));
+  return chunks;
+}
 
 function stableJson(value) {
   if (Array.isArray(value)) return `[${value.map(stableJson).join(",")}]`;
@@ -218,7 +228,27 @@ function createSupabaseSortirStore(client) {
     async upsertExternalIds(activityId, sourceId, ids) { if (!ids.length) return; const { error } = await client.from("sortir_external_ids").upsert(ids.map((id) => ({ activity_id: activityId, source_id: sourceId, system: id.system, value: id.value })), { onConflict: "activity_id,source_id,system,value", ignoreDuplicates: true }); if (error) throw new Error(error.message); },
     insertCollectionItem: (row) => one(client.from("sortir_collection_items").insert(row).select().single()),
     async insertDedupDecision(row) { if (row.left_activity_id === row.right_activity_id) return null; const ordered = row.left_activity_id < row.right_activity_id ? row : { ...row, left_activity_id: row.right_activity_id, right_activity_id: row.left_activity_id }; const { data, error } = await client.from("sortir_dedup_decisions").insert(ordered).select().single(); if (!error) return data; if (error.code === "23505") return null; throw new Error(error.message); },
-    async applyDisappearances({ sourceId, sourceRunId, cutoff }) { const stale = await one(client.from("sortir_provenances").update({ active: false }).eq("source_id", sourceId).eq("active", true).or(`last_seen_run_id.is.null,last_seen_run_id.neq.${sourceRunId}`).lt("last_seen_at", cutoff).select("activity_id")); for (const { activity_id: id } of stale) { const { count, error } = await client.from("sortir_provenances").select("id", { count: "exact", head: true }).eq("activity_id", id).eq("active", true); if (error) throw new Error(error.message); if (!count) await this.updateActivity(id, { record_status: "stale", updated_at: new Date().toISOString() }); } },
+    async applyDisappearances({ sourceId, sourceRunId, cutoff }) {
+      const stale = await one(client.from("sortir_provenances").update({ active: false }).eq("source_id", sourceId).eq("active", true).or(`last_seen_run_id.is.null,last_seen_run_id.neq.${sourceRunId}`).lt("last_seen_at", cutoff).select("activity_id"));
+      const touchedIds = [...new Set(stale.map(({ activity_id: id }) => id))];
+      if (!touchedIds.length) return;
+      // Remplace le COUNT par activité (N+1) par une poignée de lectures groupées : on
+      // récupère les activity_id ayant ENCORE au moins une provenance active parmi celles
+      // touchées, puis on marque stale uniquement la différence — même règle métier
+      // (aucune provenance active restante ⇒ stale), sans boucle par activité.
+      const stillActiveIds = new Set();
+      for (const chunk of chunkIds(touchedIds)) {
+        const rows = await one(client.from("sortir_provenances").select("activity_id").in("activity_id", chunk).eq("active", true));
+        for (const { activity_id: id } of rows) stillActiveIds.add(id);
+      }
+      const idsToMarkStale = touchedIds.filter((id) => !stillActiveIds.has(id));
+      if (!idsToMarkStale.length) return;
+      const updatedAt = new Date().toISOString();
+      for (const chunk of chunkIds(idsToMarkStale)) {
+        const { error } = await client.from("sortir_activities").update({ record_status: "stale", updated_at: updatedAt }).in("id", chunk);
+        if (error) throw new Error(error.message);
+      }
+    },
     async countFinalActivities() { const { count, error } = await client.from("sortir_activities").select("id", { count: "exact", head: true }).eq("record_status", "active"); if (error) throw new Error(error.message); return count || 0; }
   };
 }
@@ -228,4 +258,4 @@ function createDefaultSupabaseStore() {
   return createSupabaseSortirStore(createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false } }));
 }
 
-module.exports = { DEFAULT_STALE_AFTER_MS, stableJson, payloadHash, sanitizeSourcePayload, activityToRow, rowToActivity, persistSortirIngestion, mergeStoredActivities, createSupabaseSortirStore, createDefaultSupabaseStore };
+module.exports = { DEFAULT_STALE_AFTER_MS, DISAPPEARANCE_CHUNK_SIZE, chunkIds, stableJson, payloadHash, sanitizeSourcePayload, activityToRow, rowToActivity, persistSortirIngestion, mergeStoredActivities, createSupabaseSortirStore, createDefaultSupabaseStore };
