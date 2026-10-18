@@ -151,6 +151,8 @@ function normalizeActivity(input) {
   activity.longitude = raw.longitude === "" || raw.longitude === null || raw.longitude === undefined ? null : raw.longitude;
   activity.organizers = normalizeOrganizers(raw.organizers);
   activity.tags = normalizeStringList(raw.tags);
+  activity.sourceCategories = normalizeStringList(raw.sourceCategories);
+  activity.sourceTags = normalizeStringList(raw.sourceTags);
   activity.provenances = normalizeProvenances(raw.provenances);
   activity.externalIds = normalizeExternalIds(raw.externalIds);
   activity.confidence = raw.confidence === "" || raw.confidence === null || raw.confidence === undefined ? null : raw.confidence;

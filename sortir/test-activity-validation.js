@@ -197,6 +197,19 @@ test("tags trimés et dédupliqués sans modifier la première casse", () => {
   assert.deepStrictEqual(result.activity.tags, ["Musique", "Concert"]);
 });
 
+test("sourceCategories et sourceTags normalisés indépendamment de tags, jamais mélangés", () => {
+  const result = validate({ tags: ["Musique"], sourceCategories: [" Atelier ", "atelier"], sourceTags: ["petite_enfance", ""] });
+  assert.deepStrictEqual(result.activity.sourceCategories, ["Atelier"]);
+  assert.deepStrictEqual(result.activity.sourceTags, ["petite_enfance"]);
+  assert.deepStrictEqual(result.activity.tags, ["Musique"]);
+});
+
+test("sourceCategories et sourceTags absents retombent sur des tableaux vides", () => {
+  const result = validate({});
+  assert.deepStrictEqual(result.activity.sourceCategories, []);
+  assert.deepStrictEqual(result.activity.sourceTags, []);
+});
+
 test("confidence supérieure à 1", () => {
   const result = validate({ confidence: 1.1 });
   assert.strictEqual(result.status, VALIDATION_STATUSES.INVALID);

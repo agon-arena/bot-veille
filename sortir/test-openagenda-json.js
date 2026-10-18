@@ -115,17 +115,18 @@ test("localisation structurée mappée directement, sans heuristique regex", () 
   assert.strictEqual(activity.latitude, 49.199682);
 });
 
-test("categorie multi-valuée conservée telle quelle dans tags[], préfixée", () => {
+test("categorie multi-valuée conservée telle quelle dans sourceCategories[], séparée de tags[]", () => {
   const { activity } = simpleResults[0];
-  assert.ok(activity.tags.includes("categorie:atelier"));
-  assert.ok(activity.tags.includes("categorie:rencontre"));
+  assert.deepStrictEqual(activity.sourceCategories, ["atelier", "rencontre"]);
   assert.strictEqual(activity.category, null, "category ne doit pas être déduit depuis categorie à ce stade");
+  assert.strictEqual(activity.tags.length, 0, "tags[] reste réservé à la future taxonomie Mnoria, pas aux valeurs brutes source");
 });
 
-test("keywords conservés tels quels dans tags[]", () => {
+test("keywords conservés tels quels dans sourceTags[], jamais mélangés avec sourceCategories", () => {
   const { activity } = simpleResults[0];
-  assert.ok(activity.tags.includes("sommeil"));
-  assert.ok(activity.tags.includes("sante"));
+  assert.deepStrictEqual(activity.sourceTags, ["sommeil", "sante"]);
+  assert.ok(!activity.sourceTags.includes("atelier"));
+  assert.ok(!activity.sourceCategories.includes("sommeil"));
 });
 
 test("clé d'occurrence stable et déterministe au rejeu", () => {

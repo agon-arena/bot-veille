@@ -141,7 +141,6 @@ function mapOpenAgendaJsonOccurrence(event, timing, options = {}) {
   if (beginIso) evidence.push({ field: "startsAt", sourceValue: timing.begin, provenanceIndex: 0 });
   if (lifecycle.lossy || lifecycle.unrecognized) evidence.push({ field: "lifecycleStatus", sourceValue: `status=${event.status}`, provenanceIndex: 0 });
   if (admission.confidence !== null) evidence.push({ field: "admissionType", sourceValue: text(event.conditions), provenanceIndex: 0 });
-  if (categorieValues.length || keywordValues.length) evidence.push({ field: "tags", sourceValue: JSON.stringify({ categorie: categorieValues, keywords: keywordValues }), provenanceIndex: 0 });
 
   const externalIds = [];
   if (event.uid !== undefined && event.uid !== null) externalIds.push({ system: "openagenda-event", value: String(event.uid) });
@@ -170,9 +169,11 @@ function mapOpenAgendaJsonOccurrence(event, timing, options = {}) {
     longitude: location.longitude,
     onlineUrl,
     organizers: [], // Aucun champ organisateur disponible côté OpenAgenda (standard ou additionnel), vérifié sur données réelles.
-    category: null, // Volontairement non peuplé — voir `categorie` brut conservé dans tags[].
+    category: null, // Volontairement non peuplé — réservé à la future taxonomie Mnoria.
     subcategory: null,
-    tags: [...keywordValues, ...categorieValues.map((v) => `categorie:${v}`)],
+    tags: [], // Idem : réservé aux thématiques normalisées Mnoria, pas encore alimenté.
+    sourceCategories: categorieValues, // `categorie` OpenAgenda, brut, non transformé.
+    sourceTags: keywordValues, // `keywords` OpenAgenda, brut, non transformé.
     provenances: [{
       sourceType: "api",
       sourceName,

@@ -30,9 +30,15 @@ const NORMALIZED_ACTIVITY_FIELDS = Object.freeze([
   "lifecycleStatus",
   "locationType", "venueName", "address", "postalCode", "city", "country",
   "latitude", "longitude", "onlineUrl", "organizers", "category", "subcategory",
-  "tags", "provenances", "externalIds", "imageUrl", "bookingUrl", "admissionType", "confidence",
+  "tags", "sourceCategories", "sourceTags", "provenances", "externalIds", "imageUrl", "bookingUrl", "admissionType", "confidence",
   "fieldConfidence", "evidence"
 ]);
+
+// `category`/`subcategory`/`tags` sont réservés à la future taxonomie normalisée Mnoria
+// (non encore peuplée par les connecteurs). `sourceCategories`/`sourceTags` transportent les
+// valeurs BRUTES natives de la source (ex. `categorie` et `keywords` OpenAgenda, `category` et
+// `tags` Mobilizon, `qfap_tags` Paris) sans les transformer ni les interpréter. Ces deux
+// dimensions ne doivent jamais être mélangées dans le même champ.
 
 function createNormalizedActivity(overrides = {}) {
   return {
@@ -55,6 +61,8 @@ function createNormalizedActivity(overrides = {}) {
     category: null,
     subcategory: null,
     tags: [],
+    sourceCategories: [],
+    sourceTags: [],
     provenances: [],
     externalIds: [],
     imageUrl: null,
