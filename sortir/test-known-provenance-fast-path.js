@@ -31,7 +31,7 @@ const day = (n) => new Date(`2026-11-${String(n).padStart(2, "0")}T12:00:00Z`);
 class MemoryStore {
   constructor() {
     this.seq = 0; this.sources = []; this.ingestions = []; this.sourceRuns = []; this.activities = []; this.provenances = []; this.externalIds = []; this.items = []; this.decisions = [];
-    this.calls = { findProvenance: 0, findProvenancesBatch: 0, getActivity: 0, getActivitiesBatch: 0, updateProvenance: 0, upsertExternalIds: 0, updateActivity: 0, insertCollectionItem: 0, listCandidateActivities: 0, createActivity: 0, createProvenanceIdempotent: 0 };
+    this.calls = { findProvenance: 0, findProvenancesBatch: 0, getActivity: 0, getActivitiesBatch: 0, updateProvenance: 0, upsertExternalIds: 0, updateActivity: 0, insertCollectionItem: 0, listCandidateActivities: 0, createActivity: 0, createProvenanceIdempotent: 0, touchProvenancesBatch: 0, insertCollectionItemsBatch: 0 };
   }
   resetCalls() { for (const key of Object.keys(this.calls)) this.calls[key] = 0; }
   totalCalls() { return Object.values(this.calls).reduce((a, b) => a + b, 0); }
@@ -51,10 +51,12 @@ class MemoryStore {
   async updateActivity(id, row) { this.calls.updateActivity += 1; const value = this.activities.find((x) => x.id === id); Object.assign(value, row); return value; }
   async markActivityMerged(id, canonicalId) { return this.updateActivity(id, { record_status: "merged", merged_into_id: canonicalId }); }
   async updateProvenance(id, row) { this.calls.updateProvenance += 1; const value = this.provenances.find((x) => x.id === id); Object.assign(value, row); return value; }
+  async touchProvenancesBatch(ids, touch) { this.calls.touchProvenancesBatch += 1; const set = new Set(ids); for (const p of this.provenances) if (set.has(p.id)) Object.assign(p, touch); }
   async moveProvenances() {} async moveExternalIds() {}
   async createProvenanceIdempotent(row) { this.calls.createProvenanceIdempotent += 1; const existing = await this.findProvenance(row.source_id, row.source_record_id, row.source_occurrence_key); if (existing) return existing; const value = { id: this.id("prov"), ...row }; this.provenances.push(value); return value; }
   async upsertExternalIds(activityId, sourceId, ids) { this.calls.upsertExternalIds += 1; for (const id of ids) if (!this.externalIds.some((x) => x.activity_id === activityId && x.source_id === sourceId && x.system === id.system && x.value === id.value)) this.externalIds.push({ activity_id: activityId, source_id: sourceId, system: id.system, value: id.value }); }
   async insertCollectionItem(row) { this.calls.insertCollectionItem += 1; const value = { id: this.id("item"), ...row }; this.items.push(value); return value; }
+  async insertCollectionItemsBatch(rows) { this.calls.insertCollectionItemsBatch += 1; for (const row of rows) this.items.push({ id: this.id("item"), ...row }); }
   async insertDedupDecision(row) { if (row.left_activity_id === row.right_activity_id) return null; if (!this.decisions.some((x) => x.left_activity_id === row.left_activity_id && x.right_activity_id === row.right_activity_id && x.algorithm_version === row.algorithm_version)) this.decisions.push({ id: this.id("decision"), ...row }); }
   async applyDisappearances() {}
   async countFinalActivities() { return this.activities.filter((x) => x.record_status === "active").length; }
@@ -71,7 +73,7 @@ async function ingest(store, sources, date = day(1)) { return persistSortirInges
     const itemsBefore = db.items.length;
     const result = await ingest(db, [sourceDescriptor("oa", [item("oa")])], day(2));
     assert.strictEqual(result.status, "completed");
-    assert.deepStrictEqual(db.calls, { findProvenance: 0, findProvenancesBatch: 1, getActivity: 0, getActivitiesBatch: 1, updateProvenance: 1, upsertExternalIds: 0, updateActivity: 0, insertCollectionItem: 1, listCandidateActivities: 0, createActivity: 0, createProvenanceIdempotent: 0 });
+    assert.deepStrictEqual(db.calls, { findProvenance: 0, findProvenancesBatch: 1, getActivity: 0, getActivitiesBatch: 1, updateProvenance: 0, touchProvenancesBatch: 1, upsertExternalIds: 0, updateActivity: 0, insertCollectionItem: 0, insertCollectionItemsBatch: 1, listCandidateActivities: 0, createActivity: 0, createProvenanceIdempotent: 0 });
     assert.strictEqual(db.totalCalls(), 4);
     assert.strictEqual(db.activities.length, 1);
     assert.strictEqual(db.activities[0].id, activityId);

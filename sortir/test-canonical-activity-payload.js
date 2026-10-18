@@ -95,10 +95,12 @@ function baseActivity(overrides = {}) {
     async updateActivity(id, row) { const value = this.activities.find((x) => x.id === id); Object.assign(value, row); return value; }
     async markActivityMerged(id, canonicalId) { return this.updateActivity(id, { record_status: "merged", merged_into_id: canonicalId }); }
     async updateProvenance(id, row) { if (Object.prototype.hasOwnProperty.call(row, "source_payload")) this.payloadWrites += 1; const value = this.provenances.find((x) => x.id === id); Object.assign(value, row); return value; }
+    async touchProvenancesBatch(ids, touch) { const set = new Set(ids); for (const p of this.provenances) if (set.has(p.id)) Object.assign(p, touch); }
     async moveProvenances() {} async moveExternalIds() {}
     async createProvenanceIdempotent(row) { const existing = await this.findProvenance(row.source_id, row.source_record_id, row.source_occurrence_key); if (existing) return existing; const value = { id: this.id("prov"), ...row }; this.provenances.push(value); this.payloadWrites += 1; return value; }
     async upsertExternalIds(activityId, sourceId, ids) { for (const id of ids) if (!this.externalIds.some((x) => x.activity_id === activityId && x.source_id === sourceId && x.system === id.system && x.value === id.value)) this.externalIds.push({ activity_id: activityId, source_id: sourceId, system: id.system, value: id.value }); }
     async insertCollectionItem(row) { const value = { id: this.id("item"), ...row }; this.items.push(value); return value; }
+    async insertCollectionItemsBatch(rows) { for (const row of rows) this.items.push({ id: this.id("item"), ...row }); }
     async insertDedupDecision() { return null; }
     async applyDisappearances() {}
     async countFinalActivities() { return this.activities.filter((x) => x.record_status === "active").length; }

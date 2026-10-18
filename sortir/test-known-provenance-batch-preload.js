@@ -33,7 +33,7 @@ const day = (n) => new Date(`2026-11-${String(n).padStart(2, "0")}T12:00:00Z`);
 class MemoryStore {
   constructor() {
     this.seq = 0; this.sources = []; this.ingestions = []; this.sourceRuns = []; this.activities = []; this.provenances = []; this.externalIds = []; this.items = []; this.decisions = [];
-    this.calls = { findProvenance: 0, findProvenancesBatch: 0, getActivity: 0, getActivitiesBatch: 0, updateProvenance: 0, upsertExternalIds: 0, updateActivity: 0, insertCollectionItem: 0, listCandidateActivities: 0, createActivity: 0, createProvenanceIdempotent: 0 };
+    this.calls = { findProvenance: 0, findProvenancesBatch: 0, getActivity: 0, getActivitiesBatch: 0, updateProvenance: 0, upsertExternalIds: 0, updateActivity: 0, insertCollectionItem: 0, listCandidateActivities: 0, createActivity: 0, createProvenanceIdempotent: 0, touchProvenancesBatch: 0, insertCollectionItemsBatch: 0 };
   }
   resetCalls() { for (const key of Object.keys(this.calls)) this.calls[key] = 0; }
   totalCalls() { return Object.values(this.calls).reduce((a, b) => a + b, 0); }
@@ -53,10 +53,12 @@ class MemoryStore {
   async updateActivity(id, row) { this.calls.updateActivity += 1; const value = this.activities.find((x) => x.id === id); Object.assign(value, row); return value; }
   async markActivityMerged(id, canonicalId) { return this.updateActivity(id, { record_status: "merged", merged_into_id: canonicalId }); }
   async updateProvenance(id, row) { this.calls.updateProvenance += 1; const value = this.provenances.find((x) => x.id === id); Object.assign(value, row); return value; }
+  async touchProvenancesBatch(ids, touch) { this.calls.touchProvenancesBatch += 1; const set = new Set(ids); for (const p of this.provenances) if (set.has(p.id)) Object.assign(p, touch); }
   async moveProvenances() {} async moveExternalIds() {}
   async createProvenanceIdempotent(row) { this.calls.createProvenanceIdempotent += 1; const existing = await this.findProvenance(row.source_id, row.source_record_id, row.source_occurrence_key); if (existing) return existing; const value = { id: this.id("prov"), ...row }; this.provenances.push(value); return value; }
   async upsertExternalIds(activityId, sourceId, ids) { this.calls.upsertExternalIds += 1; for (const id of ids) if (!this.externalIds.some((x) => x.activity_id === activityId && x.source_id === sourceId && x.system === id.system && x.value === id.value)) this.externalIds.push({ activity_id: activityId, source_id: sourceId, system: id.system, value: id.value }); }
   async insertCollectionItem(row) { this.calls.insertCollectionItem += 1; const value = { id: this.id("item"), ...row }; this.items.push(value); return value; }
+  async insertCollectionItemsBatch(rows) { this.calls.insertCollectionItemsBatch += 1; for (const row of rows) this.items.push({ id: this.id("item"), ...row }); }
   async insertDedupDecision(row) { if (row.left_activity_id === row.right_activity_id) return null; if (!this.decisions.some((x) => x.left_activity_id === row.left_activity_id && x.right_activity_id === row.right_activity_id && x.algorithm_version === row.algorithm_version)) this.decisions.push({ id: this.id("decision"), ...row }); }
   async applyDisappearances() {}
   async countFinalActivities() { return this.activities.filter((x) => x.record_status === "active").length; }
@@ -88,8 +90,12 @@ function manyKnownItems(n, { offsetDays = 0 } = {}) {
     assert.strictEqual(db.calls.getActivity, 0, "aucune lecture individuelle d'activité");
     assert.strictEqual(db.calls.findProvenancesBatch, 1, "206 clés tiennent dans un seul chunk de 500");
     assert.strictEqual(db.calls.getActivitiesBatch, 1);
-    assert.strictEqual(db.calls.updateProvenance, 206, "les écritures restent individuelles à cette étape");
-    assert.strictEqual(db.calls.insertCollectionItem, 206);
+    // Depuis le batching des écritures du cas A (étape suivante à celle-ci), ces 206 écritures
+    // sont elles aussi groupées — assertions tenues à jour avec le pipeline actuel.
+    assert.strictEqual(db.calls.updateProvenance, 0);
+    assert.strictEqual(db.calls.touchProvenancesBatch, 1);
+    assert.strictEqual(db.calls.insertCollectionItem, 0);
+    assert.strictEqual(db.calls.insertCollectionItemsBatch, 1);
     assert.strictEqual(db.calls.updateActivity, 0);
     assert.strictEqual(db.calls.upsertExternalIds, 0);
     assert.strictEqual(db.activities.length, 206, "aucune activité perdue ou dupliquée");
@@ -244,13 +250,9 @@ function manyKnownItems(n, { offsetDays = 0 } = {}) {
     const chunks = Math.ceil(n / PRELOAD_CHUNK_SIZE);
     console.log(`  N=${String(n).padStart(6, " ")} → avant : ${2 * n} SELECT individuels (findProvenance+getActivity) → après : ${2 * chunks} SELECT groupés (${chunks} chunk(s) de ${PRELOAD_CHUNK_SIZE})`);
   }
-  console.log("\nMesure — appels Supabase TOTAUX pour une réingestion de N occurrences connues, actives, inchangées (écritures encore individuelles) :");
-  for (const n of [206, 1000, 10000]) {
-    const chunks = Math.ceil(n / PRELOAD_CHUNK_SIZE);
-    const avant = 6 * n + 4;
-    const apres = 2 * chunks /* lectures groupées */ + 2 * n /* updateProvenance + insertCollectionItem, encore individuels */ + 4 /* coût fixe run/source */;
-    console.log(`  N=${String(n).padStart(6, " ")} → avant ≈ ${avant} → après ≈ ${apres} (≈ 2×N + ${2 * chunks} lectures par chunks + coûts fixes)`);
-  }
+  // Le total d'appels TOUT compris (écritures incluses) est désormais mesuré dans
+  // test-known-provenance-batched-writes.js, une fois les écritures du cas A elles-mêmes
+  // groupées — cette mesure-ci ne portait que sur les lectures et reste correcte telle quelle.
 
   console.log(`\n${passed} test(s) réussi(s), ${failed} échec(s).`);
   if (failed) process.exitCode = 1;

@@ -172,6 +172,14 @@ async function persistSortirIngestionUnlocked({ sources, store, now = new Date()
       const preloadActivityIds = [...new Set(preloadedProvenances.map((row) => row.activity_id))];
       const preloadedActivities = await store.getActivitiesBatch(preloadActivityIds);
       const activityMap = new Map(preloadedActivities.map((row) => [row.id, row]));
+      // Cas ultra-fréquent (occurrence connue, hash identique, activité non-stale) : les
+      // écritures ne varient pas d'un item à l'autre (mêmes last_seen_at/active/
+      // last_seen_run_id pour toute la source ; la ligne elle-même ne change d'aucune autre
+      // colonne), donc accumulées ici puis écrites en quelques UPDATE/INSERT groupés après la
+      // boucle plutôt qu'un aller-retour par occurrence. Les cas stale/hash différent/nouvelle
+      // occurrence restent exécutés individuellement, inchangés, à l'intérieur de la boucle.
+      const pendingProvenanceTouchIds = [];
+      const pendingCollectionItems = [];
 
       for (let index = 0; index < (Array.isArray(descriptor.results) ? descriptor.results : []).length; index += 1) {
         const connectorResult = descriptor.results[index];
@@ -211,8 +219,10 @@ async function persistSortirIngestionUnlocked({ sources, store, now = new Date()
               // last_seen_run_id/active, nécessaires à applyDisappearances), et l'activité est
               // réactivée si (et seulement si) elle était retombée stale — jamais de merge complet
               // pour ce seul changement de statut : record_status/updated_at suffisent.
-              await store.updateProvenance(provenance.id, { last_seen_at: startedAt, active: true, last_seen_run_id: sourceRun.id });
               if (existing.record_status === "stale") {
+                // Cas rare (réactivation) : chemin individuel conservé tel quel, pour ne pas
+                // complexifier le cas ultra-fréquent ci-dessous.
+                await store.updateProvenance(provenance.id, { last_seen_at: startedAt, active: true, last_seen_run_id: sourceRun.id });
                 const updated = await store.updateActivity(existing.id, { record_status: "active", updated_at: startedAt });
                 // Une activité fusionnée peut recevoir plusieurs provenances DANS le même lot :
                 // si un item ultérieur du même lot pointe vers cette même activité, il doit voir
@@ -222,7 +232,14 @@ async function persistSortirIngestionUnlocked({ sources, store, now = new Date()
                 // (provenances/externalIds persistées séparément, jamais via ces colonnes), donc
                 // leur péremption éventuelle ici est sans effet observable.
                 activityMap.set(existing.id, { ...existing, ...updated });
+                await store.insertCollectionItem({ source_run_id: sourceRun.id, provenance_id: provenance.id, activity_id: existing.id, validation_status: validation.status, diagnostics: { errors: validation.errors, warnings: validation.warnings, sourceIndex: index } });
+              } else {
+                // Cas ultra-fréquent : ni la provenance ni l'activité ne changent de contenu.
+                // Différé en lot — voir le flush après la boucle.
+                pendingProvenanceTouchIds.push(provenance.id);
+                pendingCollectionItems.push({ source_run_id: sourceRun.id, provenance_id: provenance.id, activity_id: existing.id, validation_status: validation.status, diagnostics: { errors: validation.errors, warnings: validation.warnings, sourceIndex: index } });
               }
+              continue;
             } else {
               const merged = mergeActivities(rowToActivity(existing), validation.activity).activity;
               await store.updateProvenance(provenance.id, { last_seen_at: startedAt, active: true, last_seen_run_id: sourceRun.id, payload_hash: hash, source_payload: metadata.sourcePayload });
@@ -271,6 +288,28 @@ async function persistSortirIngestionUnlocked({ sources, store, now = new Date()
           errors.push(`élément ${index}: ${errorText(error)}`); sourceStatus = "partial";
           if (unlinkedActivityId) { try { await store.updateActivity(unlinkedActivityId, { record_status: "stale", updated_at: startedAt }); } catch (_) {} }
           try { await store.insertCollectionItem({ source_run_id: sourceRun.id, validation_status: validationStatus || "INVALID", diagnostics: { sourceIndex: index, persistenceError: errorText(error) } }); } catch (_) {}
+        }
+      }
+
+      // Deux lots séquentiels, jamais une pseudo-transaction : chaque appel est un aller-retour
+      // HTTP indépendant. Ordre volontaire — la fraîcheur des provenances (lue par
+      // applyDisappearances) est priorisée avant l'historique (purement consultatif, jamais relu
+      // par la logique métier) : si un seul des deux doit échouer, mieux vaut un historique
+      // incomplet qu'une provenance activement vue mais jamais marquée comme telle.
+      if (pendingProvenanceTouchIds.length) {
+        try {
+          await store.touchProvenancesBatch(pendingProvenanceTouchIds, { last_seen_at: startedAt, active: true, last_seen_run_id: sourceRun.id });
+        } catch (error) {
+          sourceStatus = sourceStatus === "completed" ? "partial" : sourceStatus;
+          errors.push(`revue groupée des provenances inchangées: ${errorText(error)}`);
+        }
+      }
+      if (pendingCollectionItems.length) {
+        try {
+          await store.insertCollectionItemsBatch(pendingCollectionItems);
+        } catch (error) {
+          sourceStatus = sourceStatus === "completed" ? "partial" : sourceStatus;
+          errors.push(`historique groupé des occurrences inchangées: ${errorText(error)}`);
         }
       }
     }
@@ -348,11 +387,34 @@ function createSupabaseSortirStore(client) {
     updateActivity: (id, row) => one(client.from("sortir_activities").update(row).eq("id", id).select().single()),
     markActivityMerged: (id, canonicalId) => one(client.from("sortir_activities").update({ record_status: "merged", merged_into_id: canonicalId, updated_at: new Date().toISOString() }).eq("id", id).select().single()),
     async updateProvenance(id, row) { return one(client.from("sortir_provenances").update(row).eq("id", id).select().single()); },
+    // UPDATE groupé, pas un upsert : les mêmes valeurs (last_seen_at/active/last_seen_run_id)
+    // s'appliquent à toutes les lignes du chunk, et un UPDATE ne touche jamais les colonnes
+    // non listées (activity_id/source_id/source_record_id/source_occurrence_key/source_payload/
+    // payload_hash/original_event_url/first_seen_at restent intactes) — aucun risque
+    // d'écrasement, contrairement à un upsert multi-lignes qui aurait exigé de renvoyer
+    // l'intégralité de ces colonnes pour chaque ligne.
+    async touchProvenancesBatch(ids, touch) {
+      const unique = [...new Set(ids)];
+      if (!unique.length) return;
+      for (const chunk of chunkIds(unique, PRELOAD_CHUNK_SIZE)) {
+        const { error } = await client.from("sortir_provenances").update(touch).in("id", chunk);
+        if (error) throw new Error(error.message);
+      }
+    },
     async moveProvenances(fromId, toId) { const { error } = await client.from("sortir_provenances").update({ activity_id: toId }).eq("activity_id", fromId); if (error) throw new Error(error.message); },
     async moveExternalIds(fromId, toId) { const ids = await one(client.from("sortir_external_ids").select("source_id,system,value").eq("activity_id", fromId)); if (ids.length) { const { error } = await client.from("sortir_external_ids").upsert(ids.map((id) => ({ ...id, activity_id: toId })), { onConflict: "activity_id,source_id,system,value", ignoreDuplicates: true }); if (error) throw new Error(error.message); } const { error } = await client.from("sortir_external_ids").delete().eq("activity_id", fromId); if (error) throw new Error(error.message); },
     async createProvenanceIdempotent(row) { const { data, error } = await client.from("sortir_provenances").insert(row).select().single(); if (!error) return data; if (error.code !== "23505") throw new Error(error.message); const existing = await this.findProvenance(row.source_id, row.source_record_id, row.source_occurrence_key); if (!existing) throw new Error(error.message); return existing; },
     async upsertExternalIds(activityId, sourceId, ids) { if (!ids.length) return; const { error } = await client.from("sortir_external_ids").upsert(ids.map((id) => ({ activity_id: activityId, source_id: sourceId, system: id.system, value: id.value })), { onConflict: "activity_id,source_id,system,value", ignoreDuplicates: true }); if (error) throw new Error(error.message); },
     insertCollectionItem: (row) => one(client.from("sortir_collection_items").insert(row).select().single()),
+    // INSERT multi-lignes, chunké : lignes indépendantes, aucun résultat réutilisé ensuite
+    // (contrairement à insertCollectionItem seul, jamais appelé avec .single() ici).
+    async insertCollectionItemsBatch(rows) {
+      if (!rows.length) return;
+      for (const chunk of chunkIds(rows, PRELOAD_CHUNK_SIZE)) {
+        const { error } = await client.from("sortir_collection_items").insert(chunk);
+        if (error) throw new Error(error.message);
+      }
+    },
     async insertDedupDecision(row) { if (row.left_activity_id === row.right_activity_id) return null; const ordered = row.left_activity_id < row.right_activity_id ? row : { ...row, left_activity_id: row.right_activity_id, right_activity_id: row.left_activity_id }; const { data, error } = await client.from("sortir_dedup_decisions").insert(ordered).select().single(); if (!error) return data; if (error.code === "23505") return null; throw new Error(error.message); },
     async applyDisappearances({ sourceId, sourceRunId, cutoff }) {
       const stale = await one(client.from("sortir_provenances").update({ active: false }).eq("source_id", sourceId).eq("active", true).or(`last_seen_run_id.is.null,last_seen_run_id.neq.${sourceRunId}`).lt("last_seen_at", cutoff).select("activity_id"));
