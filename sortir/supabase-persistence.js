@@ -11,12 +11,26 @@ const DEFAULT_STALE_AFTER_MS = 7 * 24 * 60 * 60 * 1000;
 // démesurée si plusieurs milliers d'activités disparaissent dans un même run. La fréquence
 // réelle des disparitions ne justifie pas d'ajuster cette valeur avant mesure en conditions réelles.
 const DISAPPEARANCE_CHUNK_SIZE = 500;
+// Même borne et même justification que DISAPPEARANCE_CHUNK_SIZE (taille raisonnable pour un
+// .in(...) PostgREST), réutilisée pour le préchargement par lot des provenances/activités
+// connues d'une source : jamais plusieurs milliers de clés dans une seule URL.
+const PRELOAD_CHUNK_SIZE = 500;
 let ingestionQueue = Promise.resolve();
 
 function chunkIds(ids, size = DISAPPEARANCE_CHUNK_SIZE) {
   const chunks = [];
   for (let index = 0; index < ids.length; index += size) chunks.push(ids.slice(index, index + size));
   return chunks;
+}
+// Reflète exactement l'expression de l'index unique réel : UNIQUE (source_id,
+// COALESCE(source_record_id,''), source_occurrence_key). Une Map indexée par
+// source_occurrence_key seule confondrait deux provenances distinctes qui partageraient par
+// accident la même clé d'occurrence avec des source_record_id différents — jamais observé chez
+// les connecteurs réels (qui n'embarquent eux-mêmes jamais sourceOccurrenceKey, voir
+// sourceMetadata), mais la Map doit rester correcte même si un connecteur futur ou un test le
+// faisait.
+function provenanceMapKey(sourceRecordId, sourceOccurrenceKey) {
+  return `${sourceRecordId ?? ""}\u0000${sourceOccurrenceKey}`;
 }
 
 function stableJson(value) {
@@ -136,6 +150,29 @@ async function persistSortirIngestionUnlocked({ sources, store, now = new Date()
     if (descriptor.error) { sourceStatus = "failed"; errors.push(errorText(descriptor.error)); }
     else if (!Array.isArray(descriptor.results)) { sourceStatus = "failed"; errors.push("Résultats source absents ou invalides."); }
     else {
+      // Préchargement par lot des LECTURES seules (findProvenance/getActivity), avant la boucle
+      // qui écrit : un aller-retour "en trop" ici (validation déjà pure/sans effet de bord,
+      // refaite ensuite dans la boucle principale) coûte zéro Supabase, et garde la boucle
+      // principale strictement identique à son comportement actuel pour tout le reste
+      // (listCandidateActivities/MATCH/REVIEW/DISTINCT/création : non touchés à cette étape).
+      const preloadOccurrenceKeys = new Set();
+      for (const connectorResult of descriptor.results) {
+        try {
+          const wrapped = connectorResult && typeof connectorResult === "object" && ("activity" in connectorResult || "error" in connectorResult);
+          if (wrapped && connectorResult.error) continue;
+          const activityInput = wrapped ? connectorResult.activity : connectorResult;
+          const validation = validateNormalizedActivity(activityInput);
+          if (validation.status === "INVALID") continue;
+          const item = { ...(wrapped ? connectorResult : {}), activity: validation.activity };
+          preloadOccurrenceKeys.add(sourceMetadata(item, source).sourceOccurrenceKey);
+        } catch (_) { /* erreur de préparation : re-détectée et comptabilisée dans la boucle principale */ }
+      }
+      const preloadedProvenances = await store.findProvenancesBatch(source.id, [...preloadOccurrenceKeys]);
+      const provenanceMap = new Map(preloadedProvenances.map((row) => [provenanceMapKey(row.source_record_id, row.source_occurrence_key), row]));
+      const preloadActivityIds = [...new Set(preloadedProvenances.map((row) => row.activity_id))];
+      const preloadedActivities = await store.getActivitiesBatch(preloadActivityIds);
+      const activityMap = new Map(preloadedActivities.map((row) => [row.id, row]));
+
       for (let index = 0; index < (Array.isArray(descriptor.results) ? descriptor.results : []).length; index += 1) {
         const connectorResult = descriptor.results[index];
         counts.collected += 1; totals.collected += 1;
@@ -155,13 +192,17 @@ async function persistSortirIngestionUnlocked({ sources, store, now = new Date()
           const item = { ...(wrapped ? connectorResult : {}), activity: validation.activity };
           const metadata = sourceMetadata(item, source);
           const hash = payloadHash(metadata.canonicalActivityPayload);
-          let provenance = await store.findProvenance(source.id, metadata.sourceRecordId, metadata.sourceOccurrenceKey);
+          // Lecture préchargée (Map), jamais un appel individuel : voir le préchargement en
+          // tête de boucle. provenance.activity_id est garanti présent dans activityMap, puisque
+          // preloadActivityIds est construit à partir exactement des mêmes provenances.
+          let provenance = provenanceMap.get(provenanceMapKey(metadata.sourceRecordId, metadata.sourceOccurrenceKey)) || null;
           let activityId;
           if (provenance) {
-            const existing = await store.getActivity(provenance.activity_id);
-            // existing.record_status n'est pas disponible sur la ligne provenance seule :
-            // getActivity() reste indispensable, même sur le chemin rapide, pour distinguer
-            // une activité stale (à réactiver) d'une activité déjà active/review (rien à faire).
+            const existing = activityMap.get(provenance.activity_id);
+            if (!existing) throw new Error("Activité préchargée introuvable (incohérence interne du préchargement par lot).");
+            // existing.record_status n'est pas disponible sur la ligne provenance seule : savoir
+            // si l'activité est stale (à réactiver) exige de lire l'activité — via la Map
+            // préchargée, jamais via un nouvel appel individuel.
             if (provenance.payload_hash === hash) {
               // Fast-path : le hash canonique confirme qu'aucune donnée métier de CETTE source
               // n'a changé depuis la dernière observation. mergeActivities()/upsertExternalIds()
@@ -172,13 +213,22 @@ async function persistSortirIngestionUnlocked({ sources, store, now = new Date()
               // pour ce seul changement de statut : record_status/updated_at suffisent.
               await store.updateProvenance(provenance.id, { last_seen_at: startedAt, active: true, last_seen_run_id: sourceRun.id });
               if (existing.record_status === "stale") {
-                await store.updateActivity(existing.id, { record_status: "active", updated_at: startedAt });
+                const updated = await store.updateActivity(existing.id, { record_status: "active", updated_at: startedAt });
+                // Une activité fusionnée peut recevoir plusieurs provenances DANS le même lot :
+                // si un item ultérieur du même lot pointe vers cette même activité, il doit voir
+                // ce nouvel état (record_status), pas la photo prise au début du run. Les clés
+                // provenances/external_ids de la photo restent volontairement inchangées : ni
+                // activityToRow() ni upsertExternalIds() ne les lisent jamais sur CE chemin
+                // (provenances/externalIds persistées séparément, jamais via ces colonnes), donc
+                // leur péremption éventuelle ici est sans effet observable.
+                activityMap.set(existing.id, { ...existing, ...updated });
               }
             } else {
               const merged = mergeActivities(rowToActivity(existing), validation.activity).activity;
               await store.updateProvenance(provenance.id, { last_seen_at: startedAt, active: true, last_seen_run_id: sourceRun.id, payload_hash: hash, source_payload: metadata.sourcePayload });
               await store.upsertExternalIds(existing.id, source.id, validation.activity.externalIds);
-              await store.updateActivity(existing.id, activityToRow(merged, existing.record_status === "stale" ? "active" : existing.record_status));
+              const updated = await store.updateActivity(existing.id, activityToRow(merged, existing.record_status === "stale" ? "active" : existing.record_status));
+              activityMap.set(existing.id, { ...existing, ...updated });
             }
             activityId = existing.id;
           } else {
@@ -274,7 +324,25 @@ function createSupabaseSortirStore(client) {
     createSourceRun: (row) => one(client.from("sortir_source_runs").insert(row).select().single()),
     updateSourceRun: (id, row) => one(client.from("sortir_source_runs").update(row).eq("id", id).select().single()),
     async findProvenance(sourceId, recordId, occurrenceKey) { let q = client.from("sortir_provenances").select("*").eq("source_id", sourceId).eq("source_occurrence_key", occurrenceKey); q = recordId == null ? q.is("source_record_id", null) : q.eq("source_record_id", recordId); const { data, error } = await q.maybeSingle(); if (error) throw new Error(error.message); return data; },
+    // Lecture groupée, par chunks bornés : le filtre PostgREST ne porte que sur
+    // source_occurrence_key (plus large que la contrainte réelle, qui inclut aussi
+    // source_record_id) — l'appelant doit donc toujours affiner avec provenanceMapKey() sur le
+    // résultat, jamais se fier à occurrence_key seule pour retrouver LA bonne ligne.
+    async findProvenancesBatch(sourceId, occurrenceKeys) {
+      const keys = [...new Set(occurrenceKeys)];
+      if (!keys.length) return [];
+      const rows = [];
+      for (const chunk of chunkIds(keys, PRELOAD_CHUNK_SIZE)) rows.push(...await one(client.from("sortir_provenances").select("*").eq("source_id", sourceId).in("source_occurrence_key", chunk)));
+      return rows;
+    },
     async getActivity(id) { return one(client.from("sortir_activities").select("*, provenances:sortir_provenances(*, source:sortir_sources(key,connector_type,base_url)), external_ids:sortir_external_ids(*)").eq("id", id).single()); },
+    async getActivitiesBatch(ids) {
+      const unique = [...new Set(ids)];
+      if (!unique.length) return [];
+      const rows = [];
+      for (const chunk of chunkIds(unique, PRELOAD_CHUNK_SIZE)) rows.push(...await one(client.from("sortir_activities").select("*, provenances:sortir_provenances(*, source:sortir_sources(key,connector_type,base_url)), external_ids:sortir_external_ids(*)").in("id", chunk)));
+      return rows;
+    },
     async listCandidateActivities(activity) { const start = new Date(Date.parse(activity.startsAt) - 12 * 60 * 60 * 1000).toISOString(); const end = new Date(Date.parse(activity.startsAt) + 12 * 60 * 60 * 1000).toISOString(); return one(client.from("sortir_activities").select("*, provenances:sortir_provenances(*, source:sortir_sources(key,connector_type,base_url)), external_ids:sortir_external_ids(*)").in("record_status", ["active", "review"]).gte("starts_at", start).lte("starts_at", end).limit(500)); },
     createActivity: (row) => one(client.from("sortir_activities").insert(row).select().single()),
     updateActivity: (id, row) => one(client.from("sortir_activities").update(row).eq("id", id).select().single()),
@@ -316,4 +384,4 @@ function createDefaultSupabaseStore() {
   return createSupabaseSortirStore(createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false } }));
 }
 
-module.exports = { DEFAULT_STALE_AFTER_MS, DISAPPEARANCE_CHUNK_SIZE, chunkIds, stableJson, payloadHash, sanitizeSourcePayload, canonicalActivityPayload, activityToRow, rowToActivity, persistSortirIngestion, mergeStoredActivities, createSupabaseSortirStore, createDefaultSupabaseStore };
+module.exports = { DEFAULT_STALE_AFTER_MS, DISAPPEARANCE_CHUNK_SIZE, PRELOAD_CHUNK_SIZE, chunkIds, provenanceMapKey, stableJson, payloadHash, sanitizeSourcePayload, canonicalActivityPayload, activityToRow, rowToActivity, persistSortirIngestion, mergeStoredActivities, createSupabaseSortirStore, createDefaultSupabaseStore };

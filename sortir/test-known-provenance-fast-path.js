@@ -31,7 +31,7 @@ const day = (n) => new Date(`2026-11-${String(n).padStart(2, "0")}T12:00:00Z`);
 class MemoryStore {
   constructor() {
     this.seq = 0; this.sources = []; this.ingestions = []; this.sourceRuns = []; this.activities = []; this.provenances = []; this.externalIds = []; this.items = []; this.decisions = [];
-    this.calls = { findProvenance: 0, getActivity: 0, updateProvenance: 0, upsertExternalIds: 0, updateActivity: 0, insertCollectionItem: 0, listCandidateActivities: 0, createActivity: 0, createProvenanceIdempotent: 0 };
+    this.calls = { findProvenance: 0, findProvenancesBatch: 0, getActivity: 0, getActivitiesBatch: 0, updateProvenance: 0, upsertExternalIds: 0, updateActivity: 0, insertCollectionItem: 0, listCandidateActivities: 0, createActivity: 0, createProvenanceIdempotent: 0 };
   }
   resetCalls() { for (const key of Object.keys(this.calls)) this.calls[key] = 0; }
   totalCalls() { return Object.values(this.calls).reduce((a, b) => a + b, 0); }
@@ -42,8 +42,10 @@ class MemoryStore {
   async createSourceRun(row) { const value = { id: this.id("run"), ...row }; this.sourceRuns.push(value); return value; }
   async updateSourceRun(id, row) { Object.assign(this.sourceRuns.find((x) => x.id === id), row); }
   async findProvenance(sourceId, recordId, occurrenceKey) { this.calls.findProvenance += 1; return this.provenances.find((x) => x.source_id === sourceId && (x.source_record_id || "") === (recordId || "") && x.source_occurrence_key === occurrenceKey) || null; }
+  async findProvenancesBatch(sourceId, occurrenceKeys) { this.calls.findProvenancesBatch += 1; const keys = new Set(occurrenceKeys); return this.provenances.filter((x) => x.source_id === sourceId && keys.has(x.source_occurrence_key)); }
   hydrate(row) { return { ...row, provenances: this.provenances.filter((p) => p.activity_id === row.id).map((p) => ({ ...p, source: this.sources.find((s) => s.id === p.source_id) })), external_ids: this.externalIds.filter((id) => id.activity_id === row.id) }; }
   async getActivity(id) { this.calls.getActivity += 1; const row = this.activities.find((x) => x.id === id); if (!row) throw new Error("activité absente"); return this.hydrate(row); }
+  async getActivitiesBatch(ids) { this.calls.getActivitiesBatch += 1; const set = new Set(ids); return this.activities.filter((x) => set.has(x.id)).map((x) => this.hydrate(x)); }
   async listCandidateActivities(activity) { this.calls.listCandidateActivities += 1; const time = Date.parse(activity.startsAt); return this.activities.filter((x) => ["active", "review"].includes(x.record_status) && Math.abs(Date.parse(x.starts_at) - time) <= 12 * 3600000).map((x) => this.hydrate(x)); }
   async createActivity(row) { this.calls.createActivity += 1; const value = { id: this.id("act"), merged_into_id: null, ...row }; this.activities.push(value); return value; }
   async updateActivity(id, row) { this.calls.updateActivity += 1; const value = this.activities.find((x) => x.id === id); Object.assign(value, row); return value; }
@@ -69,7 +71,7 @@ async function ingest(store, sources, date = day(1)) { return persistSortirInges
     const itemsBefore = db.items.length;
     const result = await ingest(db, [sourceDescriptor("oa", [item("oa")])], day(2));
     assert.strictEqual(result.status, "completed");
-    assert.deepStrictEqual(db.calls, { findProvenance: 1, getActivity: 1, updateProvenance: 1, upsertExternalIds: 0, updateActivity: 0, insertCollectionItem: 1, listCandidateActivities: 0, createActivity: 0, createProvenanceIdempotent: 0 });
+    assert.deepStrictEqual(db.calls, { findProvenance: 0, findProvenancesBatch: 1, getActivity: 0, getActivitiesBatch: 1, updateProvenance: 1, upsertExternalIds: 0, updateActivity: 0, insertCollectionItem: 1, listCandidateActivities: 0, createActivity: 0, createProvenanceIdempotent: 0 });
     assert.strictEqual(db.totalCalls(), 4);
     assert.strictEqual(db.activities.length, 1);
     assert.strictEqual(db.activities[0].id, activityId);
@@ -84,7 +86,8 @@ async function ingest(store, sources, date = day(1)) { return persistSortirInges
     await ingest(db, [sourceDescriptor("oa", [item("oa")])]);
     db.resetCalls();
     await ingest(db, [sourceDescriptor("oa", [item("oa", { description: "Nouvelle description" })])], day(2));
-    assert.strictEqual(db.calls.getActivity, 1);
+    assert.strictEqual(db.calls.getActivity, 0, "getActivity individuel ne doit plus être appelé, même sur le chemin complet");
+    assert.strictEqual(db.calls.getActivitiesBatch, 1);
     assert.strictEqual(db.calls.updateProvenance, 1);
     assert.strictEqual(db.calls.upsertExternalIds, 1);
     assert.strictEqual(db.calls.updateActivity, 1);
@@ -114,7 +117,7 @@ async function ingest(store, sources, date = day(1)) { return persistSortirInges
     await ingest(db, [sourceDescriptor("oa", [item("oa")])], day(2));
     assert.strictEqual(db.activities[0].record_status, "active", "une activité stale doit redevenir active au retour de son occurrence");
     assert.strictEqual(db.provenances[0].active, true);
-    assert.deepStrictEqual({ getActivity: db.calls.getActivity, updateProvenance: db.calls.updateProvenance, updateActivity: db.calls.updateActivity, upsertExternalIds: db.calls.upsertExternalIds, insertCollectionItem: db.calls.insertCollectionItem }, { getActivity: 1, updateProvenance: 1, updateActivity: 1, upsertExternalIds: 0, insertCollectionItem: 1 });
+    assert.deepStrictEqual({ getActivity: db.calls.getActivity, getActivitiesBatch: db.calls.getActivitiesBatch, updateProvenance: db.calls.updateProvenance, updateActivity: db.calls.updateActivity, upsertExternalIds: db.calls.upsertExternalIds, insertCollectionItem: db.calls.insertCollectionItem }, { getActivity: 0, getActivitiesBatch: 1, updateProvenance: 1, updateActivity: 1, upsertExternalIds: 0, insertCollectionItem: 1 });
     assert.strictEqual(db.totalCalls(), 5);
   });
 

@@ -86,8 +86,10 @@ function baseActivity(overrides = {}) {
     async createSourceRun(row) { const value = { id: this.id("run"), ...row }; this.sourceRuns.push(value); return value; }
     async updateSourceRun(id, row) { Object.assign(this.sourceRuns.find((x) => x.id === id), row); }
     async findProvenance(sourceId, recordId, occurrenceKey) { return this.provenances.find((x) => x.source_id === sourceId && (x.source_record_id || "") === (recordId || "") && x.source_occurrence_key === occurrenceKey) || null; }
+    async findProvenancesBatch(sourceId, occurrenceKeys) { const keys = new Set(occurrenceKeys); return this.provenances.filter((x) => x.source_id === sourceId && keys.has(x.source_occurrence_key)); }
     hydrate(row) { return { ...row, provenances: this.provenances.filter((p) => p.activity_id === row.id).map((p) => ({ ...p, source: this.sources.find((s) => s.id === p.source_id) })), external_ids: this.externalIds.filter((id) => id.activity_id === row.id) }; }
     async getActivity(id) { const row = this.activities.find((x) => x.id === id); if (!row) throw new Error("activité absente"); return this.hydrate(row); }
+    async getActivitiesBatch(ids) { const set = new Set(ids); return this.activities.filter((x) => set.has(x.id)).map((x) => this.hydrate(x)); }
     async listCandidateActivities() { return []; }
     async createActivity(row) { const value = { id: this.id("act"), merged_into_id: null, ...row }; this.activities.push(value); return value; }
     async updateActivity(id, row) { const value = this.activities.find((x) => x.id === id); Object.assign(value, row); return value; }
