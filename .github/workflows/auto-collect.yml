@@ -30,3 +30,21 @@ jobs:
           if [ "$HTTP_STATUS" != "200" ]; then
             echo "Erreur (HTTP $HTTP_STATUS)" && exit 1
           fi
+
+      # Même tick externe, même serveur, mais endpoint/pipeline indépendant (sortir-auto-ingest.js) :
+      # if: always() pour qu'un échec de la collecte presse ci-dessus n'empêche jamais ce tick d'être
+      # tenté — ce sont deux pipelines indépendants, aucune raison que l'un bloque l'autre.
+      - name: Vérifier/déclencher l'ingestion Sortir (OpenAgenda)
+        if: always()
+        run: |
+          HTTP_STATUS=$(curl -s -o /tmp/response-sortir.txt -w "%{http_code}" \
+            -X POST \
+            "${{ secrets.BOT_VEILLE_URL }}/api/sortir-ingest-tick?token=${{ secrets.BOT_VEILLE_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            --max-time 60 \
+            --retry 3 \
+            --retry-delay 10)
+          echo "HTTP $HTTP_STATUS — $(cat /tmp/response-sortir.txt)"
+          if [ "$HTTP_STATUS" != "200" ]; then
+            echo "Erreur (HTTP $HTTP_STATUS)" && exit 1
+          fi

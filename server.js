@@ -14,6 +14,7 @@ const { renderCertamenPublishWidgetHtml } = require("./certamen-publish-widget")
 const { enqueueIdeaJob } = require("./idea-post-queue");
 const { isRoundupTitle } = require("./recap-filter");
 const { enforceTitleLimit } = require("./title-limit");
+const { runSortirIngestTickIfDue } = require("./sortir-auto-ingest");
 
 const express = require("express");
 const compression = require("compression");
@@ -5633,6 +5634,24 @@ app.post("/api/auto-collect-tick", requireMixteAuth, async (req, res) => {
     }).catch((err) => console.error("[auto-collect-tick] Erreur auto-publish :", err.message));
   } catch (err) {
     res.status(500).json({ triggered: false, error: err.message });
+  }
+});
+
+// Même patron que /api/auto-collect-tick ci-dessus, pour l'ingestion quotidienne Sortir/
+// OpenAgenda (sortir-auto-ingest.js) : un tick HTTP externe fréquent (GitHub Actions), le
+// serveur décide lui-même si l'heure configurée (Réunion) est atteinte et si ce n'est pas déjà
+// fait. AUTO_PIPELINES_ENABLED réserve l'exécution à l'instance Render, comme pour la veille
+// presse — sans ça, une instance locale lancée en parallèle dupliquerait l'ingestion.
+app.post("/api/sortir-ingest-tick", requireMixteAuth, async (req, res) => {
+  if (!AUTO_PIPELINES_ENABLED) {
+    return res.json({ triggered: false, reason: "auto pipelines disabled on this instance" });
+  }
+  try {
+    const { workPromise, ...result } = await runSortirIngestTickIfDue({ timeToMinutes, getReunionTimeHHMM });
+    res.json(result); // workPromise jamais attendu ni sérialisé : le pipeline continue en tâche de fond.
+  } catch (error) {
+    console.error("[sortir-ingest-tick] Erreur inattendue :", error.message);
+    res.status(500).json({ triggered: false, error: error.message });
   }
 });
 
