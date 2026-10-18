@@ -1,0 +1,3 @@
+"use strict";
+const { fetchParisEvents } = require("./connectors/paris-events");
+(async()=>{const {total,results}=await fetchParisEvents({limit:5});const counts={VALID:0,NEEDS_REVIEW:0,INVALID:0,ERROR:0};for(const r of results){if(r.error||!r.validation){counts.ERROR++;continue}counts[r.validation.status]++;const a=r.validation.activity;console.log({title:a.title,startsAt:a.startsAt,place:a.venueName||a.city,validation:r.validation.status,issues:[...r.validation.errors,...r.validation.warnings].map(x=>x.code),url:a.provenances[0].originalEventUrl});}console.log({available:total,fetched:results.length,...counts});})().catch(e=>{console.error(e.message);process.exitCode=1});

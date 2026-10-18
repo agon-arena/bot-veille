@@ -1,0 +1,23 @@
+"use strict";
+const assert = require("assert");
+const fs = require("fs");
+const path = require("path");
+const { VALIDATION_STATUSES } = require("./activity-schema");
+const { mapAdmissionType, mapParisEvent, convertParisEvents } = require("./connectors/paris-events");
+const fixture = JSON.parse(fs.readFileSync(path.join(__dirname, "fixtures", "paris-events.json"), "utf8"));
+const options = { endpoint: "https://opendata.paris.fr/api/explore/v2.1/catalog/datasets/que-faire-a-paris-/records", fetchedAt: "2026-10-16T16:00:00Z" };
+const results = convertParisEvents(fixture.results, options);
+let passed=0, failed=0;
+function test(name,fn){try{fn();passed++;console.log(`✓ ${name}`)}catch(e){failed++;console.error(`✗ ${name}: ${e.message}`)}}
+test("événement municipal structuré",()=>{const a=results[0].activity;assert.strictEqual(a.venueName,"Atelier 11");assert.strictEqual(a.city,"Paris");assert.strictEqual(a.latitude,48.840668);assert.strictEqual(a.organizers[0].name,"L'AiR ARTS");assert.deepStrictEqual(a.tags,["Art contemporain","Atelier","Expo"]);});
+test("provenance et deux identifiants",()=>{const a=results[0].activity;assert.strictEqual(a.provenances[0].externalId,"125771");assert.deepStrictEqual(a.externalIds,[{system:"paris-que-faire",value:"125771"},{system:"paris-que-faire-event",value:"93477"}]);});
+test("HTML nettoyé",()=>assert.strictEqual(results[0].activity.description,"Une visite architecturale."));
+test("réservation et gratuité Paris Data mappées",()=>{const a=results[0].activity;assert.strictEqual(a.bookingUrl,"https://www.helloasso.com/reservation");assert.strictEqual(a.admissionType,"free");assert(a.evidence.some(e=>e.field==="bookingUrl"));assert(a.evidence.some(e=>e.field==="admissionType"));});
+test("types tarifaires Paris Data strictement mappés",()=>{assert.strictEqual(mapAdmissionType("gratuit"),"free");assert.strictEqual(mapAdmissionType("payant"),"paid");assert.strictEqual(mapAdmissionType("gratuit sous condition"),"mixed");assert.strictEqual(mapAdmissionType("participation libre"),"unknown");});
+test("occurrences multiples imposent NEEDS_REVIEW",()=>{assert.strictEqual(results[0].validation.status,VALIDATION_STATUSES.NEEDS_REVIEW);assert(results[0].activity.evidence.some(e=>e.field==="startsAt"));});
+test("occurrence unique reste VALID",()=>assert.strictEqual(results[1].validation.status,VALIDATION_STATUSES.VALID));
+test("plusieurs lieux imposent NEEDS_REVIEW",()=>assert.strictEqual(results[2].validation.status,VALIDATION_STATUSES.NEEDS_REVIEW));
+test("date absente et URL dangereuse donnent INVALID",()=>assert.strictEqual(results[3].validation.status,VALIDATION_STATUSES.INVALID));
+test("entrée malformée isolée",()=>{assert.strictEqual(results[4].validation.status,VALIDATION_STATUSES.INVALID);assert.strictEqual(results[1].validation.status,VALIDATION_STATUSES.VALID);});
+test("événement passé accepté",()=>{const a=mapParisEvent({...fixture.results[1],date_start:"2020-01-01T10:00:00Z",date_end:"2020-01-01T11:00:00Z"},options);const {validateNormalizedActivity}=require("./activity-validation");assert.strictEqual(validateNormalizedActivity(a).status,VALIDATION_STATUSES.VALID);});
+console.log(`\n${passed} test(s) réussi(s), ${failed} échec(s).`);if(failed)process.exitCode=1;

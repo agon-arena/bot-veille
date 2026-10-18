@@ -1,0 +1,101 @@
+{
+  "data": {
+    "searchEvents": {
+      "total": 6,
+      "elements": [
+        {
+          "id": "212744",
+          "uuid": "1da5fb64-79e7-4ae0-993f-7909b8eff9bf",
+          "url": "https://mobilizon.fr/events/1da5fb64-79e7-4ae0-993f-7909b8eff9bf",
+          "title": "🎲Jeux de société",
+          "description": "<p>Je vous propose un peu de détente en jouant !</p>",
+          "beginsOn": "2027-10-13T12:30:00Z",
+          "endsOn": "2027-10-13T16:00:00Z",
+          "status": "CONFIRMED",
+          "category": "MEETING",
+          "onlineAddress": null,
+          "options": { "isOnline": false, "timezone": "Europe/Paris" },
+          "physicalAddress": { "description": "Le P’tit Sas, 9 Quai Casimir Delavigne, 76600 Le Havre, France", "street": null, "locality": null, "postalCode": null, "country": null, "geom": "2.49000;49.49000", "timezone": null },
+          "organizerActor": null,
+          "attributedTo": { "name": "Agend'Havre", "preferredUsername": "agendhavre", "url": "https://mobilizon.fr/@agendhavre" },
+          "tags": [{ "slug": "jeux", "title": "Jeux" }],
+          "picture": null
+        },
+        {
+          "id": "online-1",
+          "uuid": "aaaaaaaa-1111-2222-3333-bbbbbbbbbbbb",
+          "url": "https://mobilizon.fr/events/aaaaaaaa-1111-2222-3333-bbbbbbbbbbbb",
+          "title": "Conférence en ligne",
+          "description": "<p>Une conférence <strong>publique</strong>.</p>",
+          "beginsOn": "2026-11-01T09:00:00+01:00",
+          "endsOn": null,
+          "status": "CONFIRMED",
+          "category": "CONFERENCE",
+          "onlineAddress": "https://video.example.org/room",
+          "options": { "isOnline": true, "timezone": "Europe/Paris" },
+          "physicalAddress": null,
+          "organizerActor": { "name": "Collectif numérique", "preferredUsername": "collectif", "url": "https://mobilizon.fr/@collectif" },
+          "attributedTo": null,
+          "tags": [],
+          "picture": { "url": "https://mobilizon.fr/media/conference.jpg" }
+        },
+        {
+          "id": "hybrid-1",
+          "uuid": "cccccccc-1111-2222-3333-dddddddddddd",
+          "url": "https://mobilizon.fr/events/cccccccc-1111-2222-3333-dddddddddddd",
+          "title": "Débat hybride",
+          "description": null,
+          "beginsOn": "2026-11-02T18:00:00Z",
+          "endsOn": "2026-11-02T20:00:00Z",
+          "status": "TENTATIVE",
+          "category": "MEETING",
+          "onlineAddress": "https://video.example.org/debat",
+          "options": { "isOnline": true, "timezone": "Europe/Paris" },
+          "physicalAddress": { "description": "Maison des associations", "street": "10 rue Victor Hugo", "locality": "Lyon", "postalCode": "69002", "country": "France", "geom": null, "timezone": "Europe/Paris" },
+          "organizerActor": null,
+          "attributedTo": { "name": "Groupe citoyen", "url": "https://mobilizon.fr/@groupe-citoyen" },
+          "tags": [],
+          "picture": null
+        },
+        {
+          "id": "invalid-1",
+          "uuid": "eeeeeeee-1111-2222-3333-ffffffffffff",
+          "url": "https://mobilizon.fr/events/eeeeeeee-1111-2222-3333-ffffffffffff",
+          "title": "Événement sans date",
+          "description": null,
+          "beginsOn": null,
+          "endsOn": null,
+          "status": "CANCELLED",
+          "category": null,
+          "onlineAddress": null,
+          "options": { "isOnline": false, "timezone": null },
+          "physicalAddress": { "description": "Nantes", "locality": "Nantes" },
+          "organizerActor": null,
+          "attributedTo": null,
+          "tags": [],
+          "picture": null
+        },
+        {
+          "id": "review-1",
+          "uuid": "99999999-1111-2222-3333-888888888888",
+          "url": "https://mobilizon.fr/events/99999999-1111-2222-3333-888888888888",
+          "title": "Événement à vérifier",
+          "description": null,
+          "beginsOn": "2026-11-03T12:00:00Z",
+          "endsOn": null,
+          "status": "POSTPONED",
+          "category": null,
+          "onlineAddress": null,
+          "options": { "isOnline": false, "timezone": null },
+          "physicalAddress": { "description": "Lille", "locality": "Lille" },
+          "organizerActor": null,
+          "attributedTo": null,
+          "tags": [],
+          "picture": null,
+          "_testConfidence": 0.4
+        },
+        null
+      ]
+    }
+  }
+}
