@@ -56,9 +56,9 @@ async function main() {
 
   const before = await tableCounts(client);
   const { data: beforeActivities } = await execute(client.from("sortir_activities").select("id,title,record_status").in("id", activityIds));
-  const { data: beforeProvenances } = await execute(client.from("sortir_provenances").select("id,activity_id,source_id").in("activity_id", activityIds));
+  const { data: beforeIcsProvenances } = await execute(client.from("sortir_provenances").select("id,activity_id,source_id,sortir_sources!inner(connector_type)").in("activity_id", activityIds).eq("sortir_sources.connector_type", "openagenda_ical"));
   const beforeStatusById = Object.fromEntries(beforeActivities.map((a) => [a.id, a.record_status]));
-  const beforeIcsProvenanceCount = beforeProvenances.length;
+  const beforeIcsProvenanceCount = beforeIcsProvenances.length;
 
   // Reconstruit, pour chaque activité existante, l'occurrence JSON correspondante via son uid
   // OpenAgenda extrait de la provenance ICS — lot strictement borné aux activités déjà connues.
@@ -114,6 +114,27 @@ async function main() {
   const newJsonProvenances = afterAllProvenances.filter((p) => p.sortir_sources.key.endsWith("-json"));
   console.log(`Nouvelles provenances JSON créées : ${newJsonProvenances.length}`);
 
+  const firstSourceErrors = (first.sources || []).filter((s) => s.status !== "completed" || (s.errors && s.errors.length));
+  console.log("Erreurs par source (1ère passe, doit être vide) :", JSON.stringify(firstSourceErrors, null, 2));
+
+  const { data: sourcesRows } = await execute(client.from("sortir_sources").select("id,key,connector_type").in("key", JSON_SOURCES.map((s) => s.key)));
+  console.log("Sources openagenda_json réellement créées/résolues :", JSON.stringify(sourcesRows, null, 2));
+  // Les deux sources sont créées par ensureSource() pour chaque descripteur du lot, même
+  // celles sans occurrence dans ce run précis (ex. musees-json si tout a été résolu via
+  // l'agenda Senlis) — ce n'est pas une anomalie, seul le connector_type correct compte ici.
+  const sourcesResolved = sourcesRows.length === JSON_SOURCES.length && sourcesRows.every((r) => r.connector_type === "openagenda_json");
+
+  const { data: afterExternalIds } = await execute(client.from("sortir_external_ids").select("activity_id,source_id,system,value,sortir_sources!inner(key)").in("activity_id", activityIds));
+  const newJsonExternalIds = afterExternalIds.filter((e) => e.sortir_sources.key.endsWith("-json"));
+  console.log(`External IDs JSON créés : ${newJsonExternalIds.length} (minimum attendu: ${totalOccurrences * 2} — openagenda-event + openagenda-occurrence par occurrence ; plus si timing.id présent sur certaines occurrences)`);
+  const externalIdsPresent = newJsonExternalIds.length >= totalOccurrences * 2;
+
+  const { data: orphanCheck } = await execute(client.from("sortir_provenances").select("id,activity_id").in("activity_id", activityIds).is("activity_id", null));
+  console.log("Provenances orphelines (activity_id null) :", orphanCheck.length);
+
+  const provenancesPresent = newJsonProvenances.length === totalOccurrences;
+  console.log("Provenances JSON = occurrences attendues :", provenancesPresent, `(${newJsonProvenances.length} / ${totalOccurrences})`);
+
   console.log("\n=== REJEU (idempotence) ===");
   const second = await persistSortirIngestion({ sources: lots, store });
   const afterSecond = await tableCounts(client);
@@ -122,10 +143,19 @@ async function main() {
   console.log("delta rejeu (doit être 0 sur les tables métier):", JSON.stringify(replayDelta, null, 2));
   const idempotent = businessTables.every((t) => replayDelta[t] === 0);
   console.log(idempotent ? "✓ Idempotence confirmée." : "✗ ANOMALIE: le rejeu a modifié des tables métier.");
+  const secondSourceErrors = (second.sources || []).filter((s) => s.status !== "completed" || (s.errors && s.errors.length));
+  console.log("Erreurs par source (rejeu, doit être vide) :", JSON.stringify(secondSourceErrors, null, 2));
 
-  const sane = noNewActivityRows && statusUnchanged && afterIcsProvenances.length === beforeIcsProvenanceCount && idempotent;
+  const sane = noNewActivityRows && statusUnchanged && afterIcsProvenances.length === beforeIcsProvenanceCount
+    && idempotent && firstSourceErrors.length === 0 && secondSourceErrors.length === 0
+    && sourcesResolved && provenancesPresent && orphanCheck.length === 0 && newJsonProvenances.length > 0 && externalIdsPresent;
   console.log(sane ? "\n✓✓✓ SMOKE TEST SAIN" : "\n✗✗✗ SMOKE TEST EN ANOMALIE — NE PAS RETIRER ICS");
   if (!sane) process.exitCode = 1;
+
+  console.log("\n=== Identifiants pour vérification manuelle de l'idempotence ===");
+  console.log("ingestionRunId 1ère passe:", first.ingestionRunId);
+  console.log("ingestionRunId rejeu:", second.ingestionRunId);
+  console.log("activityIds concernées:", activityIds);
 }
 
 main().catch((error) => { console.error("ERREUR:", error.message, error.stack); process.exitCode = 1; });
