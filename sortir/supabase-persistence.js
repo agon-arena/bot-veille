@@ -11,10 +11,20 @@ const DEFAULT_STALE_AFTER_MS = 7 * 24 * 60 * 60 * 1000;
 // démesurée si plusieurs milliers d'activités disparaissent dans un même run. La fréquence
 // réelle des disparitions ne justifie pas d'ajuster cette valeur avant mesure en conditions réelles.
 const DISAPPEARANCE_CHUNK_SIZE = 500;
-// Même borne et même justification que DISAPPEARANCE_CHUNK_SIZE (taille raisonnable pour un
-// .in(...) PostgREST), réutilisée pour le préchargement par lot des provenances/activités
-// connues d'une source : jamais plusieurs milliers de clés dans une seule URL.
+// Même borne et même justification que DISAPPEARANCE_CHUNK_SIZE : .in("id", chunk) sur des
+// UUID courts (~36 caractères) — getActivitiesBatch, touchProvenancesBatch, et la taille des
+// lots pour insertCollectionItemsBatch (un INSERT, pas un .in(), donc la longueur d'URL n'y
+// joue aucun rôle). Jamais utilisée pour un .in() sur source_occurrence_key, voir
+// OCCURRENCE_KEY_CHUNK_SIZE ci-dessous.
 const PRELOAD_CHUNK_SIZE = 500;
+// source_occurrence_key n'est PAS un UUID court : les clés réelles OpenAgenda
+// ("openagenda:<uid>:<date ISO complète>") font ~70-85 caractères. Mesuré en conditions
+// réelles le 18/10/2026 sur le lot Senlis (206 occurrences) : 170 clés (~14 262 octets d'URL)
+// passent, 190 clés (~15 941 octets) échouent (`fetch failed`, probablement une limite
+// d'en-tête/URL HTTP autour de 16 Ko). 100 laisse une marge large sans chercher à calculer la
+// longueur exacte de l'URL — le coût de quelques SELECT supplémentaires est négligeable face
+// au risque de dépasser à nouveau une limite non documentée précisément.
+const OCCURRENCE_KEY_CHUNK_SIZE = 100;
 let ingestionQueue = Promise.resolve();
 
 function chunkIds(ids, size = DISAPPEARANCE_CHUNK_SIZE) {
@@ -371,7 +381,7 @@ function createSupabaseSortirStore(client) {
       const keys = [...new Set(occurrenceKeys)];
       if (!keys.length) return [];
       const rows = [];
-      for (const chunk of chunkIds(keys, PRELOAD_CHUNK_SIZE)) rows.push(...await one(client.from("sortir_provenances").select("*").eq("source_id", sourceId).in("source_occurrence_key", chunk)));
+      for (const chunk of chunkIds(keys, OCCURRENCE_KEY_CHUNK_SIZE)) rows.push(...await one(client.from("sortir_provenances").select("*").eq("source_id", sourceId).in("source_occurrence_key", chunk)));
       return rows;
     },
     async getActivity(id) { return one(client.from("sortir_activities").select("*, provenances:sortir_provenances(*, source:sortir_sources(key,connector_type,base_url)), external_ids:sortir_external_ids(*)").eq("id", id).single()); },
@@ -446,4 +456,4 @@ function createDefaultSupabaseStore() {
   return createSupabaseSortirStore(createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false } }));
 }
 
-module.exports = { DEFAULT_STALE_AFTER_MS, DISAPPEARANCE_CHUNK_SIZE, PRELOAD_CHUNK_SIZE, chunkIds, provenanceMapKey, stableJson, payloadHash, sanitizeSourcePayload, canonicalActivityPayload, activityToRow, rowToActivity, persistSortirIngestion, mergeStoredActivities, createSupabaseSortirStore, createDefaultSupabaseStore };
+module.exports = { DEFAULT_STALE_AFTER_MS, DISAPPEARANCE_CHUNK_SIZE, PRELOAD_CHUNK_SIZE, OCCURRENCE_KEY_CHUNK_SIZE, chunkIds, provenanceMapKey, stableJson, payloadHash, sanitizeSourcePayload, canonicalActivityPayload, activityToRow, rowToActivity, persistSortirIngestion, mergeStoredActivities, createSupabaseSortirStore, createDefaultSupabaseStore };

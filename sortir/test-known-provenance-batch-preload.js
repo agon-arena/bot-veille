@@ -6,7 +6,7 @@
 // n'est pas une régression, c'est le périmètre explicite de ce commit.
 
 const assert = require("assert");
-const { persistSortirIngestion, createSupabaseSortirStore, PRELOAD_CHUNK_SIZE } = require("./supabase-persistence");
+const { persistSortirIngestion, createSupabaseSortirStore, PRELOAD_CHUNK_SIZE, OCCURRENCE_KEY_CHUNK_SIZE } = require("./supabase-persistence");
 
 let passed = 0, failed = 0;
 async function test(name, fn) { try { await fn(); passed += 1; console.log(`✓ ${name}`); } catch (error) { failed += 1; console.error(`✗ ${name}: ${error.stack || error.message}`); } }
@@ -212,11 +212,12 @@ function manyKnownItems(n, { offsetDays = 0 } = {}) {
   class FakeSupabaseClient {
     constructor(tables) { this.tables = tables; this.calls = []; }
     from(table) {
-      this.calls.push({ table });
+      const callRecord = { table, inSize: null };
+      this.calls.push(callRecord);
       const state = { filters: [] };
       const builder = {
         eq(col, val) { state.filters.push({ type: "eq", col, val }); return builder; },
-        in(col, arr) { state.filters.push({ type: "in", col, arr }); return builder; },
+        in(col, arr) { state.filters.push({ type: "in", col, arr }); callRecord.inSize = arr.length; return builder; },
         select() { return builder; }
       };
       builder.then = (resolve, reject) => {
@@ -227,28 +228,60 @@ function manyKnownItems(n, { offsetDays = 0 } = {}) {
     }
   }
 
-  await test("G — chunking : plus de clés que PRELOAD_CHUNK_SIZE, aucune provenance/activité perdue, nombre d'appels attendu", async () => {
+  await test("G — chunking getActivitiesBatch : plus de clés que PRELOAD_CHUNK_SIZE (UUID courts), aucune activité perdue", async () => {
     const total = PRELOAD_CHUNK_SIZE * 2 + 137; // force 3 chunks
-    const provenanceRows = Array.from({ length: total }, (_, i) => ({ id: `prov-${i}`, source_id: "src-1", source_record_id: `rec-${i}`, source_occurrence_key: `key-${i}` }));
     const activityRows = Array.from({ length: total }, (_, i) => ({ id: `act-${i}`, title: `Activité ${i}` }));
-    const client = new FakeSupabaseClient({ sortir_provenances: provenanceRows, sortir_activities: activityRows });
+    const client = new FakeSupabaseClient({ sortir_activities: activityRows });
     const store = createSupabaseSortirStore(client);
-
-    const foundProvenances = await store.findProvenancesBatch("src-1", provenanceRows.map((p) => p.source_occurrence_key));
-    assert.strictEqual(foundProvenances.length, total, "aucune provenance perdue pendant le chunking");
-    const expectedChunks = Math.ceil(total / PRELOAD_CHUNK_SIZE);
-    assert.strictEqual(client.calls.filter((c) => c.table === "sortir_provenances").length, expectedChunks);
-
-    client.calls.length = 0;
     const foundActivities = await store.getActivitiesBatch(activityRows.map((a) => a.id));
     assert.strictEqual(foundActivities.length, total, "aucune activité perdue pendant le chunking");
+    const expectedChunks = Math.ceil(total / PRELOAD_CHUNK_SIZE);
     assert.strictEqual(client.calls.filter((c) => c.table === "sortir_activities").length, expectedChunks);
+    assert(client.calls.every((c) => c.inSize <= PRELOAD_CHUNK_SIZE), "aucune requête ne doit dépasser PRELOAD_CHUNK_SIZE ids");
+  });
+
+  function realisticOpenAgendaKey(i) {
+    // Format réel produit par connectors/openagenda-json.js (buildOccurrenceKey) :
+    // openagenda:{uid}:{begin ISO complet} — ~70-85 caractères, pas un UUID court.
+    const uid = 80000000 + i;
+    const begin = new Date(Date.parse("2026-11-01T19:00:00.000Z") + i * 3_600_000).toISOString();
+    return `openagenda:${uid}:${begin}`;
+  }
+
+  await test("I — chunking findProvenancesBatch avec 206 VRAIES clés longues OpenAgenda : 3 requêtes (100/100/6), aucune perte, aucune requête > 100 clés", async () => {
+    const keys = Array.from({ length: 206 }, (_, i) => realisticOpenAgendaKey(i));
+    assert(keys[0].length >= 40, "les clés de test doivent être réalistes (format openagenda:<uid>:<ISO complet>), pas des UUID courts");
+    const provenanceRows = keys.map((key, i) => ({ id: `prov-${i}`, source_id: "src-1", source_record_id: `rec-${i}`, source_occurrence_key: key }));
+    const client = new FakeSupabaseClient({ sortir_provenances: provenanceRows });
+    const store = createSupabaseSortirStore(client);
+
+    const found = await store.findProvenancesBatch("src-1", keys);
+    assert.strictEqual(found.length, 206, "les 206 provenances doivent toutes être retrouvées");
+    assert.deepStrictEqual(new Set(found.map((p) => p.source_occurrence_key)).size, 206, "aucune clé perdue ni confondue");
+    assert.strictEqual(client.calls.length, 3, "206 clés à 100/chunk doivent produire exactement 3 requêtes (100 + 100 + 6)");
+    assert.deepStrictEqual(client.calls.map((c) => c.inSize), [100, 100, 6], "répartition exacte attendue des tailles de chunk");
+    assert(client.calls.every((c) => c.inSize <= OCCURRENCE_KEY_CHUNK_SIZE), "aucune requête de préchargement ne doit contenir plus de 100 occurrence keys");
+  });
+
+  await test("chunking findProvenancesBatch avec > 500 clés longues : plusieurs chunks de 100, aucune perte", async () => {
+    const total = 537;
+    const keys = Array.from({ length: total }, (_, i) => realisticOpenAgendaKey(i));
+    const provenanceRows = keys.map((key, i) => ({ id: `prov-${i}`, source_id: "src-1", source_record_id: `rec-${i}`, source_occurrence_key: key }));
+    const client = new FakeSupabaseClient({ sortir_provenances: provenanceRows });
+    const store = createSupabaseSortirStore(client);
+    const found = await store.findProvenancesBatch("src-1", keys);
+    assert.strictEqual(found.length, total, "aucune provenance perdue au-delà de 5 chunks");
+    const expectedChunks = Math.ceil(total / OCCURRENCE_KEY_CHUNK_SIZE);
+    assert.strictEqual(client.calls.length, expectedChunks);
+    assert(client.calls.every((c) => c.inSize <= OCCURRENCE_KEY_CHUNK_SIZE));
   });
 
   console.log("\nMesure — SELECT Supabase pour une réingestion de N occurrences connues, actives, inchangées (1 seule source) :");
+  console.log("(findProvenancesBatch chunke à 100 — clés textuelles longues ; getActivitiesBatch chunke à 500 — UUID courts)");
   for (const n of [206, 1000, 10000]) {
-    const chunks = Math.ceil(n / PRELOAD_CHUNK_SIZE);
-    console.log(`  N=${String(n).padStart(6, " ")} → avant : ${2 * n} SELECT individuels (findProvenance+getActivity) → après : ${2 * chunks} SELECT groupés (${chunks} chunk(s) de ${PRELOAD_CHUNK_SIZE})`);
+    const keyChunks = Math.ceil(n / OCCURRENCE_KEY_CHUNK_SIZE);
+    const idChunks = Math.ceil(n / PRELOAD_CHUNK_SIZE);
+    console.log(`  N=${String(n).padStart(6, " ")} → avant : ${2 * n} SELECT individuels (findProvenance+getActivity) → après : ${keyChunks + idChunks} SELECT groupés (provenances: ${keyChunks} chunk(s) de ${OCCURRENCE_KEY_CHUNK_SIZE}, activités: ${idChunks} chunk(s) de ${PRELOAD_CHUNK_SIZE})`);
   }
   // Le total d'appels TOUT compris (écritures incluses) est désormais mesuré dans
   // test-known-provenance-batched-writes.js, une fois les écritures du cas A elles-mêmes

@@ -6,7 +6,7 @@
 // restent individuels, inchangés — ce fichier le vérifie explicitement (C, D, E).
 
 const assert = require("assert");
-const { persistSortirIngestion, createSupabaseSortirStore, PRELOAD_CHUNK_SIZE } = require("./supabase-persistence");
+const { persistSortirIngestion, createSupabaseSortirStore, PRELOAD_CHUNK_SIZE, OCCURRENCE_KEY_CHUNK_SIZE } = require("./supabase-persistence");
 
 let passed = 0, failed = 0;
 async function test(name, fn) { try { await fn(); passed += 1; console.log(`✓ ${name}`); } catch (error) { failed += 1; console.error(`✗ ${name}: ${error.stack || error.message}`); } }
@@ -240,29 +240,35 @@ async function ingest(store, sources, date = day(1)) { return persistSortirInges
   });
 
   console.log("\nMesure décomposée — réingestion de N occurrences connues, actives, inchangées (1 source) :");
-  console.log("(\"logique\" = appels à l'interface store depuis l'orchestrateur, mesurés ici ; \"réel\" = appels HTTP Supabase équivalents une fois le chunking à 500 appliqué côté store réel, non simulé par ce mock)");
+  console.log("(\"logique\" = appels à l'interface store depuis l'orchestrateur, mesurés ici avec des clés synthétiques courtes ; \"réel\" = appels HTTP Supabase une fois le chunking appliqué côté store réel AVEC DE VRAIES clés OpenAgenda longues — findProvenancesBatch chunke à 100 (OCCURRENCE_KEY_CHUNK_SIZE), getActivitiesBatch/touchProvenancesBatch/insertCollectionItemsBatch chunkent à 500, voir test-known-provenance-batch-preload.js pour la preuve avec de vraies clés)");
   for (const n of [206, 1000, 10000]) {
     const db = new MemoryStore();
     const items = manyKnownItems(n);
     await ingest(db, [sourceDescriptor("oa", items)]);
     db.resetCalls();
     await ingest(db, [sourceDescriptor("oa", items)], day(2));
-    const chunks = Math.ceil(n / PRELOAD_CHUNK_SIZE);
+    const keyChunks = Math.ceil(n / OCCURRENCE_KEY_CHUNK_SIZE);
+    const idChunks = Math.ceil(n / PRELOAD_CHUNK_SIZE);
     const fixedRun = db.calls.createIngestionRun + db.calls.updateIngestionRun + db.calls.countFinalActivities;
     const fixedSource = db.calls.ensureSource + db.calls.createSourceRun + db.calls.updateSourceRun;
     const preloadLogique = db.calls.findProvenancesBatch + db.calls.getActivitiesBatch;
     const writesLogique = db.calls.touchProvenancesBatch + db.calls.insertCollectionItemsBatch;
     const disappearances = db.calls.applyDisappearances;
     const totalLogique = db.totalCalls();
-    const totalReel = fixedRun + fixedSource + disappearances + preloadLogique * chunks + writesLogique * chunks;
-    console.log(`  N=${String(n).padStart(6, " ")} → fixe run=${fixedRun}, fixe source=${fixedSource}, applyDisappearances=${disappearances}, préchargement=${preloadLogique} logique / ${preloadLogique * chunks} réel (${chunks} chunk(s)), écritures groupées=${writesLogique} logique / ${writesLogique * chunks} réel (${chunks} chunk(s)) → total logique=${totalLogique}, total réel≈${totalReel}`);
+    // findProvenancesBatch → keyChunks appels réels ; getActivitiesBatch/touchProvenancesBatch/
+    // insertCollectionItemsBatch → idChunks chacun (UUID courts ou payload, pas d'impact de la
+    // longueur des clés d'occurrence).
+    const preloadReel = keyChunks + idChunks;
+    const writesReel = idChunks * 2;
+    const totalReel = fixedRun + fixedSource + disappearances + preloadReel + writesReel;
+    console.log(`  N=${String(n).padStart(6, " ")} → fixe run=${fixedRun}, fixe source=${fixedSource}, applyDisappearances=${disappearances}, préchargement=${preloadLogique} logique / ${preloadReel} réel (provenances: ${keyChunks} chunk(s) de 100, activités: ${idChunks} chunk(s) de 500), écritures groupées=${writesLogique} logique / ${writesReel} réel (${idChunks} chunk(s) de 500) → total logique=${totalLogique}, total réel≈${totalReel}`);
   }
 
-  console.log("\nComparaison avec les étapes historiques (lot réel de 206 occurrences inchangées, total réel incluant les coûts fixes) :");
+  console.log("\nComparaison avec les étapes historiques (lot réel de 206 occurrences inchangées, total réel incluant les coûts fixes, avec de vraies clés OpenAgenda) :");
   console.log("  Pipeline initial          : ≈ 1 240 appels");
   console.log("  Après fast-path           : ≈   828 appels");
-  console.log("  Après préchargement A/B   : ≈   418 appels (mesuré à l'étape précédente)");
-  console.log("  Après cette étape         :     11 appels réels (mesuré ci-dessus pour N=206 : 7 de coût fixe + 4 dépendant du lot)");
+  console.log("  Après préchargement A/B   : ≈   418 appels (mesuré à l'étape précédente, avant la découverte du bug de longueur de clé)");
+  console.log("  Après cette étape         :     13 appels réels pour 206 (7 fixes + 3 chunks provenances/100 + 1 chunk activités/500 + 2 chunks écritures/500)");
 
   console.log(`\n${passed} test(s) réussi(s), ${failed} échec(s).`);
   if (failed) process.exitCode = 1;
