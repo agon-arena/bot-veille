@@ -3,7 +3,7 @@
 const crypto = require("crypto");
 const { createClient } = require("@supabase/supabase-js");
 const { validateNormalizedActivity } = require("./activity-validation");
-const { ALGORITHM_VERSION, DECISIONS, compareActivities, mergeActivities, canonicalUrl } = require("./activity-deduplication");
+const { ALGORITHM_VERSION, DECISIONS, compareActivities, mergeActivities, canonicalUrl, normalizedText } = require("./activity-deduplication");
 const { ORCHESTRATOR_VERSION } = require("./ingestion-orchestrator");
 
 const DEFAULT_STALE_AFTER_MS = 7 * 24 * 60 * 60 * 1000;
@@ -39,6 +39,41 @@ function sanitizeSourcePayload(value) {
 function compactPayload(activity) {
   return { title: activity.title, startsAt: activity.startsAt, endsAt: activity.endsAt, lifecycleStatus: activity.lifecycleStatus, venueName: activity.venueName, city: activity.city, bookingUrl: activity.bookingUrl, admissionType: activity.admissionType };
 }
+// Trie un ensemble (pas une séquence : l'ordre d'arrivée n'a pas de sens métier) par une clé
+// stable, pour que deux lots équivalents dans un ordre différent produisent le même hash.
+function sortedByKey(items, keyFn) {
+  return [...items].sort((a, b) => { const left = keyFn(a), right = keyFn(b); return left < right ? -1 : left > right ? 1 : 0; });
+}
+// Représentation canonique de l'état métier d'une NormalizedActivity : l'intégralité des champs
+// que mergeActivities()/activityToRow()/upsertExternalIds() ou la déduplication peuvent lire ou
+// écrire (dérivé du code réel, pas de la liste indicative d'activity-schema.js). Exclut
+// délibérément `provenances` (métadonnées sur la façon dont l'activité a été trouvée, jamais
+// écrites par activityToRow, suivies séparément via sortir_provenances) et
+// `sourceCategories`/`sourceTags` (jamais persistées, réservées à la future taxonomie). Suppose
+// que `activity` a déjà traversé normalizeActivity()/validateNormalizedActivity() — toujours le
+// cas au seul point d'appel (sourceMetadata reçoit validation.activity) — donc les valeurs
+// absentes sont déjà uniformément `null`/`[]`/`{}`, jamais `undefined`.
+function canonicalActivityPayload(activity) {
+  return {
+    title: activity.title, description: activity.description, startsAt: activity.startsAt, endsAt: activity.endsAt,
+    timezone: activity.timezone, lifecycleStatus: activity.lifecycleStatus, locationType: activity.locationType,
+    venueName: activity.venueName, address: activity.address, postalCode: activity.postalCode, city: activity.city,
+    country: activity.country, latitude: activity.latitude, longitude: activity.longitude, onlineUrl: activity.onlineUrl,
+    // Ensemble de co-organisateurs : pas de séquence sémantique.
+    organizers: sortedByKey(activity.organizers, (o) => `${normalizedText(o.name)}\u0000${canonicalUrl(o.url) || ""}`),
+    category: activity.category, subcategory: activity.subcategory,
+    // Ensemble de tags : pas de séquence sémantique.
+    tags: sortedByKey(activity.tags, (tag) => String(tag).toLocaleLowerCase("fr-FR")),
+    imageUrl: activity.imageUrl, bookingUrl: activity.bookingUrl, admissionType: activity.admissionType,
+    // Ensemble d'identifiants externes : pas de séquence sémantique.
+    externalIds: sortedByKey(activity.externalIds, (id) => `${id.system}\u0000${id.value}`),
+    confidence: activity.confidence,
+    // Dictionnaire champ → confiance : stableJson() trie déjà les clés, aucun tri supplémentaire ici.
+    fieldConfidence: activity.fieldConfidence,
+    // Ensemble de preuves rattachées à des champs : pas une séquence chronologique.
+    evidence: sortedByKey(activity.evidence, (item) => `${item.field}\u0000${item.sourceValue || ""}\u0000${item.excerpt || ""}`)
+  };
+}
 function sourceMetadata(item, source) {
   const activity = item.activity;
   const provenance = activity.provenances[0] || {};
@@ -47,7 +82,13 @@ function sourceMetadata(item, source) {
     sourceRecordId,
     sourceOccurrenceKey: item.sourceOccurrenceKey || `${sourceRecordId || canonicalUrl(provenance.originalEventUrl) || "sans-id"}@${activity.startsAt}`,
     originalEventUrl: canonicalUrl(provenance.originalEventUrl),
+    // Rôle audit/traçabilité (colonne sortir_provenances.source_payload) : inchangé, distinct du
+    // hash métier ci-dessous. Ne jamais faire reposer payloadHash() sur cette valeur : elle reste
+    // volontairement partielle (compactPayload) quand le connecteur ne fournit pas sourcePayload.
     sourcePayload: sanitizeSourcePayload(item.sourcePayload || compactPayload(activity)),
+    // Rôle hash métier (colonne sortir_provenances.payload_hash) : représentation canonique
+    // complète, découplée du format brut des fournisseurs.
+    canonicalActivityPayload: canonicalActivityPayload(activity),
     sourceKey: source.key
   };
 }
@@ -113,7 +154,7 @@ async function persistSortirIngestionUnlocked({ sources, store, now = new Date()
           }
           const item = { ...(wrapped ? connectorResult : {}), activity: validation.activity };
           const metadata = sourceMetadata(item, source);
-          const hash = payloadHash(metadata.sourcePayload);
+          const hash = payloadHash(metadata.canonicalActivityPayload);
           let provenance = await store.findProvenance(source.id, metadata.sourceRecordId, metadata.sourceOccurrenceKey);
           let activityId;
           if (provenance) {
@@ -258,4 +299,4 @@ function createDefaultSupabaseStore() {
   return createSupabaseSortirStore(createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false } }));
 }
 
-module.exports = { DEFAULT_STALE_AFTER_MS, DISAPPEARANCE_CHUNK_SIZE, chunkIds, stableJson, payloadHash, sanitizeSourcePayload, activityToRow, rowToActivity, persistSortirIngestion, mergeStoredActivities, createSupabaseSortirStore, createDefaultSupabaseStore };
+module.exports = { DEFAULT_STALE_AFTER_MS, DISAPPEARANCE_CHUNK_SIZE, chunkIds, stableJson, payloadHash, sanitizeSourcePayload, canonicalActivityPayload, activityToRow, rowToActivity, persistSortirIngestion, mergeStoredActivities, createSupabaseSortirStore, createDefaultSupabaseStore };
