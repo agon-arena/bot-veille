@@ -159,10 +159,27 @@ async function persistSortirIngestionUnlocked({ sources, store, now = new Date()
           let activityId;
           if (provenance) {
             const existing = await store.getActivity(provenance.activity_id);
-            const merged = mergeActivities(rowToActivity(existing), validation.activity).activity;
-            await store.updateProvenance(provenance.id, { last_seen_at: startedAt, active: true, last_seen_run_id: sourceRun.id, ...(provenance.payload_hash !== hash ? { payload_hash: hash, source_payload: metadata.sourcePayload } : {}) });
-            await store.upsertExternalIds(existing.id, source.id, validation.activity.externalIds);
-            await store.updateActivity(existing.id, activityToRow(merged, existing.record_status === "stale" ? "active" : existing.record_status));
+            // existing.record_status n'est pas disponible sur la ligne provenance seule :
+            // getActivity() reste indispensable, même sur le chemin rapide, pour distinguer
+            // une activité stale (à réactiver) d'une activité déjà active/review (rien à faire).
+            if (provenance.payload_hash === hash) {
+              // Fast-path : le hash canonique confirme qu'aucune donnée métier de CETTE source
+              // n'a changé depuis la dernière observation. mergeActivities()/upsertExternalIds()
+              // produiraient par construction le même résultat déjà stocké — jamais exécutés.
+              // La provenance est quand même revue à chaque passage (last_seen_at/
+              // last_seen_run_id/active, nécessaires à applyDisappearances), et l'activité est
+              // réactivée si (et seulement si) elle était retombée stale — jamais de merge complet
+              // pour ce seul changement de statut : record_status/updated_at suffisent.
+              await store.updateProvenance(provenance.id, { last_seen_at: startedAt, active: true, last_seen_run_id: sourceRun.id });
+              if (existing.record_status === "stale") {
+                await store.updateActivity(existing.id, { record_status: "active", updated_at: startedAt });
+              }
+            } else {
+              const merged = mergeActivities(rowToActivity(existing), validation.activity).activity;
+              await store.updateProvenance(provenance.id, { last_seen_at: startedAt, active: true, last_seen_run_id: sourceRun.id, payload_hash: hash, source_payload: metadata.sourcePayload });
+              await store.upsertExternalIds(existing.id, source.id, validation.activity.externalIds);
+              await store.updateActivity(existing.id, activityToRow(merged, existing.record_status === "stale" ? "active" : existing.record_status));
+            }
             activityId = existing.id;
           } else {
             const candidates = await store.listCandidateActivities(validation.activity);
