@@ -2,30 +2,39 @@
 // Outil manuel de diagnostic — PAS un test automatique, PAS exécuté par un test runner.
 // Compare deux agendas OpenAgenda réels (par défaut : Senlis officiel + Musées de Senlis) pour
 // repérer, sur des données réelles et sans rien fabriquer, de véritables recoupements inter-sources
-// (même UID des deux côtés) et des quasi-doublons naturels (même jour/lieu, UID différents).
-// Fait un appel réseau réel vers openagenda.com mais n'écrit rien nulle part.
+// (même uid OpenAgenda des deux côtés) et des quasi-doublons naturels (même jour/lieu, uid différent).
+// Fait des appels réseau réels vers l'API OpenAgenda v2 mais n'écrit rien nulle part.
+// Nécessite OPENAGENDA_PUBLIC_KEY dans l'environnement (jamais hardcodée, jamais affichée).
 // Usage: node sortir/run-dedup-recoupement-diagnostic.js [uidA] [uidB]
 
-const { fetchOpenAgendaIcal } = require("./connectors/openagenda-ical");
+require("dotenv").config();
+const { fetchOpenAgendaJsonEvents } = require("./connectors/openagenda-json");
 const { compareActivities } = require("./activity-deduplication");
 
-const DEFAULT_SOURCE_A = { key: "openagenda-senlis", sourceName: "Senlis — Agenda officiel de la ville", agendaUid: "56170473" };
-const DEFAULT_SOURCE_B = { key: "openagenda-musees-senlis", sourceName: "Musées de Senlis", agendaUid: "26110493" };
+// Clés "-json" distinctes des anciennes sources ICS "openagenda-senlis"/"openagenda-musees-senlis" :
+// ensureSource() upsert par `key` seul (voir run-openagenda-json-migration-smoke.js, même précaution),
+// pertinent si ce diagnostic est un jour suivi d'une persistance réelle.
+const DEFAULT_SOURCE_A = { key: "openagenda-senlis-json", sourceName: "Senlis — Agenda officiel de la ville", agendaUid: "56170473" };
+const DEFAULT_SOURCE_B = { key: "openagenda-musees-senlis-json", sourceName: "Musées de Senlis", agendaUid: "26110493" };
 const MAX_CASES_PER_CATEGORY = 5;
 const MAX_BUCKET_SIZE = 25; // garde-fou anti-explosion combinatoire sur un lieu très actif
+// Pas de garde-fou bas ici (contrairement au défaut du connecteur, 20) : cet outil est en
+// lecture seule et doit retrouver des événements réellement très récurrents (ex. Chaalis,
+// 787 occurrences réelles observées) pour que la recherche de recoupement reste pertinente.
+const MAX_OCCURRENCES_PER_EVENT = 1000;
 
-function icsUrl(agendaUid) {
-  return `https://openagenda.com/agendas/${agendaUid}/events.v2.ics?relative%5B%5D=current&relative%5B%5D=upcoming`;
+function apiUrl(agendaUid) {
+  return `https://api.openagenda.com/v2/agendas/${agendaUid}/events`;
 }
 
-async function fetchSource(source) {
-  const sourceUrl = icsUrl(source.agendaUid);
-  const results = await fetchOpenAgendaIcal({ sourceName: source.sourceName, sourceUrl, defaultTimezone: "Europe/Paris", country: "FR", limit: 2000 });
+async function fetchSource(source, apiKey) {
+  const sourceUrl = apiUrl(source.agendaUid);
+  const { results } = await fetchOpenAgendaJsonEvents({ agendaUid: source.agendaUid, apiKey, sourceName: source.sourceName, maxEvents: 2000, maxOccurrencesPerEvent: MAX_OCCURRENCES_PER_EVENT });
   return { ...source, sourceUrl, results: results.filter((r) => r.activity && r.validation && r.validation.status !== "INVALID") };
 }
 
 function uidOf(item) {
-  const external = item.activity.externalIds.find((e) => e.system === "ical");
+  const external = item.activity.externalIds.find((e) => e.system === "openagenda-event");
   return external ? external.value : null;
 }
 
@@ -47,9 +56,10 @@ function groupByBucket(items) {
 
 // Recherche générique : aucun titre ni UID codé en dur. Reproductible sur n'importe quelle paire
 // d'agendas OpenAgenda tant qu'ils publient des événements au même moment/lieu.
-async function discoverRecoupement(sourceAConfig = DEFAULT_SOURCE_A, sourceBConfig = DEFAULT_SOURCE_B) {
-  const sourceA = await fetchSource(sourceAConfig);
-  const sourceB = await fetchSource(sourceBConfig);
+async function discoverRecoupement(sourceAConfig = DEFAULT_SOURCE_A, sourceBConfig = DEFAULT_SOURCE_B, apiKey = process.env.OPENAGENDA_PUBLIC_KEY) {
+  if (!apiKey) throw new Error("OPENAGENDA_PUBLIC_KEY absente");
+  const sourceA = await fetchSource(sourceAConfig, apiKey);
+  const sourceB = await fetchSource(sourceBConfig, apiKey);
   const bucketsA = groupByBucket(sourceA.results);
   const bucketsB = groupByBucket(sourceB.results);
 
@@ -116,4 +126,4 @@ async function main() {
 
 if (require.main === module) main().catch((error) => { console.error(error.message); process.exitCode = 1; });
 
-module.exports = { discoverRecoupement, DEFAULT_SOURCE_A, DEFAULT_SOURCE_B, icsUrl };
+module.exports = { discoverRecoupement, DEFAULT_SOURCE_A, DEFAULT_SOURCE_B, apiUrl };

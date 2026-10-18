@@ -2,11 +2,15 @@
 
 require("dotenv").config();
 const { createClient } = require("@supabase/supabase-js");
-const { fetchOpenAgendaIcal } = require("./connectors/openagenda-ical");
+const { fetchOpenAgendaJsonEvents } = require("./connectors/openagenda-json");
 const { createSupabaseSortirStore, persistSortirIngestion } = require("./supabase-persistence");
 
-const SOURCE_KEY = "openagenda-senlis";
-const SOURCE_URL = "https://openagenda.com/agendas/56170473/events.v2.ics?relative%5B%5D=current&relative%5B%5D=upcoming";
+// Clé "-json" distincte de l'ancienne source ICS "openagenda-senlis" : ensureSource() upsert
+// par `key` seul, réutiliser la même clé aurait réécrit le connector_type de la source
+// historique en place (voir sortir/run-openagenda-json-migration-smoke.js, même précaution).
+const SOURCE_KEY = "openagenda-senlis-json";
+const AGENDA_UID = 56170473;
+const SOURCE_URL = `https://api.openagenda.com/v2/agendas/${AGENDA_UID}/events`;
 const TABLES = ["sortir_sources", "sortir_activities", "sortir_ingestion_runs", "sortir_source_runs", "sortir_provenances", "sortir_external_ids", "sortir_collection_items", "sortir_dedup_decisions"];
 
 function assert(condition, message) { if (!condition) throw new Error(`ANOMALIE: ${message}`); }
@@ -41,22 +45,30 @@ function verify(snapshot, occurrenceKeys) {
   assert(snapshot.provenances.every((p) => p.active && p.activity_id), "provenance inactive ou orpheline");
   assert(snapshot.activities.length === 5, `${snapshot.activities.length} activités au lieu de 5`);
   assert(snapshot.activities.every((a) => a.record_status === "active" && !a.merged_into_id), "activité non active ou absorbée de façon inattendue");
-  assert(snapshot.externalIds.length === 5, `${snapshot.externalIds.length} external IDs au lieu de 5`);
+  // OpenAgenda JSON produit au moins 2 external IDs par occurrence (openagenda-event +
+  // openagenda-occurrence), parfois 3 si timing.id est présent sur l'occurrence réelle —
+  // contrairement à l'ICS qui n'en produisait qu'un seul (system "ical") par occurrence.
+  assert(snapshot.externalIds.length >= 10, `${snapshot.externalIds.length} external IDs, minimum 10 attendu (2 par occurrence × 5)`);
   assert(new Set(snapshot.externalIds.map((id) => `${id.source_id}\u0000${id.system}\u0000${id.value}\u0000${id.activity_id}`)).size === snapshot.externalIds.length, "external IDs dupliqués");
   assert(snapshot.items.length === 5 && snapshot.items.every((item) => item.validation_status === "VALID" && item.activity_id && item.provenance_id), "journal incomplet");
 }
 
 async function main() {
   assert(process.env.SUPABASE_URL && process.env.SUPABASE_SECRET_KEY, "variables Supabase absentes");
+  assert(process.env.OPENAGENDA_PUBLIC_KEY, "OPENAGENDA_PUBLIC_KEY absente");
   const client = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SECRET_KEY, { auth: { persistSession: false, autoRefreshToken: false } });
   const store = createSupabaseSortirStore(client);
   const fetchedAt = new Date().toISOString();
-  const results = await fetchOpenAgendaIcal({ sourceName: "Senlis — Agenda officiel de la ville", sourceUrl: SOURCE_URL, defaultTimezone: "Europe/Paris", country: "FR", limit: 5, fetchedAt });
+  // maxOccurrencesPerEvent:1 borne à exactement 1 occurrence par événement, pour garantir
+  // 5 occurrences au total sur 5 événements (un événement récurrent JSON porterait sinon
+  // plusieurs occurrences dans un seul événement, contrairement à l'ICS qui les exposait déjà
+  // éclatées une à une).
+  const { results } = await fetchOpenAgendaJsonEvents({ agendaUid: AGENDA_UID, apiKey: process.env.OPENAGENDA_PUBLIC_KEY, sourceName: "Senlis — Agenda officiel de la ville", maxEvents: 5, maxOccurrencesPerEvent: 1, fetchedAt });
   assert(results.length === 5, `${results.length} événements collectés`);
   assert(results.every((result) => !result.error && result.validation && result.validation.status === "VALID"), "les 5 événements ne sont pas tous VALID");
   const occurrenceKeys = results.map((result) => `${result.activity.provenances[0].externalId}@${result.activity.startsAt}`);
   assert(new Set(occurrenceKeys).size === 5, "les 5 clés d'occurrence ne sont pas uniques");
-  const descriptor = { key: SOURCE_KEY, connectorType: "openagenda_ical", baseUrl: SOURCE_URL, results };
+  const descriptor = { key: SOURCE_KEY, connectorType: "openagenda_json", baseUrl: SOURCE_URL, results };
 
   const before = await counts(client);
   const first = await persistSortirIngestion({ sources: [descriptor], store });

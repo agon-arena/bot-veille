@@ -60,8 +60,8 @@ async function main() {
   const client = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SECRET_KEY, { auth: { persistSession: false, autoRefreshToken: false } });
   const store = createSupabaseSortirStore(client);
   const lots = [
-    { key: DEFAULT_SOURCE_A.key, connectorType: "openagenda_ical", baseUrl: `https://openagenda.com/agendas/${DEFAULT_SOURCE_A.agendaUid}/events.v2.ics`, results: resultsA },
-    { key: DEFAULT_SOURCE_B.key, connectorType: "openagenda_ical", baseUrl: `https://openagenda.com/agendas/${DEFAULT_SOURCE_B.agendaUid}/events.v2.ics`, results: resultsB }
+    { key: DEFAULT_SOURCE_A.key, connectorType: "openagenda_json", baseUrl: `https://api.openagenda.com/v2/agendas/${DEFAULT_SOURCE_A.agendaUid}/events`, results: resultsA },
+    { key: DEFAULT_SOURCE_B.key, connectorType: "openagenda_json", baseUrl: `https://api.openagenda.com/v2/agendas/${DEFAULT_SOURCE_B.agendaUid}/events`, results: resultsB }
   ];
 
   const before = await tableCounts(client);
