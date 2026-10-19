@@ -182,12 +182,21 @@ async function persistSortirIngestionUnlocked({ sources, store, now = new Date()
       const preloadActivityIds = [...new Set(preloadedProvenances.map((row) => row.activity_id))];
       const preloadedActivities = await store.getActivitiesBatch(preloadActivityIds);
       const activityMap = new Map(preloadedActivities.map((row) => [row.id, row]));
-      // Cas ultra-fréquent (occurrence connue, hash identique, activité non-stale) : les
-      // écritures ne varient pas d'un item à l'autre (mêmes last_seen_at/active/
-      // last_seen_run_id pour toute la source ; la ligne elle-même ne change d'aucune autre
-      // colonne), donc accumulées ici puis écrites en quelques UPDATE/INSERT groupés après la
-      // boucle plutôt qu'un aller-retour par occurrence. Les cas stale/hash différent/nouvelle
-      // occurrence restent exécutés individuellement, inchangés, à l'intérieur de la boucle.
+      // pendingProvenanceTouchIds : cas ultra-fréquent uniquement (occurrence connue, hash
+      // identique, activité non-stale) — les écritures ne varient pas d'un item à l'autre
+      // (mêmes last_seen_at/active/last_seen_run_id pour toute la source, aucune autre colonne
+      // modifiée), donc accumulées ici puis écrites en un UPDATE groupé après la boucle. Les
+      // cas stale/hash différent restent exécutés individuellement pour toutes leurs AUTRES
+      // écritures (updateProvenance/upsertExternalIds/updateActivity/mergeActivities),
+      // inchangés — seule la ligne d'historique (collection_items, ci-dessous) est différée.
+      //
+      // pendingCollectionItems : la ligne d'historique sortir_collection_items est toujours
+      // indépendante — activity_id/provenance_id y sont déjà définitivement connus au moment
+      // où on l'écrit, qu'il s'agisse d'une occurrence connue ultra-fréquente OU d'une
+      // nouvelle occurrence (MATCH/REVIEW/DISTINCT, voir la fin de la boucle). Les deux
+      // alimentent ce même tampon, vidé en un seul INSERT groupé après la boucle. Seuls les cas
+      // stale et hash-différent gardent leur propre INSERT individuel (voir plus bas), pour ne
+      // pas complexifier ces chemins déjà exceptionnels.
       const pendingProvenanceTouchIds = [];
       const pendingCollectionItems = [];
 
@@ -196,6 +205,7 @@ async function persistSortirIngestionUnlocked({ sources, store, now = new Date()
         counts.collected += 1; totals.collected += 1;
         let unlinkedActivityId = null;
         let validationStatus = null;
+        let deferCollectionItem = false;
         try {
           const wrapped = connectorResult && typeof connectorResult === "object" && ("activity" in connectorResult || "error" in connectorResult);
           if (wrapped && connectorResult.error) throw new Error(errorText(connectorResult.error));
@@ -291,8 +301,17 @@ async function persistSortirIngestionUnlocked({ sources, store, now = new Date()
             if (createdActivityId && provenance.activity_id === createdActivityId && desiredRecordStatus === "active") {
               await store.updateActivity(createdActivityId, { record_status: "active", updated_at: startedAt });
             }
+            // Nouvelle occurrence (MATCH/REVIEW/DISTINCT) : activity_id/provenance_id sont déjà
+            // définitivement connus à ce stade (après la résolution de course éventuelle
+            // ci-dessus) — différé en lot, comme le cas ultra-fréquent des occurrences connues,
+            // au lieu d'un INSERT individuel par occurrence.
+            deferCollectionItem = true;
           }
-          await store.insertCollectionItem({ source_run_id: sourceRun.id, provenance_id: provenance.id, activity_id: activityId, validation_status: validation.status, diagnostics: { errors: validation.errors, warnings: validation.warnings, sourceIndex: index } });
+          if (deferCollectionItem) {
+            pendingCollectionItems.push({ source_run_id: sourceRun.id, provenance_id: provenance.id, activity_id: activityId, validation_status: validation.status, diagnostics: { errors: validation.errors, warnings: validation.warnings, sourceIndex: index } });
+          } else {
+            await store.insertCollectionItem({ source_run_id: sourceRun.id, provenance_id: provenance.id, activity_id: activityId, validation_status: validation.status, diagnostics: { errors: validation.errors, warnings: validation.warnings, sourceIndex: index } });
+          }
         } catch (error) {
           if (!validationStatus) { counts.INVALID += 1; totals.INVALID += 1; }
           errors.push(`élément ${index}: ${errorText(error)}`); sourceStatus = "partial";
