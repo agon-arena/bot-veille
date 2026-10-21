@@ -292,8 +292,6 @@ grant execute on function public.sortir_dt_finish_national_page(uuid, uuid, text
 grant execute on function public.sortir_dt_fail_national_scan(uuid, uuid) to service_role;
 grant execute on function public.sortir_dt_finalize_national_scan(uuid, uuid, timestamptz) to service_role;
 
-commit;
-
 -- Opt-in checkpoints 500/1000. No scheduler wiring; migration NOT APPLIED.
 create function public.sortir_dt_begin_batch_scan(p_source_id uuid, p_scan_id uuid, p_now timestamptz, p_initial_url text, p_size integer)
 returns void language plpgsql security invoker set search_path = public as $$
@@ -370,3 +368,6 @@ revoke all on function public.sortir_dt_observe_national_batch(uuid, uuid, text,
 grant execute on function public.sortir_dt_observe_national_batch(uuid, uuid, text, text, integer, uuid[], integer, timestamptz) to service_role;
 revoke all on function public.sortir_dt_finish_national_batch(uuid, uuid, text, integer, jsonb) from public, anon, authenticated;
 grant execute on function public.sortir_dt_finish_national_batch(uuid, uuid, text, integer, jsonb) to service_role;
+
+-- Une seule transaction couvre aussi toutes les RPC batch et leurs permissions.
+commit;
