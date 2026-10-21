@@ -160,6 +160,27 @@ function rowToActivity(row) {
   };
 }
 
+// Réconciliation explicite, réutilisable pour le stock et les chunks futurs. Les
+// provenances déjà inactives sont aussi relues : un échec après la désactivation
+// doit pouvoir reprendre la mise en stale lors du rejeu, sans perdre les activités.
+async function reconcileDatatourismeRefusals({ store, sourceId, refusedPoiUuids, now = new Date() }) {
+  const uuids = [...new Set(refusedPoiUuids || [])];
+  if (!uuids.length) return { affectedActivityIds: [], staleActivityIds: [] };
+  if (uuids.some((id) => typeof id !== "string" || !/^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$/i.test(id))) {
+    throw new Error("UUID DATAtourisme refusé invalide");
+  }
+  const provenances = await store.findDatatourismeProvenancesByPoiUuids(sourceId, uuids);
+  const activeIds = provenances.filter((p) => p.active).map((p) => p.id);
+  if (activeIds.length) await store.touchProvenancesBatch(activeIds, { active: false });
+  const affectedActivityIds = [...new Set(provenances.map((p) => p.activity_id))];
+  const activities = await store.getActivitySupportBatch(affectedActivityIds);
+  const staleActivityIds = activities.filter((a) =>
+    ["active", "review"].includes(a.record_status) && !a.provenances.length
+  ).map((a) => a.id);
+  if (staleActivityIds.length) await store.markActivitiesStaleBatch(staleActivityIds, now.toISOString());
+  return { affectedActivityIds, staleActivityIds };
+}
+
 async function persistSortirIngestionUnlocked({ sources, store, now = new Date(), staleAfterMs = DEFAULT_STALE_AFTER_MS }) {
   if (!store) throw new Error("store est obligatoire");
   const startedAt = now.toISOString();
@@ -471,6 +492,17 @@ async function persistSortirIngestionUnlocked({ sources, store, now = new Date()
         }
       }
     }
+    if (sourceStatus === "completed" && descriptor.connectorType === "datatourisme") {
+      try {
+        const reconciliation = await reconcileDatatourismeRefusals({ store, sourceId: source.id, refusedPoiUuids: descriptor.refusedPoiUuids, now });
+        // Les sources suivantes rechargeront les candidats nécessaires depuis le store.
+        // Ne jamais réutiliser une photo antérieure à la désactivation d'une provenance.
+        for (const id of reconciliation.affectedActivityIds) candidateIndex.delete(id);
+      } catch (error) {
+        sourceStatus = "partial";
+        errors.push(`refus éditoriaux DATAtourisme: ${errorText(error)}`);
+      }
+    }
     if (sourceStatus === "completed") {
       try { await store.applyDisappearances({ sourceId: source.id, sourceRunId: sourceRun.id, cutoff: new Date(now.getTime() - staleAfterMs).toISOString() }); }
       catch (error) { sourceStatus = "partial"; errors.push(`disparitions: ${errorText(error)}`); }
@@ -597,6 +629,44 @@ function createSupabaseSortirStore(client) {
       }
     },
     async insertDedupDecision(row) { if (row.left_activity_id === row.right_activity_id) return null; const ordered = row.left_activity_id < row.right_activity_id ? row : { ...row, left_activity_id: row.right_activity_id, right_activity_id: row.left_activity_id }; const { data, error } = await client.from("sortir_dedup_decisions").insert(ordered).select().single(); if (!error) return data; if (error.code === "23505") return null; throw new Error(error.message); },
+    // source_record_id est construit par le connecteur : datatourisme:{uuid}:{date}.
+    // Le préfixe terminé par ':' vise toutes les occurrences historiques de CE POI,
+    // sans confondre deux POI fusionnés dans une même activité. Les UUID sont validés
+    // avant interpolation. 100 UUID par filtre borne la longueur des URL PostgREST.
+    async findDatatourismeProvenancesByPoiUuids(sourceId, uuids) {
+      const rows = [];
+      for (const chunk of chunkIds(uuids, OCCURRENCE_KEY_CHUNK_SIZE)) {
+        for (let from = 0; ; from += PRELOAD_CHUNK_SIZE) {
+          const { data, count, error } = await client.from("sortir_provenances")
+            .select("id,activity_id,active", { count: "exact" }).eq("source_id", sourceId)
+            .or(chunk.map((uuid) => `source_record_id.like.datatourisme:${uuid}:*`).join(","))
+            .order("id", { ascending: true }).range(from, from + PRELOAD_CHUNK_SIZE - 1);
+          if (error) throw new Error(error.message);
+          rows.push(...data);
+          if (!data.length || from + data.length >= count) break;
+        }
+      }
+      return rows;
+    },
+    async getActivitySupportBatch(ids) {
+      const rows = [];
+      for (const chunk of chunkIds(ids)) {
+        // Jointure externe : garde les activités sans soutien ; limite embarquée à
+        // une provenance active, pour éviter toute troncature liée à leur multiplicité.
+        rows.push(...await one(client.from("sortir_activities")
+          .select("id,record_status,provenances:sortir_provenances(id)").in("id", chunk)
+          .eq("provenances.active", true).limit(1, { referencedTable: "provenances" })));
+      }
+      return rows;
+    },
+    async markActivitiesStaleBatch(ids, updatedAt) {
+      for (const chunk of chunkIds(ids)) {
+        const { error } = await client.from("sortir_activities")
+          .update({ record_status: "stale", updated_at: updatedAt }).in("id", chunk)
+          .in("record_status", ["active", "review"]);
+        if (error) throw new Error(error.message);
+      }
+    },
     async applyDisappearances({ sourceId, sourceRunId, cutoff }) {
       const stale = await one(client.from("sortir_provenances").update({ active: false }).eq("source_id", sourceId).eq("active", true).or(`last_seen_run_id.is.null,last_seen_run_id.neq.${sourceRunId}`).lt("last_seen_at", cutoff).select("activity_id"));
       const touchedIds = [...new Set(stale.map(({ activity_id: id }) => id))];
@@ -627,4 +697,4 @@ function createDefaultSupabaseStore() {
   return createSupabaseSortirStore(createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false } }));
 }
 
-module.exports = { DEFAULT_STALE_AFTER_MS, DISAPPEARANCE_CHUNK_SIZE, PRELOAD_CHUNK_SIZE, OCCURRENCE_KEY_CHUNK_SIZE, CANDIDATE_RANGE_PAGE_SIZE, chunkIds, provenanceMapKey, unionExternalIds, stableJson, payloadHash, sanitizeSourcePayload, canonicalActivityPayload, activityToRow, rowToActivity, persistSortirIngestion, mergeStoredActivities, createSupabaseSortirStore, createDefaultSupabaseStore };
+module.exports = { reconcileDatatourismeRefusals, DEFAULT_STALE_AFTER_MS, DISAPPEARANCE_CHUNK_SIZE, PRELOAD_CHUNK_SIZE, OCCURRENCE_KEY_CHUNK_SIZE, CANDIDATE_RANGE_PAGE_SIZE, chunkIds, provenanceMapKey, unionExternalIds, stableJson, payloadHash, sanitizeSourcePayload, canonicalActivityPayload, activityToRow, rowToActivity, persistSortirIngestion, mergeStoredActivities, createSupabaseSortirStore, createDefaultSupabaseStore };

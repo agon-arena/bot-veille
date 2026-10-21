@@ -1,8 +1,7 @@
 "use strict";
 
 // Couche d'orchestration MINCE pour l'ingestion quotidienne Sortir : ne duplique ni les
-// connecteurs, ni la validation, ni la persistance/dédoublonnage (persistSortirIngestionUnlocked
-// et candidateIndex restent STRICTEMENT inchangés) — appelle exactement le même pipeline que les
+// connecteurs, ni la validation, ni la persistance/dédoublonnage — appelle le même pipeline que les
 // scripts de validation réelle, par LOTS SÉQUENTIELS plutôt qu'un unique appel global, pour
 // borner la mémoire quel que soit le nombre de sources à terme (voir l'audit du 19/10/2026).
 //
@@ -51,9 +50,9 @@ const DATATOURISME_MAX_TOTAL_POIS_PILOT = Number.isInteger(Number(process.env.SO
 // SÉQUENTIELS DANS LA MÊME EXÉCUTION (aucune provenance n'est fausse-positive marquée disparue
 // tant que le passage complet du catalogue reste nettement plus rapide que staleAfterMs).
 // CE QUI N'EST PAS ENCORE GARANTI à cette étape : qu'une exécution quotidienne future couvre
-// un jour la TOTALITÉ du catalogue national dans la fenêtre de 7 jours (la reprise via
-// resumeUrl n'est aujourd'hui tenue qu'en mémoire, PAS persistée entre deux exécutions du
-// scheduler) -- tant que ce n'est pas garanti, un staleAfterMs très large pour CETTE SEULE
+// un jour la TOTALITÉ du catalogue national dans la fenêtre de 7 jours, même avec le
+// curseur désormais persisté entre les exécutions du scheduler. Tant que ce n'est pas
+// garanti, un staleAfterMs très large pour CETTE SEULE
 // source évite tout faux positif de disparition, sans modifier ni contourner
 // persistSortirIngestionUnlocked/applyDisappearances : c'est un PARAMÈTRE déjà prévu à cet
 // effet, pas un bricolage. À resserrer explicitement le jour où la couverture complète du
@@ -194,9 +193,8 @@ async function runDatatourismeChunks({ apiKey, maxTotalPois, chunkSize, persist,
       chunk = await fetchChunk({ apiKey, resumeUrl: null, maxEvents: Math.min(chunkSize, remaining), sourceName: DATATOURISME_SOURCE_NAME, now });
     }
     const fetchDurationMs = Date.now() - fetchStartedAt;
-    if (!chunk.results.length) break; // plus rien à traiter, inutile de persister un lot vide.
 
-    let descriptor = { key: DATATOURISME_SOURCE_KEY, connectorType: "datatourisme", baseUrl: DATATOURISME_BASE_URL, results: chunk.results };
+    let descriptor = { key: DATATOURISME_SOURCE_KEY, connectorType: "datatourisme", baseUrl: DATATOURISME_BASE_URL, results: chunk.results, refusedPoiUuids: chunk.refusedPoiUuids || [] };
     const persistStartedAt = Date.now();
     const result = await persist({ store, sources: [descriptor], now, staleAfterMs: DATATOURISME_STALE_AFTER_MS });
     const persistDurationMs = Date.now() - persistStartedAt;
@@ -205,7 +203,7 @@ async function runDatatourismeChunks({ apiKey, maxTotalPois, chunkSize, persist,
     totalFetched += chunk.fetchedCount;
     chunkIndex += 1;
     const summary = {
-      type: "datatourisme", chunkIndex, poisFetched: chunk.fetchedCount, activitiesProduced: chunk.results.length,
+      type: "datatourisme", chunkIndex, poisFetched: chunk.fetchedCount, activitiesProduced: chunk.results.length, refusedPois: (chunk.refusedPoiUuids || []).length,
       fetchDurationMs, persistDurationMs, totalDurationMs: fetchDurationMs + persistDurationMs,
       heapUsedBeforeMB: heapBeforeMB, heapUsedAfterMB: heapAfterMB,
       status: result.status, stats: result.stats, exhausted: chunk.exhausted, cursorWasInvalid,
@@ -235,7 +233,7 @@ async function runDatatourismeChunks({ apiKey, maxTotalPois, chunkSize, persist,
     }
     descriptor = null;
 
-    if (chunk.exhausted) break;
+    if (chunk.exhausted || chunk.fetchedCount === 0) break;
   }
   return { skipped: false, summaries };
 }

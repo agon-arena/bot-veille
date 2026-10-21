@@ -1,6 +1,6 @@
 "use strict";
 
-const { validateNormalizedActivity } = require("../activity-validation");
+const { normalizeActivity, validateNormalizedActivity } = require("../activity-validation");
 
 const DEFAULT_TIMEOUT_MS = 15000;
 const DEFAULT_PAGE_SIZE = 50;
@@ -446,20 +446,24 @@ async function fetchDatatourismeEvents(options = {}) {
   // tronquée, puisque nextPageUrl pointe déjà sur la page SUIVANTE : ces éléments n'auraient
   // plus jamais été re-récupérés par un appel de reprise ultérieur.
   const nextPageUrl = nextUrl ? stripApiKeyFromUrl(nextUrl).toString() : null;
-  // Filtrage par taxonomie appliqué ICI, avant tout retour à l'appelant (runDatatourismeChunks
-  // puis persistSortirIngestion) : un événement jugé hors périmètre ne produit donc jamais
-  // d'activité, de provenance ni d'écriture Supabase -- il n'est même pas compté dans les
-  // statistiques "collected" du pipeline de persistance (qui itère sur `results`). `fetchedCount`
-  // reste basé sur `collected` (les POI bruts de l'API), jamais affecté par ce filtre : la
-  // pagination/le budget de la boucle appelante ne changent pas de comportement. Les entrées en
-  // erreur (activity absente) sont toujours conservées, pour ne jamais masquer une vraie panne de
-  // mapping derrière ce filtre éditorial.
-  const allResults = convertDatatourismeEvents(collected, { ...options, sourceUrl: stripApiKeyFromUrl(firstUrl).toString(), fetchedAt });
-  const results = allResults.filter((item) => !item.activity || isRelevantForMnoria(item.activity));
+  // Décision au niveau du POI brut : un refus reste explicite même si ses périodes
+  // ont disparu ou sont invalides. Ne pas le transformer en erreur de mapping.
+  const refusedPoiUuids = new Set();
+  const acceptedPois = collected.filter((poi) => {
+    const sourceCategories = Array.isArray(poi?.type) ? poi.type.filter((t) => typeof t === "string") : (text(poi?.type) ? [poi.type] : []);
+    // Même normalisation que les activités acceptées (espaces/doublons), sans
+    // dépendre de la validité d'une période pour prendre la décision éditoriale.
+    if (isRelevantForMnoria(normalizeActivity({ sourceCategories }))) return true;
+    if (!text(poi?.uuid)) throw new Error("POI DATAtourisme refusé sans UUID : réconciliation impossible");
+    refusedPoiUuids.add(String(poi.uuid));
+    return false;
+  });
+  const results = convertDatatourismeEvents(acceptedPois, { ...options, sourceUrl: stripApiKeyFromUrl(firstUrl).toString(), fetchedAt });
   return {
     total,
     fetchedCount: collected.length,
     pagesFetched: pages,
+    refusedPoiUuids: [...refusedPoiUuids],
     truncated: Boolean(nextPageUrl),
     nextPageUrl,
     exhausted: !nextPageUrl,
