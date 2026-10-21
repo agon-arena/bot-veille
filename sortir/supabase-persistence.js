@@ -5,6 +5,7 @@ const { createClient } = require("@supabase/supabase-js");
 const { validateNormalizedActivity } = require("./activity-validation");
 const { ALGORITHM_VERSION, DECISIONS, compareActivities, mergeActivities, canonicalUrl, normalizedText } = require("./activity-deduplication");
 const { ORCHESTRATOR_VERSION } = require("./ingestion-orchestrator");
+const { TemporalCandidateView } = require("./temporal-candidate-cache");
 
 const DEFAULT_STALE_AFTER_MS = 7 * 24 * 60 * 60 * 1000;
 // Borne la taille des .in(...) envoyés à PostgREST (disparitions groupées) : évite une URL
@@ -182,7 +183,7 @@ async function reconcileDatatourismeRefusals({ store, sourceId, refusedPoiUuids,
   return { affectedActivityIds, staleActivityIds };
 }
 
-async function persistSortirIngestionUnlocked({ sources, store, now = new Date(), staleAfterMs = DEFAULT_STALE_AFTER_MS }) {
+async function persistSortirIngestionUnlocked({ sources, store, now = new Date(), staleAfterMs = DEFAULT_STALE_AFTER_MS, reconcileDisappearances = true, candidateCache }) {
   if (!store) throw new Error("store est obligatoire");
   const startedAt = now.toISOString();
   const ingestion = await store.createIngestionRun({ status: "running", orchestrator_version: ORCHESTRATOR_VERSION, started_at: startedAt });
@@ -200,10 +201,15 @@ async function persistSortirIngestionUnlocked({ sources, store, now = new Date()
   // le préchargement ci-dessous relit l'état réellement commité en base à chaque appel -- un
   // appel antérieur déjà terminé y est donc déjà visible, exactement comme l'aurait été une
   // relecture live de listCandidateActivities.
-  const candidateIndex = new Map();
+  // Keep the original multi-descriptor ordering (including envelope gaps) intact.
+  // The national adapter uses one descriptor/call; cross-source DB candidates remain included.
+  const temporal = candidateCache && sources.length === 1;
+  if (candidateCache && !temporal) candidateCache.clear();
+  const candidateIndex = temporal ? new TemporalCandidateView(candidateCache) : new Map();
   // startsAtIso : chaîne ISO (comme activity.startsAt), jamais un Date déjà parsé par l'appelant.
-  function candidateMatches(startsAtIso) {
-    const t = Date.parse(startsAtIso);
+  function candidateMatches(activity) {
+    if (temporal) return candidateIndex.matches(activity);
+    const t = Date.parse(activity.startsAt);
     const result = [];
     for (const row of candidateIndex.values()) {
       if (!["active", "review"].includes(row.record_status)) continue;
@@ -217,7 +223,9 @@ async function persistSortirIngestionUnlocked({ sources, store, now = new Date()
   // contenu de l'index, pour ne jamais perdre silencieusement une provenance/un externalId déjà
   // connu.
   function setCandidateIndexEntry(scalarRow, provenances, externalIds) {
-    candidateIndex.set(scalarRow.id, { ...scalarRow, provenances: provenances || [], external_ids: externalIds || [] });
+    const row = { ...scalarRow, provenances: provenances || [], external_ids: externalIds || [] };
+    candidateIndex.set(scalarRow.id, row);
+    if (temporal) candidateCache.set(row);
   }
 
   for (const descriptor of Array.isArray(sources) ? sources : []) {
@@ -267,6 +275,7 @@ async function persistSortirIngestionUnlocked({ sources, store, now = new Date()
       const preloadActivityIds = [...new Set(preloadedProvenances.map((row) => row.activity_id))];
       const preloadedActivities = await store.getActivitiesBatch(preloadActivityIds);
       const activityMap = new Map(preloadedActivities.map((row) => [row.id, row]));
+      if (temporal) for (const id of preloadActivityIds) candidateCache.dirty.add(id);
       for (const { metadata, endsAt } of legacyDatatourismeItems) {
         const key = provenanceMapKey(metadata.sourceRecordId, metadata.sourceOccurrenceKey);
         if (provenanceMap.has(key)) continue;
@@ -298,8 +307,10 @@ async function persistSortirIngestionUnlocked({ sources, store, now = new Date()
       if (minNewStartsAtMs <= maxNewStartsAtMs) {
         const rangeStart = new Date(minNewStartsAtMs - 12 * 60 * 60 * 1000).toISOString();
         const rangeEnd = new Date(maxNewStartsAtMs + 12 * 60 * 60 * 1000).toISOString();
-        const fetchedCandidates = await store.listCandidateActivitiesInRange(rangeStart, rangeEnd);
-        for (const row of fetchedCandidates) candidateIndex.set(row.id, row);
+        if (temporal) {
+          await candidateCache.load([...preloadStartsAtByMapKey].filter(([key]) => !provenanceMap.has(key)).map(([, t]) => t), store);
+          candidateIndex.prepare(rangeStart, rangeEnd, preloadedActivities);
+        } else for (const row of await store.listCandidateActivitiesInRange(rangeStart, rangeEnd)) candidateIndex.set(row.id, row);
       }
       // pendingProvenanceTouchIds : cas ultra-fréquent uniquement (occurrence connue, hash
       // identique, activité non-stale) — les écritures ne varient pas d'un item à l'autre
@@ -404,7 +415,7 @@ async function persistSortirIngestionUnlocked({ sources, store, now = new Date()
             provenanceMap.set(provenanceMapKey(metadata.sourceRecordId, metadata.sourceOccurrenceKey), provenance);
             activityId = existing.id;
           } else {
-            const candidates = candidateMatches(validation.activity.startsAt);
+            const candidates = candidateMatches(validation.activity);
             const comparisons = candidates.map((candidate) => ({ candidate, result: compareActivities(rowToActivity(candidate), validation.activity) }));
             const match = validation.status === "VALID" ? comparisons.find((entry) => entry.result.decision === DECISIONS.MATCH) : null;
             const reviews = comparisons.filter((entry) => entry.result.decision === DECISIONS.REVIEW);
@@ -524,12 +535,13 @@ async function persistSortirIngestionUnlocked({ sources, store, now = new Date()
         // Les sources suivantes rechargeront les candidats nécessaires depuis le store.
         // Ne jamais réutiliser une photo antérieure à la désactivation d'une provenance.
         for (const id of reconciliation.affectedActivityIds) candidateIndex.delete(id);
+        if (temporal) candidateCache.invalidate(reconciliation.affectedActivityIds);
       } catch (error) {
         sourceStatus = "partial";
         errors.push(`refus éditoriaux DATAtourisme: ${errorText(error)}`);
       }
     }
-    if (sourceStatus === "completed") {
+    if (sourceStatus === "completed" && reconcileDisappearances) {
       try { await store.applyDisappearances({ sourceId: source.id, sourceRunId: sourceRun.id, cutoff: new Date(now.getTime() - staleAfterMs).toISOString() }); }
       catch (error) { sourceStatus = "partial"; errors.push(`disparitions: ${errorText(error)}`); }
     }
@@ -549,14 +561,34 @@ async function persistSortirIngestionUnlocked({ sources, store, now = new Date()
   return { ingestionRunId: ingestion.id, status, stats: totals, sources: sourceOutcomes };
 }
 
+const activeCandidateCaches = new WeakMap();
 function persistSortirIngestion(options) {
-  const run = ingestionQueue.then(() => persistSortirIngestionUnlocked(options));
+  const run = ingestionQueue.then(async () => {
+    // Wrappers sharing a client also share cache invalidation; independent stores do not.
+    if (!options.store) throw new Error("store est obligatoire");
+    const namespace = options.store.candidateCacheNamespace || options.store;
+    const previousCache = activeCandidateCaches.get(namespace);
+    if (previousCache !== options.candidateCache) {
+      previousCache?.clear(); options.candidateCache?.clear();
+    }
+    if (options.candidateCache) activeCandidateCaches.set(namespace, options.candidateCache);
+    else activeCandidateCaches.delete(namespace);
+    try {
+      const result = await persistSortirIngestionUnlocked(options);
+      if (options.candidateCache) {
+        if (result.status !== "completed") options.candidateCache.clear();
+        else await options.candidateCache.refresh(options.store);
+      }
+      return result;
+    } catch (error) { options.candidateCache?.clear(); throw error; }
+  });
   ingestionQueue = run.catch(() => undefined);
   return run;
 }
 
 async function mergeStoredActivities({ store, canonicalId, duplicateId }) {
   if (!store) throw new Error("store est obligatoire");
+  activeCandidateCaches.get(store.candidateCacheNamespace || store)?.clear();
   if (canonicalId === duplicateId) return store.getActivity(canonicalId);
   const canonical = await store.getActivity(canonicalId);
   const duplicate = await store.getActivity(duplicateId);
@@ -573,6 +605,7 @@ function createSupabaseSortirStore(client) {
   if (!client) throw new Error("client Supabase obligatoire");
   const one = async (query) => { const { data, error } = await query; if (error) throw new Error(error.message); return data; };
   return {
+    candidateCacheNamespace: client,
     async ensureSource(source) { return one(client.from("sortir_sources").upsert({ key: source.key, connector_type: source.connectorType, base_url: source.baseUrl || null, enabled: true, updated_at: new Date().toISOString() }, { onConflict: "key" }).select().single()); },
     // État mutable minimal pour la reprise de pagination (ex. DATAtourisme, voir
     // sortir-auto-ingest.js) -- n'a aucun rôle dans persistSortirIngestionUnlocked, jamais lu ni
@@ -619,6 +652,23 @@ function createSupabaseSortirStore(client) {
         rows.push(...page);
         if (page.length < CANDIDATE_RANGE_PAGE_SIZE) break;
         from += CANDIDATE_RANGE_PAGE_SIZE;
+      }
+      return rows;
+    },
+    async listCandidateActivitiesInWindows(windows, { maxRows = 100000, maxBytes = 256 * 1048576 } = {}) {
+      const rows = []; let bytes = 0;
+      // Disjoint UTC-day windows, batched to keep GET URLs well below 16 KB.
+      for (const group of chunkIds(windows, 40)) {
+        const filter = group.map(w => `and(starts_at.gte.${new Date(w.start).toISOString()},starts_at.lt.${new Date(w.end).toISOString()})`).join(",");
+        for (let from = 0; ; from += CANDIDATE_RANGE_PAGE_SIZE) {
+          const page = await one(client.from("sortir_activities")
+            .select("*, provenances:sortir_provenances(id,source_id,source_record_id,original_event_url,last_seen_at,source:sortir_sources(key,connector_type,base_url)), external_ids:sortir_external_ids(system,value)")
+            .in("record_status", ["active", "review"]).or(filter).order("id", { ascending: true }).range(from, from + CANDIDATE_RANGE_PAGE_SIZE - 1));
+          bytes += Buffer.byteLength(JSON.stringify(page));
+          if (rows.length + page.length > maxRows || bytes > maxBytes) throw new Error("Budget du chargement candidats dépassé");
+          rows.push(...page);
+          if (page.length < CANDIDATE_RANGE_PAGE_SIZE) break;
+        }
       }
       return rows;
     },
