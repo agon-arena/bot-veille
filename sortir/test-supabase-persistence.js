@@ -34,7 +34,7 @@ class MemoryStore {
   hydrate(row) { return { ...row, provenances: this.provenances.filter((p) => p.activity_id === row.id).map((p) => ({ ...p, source: this.sources.find((s) => s.id === p.source_id) })), external_ids: this.externalIds.filter((id) => id.activity_id === row.id) }; }
   async getActivity(id) { const row = this.activities.find((x) => x.id === id); if (!row) throw new Error("activité absente"); return this.hydrate(row); }
   async getActivitiesBatch(ids) { const set = new Set(ids); return this.activities.filter((x) => set.has(x.id)).map((x) => this.hydrate(x)); }
-  async listCandidateActivities(activity) { const time = Date.parse(activity.startsAt); return this.activities.filter((x) => ["active", "review"].includes(x.record_status) && Math.abs(Date.parse(x.starts_at) - time) <= 12 * 3600000).map((x) => this.hydrate(x)); }
+  async listCandidateActivitiesInRange(startIso, endIso) { const start = Date.parse(startIso), end = Date.parse(endIso); return this.activities.filter((x) => ["active", "review"].includes(x.record_status) && Date.parse(x.starts_at) >= start && Date.parse(x.starts_at) <= end).map((x) => this.hydrate(x)); }
   async createActivity(row) { const value = { id: this.id("act"), merged_into_id: null, ...row }; this.activities.push(value); return value; }
   async updateActivity(id, row) { const value = this.activities.find((x) => x.id === id); Object.assign(value, row); return value; }
   async markActivityMerged(id, canonicalId) { return this.updateActivity(id, { record_status: "merged", merged_into_id: canonicalId }); }

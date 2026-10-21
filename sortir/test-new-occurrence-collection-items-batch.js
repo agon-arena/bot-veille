@@ -2,7 +2,7 @@
 
 // Teste le batching de sortir_collection_items pour le chemin des NOUVELLES occurrences
 // (MATCH/REVIEW/DISTINCT) — périmètre strictement limité à cette seule table/ce seul appel.
-// Ne touche à rien d'autre : listCandidateActivities, createActivity,
+// Ne touche à rien d'autre : listCandidateActivitiesInRange, createActivity,
 // createProvenanceIdempotent, upsertExternalIds, insertDedupDecision et le dédoublonnage
 // lui-même restent exactement comme avant, non modifiés par cette étape.
 
@@ -43,7 +43,7 @@ const day = (n) => new Date(`2026-11-${String(n).padStart(2, "0")}T12:00:00Z`);
 class MemoryStore {
   constructor() {
     this.seq = 0; this.sources = []; this.ingestions = []; this.sourceRuns = []; this.activities = []; this.provenances = []; this.externalIds = []; this.items = []; this.decisions = [];
-    this.calls = { insertCollectionItem: 0, insertCollectionItemsBatch: 0, listCandidateActivities: 0, createActivity: 0, createProvenanceIdempotent: 0, upsertExternalIds: 0, insertDedupDecision: 0, updateActivity: 0 };
+    this.calls = { insertCollectionItem: 0, insertCollectionItemsBatch: 0, listCandidateActivitiesInRange: 0, createActivity: 0, createProvenanceIdempotent: 0, upsertExternalIds: 0, insertDedupDecision: 0, updateActivity: 0 };
   }
   resetCalls() { for (const k of Object.keys(this.calls)) this.calls[k] = 0; }
   id(p) { this.seq += 1; return `${p}-${this.seq}`; }
@@ -57,7 +57,7 @@ class MemoryStore {
   hydrate(row) { return { ...row, provenances: this.provenances.filter(p => p.activity_id === row.id).map(p => ({ ...p, source: this.sources.find(s => s.id === p.source_id) })), external_ids: this.externalIds.filter(id => id.activity_id === row.id) }; }
   async getActivity(id) { const row = this.activities.find(x => x.id === id); if (!row) throw new Error("absente"); return this.hydrate(row); }
   async getActivitiesBatch(ids) { const s = new Set(ids); return this.activities.filter(x => s.has(x.id)).map(x => this.hydrate(x)); }
-  async listCandidateActivities(activity) { this.calls.listCandidateActivities += 1; const t = Date.parse(activity.startsAt); return this.activities.filter(x => ["active", "review"].includes(x.record_status) && Math.abs(Date.parse(x.starts_at) - t) <= 12 * 3600000).map(x => this.hydrate(x)); }
+  async listCandidateActivitiesInRange(startIso, endIso) { this.calls.listCandidateActivitiesInRange += 1; const start = Date.parse(startIso), end = Date.parse(endIso); return this.activities.filter(x => ["active", "review"].includes(x.record_status) && Date.parse(x.starts_at) >= start && Date.parse(x.starts_at) <= end).map(x => this.hydrate(x)); }
   async createActivity(row) { this.calls.createActivity += 1; const v = { id: this.id("act"), merged_into_id: null, ...row }; this.activities.push(v); return v; }
   async updateActivity(id, row) { this.calls.updateActivity += 1; const v = this.activities.find(x => x.id === id); Object.assign(v, row); return v; }
   async markActivityMerged(id, cid) { return this.updateActivity(id, { record_status: "merged", merged_into_id: cid }); }

@@ -25,7 +25,26 @@ const PRELOAD_CHUNK_SIZE = 500;
 // longueur exacte de l'URL — le coût de quelques SELECT supplémentaires est négligeable face
 // au risque de dépasser à nouveau une limite non documentée précisément.
 const OCCURRENCE_KEY_CHUNK_SIZE = 100;
+// listCandidateActivitiesInRange retourne des lignes complètes via .range() (pagination par
+// offset, pas un .in() sur des clés textuelles) : aucune limite d'URL ici, contrairement à
+// OCCURRENCE_KEY_CHUNK_SIZE. Même borne que PRELOAD_CHUNK_SIZE par cohérence, sans raison de
+// diverger avant mesure.
+const CANDIDATE_RANGE_PAGE_SIZE = 500;
 let ingestionQueue = Promise.resolve();
+
+// Fusionne par (system, value), sans jamais supprimer une valeur déjà connue : reflète
+// exactement la sémantique d'upsertExternalIds (INSERT ... ON CONFLICT DO NOTHING), jamais un
+// DELETE. Utilisé uniquement pour tenir à jour candidateIndex en mémoire (voir
+// persistSortirIngestionUnlocked) sans jamais relire l'activité en base après chaque écriture.
+function unionExternalIds(existingIds, newIds) {
+  const seen = new Set((existingIds || []).map((id) => `${id.system}\u0000${id.value}`));
+  const merged = [...(existingIds || [])];
+  for (const id of newIds || []) {
+    const key = `${id.system}\u0000${id.value}`;
+    if (!seen.has(key)) { seen.add(key); merged.push({ system: id.system, value: id.value }); }
+  }
+  return merged;
+}
 
 function chunkIds(ids, size = DISAPPEARANCE_CHUNK_SIZE) {
   const chunks = [];
@@ -148,6 +167,37 @@ async function persistSortirIngestionUnlocked({ sources, store, now = new Date()
   const totals = { collected: 0, VALID: 0, NEEDS_REVIEW: 0, INVALID: 0, merged: 0, toReview: 0, final: 0 };
   const sourceOutcomes = [];
 
+  // Index EN MÉMOIRE des candidats pour les nouvelles occurrences (remplace les appels
+  // individuels à listCandidateActivities). Déclaré ICI, au niveau de tout l'appel -- JAMAIS
+  // réinitialisé entre deux sources -- parce qu'un candidat n'est pas filtré par source
+  // (contrairement à provenanceMap/activityMap ci-dessous, nécessairement par source puisque
+  // l'identité de provenance inclut source_id) : une activité créée en traitant la source A doit
+  // rester visible comme candidate pour la source B traitée ensuite DANS LE MÊME appel. La
+  // visibilité ENTRE deux appels séparés à persistSortirIngestion() n'a pas besoin d'être portée
+  // par cet index : ingestionQueue sérialise déjà tous les appels (jamais deux en parallèle), et
+  // le préchargement ci-dessous relit l'état réellement commité en base à chaque appel -- un
+  // appel antérieur déjà terminé y est donc déjà visible, exactement comme l'aurait été une
+  // relecture live de listCandidateActivities.
+  const candidateIndex = new Map();
+  // startsAtIso : chaîne ISO (comme activity.startsAt), jamais un Date déjà parsé par l'appelant.
+  function candidateMatches(startsAtIso) {
+    const t = Date.parse(startsAtIso);
+    const result = [];
+    for (const row of candidateIndex.values()) {
+      if (!["active", "review"].includes(row.record_status)) continue;
+      if (Math.abs(Date.parse(row.starts_at) - t) <= 12 * 60 * 60 * 1000) result.push(row);
+    }
+    return result;
+  }
+  // scalarRow : résultat brut d'un createActivity/updateActivity/markActivityMerged (colonnes de
+  // sortir_activities uniquement, sans jointures) -- provenances/externalIds doivent être
+  // fournis explicitement par l'appelant (voir les sites d'appel), jamais redérivés d'un ancien
+  // contenu de l'index, pour ne jamais perdre silencieusement une provenance/un externalId déjà
+  // connu.
+  function setCandidateIndexEntry(scalarRow, provenances, externalIds) {
+    candidateIndex.set(scalarRow.id, { ...scalarRow, provenances: provenances || [], external_ids: externalIds || [] });
+  }
+
   for (const descriptor of Array.isArray(sources) ? sources : []) {
     let source = null;
     let sourceRun = null;
@@ -164,8 +214,14 @@ async function persistSortirIngestionUnlocked({ sources, store, now = new Date()
       // qui écrit : un aller-retour "en trop" ici (validation déjà pure/sans effet de bord,
       // refaite ensuite dans la boucle principale) coûte zéro Supabase, et garde la boucle
       // principale strictement identique à son comportement actuel pour tout le reste
-      // (listCandidateActivities/MATCH/REVIEW/DISTINCT/création : non touchés à cette étape).
+      // (MATCH/REVIEW/DISTINCT/création : décision inchangée -- seule la LECTURE des candidats
+      // change, voir candidateIndex/listCandidateActivitiesInRange ci-dessous).
       const preloadOccurrenceKeys = new Set();
+      // mapKey -> startsAt (ms) de CETTE occurrence, pour le préchargement conditionnel des
+      // candidats ci-dessous (uniquement pour les clés qui s'avèrent absentes de provenanceMap,
+      // donc génuinement nouvelles) -- aucune revalidation supplémentaire : construit dans ce
+      // même pré-passage, déjà pur/sans effet de bord.
+      const preloadStartsAtByMapKey = new Map();
       for (const connectorResult of descriptor.results) {
         try {
           const wrapped = connectorResult && typeof connectorResult === "object" && ("activity" in connectorResult || "error" in connectorResult);
@@ -174,7 +230,9 @@ async function persistSortirIngestionUnlocked({ sources, store, now = new Date()
           const validation = validateNormalizedActivity(activityInput);
           if (validation.status === "INVALID") continue;
           const item = { ...(wrapped ? connectorResult : {}), activity: validation.activity };
-          preloadOccurrenceKeys.add(sourceMetadata(item, source).sourceOccurrenceKey);
+          const itemMetadata = sourceMetadata(item, source);
+          preloadOccurrenceKeys.add(itemMetadata.sourceOccurrenceKey);
+          preloadStartsAtByMapKey.set(provenanceMapKey(itemMetadata.sourceRecordId, itemMetadata.sourceOccurrenceKey), Date.parse(validation.activity.startsAt));
         } catch (_) { /* erreur de préparation : re-détectée et comptabilisée dans la boucle principale */ }
       }
       const preloadedProvenances = await store.findProvenancesBatch(source.id, [...preloadOccurrenceKeys]);
@@ -182,6 +240,29 @@ async function persistSortirIngestionUnlocked({ sources, store, now = new Date()
       const preloadActivityIds = [...new Set(preloadedProvenances.map((row) => row.activity_id))];
       const preloadedActivities = await store.getActivitiesBatch(preloadActivityIds);
       const activityMap = new Map(preloadedActivities.map((row) => [row.id, row]));
+      // Préchargement des CANDIDATS (remplace les futurs appels individuels à
+      // listCandidateActivities) -- déclenché UNIQUEMENT si cette source a au moins une
+      // occurrence qui s'avère absente de provenanceMap (génuinement nouvelle) : sur un lot où
+      // tout est déjà connu (cas quotidien dominant), aucun appel supplémentaire n'est fait, pour
+      // ne pas régresser ce cas déjà optimisé par le chemin "provenance connue" ci-dessus. La
+      // fenêtre couvre exactement l'union des ±12h de CES occurrences-là (même règle que
+      // l'ancien appel par occurrence), jamais un seuil de jours arbitraire -- une fenêtre large
+      // (ex. lot étalé sur plusieurs mois) reste correcte, juste paginée (voir
+      // listCandidateActivitiesInRange), sans jamais tronquer silencieusement au-delà de 500
+      // comme le faisait l'ancien appel borné par .limit(500).
+      let minNewStartsAtMs = Infinity;
+      let maxNewStartsAtMs = -Infinity;
+      for (const [mapKey, startsAtMs] of preloadStartsAtByMapKey) {
+        if (provenanceMap.has(mapKey) || !Number.isFinite(startsAtMs)) continue;
+        if (startsAtMs < minNewStartsAtMs) minNewStartsAtMs = startsAtMs;
+        if (startsAtMs > maxNewStartsAtMs) maxNewStartsAtMs = startsAtMs;
+      }
+      if (minNewStartsAtMs <= maxNewStartsAtMs) {
+        const rangeStart = new Date(minNewStartsAtMs - 12 * 60 * 60 * 1000).toISOString();
+        const rangeEnd = new Date(maxNewStartsAtMs + 12 * 60 * 60 * 1000).toISOString();
+        const fetchedCandidates = await store.listCandidateActivitiesInRange(rangeStart, rangeEnd);
+        for (const row of fetchedCandidates) candidateIndex.set(row.id, row);
+      }
       // pendingProvenanceTouchIds : cas ultra-fréquent uniquement (occurrence connue, hash
       // identique, activité non-stale) — les écritures ne varient pas d'un item à l'autre
       // (mêmes last_seen_at/active/last_seen_run_id pour toute la source, aucune autre colonne
@@ -252,6 +333,11 @@ async function persistSortirIngestionUnlocked({ sources, store, now = new Date()
                 // (provenances/externalIds persistées séparément, jamais via ces colonnes), donc
                 // leur péremption éventuelle ici est sans effet observable.
                 activityMap.set(existing.id, { ...existing, ...updated });
+                // existing.record_status passe de "stale" à "active" : si candidateIndex la
+                // contenait déjà (statut alors exclu par candidateMatches), elle doit redevenir
+                // sélectionnable pour une NOUVELLE occurrence traitée plus loin dans ce même lot
+                // -- provenances/external_ids inchangés (voir le commentaire ci-dessus).
+                setCandidateIndexEntry({ ...existing, ...updated }, existing.provenances, existing.external_ids);
                 await store.insertCollectionItem({ source_run_id: sourceRun.id, provenance_id: provenance.id, activity_id: existing.id, validation_status: validation.status, diagnostics: { errors: validation.errors, warnings: validation.warnings, sourceIndex: index } });
               } else {
                 // Cas ultra-fréquent : ni la provenance ni l'activité ne changent de contenu.
@@ -266,25 +352,46 @@ async function persistSortirIngestionUnlocked({ sources, store, now = new Date()
               await store.upsertExternalIds(existing.id, source.id, validation.activity.externalIds);
               const updated = await store.updateActivity(existing.id, activityToRow(merged, existing.record_status === "stale" ? "active" : existing.record_status));
               activityMap.set(existing.id, { ...existing, ...updated });
+              // Contenu fusionné + externalIds de CETTE occurrence upsertés ci-dessus : tient
+              // candidateIndex à jour pour les mêmes raisons que la réactivation ci-dessus
+              // (provenances inchangées : même provenance, seul son contenu/hash a changé).
+              setCandidateIndexEntry({ ...existing, ...updated }, existing.provenances, unionExternalIds(existing.external_ids, validation.activity.externalIds));
             }
             activityId = existing.id;
           } else {
-            const candidates = await store.listCandidateActivities(validation.activity);
+            const candidates = candidateMatches(validation.activity.startsAt);
             const comparisons = candidates.map((candidate) => ({ candidate, result: compareActivities(rowToActivity(candidate), validation.activity) }));
             const match = validation.status === "VALID" ? comparisons.find((entry) => entry.result.decision === DECISIONS.MATCH) : null;
             const reviews = comparisons.filter((entry) => entry.result.decision === DECISIONS.REVIEW);
             let createdActivityId = null;
             let desiredRecordStatus = null;
+            // indexScalarRow/basePriorProvenances/basePriorExternalIds : état de l'activité
+            // GAGNANTE pour cette occurrence, tenu à jour au fil des écritures ci-dessous, pour
+            // rafraîchir candidateIndex EN MÉMOIRE à la fin du bloc sans jamais relire l'activité
+            // en base (sauf le cas de course déjà existant, qui le faisait déjà avant cette
+            // étape).
+            let indexScalarRow;
+            let basePriorProvenances = [];
+            let basePriorExternalIds = [];
+            // provenanceAlreadyIndexed : vrai uniquement dans le cas de course ci-dessous, où la
+            // provenance renvoyée par createProvenanceIdempotent n'est pas une nouvelle ligne
+            // créée par CETTE occurrence mais la ligne déjà existante en conflit -- donc déjà
+            // comprise dans raced.provenances, jamais à ajouter une seconde fois.
+            let provenanceAlreadyIndexed = false;
             if (match) {
               const merged = mergeActivities(rowToActivity(match.candidate), validation.activity).activity;
-              await store.updateActivity(match.candidate.id, activityToRow(merged, match.candidate.record_status));
+              const updatedRow = await store.updateActivity(match.candidate.id, activityToRow(merged, match.candidate.record_status));
               await store.insertDedupDecision({ ingestion_run_id: ingestion.id, left_activity_id: match.candidate.id, right_activity_id: match.candidate.id, decision: "MATCH", algorithm_version: ALGORITHM_VERSION, signals: match.result.signals, review_status: "not_required" });
               activityId = match.candidate.id; totals.merged += 1;
+              indexScalarRow = { ...match.candidate, ...updatedRow };
+              basePriorProvenances = match.candidate.provenances || [];
+              basePriorExternalIds = match.candidate.external_ids || [];
             } else {
               const underReview = validation.status === "NEEDS_REVIEW" || reviews.length > 0;
               desiredRecordStatus = underReview ? "review" : "active";
               const created = await store.createActivity(activityToRow(validation.activity, underReview ? "review" : "stale"));
               activityId = created.id; createdActivityId = created.id; unlinkedActivityId = created.id;
+              indexScalarRow = created;
               if (underReview) { totals.toReview += 1; }
               for (const review of reviews) await store.insertDedupDecision({ ingestion_run_id: ingestion.id, left_activity_id: review.candidate.id, right_activity_id: created.id, decision: "REVIEW", algorithm_version: ALGORITHM_VERSION, signals: review.result.signals, review_status: "pending" });
             }
@@ -293,14 +400,36 @@ async function persistSortirIngestionUnlocked({ sources, store, now = new Date()
             if (provenance.activity_id !== activityId) {
               const raced = await store.getActivity(provenance.activity_id);
               const merged = mergeActivities(rowToActivity(raced), validation.activity).activity;
-              await store.updateActivity(raced.id, activityToRow(merged, raced.record_status === "stale" ? "active" : raced.record_status));
+              const updatedRow = await store.updateActivity(raced.id, activityToRow(merged, raced.record_status === "stale" ? "active" : raced.record_status));
               if (createdActivityId) await store.markActivityMerged(createdActivityId, raced.id);
               activityId = provenance.activity_id;
+              // L'activité créée localement a perdu la course : jamais indexée (elle devient
+              // "merged", de toute façon exclue de candidateMatches). L'activité réellement
+              // gagnante (raced) remplace l'état indexé précédent -- provenance est ici la ligne
+              // déjà existante en conflit, déjà comprise dans raced.provenances.
+              indexScalarRow = { ...raced, ...updatedRow };
+              basePriorProvenances = raced.provenances || [];
+              basePriorExternalIds = raced.external_ids || [];
+              provenanceAlreadyIndexed = true;
             }
             await store.upsertExternalIds(activityId, source.id, validation.activity.externalIds);
             if (createdActivityId && provenance.activity_id === createdActivityId && desiredRecordStatus === "active") {
-              await store.updateActivity(createdActivityId, { record_status: "active", updated_at: startedAt });
+              const reactivated = await store.updateActivity(createdActivityId, { record_status: "active", updated_at: startedAt });
+              indexScalarRow = { ...indexScalarRow, ...reactivated };
             }
+            // Rafraîchit candidateIndex EN MÉMOIRE (zéro appel Supabase supplémentaire) : la
+            // provenance de CETTE occurrence vient d'être créée/rattachée à activityId
+            // (createProvenanceIdempotent ci-dessus) -- une occurrence suivante DANS LE MÊME lot
+            // (même source ou une autre, voir la portée de candidateIndex en tête de fonction)
+            // doit la voir sans jamais revenir en base, exactement comme l'aurait fait une
+            // relecture live de listCandidateActivities.
+            // source est ici la ligne RETOURNÉE par ensureSource() (snake_case : connector_type/
+            // base_url), jamais le descripteur d'entrée (connectorType/baseUrl) -- une confusion
+            // ici ferait silencieusement échouer provenanceCompatible() (sourceUrl/sourceType
+            // absents), masquant les vrais MATCH intra-lot/inter-sources.
+            const provenanceForIndex = { ...provenance, source: { key: source.key, connector_type: source.connector_type, base_url: source.base_url } };
+            const finalProvenances = provenanceAlreadyIndexed ? basePriorProvenances : [...basePriorProvenances, provenanceForIndex];
+            setCandidateIndexEntry(indexScalarRow, finalProvenances, unionExternalIds(basePriorExternalIds, validation.activity.externalIds));
             // Nouvelle occurrence (MATCH/REVIEW/DISTINCT) : activity_id/provenance_id sont déjà
             // définitivement connus à ce stade (après la résolution de course éventuelle
             // ci-dessus) — différé en lot, comme le cas ultra-fréquent des occurrences connues,
@@ -387,6 +516,12 @@ function createSupabaseSortirStore(client) {
   const one = async (query) => { const { data, error } = await query; if (error) throw new Error(error.message); return data; };
   return {
     async ensureSource(source) { return one(client.from("sortir_sources").upsert({ key: source.key, connector_type: source.connectorType, base_url: source.baseUrl || null, enabled: true, updated_at: new Date().toISOString() }, { onConflict: "key" }).select().single()); },
+    // État mutable minimal pour la reprise de pagination (ex. DATAtourisme, voir
+    // sortir-auto-ingest.js) -- n'a aucun rôle dans persistSortirIngestionUnlocked, jamais lu ni
+    // écrit par lui : utilisé uniquement par la couche d'orchestration, qui décide elle-même
+    // quand lire/écrire (une lecture par cycle, une écriture après chaque chunk réussi).
+    async getSourceCursor(key) { const { data, error } = await client.from("sortir_sources").select("resume_cursor").eq("key", key).maybeSingle(); if (error) throw new Error(error.message); return data ? data.resume_cursor : null; },
+    async saveSourceCursor(key, cursor) { const { error } = await client.from("sortir_sources").update({ resume_cursor: cursor }).eq("key", key); if (error) throw new Error(error.message); },
     createIngestionRun: (row) => one(client.from("sortir_ingestion_runs").insert(row).select().single()),
     updateIngestionRun: (id, row) => one(client.from("sortir_ingestion_runs").update(row).eq("id", id).select().single()),
     createSourceRun: (row) => one(client.from("sortir_source_runs").insert(row).select().single()),
@@ -411,7 +546,24 @@ function createSupabaseSortirStore(client) {
       for (const chunk of chunkIds(unique, PRELOAD_CHUNK_SIZE)) rows.push(...await one(client.from("sortir_activities").select("*, provenances:sortir_provenances(*, source:sortir_sources(key,connector_type,base_url)), external_ids:sortir_external_ids(*)").in("id", chunk)));
       return rows;
     },
-    async listCandidateActivities(activity) { const start = new Date(Date.parse(activity.startsAt) - 12 * 60 * 60 * 1000).toISOString(); const end = new Date(Date.parse(activity.startsAt) + 12 * 60 * 60 * 1000).toISOString(); return one(client.from("sortir_activities").select("*, provenances:sortir_provenances(*, source:sortir_sources(key,connector_type,base_url)), external_ids:sortir_external_ids(*)").in("record_status", ["active", "review"]).gte("starts_at", start).lte("starts_at", end).limit(500)); },
+    // Remplace l'ancien listCandidateActivities(activity) (requête individuelle ±12h, bornée à
+    // .limit(500) donc silencieusement tronquante au-delà) : même filtre/colonnes/jointures,
+    // mais sur la fenêtre [startIso, endIso] couvrant TOUT le lot de nouvelles occurrences d'une
+    // source (voir persistSortirIngestionUnlocked), avec pagination par .range() -- jamais de
+    // perte silencieuse, quel que soit le nombre de candidats réellement actifs/en revue sur la
+    // période. .order("id") est nécessaire : .range() n'est stable/déterministe entre deux pages
+    // que sur un tri explicite.
+    async listCandidateActivitiesInRange(startIso, endIso) {
+      const rows = [];
+      let from = 0;
+      while (true) {
+        const page = await one(client.from("sortir_activities").select("*, provenances:sortir_provenances(*, source:sortir_sources(key,connector_type,base_url)), external_ids:sortir_external_ids(*)").in("record_status", ["active", "review"]).gte("starts_at", startIso).lte("starts_at", endIso).order("id", { ascending: true }).range(from, from + CANDIDATE_RANGE_PAGE_SIZE - 1));
+        rows.push(...page);
+        if (page.length < CANDIDATE_RANGE_PAGE_SIZE) break;
+        from += CANDIDATE_RANGE_PAGE_SIZE;
+      }
+      return rows;
+    },
     createActivity: (row) => one(client.from("sortir_activities").insert(row).select().single()),
     updateActivity: (id, row) => one(client.from("sortir_activities").update(row).eq("id", id).select().single()),
     markActivityMerged: (id, canonicalId) => one(client.from("sortir_activities").update({ record_status: "merged", merged_into_id: canonicalId, updated_at: new Date().toISOString() }).eq("id", id).select().single()),
@@ -475,4 +627,4 @@ function createDefaultSupabaseStore() {
   return createSupabaseSortirStore(createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false } }));
 }
 
-module.exports = { DEFAULT_STALE_AFTER_MS, DISAPPEARANCE_CHUNK_SIZE, PRELOAD_CHUNK_SIZE, OCCURRENCE_KEY_CHUNK_SIZE, chunkIds, provenanceMapKey, stableJson, payloadHash, sanitizeSourcePayload, canonicalActivityPayload, activityToRow, rowToActivity, persistSortirIngestion, mergeStoredActivities, createSupabaseSortirStore, createDefaultSupabaseStore };
+module.exports = { DEFAULT_STALE_AFTER_MS, DISAPPEARANCE_CHUNK_SIZE, PRELOAD_CHUNK_SIZE, OCCURRENCE_KEY_CHUNK_SIZE, CANDIDATE_RANGE_PAGE_SIZE, chunkIds, provenanceMapKey, unionExternalIds, stableJson, payloadHash, sanitizeSourcePayload, canonicalActivityPayload, activityToRow, rowToActivity, persistSortirIngestion, mergeStoredActivities, createSupabaseSortirStore, createDefaultSupabaseStore };
