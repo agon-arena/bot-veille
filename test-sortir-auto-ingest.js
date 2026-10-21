@@ -340,6 +340,30 @@ function fakeSources(n) { return Array.from({ length: n }, (_, i) => ({ key: `sr
     assert.strictEqual(store.cursor, null, "catalogue épuisé dès la page 1 dans ce scénario : curseur remis à zéro");
   });
 
+  await test("T — DATAtourisme : le résumé de chaque lot porte les compteurs de sélection du vrai connecteur", async () => {
+    const { fetchDatatourismeEvents } = require("./sortir/connectors/datatourisme");
+    const now = new Date("2026-10-21T08:00:00Z");
+    const located = { isLocatedAt: [{ address: [{ hasAddressCity: { label: "Paris", insee: "75056", isPartOfDepartment: { insee: "75" } } }] }], type: ["ExhibitionEvent"] };
+    const daily = Array.from({ length: 35 }, (_, i) => ({ startDate: new Date(Date.parse("2026-10-22T12:00:00Z") + i * 86400000).toISOString().slice(0, 10), startTime: "10:00", endTime: "12:00" }));
+    const objects = [
+      { ...located, uuid: "poi-capped", uri: "https://data.datatourisme.fr/x/poi-capped", label: "Visite quotidienne", takesPlaceAt: daily },
+      { ...located, uuid: "poi-window", uri: "https://data.datatourisme.fr/x/poi-window", label: "Conférence", takesPlaceAt: [{ startDate: "2026-09-01", startTime: "10:00", endTime: "12:00" }, { startDate: "2026-11-05", startTime: "18:00", endTime: "20:00" }, { startDate: "2090-01-01", startTime: "18:00", endTime: "20:00" }] }
+    ];
+    const previousFetch = global.fetch;
+    global.fetch = async () => ({ ok: true, status: 200, text: async () => JSON.stringify({ objects, meta: { total: 2, next: null } }) });
+    // La persistance revalide les activités et ne garde pas les warnings du connecteur : les
+    // compteurs ne doivent rien lui devoir.
+    const persist = async (args) => ({ status: "completed", stats: { collected: args.sources[0].results.length } });
+    try {
+      const outcome = await runDatatourismeChunks({ apiKey: "test-key", maxTotalPois: 2, chunkSize: 2, persist, store: fakeCursorStore(), now, fetchChunk: fetchDatatourismeEvents });
+      assert.deepStrictEqual(outcome.summaries[0].occurrenceSelection, {
+        poisConverted: 2, periodsTotal: 38, pastPeriodsSkipped: 1, outOfWindowPeriodsSkipped: 1, duplicatePeriodsRemoved: 0,
+        invalidPeriods: 0, poisCapped: 1, cappedOccurrencesDropped: 5, poisWithFallback: 0, occurrencesProduced: 31
+      });
+      assert.strictEqual(outcome.summaries[0].activitiesProduced, 31);
+    } finally { global.fetch = previousFetch; }
+  });
+
   console.log(`\n${passed} test(s) réussi(s), ${failed} échec(s).`);
   if (failed) process.exitCode = 1;
 })();

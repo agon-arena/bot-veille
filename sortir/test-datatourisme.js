@@ -30,7 +30,9 @@ function test(name, fn) {
   catch (error) { failed += 1; console.error(`✗ ${name}: ${error.message}`); }
 }
 
-const BASE_OPTIONS = { sourceName: "DATAtourisme — La Réunion", sourceUrl: "https://api.datatourisme.fr/v1/entertainmentAndEvent", fetchedAt: "2026-10-19T10:00:00.000Z" };
+const BASE_OPTIONS = { sourceName: "DATAtourisme — La Réunion", sourceUrl: "https://api.datatourisme.fr/v1/entertainmentAndEvent", fetchedAt: "2026-10-19T10:00:00.000Z", now: new Date("2026-10-19T10:00:00.000Z") };
+// Référence injectée dans les tests réseau mockés : aucune sélection d'occurrences ne dépend du jour réel.
+const FETCH_NOW = BASE_OPTIONS.now;
 
 // Fixtures construites à partir de PAYLOADS RÉELS récupérés sur l'API DATAtourisme le
 // 19/10/2026 (département 35, requête fields=uuid,uri,label,type,isLocatedAt,hasDescription,
@@ -189,7 +191,7 @@ test("horaire récurrent (appliesOnDay) : une seule occurrence représentative, 
 });
 
 test("champs optionnels absents (contact/image/description/thème) ne font pas échouer la conversion", () => {
-  const minimal = { uuid: "cccc3333", uri: "https://data.datatourisme.fr/x/cccc3333", label: "Minimal", isLocatedAt: [{ address: [{ hasAddressCity: { label: "Ville" } }] }], takesPlaceAt: [{ startDate: "2026-05-01", startTime: "10:00" }] };
+  const minimal = { uuid: "cccc3333", uri: "https://data.datatourisme.fr/x/cccc3333", label: "Minimal", isLocatedAt: [{ address: [{ hasAddressCity: { label: "Ville" } }] }], takesPlaceAt: [{ startDate: "2026-11-05", startTime: "10:00" }] };
   const result = convertDatatourismeEvent(minimal, BASE_OPTIONS);
   assert.strictEqual(result[0].validation.status, VALIDATION_STATUSES.VALID);
   assert.strictEqual(result[0].activity.description, null);
@@ -226,13 +228,13 @@ test("période incomplète (sans startDate) isolée sans bloquer les autres pér
 });
 
 test("données incomplètes/invalides (titre absent) donnent INVALID, jamais un crash", () => {
-  const poi = { uuid: "ddd", isLocatedAt: [{ address: [{ hasAddressCity: { label: "Ville" } }] }], takesPlaceAt: [{ startDate: "2026-05-01", startTime: "10:00" }] };
+  const poi = { uuid: "ddd", isLocatedAt: [{ address: [{ hasAddressCity: { label: "Ville" } }] }], takesPlaceAt: [{ startDate: "2026-11-05", startTime: "10:00" }] };
   const result = convertDatatourismeEvent(poi, BASE_OPTIONS);
   assert.strictEqual(result[0].validation.status, VALIDATION_STATUSES.INVALID);
 });
 
-test("garde-fou : un POI à de nombreuses périodes réelles est tronqué, pas explosé intégralement", () => {
-  const manyPeriods = Array.from({ length: 150 }, (_, i) => ({ startDate: `2026-01-${String((i % 28) + 1).padStart(2, "0")}`, startTime: "10:00", endTime: "12:00" }));
+test("garde-fou : un POI à de nombreuses périodes réelles est plafonné, pas explosé intégralement", () => {
+  const manyPeriods = Array.from({ length: 150 }, (_, i) => ({ startDate: `2026-11-${String((i % 28) + 1).padStart(2, "0")}`, startTime: `${String(8 + Math.floor(i / 28)).padStart(2, "0")}:00`, endTime: "18:00" }));
   const poi = { ...SIMPLE_POI, takesPlaceAt: manyPeriods };
   const result = convertDatatourismeEvent(poi, { ...BASE_OPTIONS, maxOccurrencesPerEvent: 10 });
   assert.strictEqual(result.length, 10);
@@ -329,12 +331,12 @@ function mockFetchSequence(responses) {
   return requestedUrls;
 }
 
-function poiStub(n) { return { uuid: `poi-${n}`, uri: `https://data.datatourisme.fr/x/poi-${n}`, label: `Événement ${n}`, isLocatedAt: [{ address: [{ hasAddressCity: { label: "Ville" } }] }], takesPlaceAt: [{ startDate: "2026-06-01", startTime: "10:00" }] }; }
+function poiStub(n) { return { uuid: `poi-${n}`, uri: `https://data.datatourisme.fr/x/poi-${n}`, label: `Événement ${n}`, isLocatedAt: [{ address: [{ hasAddressCity: { label: "Ville" } }] }], takesPlaceAt: [{ startDate: "2026-11-01", startTime: "10:00" }] }; }
 
 async function run() {
   await (async () => {
     mockFetchSequence([{ status: 200, body: { objects: [poiStub(1), poiStub(2), poiStub(3)], meta: { total: 3, next: null } } }]);
-    const result = await fetchDatatourismeEvents({ apiKey: "test-key", maxEvents: 10 });
+    const result = await fetchDatatourismeEvents({ now: FETCH_NOW, apiKey: "test-key", maxEvents: 10 });
     test("une seule page : tout récupéré en un appel", () => {
       assert.strictEqual(result.fetchedCount, 3);
       assert.strictEqual(result.pagesFetched, 1);
@@ -354,7 +356,7 @@ async function run() {
     const denyPoi = { ...poiStub(2), type: ["Event", "EntertainmentAndEvent", "Market"] };
     const mixedPoi = { ...poiStub(3), type: ["Event", "EntertainmentAndEvent", "SocialEvent"] };
     mockFetchSequence([{ status: 200, body: { objects: [allowPoi, denyPoi, mixedPoi], meta: { total: 3, next: null } } }]);
-    const result = await fetchDatatourismeEvents({ apiKey: "test-key", maxEvents: 10 });
+    const result = await fetchDatatourismeEvents({ now: FETCH_NOW, apiKey: "test-key", maxEvents: 10 });
     test("filtrage de bout en bout : un POI DENY ne produit aucune activité dans `results`, fetchedCount inchangé", () => {
       assert.strictEqual(result.fetchedCount, 3, "fetchedCount reste basé sur les POI bruts, jamais sur le résultat filtré");
       assert.strictEqual(result.results.length, 2, "seuls le POI ALLOW et le POI MIXED restent");
@@ -368,7 +370,7 @@ async function run() {
   await (async () => {
     // Chunk borné : page_size=2, maxEvents=2 -> s'arrête après EXACTEMENT 1 page, sans la couper.
     mockFetchSequence([{ status: 200, body: { objects: [poiStub(1), poiStub(2)], meta: { total: 10, next: "https://api.datatourisme.fr/v1/entertainmentAndEvent?api_key=SECRET&page=2" } } }]);
-    const chunk1 = await fetchDatatourismeEvents({ apiKey: "test-key", pageSize: 2, maxEvents: 2 });
+    const chunk1 = await fetchDatatourismeEvents({ now: FETCH_NOW, apiKey: "test-key", pageSize: 2, maxEvents: 2 });
     test("pagination bornée (chunk) : nextPageUrl renvoyé, jamais tronqué au milieu d'une page, jamais la clé dans l'URL de reprise", () => {
       assert.strictEqual(chunk1.fetchedCount, 2, "page entière conservée, rien perdu à la frontière du chunk");
       assert.strictEqual(chunk1.exhausted, false);
@@ -379,7 +381,7 @@ async function run() {
     // Reprise EXACTE à partir du curseur renvoyé par le chunk précédent (resumeUrl) : doit
     // continuer sans reconstruire de filtres, et sans jamais redemander les 2 premiers POI.
     const requestedUrls2 = mockFetchSequence([{ status: 200, body: { objects: [poiStub(3), poiStub(4)], meta: { total: 10, next: null } } }]);
-    const chunk2 = await fetchDatatourismeEvents({ apiKey: "test-key", resumeUrl: chunk1.nextPageUrl, maxEvents: 2 });
+    const chunk2 = await fetchDatatourismeEvents({ now: FETCH_NOW, apiKey: "test-key", resumeUrl: chunk1.nextPageUrl, maxEvents: 2 });
     test("reprise via resumeUrl : continue exactement où le chunk précédent s'est arrêté, aucune duplication cumulée", () => {
       assert.strictEqual(chunk2.fetchedCount, 2);
       assert.strictEqual(chunk2.exhausted, true);
@@ -395,7 +397,7 @@ async function run() {
       { status: 200, body: { objects: [poiStub(3), poiStub(4)], meta: { total: 5, next: "https://api.datatourisme.fr/v1/entertainmentAndEvent?api_key=SECRET&page=3" } } },
       { status: 200, body: { objects: [poiStub(5)], meta: { total: 5, next: null } } }
     ]);
-    const result = await fetchDatatourismeEvents({ apiKey: "test-key", pageSize: 2, maxEvents: 10 });
+    const result = await fetchDatatourismeEvents({ now: FETCH_NOW, apiKey: "test-key", pageSize: 2, maxEvents: 10 });
     test("plusieurs pages : suit meta.next jusqu'à épuisement, aucune duplication entre pages", () => {
       assert.strictEqual(result.fetchedCount, 5);
       assert.strictEqual(result.pagesFetched, 3);
@@ -409,7 +411,7 @@ async function run() {
       { status: 200, body: { objects: [poiStub(1)], meta: { total: 2, next: "https://api.datatourisme.fr/v1/entertainmentAndEvent?api_key=SECRET-LEAK-TEST&page=2" } } },
       { status: 200, body: { objects: [poiStub(2)], meta: { total: 2, next: null } } }
     ]);
-    await fetchDatatourismeEvents({ apiKey: "SECRET-LEAK-TEST", maxEvents: 10 });
+    await fetchDatatourismeEvents({ now: FETCH_NOW, apiKey: "SECRET-LEAK-TEST", maxEvents: 10 });
     test("absence de secret dans les requêtes effectuées : jamais api_key dans l'URL réellement appelée (toujours X-API-Key)", () => {
       assert.ok(requestedUrls.every((u) => !u.includes("SECRET-LEAK-TEST")), "la clé ne doit jamais apparaître dans l'URL appelée, même si meta.next l'y réintègre");
     });
@@ -420,7 +422,7 @@ async function run() {
 
   await (async () => {
     mockFetchSequence([{ status: 200, body: { objects: [poiStub(1), poiStub(2), poiStub(3)], meta: { total: 100, next: "https://api.datatourisme.fr/v1/entertainmentAndEvent?page=2" } } }]);
-    const result = await fetchDatatourismeEvents({ apiKey: "test-key", pageSize: 3, maxEvents: 3 });
+    const result = await fetchDatatourismeEvents({ now: FETCH_NOW, apiKey: "test-key", pageSize: 3, maxEvents: 3 });
     test("maxEvents borne la collecte même si l'API indique plus de résultats disponibles", () => {
       assert.strictEqual(result.fetchedCount, 3);
       assert.strictEqual(result.truncated, true);
@@ -429,7 +431,7 @@ async function run() {
 
   await (async () => {
     mockFetchSequence([{ status: 200, body: { objects: [], meta: { total: 0, next: null } } }]);
-    const result = await fetchDatatourismeEvents({ apiKey: "test-key", maxEvents: 10 });
+    const result = await fetchDatatourismeEvents({ now: FETCH_NOW, apiKey: "test-key", maxEvents: 10 });
     test("réponse vide : aucun résultat, aucune erreur", () => {
       assert.strictEqual(result.fetchedCount, 0);
       assert.deepStrictEqual(result.results, []);
@@ -440,7 +442,7 @@ async function run() {
     mockFetchSequence([{ status: 401, body: { message: "Invalid API key" } }]);
     let threw = false;
     let message = "";
-    try { await fetchDatatourismeEvents({ apiKey: "bad-key", maxEvents: 5 }); }
+    try { await fetchDatatourismeEvents({ now: FETCH_NOW, apiKey: "bad-key", maxEvents: 5 }); }
     catch (error) { threw = true; message = error.message; }
     test("erreur API (ex. clé invalide) rejette proprement sans crasher le process, et sans jamais exposer la clé dans le message", () => {
       assert.strictEqual(threw, true);
@@ -451,7 +453,7 @@ async function run() {
   await (async () => {
     mockFetchSequence([{ status: 200, body: { total: 1 } }]); // objects absent
     let threw = false;
-    try { await fetchDatatourismeEvents({ apiKey: "test-key", maxEvents: 5 }); }
+    try { await fetchDatatourismeEvents({ now: FETCH_NOW, apiKey: "test-key", maxEvents: 5 }); }
     catch (_) { threw = true; }
     test("réponse invalide (objects absent) rejette proprement", () => assert.strictEqual(threw, true));
   })();
@@ -459,7 +461,7 @@ async function run() {
   await (async () => {
     global.fetch = async () => { throw Object.assign(new Error("The operation was aborted"), { name: "AbortError" }); };
     let threw = false;
-    try { await fetchDatatourismeEvents({ apiKey: "test-key", maxEvents: 5, timeoutMs: 1 }); }
+    try { await fetchDatatourismeEvents({ now: FETCH_NOW, apiKey: "test-key", maxEvents: 5, timeoutMs: 1 }); }
     catch (_) { threw = true; }
     test("timeout réseau rejette proprement (AbortController, même mécanisme que les autres connecteurs)", () => assert.strictEqual(threw, true));
   })();
@@ -468,7 +470,7 @@ async function run() {
     // `next` ne progresse jamais : le garde-fou MAX_PAGES_SAFETY doit arrêter la boucle.
     global.fetch = async () => ({ ok: true, status: 200, text: async () => JSON.stringify({ objects: [poiStub(1)], meta: { total: 999999, next: "https://api.datatourisme.fr/v1/entertainmentAndEvent?page=2" } }) });
     let threw = false;
-    try { await fetchDatatourismeEvents({ apiKey: "test-key", maxEvents: 999999 }); }
+    try { await fetchDatatourismeEvents({ now: FETCH_NOW, apiKey: "test-key", maxEvents: 999999 }); }
     catch (_) { threw = true; }
     test("garde-fou anti boucle infinie : une pagination qui ne progresse jamais s'arrête explicitement", () => assert.strictEqual(threw, true));
   })();

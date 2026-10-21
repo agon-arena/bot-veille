@@ -38,8 +38,7 @@ réussie du chunk ni d'avancement du curseur pour une erreur de mapping).
 
 Nouvelle clé : `datatourisme:{uuid}:{début UTC}:end={fin UTC ou unknown}`.
 Elle ne dépend ni de l'index d'une période, ni de l'ordre du POI, ni du titre/texte.
-Les périodes identiques sont dédupliquées après sélection du lot de périodes ;
-la limite de 20 et l'ordre de sélection existants sont conservés.
+Les périodes identiques sont dédupliquées avant la sélection décrite ci-dessous.
 Deux périodes du même POI commençant au même instant mais finissant différemment
 sont DISTINCT même si les identifiants de POI et URL sont communs.
 
@@ -56,6 +55,26 @@ période finissant à 18h, même si son ancien payload de provenance indique 20h
 La période finissant à 20h30 devient une activité distincte lors d'une future
 ingestion. L'ordre inverse et le rejeu ne créent aucune copie supplémentaire.
 Cette règle n'est pas un nettoyage des 518 écarts historiques de l'audit.
+
+## Sélection des occurrences (fenêtre glissante)
+
+`takesPlaceAt` n'est pas trié par l'API : la sélection n'en dépend jamais. Pour chaque POI,
+avec `options.now` comme référence (à défaut `fetchedAt`) :
+
+1. préfiltre brut sur les dates civiles, avant Temporal, avec un jour de marge de fuseau :
+   période terminée avant J−1, ou commençant après J+90+1, jamais convertie ;
+2. conversion Temporal ; une période sans `startDate` ou rejetée reste une erreur isolée ;
+3. déduplication par la clé temporelle `uuid + début + fin` ;
+4. occurrences visibles uniquement (à venir, ou commencées et pas encore terminées) ;
+5. tri par début, fin (inconnue en dernier), puis clé ;
+6. fenêtre de 90 jours sur le début, plafond de 30 ;
+7. si la fenêtre est vide : la seule prochaine occurrence future (seul le premier jour civil
+   au-delà de la fenêtre, plus un jour de marge, est converti pour la trouver).
+
+`fetchDatatourismeEvents` renvoie `occurrenceStats` (périodes passées, hors fenêtre, doublons,
+invalides, POI plafonnés, occurrences produites), repris par le scheduler dans
+`occurrenceSelection` de chaque lot. Les occurrences déjà stockées qui sortent de la sélection
+suivent le vieillissement normal (`applyDisappearances`) et sont réactivées si elles reviennent.
 
 ## Provenance
 

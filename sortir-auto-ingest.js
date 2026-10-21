@@ -204,6 +204,9 @@ async function runDatatourismeChunks({ apiKey, maxTotalPois, chunkSize, persist,
     chunkIndex += 1;
     const summary = {
       type: "datatourisme", chunkIndex, poisFetched: chunk.fetchedCount, activitiesProduced: chunk.results.length, refusedPois: (chunk.refusedPoiUuids || []).length,
+      // Compteurs du connecteur (fenêtre 90 j + plafond 30), pas des warnings : la persistance
+      // revalide chaque activité et ne conserve pas les warnings du connecteur.
+      occurrenceSelection: chunk.occurrenceStats || null,
       fetchDurationMs, persistDurationMs, totalDurationMs: fetchDurationMs + persistDurationMs,
       heapUsedBeforeMB: heapBeforeMB, heapUsedAfterMB: heapAfterMB,
       status: result.status, stats: result.stats, exhausted: chunk.exhausted, cursorWasInvalid,

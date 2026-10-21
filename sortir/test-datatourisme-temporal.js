@@ -48,7 +48,7 @@ class MemoryStore {
 }
 
 const clone = x => JSON.parse(JSON.stringify(x));
-const opts = { fetchedAt: "2026-10-21T00:00:00Z", sourceName: "DATAtourisme", sourceUrl: "https://api.datatourisme.fr/v1/entertainmentAndEvent" };
+const opts = { fetchedAt: "2026-10-21T00:00:00Z", now: new Date("2026-10-21T00:00:00Z"), sourceName: "DATAtourisme", sourceUrl: "https://api.datatourisme.fr/v1/entertainmentAndEvent" };
 const periods = [{ startDate: "2026-10-09", startTime: "14:00", endDate: "2026-11-26", endTime: "20:30" },
   { startDate: "2026-10-09", startTime: "14:00", endDate: "2026-11-26", endTime: "18:00" }];
 function carrier(per = periods) { return { ...clone(fixtures.thierryCarrier), takesPlaceAt: clone(per) }; }
@@ -103,7 +103,8 @@ const convert = p => C.convertDatatourismeEvent(p, opts);
   await test("heure de printemps inexistante et heure d'automne ambiguë : aucune date artificielle",()=>{
     assert.throws(()=>C.combineDateAndTime("2026-03-29","02:30","Europe/Paris"));
     assert.throws(()=>C.combineDateAndTime("2026-10-25","02:30","Europe/Paris"));
-    const p=carrier([{startDate:"2026-03-29",startTime:"02:30"}]);const r=convert(p)[0];assert(r.error);assert.strictEqual(r.activity,null);
+    // Périodes de la fenêtre (référence 21/10/2026) : la nuit d'automne 2026 et celle de printemps 2027.
+    for(const startDate of ["2026-10-25","2027-03-28"]){const r=convert(carrier([{startDate,startTime:"02:30"}]))[0];assert(r.error,startDate);assert.strictEqual(r.activity,null);}
   });
   await test("Nouméa : mêmes règles UTC+11 en hiver, été et nuits de changement d'heure parisien",()=>{
     for(const date of ["2026-01-15","2026-07-15","2026-03-29","2026-10-25"]){const result=C.combineDateAndTime(date,"15:00","Pacific/Noumea");assert.strictEqual(result,date+"T04:00:00.000Z");}
@@ -112,7 +113,8 @@ const convert = p => C.convertDatatourismeEvent(p, opts);
   await test("Thierry Carrier : UUID et début identiques, deux fins donc deux clés distinctes",()=>{
     const r=convert(carrier());assert.strictEqual(r.length,2);assert.strictEqual(r[0].activity.startsAt,r[1].activity.startsAt);
     assert.notStrictEqual(r[0].sourceOccurrenceKey,r[1].sourceOccurrenceKey);
-    assert.strictEqual(r[0].activity.endsAt,"2026-11-26T19:30:00.000Z");assert.strictEqual(r[1].activity.endsAt,"2026-11-26T17:00:00.000Z");
+    // Même début : tri déterministe par fin, quel que soit l'ordre API.
+    assert.strictEqual(r[0].activity.endsAt,"2026-11-26T17:00:00.000Z");assert.strictEqual(r[1].activity.endsAt,"2026-11-26T19:30:00.000Z");
     assert.strictEqual(compareActivities(r[0].activity,r[1].activity).decision,DECISIONS.DISTINCT);
   });
   await test("même UUID + même début + même fin : clé identique, périodes identiques dédupliquées",()=>{
@@ -123,10 +125,12 @@ const convert = p => C.convertDatatourismeEvent(p, opts);
     const a=convert(carrier()),b=convert(carrier([...periods].reverse()));
     assert.deepStrictEqual(a.map(r=>r.sourceOccurrenceKey).sort(),b.map(r=>r.sourceOccurrenceKey).sort());
     const formatted={...periods[0],startTime:"1970-01-01T14:00:00",endTime:"20:30:00"};
-    assert.strictEqual(convert(carrier([formatted]))[0].sourceOccurrenceKey,a[0].sourceOccurrenceKey);
+    assert.strictEqual(convert(carrier([formatted]))[0].sourceOccurrenceKey,a.find(r=>r.activity.endsAt==="2026-11-26T19:30:00.000Z").sourceOccurrenceKey);
   });
   await test("fin inconnue distincte d'une fin explicite",()=>{
-    const a=convert(carrier([{startDate:"2026-10-09",startTime:"14:00"},periods[0]]));assert.notStrictEqual(a[0].sourceOccurrenceKey,a[1].sourceOccurrenceKey);
+    // Début futur : une fin inconnue n'est visible que si l'occurrence n'a pas encore commencé.
+    const a=convert(carrier([{startDate:"2026-11-26",startTime:"14:00"},{startDate:"2026-11-26",startTime:"14:00",endDate:"2026-11-26",endTime:"20:30"}]));
+    assert.strictEqual(a.length,2);assert.notStrictEqual(a[0].sourceOccurrenceKey,a[1].sourceOccurrenceKey);
   });
   await test("pipeline réel MemoryStore : deux périodes préservées, rejeu inversé sans doublon",async()=>{
     const store=new MemoryStore();await ingest(store,convert(carrier()));
@@ -159,8 +163,9 @@ const convert = p => C.convertDatatourismeEvent(p, opts);
   });
   await test("trace : un seul fragment brut et sa normalisation, aucune copie du catalogue",()=>{
     const p=carrier();p.takesPlaceAt=Array.from({length:1000},()=>clone(periods[0]));
-    const item=convert(p)[0],payload=sanitizeSourcePayload(item.sourcePayload);
-    assert(item.validation.warnings.some(w=>w.code==="occurrences_truncated"));
+    const converted=convert(p),item=converted[0],payload=sanitizeSourcePayload(item.sourcePayload);
+    // 1000 périodes identiques : dédupliquées AVANT le plafond, donc une seule occurrence, sans troncature.
+    assert.strictEqual(converted.length,1);assert(!item.validation.warnings.some(w=>w.code==="occurrences_truncated"));
     assert.deepStrictEqual(payload.period,periods[0]);assert.strictEqual(payload.normalized.endsAt,item.activity.endsAt);
     assert.strictEqual(payload.poiUuid,p.uuid);assert.strictEqual(payload.timezoneContext.departmentInsee,"57");assert(!JSON.stringify(payload).includes('takesPlaceAt'));assert(JSON.stringify(payload).length<1200);
     assert(!('description' in payload));assert.strictEqual(p.takesPlaceAt.length,1000);

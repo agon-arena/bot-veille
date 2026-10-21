@@ -77,7 +77,7 @@ class RefusalMemoryStore extends MemoryStore {
 async function fetchFixture(objects, next = null) {
   const previous = global.fetch;
   global.fetch = async () => ({ ok: true, text: async () => JSON.stringify({ objects, meta: { total: objects.length, next } }) });
-  try { return await fetchDatatourismeEvents({ apiKey: "fake", maxEvents: objects.length || 1 }); }
+  try { return await fetchDatatourismeEvents({ apiKey: "fake", maxEvents: objects.length || 1, now }); }
   finally { global.fetch = previous; }
 }
 async function runChunk(store, chunk) {

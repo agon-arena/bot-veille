@@ -9,10 +9,14 @@ const DEFAULT_PAGE_SIZE = 50;
 // Documenté (api.datatourisme.fr/v1/docs, changelog 2026-07-15) : page_size était plafonné à
 // 250, réduit à 100 depuis cette date — toute requête demandant plus reçoit une erreur 400.
 const MAX_PAGE_SIZE = 100;
-// Même garde-fou que openagenda-json.js (événement Chaalis à 787 occurrences réelles) :
-// takesPlaceAt peut aussi décrire un horaire récurrent (voir mapDatatourismeOccurrence) avec
-// de nombreuses entrées — jamais de collecte illimitée par POI.
-const DEFAULT_MAX_OCCURRENCES_PER_EVENT = 20;
+// Sélection des périodes d'un POI (audit du 21/10/2026, stratégie F) : takesPlaceAt n'est PAS
+// trié par l'API (0 POI trié sur 935 dépassant 20 périodes, jusqu'à 3 868 périodes jusqu'en
+// 2100). On ne garde que les occurrences encore visibles dans Explorer, triées
+// chronologiquement, dans une fenêtre glissante de 90 jours, plafonnées à 30 par POI ; à défaut,
+// la seule prochaine occurrence future. Les ingestions suivantes font avancer la fenêtre.
+const DEFAULT_MAX_OCCURRENCES_PER_EVENT = 30;
+const DEFAULT_OCCURRENCE_WINDOW_DAYS = 90;
+const DAY_MS = 24 * 60 * 60 * 1000;
 // CRITIQUE (bug réel rencontré le 19/10/2026) : la sélection de champs par défaut de l'API
 // EXCLUT takesPlaceAt (vérifié sur la doc officielle ET en conditions réelles : sans ce
 // paramètre, takesPlaceAt est systématiquement absent, donc CHAQUE POI échoue avec "sans
@@ -306,68 +310,201 @@ function mapDatatourismeOccurrence(poi, period, options = {}) {
   return { poiUuid: poi?.uuid, occurrenceKey, activity };
 }
 
-// Explose un POI (uuid + takesPlaceAt[]) en une NormalizedActivity par période, conformément au
-// modèle interne "une ligne = une occurrence" (même contrat que convertOpenAgendaJsonEvent).
-function convertDatatourismeEvent(poi, options = {}) {
-  const maxOccurrences = Number.isInteger(options.maxOccurrencesPerEvent) ? options.maxOccurrencesPerEvent : DEFAULT_MAX_OCCURRENCES_PER_EVENT;
+// Une période → un item du connecteur (activité validée ou erreur isolée), sans sélection.
+// index = position dans takesPlaceAt brut, jamais dans la sélection.
+function convertDatatourismePeriod(poi, period, index, options) {
+  try {
+    const { activity, occurrenceKey } = mapDatatourismeOccurrence(poi, period, options);
+    const validation = validateNormalizedActivity(activity);
+    const legacyId = buildDatatourismeOccurrenceKey(poi.uuid, validation.activity.startsAt);
+    return {
+      index, activity: validation.activity, validation, error: null,
+      // Garder source_record_id historique préserve également le rapprochement des refus.
+      sourceRecordId: legacyId, sourceOccurrenceKey: occurrenceKey,
+      legacySourceOccurrenceKey: `${legacyId}@${validation.activity.startsAt}`,
+      sourcePayload: {
+        version: "datatourisme-period-v2", poiUuid: poi.uuid, poiUri: poi.uri || null,
+        producerIdentifier: poi.identifier || null,
+        timezoneContext: {
+          poi: poi.timezone || poi.timeZone || null,
+          location: poi.isLocatedAt?.[0]?.timezone || poi.isLocatedAt?.[0]?.timeZone || null,
+          communeInsee: poi.isLocatedAt?.[0]?.address?.[0]?.hasAddressCity?.insee || null,
+          departmentInsee: poi.isLocatedAt?.[0]?.address?.[0]?.hasAddressCity?.isPartOfDepartment?.insee || null
+        },
+        // Un seul fragment, sans descriptions/images/autres périodes du POI.
+        period: JSON.parse(JSON.stringify(period)),
+        normalized: { startsAt: validation.activity.startsAt, endsAt: validation.activity.endsAt, timezone: validation.activity.timezone },
+        occurrenceKey
+      }
+    };
+  } catch (error) {
+    return { index, activity: null, validation: null, error: error.message };
+  }
+}
+
+// Compteurs de sélection, en périodes BRUTES de takesPlaceAt. Invariant vérifié par les tests :
+// periodsTotal = past + outOfWindow + duplicates + invalid + cappedDropped + occurrencesProduced.
+// Portés par la valeur de retour (jamais par un warning, que la persistance recalcule).
+function emptyOccurrenceSelectionStats() {
+  return {
+    poisConverted: 0, periodsTotal: 0, pastPeriodsSkipped: 0, outOfWindowPeriodsSkipped: 0,
+    duplicatePeriodsRemoved: 0, invalidPeriods: 0, poisCapped: 0, cappedOccurrencesDropped: 0,
+    poisWithFallback: 0, occurrencesProduced: 0
+  };
+}
+function addOccurrenceSelectionStats(total, stats) {
+  for (const key of Object.keys(total)) total[key] += stats[key] || 0;
+  return total;
+}
+
+// Instant de référence déterministe : options.now, sinon l'instant de collecte (fetchedAt).
+// Jamais l'ordre ni le contenu du POI.
+function referenceInstantMs(options) {
+  const raw = options.now !== undefined && options.now !== null ? options.now : options.fetchedAt;
+  const ms = raw === undefined || raw === null ? Date.now() : raw instanceof Date ? raw.getTime() : Date.parse(raw);
+  if (!Number.isFinite(ms)) throw new Error("Instant de référence DATAtourisme invalide (options.now/fetchedAt).");
+  return ms;
+}
+function utcDateString(ms) { return new Date(ms).toISOString().slice(0, 10); }
+
+// Préfiltre BRUT, avant toute conversion Temporal : seules les dates civiles AAAA-MM-JJ de la
+// période sont lues. Les fuseaux DATAtourisme sont tous à moins d'un jour d'UTC (Tahiti −10 h,
+// Nouméa +11 h, Wallis +12 h) : une marge d'un jour civil de chaque côté garantit qu'aucune
+// période potentiellement visible ou dans la fenêtre n'est écartée ici. Le classement exact
+// est refait sur les instants convertis. Une date illisible est laissée à la conversion, qui
+// applique la sémantique existante.
+function classifyRawPeriod(period, bounds) {
+  const start = extractDatePart(period.startDate);
+  if (!start) return "convert";
+  const end = extractDatePart(period.endDate);
+  const effectiveEnd = end && end > start ? end : start;
+  if (effectiveEnd < bounds.pastBefore) return "past";
+  if (start > bounds.windowAfter) return "beyond";
+  return "convert";
+}
+function rawStartKey(period) {
+  return `${extractDatePart(period.startDate)}T${extractTimePart(period.startTime) || "00:00"}`;
+}
+
+// Même règle que la requête Explorer : à venir, ou commencé et pas encore terminé.
+function isVisibleAt(item, nowMs) {
+  const start = Date.parse(item.activity.startsAt);
+  const end = item.activity.endsAt ? Date.parse(item.activity.endsAt) : null;
+  return start >= nowMs || (start <= nowMs && end !== null && end > nowMs);
+}
+// Ordre total déterministe : début, puis fin (fin inconnue en dernier), puis clé d'occurrence.
+function compareOccurrences(a, b) {
+  const startDiff = Date.parse(a.activity.startsAt) - Date.parse(b.activity.startsAt);
+  if (startDiff) return startDiff;
+  const endA = a.activity.endsAt ? Date.parse(a.activity.endsAt) : Infinity;
+  const endB = b.activity.endsAt ? Date.parse(b.activity.endsAt) : Infinity;
+  if (endA !== endB) return endA < endB ? -1 : 1;
+  return a.sourceOccurrenceKey < b.sourceOccurrenceKey ? -1 : a.sourceOccurrenceKey > b.sourceOccurrenceKey ? 1 : 0;
+}
+
+// Explose un POI (uuid + takesPlaceAt[]) en une NormalizedActivity par occurrence retenue
+// (modèle "une ligne = une occurrence", même contrat que convertOpenAgendaJsonEvent).
+// Étapes : préfiltre brut → conversion Temporal → erreurs isolées → déduplication par clé
+// temporelle → occurrences visibles → tri → fenêtre → plafond, sinon prochaine occurrence.
+function convertDatatourismeEventWithStats(poi, options = {}) {
+  const stats = emptyOccurrenceSelectionStats();
+  stats.poisConverted = 1;
   const periods = Array.isArray(poi && poi.takesPlaceAt) ? poi.takesPlaceAt : [];
   if (!periods.length) {
-    return [{ index: 0, activity: null, validation: null, error: "Événement sans période exploitable (takesPlaceAt vide ou absent)." }];
+    return { results: [{ index: 0, activity: null, validation: null, error: "Événement sans période exploitable (takesPlaceAt vide ou absent)." }], stats };
   }
-  const truncated = periods.length > maxOccurrences;
-  const selected = truncated ? periods.slice(0, maxOccurrences) : periods;
-  const seen = new Map();
-  return selected.map((period, index) => {
-    try {
-      if (!period || !period.startDate) {
-        return { index, activity: null, validation: null, error: "Période sans date de début exploitable." };
-      }
-      const { activity, occurrenceKey } = mapDatatourismeOccurrence(poi, period, options);
-      const validation = validateNormalizedActivity(activity);
-      if (truncated && index === selected.length - 1) {
-        validation.warnings.push({ code: "occurrences_truncated", field: "startsAt", message: `Événement tronqué à ${maxOccurrences} périodes sur ${periods.length} réelles (garde-fou).` });
-      }
-      const legacyId = buildDatatourismeOccurrenceKey(poi.uuid, validation.activity.startsAt);
-      return {
-        index, activity: validation.activity, validation, error: null,
-        // Garder source_record_id historique préserve également le rapprochement des refus.
-        sourceRecordId: legacyId, sourceOccurrenceKey: occurrenceKey,
-        legacySourceOccurrenceKey: `${legacyId}@${validation.activity.startsAt}`,
-        sourcePayload: {
-          version: "datatourisme-period-v2", poiUuid: poi.uuid, poiUri: poi.uri || null,
-          producerIdentifier: poi.identifier || null,
-          timezoneContext: {
-            poi: poi.timezone || poi.timeZone || null,
-            location: poi.isLocatedAt?.[0]?.timezone || poi.isLocatedAt?.[0]?.timeZone || null,
-            communeInsee: poi.isLocatedAt?.[0]?.address?.[0]?.hasAddressCity?.insee || null,
-            departmentInsee: poi.isLocatedAt?.[0]?.address?.[0]?.hasAddressCity?.isPartOfDepartment?.insee || null
-          },
-          // Un seul fragment, sans descriptions/images/autres périodes du POI.
-          period: JSON.parse(JSON.stringify(period)),
-          normalized: { startsAt: validation.activity.startsAt, endsAt: validation.activity.endsAt, timezone: validation.activity.timezone },
-          occurrenceKey
-        }
-      };
-    } catch (error) {
-      return { index, activity: null, validation: null, error: error.message };
+  stats.periodsTotal = periods.length;
+  const maxOccurrences = Number.isInteger(options.maxOccurrencesPerEvent) && options.maxOccurrencesPerEvent > 0 ? options.maxOccurrencesPerEvent : DEFAULT_MAX_OCCURRENCES_PER_EVENT;
+  const windowDays = Number.isInteger(options.occurrenceWindowDays) && options.occurrenceWindowDays > 0 ? options.occurrenceWindowDays : DEFAULT_OCCURRENCE_WINDOW_DAYS;
+  const nowMs = referenceInstantMs(options);
+  const windowEndMs = nowMs + windowDays * DAY_MS;
+  const bounds = { pastBefore: utcDateString(nowMs - DAY_MS), windowAfter: utcDateString(windowEndMs + DAY_MS) };
+
+  const invalid = [];
+  const unique = new Map();
+  const convertInto = (period, index) => {
+    const item = convertDatatourismePeriod(poi, period, index, options);
+    // Sans instant de début exploitable, l'item reste émis tel quel (INVALID ou erreur), comme avant.
+    if (!item.activity || !Number.isFinite(Date.parse(item.activity.startsAt))) { invalid.push(item); stats.invalidPeriods += 1; return; }
+    if (unique.has(item.sourceOccurrenceKey)) { stats.duplicatePeriodsRemoved += 1; return; }
+    unique.set(item.sourceOccurrenceKey, item);
+  };
+
+  const beyondRaw = [];
+  periods.forEach((period, index) => {
+    if (!period || !period.startDate) {
+      invalid.push({ index, activity: null, validation: null, error: "Période sans date de début exploitable." });
+      stats.invalidPeriods += 1;
+      return;
     }
-  }).filter((item) => {
-    if (!item.activity) return true;
-    const duplicate = seen.get(item.sourceOccurrenceKey);
-    if (duplicate) {
-      // Le garde-fou de 20 périodes doit rester visible même si la dernière
-      // période sélectionnée est un doublon supprimé.
-      duplicate.validation.warnings.push(...item.validation.warnings.filter(w => w.code === "occurrences_truncated"));
-      return false;
-    }
-    seen.set(item.sourceOccurrenceKey, item);
-    return true;
+    const rawClass = classifyRawPeriod(period, bounds);
+    if (rawClass === "past") stats.pastPeriodsSkipped += 1;
+    else if (rawClass === "beyond") beyondRaw.push({ period, index, key: rawStartKey(period) });
+    else convertInto(period, index);
   });
+
+  const inWindow = [];
+  const beyondWindow = [];
+  const classifyConverted = (items) => {
+    for (const item of items) {
+      if (!isVisibleAt(item, nowMs)) stats.pastPeriodsSkipped += 1;
+      else if (Date.parse(item.activity.startsAt) > windowEndMs) beyondWindow.push(item);
+      else inWindow.push(item);
+    }
+  };
+  classifyConverted([...unique.values()]);
+
+  let selected;
+  let unconvertedBeyond = beyondRaw.length;
+  if (inWindow.length) {
+    inWindow.sort(compareOccurrences);
+    selected = inWindow.slice(0, maxOccurrences);
+    stats.cappedOccurrencesDropped = inWindow.length - selected.length;
+    if (stats.cappedOccurrencesDropped) {
+      stats.poisCapped = 1;
+      selected[selected.length - 1].validation.warnings.push({ code: "occurrences_truncated", field: "startsAt", message: `Plafond de ${maxOccurrences} occurrences atteint sur ${inWindow.length} visibles dans les ${windowDays} prochains jours.` });
+    }
+  } else {
+    // Repli : la VRAIE prochaine occurrence future. Les périodes brutes au-delà de la fenêtre
+    // sont converties seulement pour le premier jour civil (+1 jour de marge de fuseau) ; les
+    // suivantes ne peuvent pas commencer plus tôt.
+    if (beyondRaw.length) {
+      beyondRaw.sort((a, b) => (a.key < b.key ? -1 : a.key > b.key ? 1 : a.index - b.index));
+      const firstDate = extractDatePart(beyondRaw[0].period.startDate);
+      const limitDate = utcDateString(Date.parse(`${firstDate}T00:00:00Z`) + DAY_MS);
+      const group = beyondRaw.filter((entry) => extractDatePart(entry.period.startDate) <= limitDate);
+      unconvertedBeyond -= group.length;
+      const before = new Set(unique.keys());
+      for (const entry of group) convertInto(entry.period, entry.index);
+      classifyConverted([...unique.entries()].filter(([key]) => !before.has(key)).map(([, item]) => item));
+    }
+    beyondWindow.sort(compareOccurrences);
+    selected = beyondWindow.length ? [beyondWindow[0]] : [];
+    if (selected.length) stats.poisWithFallback = 1;
+  }
+  stats.outOfWindowPeriodsSkipped = unconvertedBeyond + beyondWindow.length - (inWindow.length ? 0 : selected.length);
+  stats.occurrencesProduced = selected.length;
+  invalid.sort((a, b) => a.index - b.index);
+  return { results: [...invalid, ...selected], stats };
+}
+
+function convertDatatourismeEvent(poi, options = {}) {
+  return convertDatatourismeEventWithStats(poi, options).results;
+}
+
+function convertDatatourismeEventsWithStats(pois, options = {}) {
+  const stats = emptyOccurrenceSelectionStats();
+  const results = [];
+  for (const poi of Array.isArray(pois) ? pois : []) {
+    const converted = convertDatatourismeEventWithStats(poi, options);
+    results.push(...converted.results);
+    addOccurrenceSelectionStats(stats, converted.stats);
+  }
+  return { results, stats };
 }
 
 function convertDatatourismeEvents(pois, options = {}) {
-  if (!Array.isArray(pois)) return [];
-  return pois.flatMap((poi) => convertDatatourismeEvent(poi, options));
+  return convertDatatourismeEventsWithStats(pois, options).results;
 }
 
 // Filtrage par taxonomie DATAtourisme (positionnement éditorial Mnoria : culture, intellectuel,
@@ -430,6 +567,8 @@ async function fetchDatatourismeEvents(options = {}) {
   const maxEvents = Number.isInteger(options.maxEvents) && options.maxEvents > 0 ? options.maxEvents : 20;
   const pageSize = Math.min(options.pageSize || DEFAULT_PAGE_SIZE, MAX_PAGE_SIZE, maxEvents);
   const fetchedAt = options.fetchedAt || new Date().toISOString();
+  // Même instant pour le filtre API et la sélection des occurrences (fenêtre, passé, en cours).
+  const now = options.now || new Date();
 
   const filters = [];
   if (options.departmentInsee) filters.push(`isLocatedAt.address.hasAddressCity.isPartOfDepartment.insee[eq]=${options.departmentInsee}`);
@@ -439,7 +578,7 @@ async function fetchDatatourismeEvents(options = {}) {
   // (même principe que l'exemple isPartOfDepartment.insee[in]=...).
   const onlyFutureOrOngoing = options.onlyFutureOrOngoing !== false;
   if (onlyFutureOrOngoing) {
-    const today = (options.now || new Date()).toISOString().slice(0, 10);
+    const today = now.toISOString().slice(0, 10);
     filters.push(`takesPlaceAt.endDate[gte]=${today}`);
   }
 
@@ -490,7 +629,7 @@ async function fetchDatatourismeEvents(options = {}) {
     refusedPoiUuids.add(String(poi.uuid));
     return false;
   });
-  const results = convertDatatourismeEvents(acceptedPois, { ...options, sourceUrl: stripApiKeyFromUrl(firstUrl).toString(), fetchedAt });
+  const { results, stats: occurrenceStats } = convertDatatourismeEventsWithStats(acceptedPois, { ...options, now, sourceUrl: stripApiKeyFromUrl(firstUrl).toString(), fetchedAt });
   return {
     total,
     fetchedCount: collected.length,
@@ -499,6 +638,7 @@ async function fetchDatatourismeEvents(options = {}) {
     truncated: Boolean(nextPageUrl),
     nextPageUrl,
     exhausted: !nextPageUrl,
+    occurrenceStats,
     results
   };
 }
@@ -519,8 +659,13 @@ module.exports = {
   mapImage,
   buildDatatourismeOccurrenceKey,
   mapDatatourismeOccurrence,
+  DEFAULT_MAX_OCCURRENCES_PER_EVENT,
+  DEFAULT_OCCURRENCE_WINDOW_DAYS,
+  emptyOccurrenceSelectionStats,
   convertDatatourismeEvent,
+  convertDatatourismeEventWithStats,
   convertDatatourismeEvents,
+  convertDatatourismeEventsWithStats,
   stripApiKeyFromUrl,
   fetchDatatourismeEvents,
   stripHtml,
