@@ -1,0 +1,397 @@
+{
+  "thierryCarrier": {
+    "uuid": "0312af50-a77f-30b3-9e73-63e070dc0d3d",
+    "uri": "https://data.datatourisme.fr/10/857bbdb5-3925-34a4-858b-439154037d66",
+    "identifier": "838175335",
+    "label": {
+      "@fr": "Exposition - Thierry Carrier « ... On the other side »"
+    },
+    "type": [
+      "Exhibition",
+      "PointOfInterest",
+      "Event",
+      "EntertainmentAndEvent",
+      "CulturalEvent",
+      "ExhibitionEvent"
+    ],
+    "isLocatedAt": [
+      {
+        "geo": {
+          "latitude": 49.122025,
+          "longitude": 6.171019
+        },
+        "address": [
+          {
+            "hasAddressCity": {
+              "insee": "57463",
+              "isPartOfDepartment": {
+                "isPartOfRegion": {
+                  "isPartOfCountry": {
+                    "label": {
+                      "@en": "France",
+                      "@fr": "France"
+                    }
+                  },
+                  "insee": "44",
+                  "label": {
+                    "@en": "Grand Est",
+                    "@fr": "Grand Est"
+                  }
+                },
+                "insee": "57",
+                "label": {
+                  "@en": "Moselle",
+                  "@fr": "Moselle"
+                }
+              },
+              "label": {
+                "@en": "Metz",
+                "@fr": "Metz"
+              }
+            },
+            "streetAddress": [
+              "MCL Saint-Marcel",
+              "36 Rue Saint Marcel"
+            ],
+            "postalCode": "57000",
+            "addressLocality": "Metz"
+          }
+        ],
+        "petsAllowed": false,
+        "openingHoursSpecification": [
+          {
+            "validThrough": "2026-11-27T23:59:59Z",
+            "opens": "16:00",
+            "validFrom": "2026-10-10T00:00:00Z",
+            "closes": "20:30"
+          },
+          {
+            "validThrough": "2026-11-27T23:59:59Z",
+            "opens": "14:00",
+            "validFrom": "2026-10-10T00:00:00Z",
+            "closes": "18:00"
+          },
+          {
+            "validThrough": "2026-11-27T23:59:59Z",
+            "opens": "14:00",
+            "validFrom": "2026-10-10T00:00:00Z",
+            "closes": "20:30"
+          },
+          {
+            "validThrough": "2026-11-27T23:59:59Z",
+            "opens": "10:00",
+            "validFrom": "2026-10-10T00:00:00Z",
+            "closes": "12:00"
+          }
+        ],
+        "geoPoint": {
+          "lon": 6.171019,
+          "lat": 49.122025
+        }
+      }
+    ],
+    "takesPlaceAt": [
+      {
+        "endDate": "2026-11-26",
+        "startTime": "14:00",
+        "endTime": "20:30",
+        "startDate": "2026-10-09"
+      },
+      {
+        "endDate": "2026-11-26",
+        "startTime": "10:00",
+        "endTime": "12:00",
+        "startDate": "2026-10-09"
+      },
+      {
+        "endDate": "2026-11-26",
+        "startTime": "16:00",
+        "endTime": "20:30",
+        "startDate": "2026-10-09"
+      },
+      {
+        "endDate": "2026-11-26",
+        "startTime": "14:00",
+        "endTime": "18:00",
+        "startDate": "2026-10-09"
+      }
+    ],
+    "hasDescription": [
+      {
+        "isDedicatedTo": [
+          {
+            "label": {
+              "@en": "For all",
+              "@fr": "Tout public"
+            }
+          }
+        ],
+        "shortDescription": {
+          "@en": "Partnership: H Gallery - Paris “On the Other Side” might finally reveal what lies behind the door or behind that wall—a world we might catch a glimpse of through the keyhole or that crack worn away by time.\nWe undoubtedly want to see but not to know. These paintings are fragments of a body of work that I am trying to build into a cohesive whole. To show without imposing a narrative or intelligible meaning. On the other hand, it is what we imagine; it is what we fantasize about. \n\nAt first glance, if we had to cling to a narrative, we might evoke the relationship of the individual to a given environment. Here, a child soldier in a setting reminiscent of a possible past America, there, a woman lying by the water’s edge, vulnerable and at the mercy of any unforeseen event; here again, a young girl in the middle of a road. These images have meaning only if we choose to give them one. We don’t like ambiguity; we don’t like doubt; we don’t like confusion; and we feel this constant need for a point of reference or a framework that reassures us.\nSo what purpose can a figurative painting serve if it has no title or if we cannot precisely define what is happening before our eyes? It hovers between the possible—linked to reality—and a still from a film without a script. We cannot even define the character through an action—because there is no action. We cannot narrate events, and we find ourselves faced with the depiction of a state of being.\n\nThe paintings presented here, to me, are no more significant than simple pebbles picked up on a beach. What matters most is not these pebbles but the beach itself. A beach where I can stand and scan the horizon—an unreachable horizon where perhaps a boundary takes shape, a wall rises (a reference to the film *The Truman Show*) where I might find an eroded crack and thus glimpse what the painting would finally allow me to see.\nSo all we have left are our own cultural references to provide meaning, or even a moral. We must draw from within ourselves what defines us and thus gain, without too much difficulty, a sensory understanding of the work.",
+          "@fr": "Partenariat : H Gallery - Paris \"On the other side\" pourrait enfin dévoiler ce qui se cache derrière la porte ou derrière ce mur, un monde que l'on pourrait entrevoir par le trou de la serrure ou cette fissure érodée par le temps.\nOn a sans doute envie de voir mais ne pas savoir. Ces peintures sont des bribes d'un travail que je tente de bâtir dans un ensemble. Montrer à voir sans imposer de sens narratif et intelligible. De l'autre côté, c'est ce que l'on imagine, c'est ce que l'on fantasme. \n\nEn première lecture, si nous devions nous accrocher à une narration, nous pourrions évoquer le rapport de l'individu dans un environnement donné. Ici un enfant soldat dans un décors d'une possible Amérique passée, là une femme gisant au bort de l'eau ,vénérable et à la merci de tout imprévu, ici encore une jeune fille au milieu d'une route. Ces images qui n'ont de sens que si on veut bien leur en donner. Nous n'aimons pas le flou, nous n'aimons pas le doute, nous n'aimons pas la confusion et nous sentons ce besoin permanent de repère ou de cadre qui nous rassure.\nAlors quelle peut être l'utilité d'une peinture figurative si elle n'a pas de titre ou si nous ne pouvons définir avec précision ce qui se passe sous nos yeux ? On flirte entre le possible lié au réel ou un arrêt sur image d'un film dépourvu de scénario. Nous ne pouvons même pas définir le personnage de par une action…car d'action, il n'y en a pas. Nous ne pouvons pas narrer les choses et nous nous retrouvons devant une mise en situation d'un état.\n\nLes peintures ici présentées, n'ont pour moi, pas plus d'importance que de simples galets ramassés sur une plage. Le plus important, ce ne sont pas ces galets mais la plage elle-même. Plage sur laquelle je peux me tenir debout pour scruter l'horizon, un horizon inatteignable où peut être se dessine une limite, se dresse un mur (référence au film the Truman show) où je pourrais trouver une fissure érodée et ainsi deviner ce que la peinture me permettrait enfin de voir.\nAlors il ne nous reste que nos propres références culturelles pour apporter du sens, voire même une morale. Puiser en nous même ce qui nous définit et ainsi accéder sans trop de difficulté à la lecture sensible de l'œuvre."
+        }
+      }
+    ]
+  },
+  "kone": {
+    "uuid": "014b10cb-7bd7-3179-b3a8-c340dbdba0c4",
+    "uri": "https://data.datatourisme.fr/13/243e76bc-5503-3ed8-a46b-64764560fcd8",
+    "identifier": "5740543",
+    "label": {
+      "@en": "Koné Market",
+      "@fr": "Marché de Koné"
+    },
+    "type": [
+      "Event",
+      "SaleEvent",
+      "PointOfInterest",
+      "Market",
+      "EntertainmentAndEvent"
+    ],
+    "isLocatedAt": [
+      {
+        "geo": {
+          "latitude": -21.065347,
+          "longitude": 164.864248
+        },
+        "address": [
+          {
+            "hasAddressCity": {
+              "insee": "98811",
+              "isPartOfDepartment": {
+                "isPartOfRegion": {
+                  "isPartOfCountry": {
+                    "label": {
+                      "@en": "France",
+                      "@fr": "France"
+                    }
+                  },
+                  "insee": "98",
+                  "label": {
+                    "@en": "Collectivités d'outre-mer",
+                    "@fr": "Collectivités d'outre-mer"
+                  }
+                },
+                "insee": "988",
+                "label": {
+                  "@en": "Nouvelle-Calédonie",
+                  "@fr": "Nouvelle-Calédonie"
+                }
+              },
+              "label": {
+                "@en": "Koné",
+                "@fr": "Koné"
+              }
+            },
+            "streetAddress": [
+              "Mairie de Koné",
+              "154 rue Pierre Chivot",
+              "BP 06"
+            ],
+            "postalCode": "98859",
+            "addressLocality": "Koné"
+          }
+        ],
+        "openingHoursSpecification": [
+          {
+            "validThrough": "2026-12-31T23:59:59Z",
+            "opens": "06:00",
+            "validFrom": "2026-01-01T00:00:00Z",
+            "closes": "12:00"
+          }
+        ],
+        "geoPoint": {
+          "lon": 164.864248,
+          "lat": -21.065347
+        }
+      }
+    ],
+    "takesPlaceAt": [
+      {
+        "endDate": "2026-12-30",
+        "startTime": "06:00",
+        "endTime": "12:00",
+        "startDate": "2025-12-31"
+      }
+    ],
+    "hasDescription": [
+      {
+        "shortDescription": {
+          "@en": "Every Wednesday, Friday and Saturday morning, head to the village for a spot at the market with the locals.",
+          "@fr": "Tous les mercredis, vendredi et samedi matin, rendez-vous au village pour un moment de marché avec les habitants du coin."
+        }
+      }
+    ]
+  },
+  "laFoa": {
+    "uuid": "0392e637-ace4-34bf-8937-82fa6768eda7",
+    "uri": "https://data.datatourisme.fr/13/c49d9399-9045-33fc-a94c-7d82886bfaf6",
+    "identifier": "5347155",
+    "label": {
+      "@en": "La Foa Market",
+      "@fr": "Marché  de La Foa"
+    },
+    "type": [
+      "PointOfInterest",
+      "Event",
+      "SaleEvent",
+      "Market",
+      "EntertainmentAndEvent"
+    ],
+    "isLocatedAt": [
+      {
+        "geo": {
+          "latitude": -21.704296,
+          "longitude": 165.817136
+        },
+        "address": [
+          {
+            "hasAddressCity": {
+              "insee": "98813",
+              "isPartOfDepartment": {
+                "isPartOfRegion": {
+                  "isPartOfCountry": {
+                    "label": {
+                      "@en": "France",
+                      "@fr": "France"
+                    }
+                  },
+                  "insee": "98",
+                  "label": {
+                    "@en": "Collectivités d'outre-mer",
+                    "@fr": "Collectivités d'outre-mer"
+                  }
+                },
+                "insee": "988",
+                "label": {
+                  "@en": "Nouvelle-Calédonie",
+                  "@fr": "Nouvelle-Calédonie"
+                }
+              },
+              "label": {
+                "@en": "La Foa",
+                "@fr": "La Foa"
+              }
+            },
+            "streetAddress": [
+              "Place du marché municipal"
+            ],
+            "postalCode": "98880",
+            "addressLocality": "La Foa"
+          }
+        ],
+        "openingHoursSpecification": [
+          {
+            "validThrough": "2026-12-31T23:59:59Z",
+            "opens": "07:00",
+            "validFrom": "2026-01-01T00:00:00Z",
+            "closes": "13:00"
+          }
+        ],
+        "geoPoint": {
+          "lon": 165.817136,
+          "lat": -21.704296
+        }
+      }
+    ],
+    "takesPlaceAt": [
+      {
+        "endDate": "2026-12-30",
+        "startTime": "07:00",
+        "endTime": "13:00",
+        "startDate": "2025-12-31"
+      }
+    ],
+    "hasDescription": [
+      {
+        "shortDescription": {
+          "@en": "Join us every Friday and Saturday for a colorful market at the La Foa Municipal Market.",
+          "@fr": "Rendez-vous tous les vendredis et samedi, pour un marché haut en couleur, au marché municipal de La Foa."
+        }
+      }
+    ]
+  },
+  "atelierCreatif": {
+    "uuid": "03de38f0-b62f-30a3-9662-b4a6bd101029",
+    "uri": "https://data.datatourisme.fr/49/9a53fa05-c259-303f-8e47-9a862ba32609",
+    "identifier": "FMAFMAYOTPSGBIBLIOSTEANNESURBRIVET",
+    "label": {
+      "@fr": "Atelier créatif"
+    },
+    "type": [
+      "Product",
+      "Event",
+      "Traineeship",
+      "Game",
+      "SportsEvent",
+      "Practice",
+      "PointOfInterest",
+      "EntertainmentAndEvent"
+    ],
+    "isLocatedAt": [
+      {
+        "geo": {
+          "latitude": 47.45886,
+          "longitude": -2.00468
+        },
+        "address": [
+          {
+            "hasAddressCity": {
+              "insee": "44152",
+              "isPartOfDepartment": {
+                "isPartOfRegion": {
+                  "isPartOfCountry": {
+                    "label": {
+                      "@en": "France",
+                      "@fr": "France"
+                    }
+                  },
+                  "insee": "52",
+                  "label": {
+                    "@en": "Pays de la Loire",
+                    "@fr": "Pays de la Loire"
+                  }
+                },
+                "insee": "44",
+                "label": {
+                  "@en": "Loire-Atlantique",
+                  "@fr": "Loire-Atlantique"
+                }
+              },
+              "label": {
+                "@en": "Sainte-Anne-sur-Brivet",
+                "@fr": "Sainte-Anne-sur-Brivet"
+              }
+            },
+            "streetAddress": [
+              "Les pirogues",
+              "2 rue du mortier plat"
+            ],
+            "postalCode": "44160",
+            "addressLocality": "Sainte-Anne-sur-Brivet"
+          }
+        ],
+        "geoPoint": {
+          "lon": -2.00468,
+          "lat": 47.45886
+        }
+      }
+    ],
+    "takesPlaceAt": [
+      {
+        "endDate": "2026-10-29",
+        "startTime": "15:00",
+        "endTime": "16:00",
+        "startDate": "2026-10-29"
+      }
+    ],
+    "hasDescription": [
+      {
+        "description": {
+          "@en": "CREATIVE WORKSHOP\nDive into a little enchanted world where ghosts come to life on paper!\n\nGarlands that sparkle as if by magic, spirals that dance in the air…\n\nA workshop where every cut becomes a spell and every creation a little marvel.\n\nSainte-Anne-sur-Brivet Library\nFriday, October 30 at 3:00 p.m.\nFor children under 6 / Free / Open to the public\n\nInformation: \nSainte-Anne-sur-Brivet Library 02 40 91 84 88\nEmail: bibliosainteanne@cc-paysdepontchateau.fr",
+          "@fr": "ATELIER CREATIF\nPlonge dans un petit monde enchanté où les fantômes prennent vie en papier !\n\nGuirlandes qui brillent comme par magie, spirales qui dansent dans l’air…\n\nUn atelier où chaque découpe devient un sortilège et chaque création une petite merveille.\n\nBibliothèque de Sainte-Anne-sur-Brivet\nVendredi 30 octobre à 15h00\nPour les moins de 6 ans / Gratuit / Entrée libre\n\nRenseignement : \nBibliothèque de Ste Anne sur Brivet  02 40 91 84 88\nE.mail : bibliosainteanne@cc-paysdepontchateau.fr"
+        }
+      }
+    ]
+  }
+}

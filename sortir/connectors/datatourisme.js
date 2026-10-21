@@ -1,5 +1,7 @@
 "use strict";
 
+const { Temporal } = require("@js-temporal/polyfill");
+
 const { normalizeActivity, validateNormalizedActivity } = require("../activity-validation");
 
 const DEFAULT_TIMEOUT_MS = 15000;
@@ -23,13 +25,8 @@ const REQUIRED_FIELDS = "uuid,uri,label,type,isLocatedAt,hasDescription,hasConta
 // collecté mais pas nécessairement le nombre d'itérations si pageSize était mal configuré.
 const MAX_PAGES_SAFETY = 2000;
 
-// DATAtourisme est une plateforme NATIONALE (métropole + DOM-TOM) : contrairement aux autres
-// connecteurs Sortir (tous mono-fuseau, Europe/Paris implicite), le fuseau horaire réel dépend
-// du département. Mapping standard IANA par code département (source : affectation officielle
-// des DOM, pas une hypothèse) ; tout département non listé retombe sur Europe/Paris (métropole
-// + Corse). Utilisé uniquement parce qu'aucun champ timezone explicite n'existe dans le schéma
-// POI DATAtourisme (vérifié sur la spec OpenAPI officielle) — ne jamais fabriquer un autre champ
-// absent de la même façon sans cette justification.
+// IANA zone.tab : https://data.iana.org/time-zones/tzdb/zone.tab
+// 987 est multi-fuseaux : résolution par commune ci-dessous, jamais Tahiti par défaut.
 const DEPARTMENT_TIMEZONES = {
   971: "America/Guadeloupe",
   972: "America/Martinique",
@@ -38,7 +35,16 @@ const DEPARTMENT_TIMEZONES = {
   975: "America/Miquelon",
   976: "Indian/Mayotte",
   977: "America/St_Barthelemy",
-  978: "America/Marigot"
+  978: "America/Marigot",
+  986: "Pacific/Wallis",
+  988: "Pacific/Noumea"
+};
+// Codes COG INSEE (pas codes postaux), six communes des Marquises et Gambier.
+// https://www.insee.fr/fr/information/7929495
+const POLYNESIA_TIMEZONES = {
+  98718: "Pacific/Marquesas", 98723: "Pacific/Marquesas", 98731: "Pacific/Marquesas",
+  98746: "Pacific/Marquesas", 98756: "Pacific/Marquesas", 98757: "Pacific/Marquesas",
+  98719: "Pacific/Gambier"
 };
 const DEFAULT_TIMEZONE = "Europe/Paris";
 
@@ -71,21 +77,6 @@ function monolingualText(value) {
   return null;
 }
 
-// Calcule le décalage (en minutes) d'un fuseau IANA à un instant UTC donné, sans dépendance
-// externe (Intl.DateTimeFormat est natif à Node) — nécessaire pour combiner correctement
-// takesPlaceAt.startDate + startTime (voir plus bas), le schéma DATAtourisme ne fournissant ni
-// instant combiné ni fuseau explicite.
-function timezoneOffsetMinutes(timezone, utcDate) {
-  try {
-    const dtf = new Intl.DateTimeFormat("en-US", { timeZone: timezone, hourCycle: "h23", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit" });
-    const parts = Object.fromEntries(dtf.formatToParts(utcDate).map((p) => [p.type, p.value]));
-    const asUtc = Date.UTC(Number(parts.year), Number(parts.month) - 1, Number(parts.day), Number(parts.hour), Number(parts.minute), Number(parts.second));
-    return Math.round((asUtc - utcDate.getTime()) / 60000);
-  } catch (_) {
-    return 0;
-  }
-}
-
 // Extrait uniquement AAAA-MM-JJ, quelle que soit la forme exacte renvoyée par l'API pour un
 // champ typé "date-time" mais décrit comme une simple date (startDate/endDate).
 function extractDatePart(value) {
@@ -111,20 +102,29 @@ function combineDateAndTime(dateValue, timeValue, timezone, fallbackTime) {
   const datePart = extractDatePart(dateValue);
   if (!datePart) return null;
   const timePart = extractTimePart(timeValue) || fallbackTime || "00:00";
-  const [year, month, day] = datePart.split("-").map(Number);
-  const [hour, minute] = timePart.split(":").map(Number);
-  const naiveUtcGuess = Date.UTC(year, month - 1, day, hour, minute, 0);
-  // Une seule correction suffit en pratique : l'écart dépend de la date calendaire (règles DST
-  // françaises fixes par période de l'année), pas de l'heure du jour elle-même.
-  const offsetMinutes = timezoneOffsetMinutes(timezone, new Date(naiveUtcGuess));
-  const instant = naiveUtcGuess - offsetMinutes * 60000;
-  return Number.isFinite(instant) ? new Date(instant).toISOString() : null;
+  // Temporal résout l'offset à l'heure civile demandée, sans dépendre de la date
+  // d'exécution. Une heure inexistante OU ambiguë est signalée, jamais déplacée.
+  return Temporal.PlainDateTime.from(`${datePart}T${timePart}:00`, { overflow: "reject" })
+    .toZonedDateTime(timezone, { disambiguation: "reject" })
+    .toInstant().toString({ fractionalSecondDigits: 3 });
 }
 
-function inferTimezoneFromPoi(poi) {
-  const insee = text(poi?.isLocatedAt?.[0]?.address?.[0]?.hasAddressCity?.isPartOfDepartment?.insee);
+function inferTimezoneFromPoi(poi, period = {}) {
+  const location = poi?.isLocatedAt?.[0];
+  for (const value of [period.timezone, period.timeZone, poi?.timezone, poi?.timeZone, location?.timezone, location?.timeZone]) {
+    if (typeof value !== "string" || !value.trim()) continue;
+    try { new Intl.DateTimeFormat("fr-FR", { timeZone: value.trim() }); return value.trim(); } catch (_) { /* pas un fuseau fiable */ }
+  }
+  const city = location?.address?.[0]?.hasAddressCity;
+  const commune = text(city?.insee);
+  const insee = text(city?.isPartOfDepartment?.insee) || commune?.slice(0, 3);
   if (!insee) return DEFAULT_TIMEZONE;
   const deptCode = Number(insee.slice(0, 3));
+  if (deptCode === 987) {
+    if (!/^987\d{2}$/.test(commune || "")) throw new Error("Fuseau 987 indéterminé : commune INSEE ou timezone explicite nécessaire");
+    if (Number(commune.slice(3)) < 11 || Number(commune.slice(3)) > 58) throw new Error("Commune 987 inconnue : fuseau non déterminé");
+    return POLYNESIA_TIMEZONES[commune] || "Pacific/Tahiti";
+  }
   return DEPARTMENT_TIMEZONES[deptCode] || DEFAULT_TIMEZONE;
 }
 
@@ -214,18 +214,18 @@ function mapImage(poi) {
   return firstOfArrayOrString(resource?.locator);
 }
 
-// Clé d'occurrence stable et déterministe, même convention qu'OpenAgenda
-// (buildOccurrenceKey) : datatourisme:{uuid}:{instant normalisé}. Rejouer le même POI produit
-// exactement la même clé.
-function buildDatatourismeOccurrenceKey(uuid, startsAtIso) {
-  return `datatourisme:${uuid}:${startsAtIso}`;
+// Identité minimale : UUID + début UTC + fin UTC (ou fin inconnue explicite).
+// Deux arguments restent disponibles pour retrouver l'identité historique.
+function buildDatatourismeOccurrenceKey(uuid, startsAtIso, endsAtIso) {
+  const legacy = `datatourisme:${uuid}:${startsAtIso}`;
+  return arguments.length < 3 ? legacy : `${legacy}:end=${endsAtIso || "unknown"}`;
 }
 
 function mapDatatourismeOccurrence(poi, period, options = {}) {
   const sourceName = options.sourceName || "DATAtourisme";
   const sourceUrl = options.sourceUrl || null;
   const fetchedAt = options.fetchedAt || new Date().toISOString();
-  const timezone = inferTimezoneFromPoi(poi);
+  const timezone = inferTimezoneFromPoi(poi, period);
   const startsAt = combineDateAndTime(period?.startDate, period?.startTime, timezone, "00:00");
   // Ni endDate ni endTime fournis : endsAt reste null (une heure de fin à "00:00" du jour de
   // début serait ANTÉRIEURE à startsAt dès que startTime est après minuit — bug réel rencontré
@@ -234,7 +234,7 @@ function mapDatatourismeOccurrence(poi, period, options = {}) {
   // le début.
   const hasEndInfo = Boolean(period?.endDate) || Boolean(period?.endTime);
   const endsAt = hasEndInfo ? combineDateAndTime(period?.endDate || period?.startDate, period?.endTime, timezone, "23:59") : null;
-  const occurrenceKey = startsAt ? buildDatatourismeOccurrenceKey(poi?.uuid, startsAt) : null;
+  const occurrenceKey = startsAt ? buildDatatourismeOccurrenceKey(poi?.uuid, startsAt, endsAt) : null;
   const location = mapLocation(poi);
   const originalEventUrl = canonicalPoiUrl(poi);
   // type est documenté "string" mais renvoyé en RÉALITÉ comme un tableau de valeurs de
@@ -316,20 +316,52 @@ function convertDatatourismeEvent(poi, options = {}) {
   }
   const truncated = periods.length > maxOccurrences;
   const selected = truncated ? periods.slice(0, maxOccurrences) : periods;
+  const seen = new Map();
   return selected.map((period, index) => {
     try {
       if (!period || !period.startDate) {
         return { index, activity: null, validation: null, error: "Période sans date de début exploitable." };
       }
-      const { activity } = mapDatatourismeOccurrence(poi, period, options);
+      const { activity, occurrenceKey } = mapDatatourismeOccurrence(poi, period, options);
       const validation = validateNormalizedActivity(activity);
       if (truncated && index === selected.length - 1) {
         validation.warnings.push({ code: "occurrences_truncated", field: "startsAt", message: `Événement tronqué à ${maxOccurrences} périodes sur ${periods.length} réelles (garde-fou).` });
       }
-      return { index, activity: validation.activity, validation, error: null };
+      const legacyId = buildDatatourismeOccurrenceKey(poi.uuid, validation.activity.startsAt);
+      return {
+        index, activity: validation.activity, validation, error: null,
+        // Garder source_record_id historique préserve également le rapprochement des refus.
+        sourceRecordId: legacyId, sourceOccurrenceKey: occurrenceKey,
+        legacySourceOccurrenceKey: `${legacyId}@${validation.activity.startsAt}`,
+        sourcePayload: {
+          version: "datatourisme-period-v2", poiUuid: poi.uuid, poiUri: poi.uri || null,
+          producerIdentifier: poi.identifier || null,
+          timezoneContext: {
+            poi: poi.timezone || poi.timeZone || null,
+            location: poi.isLocatedAt?.[0]?.timezone || poi.isLocatedAt?.[0]?.timeZone || null,
+            communeInsee: poi.isLocatedAt?.[0]?.address?.[0]?.hasAddressCity?.insee || null,
+            departmentInsee: poi.isLocatedAt?.[0]?.address?.[0]?.hasAddressCity?.isPartOfDepartment?.insee || null
+          },
+          // Un seul fragment, sans descriptions/images/autres périodes du POI.
+          period: JSON.parse(JSON.stringify(period)),
+          normalized: { startsAt: validation.activity.startsAt, endsAt: validation.activity.endsAt, timezone: validation.activity.timezone },
+          occurrenceKey
+        }
+      };
     } catch (error) {
       return { index, activity: null, validation: null, error: error.message };
     }
+  }).filter((item) => {
+    if (!item.activity) return true;
+    const duplicate = seen.get(item.sourceOccurrenceKey);
+    if (duplicate) {
+      // Le garde-fou de 20 périodes doit rester visible même si la dernière
+      // période sélectionnée est un doublon supprimé.
+      duplicate.validation.warnings.push(...item.validation.warnings.filter(w => w.code === "occurrences_truncated"));
+      return false;
+    }
+    seen.set(item.sourceOccurrenceKey, item);
+    return true;
   });
 }
 
@@ -473,6 +505,7 @@ async function fetchDatatourismeEvents(options = {}) {
 
 module.exports = {
   DEPARTMENT_TIMEZONES,
+  POLYNESIA_TIMEZONES,
   DEFAULT_TIMEZONE,
   REQUIRED_FIELDS,
   monolingualText,

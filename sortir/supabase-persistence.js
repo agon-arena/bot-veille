@@ -132,6 +132,7 @@ function sourceMetadata(item, source) {
     // Rôle hash métier (colonne sortir_provenances.payload_hash) : représentation canonique
     // complète, découplée du format brut des fournisseurs.
     canonicalActivityPayload: canonicalActivityPayload(activity),
+    legacySourceOccurrenceKey: item.legacySourceOccurrenceKey || null,
     sourceKey: source.key
   };
 }
@@ -243,6 +244,7 @@ async function persistSortirIngestionUnlocked({ sources, store, now = new Date()
       // donc génuinement nouvelles) -- aucune revalidation supplémentaire : construit dans ce
       // même pré-passage, déjà pur/sans effet de bord.
       const preloadStartsAtByMapKey = new Map();
+      const legacyDatatourismeItems = [];
       for (const connectorResult of descriptor.results) {
         try {
           const wrapped = connectorResult && typeof connectorResult === "object" && ("activity" in connectorResult || "error" in connectorResult);
@@ -253,6 +255,10 @@ async function persistSortirIngestionUnlocked({ sources, store, now = new Date()
           const item = { ...(wrapped ? connectorResult : {}), activity: validation.activity };
           const itemMetadata = sourceMetadata(item, source);
           preloadOccurrenceKeys.add(itemMetadata.sourceOccurrenceKey);
+          if (descriptor.connectorType === "datatourisme" && itemMetadata.legacySourceOccurrenceKey) {
+            preloadOccurrenceKeys.add(itemMetadata.legacySourceOccurrenceKey);
+            legacyDatatourismeItems.push({ metadata: itemMetadata, endsAt: validation.activity.endsAt });
+          }
           preloadStartsAtByMapKey.set(provenanceMapKey(itemMetadata.sourceRecordId, itemMetadata.sourceOccurrenceKey), Date.parse(validation.activity.startsAt));
         } catch (_) { /* erreur de préparation : re-détectée et comptabilisée dans la boucle principale */ }
       }
@@ -261,6 +267,17 @@ async function persistSortirIngestionUnlocked({ sources, store, now = new Date()
       const preloadActivityIds = [...new Set(preloadedProvenances.map((row) => row.activity_id))];
       const preloadedActivities = await store.getActivitiesBatch(preloadActivityIds);
       const activityMap = new Map(preloadedActivities.map((row) => [row.id, row]));
+      for (const { metadata, endsAt } of legacyDatatourismeItems) {
+        const key = provenanceMapKey(metadata.sourceRecordId, metadata.sourceOccurrenceKey);
+        if (provenanceMap.has(key)) continue;
+        const legacy = provenanceMap.get(provenanceMapKey(metadata.sourceRecordId, metadata.legacySourceOccurrenceKey));
+        const existing = legacy && activityMap.get(legacy.activity_id);
+        // Même début (dans la clé historique) ET même fin canonique : aucune création
+        // liée au seul changement de format. Une autre fin reste une autre période.
+        if (existing && (existing.ends_at == null && endsAt == null || Date.parse(existing.ends_at) === Date.parse(endsAt))) {
+          provenanceMap.set(key, legacy);
+        }
+      }
       // Préchargement des CANDIDATS (remplace les futurs appels individuels à
       // listCandidateActivities) -- déclenché UNIQUEMENT si cette source a au moins une
       // occurrence qui s'avère absente de provenanceMap (génuinement nouvelle) : sur un lot où
@@ -333,6 +350,8 @@ async function persistSortirIngestionUnlocked({ sources, store, now = new Date()
             // existing.record_status n'est pas disponible sur la ligne provenance seule : savoir
             // si l'activité est stale (à réactiver) exige de lire l'activité — via la Map
             // préchargée, jamais via un nouvel appel individuel.
+            const temporalPayloadChanged = descriptor.connectorType === "datatourisme" && item.sourcePayload &&
+              stableJson(provenance.source_payload) !== stableJson(metadata.sourcePayload);
             if (provenance.payload_hash === hash) {
               // Fast-path : le hash canonique confirme qu'aucune donnée métier de CETTE source
               // n'a changé depuis la dernière observation. mergeActivities()/upsertExternalIds()
@@ -344,7 +363,7 @@ async function persistSortirIngestionUnlocked({ sources, store, now = new Date()
               if (existing.record_status === "stale") {
                 // Cas rare (réactivation) : chemin individuel conservé tel quel, pour ne pas
                 // complexifier le cas ultra-fréquent ci-dessous.
-                await store.updateProvenance(provenance.id, { last_seen_at: startedAt, active: true, last_seen_run_id: sourceRun.id });
+                await store.updateProvenance(provenance.id, { last_seen_at: startedAt, active: true, last_seen_run_id: sourceRun.id, ...(temporalPayloadChanged ? { source_payload: metadata.sourcePayload } : {}) });
                 const updated = await store.updateActivity(existing.id, { record_status: "active", updated_at: startedAt });
                 // Une activité fusionnée peut recevoir plusieurs provenances DANS le même lot :
                 // si un item ultérieur du même lot pointe vers cette même activité, il doit voir
@@ -360,6 +379,9 @@ async function persistSortirIngestionUnlocked({ sources, store, now = new Date()
                 // -- provenances/external_ids inchangés (voir le commentaire ci-dessus).
                 setCandidateIndexEntry({ ...existing, ...updated }, existing.provenances, existing.external_ids);
                 await store.insertCollectionItem({ source_run_id: sourceRun.id, provenance_id: provenance.id, activity_id: existing.id, validation_status: validation.status, diagnostics: { errors: validation.errors, warnings: validation.warnings, sourceIndex: index } });
+              } else if (temporalPayloadChanged) {
+                await store.updateProvenance(provenance.id, { last_seen_at: startedAt, active: true, last_seen_run_id: sourceRun.id, source_payload: metadata.sourcePayload });
+                pendingCollectionItems.push({ source_run_id: sourceRun.id, provenance_id: provenance.id, activity_id: existing.id, validation_status: validation.status, diagnostics: { errors: validation.errors, warnings: validation.warnings, sourceIndex: index } });
               } else {
                 // Cas ultra-fréquent : ni la provenance ni l'activité ne changent de contenu.
                 // Différé en lot — voir le flush après la boucle.
@@ -378,6 +400,8 @@ async function persistSortirIngestionUnlocked({ sources, store, now = new Date()
               // (provenances inchangées : même provenance, seul son contenu/hash a changé).
               setCandidateIndexEntry({ ...existing, ...updated }, existing.provenances, unionExternalIds(existing.external_ids, validation.activity.externalIds));
             }
+            provenance = { ...provenance, payload_hash: hash, source_payload: metadata.sourcePayload };
+            provenanceMap.set(provenanceMapKey(metadata.sourceRecordId, metadata.sourceOccurrenceKey), provenance);
             activityId = existing.id;
           } else {
             const candidates = candidateMatches(validation.activity.startsAt);
@@ -451,6 +475,8 @@ async function persistSortirIngestionUnlocked({ sources, store, now = new Date()
             const provenanceForIndex = { ...provenance, source: { key: source.key, connector_type: source.connector_type, base_url: source.base_url } };
             const finalProvenances = provenanceAlreadyIndexed ? basePriorProvenances : [...basePriorProvenances, provenanceForIndex];
             setCandidateIndexEntry(indexScalarRow, finalProvenances, unionExternalIds(basePriorExternalIds, validation.activity.externalIds));
+            provenanceMap.set(provenanceMapKey(metadata.sourceRecordId, metadata.sourceOccurrenceKey), provenance);
+            activityMap.set(activityId, { ...indexScalarRow, provenances: finalProvenances, external_ids: unionExternalIds(basePriorExternalIds, validation.activity.externalIds) });
             // Nouvelle occurrence (MATCH/REVIEW/DISTINCT) : activity_id/provenance_id sont déjà
             // définitivement connus à ce stade (après la résolution de course éventuelle
             // ci-dessus) — différé en lot, comme le cas ultra-fréquent des occurrences connues,

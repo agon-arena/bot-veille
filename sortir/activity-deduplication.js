@@ -112,6 +112,13 @@ function compareActivities(leftInput, rightInput) {
   if (originalUrl) signals.push({ type: "same_original_url", value: originalUrl });
   if (locationConflict) signals.push({ type: "location_conflict", value: true });
 
+  const datatourismePoiIds = new Set(a.externalIds.filter(id => id.system === "datatourisme-poi").map(id => id.value));
+  const sameDatatourismePoi = b.externalIds.some(id => id.system === "datatourisme-poi" && datatourismePoiIds.has(id.value));
+  if (sameDatatourismePoi && startDeltaMs === 0 && instant(a.endsAt) !== instant(b.endsAt)) {
+    signals.push({ type: "datatourisme_period_end_conflict", value: true });
+    return { algorithmVersion: ALGORITHM_VERSION, decision: DECISIONS.DISTINCT, signals };
+  }
+
   const occurrenceConflict = startDeltaMs !== null && startDeltaMs > TWELVE_HOURS;
   if (occurrenceConflict) signals.push({ type: "occurrence_conflict", value: true });
   if (occurrenceConflict) return { algorithmVersion: ALGORITHM_VERSION, decision: identitySignal ? DECISIONS.REVIEW : DECISIONS.DISTINCT, signals };

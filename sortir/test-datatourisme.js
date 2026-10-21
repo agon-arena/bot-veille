@@ -157,7 +157,7 @@ test("identité : identifiant stable de l'événement (uuid), clé d'occurrence 
   const first = mapDatatourismeOccurrence(SIMPLE_POI, SIMPLE_POI.takesPlaceAt[0], BASE_OPTIONS);
   const second = mapDatatourismeOccurrence(SIMPLE_POI, SIMPLE_POI.takesPlaceAt[0], BASE_OPTIONS);
   assert.strictEqual(first.occurrenceKey, second.occurrenceKey);
-  assert.strictEqual(first.occurrenceKey, buildDatatourismeOccurrenceKey(SIMPLE_POI.uuid, "2026-11-20T10:00:00.000Z"));
+  assert.strictEqual(first.occurrenceKey, buildDatatourismeOccurrenceKey(SIMPLE_POI.uuid, "2026-11-20T10:00:00.000Z", "2026-11-20T18:00:00.000Z"));
   assert.strictEqual(first.poiUuid, SIMPLE_POI.uuid);
 });
 
