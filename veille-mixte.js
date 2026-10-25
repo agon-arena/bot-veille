@@ -15,6 +15,7 @@ const { cleanCertamenGeneratedText } = require("./certamen-text-cleanup");
 const { isRoundupTitle } = require("./recap-filter");
 const { enforceTitleLimit } = require("./title-limit");
 const certamenComparisonStore = require("./certamen-comparison-store");
+const { videoId: youtubeVideoId, collectWithRecovery } = require("./youtube-collection");
 
 const apiApp = express();
 apiApp.use(express.json({ limit: "2mb" }));
@@ -547,8 +548,10 @@ async function fetchFeedWithFallback(url, label, timeoutMs = FEED_TIMEOUT_MS) {
     return await parseFeedWithTimeout(url, label, timeoutMs);
   } catch (initialError) {
     const initialStatus = extractHttpStatus(initialError);
+    const isYouTube = /^https:\/\/(?:www\.)?youtube\.com\/feeds\//.test(url);
+    if (isYouTube && initialStatus === 403) throw initialError;
     if (initialStatus === 404) {
-      throw createFeedError(label, "URL RSS à remplacer (HTTP 404)", {
+      throw createFeedError(label, isYouTube ? "Flux YouTube temporairement inaccessible (HTTP 404)" : "URL RSS à remplacer (HTTP 404)", {
         httpStatus: 404,
         rssErrorKind: "http_status",
         fetchUrl: url,
@@ -562,6 +565,15 @@ async function fetchFeedWithFallback(url, label, timeoutMs = FEED_TIMEOUT_MS) {
         fetchUrl: url,
         originalError: initialError
       });
+    }
+
+    // YouTube retries belong to the spaced recovery rounds. An immediate
+    // second request with browser headers does not resolve its intermittent 404s.
+    if (isYouTube) {
+      if (!initialStatus && /timeout|ECONN|ENOTFOUND|fetch failed|socket/i.test(String(initialError.message))) {
+        throw createFeedError(label, initialError.message, { rssErrorKind: "fetch_failed", originalError: initialError });
+      }
+      throw initialError;
     }
 
     const feedText = await fetchTextWithTimeout(url, {
@@ -863,56 +875,19 @@ async function getRssUrlFromYouTubeChannel(channel) {
   throw new Error("Impossible de trouver le channel_id YouTube");
 }
 
-function persistYoutubeRssUrl(channelName, rssUrl) {
-  if (!channelName || !rssUrl) return;
-  try {
-    const channels = JSON.parse(fs.readFileSync(CHANNELS_FILE, "utf8"));
-    const index = channels.findIndex((item) => String(item.nom || "").trim() === String(channelName).trim());
-    if (index === -1) return;
-    if (channels[index].rss === rssUrl) return;
-    channels[index].rss = rssUrl;
-    fs.writeFileSync(CHANNELS_FILE, JSON.stringify(channels, null, 2), "utf8");
-  } catch (error) {
-    console.error(`Impossible de mettre à jour le flux YouTube pour ${channelName}:`, error.message);
-  }
-}
-
 async function getWorkingYouTubeRssUrl(channel) {
-  let lastError = null;
-  if (channel.rss) {
-    try {
-      collectionDiagnostics.youtubeRssFetched++;
-      const feed = await fetchFeedWithFallback(channel.rss, `Flux YouTube ${channel.nom}`);
-      return { rssUrl: channel.rss, feed };
-    } catch (error) {
-      lastError = error;
-    }
-  }
-
-  if (channel.url) {
-    try {
-      const rebuilt = await getRssUrlFromYouTubeChannel({ ...channel, rss: "" });
-      collectionDiagnostics.youtubeRssFetched++;
-      const feed = await fetchFeedWithFallback(rebuilt, `Flux YouTube ${channel.nom}`);
-      persistYoutubeRssUrl(channel.nom, rebuilt);
-      return { rssUrl: rebuilt, feed };
-    } catch (error) {
-      lastError = error;
-    }
-  }
-
-  throw lastError || new Error("Aucun flux YouTube utilisable n'a pu être déterminé");
+  // A playlist is not a channel. Do not replace its error (or feed) with a
+  // failed channel-id lookup. Retry the actual feed in later recovery rounds.
+  const rssUrl = channel.rss || (/[?&]list=/.test(channel.url || "")
+    ? `https://www.youtube.com/feeds/videos.xml?playlist_id=${new URL(channel.url).searchParams.get("list")}`
+    : await getRssUrlFromYouTubeChannel(channel));
+  collectionDiagnostics.youtubeRssFetched++;
+  const feed = await fetchFeedWithFallback(rssUrl, `Flux YouTube ${channel.nom}`);
+  return { rssUrl, feed };
 }
 
 function extractYouTubeVideoId(link) {
-  const value = String(link || "");
-  const match = value.match(/[?&]v=([^&]+)/);
-
-  if (match && match[1]) {
-    return match[1];
-  }
-
-  return "";
+  return youtubeVideoId(link);
 }
 
 async function collectArticles(lastSessionCutoff = null, knownSources = new Set(), sourceFile = MEDIA_FILE) {
@@ -974,52 +949,51 @@ async function collectArticles(lastSessionCutoff = null, knownSources = new Set(
 
 async function collectYouTubeVideos(lastSessionCutoff = null, knownSources = new Set(), sourceFile = CHANNELS_FILE) {
   const channels = JSON.parse(fs.readFileSync(sourceFile, "utf8"));
-  const contents = [];
-  const report = { sources: [] };
-
-  for (let _ci = 0; _ci < channels.length; _ci++) {
-    const channel = channels[_ci];
-    setProgress(2, "Collecte des vidéos YouTube", `${_ci + 1} / ${channels.length} — ${channel.nom}`);
-
-    if (isSourcePaused(channel.nom)) {
-      console.log(`[pause] ${channel.nom} ignoré (en pause).`);
-      report.sources.push({ nom: channel.nom, statut: "pause", kept: 0, skipped: 0 });
-      continue;
-    }
-
-    try {
-      console.log(`YouTube — lecture de ${channel.nom}...`);
-      const { feed } = await getWorkingYouTubeRssUrl(channel);
-      const isNewSource = knownSources.size > 0 && !knownSources.has(channel.nom);
-      let kept = 0, skipped = 0;
-
-      for (const item of feed.items || []) {
-        const date = getItemDate(item);
-        if (!isRecent(date, HOURS_BACK_YOUTUBE)) { skipped++; continue; }
-        if (!isNewSource && !isFreshSinceLastSession(date, lastSessionCutoff)) { skipped++; continue; }
-        const title = item.title || "Sans titre";
-        if (isRoundupTitle(title)) { skipped++; continue; }
-        const summary = stripHtmlAndDecodeEntities(item.contentSnippet || item.content || item.summary || "");
-        const link = item.link || "";
-        const videoId = extractYouTubeVideoId(link);
-        contents.push({ type: "youtube", source: channel.nom, orientation: channel.orientation || "", title, link, date: date.toISOString(), summary, thumbnail: videoId ? `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg` : "", comparableText: cleanText(title) });
-        kept++;
-      }
-      report.sources.push({ nom: channel.nom, statut: "ok", kept, skipped });
-    } catch (error) {
+  const historyFile = sourceFile === CHANNELS_FILE ? HISTORY_FILE : "certamen-sessions.json";
+  let latest;
+  try {
+    latest = sourceFile === CHANNELS_FILE ? loadSessions()[0] :
+      JSON.parse(fs.readFileSync(historyFile, "utf8"))[0];
+  } catch { latest = null; }
+  const previousContents = [
+    ...(latest?.opinionItems || []),
+    ...(latest?.subjects || []).flatMap(subject => subject.contents || [])
+  ];
+  return collectWithRecovery(channels, {
+    fetchFeed: getWorkingYouTubeRssUrl,
+    previousState: latest?.youtubeCollectionState || {},
+    previousContents,
+    hoursBack: HOURS_BACK_YOUTUBE,
+    isPaused: isSourcePaused,
+    statusOf: extractHttpStatus,
+    onAttempt(channel, attempt) {
+      setProgress(2, "Collecte des vidéos YouTube", `${channel.nom} — tentative ${attempt}/3`);
+      console.log(`YouTube — lecture de ${channel.nom} (tentative ${attempt}/3)...`);
+    },
+    onFailure(channel, error) {
       registerRssError(error);
-      logRssError(channel.nom, error, { orientation: channel.orientation || "", rss: channel.rss || channel.url || "" });
+      console.error(`[YouTube] ${channel.nom} — flux inaccessible après relances : ${error.message}`);
       const status = extractHttpStatus(error);
-      if (status === 403 || status === 429) {
-        pauseSource(channel.nom, status);
-        report.sources.push(getRssErrorDetails(channel.nom, error, { orientation: channel.orientation || "", rss: channel.rss || channel.url || "" }));
-      } else {
-        report.sources.push(getRssErrorDetails(channel.nom, error, { orientation: channel.orientation || "", rss: channel.rss || channel.url || "" }));
-      }
+      if (status === 403 || status === 429) pauseSource(channel.nom, status);
+    },
+    normalize(item, channel) {
+      // Undated entries must not be silently stamped with today's date.
+      const rawDate = item.isoDate || item.pubDate || item.published || item.updated;
+      const date = dayjs(rawDate);
+      if (!rawDate || !date.isValid()) return null;
+      const title = item.title || "Sans titre";
+      if (isRoundupTitle(title)) return null;
+      const link = item.link || "";
+      const videoId = extractYouTubeVideoId(link);
+      return {
+        type: "youtube", source: channel.nom, orientation: channel.orientation || "",
+        title, link, date: date.toISOString(),
+        summary: stripHtmlAndDecodeEntities(item.contentSnippet || item.content || item.summary || ""),
+        thumbnail: videoId ? `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg` : "",
+        comparableText: cleanText(title)
+      };
     }
-  }
-
-  return { contents, report };
+  });
 }
 
 function groupContentsBySubject(contents) {
@@ -7381,13 +7355,14 @@ function generateHtml(sessions) {
       const isPause = s.statut === "pause";
       const icon = isOk ? "✓" : isPause ? "⏸" : "✗";
       const cls = isOk ? "cr-ok" : isPause ? "cr-pause" : "cr-err";
-      const detail = isOk ? `${s.kept} retenu(s), ${s.skipped} ignoré(s)${s.message ? ` — ${s.message}` : ""}` : (s.message ? `${s.statut} — ${s.message}` : s.statut);
+      let detail = isOk ? `${s.kept} retenu(s), ${s.skipped} ignoré(s)${s.message ? ` — ${s.message}` : ""}` : (s.message ? `${s.statut} — ${s.message}` : s.statut);
+      if (s.attempts !== undefined) detail += ` — ${s.attempts} tentative(s), ${s.available} disponible(s), dernière réussite : ${s.lastSuccessfulAt || "aucune connue"}`;
       return `<tr class="${cls}"><td class="cr-icon">${icon}</td><td class="cr-name">${escapeHtml(s.nom)}</td><td class="cr-detail">${escapeHtml(detail)}</td></tr>`;
     };
 
     const body = sections.map(sec => {
       const totalKept = sec.sources.reduce((acc, s) => acc + (s.kept || 0), 0);
-      const errors = sec.sources.filter(s => s.statut.startsWith("erreur") || s.statut === "pause").length;
+      const errors = sec.sources.filter(s => s.statut !== "ok").length;
       const errNote = errors ? ` · <span class="cr-err">${errors} en erreur/pause</span>` : "";
       return `<div class="cr-section">
         <div class="cr-section-label">${escapeHtml(sec.label)} <span class="cr-summary">— ${totalKept} collecté(s)${errNote}</span></div>
@@ -7575,12 +7550,13 @@ function generateHtml(sessions) {
         var icon = isOk ? '✓' : isPause ? '⏸' : '✗';
         var cls = isOk ? 'cr-ok' : isPause ? 'cr-pause' : 'cr-err';
         var detail = isOk ? (s.kept + ' retenu(s), ' + s.skipped + ' ignoré(s)' + (s.message ? ' — ' + s.message : '')) : (s.message ? s.statut + ' — ' + s.message : s.statut);
+        if (s.attempts !== undefined) detail += ' — ' + s.attempts + ' tentative(s), ' + s.available + ' disponible(s), dernière réussite : ' + (s.lastSuccessfulAt || 'aucune connue');
         return '<tr class="' + cls + '"><td class="cr-icon">' + icon + '</td><td class="cr-name">' + s.nom + '</td><td class="cr-detail">' + detail + '</td></tr>';
       }
 
       var body = sections.map(function(sec) {
         var totalKept = sec.sources.reduce(function(acc, s) { return acc + (s.kept || 0); }, 0);
-        var errors = sec.sources.filter(function(s) { return s.statut.startsWith('erreur') || s.statut === 'pause'; }).length;
+        var errors = sec.sources.filter(function(s) { return s.statut !== 'ok'; }).length;
         var errNote = errors ? ' · <span class="cr-err">' + errors + ' en erreur/pause</span>' : '';
         return '<div class="cr-section"><div class="cr-section-label">' + sec.label + ' <span class="cr-summary">— ' + totalKept + ' collecté(s)' + errNote + '</span></div><table class="cr-table"><tbody>' + sec.sources.map(row).join('') + '</tbody></table></div>';
       }).join('');
@@ -7741,11 +7717,12 @@ async function runWatchSession(minSources = MIN_DISTINCT_SOURCES) {
   console.log("======================================");
   resetCollectionDiagnostics();
   if (lastSessionCutoff) {
-    console.log("Filtre fraîcheur actif : seulement les contenus publiés après " + lastSessionCutoff.format("DD/MM/YYYY HH:mm:ss") + ".");
+    console.log("Filtre fraîcheur presse : articles publiés après " + lastSessionCutoff.format("DD/MM/YYYY HH:mm:ss") + ".");
   } else {
     console.log("Aucune session précédente : première collecte sur la fenêtre récente habituelle.");
   }
 
+  console.log(`YouTube : relecture des ${HOURS_BACK_YOUTUBE} dernières heures avec conservation et déduplication par vidéo.`);
   const previousSources = getPreviousSessionSources();
 
   setProgress(1, "Collecte des articles", "Démarrage…");
@@ -7754,7 +7731,7 @@ async function runWatchSession(minSources = MIN_DISTINCT_SOURCES) {
 
   setProgress(2, "Collecte des vidéos YouTube", "Démarrage…");
   console.log("Collecte des vidéos YouTube...");
-  const { contents: videos, report: videosReport } = await collectYouTubeVideos(lastSessionCutoff, previousSources);
+  const { contents: videos, report: videosReport, state: youtubeCollectionState } = await collectYouTubeVideos(lastSessionCutoff, previousSources);
 
   const contents = [...articles, ...videos];
 
@@ -7814,6 +7791,7 @@ async function runWatchSession(minSources = MIN_DISTINCT_SOURCES) {
     deduplication: deduplication.mergeResult,
     aiEnabled: Boolean(openai),
     collectReport: { articles: articlesReport, youtube: videosReport },
+    youtubeCollectionState,
     subjects: analyzedSubjects,
     opinionItems
   };
@@ -7830,6 +7808,7 @@ async function runWatchSession(minSources = MIN_DISTINCT_SOURCES) {
   // pesaient à eux seuls 9,2 Mo sur les 16 Mo de sessions-mixte.json — contributeur majeur
   // du crash OOM Render (limite 512MB) du 17/07/2026.
   limitedSessions.forEach((s, index) => {
+    if (index > 0) delete s.youtubeCollectionState;
     if (index > 0 && Array.isArray(s.opinionItems) && s.opinionItems.length) {
       s.opinionItems = [];
     }
@@ -11339,7 +11318,7 @@ async function runCertamenSession() {
   const { contents: articles } = await collectArticles(null, new Set(), MEDIA_FILE_CERTAMEN);
 
   setCertamenProgress(2, "Collecte des vidéos YouTube", "Démarrage…");
-  const { contents: videos } = await collectYouTubeVideos(null, new Set(), CHANNELS_FILE_CERTAMEN);
+  const { contents: videos, report: youtubeReport, state: youtubeCollectionState } = await collectYouTubeVideos(null, new Set(), CHANNELS_FILE_CERTAMEN);
 
   const contents = [...articles, ...videos];
   console.log(`Certamen : ${contents.length} contenu(s) collecté(s).`);
@@ -11517,12 +11496,15 @@ async function runCertamenSession() {
     mergeCount: deduplication.mergeResult.mergeGroups.length,
     dedupError: deduplication.mergeResult.error || null,
     deduplication: deduplication.mergeResult,
-    subjects: debatables
+    subjects: debatables,
+    collectReport: { youtube: youtubeReport },
+    youtubeCollectionState
   };
 
   const sessions = loadCertamenSessions();
   sessions.unshift(session);
   const trimmed = sessions.slice(0, CERTAMEN_MAX_SESSIONS);
+  trimmed.forEach((entry, index) => { if (index > 0) delete entry.youtubeCollectionState; });
   saveCertamenSessions(trimmed);
   fs.writeFileSync(CERTAMEN_OUTPUT_HTML, generateCertamenHtml(trimmed), "utf8");
   console.log(`Certamen : session sauvegardée.`);
