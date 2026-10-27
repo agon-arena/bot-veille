@@ -891,5 +891,17 @@
     "nom": "Imaz Press Réunion",
     "orientation": "actualités régionales",
     "rss": "https://imazpress.com/feed/"
+  },
+  {
+    "nom": "Elucid",
+    "orientation": "gauche / critique sociale",
+    "rss": "https://elucid.media/feed",
+    "opinionOnly": true
+  },
+  {
+    "nom": "Praxis",
+    "orientation": "gauche / démocratie / analyse",
+    "rss": "https://praxismedia.fr/feed/",
+    "opinionOnly": true
   }
 ]

@@ -539,5 +539,15 @@
     "excludeTitlePatterns": [
       "^(Nos abonnements|Faire un don|Les magazines|Frontières)$"
     ]
+  },
+  {
+    "nom": "Elucid",
+    "orientation": "gauche / critique sociale",
+    "rss": "https://elucid.media/feed"
+  },
+  {
+    "nom": "Praxis",
+    "orientation": "gauche / démocratie / analyse",
+    "rss": "https://praxismedia.fr/feed/"
   }
 ]
