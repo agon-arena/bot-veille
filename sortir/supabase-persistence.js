@@ -1,23 +1,23 @@
 "use strict";
 
 const crypto = require("crypto");
+const { sameInterval, matchesLegacyOccurrence, UNSPECIFIED_START } = require("./datatourisme-occurrence-identity");
 const { createClient } = require("@supabase/supabase-js");
 const { validateNormalizedActivity } = require("./activity-validation");
 const { ALGORITHM_VERSION, DECISIONS, compareActivities, mergeActivities, canonicalUrl, normalizedText } = require("./activity-deduplication");
 const { ORCHESTRATOR_VERSION } = require("./ingestion-orchestrator");
 const { TemporalCandidateView } = require("./temporal-candidate-cache");
+const { quarantineSignal, reactivationStatus } = require("./datatourisme-review-quarantine");
 
 const DEFAULT_STALE_AFTER_MS = 7 * 24 * 60 * 60 * 1000;
-// Borne la taille des .in(...) envoyés à PostgREST (disparitions groupées) : évite une URL
-// démesurée si plusieurs milliers d'activités disparaissent dans un même run. La fréquence
-// réelle des disparitions ne justifie pas d'ajuster cette valeur avant mesure en conditions réelles.
+// Taille logique des lots historiques ; les filtres HTTP UUID sont bornés séparément
+// par UUID_FILTER_CHUNK_SIZE, y compris les lectures/updates de disparition.
 const DISAPPEARANCE_CHUNK_SIZE = 500;
-// Même borne et même justification que DISAPPEARANCE_CHUNK_SIZE : .in("id", chunk) sur des
-// UUID courts (~36 caractères) — getActivitiesBatch, touchProvenancesBatch, et la taille des
-// lots pour insertCollectionItemsBatch (un INSERT, pas un .in(), donc la longueur d'URL n'y
-// joue aucun rôle). Jamais utilisée pour un .in() sur source_occurrence_key, voir
-// OCCURRENCE_KEY_CHUNK_SIZE ci-dessous.
+// Lots de corps POST (collection items), sans liste d'UUID dans l'URL.
 const PRELOAD_CHUNK_SIZE = 500;
+// Mesure réelle nationale : 500 UUID => URL 19 734 octets / HEADERS_OVERFLOW ;
+// 100 UUID => 4 134 octets / HTTP 200. Borne commune aux filtres UUID GET/PATCH.
+const UUID_FILTER_CHUNK_SIZE = 100;
 // source_occurrence_key n'est PAS un UUID court : les clés réelles OpenAgenda
 // ("openagenda:<uid>:<date ISO complète>") font ~70-85 caractères. Mesuré en conditions
 // réelles le 18/10/2026 sur le lot Senlis (206 occurrences) : 170 clés (~14 262 octets d'URL)
@@ -156,7 +156,13 @@ function rowToActivity(row) {
     postalCode: row.postal_code, city: row.city, country: row.country, latitude: row.latitude, longitude: row.longitude,
     onlineUrl: row.online_url, bookingUrl: row.booking_url, admissionType: row.admission_type, organizers: row.organizers || [],
     category: row.category, subcategory: row.subcategory, tags: row.tags || [], imageUrl: row.image_url,
-    confidence: row.confidence, fieldConfidence: row.field_confidence || {}, evidence: row.evidence || [],
+    confidence: row.confidence, fieldConfidence: row.field_confidence || {}, evidence: [
+      ...(row.evidence || []),
+      ...((row.provenances || []).some(p => p.source_payload?.version === "datatourisme-period-v2" &&
+        p.source_payload.period && !p.source_payload.period.startTime) &&
+        !(row.evidence || []).some(e => e.field === "startsAt" && e.excerpt === UNSPECIFIED_START)
+        ? [{ field: "startsAt", excerpt: UNSPECIFIED_START }] : [])
+    ],
     provenances: (row.provenances || []).map((p) => ({ sourceType: p.source && p.source.connector_type || "database", sourceName: p.source && p.source.key || p.source_id || "source-inconnue", sourceUrl: p.source && p.source.base_url || null, originalEventUrl: p.original_event_url, externalId: p.source_record_id, fetchedAt: p.last_seen_at })),
     externalIds: (row.external_ids || []).map((id) => ({ system: id.system, value: id.value }))
   };
@@ -183,8 +189,9 @@ async function reconcileDatatourismeRefusals({ store, sourceId, refusedPoiUuids,
   return { affectedActivityIds, staleActivityIds };
 }
 
-async function persistSortirIngestionUnlocked({ sources, store, now = new Date(), staleAfterMs = DEFAULT_STALE_AFTER_MS, reconcileDisappearances = true, candidateCache }) {
+async function persistSortirIngestionUnlocked({ sources, store, now = new Date(), staleAfterMs = DEFAULT_STALE_AFTER_MS, reconcileDisappearances = true, candidateCache, datatourismeRepair = null, beforeCreateActivity = null }) {
   if (!store) throw new Error("store est obligatoire");
+  if (datatourismeRepair && !require("./datatourisme-poi-repair").isDatatourismeRepairContext(datatourismeRepair)) throw new Error("Capacité de réparation explicite invalide");
   const startedAt = now.toISOString();
   const ingestion = await store.createIngestionRun({ status: "running", orchestrator_version: ORCHESTRATOR_VERSION, started_at: startedAt });
   const totals = { collected: 0, VALID: 0, NEEDS_REVIEW: 0, INVALID: 0, merged: 0, toReview: 0, final: 0 };
@@ -227,6 +234,12 @@ async function persistSortirIngestionUnlocked({ sources, store, now = new Date()
     candidateIndex.set(scalarRow.id, row);
     if (temporal) candidateCache.set(row);
   }
+  // A stale activity brought back by its own source is republished only if it is not a REVIEW
+  // quarantine (rare path: one read per reactivation, never on the daily fast path).
+  async function reactivatedStatus(activityId) {
+    const decisions = typeof store.loadReviewDecisionsBatch === "function" ? await store.loadReviewDecisionsBatch([activityId]) : [];
+    return reactivationStatus(activityId, decisions);
+  }
 
   for (const descriptor of Array.isArray(sources) ? sources : []) {
     let source = null;
@@ -236,6 +249,7 @@ async function persistSortirIngestionUnlocked({ sources, store, now = new Date()
     let sourceStatus = "completed";
     try {
     source = await store.ensureSource(descriptor);
+    if (datatourismeRepair) datatourismeRepair.validateSource(source.id, descriptor);
     sourceRun = await store.createSourceRun({ ingestion_run_id: ingestion.id, source_id: source.id, status: "running", started_at: startedAt });
     if (descriptor.error) { sourceStatus = "failed"; errors.push(errorText(descriptor.error)); }
     else if (!Array.isArray(descriptor.results)) { sourceStatus = "failed"; errors.push("Résultats source absents ou invalides."); }
@@ -253,6 +267,7 @@ async function persistSortirIngestionUnlocked({ sources, store, now = new Date()
       // même pré-passage, déjà pur/sans effet de bord.
       const preloadStartsAtByMapKey = new Map();
       const legacyDatatourismeItems = [];
+      const datatourismeOccurrences = [];
       for (const connectorResult of descriptor.results) {
         try {
           const wrapped = connectorResult && typeof connectorResult === "object" && ("activity" in connectorResult || "error" in connectorResult);
@@ -263,6 +278,9 @@ async function persistSortirIngestionUnlocked({ sources, store, now = new Date()
           const item = { ...(wrapped ? connectorResult : {}), activity: validation.activity };
           const itemMetadata = sourceMetadata(item, source);
           preloadOccurrenceKeys.add(itemMetadata.sourceOccurrenceKey);
+          if (descriptor.connectorType === "datatourisme" && itemMetadata.sourceOccurrenceKey.startsWith("datatourisme:")) {
+            datatourismeOccurrences.push({ metadata: itemMetadata, activity: validation.activity });
+          }
           if (descriptor.connectorType === "datatourisme" && itemMetadata.legacySourceOccurrenceKey) {
             preloadOccurrenceKeys.add(itemMetadata.legacySourceOccurrenceKey);
             legacyDatatourismeItems.push({ metadata: itemMetadata, endsAt: validation.activity.endsAt });
@@ -271,6 +289,7 @@ async function persistSortirIngestionUnlocked({ sources, store, now = new Date()
         } catch (_) { /* erreur de préparation : re-détectée et comptabilisée dans la boucle principale */ }
       }
       const preloadedProvenances = await store.findProvenancesBatch(source.id, [...preloadOccurrenceKeys]);
+      const repairRelinks = new Map();
       const provenanceMap = new Map(preloadedProvenances.map((row) => [provenanceMapKey(row.source_record_id, row.source_occurrence_key), row]));
       const preloadActivityIds = [...new Set(preloadedProvenances.map((row) => row.activity_id))];
       const preloadedActivities = await store.getActivitiesBatch(preloadActivityIds);
@@ -281,10 +300,23 @@ async function persistSortirIngestionUnlocked({ sources, store, now = new Date()
         if (provenanceMap.has(key)) continue;
         const legacy = provenanceMap.get(provenanceMapKey(metadata.sourceRecordId, metadata.legacySourceOccurrenceKey));
         const existing = legacy && activityMap.get(legacy.activity_id);
-        // Même début (dans la clé historique) ET même fin canonique : aucune création
-        // liée au seul changement de format. Une autre fin reste une autre période.
-        if (existing && (existing.ends_at == null && endsAt == null || Date.parse(existing.ends_at) === Date.parse(endsAt))) {
+        // The provenance payload identifies the historical period, even if its
+        // activity was overwritten. The known-provenance guard below checks the link.
+        if (existing && matchesLegacyOccurrence(legacy, { ...metadata, activity: { startsAt: metadata.canonicalActivityPayload.startsAt, endsAt } })) {
           provenanceMap.set(key, legacy);
+        }
+      }
+      // Refuse a corrupt known link before processing ANY occurrence in this
+      // source batch. Do not let a later sibling overwrite or replace it again.
+      for (const { metadata, activity } of datatourismeOccurrences) {
+        const known = provenanceMap.get(provenanceMapKey(metadata.sourceRecordId, metadata.sourceOccurrenceKey));
+        const existing = known && activityMap.get(known.activity_id);
+        if (known && (!existing || !sameInterval({ startsAt: existing.starts_at, endsAt: existing.ends_at }, activity))) {
+          if (!datatourismeRepair || !existing) throw new Error("Couverture DATAtourisme incohérente : provenance connue mal rattachée (intervalle)");
+          datatourismeRepair.authorize(known, metadata);
+          const key = provenanceMapKey(metadata.sourceRecordId, metadata.sourceOccurrenceKey);
+          repairRelinks.set(key, known);
+          provenanceMap.delete(key); // Choose a correct target through the normal candidate pipeline.
         }
       }
       // Préchargement des CANDIDATS (remplace les futurs appels individuels à
@@ -358,6 +390,10 @@ async function persistSortirIngestionUnlocked({ sources, store, now = new Date()
           if (provenance) {
             const existing = activityMap.get(provenance.activity_id);
             if (!existing) throw new Error("Activité préchargée introuvable (incohérence interne du préchargement par lot).");
+            if (descriptor.connectorType === "datatourisme" && metadata.sourceOccurrenceKey.startsWith("datatourisme:") && !sameInterval(
+              { startsAt: existing.starts_at, endsAt: existing.ends_at }, validation.activity)) {
+              throw new Error("Couverture DATAtourisme incohérente : provenance connue mal rattachée (intervalle)");
+            }
             // existing.record_status n'est pas disponible sur la ligne provenance seule : savoir
             // si l'activité est stale (à réactiver) exige de lire l'activité — via la Map
             // préchargée, jamais via un nouvel appel individuel.
@@ -375,7 +411,12 @@ async function persistSortirIngestionUnlocked({ sources, store, now = new Date()
                 // Cas rare (réactivation) : chemin individuel conservé tel quel, pour ne pas
                 // complexifier le cas ultra-fréquent ci-dessous.
                 await store.updateProvenance(provenance.id, { last_seen_at: startedAt, active: true, last_seen_run_id: sourceRun.id, ...(temporalPayloadChanged ? { source_payload: metadata.sourcePayload } : {}) });
-                const updated = await store.updateActivity(existing.id, { record_status: "active", updated_at: startedAt });
+                // Completes a creation interrupted after its provenance (only missing IDs; repair
+                // mode relocates identifiers itself in finishIdentifiers).
+                const missingIds = validation.activity.externalIds.filter(e => !(existing.external_ids || []).some(x =>
+                  x.system === e.system && x.value === e.value && (x.source_id == null || x.source_id === source.id)));
+                if (missingIds.length && !datatourismeRepair) await store.upsertExternalIds(existing.id, source.id, missingIds);
+                const updated = await store.updateActivity(existing.id, { record_status: await reactivatedStatus(existing.id), updated_at: startedAt });
                 // Une activité fusionnée peut recevoir plusieurs provenances DANS le même lot :
                 // si un item ultérieur du même lot pointe vers cette même activité, il doit voir
                 // ce nouvel état (record_status), pas la photo prise au début du run. Les clés
@@ -404,7 +445,7 @@ async function persistSortirIngestionUnlocked({ sources, store, now = new Date()
               const merged = mergeActivities(rowToActivity(existing), validation.activity).activity;
               await store.updateProvenance(provenance.id, { last_seen_at: startedAt, active: true, last_seen_run_id: sourceRun.id, payload_hash: hash, source_payload: metadata.sourcePayload });
               await store.upsertExternalIds(existing.id, source.id, validation.activity.externalIds);
-              const updated = await store.updateActivity(existing.id, activityToRow(merged, existing.record_status === "stale" ? "active" : existing.record_status));
+              const updated = await store.updateActivity(existing.id, activityToRow(merged, existing.record_status === "stale" ? await reactivatedStatus(existing.id) : existing.record_status));
               activityMap.set(existing.id, { ...existing, ...updated });
               // Contenu fusionné + externalIds de CETTE occurrence upsertés ci-dessus : tient
               // candidateIndex à jour pour les mêmes raisons que la réactivation ci-dessus
@@ -417,7 +458,13 @@ async function persistSortirIngestionUnlocked({ sources, store, now = new Date()
           } else {
             const candidates = candidateMatches(validation.activity);
             const comparisons = candidates.map((candidate) => ({ candidate, result: compareActivities(rowToActivity(candidate), validation.activity) }));
-            const match = validation.status === "VALID" ? comparisons.find((entry) => entry.result.decision === DECISIONS.MATCH) : null;
+            // Editorial incompleteness does not contradict an otherwise proven identity.
+            // Unknown/identity-sensitive warnings remain blocking; keep validation diagnostics
+            // and the existing activity's review status when attaching the new provenance.
+            const identityEligible = validation.status === "VALID" ||
+              (validation.status === "NEEDS_REVIEW" && validation.errors.length === 0 &&
+                validation.warnings.length > 0 && validation.warnings.every(w => w.code === "organizer_name_missing"));
+            const match = identityEligible ? comparisons.find((entry) => entry.result.decision === DECISIONS.MATCH) : null;
             const reviews = comparisons.filter((entry) => entry.result.decision === DECISIONS.REVIEW);
             let createdActivityId = null;
             let desiredRecordStatus = null;
@@ -445,18 +492,30 @@ async function persistSortirIngestionUnlocked({ sources, store, now = new Date()
             } else {
               const underReview = validation.status === "NEEDS_REVIEW" || reviews.length > 0;
               desiredRecordStatus = underReview ? "review" : "active";
-              const created = await store.createActivity(activityToRow(validation.activity, underReview ? "review" : "stale"));
+              // Run scan safety checks before the INSERT, never in the HTTP response hook.
+              const stagingRow = activityToRow(validation.activity, "stale");
+              if (beforeCreateActivity) await beforeCreateActivity({ row: stagingRow, metadata, comparisons,
+                decision: underReview ? "REVIEW" : "DISTINCT" });
+              // Even an ambiguous/lost INSERT response leaves only non-publishable staging.
+              // REVIEW, like active, is published only after its provenance exists.
+              const created = await store.createActivity(stagingRow);
               activityId = created.id; createdActivityId = created.id; unlinkedActivityId = created.id;
               indexScalarRow = created;
               if (underReview) { totals.toReview += 1; }
-              for (const review of reviews) await store.insertDedupDecision({ ingestion_run_id: ingestion.id, left_activity_id: review.candidate.id, right_activity_id: created.id, decision: "REVIEW", algorithm_version: ALGORITHM_VERSION, signals: review.result.signals, review_status: "pending" });
+              // Quarantine trace BEFORE the provenance: once the provenance exists, every pending
+              // decision exists too, so a replay can always recognise (and never publish) it.
+              for (const review of reviews) await store.insertDedupDecision({ ingestion_run_id: ingestion.id, left_activity_id: review.candidate.id, right_activity_id: created.id, decision: "REVIEW", algorithm_version: ALGORITHM_VERSION, review_status: "pending",
+                signals: [...review.result.signals, quarantineSignal({ quarantinedActivityId: created.id, candidateActivityId: review.candidate.id, sourceId: source.id, metadata, activity: validation.activity })] });
             }
-            provenance = await store.createProvenanceIdempotent({ activity_id: activityId, source_id: source.id, source_record_id: metadata.sourceRecordId, source_occurrence_key: metadata.sourceOccurrenceKey, original_event_url: metadata.originalEventUrl, source_payload: metadata.sourcePayload, payload_hash: hash, first_seen_at: startedAt, last_seen_at: startedAt, last_seen_run_id: sourceRun.id, active: true });
+            const relink = repairRelinks.get(provenanceMapKey(metadata.sourceRecordId, metadata.sourceOccurrenceKey));
+            const provenancePayload = { activity_id: activityId, source_id: source.id, source_record_id: metadata.sourceRecordId, source_occurrence_key: metadata.sourceOccurrenceKey, original_event_url: metadata.originalEventUrl, source_payload: metadata.sourcePayload, payload_hash: hash, first_seen_at: startedAt, last_seen_at: startedAt, last_seen_run_id: sourceRun.id, active: true };
+            provenance = relink ? await datatourismeRepair.relink(store, relink, activityId, metadata, provenancePayload)
+              : await store.createProvenanceIdempotent(provenancePayload);
             unlinkedActivityId = null;
             if (provenance.activity_id !== activityId) {
               const raced = await store.getActivity(provenance.activity_id);
               const merged = mergeActivities(rowToActivity(raced), validation.activity).activity;
-              const updatedRow = await store.updateActivity(raced.id, activityToRow(merged, raced.record_status === "stale" ? "active" : raced.record_status));
+              const updatedRow = await store.updateActivity(raced.id, activityToRow(merged, raced.record_status === "stale" ? await reactivatedStatus(raced.id) : raced.record_status));
               if (createdActivityId) await store.markActivityMerged(createdActivityId, raced.id);
               activityId = provenance.activity_id;
               // L'activité créée localement a perdu la course : jamais indexée (elle devient
@@ -469,8 +528,8 @@ async function persistSortirIngestionUnlocked({ sources, store, now = new Date()
               provenanceAlreadyIndexed = true;
             }
             await store.upsertExternalIds(activityId, source.id, validation.activity.externalIds);
-            if (createdActivityId && provenance.activity_id === createdActivityId && desiredRecordStatus === "active") {
-              const reactivated = await store.updateActivity(createdActivityId, { record_status: "active", updated_at: startedAt });
+            if (createdActivityId && provenance.activity_id === createdActivityId && desiredRecordStatus) {
+              const reactivated = await store.updateActivity(createdActivityId, { record_status: desiredRecordStatus, updated_at: startedAt });
               indexScalarRow = { ...indexScalarRow, ...reactivated };
             }
             // Rafraîchit candidateIndex EN MÉMOIRE (zéro appel Supabase supplémentaire) : la
@@ -629,12 +688,18 @@ function createSupabaseSortirStore(client) {
       for (const chunk of chunkIds(keys, OCCURRENCE_KEY_CHUNK_SIZE)) rows.push(...await one(client.from("sortir_provenances").select("*").eq("source_id", sourceId).in("source_occurrence_key", chunk)));
       return rows;
     },
+    async relocateDatatourismeOccurrenceExternalIds({ sourceId, fromActivityId, toActivityId, values }) {
+      if (fromActivityId === toActivityId) return [];
+      if (!sourceId || !fromActivityId || !toActivityId || !Array.isArray(values) || !values.length || values.length > 3 || values.some(v => !v.startsWith("datatourisme:"))) throw new Error("Déplacement d'identité hors périmètre");
+      return one(client.from("sortir_external_ids").update({ activity_id: toActivityId })
+        .eq("activity_id", fromActivityId).eq("source_id", sourceId).eq("system", "datatourisme-occurrence").in("value", values).select());
+    },
     async getActivity(id) { return one(client.from("sortir_activities").select("*, provenances:sortir_provenances(*, source:sortir_sources(key,connector_type,base_url)), external_ids:sortir_external_ids(*)").eq("id", id).single()); },
     async getActivitiesBatch(ids) {
       const unique = [...new Set(ids)];
       if (!unique.length) return [];
       const rows = [];
-      for (const chunk of chunkIds(unique, PRELOAD_CHUNK_SIZE)) rows.push(...await one(client.from("sortir_activities").select("*, provenances:sortir_provenances(*, source:sortir_sources(key,connector_type,base_url)), external_ids:sortir_external_ids(*)").in("id", chunk)));
+      for (const chunk of chunkIds(unique, UUID_FILTER_CHUNK_SIZE)) rows.push(...await one(client.from("sortir_activities").select("*, provenances:sortir_provenances(*, source:sortir_sources(key,connector_type,base_url)), external_ids:sortir_external_ids(*)").in("id", chunk)));
       return rows;
     },
     // Remplace l'ancien listCandidateActivities(activity) (requête individuelle ±12h, bornée à
@@ -685,7 +750,7 @@ function createSupabaseSortirStore(client) {
     async touchProvenancesBatch(ids, touch) {
       const unique = [...new Set(ids)];
       if (!unique.length) return;
-      for (const chunk of chunkIds(unique, PRELOAD_CHUNK_SIZE)) {
+      for (const chunk of chunkIds(unique, UUID_FILTER_CHUNK_SIZE)) {
         const { error } = await client.from("sortir_provenances").update(touch).in("id", chunk);
         if (error) throw new Error(error.message);
       }
@@ -703,6 +768,22 @@ function createSupabaseSortirStore(client) {
         const { error } = await client.from("sortir_collection_items").insert(chunk);
         if (error) throw new Error(error.message);
       }
+    },
+    // Decisions REVIEW (pending or resolved) touching these activities; OR filter on two
+    // columns, so 50 UUID per GET keeps the URL well below the measured 16 KB limit.
+    async loadReviewDecisionsBatch(ids) {
+      const rows = [], seen = new Set();
+      for (const chunk of chunkIds([...new Set(ids)], UUID_FILTER_CHUNK_SIZE / 2)) {
+        const list = chunk.join(",");
+        for (const row of await one(client.from("sortir_dedup_decisions").select("id,left_activity_id,right_activity_id,decision,review_status,algorithm_version,signals,resolved_at,created_at")
+          .eq("decision", "REVIEW").or(`left_activity_id.in.(${list}),right_activity_id.in.(${list})`).order("id").limit(1000)).then(page => {
+            if (page.length >= 1000) throw new Error("Lecture des décisions REVIEW tronquée");
+            return page;
+          })) {
+          if (!seen.has(row.id)) { seen.add(row.id); rows.push(row); }
+        }
+      }
+      return rows;
     },
     async insertDedupDecision(row) { if (row.left_activity_id === row.right_activity_id) return null; const ordered = row.left_activity_id < row.right_activity_id ? row : { ...row, left_activity_id: row.right_activity_id, right_activity_id: row.left_activity_id }; const { data, error } = await client.from("sortir_dedup_decisions").insert(ordered).select().single(); if (!error) return data; if (error.code === "23505") return null; throw new Error(error.message); },
     // source_record_id est construit par le connecteur : datatourisme:{uuid}:{date}.
@@ -726,7 +807,7 @@ function createSupabaseSortirStore(client) {
     },
     async getActivitySupportBatch(ids) {
       const rows = [];
-      for (const chunk of chunkIds(ids)) {
+      for (const chunk of chunkIds(ids, UUID_FILTER_CHUNK_SIZE)) {
         // Jointure externe : garde les activités sans soutien ; limite embarquée à
         // une provenance active, pour éviter toute troncature liée à leur multiplicité.
         rows.push(...await one(client.from("sortir_activities")
@@ -736,7 +817,7 @@ function createSupabaseSortirStore(client) {
       return rows;
     },
     async markActivitiesStaleBatch(ids, updatedAt) {
-      for (const chunk of chunkIds(ids)) {
+      for (const chunk of chunkIds(ids, UUID_FILTER_CHUNK_SIZE)) {
         const { error } = await client.from("sortir_activities")
           .update({ record_status: "stale", updated_at: updatedAt }).in("id", chunk)
           .in("record_status", ["active", "review"]);
@@ -752,14 +833,14 @@ function createSupabaseSortirStore(client) {
       // touchées, puis on marque stale uniquement la différence — même règle métier
       // (aucune provenance active restante ⇒ stale), sans boucle par activité.
       const stillActiveIds = new Set();
-      for (const chunk of chunkIds(touchedIds)) {
+      for (const chunk of chunkIds(touchedIds, UUID_FILTER_CHUNK_SIZE)) {
         const rows = await one(client.from("sortir_provenances").select("activity_id").in("activity_id", chunk).eq("active", true));
         for (const { activity_id: id } of rows) stillActiveIds.add(id);
       }
       const idsToMarkStale = touchedIds.filter((id) => !stillActiveIds.has(id));
       if (!idsToMarkStale.length) return;
       const updatedAt = new Date().toISOString();
-      for (const chunk of chunkIds(idsToMarkStale)) {
+      for (const chunk of chunkIds(idsToMarkStale, UUID_FILTER_CHUNK_SIZE)) {
         const { error } = await client.from("sortir_activities").update({ record_status: "stale", updated_at: updatedAt }).in("id", chunk);
         if (error) throw new Error(error.message);
       }
@@ -773,4 +854,4 @@ function createDefaultSupabaseStore() {
   return createSupabaseSortirStore(createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false } }));
 }
 
-module.exports = { reconcileDatatourismeRefusals, DEFAULT_STALE_AFTER_MS, DISAPPEARANCE_CHUNK_SIZE, PRELOAD_CHUNK_SIZE, OCCURRENCE_KEY_CHUNK_SIZE, CANDIDATE_RANGE_PAGE_SIZE, chunkIds, provenanceMapKey, unionExternalIds, stableJson, payloadHash, sanitizeSourcePayload, canonicalActivityPayload, activityToRow, rowToActivity, persistSortirIngestion, mergeStoredActivities, createSupabaseSortirStore, createDefaultSupabaseStore };
+module.exports = { reconcileDatatourismeRefusals, DEFAULT_STALE_AFTER_MS, DISAPPEARANCE_CHUNK_SIZE, PRELOAD_CHUNK_SIZE, UUID_FILTER_CHUNK_SIZE, OCCURRENCE_KEY_CHUNK_SIZE, CANDIDATE_RANGE_PAGE_SIZE, chunkIds, provenanceMapKey, unionExternalIds, stableJson, payloadHash, sanitizeSourcePayload, canonicalActivityPayload, activityToRow, rowToActivity, persistSortirIngestion, mergeStoredActivities, createSupabaseSortirStore, createDefaultSupabaseStore };

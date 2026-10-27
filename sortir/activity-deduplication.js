@@ -1,8 +1,10 @@
 "use strict";
 
+const { sameInterval, hasUnspecifiedStart } = require("./datatourisme-occurrence-identity");
+
 const { normalizeActivity, isValidHttpUrl } = require("./activity-validation");
 
-const ALGORITHM_VERSION = "sortir-dedup-v1";
+const ALGORITHM_VERSION = "sortir-dedup-v4";
 const DECISIONS = Object.freeze({ MATCH: "MATCH", REVIEW: "REVIEW", DISTINCT: "DISTINCT" });
 const FIVE_MINUTES = 5 * 60 * 1000;
 const TWO_HOURS = 2 * 60 * 60 * 1000;
@@ -81,6 +83,39 @@ function organizerSimilarity(a, b) {
   return best;
 }
 
+// Positive evidence of different visit subjects inside an otherwise identical programme.
+// UUIDs, missing hours and a shared programme title alone never establish distinction.
+function distinctNamedDatatourismeVisits(leftInput, rightInput) {
+  const adapt = x => normalizeActivity({ ...x, externalIds: x.externalIds || x.external_ids,
+    provenances: (x.provenances || []).map(p => ({ ...p, originalEventUrl: p.originalEventUrl || p.original_event_url })) });
+  const a = adapt(leftInput), b = adapt(rightInput);
+  const ids = (x, system) => x.externalIds.filter(e => e.system === system).map(e => e.value);
+  const ap = ids(a, "datatourisme-poi"), bp = ids(b, "datatourisme-poi");
+  const ar = ids(a, "datatourisme-producer-id"), br = ids(b, "datatourisme-producer-id");
+  if (!ap.length || !bp.length || ap.some(x => bp.includes(x)) || !ar.length || !br.length ||
+    ar.some(x => br.includes(x)) || sharedExternalId(a, b) || sharedOriginalUrl(a, b)) return null;
+  if (!normalizedText(a.title) || normalizedText(a.title) !== normalizedText(b.title) ||
+    !normalizedText(a.city) || normalizedText(a.city) !== normalizedText(b.city)) return null;
+  function subject(x) {
+    const lines = String(x.description || "").split(/\r?\n/);
+    const matches = lines.map((line, index) => ({ index,
+      match: line.trim().match(/^[AÀ]\s+(.+?),\s+visite de l['’]atelier\s+(.+?)[.]?$/iu) }))
+      .filter(x => x.match);
+    if (matches.length !== 1 || normalizedText(matches[0].match[1]) !== normalizedText(x.city)) return null;
+    const name = normalizedText(matches[0].match[2]);
+    const tokens = name.split(" ").filter(t => !/^(de|du|des|le|la|les|l|d|et|en|au|aux|un|une|atelier)$/.test(t));
+    if (tokens.length < 2) return null;
+    lines[matches[0].index] = "VISIT_SUBJECT";
+    const programme = normalizedText(lines.join("\n"));
+    if (programme.split(" ").length < 24) return null;
+    return { name, tokens, programme };
+  }
+  const left = subject(a), right = subject(b);
+  if (!left || !right || left.programme !== right.programme ||
+    left.tokens.some(t => right.tokens.includes(t))) return null;
+  return { left: left.name, right: right.name };
+}
+
 function compareActivities(leftInput, rightInput) {
   const a = normalizeActivity(leftInput);
   const b = normalizeActivity(rightInput);
@@ -114,9 +149,71 @@ function compareActivities(leftInput, rightInput) {
 
   const datatourismePoiIds = new Set(a.externalIds.filter(id => id.system === "datatourisme-poi").map(id => id.value));
   const sameDatatourismePoi = b.externalIds.some(id => id.system === "datatourisme-poi" && datatourismePoiIds.has(id.value));
-  if (sameDatatourismePoi && startDeltaMs === 0 && instant(a.endsAt) !== instant(b.endsAt)) {
-    signals.push({ type: "datatourisme_period_end_conflict", value: true });
-    return { algorithmVersion: ALGORITHM_VERSION, decision: DECISIONS.DISTINCT, signals };
+  if (sameDatatourismePoi) {
+    // A source occurrence ID is evidence of a period representation. Legacy
+    // POI-only copies retain the generic five-minute tolerance; explicit
+    // occurrence identities never use that tolerance to collapse two source periods.
+    const hasOccurrenceIdentity = [...a.externalIds, ...b.externalIds].some(id => id.system === "datatourisme-occurrence");
+    if (!sameInterval(a, b) && (hasOccurrenceIdentity || startDeltaMs === 0 || startDeltaMs > FIVE_MINUTES || hasUnspecifiedStart(a) || hasUnspecifiedStart(b))) {
+      const ambiguous = hasUnspecifiedStart(a) || hasUnspecifiedStart(b);
+      signals.push({ type: ambiguous ? "datatourisme_time_precision_conflict" :
+        startDeltaMs === 0 ? "datatourisme_period_end_conflict" : "datatourisme_occurrence_conflict", value: true });
+      return { algorithmVersion: ALGORITHM_VERSION, decision: ambiguous ? DECISIONS.REVIEW : DECISIONS.DISTINCT, signals };
+    }
+  }
+
+  const otherDatatourismePoi = datatourismePoiIds.size > 0 &&
+    b.externalIds.some(id => id.system === "datatourisme-poi") && !sameDatatourismePoi;
+  if (otherDatatourismePoi) {
+    // Different POI identities may represent one session, but never erase temporal distinctions.
+    if (!sameInterval(a, b)) {
+      const ambiguous = hasUnspecifiedStart(a) || hasUnspecifiedStart(b) || !a.endsAt || !b.endsAt;
+      signals.push({ type: "datatourisme_inter_poi_interval_conflict", value: true });
+      return { algorithmVersion: ALGORITHM_VERSION, decision: ambiguous && (identitySignal || titleSimilarity >= 0.82 && strongLocation) ? DECISIONS.REVIEW : DECISIONS.DISTINCT, signals };
+    }
+    const distinctVisits = distinctNamedDatatourismeVisits(a, b);
+    if (distinctVisits) {
+      signals.push({ type: "datatourisme_distinct_named_visits", value: distinctVisits });
+      return { algorithmVersion: ALGORITHM_VERSION, decision: DECISIONS.DISTINCT, signals };
+    }
+    const exactTitle = normalizedText(a.title) && normalizedText(a.title) === normalizedText(b.title);
+    const descriptionScore = tokenSimilarity(a.description, b.description);
+    const descriptionEvidence = normalizedText(a.description).split(" ").length >= 12 &&
+      normalizedText(b.description).split(" ").length >= 12;
+    const namedOrganizers = a.organizers.some(o => normalizedText(o.name)) && b.organizers.some(o => normalizedText(o.name));
+    const sharedOrganizerUrl = a.organizers.some(o => canonicalUrl(o.url) && b.organizers.some(p => canonicalUrl(p.url) === canonicalUrl(o.url)));
+    const otherContradiction = cityConflict ||
+      (a.postalCode && b.postalCode && a.postalCode !== b.postalCode) ||
+      (a.country && b.country && a.country !== b.country) ||
+      (a.venueName && b.venueName && tokenSimilarity(a.venueName, b.venueName) < 0.8) ||
+      (namedOrganizers && organizerScore < 0.5 && !sharedOrganizerUrl) ||
+      (descriptionEvidence && descriptionScore < 0.5);
+    const exactSession = a.endsAt && b.endsAt && a.timezone === b.timezone && !hasUnspecifiedStart(a) && !hasUnspecifiedStart(b);
+    // A coordinate is evidence of location quality, not an unconditional event identity.
+    // Only exact, independently corroborated metadata can resolve that one conflict.
+    // Missing structured address parts, similar prose or conflicting venues never qualify.
+    const exactStructuredAddress = sameAddress && sameCity && Boolean(a.postalCode && b.postalCode &&
+      a.country && b.country && a.postalCode === b.postalCode && a.country === b.country);
+    const exactVenue = normalizedText(a.venueName) === normalizedText(b.venueName);
+    const exactDescription = descriptionEvidence && normalizedText(a.description) === normalizedText(b.description);
+    const coordinateConflict = distance !== null && distance > 100;
+    const coordinateIdentityProven = coordinateConflict && exactSession && exactTitle && exactDescription &&
+      exactStructuredAddress && exactVenue && sharedOrganizerUrl && !otherContradiction;
+    const contradiction = otherContradiction || (coordinateConflict && !coordinateIdentityProven);
+    if (coordinateIdentityProven) signals.push({ type: "datatourisme_coordinate_conflict_exact_identity", value: true });
+    // The ordinary 100m rule is unchanged for all less certain representations.
+    const strongIdentity = exactSession && exactTitle && sameAddress && sameCity && !contradiction &&
+      ((descriptionEvidence && descriptionScore >= 0.85) || organizerScore >= 0.9);
+    if (strongIdentity) {
+      signals.push({ type: "datatourisme_inter_poi_strong_identity", value: true },
+        { type: "description_similarity", value: Number(descriptionScore.toFixed(3)) });
+      return { algorithmVersion: ALGORITHM_VERSION, decision: DECISIONS.MATCH, signals };
+    }
+    const ambiguousIdentity = identitySignal || titleSimilarity >= 0.82 && strongLocation ||
+      titleSimilarity >= 0.82 && !cityConflict;
+    signals.push({ type: contradiction ? "datatourisme_inter_poi_contradiction" : "datatourisme_inter_poi_identity_ambiguous", value: true });
+    // Never fall through to URL/producer-ID-only matching for two distinct POIs.
+    return { algorithmVersion: ALGORITHM_VERSION, decision: ambiguousIdentity ? DECISIONS.REVIEW : DECISIONS.DISTINCT, signals };
   }
 
   const occurrenceConflict = startDeltaMs !== null && startDeltaMs > TWELVE_HOURS;
@@ -185,6 +282,13 @@ function mergeActivities(leftInput, rightInput) {
   const scalarFields = ["title", "description", "startsAt", "endsAt", "timezone", "venueName", "address", "postalCode", "city", "country", "latitude", "longitude", "onlineUrl", "category", "subcategory", "imageUrl", "bookingUrl"];
   const activity = { ...a };
   for (const field of scalarFields) activity[field] = chooseValue(a, b, field);
+  // Event identity does not establish which discrepant GPS pair is authoritative.
+  // Attach the source without silently relocating the incumbent activity. Both
+  // original values remain in the conflict evidence below.
+  if (comparison.signals.some(s => s.type === "datatourisme_coordinate_conflict_exact_identity")) {
+    activity.latitude = a.latitude;
+    activity.longitude = a.longitude;
+  }
   activity.locationType = a.locationType === b.locationType ? a.locationType
     : [a.locationType, b.locationType].includes("hybrid") || new Set([a.locationType, b.locationType]).has("online") && new Set([a.locationType, b.locationType]).has("physical") ? "hybrid" : chooseValue(a, b, "locationType");
   const lifecycleOrder = { scheduled: 0, tentative: 1, postponed: 2, cancelled: 3 };
@@ -208,4 +312,4 @@ function mergeActivities(leftInput, rightInput) {
   return { algorithmVersion: ALGORITHM_VERSION, decision: DECISIONS.MATCH, comparison, conflicts: conflictFields, activity };
 }
 
-module.exports = { ALGORITHM_VERSION, DECISIONS, normalizedText, canonicalUrl, tokenSimilarity, compareActivities, mergeActivities };
+module.exports = { distinctNamedDatatourismeVisits, ALGORITHM_VERSION, DECISIONS, normalizedText, canonicalUrl, tokenSimilarity, compareActivities, mergeActivities };

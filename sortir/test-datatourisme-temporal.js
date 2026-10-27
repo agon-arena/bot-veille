@@ -153,13 +153,15 @@ const convert = p => C.convertDatatourismeEvent(p, opts);
     await ingest(store,convert(carrier([periods[0]])));assert.strictEqual(store.activities.length,1);assert.strictEqual(store.provenances.length,1);
     assert.strictEqual(store.activities[0].id,id);assert.strictEqual(store.provenances[0].id,pid);assert(store.provenances[0].source_payload.period);
   });
-  await test("Thierry historique : fin canonique 18h mais payload 20h30, compatibilité sans fusion silencieuse",async()=>{
+  await test("Thierry historique : payload propre reconnu, rattachement incohérent refusé avant toute écriture métier",async()=>{
     const store=await legacyStore("20:30");store.activities[0].ends_at="2026-11-26T17:00:00.000Z";
     store.activities[0].evidence=[{field:"endsAt",sourceValue:JSON.stringify(["2026-11-26T19:30:00.000Z","2026-11-26T17:00:00.000Z"]),provenanceIndex:null}];
-    const oldId=store.activities[0].id;
-    await ingest(store,convert(carrier()));assert.strictEqual(store.activities.length,2);assert.strictEqual(store.provenances.length,2);
-    assert.strictEqual(store.activities.find(a=>a.id===oldId).ends_at,"2026-11-26T17:00:00.000Z");
-    await ingest(store,convert(carrier([...periods].reverse())));assert.strictEqual(store.activities.length,2);assert.strictEqual(store.provenances.length,2);
+    const before=JSON.stringify([store.activities,store.provenances,store.externalIds]);
+    for (const p of [carrier(), carrier([...periods].reverse())]) {
+      const result=await ingest(store,convert(p)); assert.strictEqual(result.status,"failed");
+      assert.strictEqual(JSON.stringify([store.activities,store.provenances,store.externalIds]),before);
+      assert.strictEqual(store.activities.length,1); assert.strictEqual(store.provenances.length,1);
+    }
   });
   await test("trace : un seul fragment brut et sa normalisation, aucune copie du catalogue",()=>{
     const p=carrier();p.takesPlaceAt=Array.from({length:1000},()=>clone(periods[0]));

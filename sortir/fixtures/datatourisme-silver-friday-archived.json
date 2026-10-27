@@ -1,0 +1,665 @@
+{
+ "source": "datatourisme-silver-friday-audit.json (archive réelle, pages 58 et 107)",
+ "now": "2026-10-25T09:56:37.240Z",
+ "pois": [
+  {
+   "identifier": "FMAPIC000V568280886",
+   "isLocatedAt": [
+    {
+     "geo": {
+      "latitude": 50.637583,
+      "longitude": 3.148595
+     },
+     "address": [
+      {
+       "hasAddressCity": {
+        "insee": "59009",
+        "isPartOfDepartment": {
+         "isPartOfRegion": {
+          "isPartOfCountry": {
+           "label": {
+            "@fr": "France"
+           }
+          },
+          "insee": "32",
+          "label": {
+           "@fr": "Hauts-de-France"
+          }
+         },
+         "insee": "59",
+         "label": {
+          "@fr": "Nord"
+         }
+        },
+        "label": {
+         "@fr": "Villeneuve-d'Ascq"
+        }
+       },
+       "streetAddress": [
+        "1 allée du Musée VIlleneuve-d'Ascq"
+       ],
+       "postalCode": "59650",
+       "addressLocality": "Villeneuve-d'Ascq"
+      }
+     ],
+     "openingHoursSpecification": [
+      {
+       "validThrough": "2026-10-29T23:00:00Z",
+       "opens": "14:00",
+       "validFrom": "2026-10-29T23:00:00Z",
+       "closes": "17:00"
+      },
+      {
+       "validThrough": "2027-01-14T23:00:00Z",
+       "opens": "14:00",
+       "validFrom": "2027-01-14T23:00:00Z",
+       "closes": "17:00"
+      },
+      {
+       "validThrough": "2027-12-17T23:00:00Z",
+       "opens": "14:00",
+       "validFrom": "2027-12-17T23:00:00Z",
+       "closes": "17:00"
+      },
+      {
+       "validThrough": "2026-11-19T23:00:00Z",
+       "opens": "14:00",
+       "validFrom": "2026-11-19T23:00:00Z",
+       "closes": "17:00"
+      },
+      {
+       "validThrough": "2026-11-26T23:00:00Z",
+       "opens": "14:00",
+       "validFrom": "2026-11-26T23:00:00Z",
+       "closes": "17:00"
+      },
+      {
+       "validThrough": "2026-12-10T23:00:00Z",
+       "opens": "14:00",
+       "validFrom": "2026-12-10T23:00:00Z",
+       "closes": "17:00"
+      },
+      {
+       "validThrough": "2026-10-22T22:00:00Z",
+       "opens": "14:00",
+       "validFrom": "2026-10-22T22:00:00Z",
+       "closes": "17:00"
+      },
+      {
+       "validThrough": "2026-09-24T22:00:00Z",
+       "opens": "14:00",
+       "validFrom": "2026-09-24T22:00:00Z",
+       "closes": "17:00"
+      },
+      {
+       "validThrough": "2026-10-01T22:00:00Z",
+       "opens": "14:00",
+       "validFrom": "2026-10-01T22:00:00Z",
+       "closes": "17:00"
+      },
+      {
+       "validThrough": "2026-10-08T22:00:00Z",
+       "opens": "14:00",
+       "validFrom": "2026-10-08T22:00:00Z",
+       "closes": "17:00"
+      },
+      {
+       "validThrough": "2027-01-21T23:00:00Z",
+       "opens": "14:00",
+       "validFrom": "2027-01-21T23:00:00Z",
+       "closes": "17:00"
+      },
+      {
+       "validThrough": "2026-09-17T22:00:00Z",
+       "opens": "14:00",
+       "validFrom": "2026-09-17T22:00:00Z",
+       "closes": "17:00"
+      },
+      {
+       "validThrough": "2026-09-10T22:00:00Z",
+       "opens": "14:00",
+       "validFrom": "2026-09-10T22:00:00Z",
+       "closes": "17:00"
+      },
+      {
+       "validThrough": "2027-01-07T23:00:00Z",
+       "opens": "14:00",
+       "validFrom": "2027-01-07T23:00:00Z",
+       "closes": "17:00"
+      },
+      {
+       "validThrough": "2026-11-12T23:00:00Z",
+       "opens": "14:00",
+       "validFrom": "2026-11-12T23:00:00Z",
+       "closes": "17:00"
+      },
+      {
+       "validThrough": "2026-10-15T22:00:00Z",
+       "opens": "14:00",
+       "validFrom": "2026-10-15T22:00:00Z",
+       "closes": "17:00"
+      },
+      {
+       "validThrough": "2026-11-05T23:00:00Z",
+       "opens": "14:00",
+       "validFrom": "2026-11-05T23:00:00Z",
+       "closes": "17:00"
+      },
+      {
+       "validThrough": "2026-12-03T23:00:00Z",
+       "opens": "14:00",
+       "validFrom": "2026-12-03T23:00:00Z",
+       "closes": "17:00"
+      }
+     ],
+     "geoPoint": {
+      "lon": 3.148595,
+      "lat": 50.637583
+     }
+    }
+   ],
+   "hasDescription": [
+    {
+     "description": {
+      "@fr": "**Les vendredis après-midi gratuits**   \n**pour les + 65 ans**   \nTous les vendredis, le musée ouvre gratuitement ses portes aux séniors. Ils pourront bénéficier de visites courtes, d'un moment convivial autour d'un café ou goûter et d'une activité culturelle renouvelée.  Au programme : cours d'histoire de l'art, conférences, lectures, concerts intimistes ou atelier de pratique artistiques seront organisés. \n\n**Visites \"flash\"**  \nDes visites courtes, gratuites et sans réservation, sont également proposées. D’une durée de 30 minutes, elles ont lieu tous les vendredis, sur des créneaux différents. \n\n**Silver Friday intergénérationnels**  \nPendant les vacances scolaires, les Silver Friday deviennent intergénérationnels. Grands-parents et petits-enfants peuvent se retrouver pour partager ateliers créatifs et moments musicaux. \n\n**Des rendez-vous exclusifs au fil des mois à 15h :**\n\n_**Jauge limitée, accès dans la limite des**_   \n_**places disponibles ou inscription par mail :**_ [Inscription](mailto:accueil@musee-lam.fr://exemple.com)\n\n*   **16 octobre** : Atelier dessin avec l'ARPET\n*   **6 novembre** : Atelier d'écriture avec l'ABLAV\n*   **20 novembre** : Atelier dessin avec l'ARPET\n*   **27 novembre** : Concert d'Astrée, duo chant et violoncelle, en résonance avec l'opéra _Alcina_ de Haendel et de l'exposition _Singulières : artistes, autodidactes, affranchies_ (pas de réservation)\n*   **4 décembre :** Atelier de bibliothérapie par _Mademoiselle Lit_\n\n**Des ateliers intergénérationnels à partager avec vos petits-enfants** \n\nPendant les vacances scolaires, le LaM propose des ateliers de pratique artistique intergénérationnels, animé par ses médiateurs. Des moments de création et de complicité pour imaginer, fabriquer et s'amuser ensemble, petits et grands réunis !\n\n_**A partir de 15h, inscription obligatoire pour ces ateliers :**_  [Je m'inscris](mailto:info@musee-lam.fr)\n\n*   **23 octobre :** Jeux de ligne et symétrie, inspirés par les formes et motifs mystérieux des peintures spirites de la collection du LaM\n*   **30 octobre :** En écho à l'oeuvre de l'artiste Baya dans l'exposition Singulières, petits et grands explorent la couleur à travers un atelier mêlant encres et craies grasses\n    \n      \n    _Avec le soutien d'On Seniors'Side Foundation._\n    \n\n![](/sites/default/files/inline-images/Logo-de-la-Fondation-On-Seniors%27-Side.jpg)"
+     },
+     "shortDescription": {
+      "@fr": "**Les vendredis après-midi gratuits**   \n**pour les + 65 ans**   \nTous les vendredis, le musée ouvre gratuitement ses portes aux séniors. Ils pourront bénéficier de visites courtes, d'un moment convivial autour d'un café ou goûter et d'une activité culturelle renouvelée.  Au programme : cours d'histoire de l'art, conférences, lectures, concerts intimistes ou atelier de pratique artistiques seront organisés. \n\n**Visites \"flash\"**  \nDes visites courtes, gratuites et sans réservation, sont également proposées. D’une durée de 30 minutes, elles ont lieu tous les vendredis, sur des créneaux différents. \n\n**Silver Friday intergénérationnels**  \nPendant les vacances scolaires, les Silver Friday deviennent intergénérationnels. Grands-parents et petits-enfants peuvent se retrouver pour partager ateliers créatifs et moments musicaux. \n\n**Des rendez-vous exclusifs au fil des mois à 15h :**\n\n_**Jauge limitée, accès dans la limite des**_   \n_**places disponibles ou inscription par mail :**_ [Inscription](mailto:accueil@musee-lam.fr://exemple.com)\n\n*   **16 octobre** : Atelier dessin avec l'ARPET\n*   **6 novembre** : Atelier d'écriture avec l'ABLAV\n*   **20 novembre** : Atelier dessin avec l'ARPET\n*   **27 novembre** : Concert d'Astrée, duo chant et violoncelle, en résonance avec l'opéra _Alcina_ de Haendel et de l'exposition _Singulières : artistes, autodidactes, affranchies_ (pas de réservation)\n*   **4 décembre :** Atelier de bibliothérapie par _Mademoiselle Lit_\n\n**Des ateliers intergénérationnels à partager avec vos petits-enfants** \n\nPendant les vacances scolaires, le LaM propose des ateliers de pratique artistique intergénérationnels, animé par ses médiateurs. Des moments de création et de complicité pour imaginer, fabriquer et s'amuser ensemble, petits et grands réunis !\n\n_**A partir de 15h, inscription obligatoire pour ces ateliers :**_  [Je m'inscris](mailto:info@musee-lam.fr)\n\n*   **23 octobre :** Jeux de ligne et symétrie, inspirés par les formes et motifs mystérieux des peintures spirites de la collection du LaM\n*   **30 octobre :** En écho à l'oeuvre de l'artiste Baya dans l'exposition Singulières, petits et grands explorent la couleur à travers un atelier mêlant encres et craies grasses\n    \n      \n    _Avec le soutien d'On Seniors'Side Foundation._\n    \n\n![](/sites/default/files/inline-images/Logo-de-la-Fondation-On-Seniors%27-Side.jpg)"
+     }
+    }
+   ],
+   "label": {
+    "@fr": "Silver Friday"
+   },
+   "type": [
+    "Festival",
+    "CulturalEvent",
+    "ShowEvent",
+    "PointOfInterest",
+    "SocialEvent",
+    "Event",
+    "EntertainmentAndEvent",
+    "Parade",
+    "Carnival"
+   ],
+   "hasContact": [
+    {
+     "telephone": [
+      "+33 3 20 19 68 68"
+     ]
+    }
+   ],
+   "uri": "https://data.datatourisme.fr/28/620b1450-54df-3e35-ae57-76037350888d",
+   "takesPlaceAt": [
+    {
+     "endDate": "2026-10-16",
+     "startTime": "14:00",
+     "endTime": "17:00",
+     "startDate": "2026-10-16"
+    },
+    {
+     "endDate": "2026-09-18",
+     "startTime": "14:00",
+     "endTime": "17:00",
+     "startDate": "2026-09-18"
+    },
+    {
+     "endDate": "2026-12-04",
+     "startTime": "14:00",
+     "endTime": "17:00",
+     "startDate": "2026-12-04"
+    },
+    {
+     "endDate": "2026-09-11",
+     "startTime": "14:00",
+     "endTime": "17:00",
+     "startDate": "2026-09-11"
+    },
+    {
+     "endDate": "2026-10-09",
+     "startTime": "14:00",
+     "endTime": "17:00",
+     "startDate": "2026-10-09"
+    },
+    {
+     "endDate": "2027-01-15",
+     "startTime": "14:00",
+     "endTime": "17:00",
+     "startDate": "2027-01-15"
+    },
+    {
+     "endDate": "2026-11-06",
+     "startTime": "14:00",
+     "endTime": "17:00",
+     "startDate": "2026-11-06"
+    },
+    {
+     "endDate": "2027-01-08",
+     "startTime": "14:00",
+     "endTime": "17:00",
+     "startDate": "2027-01-08"
+    },
+    {
+     "endDate": "2026-11-27",
+     "startTime": "14:00",
+     "endTime": "17:00",
+     "startDate": "2026-11-27"
+    },
+    {
+     "endDate": "2026-10-30",
+     "startTime": "14:00",
+     "endTime": "17:00",
+     "startDate": "2026-10-30"
+    },
+    {
+     "endDate": "2026-11-20",
+     "startTime": "14:00",
+     "endTime": "17:00",
+     "startDate": "2026-11-20"
+    },
+    {
+     "endDate": "2026-10-02",
+     "startTime": "14:00",
+     "endTime": "17:00",
+     "startDate": "2026-10-02"
+    },
+    {
+     "endDate": "2027-01-22",
+     "startTime": "14:00",
+     "endTime": "17:00",
+     "startDate": "2027-01-22"
+    },
+    {
+     "endDate": "2026-09-25",
+     "startTime": "14:00",
+     "endTime": "17:00",
+     "startDate": "2026-09-25"
+    },
+    {
+     "endDate": "2026-11-13",
+     "startTime": "14:00",
+     "endTime": "17:00",
+     "startDate": "2026-11-13"
+    },
+    {
+     "endDate": "2027-12-18",
+     "startTime": "14:00",
+     "endTime": "17:00",
+     "startDate": "2027-12-18"
+    },
+    {
+     "endDate": "2026-10-23",
+     "startTime": "14:00",
+     "endTime": "17:00",
+     "startDate": "2026-10-23"
+    },
+    {
+     "endDate": "2026-12-11",
+     "startTime": "14:00",
+     "endTime": "17:00",
+     "startDate": "2026-12-11"
+    }
+   ],
+   "uuid": "170846a2-2e11-393a-b970-42c8902b90ae"
+  },
+  {
+   "identifier": "FMAPIC000V573355848",
+   "isLocatedAt": [
+    {
+     "geo": {
+      "latitude": 50.637583,
+      "longitude": 3.148595
+     },
+     "address": [
+      {
+       "hasAddressCity": {
+        "insee": "59009",
+        "isPartOfDepartment": {
+         "isPartOfRegion": {
+          "isPartOfCountry": {
+           "label": {
+            "@fr": "France"
+           }
+          },
+          "insee": "32",
+          "label": {
+           "@fr": "Hauts-de-France"
+          }
+         },
+         "insee": "59",
+         "label": {
+          "@fr": "Nord"
+         }
+        },
+        "label": {
+         "@fr": "Villeneuve-d'Ascq"
+        }
+       },
+       "streetAddress": [
+        "1 allée du Musée VIlleneuve-d'Ascq"
+       ],
+       "postalCode": "59650",
+       "addressLocality": "Villeneuve-d'Ascq"
+      }
+     ],
+     "openingHoursSpecification": [
+      {
+       "validThrough": "2026-10-29T23:00:00Z",
+       "opens": "14:00",
+       "validFrom": "2026-10-29T23:00:00Z",
+       "closes": "17:00"
+      },
+      {
+       "validThrough": "2027-01-14T23:00:00Z",
+       "opens": "14:00",
+       "validFrom": "2027-01-14T23:00:00Z",
+       "closes": "17:00"
+      },
+      {
+       "validThrough": "2027-12-17T23:00:00Z",
+       "opens": "14:00",
+       "validFrom": "2027-12-17T23:00:00Z",
+       "closes": "17:00"
+      },
+      {
+       "validThrough": "2026-11-19T23:00:00Z",
+       "opens": "14:00",
+       "validFrom": "2026-11-19T23:00:00Z",
+       "closes": "17:00"
+      },
+      {
+       "validThrough": "2026-11-26T23:00:00Z",
+       "opens": "14:00",
+       "validFrom": "2026-11-26T23:00:00Z",
+       "closes": "17:00"
+      },
+      {
+       "validThrough": "2026-12-10T23:00:00Z",
+       "opens": "14:00",
+       "validFrom": "2026-12-10T23:00:00Z",
+       "closes": "17:00"
+      },
+      {
+       "validThrough": "2026-10-22T22:00:00Z",
+       "opens": "14:00",
+       "validFrom": "2026-10-22T22:00:00Z",
+       "closes": "17:00"
+      },
+      {
+       "validThrough": "2026-09-24T22:00:00Z",
+       "opens": "14:00",
+       "validFrom": "2026-09-24T22:00:00Z",
+       "closes": "17:00"
+      },
+      {
+       "validThrough": "2026-10-01T22:00:00Z",
+       "opens": "14:00",
+       "validFrom": "2026-10-01T22:00:00Z",
+       "closes": "17:00"
+      },
+      {
+       "validThrough": "2026-10-08T22:00:00Z",
+       "opens": "14:00",
+       "validFrom": "2026-10-08T22:00:00Z",
+       "closes": "17:00"
+      },
+      {
+       "validThrough": "2027-01-21T23:00:00Z",
+       "opens": "14:00",
+       "validFrom": "2027-01-21T23:00:00Z",
+       "closes": "17:00"
+      },
+      {
+       "validThrough": "2026-09-17T22:00:00Z",
+       "opens": "14:00",
+       "validFrom": "2026-09-17T22:00:00Z",
+       "closes": "17:00"
+      },
+      {
+       "validThrough": "2026-09-10T22:00:00Z",
+       "opens": "14:00",
+       "validFrom": "2026-09-10T22:00:00Z",
+       "closes": "17:00"
+      },
+      {
+       "validThrough": "2027-01-07T23:00:00Z",
+       "opens": "14:00",
+       "validFrom": "2027-01-07T23:00:00Z",
+       "closes": "17:00"
+      },
+      {
+       "validThrough": "2026-11-12T23:00:00Z",
+       "opens": "14:00",
+       "validFrom": "2026-11-12T23:00:00Z",
+       "closes": "17:00"
+      },
+      {
+       "validThrough": "2026-10-15T22:00:00Z",
+       "opens": "14:00",
+       "validFrom": "2026-10-15T22:00:00Z",
+       "closes": "17:00"
+      },
+      {
+       "validThrough": "2026-11-05T23:00:00Z",
+       "opens": "14:00",
+       "validFrom": "2026-11-05T23:00:00Z",
+       "closes": "17:00"
+      },
+      {
+       "validThrough": "2026-12-03T23:00:00Z",
+       "opens": "14:00",
+       "validFrom": "2026-12-03T23:00:00Z",
+       "closes": "17:00"
+      }
+     ],
+     "geoPoint": {
+      "lon": 3.148595,
+      "lat": 50.637583
+     }
+    }
+   ],
+   "hasDescription": [
+    {
+     "description": {
+      "@fr": "**Les vendredis après-midi gratuits**   \n**pour les + 65 ans**   \nTous les vendredis, le musée ouvre gratuitement ses portes aux séniors. Ils pourront bénéficier de visites courtes, d'un moment convivial autour d'un café ou goûter et d'une activité culturelle renouvelée.  Au programme : cours d'histoire de l'art, conférences, lectures, concerts intimistes ou atelier de pratique artistiques seront organisés. \n\n**Visites \"flash\"**  \nDes visites courtes, gratuites et sans réservation, sont également proposées. D’une durée de 30 minutes, elles ont lieu tous les vendredis, sur des créneaux différents. \n\n**Silver Friday intergénérationnels**  \nPendant les vacances scolaires, les Silver Friday deviennent intergénérationnels. Grands-parents et petits-enfants peuvent se retrouver pour partager ateliers créatifs et moments musicaux. \n\n**Des rendez-vous exclusifs au fil des mois à 15h :**\n\n_**Jauge limitée, accès dans la limite des**_   \n_**places disponibles ou inscription par mail :**_\n\n*   **4 septembre** : Visite du jardin de sculptures et randonnée dans le parc avec la FFRP\n*   **11 septembre** : Découvrez le qi gong, avec une séance animée par Michèle Lerouge\n*   **25 septembre** : Balade littéraire avec l'ARPET \n*   **16 octobre** : Atelier dessin avec l'ARPET\n*   **6 novembre** : Atelier d'écriture avec l'ABLAV\n*   **20 novembre** : Atelier dessin avec l'ARPET\n\n**Des ateliers intergénérationnels à partager avec vos petits-enfants** \n\nPendant les vacances scolaires, le LaM propose des ateliers de pratique artistique intergénérationnels, animé par ses médiateurs. Des moments de création et de complicité pour imaginer, fabriquer et s'amuser ensemble, petits et grands réunis !\n\n_**A partir de 15h, inscription obligatoire pour ces ateliers :**_  [Je m'inscris](mailto:info@musee-lam.fr)\n\n*   **23 octobre,** thème à venir\n*   **30 octobre,** thème à venir\n    \n      \n    _Avec le soutien d'On Seniors'Side Foundation._\n    \n\n![](/sites/default/files/inline-images/Logo-de-la-Fondation-On-Seniors%27-Side.jpg)"
+     },
+     "shortDescription": {
+      "@fr": "**Les vendredis après-midi gratuits**   \n**pour les + 65 ans**   \nTous les vendredis, le musée ouvre gratuitement ses portes aux séniors. Ils pourront bénéficier de visites courtes, d'un moment convivial autour d'un café ou goûter et d'une activité culturelle renouvelée.  Au programme : cours d'histoire de l'art, conférences, lectures, concerts intimistes ou atelier de pratique artistiques seront organisés. \n\n**Visites \"flash\"**  \nDes visites courtes, gratuites et sans réservation, sont également proposées. D’une durée de 30 minutes, elles ont lieu tous les vendredis, sur des créneaux différents. \n\n**Silver Friday intergénérationnels**  \nPendant les vacances scolaires, les Silver Friday deviennent intergénérationnels. Grands-parents et petits-enfants peuvent se retrouver pour partager ateliers créatifs et moments musicaux. \n\n**Des rendez-vous exclusifs au fil des mois à 15h :**\n\n_**Jauge limitée, accès dans la limite des**_   \n_**places disponibles ou inscription par mail :**_\n\n*   **4 septembre** : Visite du jardin de sculptures et randonnée dans le parc avec la FFRP\n*   **11 septembre** : Découvrez le qi gong, avec une séance animée par Michèle Lerouge\n*   **25 septembre** : Balade littéraire avec l'ARPET \n*   **16 octobre** : Atelier dessin avec l'ARPET\n*   **6 novembre** : Atelier d'écriture avec l'ABLAV\n*   **20 novembre** : Atelier dessin avec l'ARPET\n\n**Des ateliers intergénérationnels à partager avec vos petits-enfants** \n\nPendant les vacances scolaires, le LaM propose des ateliers de pratique artistique intergénérationnels, animé par ses médiateurs. Des moments de création et de complicité pour imaginer, fabriquer et s'amuser ensemble, petits et grands réunis !\n\n_**A partir de 15h, inscription obligatoire pour ces ateliers :**_  [Je m'inscris](mailto:info@musee-lam.fr)\n\n*   **23 octobre,** thème à venir\n*   **30 octobre,** thème à venir\n    \n      \n    _Avec le soutien d'On Seniors'Side Foundation._\n    \n\n![](/sites/default/files/inline-images/Logo-de-la-Fondation-On-Seniors%27-Side.jpg)"
+     }
+    }
+   ],
+   "label": {
+    "@fr": "Silver Friday"
+   },
+   "type": [
+    "EntertainmentAndEvent",
+    "Festival",
+    "CulturalEvent",
+    "SocialEvent",
+    "PointOfInterest",
+    "Parade",
+    "Event",
+    "ShowEvent",
+    "Carnival"
+   ],
+   "hasContact": [
+    {
+     "telephone": [
+      "+33 3 20 19 68 68"
+     ]
+    }
+   ],
+   "uri": "https://data.datatourisme.fr/28/58a63c83-d945-311e-aa12-2dc8f44a0470",
+   "takesPlaceAt": [
+    {
+     "endDate": "2027-12-18",
+     "startTime": "14:00",
+     "endTime": "17:00",
+     "startDate": "2027-12-18"
+    },
+    {
+     "endDate": "2026-10-30",
+     "startTime": "14:00",
+     "endTime": "17:00",
+     "startDate": "2026-10-30"
+    },
+    {
+     "endDate": "2027-01-22",
+     "startTime": "14:00",
+     "endTime": "17:00",
+     "startDate": "2027-01-22"
+    },
+    {
+     "endDate": "2026-10-23",
+     "startTime": "14:00",
+     "endTime": "17:00",
+     "startDate": "2026-10-23"
+    },
+    {
+     "endDate": "2026-10-09",
+     "startTime": "14:00",
+     "endTime": "17:00",
+     "startDate": "2026-10-09"
+    },
+    {
+     "endDate": "2026-10-02",
+     "startTime": "14:00",
+     "endTime": "17:00",
+     "startDate": "2026-10-02"
+    },
+    {
+     "endDate": "2026-11-27",
+     "startTime": "14:00",
+     "endTime": "17:00",
+     "startDate": "2026-11-27"
+    },
+    {
+     "endDate": "2026-11-13",
+     "startTime": "14:00",
+     "endTime": "17:00",
+     "startDate": "2026-11-13"
+    },
+    {
+     "endDate": "2027-01-08",
+     "startTime": "14:00",
+     "endTime": "17:00",
+     "startDate": "2027-01-08"
+    },
+    {
+     "endDate": "2026-10-16",
+     "startTime": "14:00",
+     "endTime": "17:00",
+     "startDate": "2026-10-16"
+    },
+    {
+     "endDate": "2026-11-06",
+     "startTime": "14:00",
+     "endTime": "17:00",
+     "startDate": "2026-11-06"
+    },
+    {
+     "endDate": "2026-12-11",
+     "startTime": "14:00",
+     "endTime": "17:00",
+     "startDate": "2026-12-11"
+    },
+    {
+     "endDate": "2026-09-11",
+     "startTime": "14:00",
+     "endTime": "17:00",
+     "startDate": "2026-09-11"
+    },
+    {
+     "endDate": "2026-09-25",
+     "startTime": "14:00",
+     "endTime": "17:00",
+     "startDate": "2026-09-25"
+    },
+    {
+     "endDate": "2026-11-20",
+     "startTime": "14:00",
+     "endTime": "17:00",
+     "startDate": "2026-11-20"
+    },
+    {
+     "endDate": "2026-09-18",
+     "startTime": "14:00",
+     "endTime": "17:00",
+     "startDate": "2026-09-18"
+    },
+    {
+     "endDate": "2027-01-15",
+     "startTime": "14:00",
+     "endTime": "17:00",
+     "startDate": "2027-01-15"
+    },
+    {
+     "endDate": "2026-12-04",
+     "startTime": "14:00",
+     "endTime": "17:00",
+     "startDate": "2026-12-04"
+    }
+   ],
+   "uuid": "2b09651e-3cbc-3cee-bc7b-28bef676f38f"
+  }
+ ],
+ "expected": {
+  "uuids": [
+   "170846a2-2e11-393a-b970-42c8902b90ae",
+   "2b09651e-3cbc-3cee-bc7b-28bef676f38f"
+  ],
+  "selectedOccurrences": 10,
+  "intervals": [
+   {
+    "startsAt": "2026-10-30T13:00:00.000Z",
+    "endsAt": "2026-10-30T16:00:00.000Z",
+    "timezone": "Europe/Paris"
+   },
+   {
+    "startsAt": "2026-11-06T13:00:00.000Z",
+    "endsAt": "2026-11-06T16:00:00.000Z",
+    "timezone": "Europe/Paris"
+   },
+   {
+    "startsAt": "2026-11-13T13:00:00.000Z",
+    "endsAt": "2026-11-13T16:00:00.000Z",
+    "timezone": "Europe/Paris"
+   },
+   {
+    "startsAt": "2026-11-20T13:00:00.000Z",
+    "endsAt": "2026-11-20T16:00:00.000Z",
+    "timezone": "Europe/Paris"
+   },
+   {
+    "startsAt": "2026-11-27T13:00:00.000Z",
+    "endsAt": "2026-11-27T16:00:00.000Z",
+    "timezone": "Europe/Paris"
+   },
+   {
+    "startsAt": "2026-12-04T13:00:00.000Z",
+    "endsAt": "2026-12-04T16:00:00.000Z",
+    "timezone": "Europe/Paris"
+   },
+   {
+    "startsAt": "2026-12-11T13:00:00.000Z",
+    "endsAt": "2026-12-11T16:00:00.000Z",
+    "timezone": "Europe/Paris"
+   },
+   {
+    "startsAt": "2027-01-08T13:00:00.000Z",
+    "endsAt": "2027-01-08T16:00:00.000Z",
+    "timezone": "Europe/Paris"
+   },
+   {
+    "startsAt": "2027-01-15T13:00:00.000Z",
+    "endsAt": "2027-01-15T16:00:00.000Z",
+    "timezone": "Europe/Paris"
+   },
+   {
+    "startsAt": "2027-01-22T13:00:00.000Z",
+    "endsAt": "2027-01-22T16:00:00.000Z",
+    "timezone": "Europe/Paris"
+   }
+  ]
+ }
+}

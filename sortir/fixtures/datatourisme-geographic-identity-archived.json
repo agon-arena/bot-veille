@@ -1,0 +1,274 @@
+[
+  {
+    "hasMainRepresentation": [
+      {
+        "hasAnnotation": [
+          {
+            "credits": [
+              "Château de Canon"
+            ],
+            "title": {
+              "@fr": "Encart noel 2025"
+            }
+          }
+        ],
+        "hasRelatedResource": [
+          {
+            "locator": [
+              "https://cdt61.media.tourinsoft.eu/upload/Encart-noel-2025.jpg"
+            ]
+          }
+        ]
+      }
+    ],
+    "identifier": "FMANOR014V567ZFM",
+    "isLocatedAt": [
+      {
+        "geo": {
+          "latitude": 49.0780719,
+          "longitude": -0.0914689
+        },
+        "address": [
+          {
+            "hasAddressCity": {
+              "insee": "14431",
+              "isPartOfDepartment": {
+                "isPartOfRegion": {
+                  "isPartOfCountry": {
+                    "label": {
+                      "@fr": "France"
+                    }
+                  },
+                  "insee": "28",
+                  "label": {
+                    "@fr": "Normandie"
+                  }
+                },
+                "insee": "14",
+                "label": {
+                  "@fr": "Calvados"
+                }
+              },
+              "label": {
+                "@fr": "Mézidon Vallée d'Auge"
+              }
+            },
+            "streetAddress": [
+              "Avenue du château"
+            ],
+            "postalCode": "14270",
+            "addressLocality": "Mézidon Vallée d'Auge"
+          }
+        ],
+        "openingHoursSpecification": [
+          {
+            "validThrough": "2026-12-30T23:00:00Z",
+            "opens": "14:00",
+            "validFrom": "2026-12-18T23:00:00Z",
+            "closes": "19:00"
+          }
+        ],
+        "geoPoint": {
+          "lon": -0.0914689,
+          "lat": 49.0780719
+        }
+      }
+    ],
+    "hasDescription": [
+      {
+        "description": {
+          "@fr": "Noël au château, c’est l’occasion de découvrir un magnifique domaine du XVIIIe\nsiècle entièrement classé Monument historique constitué d’1 hectare de bâtiment...\nNombre d’entre eux sont ouverts et décorés pour l’occasion et réservent bien des\nsurprises aux visiteurs !\nA l’approche de Noël, l’intérieur du château de Canon entièrement décoré s’ouvre à\nla visite. De la salle à manger au grand salon en passant par la chambre des enfants et\nles cuisines... la visite du château laisse ressurgir les émotions du Noël d’antan dans\nune atmosphère festive et familiale pleine d’émerveillements !"
+        },
+        "shortDescription": {
+          "@fr": "Noël au château, c’est l’occasion de découvrir un magnifique domaine du XVIIIe\nsiècle entièrement classé Monument historique constitué d’1 hectare de bâtiment...\nNombre d’entre eux sont ouverts et décorés pour l’occasion et réservent bien des\nsurprises aux visiteurs !"
+        }
+      }
+    ],
+    "label": {
+      "@fr": "Noël au château"
+    },
+    "hasTheme": [
+      {
+        "label": {
+          "@fr": "Architecture et patrimoine"
+        },
+        "key": "ArchitectureAndHeritage"
+      },
+      {
+        "label": {
+          "@fr": "Noël"
+        },
+        "key": "Christmas"
+      }
+    ],
+    "type": [
+      "PointOfInterest",
+      "CulturalEvent",
+      "Product",
+      "ChildrensEvent",
+      "ShowEvent",
+      "Event",
+      "Visit",
+      "EntertainmentAndEvent"
+    ],
+    "hasContact": [
+      {
+        "homepage": [
+          "https://www.chateaudecanon.com/"
+        ]
+      }
+    ],
+    "uri": "https://data.datatourisme.fr/30/311517db-c20b-385c-8c97-adc0e9d9e82f",
+    "takesPlaceAt": [
+      {
+        "endDate": "2026-12-31",
+        "startTime": "14:00",
+        "endTime": "19:00",
+        "startDate": "2026-12-19"
+      }
+    ],
+    "uuid": "0e898107-1fb2-3a07-8cc1-f1a7b4724159"
+  },
+  {
+    "hasMainRepresentation": [
+      {
+        "hasAnnotation": [
+          {
+            "credits": [
+              "Château de Canon"
+            ],
+            "title": {
+              "@fr": "Encart insta noel 2026"
+            }
+          }
+        ],
+        "hasRelatedResource": [
+          {
+            "locator": [
+              "https://cdt61.media.tourinsoft.eu/upload/Encart-insta-noel-2026.jpg"
+            ]
+          }
+        ]
+      }
+    ],
+    "identifier": "FMANOR014V54P4CE",
+    "isLocatedAt": [
+      {
+        "geo": {
+          "latitude": 49.07323,
+          "longitude": -0.07877
+        },
+        "address": [
+          {
+            "hasAddressCity": {
+              "insee": "14431",
+              "isPartOfDepartment": {
+                "isPartOfRegion": {
+                  "isPartOfCountry": {
+                    "label": {
+                      "@fr": "France"
+                    }
+                  },
+                  "insee": "28",
+                  "label": {
+                    "@fr": "Normandie"
+                  }
+                },
+                "insee": "14",
+                "label": {
+                  "@fr": "Calvados"
+                }
+              },
+              "label": {
+                "@fr": "Mézidon Vallée d'Auge"
+              }
+            },
+            "streetAddress": [
+              "Avenue du château"
+            ],
+            "postalCode": "14270",
+            "addressLocality": "Mézidon Vallée d'Auge"
+          }
+        ],
+        "openingHoursSpecification": [
+          {
+            "validThrough": "2027-12-30T23:00:00Z",
+            "opens": "14:00",
+            "validFrom": "2027-12-17T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-12-30T23:00:00Z",
+            "opens": "14:00",
+            "validFrom": "2026-12-18T23:00:00Z",
+            "closes": "19:00"
+          }
+        ],
+        "geoPoint": {
+          "lon": -0.07877,
+          "lat": 49.07323
+        }
+      }
+    ],
+    "hasDescription": [
+      {
+        "description": {
+          "@fr": "Noël au château, c’est l’occasion de découvrir un magnifique domaine du XVIIIe\nsiècle entièrement classé Monument historique constitué d’1 hectare de bâtiment...\nNombre d’entre eux sont ouverts et décorés pour l’occasion et réservent bien des\nsurprises aux visiteurs !\nA l’approche de Noël, l’intérieur du château de Canon entièrement décoré s’ouvre à\nla visite. De la salle à manger au grand salon en passant par la chambre des enfants et\nles cuisines... la visite du château laisse ressurgir les émotions du Noël d’antan dans\nune atmosphère festive et familiale pleine d’émerveillements !"
+        },
+        "shortDescription": {
+          "@fr": "Noël au château, c’est l’occasion de découvrir un magnifique domaine du XVIIIe\nsiècle entièrement classé Monument historique constitué d’1 hectare de bâtiment...\nNombre d’entre eux sont ouverts et décorés pour l’occasion et réservent bien des\nsurprises aux visiteurs !"
+        }
+      }
+    ],
+    "label": {
+      "@fr": "Noël au château"
+    },
+    "hasTheme": [
+      {
+        "label": {
+          "@fr": "Architecture et patrimoine"
+        },
+        "key": "ArchitectureAndHeritage"
+      },
+      {
+        "label": {
+          "@fr": "Noël"
+        },
+        "key": "Christmas"
+      }
+    ],
+    "type": [
+      "CulturalEvent",
+      "ChildrensEvent",
+      "Visit",
+      "PointOfInterest",
+      "Product",
+      "ShowEvent",
+      "EntertainmentAndEvent",
+      "Event"
+    ],
+    "hasContact": [
+      {
+        "homepage": [
+          "https://www.chateaudecanon.com/"
+        ]
+      }
+    ],
+    "uri": "https://data.datatourisme.fr/30/9f30224c-cd7a-3cc3-a7fe-cdf5922d0a57",
+    "takesPlaceAt": [
+      {
+        "endDate": "2027-12-31",
+        "startTime": "14:00",
+        "endTime": "19:00",
+        "startDate": "2027-12-18"
+      },
+      {
+        "endDate": "2026-12-31",
+        "startTime": "14:00",
+        "endTime": "19:00",
+        "startDate": "2026-12-19"
+      }
+    ],
+    "uuid": "25b6bd21-f624-3fc9-a873-8cc819ae6161"
+  }
+]

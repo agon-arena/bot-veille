@@ -6,7 +6,7 @@
 // n'est pas une régression, c'est le périmètre explicite de ce commit.
 
 const assert = require("assert");
-const { persistSortirIngestion, createSupabaseSortirStore, PRELOAD_CHUNK_SIZE, OCCURRENCE_KEY_CHUNK_SIZE } = require("./supabase-persistence");
+const { persistSortirIngestion, createSupabaseSortirStore, UUID_FILTER_CHUNK_SIZE, OCCURRENCE_KEY_CHUNK_SIZE } = require("./supabase-persistence");
 
 let passed = 0, failed = 0;
 async function test(name, fn) { try { await fn(); passed += 1; console.log(`✓ ${name}`); } catch (error) { failed += 1; console.error(`✗ ${name}: ${error.stack || error.message}`); } }
@@ -228,16 +228,16 @@ function manyKnownItems(n, { offsetDays = 0 } = {}) {
     }
   }
 
-  await test("G — chunking getActivitiesBatch : plus de clés que PRELOAD_CHUNK_SIZE (UUID courts), aucune activité perdue", async () => {
-    const total = PRELOAD_CHUNK_SIZE * 2 + 137; // force 3 chunks
+  await test("G — chunking getActivitiesBatch : plus de clés que UUID_FILTER_CHUNK_SIZE (UUID courts), aucune activité perdue", async () => {
+    const total = 1137; // volume historique conservé, désormais 12 chunks de 100
     const activityRows = Array.from({ length: total }, (_, i) => ({ id: `act-${i}`, title: `Activité ${i}` }));
     const client = new FakeSupabaseClient({ sortir_activities: activityRows });
     const store = createSupabaseSortirStore(client);
     const foundActivities = await store.getActivitiesBatch(activityRows.map((a) => a.id));
     assert.strictEqual(foundActivities.length, total, "aucune activité perdue pendant le chunking");
-    const expectedChunks = Math.ceil(total / PRELOAD_CHUNK_SIZE);
+    const expectedChunks = Math.ceil(total / UUID_FILTER_CHUNK_SIZE);
     assert.strictEqual(client.calls.filter((c) => c.table === "sortir_activities").length, expectedChunks);
-    assert(client.calls.every((c) => c.inSize <= PRELOAD_CHUNK_SIZE), "aucune requête ne doit dépasser PRELOAD_CHUNK_SIZE ids");
+    assert(client.calls.every((c) => c.inSize <= UUID_FILTER_CHUNK_SIZE), "aucune requête ne doit dépasser UUID_FILTER_CHUNK_SIZE ids");
   });
 
   function realisticOpenAgendaKey(i) {
@@ -277,11 +277,11 @@ function manyKnownItems(n, { offsetDays = 0 } = {}) {
   });
 
   console.log("\nMesure — SELECT Supabase pour une réingestion de N occurrences connues, actives, inchangées (1 seule source) :");
-  console.log("(findProvenancesBatch chunke à 100 — clés textuelles longues ; getActivitiesBatch chunke à 500 — UUID courts)");
+  console.log("(findProvenancesBatch chunke à 100 — clés textuelles longues ; getActivitiesBatch chunke à 100 — UUID courts)");
   for (const n of [206, 1000, 10000]) {
     const keyChunks = Math.ceil(n / OCCURRENCE_KEY_CHUNK_SIZE);
-    const idChunks = Math.ceil(n / PRELOAD_CHUNK_SIZE);
-    console.log(`  N=${String(n).padStart(6, " ")} → avant : ${2 * n} SELECT individuels (findProvenance+getActivity) → après : ${keyChunks + idChunks} SELECT groupés (provenances: ${keyChunks} chunk(s) de ${OCCURRENCE_KEY_CHUNK_SIZE}, activités: ${idChunks} chunk(s) de ${PRELOAD_CHUNK_SIZE})`);
+    const idChunks = Math.ceil(n / UUID_FILTER_CHUNK_SIZE);
+    console.log(`  N=${String(n).padStart(6, " ")} → avant : ${2 * n} SELECT individuels (findProvenance+getActivity) → après : ${keyChunks + idChunks} SELECT groupés (provenances: ${keyChunks} chunk(s) de ${OCCURRENCE_KEY_CHUNK_SIZE}, activités: ${idChunks} chunk(s) de ${UUID_FILTER_CHUNK_SIZE})`);
   }
   // Le total d'appels TOUT compris (écritures incluses) est désormais mesuré dans
   // test-known-provenance-batched-writes.js, une fois les écritures du cas A elles-mêmes

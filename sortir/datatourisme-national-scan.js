@@ -19,7 +19,7 @@ function nextUrl(value, initial) {
   const url = stripApiKeyFromUrl(new URL(value, ENDPOINT)), root = new URL(initial);
   if (url.origin !== root.origin || url.pathname !== root.pathname || url.username || url.password || url.hash) throw new Error("Pagination hors catalogue national");
   for (const key of ["fields", "lang", "page_size", "filters"]) if (url.searchParams.get(key) !== root.searchParams.get(key)) throw new Error("Périmètre national modifié pendant la pagination");
-  for (const key of url.searchParams.keys()) if (!["fields", "lang", "page_size", "filters", "page", "cursor", "search_after"].includes(key)) throw new Error("Paramètre de pagination non reconnu");
+  for (const key of url.searchParams.keys()) if (!["fields", "lang", "page_size", "filters", "page", "cursor", "search_after", "crs"].includes(key)) throw new Error("Paramètre de pagination non reconnu");
   return url.toString();
 }
 
@@ -80,11 +80,25 @@ async function runNationalScan({ store, sourceId, fetchPage, processPage, now, s
   }
 }
 
+// A cursor ending before its initial meta.total is accepted ONLY with structural proof: a
+// valid page whose meta has no next, contiguous meta.page from the scan start, every earlier
+// page full, and a fresh catalogue count no greater than what the cursor returned. Errors
+// (timeout, HTTP, invalid JSON) throw before reaching this point and never mean "end".
+function terminalDriftProof(metas, { pagesBefore, receivedBefore, received, total }) {
+  const last = metas.at(-1), pageSize = last?.meta?.page_size;
+  if (receivedBefore !== pagesBefore * 100 || pageSize !== 100 || received >= total || last.meta.next != null || last.count < 1 || last.count > pageSize) return null;
+  if (metas.some((m, i) => m.meta.page !== pagesBefore + i + 1 || (i < metas.length - 1 && m.count !== pageSize))) return null;
+  if (received !== (last.meta.page - 1) * pageSize + last.count) return null;
+  return { terminalPage: last.meta.page, pageSize, terminalCount: last.count };
+}
+
 // Opt-in batched runner. Pending observations survive conversion/persistence errors.
 // Resume always refetches the entire unacknowledged block, using its original now.
 async function runNationalScanBatched({ store, sourceId, fetchPage, processPage, now,
-  scanId = randomUUID(), checkpointSize = 1000, resume = false, maxPages = Infinity }) {
+  scanId = randomUUID(), checkpointSize = 1000, resume = false, maxPages = Infinity, sourceDrift = null }) {
   if (![500, 1000].includes(checkpointSize) || !UUID.test(scanId) || !UUID.test(sourceId) || typeof fetchPage !== "function" || typeof processPage !== "function") throw new Error("Paramètres de scan invalides");
+  const currentNow = new Date(now);
+  if (now == null || !Number.isFinite(+currentNow)) throw new Error("Instant de reprise explicite obligatoire");
   let checkpoint;
   if (resume) checkpoint = await store.resumeBatchScan({ sourceId, scanId });
   else {
@@ -100,7 +114,7 @@ async function runNationalScanBatched({ store, sourceId, fetchPage, processPage,
   let url = checkpoint.next_url, total = checkpoint.total;
   const visited = new Set();
   while (url) {
-    const first = url, objects = [], ids = new Set(); let pages = 0;
+    const first = url, objects = [], ids = new Set(), metas = []; let pages = 0, terminal = null;
     do {
       if (stats.pages + pages >= maxPages || visited.has(url)) throw new Error("Scan tronqué ou pagination cyclique");
       visited.add(url);
@@ -115,11 +129,27 @@ async function runNationalScanBatched({ store, sourceId, fetchPage, processPage,
         ids.add(id); objects.push(poi);
       }
       const received = stats.received + objects.length;
-      if (received > total || (next === null && received !== total) || (next !== null && (!page.objects.length || received >= total))) throw new Error("Pagination incomplète ou limitée");
+      metas.push({ meta: page.meta, count: page.objects.length });
+      if (next === null && received < total && sourceDrift) terminal = terminalDriftProof(metas, { pagesBefore: stats.pages, receivedBefore: stats.received, received, total });
+      if (received > total || (next === null && received !== total && !terminal) || (next !== null && (!page.objects.length || received >= total))) throw new Error("Pagination incomplète ou limitée");
       pages++; url = next;
     } while (url && pages < checkpoint.batch_size / 100);
-    await store.observeBatch({ sourceId, scanId, url: first, nextUrl: url, total, ids: [...ids], pages, now: date.toISOString() });
-    const result = await processPage(objects, { sourceId, scanId, now: date });
+    // The catalog cursor retains its original filter; selection has its own durable clock.
+    // Old checkpoints predate selection_now: only THEIR pending batch uses started_at.
+    const historical = checkpoint.pending && checkpoint.pending.url === first;
+    const selectionNow = historical ? new Date(checkpoint.pending.selection_now || checkpoint.started_at) : currentNow;
+    if (!Number.isFinite(+selectionNow)) throw new Error("Instant du lot invalide");
+    if (terminal) {
+      const received = stats.received + objects.length, controlTotal = await sourceDrift.controlTotal({ initialUrl: initial });
+      if (!Number.isInteger(controlTotal) || controlTotal <= 0 || controlTotal > received) throw new Error("Dérive de source non expliquée par le contrôle frais");
+      terminal = { ...terminal, initialTotal: total, receivedTotal: received, controlTotal, controlAt: new Date().toISOString() };
+      await store.observeTerminalDriftBatch({ sourceId, scanId, url: first, total, ids: [...ids], pages, now: date.toISOString(),
+        selectionNow: selectionNow.toISOString(), terminalPage: terminal.terminalPage, pageSize: terminal.pageSize,
+        terminalCount: terminal.terminalCount, controlTotal, controlAt: terminal.controlAt });
+      stats.sourceDrift = terminal;
+    } else await store.observeBatch({ sourceId, scanId, url: first, nextUrl: url, total, ids: [...ids], pages,
+      now: date.toISOString(), selectionNow: selectionNow.toISOString() });
+    const result = await processPage(objects, { sourceId, scanId, now: selectionNow, historical: !!historical });
     const classified = result?.classified, errors = result?.errors, committed = new Set(result?.committed);
     if (!Array.isArray(classified) || !Array.isArray(errors) || !Array.isArray(result.committed)) throw new Error("Résultat de lot absent");
     const accounted = [...classified.map(s => s.uuid), ...errors.map(e => e.uuid?.toLowerCase())];
@@ -147,7 +177,9 @@ function createSupabaseNationalScanStore(client) {
   return {
     beginBatchScan: s => rpc("sortir_dt_begin_batch_scan", { p_source_id: s.sourceId, p_scan_id: s.scanId, p_now: s.now, p_initial_url: s.initialUrl, p_size: s.checkpointSize }),
     resumeBatchScan: s => rpc("sortir_dt_resume_batch_scan", { p_source_id: s.sourceId, p_scan_id: s.scanId }),
-    observeBatch: s => rpc("sortir_dt_observe_national_batch", { p_source_id: s.sourceId, p_scan_id: s.scanId, p_url: s.url, p_next: s.nextUrl, p_total: s.total, p_uuids: s.ids, p_pages: s.pages, p_now: s.now }),
+    observeBatch: s => rpc("sortir_dt_observe_national_batch_v2", { p_source_id: s.sourceId, p_scan_id: s.scanId, p_url: s.url, p_next: s.nextUrl, p_total: s.total, p_uuids: s.ids, p_pages: s.pages, p_now: s.now, p_selection_now: s.selectionNow }),
+    observeTerminalDriftBatch: s => rpc("sortir_dt_observe_terminal_drift_batch", { p_source_id: s.sourceId, p_scan_id: s.scanId, p_url: s.url, p_total: s.total, p_uuids: s.ids, p_pages: s.pages, p_now: s.now, p_selection_now: s.selectionNow,
+      p_terminal_page: s.terminalPage, p_page_size: s.pageSize, p_terminal_count: s.terminalCount, p_control_total: s.controlTotal, p_control_at: s.controlAt }),
     finishBatch: s => rpc("sortir_dt_finish_national_batch", { p_source_id: s.sourceId, p_scan_id: s.scanId, p_url: s.url, p_invalid: s.invalid, p_errors: s.errorCodes }),
     beginScan: s => rpc("sortir_dt_begin_national_scan", { p_source_id: s.sourceId, p_scan_id: s.scanId, p_now: s.now, p_initial_url: s.initialUrl }),
     observePage: s => rpc("sortir_dt_observe_national_page", { p_source_id: s.sourceId, p_scan_id: s.scanId, p_url: s.url, p_next: s.nextUrl, p_total: s.total, p_uuids: s.ids, p_now: s.now }),
@@ -157,4 +189,4 @@ function createSupabaseNationalScanStore(client) {
   };
 }
 
-module.exports = { runNationalScanBatched, nationalUrl, createNationalPageFetcher, runNationalScan, receivedPoiProcessor, finalizeNationalScan, createSupabaseNationalScanStore };
+module.exports = { terminalDriftProof, runNationalScanBatched, nationalUrl, createNationalPageFetcher, runNationalScan, receivedPoiProcessor, finalizeNationalScan, createSupabaseNationalScanStore };

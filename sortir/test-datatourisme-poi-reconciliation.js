@@ -24,7 +24,7 @@ class Ledger {
 }
 // The NORMAL persistence/deduplication pipeline executes against this in-memory store.
 class MemoryStore {
-  constructor() { this.seq = 0; this.sources = []; this.activities = []; this.provenances = []; this.externalIds = []; this.items = []; this.calls = { load: 0, deactivate: 0, support: 0, stale: 0 }; }
+  constructor() { this.seq = 0; this.sources = []; this.activities = []; this.provenances = []; this.externalIds = []; this.items = []; this.decisions = []; this.calls = { load: 0, deactivate: 0, support: 0, stale: 0 }; }
   id(p) { return `${p}-${++this.seq}`; }
   async ensureSource(row) { let s = this.sources.find(s => s.key === row.key); if (!s) { s = { id: SOURCE, key: row.key, connector_type: row.connectorType, base_url: row.baseUrl }; this.sources.push(s); } return s; }
   async createIngestionRun(row) { return { id: this.id("run"), ...row }; }
@@ -46,7 +46,14 @@ class MemoryStore {
   async upsertExternalIds(aid, sid, ids) { for (const e of ids) if (!this.externalIds.some(x => x.activity_id === aid && x.source_id === sid && x.system === e.system && x.value === e.value)) this.externalIds.push({ activity_id: aid, source_id: sid, ...e }); }
   async insertCollectionItem(row) { this.items.push(row); }
   async insertCollectionItemsBatch(rows) { this.items.push(...rows); }
-  async insertDedupDecision() {}
+  // Same contract as the real unique index (pair, algorithm_version): replay returns null.
+  async insertDedupDecision(row) {
+    if (row.left_activity_id === row.right_activity_id) return null;
+    const [l, r] = [row.left_activity_id, row.right_activity_id].sort();
+    if (this.decisions.some(d => d.left_activity_id === l && d.right_activity_id === r && d.algorithm_version === row.algorithm_version)) return null;
+    const d = { id: this.id("decision"), ...row, left_activity_id: l, right_activity_id: r }; this.decisions.push(d); return { ...d };
+  }
+  async loadReviewDecisionsBatch(ids) { return this.decisions.filter(d => d.decision === "REVIEW" && (ids.includes(d.left_activity_id) || ids.includes(d.right_activity_id))).map(d => structuredClone(d)); }
   async countFinalActivities() { return this.activities.filter(a => a.record_status === "active").length; }
   async applyDisappearances() { throw new Error("Balayage global interdit dans la réconciliation par POI"); }
   async loadPoiProvenancesBatch(sourceId, ids) {
@@ -170,7 +177,7 @@ if (require.main === module) (async () => {
     const states = [], store = new MemoryStore();
     for (let n = 1; n <= 500; n++) {
       const previous = S.calculatePoiState(poi("ABC", n), { now: NOW });
-      for (const item of previous.results) { const aid = `act-${n}-${item.sourceOccurrenceKey}`; store.activities.push({ id: aid, ends_at: item.activity.endsAt, record_status: "active" }); store.provenances.push({ id: `prov-${aid}`, activity_id: aid, source_id: SOURCE, source_record_id: item.sourceRecordId, source_occurrence_key: item.sourceOccurrenceKey, active: true }); }
+      for (const item of previous.results) { const aid = `act-${n}-${item.sourceOccurrenceKey}`; store.activities.push({ id: aid, starts_at: item.activity.startsAt, ends_at: item.activity.endsAt, record_status: "active" }); store.provenances.push({ id: `prov-${aid}`, activity_id: aid, source_id: SOURCE, source_record_id: item.sourceRecordId, source_occurrence_key: item.sourceOccurrenceKey, active: true }); }
       states.push({ ...S.calculatePoiState(poi("BC", n), { now: NOW }), classification: "CHANGED" });
     }
     const r = await R.reconcileReceivedPoiOccurrences({ states, store, sourceId: SOURCE, now: NOW }); assert.equal(r.deactivated, 500); assert.equal(r.staled, 500); assert.equal(r.provenancesRead, 1500);
@@ -205,7 +212,7 @@ if (require.main === module) (async () => {
     };
     const r = await h.run([poi("BC")]); assert.equal(r.reconciliation.staled, 0); assert.equal(activity(s, a).record_status, "active");
   });
-  for (const [size, expected] of [[100, 4], [500, 7], [2300, 34]]) await test(`${size} POI changed : ${expected} requêtes RPC (4 historiques, 1 retirée/POI)`, async () => {
+  for (const [size, expected] of [[100, 7], [500, 22], [2300, 103]]) await test(`${size} POI changed : ${expected} requêtes batchées avec contrôle de couverture`, async () => {
     const history = [], states = [], requests = [];
     for (let n = 1; n <= size; n++) {
       const previous = S.calculatePoiState(poi("ABCD", n), { now: NOW });
@@ -213,6 +220,11 @@ if (require.main === module) (async () => {
       previous.results.forEach((item, i) => history.push({ poi_uuid: id(n), id: id(n * 10 + i), activity_id: id(n * 10 + i), source_id: SOURCE, source_record_id: item.sourceRecordId, source_occurrence_key: item.sourceOccurrenceKey, active: true, activity_ends_at: item.activity.endsAt }));
     }
     const client = createClient("https://example.supabase.co", "fake", { auth: { persistSession: false }, global: { fetch: async (url, init) => {
+      if (init.method === "GET") {
+        const ids = new URL(String(url)).searchParams.get("id").slice(4, -1).split(",");
+        requests.push({ method: "GET", ids });
+        return new Response(JSON.stringify(history.filter(r => ids.includes(r.activity_id)).map(r => ({ id: r.activity_id, starts_at: r.source_record_id.slice("datatourisme:".length + 37), ends_at: r.activity_ends_at, record_status: "active" }))), { status: 200, headers: { "Content-Type": "application/json" } });
+      }
       const body = JSON.parse(init.body), name = String(url).split("/").at(-1).split("?")[0]; requests.push({ name, body, method: init.method });
       let data, headers = { "Content-Type": "application/json" };
       if (name === "sortir_load_datatourisme_poi_provenances") {
@@ -225,7 +237,7 @@ if (require.main === module) (async () => {
     } } });
     const r = await R.reconcileReceivedPoiOccurrences({ states, store: R.createSupabasePoiReconciliationStore(client), sourceId: SOURCE, now: NOW });
     assert.equal(r.deactivated, size); assert.equal(r.staled, size); assert.equal(requests.length, expected);
-    assert.ok(requests.every(r => r.method === "POST" && (r.body.p_ids || r.body.p_uuids).length <= 500));
+    assert.ok(requests.every(r => r.method === "GET" ? r.ids.length <= 100 : r.method === "POST" && (r.body.p_ids || r.body.p_uuids).length <= 500));
   });
   await test("état invalide ou UNCHANGED refusé avant toute désactivation", async () => {
     const store = new MemoryStore(), s = S.calculatePoiState(poi(), { now: NOW });
@@ -233,6 +245,125 @@ if (require.main === module) (async () => {
     s.results[0].error = "conversion ratée";
     await assert.rejects(R.reconcileReceivedPoiOccurrences({ states: [{ ...s, classification: "CHANGED" }], store, sourceId: SOURCE, now: NOW }), /inexploitable/);
     assert.deepEqual(store.calls, { load: 0, deactivate: 0, support: 0, stale: 0 });
+  });
+  await test("RPC compact sans payload : identité legacy relue dans les provenances hydratées", async () => {
+    const h = harness(); await h.run([poi("AB")]); const s = h.activityStore;
+    const item = S.calculatePoiState(poi("A"), { now: NOW }).results[0], legacy = find(s, "A");
+    legacy.source_occurrence_key = item.legacySourceOccurrenceKey;
+    const load = s.loadPoiProvenancesBatch.bind(s);
+    s.loadPoiProvenancesBatch = async (...args) => (await load(...args)).map(({ source_payload, ...row }) => row);
+    h.stateStore.rows.clear(); const r = await h.run([poi("A")]);
+    assert.equal(r.committed.length, 1); assert.equal(legacy.active, true); assert.equal(find(s, "B").active, false);
+  });
+  await test("remplacement canonique inactif : alias actif conservé", async () => {
+    const h = harness(); await h.run([poi("A")]); const s = h.activityStore, legacy = find(s, "A");
+    const item = S.calculatePoiState(poi("A"), { now: NOW }).results[0];
+    legacy.source_occurrence_key = item.legacySourceOccurrenceKey;
+    s.provenances.push({ ...legacy, id: "inactive-replacement", source_occurrence_key: item.sourceOccurrenceKey, active: false });
+    await R.reconcileReceivedPoiOccurrences({ states: [{ ...S.calculatePoiState(poi("A"), { now: NOW }), classification: "CHANGED" }], store: s, sourceId: SOURCE, now: NOW });
+    assert.equal(legacy.active, true); assert.equal(s.calls.deactivate, 0);
+  });
+  // Regression: use the real normal persistence + reconciliation + durable ledger,
+  // never substitute a comparator stub or bypass the acknowledgement guard.
+  function sessions(periods) { const p = poi("A"); p.takesPlaceAt = periods; return p; }
+  function slot(start, end, day = "2026-10-29", endDay = day) {
+    return { startDate: day, endDate: endDay, ...(start ? { startTime: start } : {}), ...(end ? { endTime: end } : {}) };
+  }
+  for (const [name, periods] of [
+    ["matin/après-midi", [slot("09:30", "10:30"), slot("14:30", "15:30")]],
+    ["ordre inversé", [slot("14:30", "15:30"), slot("09:30", "10:30")]],
+    ["contigus", [slot("10:00", "11:00"), slot("11:00", "12:00")]],
+    ["même début, fins différentes", [slot("10:00", "11:00"), slot("10:00", "12:00")]],
+    ["périodes longues", [slot("09:00", "12:00", "2026-10-29", "2026-11-20"), slot("14:00", "18:00", "2026-10-29", "2026-11-20")]],
+    ["fins absentes", [slot("10:00"), slot("14:00")]],
+    ["aucune information de fin", [{ startDate: "2026-10-29", startTime: "10:00" }, { startDate: "2026-10-29", startTime: "14:00" }]]
+  ]) await test(`séances DATAtourisme ${name} : deux activités et rejeu sans doublon`, async () => {
+    const h = harness(), p = sessions(periods), s = h.activityStore;
+    const first = await h.run([p]); assert.equal(first.committed.length, 1);
+    assert.equal(s.activities.length, 2); assert.equal(s.provenances.length, 2);
+    assert.equal(new Set(s.provenances.map(p => p.activity_id)).size, 2); assert.ok(s.provenances.every(p => p.active));
+    const before = JSON.stringify([s.activities, s.provenances, s.externalIds, s.items]);
+    const second = await h.run([p]); assert.equal(second.unchanged.length, 1);
+    assert.equal(JSON.stringify([s.activities, s.provenances, s.externalIds, s.items]), before);
+    // Force a persistence replay too: the per-occurrence path must remain idempotent.
+    h.stateStore.rows.clear(); await h.run([p]); assert.equal(s.activities.length, 2); assert.equal(s.provenances.length, 2);
+  });
+  await test("Atelier de la Nacre : ordre de persistance réellement inversé, UTC 08:30 et 13:30 conservés", async () => {
+    const h = harness(), p = sessions([slot("09:30", "10:30"), slot("14:30", "15:30")]);
+    p.uuid = "038cc76c-3c2f-34c4-a7c4-ea7982a00787";
+    p.uri = "https://data.datatourisme.fr/38/6965358b-636d-3e75-a03e-2d951a50f3b3";
+    p.label["@fr"] = "Visite d’entreprise : Atelier de la Nacre";
+    const persist = R.createDatatourismePoiPersister({ store: h.activityStore, now: NOW });
+    const result = await h.run([p], NOW, states => persist(states.map(s => ({ ...s, results: [...s.results].reverse() }))));
+    assert.equal(result.committed.length, 1); assert.equal(h.activityStore.activities.length, 2);
+    assert.deepEqual(h.activityStore.activities.map(a => a.starts_at).sort(), ["2026-10-29T08:30:00.000Z", "2026-10-29T13:30:00.000Z"]);
+    assert.ok(h.activityStore.provenances.every(p => p.active));
+  });
+  for (const reverse of [false, true]) await test(`date seule / heure précise (inverse=${reverse}) : REVIEW prudent`, async () => {
+    const h = harness(), periods = [slot(), slot("10:00", "11:00")];
+    if (reverse) periods.reverse();
+    const calculated = S.calculatePoiState(sessions(periods), { now: NOW });
+    const decision = require("./activity-deduplication").compareActivities(...calculated.results.map(i => i.activity));
+    assert.equal(decision.decision, "REVIEW");
+    assert.equal(require("./activity-deduplication").compareActivities(...calculated.results.map(i => i.activity).reverse()).decision, "REVIEW");
+    await h.run([sessions(periods)]); assert.equal(h.activityStore.activities.length, 2);
+    assert.ok(h.activityStore.activities.some(a => a.record_status === "review"));
+  });
+  await test("alias historique : identité propre conservée malgré activité écrasée, traitement refusé sans désactivation", async () => {
+    const h = harness(), p = sessions([slot("09:30", "10:30")]); await h.run([p]);
+    const item = S.calculatePoiState(p, { now: NOW }).results[0], prov = h.activityStore.provenances[0];
+    prov.source_occurrence_key = item.legacySourceOccurrenceKey;
+    activity(h.activityStore, prov).starts_at = "2026-10-29T13:30:00Z";
+    activity(h.activityStore, prov).ends_at = "2026-10-29T14:30:00Z";
+    assert.ok(require("./datatourisme-occurrence-identity").matchesLegacyOccurrence(prov, item));
+    const old = { ...h.stateStore.rows.get(id(1)) }; p.label["@fr"] += " modifié";
+    const r = await h.run([p]); assert.equal(r.committed.length, 0); assert.equal(prov.active, true);
+    assert.equal(h.activityStore.provenances.length, 1); assert.deepEqual(h.stateStore.rows.get(id(1)), old);
+  });
+  await test("provenance canonique connue mal rattachée : hash identique ne suffit pas", async () => {
+    const h = harness(), p = sessions([slot("09:30", "10:30")]); await h.run([p]);
+    const prov = h.activityStore.provenances[0]; activity(h.activityStore, prov).starts_at = "2026-10-29T13:30:00Z";
+    h.stateStore.rows.get(id(1)).needs_reprocess = true;
+    const r = await h.run([p]); assert.equal(r.committed.length, 0);
+    assert.equal(h.stateStore.rows.get(id(1)).needs_reprocess, true); assert.equal(prov.active, true);
+  });
+  await test("couverture incomplète après prétendu succès : aucune empreinte ni désactivation", async () => {
+    const h = harness(); await h.run([poi("ABC")]); const old = { ...h.stateStore.rows.get(id(1)) };
+    await assert.rejects(h.run([poi("BCD")], NOW, async states => states.map(s => ({ uuid: s.uuid, status: "completed" }))), /Couverture/);
+    assert.equal(find(h.activityStore, "A").active, true); assert.deepEqual(h.stateStore.rows.get(id(1)), old);
+    assert.equal(h.activityStore.calls.deactivate, 0);
+  });
+  await test("deux séances sélectionnées / une seule persistée : zéro acquittement d'empreinte", async () => {
+    const h = harness(), p = sessions([slot("09:30", "10:30"), slot("14:30", "15:30")]);
+    await assert.rejects(h.run([p], NOW, async states => {
+      const result = await require("./supabase-persistence").persistSortirIngestion({ store: h.activityStore, now: NOW, reconcileDisappearances: false,
+        sources: [{ key: "datatourisme-national", connectorType: "datatourisme", results: states[0].results.slice(0, 1) }] });
+      assert.equal(result.status, "completed"); return [{ uuid: states[0].uuid, status: "completed" }];
+    }), /Couverture/);
+    assert.equal(h.stateStore.rows.size, 0); assert.equal(h.activityStore.provenances.length, 1);
+    assert.equal(h.activityStore.provenances[0].active, true); assert.equal(h.activityStore.calls.deactivate, 0);
+  });
+  await test("remplacement canonique mal rattaché : ne retire pas l'alias encore sélectionné", async () => {
+    const h = harness(); await h.run([poi("AB")]); const s = h.activityStore, item = S.calculatePoiState(poi("A"), { now: NOW }).results[0];
+    const a = find(s, "A"); a.source_occurrence_key = item.legacySourceOccurrenceKey;
+    const b = find(s, "B"); s.provenances.push({ ...a, id: "bad-canonical", source_occurrence_key: item.sourceOccurrenceKey, activity_id: b.activity_id });
+    h.stateStore.rows.clear();
+    await assert.rejects(h.run([poi("A")], NOW, async states => states.map(s => ({ uuid: s.uuid, status: "completed" }))), /Couverture/);
+    assert.equal(a.active, true); assert.equal(b.active, true); assert.equal(h.stateStore.rows.size, 0);
+  });
+  await test("autre source, même séance : MATCH générique et soutien multisource conservés", async () => {
+    const h = harness(), p = sessions([slot("09:30", "10:30")]); await h.run([p]);
+    const original = h.activityStore.activities[0], item = S.calculatePoiState(p, { now: NOW }).results[0];
+    const other = { ...item.activity, externalIds: [{ system: "other", value: "session" }], provenances: [{ ...item.activity.provenances[0], sourceName: "Other" }] };
+    assert.equal(require("./activity-deduplication").compareActivities(item.activity, other).decision, "MATCH");
+    const store = h.activityStore, ensure = store.ensureSource.bind(store);
+    store.ensureSource = async row => row.key === "other-source" ? { id: id(99), key: row.key, connector_type: "api" } : ensure(row);
+    const ingestion = await require("./supabase-persistence").persistSortirIngestion({ store, now: NOW, reconcileDisappearances: false,
+      sources: [{ key: "other-source", connectorType: "other", results: [{ activity: other, sourceRecordId: "other", sourceOccurrenceKey: "other-session" }] }] });
+    assert.equal(ingestion.status, "completed"); assert.equal(store.activities.length, 1);
+    assert.ok(store.provenances.some(p => p.activity_id === original.id && p.source_id === id(99) && p.active));
+    await h.run([sessions([slot("14:30", "15:30")])]);
+    assert.equal(original.record_status, "active"); assert.ok(h.activityStore.provenances.some(p => p.activity_id === original.id && p.source_id === id(99) && p.active));
   });
   console.log(`\n${passed} réussis, ${failed} échoués`); if (failed) process.exitCode = 1;
 })();

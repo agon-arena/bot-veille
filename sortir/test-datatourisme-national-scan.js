@@ -80,7 +80,7 @@ function setup() {
 const snapshot = s => JSON.stringify({ rows: [...s.h.stateStore.rows], activities: s.h.activityStore.activities, provenances: s.h.activityStore.provenances, control: s.store.control });
 let passed = 0, failed = 0;
 async function test(name, fn) { try { await fn(); passed++; console.log(`✓ ${name}`); } catch (e) { failed++; console.error(`✗ ${name}: ${e.stack}`); } }
-(async () => {
+if (require.main === module) (async () => {
   await test("J1 présent / J2 absent / J3 présent : absence annulée sans désactivation", async () => {
     const s = setup(); await s.finalize((await s.scan([poi()])).scanId);
     const j2 = await s.scan([]); const r = await s.finalize(j2.scanId); assert.equal(r.first_absences, 1); assert.equal(r.deactivated, 0);
@@ -241,3 +241,5 @@ async function test(name, fn) { try { await fn(); passed++; console.log(`✓ ${n
   });
   console.log(`\n${passed} réussis, ${failed} échoués`); if (failed) process.exitCode = 1;
 })();
+
+module.exports = { setup };

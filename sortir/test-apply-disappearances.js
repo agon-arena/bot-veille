@@ -7,7 +7,7 @@
 // pas démontrer l'absence de N+1 — seul createSupabaseSortirStore(client) le peut.
 
 const assert = require("assert");
-const { createSupabaseSortirStore, DISAPPEARANCE_CHUNK_SIZE } = require("./supabase-persistence");
+const { createSupabaseSortirStore, UUID_FILTER_CHUNK_SIZE } = require("./supabase-persistence");
 
 let passed = 0, failed = 0;
 async function test(name, fn) { try { await fn(); passed += 1; console.log(`✓ ${name}`); } catch (error) { failed += 1; console.error(`✗ ${name}: ${error.stack || error.message}`); } }
@@ -114,13 +114,13 @@ function makeTouchedFixture(count, { secondActiveProvenance = false } = {}) {
   });
 
   await test("cas 5 — volume > taille de chunk : aucun activity_id perdu au chunking", async () => {
-    const total = DISAPPEARANCE_CHUNK_SIZE * 2 + 200; // force 3 chunks pour les 2 passes groupées
+    const total = 1200; // volume historique conservé, désormais 12 chunks de 100
     const { sourceId, sourceRunId, cutoff, activities, provenances } = makeTouchedFixture(total);
     const client = new FakeSupabaseClient({ sortir_provenances: provenances, sortir_activities: activities });
     const store = createSupabaseSortirStore(client);
     await store.applyDisappearances({ sourceId, sourceRunId, cutoff });
     assert.strictEqual(activities.filter((a) => a.record_status === "stale").length, total, "au moins un activity_id perdu pendant le chunking");
-    const expectedChunks = Math.ceil(total / DISAPPEARANCE_CHUNK_SIZE);
+    const expectedChunks = Math.ceil(total / UUID_FILTER_CHUNK_SIZE);
     assert.strictEqual(client.calls.length, 1 + expectedChunks + expectedChunks, `attendu ${1 + 2 * expectedChunks} appels (1 désactivation + ${expectedChunks} lectures groupées + ${expectedChunks} updates groupés), obtenu ${client.calls.length}`);
   });
 

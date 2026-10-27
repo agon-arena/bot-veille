@@ -223,15 +223,15 @@ const reconcileFake = (f, ids) => reconcileDatatourismeRefusals({ store: f.store
     const store = new RefusalMemoryStore(); await runChunk(store, { results: [], refusedPoiUuids: [], fetchedCount: 0, exhausted: true, nextPageUrl: null });
     assert.deepStrictEqual(store.cursorWrites, [null]);
   });
-  await test("store Supabase : 100 POI / 300 occurrences = 2 SELECT + 2 UPDATE", async () => {
+  await test("store Supabase : 100 POI / 300 occurrences : filtres UUID bornés à 100", async () => {
     const f = fakeFixture(300); await reconcileFake(f, Array.from({ length: 100 }, (_, i) => uuid(i)));
     assert(f.activities.every(a => a.record_status === "stale")); assert(f.provenances.every(p => !p.active));
-    assert.deepStrictEqual(f.client.calls.map(c => c.op), ["select", "update", "select", "update"]);
+    assert.deepStrictEqual(f.client.calls.map(c => c.op), ["select", ...Array(3).fill("update"), ...Array(3).fill("select"), ...Array(3).fill("update")]);
   });
-  await test("store Supabase : multisource = 2 SELECT + 1 UPDATE", async () => {
+  await test("store Supabase : multisource : soutiens et mises à jour bornés à 100", async () => {
     const f = fakeFixture(300, { other: true }); await reconcileFake(f, Array.from({ length: 100 }, (_, i) => uuid(i)));
     assert(f.activities.every(a => a.record_status === "active")); assert(f.provenances.filter(p => p.source_id === "oa").every(p => p.active));
-    assert.deepStrictEqual(f.client.calls.map(c => c.op), ["select", "update", "select"]);
+    assert.deepStrictEqual(f.client.calls.map(c => c.op), ["select", ...Array(3).fill("update"), ...Array(3).fill("select")]);
   });
   await test("store Supabase : DENY inconnu = 1 SELECT, aucun UPDATE", async () => {
     const f = fakeFixture(1); await reconcileFake(f, [uuid(999)]); assert.deepStrictEqual(f.client.calls.map(c => c.op), ["select"]);
@@ -243,8 +243,8 @@ const reconcileFake = (f, ids) => reconcileDatatourismeRefusals({ store: f.store
   await test("store Supabase : 1 200 occurrences historiques, pagination sans perte", async () => {
     const f = fakeFixture(1200); await reconcileFake(f, Array.from({ length: 100 }, (_, i) => uuid(i)));
     assert.strictEqual(f.activities.filter(a => a.record_status === "stale").length, 1200);
-    assert.strictEqual(f.client.calls.filter(c => c.op === "select").length, 6); // 3 pages + 3 lots de soutien
-    assert.strictEqual(f.client.calls.filter(c => c.op === "update").length, 6);
+    assert.strictEqual(f.client.calls.filter(c => c.op === "select").length, 15); // 3 pages + 12 lots de soutien
+    assert.strictEqual(f.client.calls.filter(c => c.op === "update").length, 24);
   });
   await test("store Supabase : deux POI fusionnés, le KEEP et les autres sources restent actifs", async () => {
     const f = fakeFixture(1); f.provenances.push({ id: "keep", activity_id: "a-0", source_id: "dt", source_record_id: `datatourisme:${uuid(2)}:2026-11-20`, active: true });

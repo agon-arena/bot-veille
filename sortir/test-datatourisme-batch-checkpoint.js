@@ -11,9 +11,9 @@ class Store {
  async observeBatch(s){
   this.calls.push('observe'); const c=this.c;
   assert.equal(c.status,'running'); assert.equal(c.next_url,s.url);
-  if(c.pending){assert.deepEqual(c.pending,s);return;}
+  if(c.pending){assert.deepEqual(c.pending,{...s,selection_now:s.selectionNow});return;}
   assert.ok(s.ids.every(id=>!this.observed.has(id)));
-  s.ids.forEach(id=>this.observed.add(id));c.pending=structuredClone(s);
+  s.ids.forEach(id=>this.observed.add(id));c.pending={...structuredClone(s),selection_now:s.selectionNow};
  }
  async finishBatch(s){
   this.calls.push('finish');const c=this.c,p=c.pending;
@@ -37,7 +37,7 @@ async function test(name,fn){try{await fn();passed++;console.log('✓ '+name);}c
 (async()=>{
  for(const size of [500,1000])await test(`61289 POI checkpoints ${size}`,async()=>{const f=fixture(61289);const r=await run({...f.options,checkpointSize:size});assert.equal(r.pages,613);assert.equal(r.received,61289);assert.equal(f.store.calls.length+1,size===1000?126:248);f.store.finalize();});
  await test('crash avant observation : maximum dix pages relues',async()=>{const f=fixture();const fetch=f.options.fetchPage;let n=0;await assert.rejects(run({...f.options,fetchPage:async u=>{if(++n===10)throw Error('API');return fetch(u);}}));assert.equal(f.store.observed.size,0);assert.throws(()=>f.store.finalize());await run({...f.options,resume:true});f.store.finalize();});
- await test('crash après observation : rejeu idempotent, instant original',async()=>{const f=fixture();await assert.rejects(run({...f.options,processPage:async()=>{throw Error('crash');}}));assert.equal(f.store.observed.size,1000);assert.equal(f.store.c.received,0);const r=await run({...f.options,resume:true,now:new Date('2026-10-22'),processPage:async(p,c)=>{assert.equal(+c.now,+now);return f.options.processPage(p,c);}});assert.equal(r.received,2101);assert.equal(f.store.observed.size,2101);});
+ await test('crash après observation : rejeu idempotent, instant original',async()=>{const f=fixture();await assert.rejects(run({...f.options,processPage:async()=>{throw Error('crash');}}));assert.equal(f.store.observed.size,1000);assert.equal(f.store.c.received,0);const r=await run({...f.options,resume:true,now:new Date('2026-10-22'),processPage:async(p,c)=>{assert.equal(+c.now,c.historical?+now:+new Date('2026-10-22'));return f.options.processPage(p,c);}});assert.equal(r.received,2101);assert.equal(f.store.observed.size,2101);});
  await test('échec après pipeline avant acquittement : au plus 1000 POI rejoués',async()=>{const f=fixture();const finish=f.store.finishBatch.bind(f.store);f.store.finishBatch=async()=>{throw Error('RPC');};await assert.rejects(run(f.options));assert.equal(f.processed,1000);f.store.finishBatch=finish;await run({...f.options,resume:true});assert.equal(f.processed,3101);f.store.finalize();});
  await test('réponse acquittement perdue : pas de double progression',async()=>{const f=fixture();const finish=f.store.finishBatch.bind(f.store);let fail=true;f.store.finishBatch=async s=>{await finish(s);if(fail){fail=false;throw Error('réponse perdue');}};await assert.rejects(run(f.options));await run({...f.options,resume:true});assert.equal(f.processed,2101);assert.equal(f.store.c.pages,22);});
  await test('lot rejoué différent : refus sécurisé',async()=>{const f=fixture();await assert.rejects(run({...f.options,processPage:async()=>{throw Error('crash');}}));const fetch=f.options.fetchPage;await assert.rejects(run({...f.options,resume:true,fetchPage:async u=>{const p=await fetch(u);p.objects.reverse();return p;}}));assert.throws(()=>f.store.finalize());});
@@ -49,9 +49,68 @@ async function test(name,fn){try{await fn();passed++;console.log('✓ '+name);}c
   const calls=[]; const store=createSupabaseNationalScanStore({rpc:async(name,args)=>{calls.push({name,args});return {data:{},error:null};}});
   await store.beginBatchScan({sourceId,scanId,now:now.toISOString(),initialUrl:nationalUrl(now),checkpointSize:1000});
   await store.resumeBatchScan({sourceId,scanId});
-  await store.observeBatch({sourceId,scanId,url:nationalUrl(now),nextUrl:null,total:1000,ids:Array(1000).fill(sourceId),pages:10,now:now.toISOString()});
+  await store.observeBatch({sourceId,scanId,url:nationalUrl(now),nextUrl:null,total:1000,ids:Array(1000).fill(sourceId),pages:10,now:now.toISOString(),selectionNow:now.toISOString()});
   await store.finishBatch({sourceId,scanId,url:nationalUrl(now),invalid:335,errorCodes:{conversion_error:335}});
-  assert.equal(calls.length,4);assert.equal(calls[2].args.p_uuids.length,1000);assert.equal(calls[2].args.p_pages,10);assert.equal(calls[3].args.p_invalid,335);
+  assert.equal(calls.length,4);assert.equal(calls[2].args.p_uuids.length,1000);assert.equal(calls[2].args.p_pages,10);assert.equal(calls[2].name,"sortir_dt_observe_national_batch_v2");assert.equal(calls[2].args.p_selection_now,now.toISOString());assert.equal(calls[3].args.p_invalid,335);
+ });
+ await test('meta.next réel avec crs : page suivante réutilisée et api_key jamais transmise dans URL',async()=>{
+  const { createNationalPageFetcher }=require('./datatourisme-national-scan');
+  // Curseur et forme de meta.next observés sur la réponse réelle du 22/10/2026.
+  const crs='i45WMjCwMDZPsrTQNTVIs9Q1TjYw0U00tbTUNU9NMjIyMDU3Tkm1VIrVMdQx0jEzMTU3jAUA';
+  for(const withKey of [false,true]){
+   const f=fixture(2), initial=nationalUrl(now), next=new URL(initial), urls=[];
+   next.searchParams.set('crs',crs); if(withKey)next.searchParams.set('api_key','must-not-leak');
+   const clean=new URL(next);clean.searchParams.delete('api_key');
+   const fetchPage=createNationalPageFetcher({apiKey:'header-only',request:async(url,options)=>{
+    urls.push(url);assert.equal(new URL(url).searchParams.has('api_key'),false);assert.equal(options.headers['X-API-Key'],'header-only');
+    const first=urls.length===1;assert.equal(url,first?initial:clean.toString());
+    return new Response(JSON.stringify({objects:[{uuid:first?'aaaaaaaa-2222-3333-4444-000000000001':'aaaaaaaa-2222-3333-4444-000000000002'}],meta:{total:2,next:first?next.toString():null}}),{status:200});
+   }});
+   const result=await run({...f.options,fetchPage});assert.equal(result.pages,2);assert.equal(result.received,2);assert.equal(urls.length,2);assert.equal(new URL(urls[1]).searchParams.get('crs'),crs);f.store.finalize();
+  }
+ });
+ await test('crs ne contourne pas origine, périmètre, authentification ni allowlist',async()=>{
+  const mutations=[u=>u.hostname='example.org',u=>u.pathname='/v1/other',u=>u.username='user',u=>u.hash='fragment',
+   ...['fields','lang','page_size','filters'].map(key=>u=>u.searchParams.set(key,'changed')),
+   ...['search','apiKey','access_token','crs_unrecognized'].map(key=>u=>u.searchParams.set(key,'unexpected'))];
+  for(const mutate of mutations){
+   const f=fixture(2);let fetched=0;const next=new URL(nationalUrl(now));next.searchParams.set('crs','opaque-cursor');mutate(next);
+   await assert.rejects(run({...f.options,fetchPage:async()=>{fetched++;return {objects:[{uuid:'aaaaaaaa-2222-3333-4444-000000000001'}],meta:{total:2,next:next.toString()}};}}),/Pagination hors catalogue|Périmètre national modifié|Paramètre de pagination non reconnu/);
+   assert.equal(fetched,1);assert.equal(f.processed,0);assert.equal(f.store.observed.size,0);assert.throws(()=>f.store.finalize());
+  }
+ });
+ await test('transition pending historique → pages neuves : aucune résurrection',async()=>{
+  const f=fixture(1100),later=new Date('2026-10-23T08:00Z'),end=new Date('2026-10-22T18:00Z'),contexts=[];
+  await assert.rejects(run({...f.options,processPage:async()=>{throw Error('crash');}}));
+  await run({...f.options,resume:true,now:later,processPage:async(p,c)=>{
+    contexts.push({historical:c.historical,selected:end>c.now,now:c.now.toISOString()});
+    return f.options.processPage(p,c);
+  }});
+  assert.deepEqual(contexts,[{historical:true,selected:true,now:now.toISOString()},
+    {historical:false,selected:false,now:later.toISOString()}]);
+ });
+ await test('crash sur pages neuves : leur propre now reste durable au rejeu suivant',async()=>{
+  const f=fixture(1100),later=new Date('2026-10-23T08:00Z');
+  await assert.rejects(run({...f.options,processPage:async()=>{throw Error('crash');}}));
+  await assert.rejects(run({...f.options,resume:true,now:later,processPage:async(p,c)=>{
+    if(!c.historical)throw Error('second crash');return f.options.processPage(p,c);
+  }}));
+  assert.equal(f.store.c.pending.selection_now,later.toISOString());
+  await run({...f.options,resume:true,now:new Date('2026-10-24'),processPage:async(p,c)=>{
+    assert.equal(+c.now,+later);assert.equal(c.historical,true);return f.options.processPage(p,c);
+  }});
+ });
+ await test('pending legacy sans horloge : seul ce lot utilise started_at',async()=>{
+  const f=fixture(100);await assert.rejects(run({...f.options,processPage:async()=>{throw Error('crash');}}));
+  delete f.store.c.pending.selection_now;delete f.store.c.pending.selectionNow;
+  const observe=f.store.observeBatch.bind(f.store);f.store.observeBatch=async s=>{assert.equal(s.selectionNow,now.toISOString());f.store.c.pending.selectionNow=s.selectionNow;f.store.c.pending.selection_now=s.selectionNow;return observe(s);};
+  await run({...f.options,resume:true,now:new Date('2026-10-23'),processPage:async(p,c)=>{assert.equal(+c.now,+now);return f.options.processPage(p,c);}});
+ });
+ await test('sélection réelle du connecteur : occurrence expirée entre les deux horloges',async()=>{
+  const {poi}=require('./test-datatourisme-poi-reconciliation'),{calculatePoiState}=require('./datatourisme-poi-state');
+  const p=poi('B');p.takesPlaceAt=[{startDate:'2026-10-22',endDate:'2026-10-22',startTime:'10:00',endTime:'12:00'}];
+  const historical=calculatePoiState(p,{now:'2026-10-21T08:00Z'}),current=calculatePoiState(p,{now:'2026-10-23T08:00Z'});
+  assert.equal(historical.results.length,1);assert.equal(current.results.length,0);assert.notEqual(historical.fingerprint,current.fingerprint);
  });
  console.log(`${passed} réussis, ${failed} échoués`);if(failed)process.exitCode=1;
 })();

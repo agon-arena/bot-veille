@@ -1,0 +1,201 @@
+{
+  "poi": {
+    "identifier": "FMABRE029V54VTCI",
+    "isLocatedAt": [
+      {
+        "geo": {
+          "latitude": 48.29254,
+          "longitude": -4.268
+        },
+        "address": [
+          {
+            "hasAddressCity": {
+              "insee": "29104",
+              "isPartOfDepartment": {
+                "isPartOfRegion": {
+                  "isPartOfCountry": {
+                    "label": {
+                      "@fr": "France"
+                    }
+                  },
+                  "insee": "53",
+                  "label": {
+                    "@fr": "Bretagne"
+                  }
+                },
+                "insee": "29",
+                "label": {
+                  "@fr": "Finistère"
+                }
+              },
+              "label": {
+                "@fr": "Landévennec"
+              }
+            },
+            "streetAddress": [
+              "Breizh Odyssée",
+              "Place de la Mairie"
+            ],
+            "postalCode": "29560",
+            "addressLocality": "Landévennec"
+          }
+        ],
+        "openingHoursSpecification": [
+          {
+            "validThrough": "2026-10-31T23:00:00Z",
+            "opens": "11:00",
+            "validFrom": "2026-10-31T23:00:00Z",
+            "closes": "19:00"
+          }
+        ],
+        "geoPoint": {
+          "lon": -4.268,
+          "lat": 48.29254
+        }
+      }
+    ],
+    "hasDescription": [
+      {
+        "description": {
+          "@fr": "Le reliquaire de la duchesse Anne a été volé ! Partez à la rencontre des personnages marquants de l’histoire bretonne et récoltez les précieux indices nécessaires à la résolution de cette énigme.\nVenez récupérer votre matériel d'enquêteur à l'accueil du musée à l'occasion de l'achat de vos billets d'entrées.\nDurée 30 à 45 min / Age 7-12 ans"
+        }
+      }
+    ],
+    "label": {
+      "@fr": "Le vol du cœur d'Anne de Bretagne"
+    },
+    "type": [
+      "ExhibitionEvent",
+      "PointOfInterest",
+      "ChildrensEvent",
+      "CulturalEvent",
+      "EntertainmentAndEvent",
+      "Exhibition",
+      "Event"
+    ],
+    "hasContact": [
+      {
+        "telephone": [
+          "+33 2 98 23 63 05"
+        ],
+        "homepage": [
+          "http://www.breizh-odyssee.bzh/"
+        ]
+      }
+    ],
+    "uri": "https://data.datatourisme.fr/38/49cd1b6a-321c-3dfa-89bb-acf10742f6ea",
+    "takesPlaceAt": [
+      {
+        "endDate": "2026-11-01",
+        "startTime": "11:00",
+        "endTime": "19:00",
+        "startDate": "2026-11-01"
+      }
+    ],
+    "uuid": "1179c639-b62b-3efd-9dc2-8148cb2f1f40"
+  },
+  "candidate": {
+    "id": "5807d6cf-687d-4032-b739-d8a5c476cab4",
+    "title": "Le vol du cœur d'Anne de Bretagne",
+    "description": "Le reliquaire de la duchesse Anne a été volé ! Partez à la rencontre des personnages marquants de l’histoire bretonne et récoltez les précieux indices nécessaires à la résolution de cette énigme.\nVenez récupérer votre matériel d'enquêteur à l'accueil du musée à l'occasion de l'achat de vos billets d'entrées.\nDurée 30 à 45 min / Age 7-12 ans",
+    "starts_at": "2026-11-01T10:00:00+00:00",
+    "ends_at": "2026-11-01T18:00:00+00:00",
+    "timezone": "Europe/Paris",
+    "lifecycle_status": "scheduled",
+    "location_type": "physical",
+    "venue_name": null,
+    "address": "Breizh Odyssée",
+    "postal_code": "29560",
+    "city": "Landévennec",
+    "country": "FR",
+    "latitude": 48.29254,
+    "longitude": -4.268,
+    "online_url": null,
+    "booking_url": null,
+    "admission_type": "unknown",
+    "organizers": [
+      {
+        "url": "http://www.breizh-odyssee.bzh/",
+        "name": null
+      }
+    ],
+    "category": null,
+    "subcategory": null,
+    "tags": [],
+    "image_url": null,
+    "confidence": 0.85,
+    "field_confidence": {},
+    "evidence": [],
+    "record_status": "review",
+    "merged_into_id": null,
+    "first_seen_at": "2026-10-22T05:58:41.588914+00:00",
+    "last_seen_at": "2026-10-22T05:58:41.165+00:00",
+    "created_at": "2026-10-22T05:58:41.588914+00:00",
+    "updated_at": "2026-10-22T05:58:41.165+00:00",
+    "external_ids": [
+      {
+        "activity_id": "5807d6cf-687d-4032-b739-d8a5c476cab4",
+        "source_id": "0702abac-85d0-4d54-8321-7edc128c2a7d",
+        "system": "datatourisme-occurrence",
+        "value": "datatourisme:03060822-7d03-30e1-a3f2-465d3a44bba5:2026-11-01T10:00:00.000Z:end=2026-11-01T18:00:00.000Z"
+      },
+      {
+        "activity_id": "5807d6cf-687d-4032-b739-d8a5c476cab4",
+        "source_id": "0702abac-85d0-4d54-8321-7edc128c2a7d",
+        "system": "datatourisme-poi",
+        "value": "03060822-7d03-30e1-a3f2-465d3a44bba5"
+      },
+      {
+        "activity_id": "5807d6cf-687d-4032-b739-d8a5c476cab4",
+        "source_id": "0702abac-85d0-4d54-8321-7edc128c2a7d",
+        "system": "datatourisme-producer-id",
+        "value": "FMABRE029V54VRYF"
+      }
+    ],
+    "provenances": [
+      {
+        "id": "576c12a6-dff1-4f86-95a4-a09f169d643e",
+        "activity_id": "5807d6cf-687d-4032-b739-d8a5c476cab4",
+        "source_id": "0702abac-85d0-4d54-8321-7edc128c2a7d",
+        "source_record_id": "datatourisme:03060822-7d03-30e1-a3f2-465d3a44bba5:2026-11-01T10:00:00.000Z",
+        "source_occurrence_key": "datatourisme:03060822-7d03-30e1-a3f2-465d3a44bba5:2026-11-01T10:00:00.000Z:end=2026-11-01T18:00:00.000Z",
+        "original_event_url": "https://data.datatourisme.fr/38/ac3576fc-8919-37ee-a81c-2cc4e2cb6877",
+        "source_payload": {
+          "period": {
+            "endDate": "2026-11-01",
+            "endTime": "19:00",
+            "startDate": "2026-11-01",
+            "startTime": "11:00"
+          },
+          "poiUri": "https://data.datatourisme.fr/38/ac3576fc-8919-37ee-a81c-2cc4e2cb6877",
+          "poiUuid": "03060822-7d03-30e1-a3f2-465d3a44bba5",
+          "version": "datatourisme-period-v2",
+          "normalized": {
+            "endsAt": "2026-11-01T18:00:00.000Z",
+            "startsAt": "2026-11-01T10:00:00.000Z",
+            "timezone": "Europe/Paris"
+          },
+          "occurrenceKey": "datatourisme:03060822-7d03-30e1-a3f2-465d3a44bba5:2026-11-01T10:00:00.000Z:end=2026-11-01T18:00:00.000Z",
+          "timezoneContext": {
+            "poi": null,
+            "location": null,
+            "communeInsee": "29104",
+            "departmentInsee": "29"
+          },
+          "producerIdentifier": "FMABRE029V54VRYF"
+        },
+        "payload_hash": "69ce22687fe4322fff41a548fc77c5132ad357f9b9bce48f18e76ddd1ed9b28e",
+        "first_seen_at": "2026-10-21T18:45:07.661+00:00",
+        "last_seen_at": "2026-10-22T17:53:41.312+00:00",
+        "last_seen_run_id": "8352c4d5-c0ab-4b7f-b477-384daa9c0af0",
+        "active": true
+      }
+    ]
+  },
+  "source": {
+    "id": "0702abac-85d0-4d54-8321-7edc128c2a7d",
+    "key": "datatourisme-national",
+    "connector_type": "datatourisme",
+    "base_url": "https://api.datatourisme.fr/v1/entertainmentAndEvent"
+  }
+}

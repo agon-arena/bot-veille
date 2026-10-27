@@ -1,0 +1,174 @@
+[
+  {
+    "identifier": "FMABRE056V50HA3B",
+    "isLocatedAt": [
+      {
+        "geo": {
+          "latitude": 45.4587971,
+          "longitude": -94.418775
+        },
+        "address": [
+          {
+            "hasAddressCity": {
+              "insee": "56105",
+              "isPartOfDepartment": {
+                "isPartOfRegion": {
+                  "isPartOfCountry": {
+                    "label": {
+                      "@fr": "France"
+                    }
+                  },
+                  "insee": "53",
+                  "label": {
+                    "@fr": "Bretagne"
+                  }
+                },
+                "insee": "56",
+                "label": {
+                  "@fr": "Morbihan"
+                }
+              },
+              "label": {
+                "@fr": "Lanvénégen"
+              }
+            },
+            "postalCode": "56320",
+            "addressLocality": "Lanvénégen"
+          }
+        ],
+        "openingHoursSpecification": [
+          {
+            "validThrough": "2026-10-31T23:00:00Z",
+            "validFrom": "2026-10-18T22:00:00Z"
+          }
+        ],
+        "geoPoint": {
+          "lon": -94.418775,
+          "lat": 45.4587971
+        }
+      }
+    ],
+    "hasDescription": [
+      {
+        "description": {
+          "@fr": "Les Semaines du Tourisme Économique et des Savoir-Faire, organisées par la Fédération des Offices de Tourisme de Bretagne, c’est un événement unique pour une expérience inoubliable. L’occasion rêvée de s’immerger dans la culture bretonne, de découvrir des talents exceptionnels et de faire des rencontres authentiques au travers des savoir-faire de la Bretagne. \n\nA Lanvénégen, visite de l'atelier le meuble du photographe.\nRetrouvez tous les créneaux disponibles en ligne sur le site des Semaines du Tourisme Économique et des Savoir-Faire  et réservez directement en quelques clics, ou rendez-vous dans l’un de nos deux bureaux d'accueil pour réserver sur place."
+        }
+      }
+    ],
+    "label": {
+      "@fr": "Les Semaines du Tourisme Économique et des Savoir-Faire"
+    },
+    "type": [
+      "Event",
+      "EntertainmentAndEvent",
+      "Product",
+      "Visit",
+      "PointOfInterest"
+    ],
+    "hasContact": [
+      {
+        "telephone": [
+          "+33 2 97 23 23 23",
+          "+33 2 97 28 01 20"
+        ],
+        "homepage": [
+          "https://semaines-tourisme-economique.bzh/retrouvez-vos-visites-dans-le-morbihan/pays-du-roi-morvan/"
+        ]
+      }
+    ],
+    "uri": "https://data.datatourisme.fr/38/88056ab3-f6f8-3307-b94d-51e9e4841c10",
+    "takesPlaceAt": [
+      {
+        "endDate": "2026-11-01",
+        "startDate": "2026-10-19"
+      }
+    ],
+    "uuid": "092d8ee7-e610-3a05-a105-6e305e901260"
+  },
+  {
+    "identifier": "FMABRE056V50H8XI",
+    "isLocatedAt": [
+      {
+        "geo": {
+          "latitude": 45.4587971,
+          "longitude": -94.418775
+        },
+        "address": [
+          {
+            "hasAddressCity": {
+              "insee": "56105",
+              "isPartOfDepartment": {
+                "isPartOfRegion": {
+                  "isPartOfCountry": {
+                    "label": {
+                      "@fr": "France"
+                    }
+                  },
+                  "insee": "53",
+                  "label": {
+                    "@fr": "Bretagne"
+                  }
+                },
+                "insee": "56",
+                "label": {
+                  "@fr": "Morbihan"
+                }
+              },
+              "label": {
+                "@fr": "Lanvénégen"
+              }
+            },
+            "postalCode": "56320",
+            "addressLocality": "Lanvénégen"
+          }
+        ],
+        "openingHoursSpecification": [
+          {
+            "validThrough": "2026-10-31T23:00:00Z",
+            "validFrom": "2026-10-18T22:00:00Z"
+          }
+        ],
+        "geoPoint": {
+          "lon": -94.418775,
+          "lat": 45.4587971
+        }
+      }
+    ],
+    "hasDescription": [
+      {
+        "description": {
+          "@fr": "Les Semaines du Tourisme Économique et des Savoir-Faire, organisées par la Fédération des Offices de Tourisme de Bretagne, c’est un événement unique pour une expérience inoubliable. L’occasion rêvée de s’immerger dans la culture bretonne, de découvrir des talents exceptionnels et de faire des rencontres authentiques au travers des savoir-faire de la Bretagne. \n\nA Lanvénégen, visite de l'atelier l'En verre du Décor et l'instant de verre\nRetrouvez tous les créneaux disponibles en ligne sur le site des Semaines du Tourisme Économique et des Savoir-Faire  et réservez directement en quelques clics, ou rendez-vous dans l’un de nos deux bureaux d'accueil pour réserver sur place."
+        }
+      }
+    ],
+    "label": {
+      "@fr": "Les Semaines du Tourisme Économique et des Savoir-Faire"
+    },
+    "type": [
+      "Event",
+      "EntertainmentAndEvent",
+      "PointOfInterest",
+      "Product",
+      "Visit"
+    ],
+    "hasContact": [
+      {
+        "telephone": [
+          "+33 2 97 23 23 23",
+          "+33 2 97 28 01 20"
+        ],
+        "homepage": [
+          "https://semaines-tourisme-economique.bzh/retrouvez-vos-visites-dans-le-morbihan/pays-du-roi-morvan/"
+        ]
+      }
+    ],
+    "uri": "https://data.datatourisme.fr/38/91eba088-94a0-352c-aaaf-ee5232293378",
+    "takesPlaceAt": [
+      {
+        "endDate": "2026-11-01",
+        "startDate": "2026-10-19"
+      }
+    ],
+    "uuid": "28f6fbfd-a9fc-3e99-a0ef-da4a1fcbc5c3"
+  }
+]

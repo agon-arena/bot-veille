@@ -1,0 +1,2946 @@
+[
+  {
+    "identifier": "FMAPIC000V556036912",
+    "isLocatedAt": [
+      {
+        "geo": {
+          "latitude": 50.637583,
+          "longitude": 3.148595
+        },
+        "address": [
+          {
+            "hasAddressCity": {
+              "insee": "59009",
+              "isPartOfDepartment": {
+                "isPartOfRegion": {
+                  "isPartOfCountry": {
+                    "label": {
+                      "@fr": "France"
+                    }
+                  },
+                  "insee": "32",
+                  "label": {
+                    "@fr": "Hauts-de-France"
+                  }
+                },
+                "insee": "59",
+                "label": {
+                  "@fr": "Nord"
+                }
+              },
+              "label": {
+                "@fr": "Villeneuve-d'Ascq"
+              }
+            },
+            "streetAddress": [
+              "1 allée du Musée VIlleneuve-d'Ascq"
+            ],
+            "postalCode": "59650",
+            "addressLocality": "Villeneuve-d'Ascq"
+          }
+        ],
+        "openingHoursSpecification": [
+          {
+            "validThrough": "2026-12-12T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-12-12T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-11-25T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-11-25T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-12-18T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-12-18T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2027-01-23T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2027-01-23T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2027-01-07T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2027-01-07T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-10-02T22:00:00Z",
+            "opens": "11:00",
+            "validFrom": "2026-10-02T22:00:00Z",
+            "closes": "20:00"
+          },
+          {
+            "validThrough": "2027-02-09T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2027-02-09T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2027-01-12T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2027-01-12T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-11-06T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-11-06T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-12-22T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-12-22T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2027-01-25T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2027-01-25T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-10-03T22:00:00Z",
+            "opens": "11:00",
+            "validFrom": "2026-10-03T22:00:00Z",
+            "closes": "20:00"
+          },
+          {
+            "validThrough": "2026-12-09T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-12-09T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2027-01-22T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2027-01-22T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2027-01-16T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2027-01-16T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2027-01-28T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2027-01-28T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2027-01-04T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2027-01-04T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-10-26T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-10-26T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-11-12T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-11-12T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2027-02-13T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2027-02-13T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2027-01-11T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2027-01-11T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2027-02-06T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2027-02-06T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-11-26T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-11-26T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-10-09T22:00:00Z",
+            "opens": "11:00",
+            "validFrom": "2026-10-09T22:00:00Z",
+            "closes": "20:00"
+          },
+          {
+            "validThrough": "2026-11-30T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-11-30T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-11-23T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-11-23T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-10-17T22:00:00Z",
+            "opens": "11:00",
+            "validFrom": "2026-10-17T22:00:00Z",
+            "closes": "20:00"
+          },
+          {
+            "validThrough": "2026-12-24T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-12-24T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-11-11T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-11-11T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2027-01-01T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2027-01-01T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-10-08T22:00:00Z",
+            "opens": "11:00",
+            "validFrom": "2026-10-08T22:00:00Z",
+            "closes": "20:00"
+          },
+          {
+            "validThrough": "2026-12-28T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-12-28T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2027-02-08T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2027-02-08T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-11-05T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-11-05T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-12-02T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-12-02T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2027-01-21T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2027-01-21T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-10-16T22:00:00Z",
+            "opens": "11:00",
+            "validFrom": "2026-10-16T22:00:00Z",
+            "closes": "20:00"
+          },
+          {
+            "validThrough": "2026-12-19T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-12-19T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2027-02-05T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2027-02-05T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-11-20T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-11-20T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-10-29T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-10-29T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2027-01-26T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2027-01-26T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-10-24T22:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-10-24T22:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-12-04T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-12-04T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-10-12T22:00:00Z",
+            "opens": "11:00",
+            "validFrom": "2026-10-12T22:00:00Z",
+            "closes": "20:00"
+          },
+          {
+            "validThrough": "2027-02-02T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2027-02-02T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-12-30T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-12-30T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-11-19T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-11-19T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-10-30T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-10-30T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-12-07T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-12-07T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2027-01-06T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2027-01-06T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-12-08T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-12-08T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2027-02-01T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2027-02-01T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-12-17T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-12-17T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-10-22T22:00:00Z",
+            "opens": "11:00",
+            "validFrom": "2026-10-22T22:00:00Z",
+            "closes": "20:00"
+          },
+          {
+            "validThrough": "2026-11-24T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-11-24T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-10-21T22:00:00Z",
+            "opens": "11:00",
+            "validFrom": "2026-10-21T22:00:00Z",
+            "closes": "20:00"
+          },
+          {
+            "validThrough": "2027-01-05T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2027-01-05T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-11-28T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-11-28T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2027-01-29T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2027-01-29T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-12-05T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-12-05T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-12-29T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-12-29T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-12-03T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-12-03T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2027-01-27T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2027-01-27T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-11-17T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-11-17T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2027-02-10T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2027-02-10T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-10-07T22:00:00Z",
+            "opens": "11:00",
+            "validFrom": "2026-10-07T22:00:00Z",
+            "closes": "20:00"
+          },
+          {
+            "validThrough": "2027-01-20T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2027-01-20T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2027-01-18T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2027-01-18T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2027-02-03T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2027-02-03T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-10-15T22:00:00Z",
+            "opens": "11:00",
+            "validFrom": "2026-10-15T22:00:00Z",
+            "closes": "20:00"
+          },
+          {
+            "validThrough": "2026-10-06T22:00:00Z",
+            "opens": "11:00",
+            "validFrom": "2026-10-06T22:00:00Z",
+            "closes": "20:00"
+          },
+          {
+            "validThrough": "2026-12-21T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-12-21T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-10-13T22:00:00Z",
+            "opens": "11:00",
+            "validFrom": "2026-10-13T22:00:00Z",
+            "closes": "20:00"
+          },
+          {
+            "validThrough": "2027-01-13T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2027-01-13T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2027-01-08T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2027-01-08T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-12-23T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-12-23T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-10-31T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-10-31T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2027-01-14T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2027-01-14T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-11-07T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-11-07T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-10-05T22:00:00Z",
+            "opens": "11:00",
+            "validFrom": "2026-10-05T22:00:00Z",
+            "closes": "20:00"
+          },
+          {
+            "validThrough": "2026-12-31T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-12-31T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-10-27T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-10-27T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-10-23T22:00:00Z",
+            "opens": "11:00",
+            "validFrom": "2026-10-23T22:00:00Z",
+            "closes": "20:00"
+          },
+          {
+            "validThrough": "2026-11-03T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-11-03T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-11-16T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-11-16T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-11-13T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-11-13T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-10-19T22:00:00Z",
+            "opens": "11:00",
+            "validFrom": "2026-10-19T22:00:00Z",
+            "closes": "20:00"
+          },
+          {
+            "validThrough": "2026-10-14T22:00:00Z",
+            "opens": "11:00",
+            "validFrom": "2026-10-14T22:00:00Z",
+            "closes": "20:00"
+          },
+          {
+            "validThrough": "2026-12-16T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-12-16T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-12-15T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-12-15T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-11-14T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-11-14T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2027-01-19T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2027-01-19T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-12-25T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-12-25T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-12-01T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-12-01T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-11-10T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-11-10T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-12-11T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-12-11T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-11-09T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-11-09T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2027-01-30T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2027-01-30T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2027-02-12T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2027-02-12T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-11-18T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-11-18T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-11-02T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-11-02T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-11-27T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-11-27T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2027-01-02T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2027-01-02T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-11-04T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-11-04T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-12-14T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-12-14T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-11-21T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-11-21T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-12-26T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-12-26T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2027-01-15T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2027-01-15T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-10-28T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-10-28T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-10-20T22:00:00Z",
+            "opens": "11:00",
+            "validFrom": "2026-10-20T22:00:00Z",
+            "closes": "20:00"
+          },
+          {
+            "validThrough": "2026-10-10T22:00:00Z",
+            "opens": "11:00",
+            "validFrom": "2026-10-10T22:00:00Z",
+            "closes": "20:00"
+          },
+          {
+            "validThrough": "2026-12-10T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-12-10T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2027-02-11T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2027-02-11T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2027-02-04T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2027-02-04T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2027-01-09T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2027-01-09T23:00:00Z",
+            "closes": "19:00"
+          }
+        ],
+        "geoPoint": {
+          "lon": 3.148595,
+          "lat": 50.637583
+        }
+      }
+    ],
+    "hasDescription": [
+      {
+        "description": {
+          "@fr": "**Plus de 300 œuvres réalisées par 70 artistes femmes internationales investissent le LaM pour une exposition hors du commun.**\n\nSingulières dévoile des artistes longtemps restées dans l’ombre : créatrices anonymes, autodidactes, classées dans l’art brut ou affranchies de toutes catégories. Œuvres habitées, formes foisonnantes, visions intimes ou gestes de révolte racontent des trajectoires où la création devient un espace d’émancipation et de transformation. \n\nPortée par l’exceptionnel fonds L’Aracine et de nombreux prêts, l’exposition propose une traversée sensible qui interroge la place des femmes dans l’histoire de l’art, tout en révélant des œuvres d’une force visuelle rare.  \n \n\n**Commissariat**  \n**Savine Faupin**, conservatrice en chef en charge de la collection d'art brut  \n**Christophe Boulanger**, attaché de conservation en charge de l'art brut\n\nBaya, _Femme en robe orange et cheval bleu_, vers 1947. Gouache, crayon sur papier ; 74,7 x 91,6 cm. Donation l’Aracine en 1999. Collection du LaM. © Othmane Mahieddine"
+        },
+        "shortDescription": {
+          "@fr": "**Plus de 300 œuvres réalisées par 70 artistes femmes internationales investissent le LaM pour une exposition hors du commun.**\n\nSingulières dévoile des artistes longtemps restées dans l’ombre : créatrices anonymes, autodidactes, classées dans l’art brut ou affranchies de toutes catégories. Œuvres habitées, formes foisonnantes, visions intimes ou gestes de révolte racontent des trajectoires où la création devient un espace d’émancipation et de transformation. \n\nPortée par l’exceptionnel fonds L’Aracine et de nombreux prêts, l’exposition propose une traversée sensible qui interroge la place des femmes dans l’histoire de l’art, tout en révélant des œuvres d’une force visuelle rare.  \n \n\n**Commissariat**  \n**Savine Faupin**, conservatrice en chef en charge de la collection d'art brut  \n**Christophe Boulanger**, attaché de conservation en charge de l'art brut\n\nBaya, _Femme en robe orange et cheval bleu_, vers 1947. Gouache, crayon sur papier ; 74,7 x 91,6 cm. Donation l’Aracine en 1999. Collection du LaM. © Othmane Mahieddine"
+        }
+      }
+    ],
+    "label": {
+      "@fr": "Singulières : artistes, autodidactes, affranchies"
+    },
+    "type": [
+      "Event",
+      "EntertainmentAndEvent",
+      "SaleEvent",
+      "PointOfInterest",
+      "FairOrShow"
+    ],
+    "hasContact": [
+      {
+        "telephone": [
+          "+33 3 20 19 68 68"
+        ]
+      }
+    ],
+    "uri": "https://data.datatourisme.fr/28/4124480e-11da-3924-8f24-091c450d1e95",
+    "takesPlaceAt": [
+      {
+        "endDate": "2027-01-28",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2027-01-28"
+      },
+      {
+        "endDate": "2027-02-12",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2027-02-12"
+      },
+      {
+        "endDate": "2027-01-20",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2027-01-20"
+      },
+      {
+        "endDate": "2026-11-01",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-11-01"
+      },
+      {
+        "endDate": "2026-11-21",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-11-21"
+      },
+      {
+        "endDate": "2027-01-03",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2027-01-03"
+      },
+      {
+        "endDate": "2026-10-11",
+        "startTime": "11:00",
+        "endTime": "20:00",
+        "startDate": "2026-10-11"
+      },
+      {
+        "endDate": "2026-12-19",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-12-19"
+      },
+      {
+        "endDate": "2026-11-15",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-11-15"
+      },
+      {
+        "endDate": "2027-01-10",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2027-01-10"
+      },
+      {
+        "endDate": "2027-02-06",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2027-02-06"
+      },
+      {
+        "endDate": "2026-12-12",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-12-12"
+      },
+      {
+        "endDate": "2026-11-13",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-11-13"
+      },
+      {
+        "endDate": "2026-10-07",
+        "startTime": "11:00",
+        "endTime": "20:00",
+        "startDate": "2026-10-07"
+      },
+      {
+        "endDate": "2026-12-06",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-12-06"
+      },
+      {
+        "endDate": "2026-10-31",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-10-31"
+      },
+      {
+        "endDate": "2026-10-23",
+        "startTime": "11:00",
+        "endTime": "20:00",
+        "startDate": "2026-10-23"
+      },
+      {
+        "endDate": "2027-02-11",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2027-02-11"
+      },
+      {
+        "endDate": "2026-10-27",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-10-27"
+      },
+      {
+        "endDate": "2026-11-25",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-11-25"
+      },
+      {
+        "endDate": "2026-12-17",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-12-17"
+      },
+      {
+        "endDate": "2027-02-14",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2027-02-14"
+      },
+      {
+        "endDate": "2026-10-28",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-10-28"
+      },
+      {
+        "endDate": "2027-01-22",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2027-01-22"
+      },
+      {
+        "endDate": "2027-01-23",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2027-01-23"
+      },
+      {
+        "endDate": "2026-11-28",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-11-28"
+      },
+      {
+        "endDate": "2027-01-29",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2027-01-29"
+      },
+      {
+        "endDate": "2026-10-13",
+        "startTime": "11:00",
+        "endTime": "20:00",
+        "startDate": "2026-10-13"
+      },
+      {
+        "endDate": "2027-01-05",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2027-01-05"
+      },
+      {
+        "endDate": "2027-01-06",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2027-01-06"
+      },
+      {
+        "endDate": "2026-10-14",
+        "startTime": "11:00",
+        "endTime": "20:00",
+        "startDate": "2026-10-14"
+      },
+      {
+        "endDate": "2026-10-22",
+        "startTime": "11:00",
+        "endTime": "20:00",
+        "startDate": "2026-10-22"
+      },
+      {
+        "endDate": "2027-01-27",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2027-01-27"
+      },
+      {
+        "endDate": "2026-10-25",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-10-25"
+      },
+      {
+        "endDate": "2026-10-17",
+        "startTime": "11:00",
+        "endTime": "20:00",
+        "startDate": "2026-10-17"
+      },
+      {
+        "endDate": "2027-01-02",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2027-01-02"
+      },
+      {
+        "endDate": "2026-12-09",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-12-09"
+      },
+      {
+        "endDate": "2026-11-07",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-11-07"
+      },
+      {
+        "endDate": "2026-12-03",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-12-03"
+      },
+      {
+        "endDate": "2027-01-21",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2027-01-21"
+      },
+      {
+        "endDate": "2026-12-31",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-12-31"
+      },
+      {
+        "endDate": "2027-01-14",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2027-01-14"
+      },
+      {
+        "endDate": "2027-01-17",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2027-01-17"
+      },
+      {
+        "endDate": "2026-10-04",
+        "startTime": "11:00",
+        "endTime": "20:00",
+        "startDate": "2026-10-04"
+      },
+      {
+        "endDate": "2026-12-29",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-12-29"
+      },
+      {
+        "endDate": "2026-10-20",
+        "startTime": "11:00",
+        "endTime": "20:00",
+        "startDate": "2026-10-20"
+      },
+      {
+        "endDate": "2026-11-03",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-11-03"
+      },
+      {
+        "endDate": "2026-12-04",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-12-04"
+      },
+      {
+        "endDate": "2026-12-22",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-12-22"
+      },
+      {
+        "endDate": "2026-11-26",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-11-26"
+      },
+      {
+        "endDate": "2027-01-08",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2027-01-08"
+      },
+      {
+        "endDate": "2027-01-26",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2027-01-26"
+      },
+      {
+        "endDate": "2027-02-03",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2027-02-03"
+      },
+      {
+        "endDate": "2026-12-01",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-12-01"
+      },
+      {
+        "endDate": "2026-12-05",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-12-05"
+      },
+      {
+        "endDate": "2026-11-08",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-11-08"
+      },
+      {
+        "endDate": "2026-10-03",
+        "startTime": "11:00",
+        "endTime": "20:00",
+        "startDate": "2026-10-03"
+      },
+      {
+        "endDate": "2026-12-20",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-12-20"
+      },
+      {
+        "endDate": "2026-11-27",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-11-27"
+      },
+      {
+        "endDate": "2026-11-04",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-11-04"
+      },
+      {
+        "endDate": "2026-12-11",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-12-11"
+      },
+      {
+        "endDate": "2026-10-06",
+        "startTime": "11:00",
+        "endTime": "20:00",
+        "startDate": "2026-10-06"
+      },
+      {
+        "endDate": "2027-02-09",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2027-02-09"
+      },
+      {
+        "endDate": "2026-10-16",
+        "startTime": "11:00",
+        "endTime": "20:00",
+        "startDate": "2026-10-16"
+      },
+      {
+        "endDate": "2027-02-07",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2027-02-07"
+      },
+      {
+        "endDate": "2026-12-08",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-12-08"
+      },
+      {
+        "endDate": "2027-01-01",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2027-01-01"
+      },
+      {
+        "endDate": "2026-12-15",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-12-15"
+      },
+      {
+        "endDate": "2027-01-15",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2027-01-15"
+      },
+      {
+        "endDate": "2026-12-13",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-12-13"
+      },
+      {
+        "endDate": "2027-01-19",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2027-01-19"
+      },
+      {
+        "endDate": "2026-12-23",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-12-23"
+      },
+      {
+        "endDate": "2027-01-30",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2027-01-30"
+      },
+      {
+        "endDate": "2027-02-13",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2027-02-13"
+      },
+      {
+        "endDate": "2027-01-12",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2027-01-12"
+      },
+      {
+        "endDate": "2026-12-24",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-12-24"
+      },
+      {
+        "endDate": "2027-02-10",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2027-02-10"
+      },
+      {
+        "endDate": "2026-10-24",
+        "startTime": "11:00",
+        "endTime": "20:00",
+        "startDate": "2026-10-24"
+      },
+      {
+        "endDate": "2026-11-14",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-11-14"
+      },
+      {
+        "endDate": "2027-01-09",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2027-01-09"
+      },
+      {
+        "endDate": "2027-02-05",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2027-02-05"
+      },
+      {
+        "endDate": "2026-11-12",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-11-12"
+      },
+      {
+        "endDate": "2026-12-10",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-12-10"
+      },
+      {
+        "endDate": "2027-01-16",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2027-01-16"
+      },
+      {
+        "endDate": "2026-12-27",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-12-27"
+      },
+      {
+        "endDate": "2026-10-30",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-10-30"
+      },
+      {
+        "endDate": "2026-11-20",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-11-20"
+      },
+      {
+        "endDate": "2026-11-24",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-11-24"
+      },
+      {
+        "endDate": "2027-01-24",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2027-01-24"
+      },
+      {
+        "endDate": "2026-11-10",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-11-10"
+      },
+      {
+        "endDate": "2026-11-17",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-11-17"
+      },
+      {
+        "endDate": "2027-02-04",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2027-02-04"
+      },
+      {
+        "endDate": "2026-12-16",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-12-16"
+      },
+      {
+        "endDate": "2026-11-22",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-11-22"
+      },
+      {
+        "endDate": "2026-10-21",
+        "startTime": "11:00",
+        "endTime": "20:00",
+        "startDate": "2026-10-21"
+      },
+      {
+        "endDate": "2026-11-05",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-11-05"
+      },
+      {
+        "endDate": "2026-12-02",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-12-02"
+      },
+      {
+        "endDate": "2026-10-10",
+        "startTime": "11:00",
+        "endTime": "20:00",
+        "startDate": "2026-10-10"
+      },
+      {
+        "endDate": "2027-01-13",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2027-01-13"
+      },
+      {
+        "endDate": "2026-10-29",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-10-29"
+      },
+      {
+        "endDate": "2026-10-18",
+        "startTime": "11:00",
+        "endTime": "20:00",
+        "startDate": "2026-10-18"
+      },
+      {
+        "endDate": "2026-12-30",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-12-30"
+      },
+      {
+        "endDate": "2026-10-08",
+        "startTime": "11:00",
+        "endTime": "20:00",
+        "startDate": "2026-10-08"
+      },
+      {
+        "endDate": "2026-11-06",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-11-06"
+      },
+      {
+        "endDate": "2027-02-02",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2027-02-02"
+      },
+      {
+        "endDate": "2026-10-09",
+        "startTime": "11:00",
+        "endTime": "20:00",
+        "startDate": "2026-10-09"
+      },
+      {
+        "endDate": "2026-11-11",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-11-11"
+      },
+      {
+        "endDate": "2026-11-19",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-11-19"
+      },
+      {
+        "endDate": "2026-12-18",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-12-18"
+      },
+      {
+        "endDate": "2026-10-15",
+        "startTime": "11:00",
+        "endTime": "20:00",
+        "startDate": "2026-10-15"
+      },
+      {
+        "endDate": "2026-11-18",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-11-18"
+      },
+      {
+        "endDate": "2027-01-31",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2027-01-31"
+      },
+      {
+        "endDate": "2026-11-29",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-11-29"
+      },
+      {
+        "endDate": "2027-01-07",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2027-01-07"
+      },
+      {
+        "endDate": "2026-12-25",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-12-25"
+      },
+      {
+        "endDate": "2026-12-26",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-12-26"
+      }
+    ],
+    "uuid": "024207fe-3c2c-3dde-978b-9c620aa19ef9"
+  },
+  {
+    "identifier": "FMAPIC000V595766817",
+    "isLocatedAt": [
+      {
+        "geo": {
+          "latitude": 50.637583,
+          "longitude": 3.148595
+        },
+        "address": [
+          {
+            "hasAddressCity": {
+              "insee": "59009",
+              "isPartOfDepartment": {
+                "isPartOfRegion": {
+                  "isPartOfCountry": {
+                    "label": {
+                      "@fr": "France"
+                    }
+                  },
+                  "insee": "32",
+                  "label": {
+                    "@fr": "Hauts-de-France"
+                  }
+                },
+                "insee": "59",
+                "label": {
+                  "@fr": "Nord"
+                }
+              },
+              "label": {
+                "@fr": "Villeneuve-d'Ascq"
+              }
+            },
+            "streetAddress": [
+              "1 allée du Musée VIlleneuve-d'Ascq"
+            ],
+            "postalCode": "59650",
+            "addressLocality": "Villeneuve-d'Ascq"
+          }
+        ],
+        "openingHoursSpecification": [
+          {
+            "validThrough": "2026-12-12T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-12-12T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-11-25T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-11-25T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-12-18T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-12-18T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2027-01-23T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2027-01-23T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2027-01-07T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2027-01-07T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-10-02T22:00:00Z",
+            "opens": "11:00",
+            "validFrom": "2026-10-02T22:00:00Z",
+            "closes": "20:00"
+          },
+          {
+            "validThrough": "2027-02-09T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2027-02-09T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2027-01-12T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2027-01-12T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-11-06T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-11-06T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2027-01-25T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2027-01-25T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-12-09T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-12-09T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-10-03T22:00:00Z",
+            "opens": "11:00",
+            "validFrom": "2026-10-03T22:00:00Z",
+            "closes": "20:00"
+          },
+          {
+            "validThrough": "2026-12-22T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-12-22T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2027-01-22T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2027-01-22T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2027-01-16T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2027-01-16T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2027-01-28T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2027-01-28T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2027-01-04T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2027-01-04T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2027-02-13T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2027-02-13T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-10-26T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-10-26T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-11-12T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-11-12T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2027-01-11T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2027-01-11T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2027-02-06T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2027-02-06T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-11-26T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-11-26T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-10-09T22:00:00Z",
+            "opens": "11:00",
+            "validFrom": "2026-10-09T22:00:00Z",
+            "closes": "20:00"
+          },
+          {
+            "validThrough": "2026-11-30T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-11-30T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-11-23T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-11-23T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-10-17T22:00:00Z",
+            "opens": "11:00",
+            "validFrom": "2026-10-17T22:00:00Z",
+            "closes": "20:00"
+          },
+          {
+            "validThrough": "2026-11-11T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-11-11T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-12-24T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-12-24T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2027-01-01T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2027-01-01T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-10-08T22:00:00Z",
+            "opens": "11:00",
+            "validFrom": "2026-10-08T22:00:00Z",
+            "closes": "20:00"
+          },
+          {
+            "validThrough": "2027-02-08T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2027-02-08T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-12-28T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-12-28T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-11-05T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-11-05T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-12-02T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-12-02T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2027-01-21T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2027-01-21T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-10-16T22:00:00Z",
+            "opens": "11:00",
+            "validFrom": "2026-10-16T22:00:00Z",
+            "closes": "20:00"
+          },
+          {
+            "validThrough": "2026-12-19T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-12-19T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2027-02-05T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2027-02-05T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-11-20T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-11-20T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-10-29T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-10-29T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2027-01-26T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2027-01-26T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-10-24T22:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-10-24T22:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-12-04T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-12-04T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-10-12T22:00:00Z",
+            "opens": "11:00",
+            "validFrom": "2026-10-12T22:00:00Z",
+            "closes": "20:00"
+          },
+          {
+            "validThrough": "2027-02-02T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2027-02-02T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-12-30T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-12-30T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-11-19T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-11-19T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-10-30T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-10-30T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-12-07T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-12-07T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2027-01-06T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2027-01-06T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-12-08T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-12-08T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2027-02-01T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2027-02-01T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-12-17T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-12-17T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-10-22T22:00:00Z",
+            "opens": "11:00",
+            "validFrom": "2026-10-22T22:00:00Z",
+            "closes": "20:00"
+          },
+          {
+            "validThrough": "2026-10-21T22:00:00Z",
+            "opens": "11:00",
+            "validFrom": "2026-10-21T22:00:00Z",
+            "closes": "20:00"
+          },
+          {
+            "validThrough": "2026-11-24T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-11-24T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2027-01-05T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2027-01-05T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2027-01-29T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2027-01-29T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-11-28T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-11-28T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-12-05T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-12-05T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-12-29T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-12-29T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-12-03T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-12-03T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2027-01-27T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2027-01-27T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-11-17T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-11-17T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2027-02-10T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2027-02-10T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-10-07T22:00:00Z",
+            "opens": "11:00",
+            "validFrom": "2026-10-07T22:00:00Z",
+            "closes": "20:00"
+          },
+          {
+            "validThrough": "2027-01-20T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2027-01-20T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2027-01-18T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2027-01-18T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2027-02-03T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2027-02-03T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-10-15T22:00:00Z",
+            "opens": "11:00",
+            "validFrom": "2026-10-15T22:00:00Z",
+            "closes": "20:00"
+          },
+          {
+            "validThrough": "2026-10-06T22:00:00Z",
+            "opens": "11:00",
+            "validFrom": "2026-10-06T22:00:00Z",
+            "closes": "20:00"
+          },
+          {
+            "validThrough": "2026-12-21T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-12-21T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2027-01-13T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2027-01-13T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-10-13T22:00:00Z",
+            "opens": "11:00",
+            "validFrom": "2026-10-13T22:00:00Z",
+            "closes": "20:00"
+          },
+          {
+            "validThrough": "2027-01-08T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2027-01-08T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-12-23T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-12-23T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2027-01-14T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2027-01-14T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-11-07T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-11-07T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-10-31T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-10-31T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-10-05T22:00:00Z",
+            "opens": "11:00",
+            "validFrom": "2026-10-05T22:00:00Z",
+            "closes": "20:00"
+          },
+          {
+            "validThrough": "2026-12-31T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-12-31T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-10-27T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-10-27T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-10-23T22:00:00Z",
+            "opens": "11:00",
+            "validFrom": "2026-10-23T22:00:00Z",
+            "closes": "20:00"
+          },
+          {
+            "validThrough": "2026-11-16T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-11-16T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-11-03T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-11-03T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-11-13T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-11-13T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-10-19T22:00:00Z",
+            "opens": "11:00",
+            "validFrom": "2026-10-19T22:00:00Z",
+            "closes": "20:00"
+          },
+          {
+            "validThrough": "2026-10-14T22:00:00Z",
+            "opens": "11:00",
+            "validFrom": "2026-10-14T22:00:00Z",
+            "closes": "20:00"
+          },
+          {
+            "validThrough": "2026-12-16T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-12-16T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-12-15T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-12-15T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-11-14T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-11-14T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2027-01-19T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2027-01-19T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-12-25T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-12-25T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-12-01T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-12-01T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-11-10T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-11-10T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-12-11T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-12-11T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-11-09T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-11-09T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2027-01-30T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2027-01-30T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2027-02-12T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2027-02-12T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-11-18T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-11-18T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-11-02T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-11-02T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-11-27T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-11-27T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2027-01-02T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2027-01-02T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-11-04T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-11-04T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-12-14T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-12-14T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-11-21T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-11-21T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2027-01-15T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2027-01-15T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-12-26T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-12-26T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-10-20T22:00:00Z",
+            "opens": "11:00",
+            "validFrom": "2026-10-20T22:00:00Z",
+            "closes": "20:00"
+          },
+          {
+            "validThrough": "2026-10-10T22:00:00Z",
+            "opens": "11:00",
+            "validFrom": "2026-10-10T22:00:00Z",
+            "closes": "20:00"
+          },
+          {
+            "validThrough": "2026-10-28T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-10-28T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2027-02-11T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2027-02-11T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2027-02-04T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2027-02-04T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2026-12-10T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2026-12-10T23:00:00Z",
+            "closes": "19:00"
+          },
+          {
+            "validThrough": "2027-01-09T23:00:00Z",
+            "opens": "10:00",
+            "validFrom": "2027-01-09T23:00:00Z",
+            "closes": "19:00"
+          }
+        ],
+        "geoPoint": {
+          "lon": 3.148595,
+          "lat": 50.637583
+        }
+      }
+    ],
+    "hasDescription": [
+      {
+        "description": {
+          "@fr": "**Plus de 300 œuvres réalisées par 70 artistes femmes internationales investissent le LaM pour une exposition hors du commun.**\n\n_Singulières_ dévoile des artistes longtemps restées dans l’ombre : créatrices anonymes, autodidactes, classées dans l’art brut ou affranchies de toutes catégories. Œuvres habitées, formes foisonnantes, visions intimes ou gestes de révolte racontent des trajectoires où la création devient un espace d’émancipation et de transformation. \n\nPortée par l’exceptionnel fonds L’Aracine et de nombreux prêts, l’exposition propose une traversée sensible qui interroge la place des femmes dans l’histoire de l’art, tout en révélant des œuvres d’une force visuelle rare.\n\nArtistes présentées (sélection) : Baya, Aloïse Corbaz, Madge Gill, Jeanne Laporte-Fromage, Séraphine Louis (dite Séraphine de Senlis), Élise Müller (dite Hélène Smith), Anna Zemánková...  \n \n\n**Commissariat**  \n**Savine Faupin**, conservatrice en chef en charge de la collection d'art brut  \n**Christophe Boulanger**, attaché de conservation en charge de l'art brut\n\n**Partenaires média**  \n**![](/sites/default/files/inline-images/Logos_PartenairesM%C3%A9dia-01.png)**\n\nBaya, _Femme en robe orange et cheval bleu_, vers 1947. Gouache, crayon sur papier ; 74,7 x 91,6 cm. Donation l’Aracine en 1999. Collection du LaM. © Othmane Mahieddine"
+        },
+        "shortDescription": {
+          "@fr": "**Plus de 300 œuvres réalisées par 70 artistes femmes internationales investissent le LaM pour une exposition hors du commun.**\n\n_Singulières_ dévoile des artistes longtemps restées dans l’ombre : créatrices anonymes, autodidactes, classées dans l’art brut ou affranchies de toutes catégories. Œuvres habitées, formes foisonnantes, visions intimes ou gestes de révolte racontent des trajectoires où la création devient un espace d’émancipation et de transformation. \n\nPortée par l’exceptionnel fonds L’Aracine et de nombreux prêts, l’exposition propose une traversée sensible qui interroge la place des femmes dans l’histoire de l’art, tout en révélant des œuvres d’une force visuelle rare.\n\nArtistes présentées (sélection) : Baya, Aloïse Corbaz, Madge Gill, Jeanne Laporte-Fromage, Séraphine Louis (dite Séraphine de Senlis), Élise Müller (dite Hélène Smith), Anna Zemánková...  \n \n\n**Commissariat**  \n**Savine Faupin**, conservatrice en chef en charge de la collection d'art brut  \n**Christophe Boulanger**, attaché de conservation en charge de l'art brut\n\n**Partenaires média**  \n**![](/sites/default/files/inline-images/Logos_PartenairesM%C3%A9dia-01.png)**\n\nBaya, _Femme en robe orange et cheval bleu_, vers 1947. Gouache, crayon sur papier ; 74,7 x 91,6 cm. Donation l’Aracine en 1999. Collection du LaM. © Othmane Mahieddine"
+        }
+      }
+    ],
+    "label": {
+      "@fr": "Singulières : artistes, autodidactes, affranchies"
+    },
+    "type": [
+      "SaleEvent",
+      "Event",
+      "EntertainmentAndEvent",
+      "PointOfInterest",
+      "FairOrShow"
+    ],
+    "hasContact": [
+      {
+        "telephone": [
+          "+33 3 20 19 68 68"
+        ]
+      }
+    ],
+    "uri": "https://data.datatourisme.fr/28/103c7024-daf6-39e4-bbd9-da2426fc7509",
+    "takesPlaceAt": [
+      {
+        "endDate": "2026-12-29",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-12-29"
+      },
+      {
+        "endDate": "2027-01-19",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2027-01-19"
+      },
+      {
+        "endDate": "2026-12-22",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-12-22"
+      },
+      {
+        "endDate": "2027-02-11",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2027-02-11"
+      },
+      {
+        "endDate": "2027-02-06",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2027-02-06"
+      },
+      {
+        "endDate": "2027-01-17",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2027-01-17"
+      },
+      {
+        "endDate": "2026-11-10",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-11-10"
+      },
+      {
+        "endDate": "2026-10-23",
+        "startTime": "11:00",
+        "endTime": "20:00",
+        "startDate": "2026-10-23"
+      },
+      {
+        "endDate": "2026-10-24",
+        "startTime": "11:00",
+        "endTime": "20:00",
+        "startDate": "2026-10-24"
+      },
+      {
+        "endDate": "2027-01-08",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2027-01-08"
+      },
+      {
+        "endDate": "2026-11-26",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-11-26"
+      },
+      {
+        "endDate": "2026-11-22",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-11-22"
+      },
+      {
+        "endDate": "2026-11-04",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-11-04"
+      },
+      {
+        "endDate": "2027-01-20",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2027-01-20"
+      },
+      {
+        "endDate": "2027-01-03",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2027-01-03"
+      },
+      {
+        "endDate": "2026-11-24",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-11-24"
+      },
+      {
+        "endDate": "2026-12-26",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-12-26"
+      },
+      {
+        "endDate": "2027-01-15",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2027-01-15"
+      },
+      {
+        "endDate": "2026-11-11",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-11-11"
+      },
+      {
+        "endDate": "2026-12-04",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-12-04"
+      },
+      {
+        "endDate": "2026-11-12",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-11-12"
+      },
+      {
+        "endDate": "2026-11-15",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-11-15"
+      },
+      {
+        "endDate": "2026-10-30",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-10-30"
+      },
+      {
+        "endDate": "2026-11-03",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-11-03"
+      },
+      {
+        "endDate": "2026-12-05",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-12-05"
+      },
+      {
+        "endDate": "2026-11-21",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-11-21"
+      },
+      {
+        "endDate": "2026-10-27",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-10-27"
+      },
+      {
+        "endDate": "2026-12-12",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-12-12"
+      },
+      {
+        "endDate": "2026-12-18",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-12-18"
+      },
+      {
+        "endDate": "2026-11-25",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-11-25"
+      },
+      {
+        "endDate": "2027-01-22",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2027-01-22"
+      },
+      {
+        "endDate": "2026-12-11",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-12-11"
+      },
+      {
+        "endDate": "2026-10-15",
+        "startTime": "11:00",
+        "endTime": "20:00",
+        "startDate": "2026-10-15"
+      },
+      {
+        "endDate": "2026-12-10",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-12-10"
+      },
+      {
+        "endDate": "2026-12-27",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-12-27"
+      },
+      {
+        "endDate": "2027-01-14",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2027-01-14"
+      },
+      {
+        "endDate": "2026-12-24",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-12-24"
+      },
+      {
+        "endDate": "2026-10-20",
+        "startTime": "11:00",
+        "endTime": "20:00",
+        "startDate": "2026-10-20"
+      },
+      {
+        "endDate": "2027-02-13",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2027-02-13"
+      },
+      {
+        "endDate": "2026-12-30",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-12-30"
+      },
+      {
+        "endDate": "2026-10-04",
+        "startTime": "11:00",
+        "endTime": "20:00",
+        "startDate": "2026-10-04"
+      },
+      {
+        "endDate": "2027-01-06",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2027-01-06"
+      },
+      {
+        "endDate": "2026-11-05",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-11-05"
+      },
+      {
+        "endDate": "2027-01-09",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2027-01-09"
+      },
+      {
+        "endDate": "2026-12-08",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-12-08"
+      },
+      {
+        "endDate": "2026-11-19",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-11-19"
+      },
+      {
+        "endDate": "2026-10-08",
+        "startTime": "11:00",
+        "endTime": "20:00",
+        "startDate": "2026-10-08"
+      },
+      {
+        "endDate": "2026-10-21",
+        "startTime": "11:00",
+        "endTime": "20:00",
+        "startDate": "2026-10-21"
+      },
+      {
+        "endDate": "2026-10-28",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-10-28"
+      },
+      {
+        "endDate": "2027-02-14",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2027-02-14"
+      },
+      {
+        "endDate": "2026-10-22",
+        "startTime": "11:00",
+        "endTime": "20:00",
+        "startDate": "2026-10-22"
+      },
+      {
+        "endDate": "2027-01-29",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2027-01-29"
+      },
+      {
+        "endDate": "2026-12-09",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-12-09"
+      },
+      {
+        "endDate": "2026-11-08",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-11-08"
+      },
+      {
+        "endDate": "2026-11-18",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-11-18"
+      },
+      {
+        "endDate": "2026-11-07",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-11-07"
+      },
+      {
+        "endDate": "2026-12-17",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-12-17"
+      },
+      {
+        "endDate": "2026-10-03",
+        "startTime": "11:00",
+        "endTime": "20:00",
+        "startDate": "2026-10-03"
+      },
+      {
+        "endDate": "2026-12-31",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-12-31"
+      },
+      {
+        "endDate": "2027-01-26",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2027-01-26"
+      },
+      {
+        "endDate": "2026-12-03",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-12-03"
+      },
+      {
+        "endDate": "2026-11-06",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-11-06"
+      },
+      {
+        "endDate": "2026-11-28",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-11-28"
+      },
+      {
+        "endDate": "2026-10-13",
+        "startTime": "11:00",
+        "endTime": "20:00",
+        "startDate": "2026-10-13"
+      },
+      {
+        "endDate": "2027-01-21",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2027-01-21"
+      },
+      {
+        "endDate": "2027-02-02",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2027-02-02"
+      },
+      {
+        "endDate": "2026-11-17",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-11-17"
+      },
+      {
+        "endDate": "2027-02-03",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2027-02-03"
+      },
+      {
+        "endDate": "2026-11-14",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-11-14"
+      },
+      {
+        "endDate": "2026-10-14",
+        "startTime": "11:00",
+        "endTime": "20:00",
+        "startDate": "2026-10-14"
+      },
+      {
+        "endDate": "2027-02-09",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2027-02-09"
+      },
+      {
+        "endDate": "2026-10-10",
+        "startTime": "11:00",
+        "endTime": "20:00",
+        "startDate": "2026-10-10"
+      },
+      {
+        "endDate": "2026-12-23",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-12-23"
+      },
+      {
+        "endDate": "2026-11-13",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-11-13"
+      },
+      {
+        "endDate": "2027-02-10",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2027-02-10"
+      },
+      {
+        "endDate": "2026-12-15",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-12-15"
+      },
+      {
+        "endDate": "2026-10-16",
+        "startTime": "11:00",
+        "endTime": "20:00",
+        "startDate": "2026-10-16"
+      },
+      {
+        "endDate": "2027-01-02",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2027-01-02"
+      },
+      {
+        "endDate": "2027-01-10",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2027-01-10"
+      },
+      {
+        "endDate": "2026-12-06",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-12-06"
+      },
+      {
+        "endDate": "2027-01-23",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2027-01-23"
+      },
+      {
+        "endDate": "2027-01-13",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2027-01-13"
+      },
+      {
+        "endDate": "2026-12-13",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-12-13"
+      },
+      {
+        "endDate": "2026-11-01",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-11-01"
+      },
+      {
+        "endDate": "2026-10-09",
+        "startTime": "11:00",
+        "endTime": "20:00",
+        "startDate": "2026-10-09"
+      },
+      {
+        "endDate": "2026-12-02",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-12-02"
+      },
+      {
+        "endDate": "2026-12-16",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-12-16"
+      },
+      {
+        "endDate": "2026-10-17",
+        "startTime": "11:00",
+        "endTime": "20:00",
+        "startDate": "2026-10-17"
+      },
+      {
+        "endDate": "2027-01-24",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2027-01-24"
+      },
+      {
+        "endDate": "2026-10-18",
+        "startTime": "11:00",
+        "endTime": "20:00",
+        "startDate": "2026-10-18"
+      },
+      {
+        "endDate": "2026-11-29",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-11-29"
+      },
+      {
+        "endDate": "2026-10-25",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-10-25"
+      },
+      {
+        "endDate": "2027-01-31",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2027-01-31"
+      },
+      {
+        "endDate": "2027-02-04",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2027-02-04"
+      },
+      {
+        "endDate": "2026-11-20",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-11-20"
+      },
+      {
+        "endDate": "2027-01-28",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2027-01-28"
+      },
+      {
+        "endDate": "2027-01-07",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2027-01-07"
+      },
+      {
+        "endDate": "2027-02-12",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2027-02-12"
+      },
+      {
+        "endDate": "2027-02-07",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2027-02-07"
+      },
+      {
+        "endDate": "2026-12-20",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-12-20"
+      },
+      {
+        "endDate": "2027-01-16",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2027-01-16"
+      },
+      {
+        "endDate": "2026-11-27",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-11-27"
+      },
+      {
+        "endDate": "2027-01-01",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2027-01-01"
+      },
+      {
+        "endDate": "2026-10-11",
+        "startTime": "11:00",
+        "endTime": "20:00",
+        "startDate": "2026-10-11"
+      },
+      {
+        "endDate": "2026-10-29",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-10-29"
+      },
+      {
+        "endDate": "2027-01-30",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2027-01-30"
+      },
+      {
+        "endDate": "2026-10-07",
+        "startTime": "11:00",
+        "endTime": "20:00",
+        "startDate": "2026-10-07"
+      },
+      {
+        "endDate": "2027-02-05",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2027-02-05"
+      },
+      {
+        "endDate": "2026-12-19",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-12-19"
+      },
+      {
+        "endDate": "2027-01-12",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2027-01-12"
+      },
+      {
+        "endDate": "2026-10-31",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-10-31"
+      },
+      {
+        "endDate": "2026-12-01",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-12-01"
+      },
+      {
+        "endDate": "2027-01-05",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2027-01-05"
+      },
+      {
+        "endDate": "2026-12-25",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2026-12-25"
+      },
+      {
+        "endDate": "2027-01-27",
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "startDate": "2027-01-27"
+      },
+      {
+        "endDate": "2026-10-06",
+        "startTime": "11:00",
+        "endTime": "20:00",
+        "startDate": "2026-10-06"
+      }
+    ],
+    "uuid": "04e718a7-4711-3b1e-abe3-119144ba4ccb"
+  }
+]

@@ -6,7 +6,7 @@
 // restent individuels, inchangés — ce fichier le vérifie explicitement (C, D, E).
 
 const assert = require("assert");
-const { persistSortirIngestion, createSupabaseSortirStore, PRELOAD_CHUNK_SIZE, OCCURRENCE_KEY_CHUNK_SIZE } = require("./supabase-persistence");
+const { persistSortirIngestion, createSupabaseSortirStore, PRELOAD_CHUNK_SIZE, UUID_FILTER_CHUNK_SIZE, OCCURRENCE_KEY_CHUNK_SIZE } = require("./supabase-persistence");
 
 let passed = 0, failed = 0;
 async function test(name, fn) { try { await fn(); passed += 1; console.log(`✓ ${name}`); } catch (error) { failed += 1; console.error(`✗ ${name}: ${error.stack || error.message}`); } }
@@ -228,19 +228,19 @@ async function ingest(store, sources, date = day(1)) { return persistSortirInges
     const client = new FakeSupabaseClient({ sortir_provenances: provenanceRows, sortir_collection_items: [] });
     const store = createSupabaseSortirStore(client);
     await store.touchProvenancesBatch(provenanceRows.map((p) => p.id), { active: true, last_seen_at: "2026-11-02T12:00:00.000Z" });
-    const expectedChunks = Math.ceil(total / PRELOAD_CHUNK_SIZE);
+    const expectedChunks = Math.ceil(total / UUID_FILTER_CHUNK_SIZE);
     assert.strictEqual(client.calls.filter((c) => c.table === "sortir_provenances").length, expectedChunks);
     assert(provenanceRows.every((p) => p.active === true && p.last_seen_at === "2026-11-02T12:00:00.000Z"), "aucune provenance oubliée par le chunking");
 
     client.calls.length = 0;
     const rows = Array.from({ length: total }, (_, i) => ({ source_run_id: "run-1", activity_id: `act-${i}`, validation_status: "VALID", diagnostics: {} }));
     await store.insertCollectionItemsBatch(rows);
-    assert.strictEqual(client.calls.filter((c) => c.table === "sortir_collection_items").length, expectedChunks);
+    assert.strictEqual(client.calls.filter((c) => c.table === "sortir_collection_items").length, Math.ceil(total / PRELOAD_CHUNK_SIZE));
     assert.strictEqual(client.tables.sortir_collection_items.length, total, "aucune ligne d'historique perdue par le chunking");
   });
 
   console.log("\nMesure décomposée — réingestion de N occurrences connues, actives, inchangées (1 source) :");
-  console.log("(\"logique\" = appels à l'interface store depuis l'orchestrateur, mesurés ici avec des clés synthétiques courtes ; \"réel\" = appels HTTP Supabase une fois le chunking appliqué côté store réel AVEC DE VRAIES clés OpenAgenda longues — findProvenancesBatch chunke à 100 (OCCURRENCE_KEY_CHUNK_SIZE), getActivitiesBatch/touchProvenancesBatch/insertCollectionItemsBatch chunkent à 500, voir test-known-provenance-batch-preload.js pour la preuve avec de vraies clés)");
+  console.log("(\"logique\" = appels à l'interface store depuis l'orchestrateur, mesurés ici avec des clés synthétiques courtes ; \"réel\" = appels HTTP Supabase une fois le chunking appliqué côté store réel AVEC DE VRAIES clés OpenAgenda longues — findProvenancesBatch chunke à 100 (OCCURRENCE_KEY_CHUNK_SIZE), getActivitiesBatch/touchProvenancesBatch chunkent à 100 ; insertCollectionItemsBatch à 500, voir test-known-provenance-batch-preload.js pour la preuve avec de vraies clés)");
   for (const n of [206, 1000, 10000]) {
     const db = new MemoryStore();
     const items = manyKnownItems(n);
@@ -248,7 +248,8 @@ async function ingest(store, sources, date = day(1)) { return persistSortirInges
     db.resetCalls();
     await ingest(db, [sourceDescriptor("oa", items)], day(2));
     const keyChunks = Math.ceil(n / OCCURRENCE_KEY_CHUNK_SIZE);
-    const idChunks = Math.ceil(n / PRELOAD_CHUNK_SIZE);
+    const idChunks = Math.ceil(n / UUID_FILTER_CHUNK_SIZE);
+    const insertChunks = Math.ceil(n / PRELOAD_CHUNK_SIZE);
     const fixedRun = db.calls.createIngestionRun + db.calls.updateIngestionRun + db.calls.countFinalActivities;
     const fixedSource = db.calls.ensureSource + db.calls.createSourceRun + db.calls.updateSourceRun;
     const preloadLogique = db.calls.findProvenancesBatch + db.calls.getActivitiesBatch;
@@ -259,9 +260,9 @@ async function ingest(store, sources, date = day(1)) { return persistSortirInges
     // insertCollectionItemsBatch → idChunks chacun (UUID courts ou payload, pas d'impact de la
     // longueur des clés d'occurrence).
     const preloadReel = keyChunks + idChunks;
-    const writesReel = idChunks * 2;
+    const writesReel = idChunks + insertChunks;
     const totalReel = fixedRun + fixedSource + disappearances + preloadReel + writesReel;
-    console.log(`  N=${String(n).padStart(6, " ")} → fixe run=${fixedRun}, fixe source=${fixedSource}, applyDisappearances=${disappearances}, préchargement=${preloadLogique} logique / ${preloadReel} réel (provenances: ${keyChunks} chunk(s) de 100, activités: ${idChunks} chunk(s) de 500), écritures groupées=${writesLogique} logique / ${writesReel} réel (${idChunks} chunk(s) de 500) → total logique=${totalLogique}, total réel≈${totalReel}`);
+    console.log(`  N=${String(n).padStart(6, " ")} → fixe run=${fixedRun}, fixe source=${fixedSource}, applyDisappearances=${disappearances}, préchargement=${preloadLogique} logique / ${preloadReel} réel (provenances: ${keyChunks} chunk(s) de 100, activités: ${idChunks} chunk(s) de 100), écritures groupées=${writesLogique} logique / ${writesReel} réel (${idChunks} PATCH de 100 et ${insertChunks} INSERT de 500) → total logique=${totalLogique}, total réel≈${totalReel}`);
   }
 
   console.log("\nComparaison avec les étapes historiques (lot réel de 206 occurrences inchangées, total réel incluant les coûts fixes, avec de vraies clés OpenAgenda) :");

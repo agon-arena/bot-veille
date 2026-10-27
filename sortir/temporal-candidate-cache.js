@@ -44,6 +44,12 @@ class TemporalCandidateIndex {
       const bucket = this.days.get(day); if (!bucket) continue;
       const collect = set => { if (set) for (const id of set) ids.add(id); };
       for (const token of tokens) for (const c of city ? [city, ""] : ["*"]) collect(bucket.title.get(JSON.stringify([token, c])));
+      // New DT semantics can REVIEW a shared location with contradictory city labels.
+      // Preserve those candidates too; transport/cache budgets and time bounds stay identical.
+      if ((activity.externalIds || []).some(e => e.system === "datatourisme-poi")) for (const token of tokens) {
+        for (const id of bucket.title.get(JSON.stringify([token, "*"])) || [])
+          if ((this.rows.get(id)?.row.external_ids || []).some(e => e.system === "datatourisme-poi")) ids.add(id);
+      }
       for (const key of external) collect(bucket.identity.get(key));
       for (const key of original) collect(bucket.url.get(key));
     }

@@ -1,5 +1,7 @@
 "use strict";
 
+const { UNSPECIFIED_START } = require("../datatourisme-occurrence-identity");
+
 const { Temporal } = require("@js-temporal/polyfill");
 
 const { normalizeActivity, validateNormalizedActivity } = require("../activity-validation");
@@ -257,6 +259,7 @@ function mapDatatourismeOccurrence(poi, period, options = {}) {
   // confiance réduite et une preuve explicite sur startsAt/endsAt pour signaler le cas.
   const isRecurring = (Array.isArray(period?.appliesOnDay) && period.appliesOnDay.length > 0) || (Array.isArray(period?.weekOfMonth) && period.weekOfMonth.length > 0);
   const evidence = [];
+  if (!period?.startTime) evidence.push({ field: "startsAt", excerpt: UNSPECIFIED_START });
   const fieldConfidence = {};
   if (isRecurring) {
     fieldConfidence.startsAt = 0.5; fieldConfidence.endsAt = 0.5;
@@ -409,11 +412,13 @@ function compareOccurrences(a, b) {
 function convertDatatourismeEventWithStats(poi, options = {}) {
   const stats = emptyOccurrenceSelectionStats();
   stats.poisConverted = 1;
-  const periods = Array.isArray(poi && poi.takesPlaceAt) ? poi.takesPlaceAt : [];
+  const rawPeriods = Array.isArray(poi && poi.takesPlaceAt) ? poi.takesPlaceAt : [];
+  const periods = require("../datatourisme-period-resolutions").resolvedDatatourismePeriods(poi?.uuid, rawPeriods);
   if (!periods.length) {
     return { results: [{ index: 0, activity: null, validation: null, error: "Événement sans période exploitable (takesPlaceAt vide ou absent)." }], stats };
   }
-  stats.periodsTotal = periods.length;
+  stats.periodsTotal = rawPeriods.length;
+  stats.duplicatePeriodsRemoved += rawPeriods.length - periods.length;
   const maxOccurrences = Number.isInteger(options.maxOccurrencesPerEvent) && options.maxOccurrencesPerEvent > 0 ? options.maxOccurrencesPerEvent : DEFAULT_MAX_OCCURRENCES_PER_EVENT;
   const windowDays = Number.isInteger(options.occurrenceWindowDays) && options.occurrenceWindowDays > 0 ? options.occurrenceWindowDays : DEFAULT_OCCURRENCE_WINDOW_DAYS;
   const nowMs = referenceInstantMs(options);
