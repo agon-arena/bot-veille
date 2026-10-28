@@ -8,6 +8,7 @@ const { ALGORITHM_VERSION, DECISIONS, compareActivities, mergeActivities, canoni
 const { ORCHESTRATOR_VERSION } = require("./ingestion-orchestrator");
 const { TemporalCandidateView } = require("./temporal-candidate-cache");
 const { quarantineSignal, reactivationStatus } = require("./datatourisme-review-quarantine");
+const { organizerWarningNonBlocking } = require("./organizer-review-policy");
 
 const DEFAULT_STALE_AFTER_MS = 7 * 24 * 60 * 60 * 1000;
 // Taille logique des lots historiques ; les filtres HTTP UUID sont bornés séparément
@@ -240,12 +241,25 @@ async function persistSortirIngestionUnlocked({ sources, store, now = new Date()
   }
   // A stale activity brought back by its own source is republished only if it is not a REVIEW
   // quarantine (rare path: one read per reactivation, never on the daily fast path). An activity
-  // never supported by anything but this provenance gets its CREATION status back: a staging row
-  // interrupted before its flip, or an editorial review that disappeared, stays review.
-  async function reactivatedStatus(activityId, { validation, existing, provenanceId } = {}) {
+  // never supported by anything but this provenance is revalidated conservatively. Only the
+  // organizer-only DISTINCT exception can recover active; any other review stays review.
+  async function reactivatedStatus(activityId, { validation, existing, provenanceId, connectorType } = {}) {
     const decisions = typeof store.loadReviewDecisionsBatch === "function" ? await store.loadReviewDecisionsBatch([activityId]) : [];
     if (reactivationStatus(activityId, decisions) === "review") return "review";
-    if (validation?.status === "NEEDS_REVIEW" && (existing?.provenances || []).every(p => p.id === provenanceId)) return "review";
+    if (validation?.status === "NEEDS_REVIEW" && (existing?.provenances || []).every(p => p.id === provenanceId)) {
+      if (!organizerWarningNonBlocking(validation, connectorType)) return "review";
+      // Interrupted DISTINCT creation / reappearance: recheck identity, never merge
+      // or publish a stale representation with another MATCH/REVIEW candidate.
+      // Known-provenance preload need not load any candidate range. This rare
+      // reactivation must read it explicitly, rather than trust an empty index.
+      const instant = Date.parse(validation.activity.startsAt), window = 12 * 60 * 60 * 1000;
+      for (const candidate of await store.listCandidateActivitiesInRange(
+        new Date(instant - window).toISOString(), new Date(instant + window).toISOString())) {
+        setCandidateIndexEntry(candidate, candidate.provenances, candidate.external_ids);
+      }
+      if (candidateMatches(validation.activity).some(candidate => candidate.id !== activityId &&
+        compareActivities(rowToActivity(candidate), validation.activity).decision !== DECISIONS.DISTINCT)) return "review";
+    }
     return "active";
   }
 
@@ -428,20 +442,21 @@ async function persistSortirIngestionUnlocked({ sources, store, now = new Date()
                 const missingIds = validation.activity.externalIds.filter(e => !(existing.external_ids || []).some(x =>
                   x.system === e.system && x.value === e.value && (x.source_id == null || x.source_id === source.id)));
                 if (missingIds.length && !datatourismeRepair) await store.upsertExternalIds(existing.id, source.id, missingIds);
-                const updated = await store.updateActivity(existing.id, { record_status: await reactivatedStatus(existing.id, { validation, existing, provenanceId: provenance.id }), updated_at: startedAt });
+                const updated = await store.updateActivity(existing.id, { record_status: await reactivatedStatus(existing.id, { validation, existing, provenanceId: provenance.id, connectorType: source.connector_type }), updated_at: startedAt });
+                // IDs can have been missing after an interrupted write-behind flush. The
+                // reactivation check now reads candidate identities: expose repaired IDs to
+                // subsequent occurrences in this batch, without another database read.
+                const reactivatedExternalIds = unionExternalIds(existing.external_ids, validation.activity.externalIds);
                 // Une activité fusionnée peut recevoir plusieurs provenances DANS le même lot :
                 // si un item ultérieur du même lot pointe vers cette même activité, il doit voir
-                // ce nouvel état (record_status), pas la photo prise au début du run. Les clés
-                // provenances/external_ids de la photo restent volontairement inchangées : ni
-                // activityToRow() ni upsertExternalIds() ne les lisent jamais sur CE chemin
-                // (provenances/externalIds persistées séparément, jamais via ces colonnes), donc
-                // leur péremption éventuelle ici est sans effet observable.
-                activityMap.set(existing.id, { ...existing, ...updated });
+                // ce nouvel état, pas la photo prise au début du run. Les provenances restent
+                // préchargées ; les identifiants réparés sont visibles dans la Map et l'index.
+                activityMap.set(existing.id, { ...existing, ...updated, external_ids: reactivatedExternalIds });
                 // existing.record_status passe de "stale" à "active" : si candidateIndex la
                 // contenait déjà (statut alors exclu par candidateMatches), elle doit redevenir
                 // sélectionnable pour une NOUVELLE occurrence traitée plus loin dans ce même lot
-                // -- provenances/external_ids inchangés (voir le commentaire ci-dessus).
-                setCandidateIndexEntry({ ...existing, ...updated }, existing.provenances, existing.external_ids);
+                // -- avec les identifiants effectivement réparés ci-dessus.
+                setCandidateIndexEntry({ ...existing, ...updated }, existing.provenances, reactivatedExternalIds);
                 await store.insertCollectionItem({ source_run_id: sourceRun.id, provenance_id: provenance.id, activity_id: existing.id, validation_status: validation.status, diagnostics: { errors: validation.errors, warnings: validation.warnings, sourceIndex: index } });
               } else if (temporalPayloadChanged) {
                 await store.updateProvenance(provenance.id, { last_seen_at: startedAt, active: true, last_seen_run_id: sourceRun.id, source_payload: metadata.sourcePayload });
@@ -457,7 +472,7 @@ async function persistSortirIngestionUnlocked({ sources, store, now = new Date()
               const merged = mergeActivities(rowToActivity(existing), validation.activity).activity;
               await store.updateProvenance(provenance.id, { last_seen_at: startedAt, active: true, last_seen_run_id: sourceRun.id, payload_hash: hash, source_payload: metadata.sourcePayload });
               await store.upsertExternalIds(existing.id, source.id, validation.activity.externalIds);
-              const updated = await store.updateActivity(existing.id, activityToRow(merged, existing.record_status === "stale" ? await reactivatedStatus(existing.id, { validation, existing, provenanceId: provenance.id }) : existing.record_status));
+              const updated = await store.updateActivity(existing.id, activityToRow(merged, existing.record_status === "stale" ? await reactivatedStatus(existing.id, { validation, existing, provenanceId: provenance.id, connectorType: source.connector_type }) : existing.record_status));
               activityMap.set(existing.id, { ...existing, ...updated });
               // Contenu fusionné + externalIds de CETTE occurrence upsertés ci-dessus : tient
               // candidateIndex à jour pour les mêmes raisons que la réactivation ci-dessus
@@ -502,7 +517,8 @@ async function persistSortirIngestionUnlocked({ sources, store, now = new Date()
               basePriorProvenances = match.candidate.provenances || [];
               basePriorExternalIds = match.candidate.external_ids || [];
             } else {
-              const underReview = validation.status === "NEEDS_REVIEW" || reviews.length > 0;
+              const underReview = (validation.status === "NEEDS_REVIEW" &&
+                !organizerWarningNonBlocking(validation, source.connector_type)) || reviews.length > 0;
               desiredRecordStatus = underReview ? "review" : "active";
               // Run scan safety checks before the INSERT, never in the HTTP response hook.
               const stagingRow = activityToRow(validation.activity, "stale");

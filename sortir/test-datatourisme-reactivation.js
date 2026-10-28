@@ -8,7 +8,7 @@ global.fetch = async () => { throw new Error("Réseau réel interdit"); };
 let passed = 0, failed = 0;
 async function test(name, fn) { try { await fn(); passed++; console.log(`✓ ${name}`); } catch (e) { failed++; console.error(`✗ ${name}: ${e.stack}`); } }
 const slot = day => ({ startDate: day, startTime: "10:00", endDate: day, endTime: "12:00" });
-// Organizer without a name: validation NEEDS_REVIEW (editorial), created as review.
+// Organizer without a name: diagnostic retained, DISTINCT publication now non-blocking.
 function editorial(n = 801) { const p = poi("B", n); p.hasContact = [{ homepage: ["https://museum.example"] }]; return p; }
 const statusOf = (s, p) => s.activities.find(a => s.provenances.some(x => x.activity_id === a.id && x.source_record_id.startsWith(`datatourisme:${p.uuid}:`)))?.record_status;
 const elsewhere = p => ({ ...p, takesPlaceAt: [slot("2026-11-09")] });
@@ -17,17 +17,17 @@ const elsewhere = p => ({ ...p, takesPlaceAt: [slot("2026-11-09")] });
   await test("NEEDS_REVIEW éditorial confirmé par la validation", () => {
     assert.equal(P.calculatePoiState(editorial(), { now: NOW }).results[0].validation.status, "NEEDS_REVIEW");
   });
-  await test("disparition → réapparition d'une activité REVIEW : reste review, jamais publiée", async () => {
-    const h = harness(), s = h.activityStore, p = editorial(); await h.run([p]); assert.equal(statusOf(s, p), "review");
+  await test("DISTINCT nom manquant : disparition → réapparition reste active", async () => {
+    const h = harness(), s = h.activityStore, p = editorial(); await h.run([p]); assert.equal(statusOf(s, p), "active");
     await h.run([elsewhere(p)]); assert.equal(s.activities[0].record_status, "stale");
-    await h.run([p]); assert.equal(s.activities[0].record_status, "review"); assert.equal(s.activities.length, 2);
+    await h.run([p]); assert.equal(s.activities[0].record_status, "active"); assert.equal(s.activities.length, 2);
   });
-  await test("panne entre provenance et bascule → rejeu : review restauré", async () => {
+  await test("panne entre provenance et bascule → rejeu : DISTINCT active restauré", async () => {
     const h = harness(), s = h.activityStore, update = s.updateActivity.bind(s); let crash = true;
-    s.updateActivity = async (id, row) => { if (crash && row.record_status === "review") { crash = false; throw new Error("crash"); } return update(id, row); };
+    s.updateActivity = async (id, row) => { if (crash && row.record_status === "active") { crash = false; throw new Error("crash"); } return update(id, row); };
     const p = editorial(), first = await h.run([p], NOW, R.createDatatourismePoiPersister({ store: s, now: NOW, writeBehind: false }));
     assert.equal(first.committed.length, 0); assert.equal(s.activities[0].record_status, "stale");
-    await h.run([p], NOW, R.createDatatourismePoiPersister({ store: s, now: NOW, writeBehind: false })); assert.equal(s.activities[0].record_status, "review"); assert.equal(s.activities.length, 1);
+    await h.run([p], NOW, R.createDatatourismePoiPersister({ store: s, now: NOW, writeBehind: false })); assert.equal(s.activities[0].record_status, "active"); assert.equal(s.activities.length, 1);
   });
   await test("activité ACTIVE normale : disparition → réapparition redevient active", async () => {
     const h = harness(), s = h.activityStore, p = poi("B", 802); await h.run([p]); assert.equal(statusOf(s, p), "active");
@@ -51,7 +51,7 @@ const elsewhere = p => ({ ...p, takesPlaceAt: [slot("2026-11-09")] });
     assert.equal((await h.run([p])).unchanged.length, 1); h.stateStore.rows.clear(); await h.run([p]);
     assert.equal(JSON.stringify([s.activities.map(({ last_seen_at, updated_at, ...x }) => x), s.provenances.map(({ last_seen_at, last_seen_run_id, ...x }) => x), s.externalIds]),
       JSON.stringify(JSON.parse(before).map((x, i) => i === 1 ? x.map(({ last_seen_at, last_seen_run_id, ...y }) => y) : x)));
-    assert.equal(s.activities.find(a => a.record_status !== "stale").record_status, "review");
+    assert.equal(s.activities.find(a => a.record_status !== "stale").record_status, "active");
   });
   console.log(`${passed} réussis, ${failed} échoués`); if (failed) process.exitCode = 1;
 })();

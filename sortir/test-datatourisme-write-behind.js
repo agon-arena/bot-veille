@@ -129,7 +129,16 @@ function invariants(e) {
     safetyReady: Safety.auditActivitySafety(s.activities.map(hyd), { decisions: s.decisions }).ready };
 }
 
+function publicationCovered(key, referenceIdentities) { return referenceIdentities.some(identity => key.split("+").every(part => identity.has(part))); }
+
 (async () => {
+  await test("couverture partielle : identité unique obligatoire, source inconnue et mélange refusés", () => {
+    const reference = [new Set(["a", "b"]), new Set(["c"])];
+    assert.equal(publicationCovered("a", reference), true);
+    assert.equal(publicationCovered("a+b", reference), true);
+    assert.equal(publicationCovered("a+c", reference), false);
+    assert.equal(publicationCovered("unknown", reference), false);
+  });
   for (const name of Object.keys(SCENARIOS)) await test(`A/B équivalents : ${name}`, async () => {
     const { A, B, fa, fb } = await pair(name), d = diff(fa, fb); assert.deepEqual(d, [], d.join("\n"));
     assert.ok(B.counts.requests <= A.counts.requests, `requêtes B ${B.counts.requests} > A ${A.counts.requests}`);
@@ -148,9 +157,13 @@ function invariants(e) {
     const clean = env("A"); prepare(scenario, clean); await SCENARIOS[scenario](clean); const reference = projection(clean);
     for (const phase of PHASES) await test(`panne phase ${phase} — ${scenario.split(" (")[0]} : rien de publié à tort, rejeu convergent`, async () => {
       const B = env("B"); prepare(scenario, B); B.failAt = phase; await SCENARIOS[scenario](B);
-      const fired = B.stats.some(s => s.poisoned > 0), inv = invariants(B), refPublished = new Set(reference.activities.filter(a => a[1] === "active").map(a => a[0]));
+      // A supported active canonical row may have only its first provenance when
+      // a later attachment fails. Compare coverage within one reference identity,
+      // not equality of the concatenated (still incomplete) provenance-set key.
+      const fired = B.stats.some(s => s.poisoned > 0), inv = invariants(B), refPublished = reference.activities.filter(a => a[1] === "active").map(a => new Set(a[0].split("+")));
       assert.equal(inv.unsupported, 0); assert.equal(inv.incompleteLiveQuarantines, 0); assert.equal(inv.safetyReady, true);
-      assert.deepEqual(projection(B).activities.filter(a => a[1] === "active" && !refPublished.has(a[0])), [], "publication à tort");
+      assert.deepEqual(projection(B).activities.filter(a => a[1] === "active" &&
+        !publicationCovered(a[0], refPublished)), [], "publication à tort");
       if (fired) assert.ok([...B.h.stateStore.rows.values()].length < reference.states.length || reference.states.length === 0 || scenario.startsWith("cycle"), "empreintes validées malgré la panne");
       B.h.stateStore.rows = new Map([...B.h.stateStore.rows].filter(([, r]) => r.fingerprint)); B.results = [];
       await SCENARIOS[scenario](B); assert.deepEqual(diff(reference, projection(B)), []);

@@ -1,0 +1,412 @@
+{
+  "snapshot": "2026-10-28T17:38:11.011Z",
+  "head": "87f74c1b2b0ff4f69b8c0d4c60c59d49474f37ae",
+  "branch": "main",
+  "productionWrites": 0,
+  "suites": 42,
+  "passedCases": 692,
+  "tests": [
+    {
+      "file": "sortir/test-activity-deduplication.js",
+      "exit": 0,
+      "seconds": 0.04,
+      "passedCases": 11
+    },
+    {
+      "file": "sortir/test-activity-validation.js",
+      "exit": 0,
+      "seconds": 0.04,
+      "passedCases": 41
+    },
+    {
+      "file": "sortir/test-apply-disappearances.js",
+      "exit": 0,
+      "seconds": 0.06,
+      "passedCases": 5
+    },
+    {
+      "file": "sortir/test-candidate-index-store.js",
+      "exit": 0,
+      "seconds": 0.06,
+      "passedCases": 3
+    },
+    {
+      "file": "sortir/test-canonical-activity-payload.js",
+      "exit": 0,
+      "seconds": 0.06,
+      "passedCases": 15
+    },
+    {
+      "file": "sortir/test-datatourisme-activity-safety.js",
+      "exit": 0,
+      "seconds": 0.09,
+      "passedCases": 8
+    },
+    {
+      "file": "sortir/test-datatourisme-batch-checkpoint.js",
+      "exit": 0,
+      "seconds": 0.27,
+      "passedCases": 17
+    },
+    {
+      "file": "sortir/test-datatourisme-chunking-disappearances.js",
+      "exit": 0,
+      "seconds": 0.07,
+      "passedCases": 4
+    },
+    {
+      "file": "sortir/test-datatourisme-compact-candidate-cache.js",
+      "exit": 0,
+      "seconds": 7.46,
+      "passedCases": 14
+    },
+    {
+      "file": "sortir/test-datatourisme-get-preflight.js",
+      "exit": 0,
+      "seconds": 0.08,
+      "passedCases": 22
+    },
+    {
+      "file": "sortir/test-datatourisme-inter-poi.js",
+      "exit": 0,
+      "seconds": 0.28,
+      "passedCases": 27
+    },
+    {
+      "file": "sortir/test-datatourisme-migration-static.js",
+      "exit": 0,
+      "seconds": 0.03,
+      "passedCases": 5
+    },
+    {
+      "file": "sortir/test-datatourisme-national-scan.js",
+      "exit": 0,
+      "seconds": 72.2,
+      "passedCases": 22
+    },
+    {
+      "file": "sortir/test-datatourisme-occurrence-window.js",
+      "exit": 0,
+      "seconds": 0.25,
+      "passedCases": 19
+    },
+    {
+      "file": "sortir/test-datatourisme-poi-reconciliation.js",
+      "exit": 0,
+      "seconds": 8.05,
+      "passedCases": 46
+    },
+    {
+      "file": "sortir/test-datatourisme-poi-repair.js",
+      "exit": 0,
+      "seconds": 0.16,
+      "passedCases": 12
+    },
+    {
+      "file": "sortir/test-datatourisme-poi-state.js",
+      "exit": 0,
+      "seconds": 0.74,
+      "passedCases": 32
+    },
+    {
+      "file": "sortir/test-datatourisme-reactivation.js",
+      "exit": 0,
+      "seconds": 0.11,
+      "passedCases": 7
+    },
+    {
+      "file": "sortir/test-datatourisme-refusals.js",
+      "exit": 0,
+      "seconds": 0.26,
+      "passedCases": 28
+    },
+    {
+      "file": "sortir/test-datatourisme-reopen-checkpoint.js",
+      "exit": 0,
+      "seconds": 0.03,
+      "passedCases": 4
+    },
+    {
+      "file": "sortir/test-datatourisme-review-quarantine.js",
+      "exit": 0,
+      "seconds": 0.36,
+      "passedCases": 30
+    },
+    {
+      "file": "sortir/test-datatourisme-selection-clock-sql.js",
+      "exit": 0,
+      "seconds": 0.03,
+      "passedCases": 4
+    },
+    {
+      "file": "sortir/test-datatourisme-source-drift.js",
+      "exit": 0,
+      "seconds": 13.82,
+      "passedCases": 17
+    },
+    {
+      "file": "sortir/test-datatourisme-temporal.js",
+      "exit": 0,
+      "seconds": 0.44,
+      "passedCases": 43
+    },
+    {
+      "file": "sortir/test-datatourisme-write-behind.js",
+      "exit": 0,
+      "seconds": 18.63,
+      "passedCases": 39
+    },
+    {
+      "file": "sortir/test-datatourisme.js",
+      "exit": 0,
+      "seconds": 0.17,
+      "passedCases": 51
+    },
+    {
+      "file": "sortir/test-ingestion-orchestrator.js",
+      "exit": 0,
+      "seconds": 0.07,
+      "passedCases": 6
+    },
+    {
+      "file": "sortir/test-known-provenance-batch-preload.js",
+      "exit": 0,
+      "seconds": 0.22,
+      "passedCases": 10
+    },
+    {
+      "file": "sortir/test-known-provenance-batched-writes.js",
+      "exit": 0,
+      "seconds": 23.02,
+      "passedCases": 9
+    },
+    {
+      "file": "sortir/test-known-provenance-fast-path.js",
+      "exit": 0,
+      "seconds": 0.11,
+      "passedCases": 7
+    },
+    {
+      "file": "sortir/test-list-candidates-batch-prototype.js",
+      "exit": 0,
+      "seconds": 0.11,
+      "passedCases": 8
+    },
+    {
+      "file": "sortir/test-mobilizon.js",
+      "exit": 0,
+      "seconds": 0.06,
+      "passedCases": 19
+    },
+    {
+      "file": "sortir/test-new-occurrence-collection-items-batch.js",
+      "exit": 0,
+      "seconds": 0.14,
+      "passedCases": 5
+    },
+    {
+      "file": "sortir/test-openagenda-json.js",
+      "exit": 0,
+      "seconds": 0.08,
+      "passedCases": 22
+    },
+    {
+      "file": "sortir/test-openagenda-reunion-v1.js",
+      "exit": 0,
+      "seconds": 2.78,
+      "passedCases": 0
+    },
+    {
+      "file": "sortir/test-openagenda-v1.js",
+      "exit": 0,
+      "seconds": 1.37,
+      "passedCases": 0
+    },
+    {
+      "file": "sortir/test-organizer-review-policy.js",
+      "exit": 0,
+      "seconds": 0.15,
+      "passedCases": 22
+    },
+    {
+      "file": "sortir/test-organizer-review-recovery.js",
+      "exit": 0,
+      "seconds": 0.21,
+      "passedCases": 16
+    },
+    {
+      "file": "sortir/test-paris-events.js",
+      "exit": 0,
+      "seconds": 0.07,
+      "passedCases": 11
+    },
+    {
+      "file": "sortir/test-supabase-multisource-smoke.js",
+      "exit": 0,
+      "seconds": 0.09,
+      "passedCases": 1
+    },
+    {
+      "file": "sortir/test-supabase-persistence.js",
+      "exit": 0,
+      "seconds": 0.13,
+      "passedCases": 20
+    },
+    {
+      "file": "sortir/test-temporal-candidate-cache.js",
+      "exit": 0,
+      "seconds": 0.47,
+      "passedCases": 10
+    }
+  ],
+  "simulation": {
+    "snapshot": "2026-10-28T17:38:11.011Z",
+    "rows": 35899,
+    "pairs": 8361174,
+    "stats": {
+      "MATCH": 0,
+      "DISTINCT": 35269,
+      "OTHER_REVIEW": 630,
+      "DANGEROUS": 0
+    },
+    "onlyMissingOrganizer": 35890,
+    "decisionsIdenticalToAudit": true,
+    "rowToActivityUnchanged": true,
+    "dedupValidationIndexQuarantineUnchanged": true,
+    "productionWrites": 0,
+    "policySha256": "f62ca2b7a9efe7d3b3eb90db505a610a621adadd4a89aaf06d3f2d39b569ea62",
+    "rowToActivitySha256": "bb5da47c7e6cabd3cc5b18587772bb34d7fc281660111f8a26beae342ae3908d"
+  },
+  "pilot": {
+    "asOf": "2026-10-28T17:38:11.011Z",
+    "mode": "dry-run",
+    "databaseWrites": 0,
+    "pilotSize": 75,
+    "totals": {
+      "examined": 75,
+      "wouldActivate": 50,
+      "retainedReview": 25,
+      "errors": 0,
+      "quarantines": 10,
+      "otherAmbiguities": 10,
+      "alreadyActive": 0,
+      "skipped": 0,
+      "alreadyProcessed": 75,
+      "databaseWrites": 0
+    },
+    "interruptionResumeTestPassed": true,
+    "identicalReplay": true,
+    "before": {
+      "activities": 75,
+      "provenances": 75,
+      "externalIds": 230
+    },
+    "after": {
+      "activities": 75,
+      "provenances": 75,
+      "externalIds": 230
+    },
+    "statusesBefore": {
+      "review": 75,
+      "active": 0
+    },
+    "statusesSimulatedAfter": {
+      "review": 25,
+      "active": 50
+    },
+    "cities": [
+      {
+        "city": "Paris",
+        "before": 0,
+        "wouldActivate": 10,
+        "after": 10,
+        "stableGroupingOnReplay": true
+      },
+      {
+        "city": "Lyon",
+        "before": 0,
+        "wouldActivate": 10,
+        "after": 9,
+        "stableGroupingOnReplay": true
+      },
+      {
+        "city": "Marseille",
+        "before": 11,
+        "wouldActivate": 10,
+        "after": 21,
+        "stableGroupingOnReplay": true
+      },
+      {
+        "city": "Toulouse",
+        "before": 47,
+        "wouldActivate": 10,
+        "after": 56,
+        "stableGroupingOnReplay": true
+      },
+      {
+        "city": "Bordeaux",
+        "before": 3,
+        "wouldActivate": 0,
+        "after": 3,
+        "stableGroupingOnReplay": true
+      },
+      {
+        "city": "Lille",
+        "before": 27,
+        "wouldActivate": 0,
+        "after": 27,
+        "stableGroupingOnReplay": true
+      },
+      {
+        "city": "Nantes",
+        "before": 0,
+        "wouldActivate": 0,
+        "after": 0,
+        "stableGroupingOnReplay": true
+      },
+      {
+        "city": "Strasbourg",
+        "before": 0,
+        "wouldActivate": 10,
+        "after": 8,
+        "stableGroupingOnReplay": true
+      },
+      {
+        "city": "Montpellier",
+        "before": 191,
+        "wouldActivate": 0,
+        "after": 191,
+        "stableGroupingOnReplay": true
+      },
+      {
+        "city": "Rennes",
+        "before": 0,
+        "wouldActivate": 0,
+        "after": 0,
+        "stableGroupingOnReplay": true
+      },
+      {
+        "city": "Saint-Denis (974)",
+        "before": 3,
+        "wouldActivate": 0,
+        "after": 3,
+        "stableGroupingOnReplay": true
+      },
+      {
+        "city": "Le Port (974)",
+        "before": 1,
+        "wouldActivate": 0,
+        "after": 1,
+        "stableGroupingOnReplay": true
+      },
+      {
+        "city": "Saint-Pierre (974)",
+        "before": 0,
+        "wouldActivate": 0,
+        "after": 0,
+        "stableGroupingOnReplay": true
+      }
+    ],
+    "sourceSnapshotUnchanged": true
+  }
+}
