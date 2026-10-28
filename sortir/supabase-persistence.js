@@ -31,6 +31,10 @@ const OCCURRENCE_KEY_CHUNK_SIZE = 100;
 // OCCURRENCE_KEY_CHUNK_SIZE. Même borne que PRELOAD_CHUNK_SIZE par cohérence, sans raison de
 // diverger avant mesure.
 const CANDIDATE_RANGE_PAGE_SIZE = 500;
+// Compact candidate rows (~1.3 KB instead of ~2.3 KB): 1 000 rows per page, measured on the real
+// DB (27 677 rows: 28 GET, 35.6 MB, 42.5 s instead of 56 GET / 64.9 MB / 92.6 s at full width).
+const COMPACT_CANDIDATE_PAGE_SIZE = 1000;
+const COMPACT_CANDIDATE_COLUMNS = "id,title,starts_at,ends_at,timezone,lifecycle_status,location_type,venue_name,address,postal_code,city,country,latitude,longitude,online_url,booking_url,image_url,admission_type,organizers,category,subcategory,confidence,evidence,record_status,merged_into_id,provenances:sortir_provenances(id,source_id,source_record_id,original_event_url,last_seen_at),external_ids:sortir_external_ids(system,value)";
 let ingestionQueue = Promise.resolve();
 
 // Fusionne par (system, value), sans jamais supprimer une valeur déjà connue : reflète
@@ -270,6 +274,8 @@ async function persistSortirIngestionUnlocked({ sources, store, now = new Date()
       // donc génuinement nouvelles) -- aucune revalidation supplémentaire : construit dans ce
       // même pré-passage, déjà pur/sans effet de bord.
       const preloadStartsAtByMapKey = new Map();
+      // NEW occurrences given to the candidate cache (compact cache hydrates before the loop).
+      const preloadActivityByMapKey = new Map();
       const legacyDatatourismeItems = [];
       const datatourismeOccurrences = [];
       for (const connectorResult of descriptor.results) {
@@ -290,6 +296,7 @@ async function persistSortirIngestionUnlocked({ sources, store, now = new Date()
             legacyDatatourismeItems.push({ metadata: itemMetadata, endsAt: validation.activity.endsAt });
           }
           preloadStartsAtByMapKey.set(provenanceMapKey(itemMetadata.sourceRecordId, itemMetadata.sourceOccurrenceKey), Date.parse(validation.activity.startsAt));
+          preloadActivityByMapKey.set(provenanceMapKey(itemMetadata.sourceRecordId, itemMetadata.sourceOccurrenceKey), validation.activity);
         } catch (_) { /* erreur de préparation : re-détectée et comptabilisée dans la boucle principale */ }
       }
       const preloadedProvenances = await store.findProvenancesBatch(source.id, [...preloadOccurrenceKeys]);
@@ -344,7 +351,8 @@ async function persistSortirIngestionUnlocked({ sources, store, now = new Date()
         const rangeStart = new Date(minNewStartsAtMs - 12 * 60 * 60 * 1000).toISOString();
         const rangeEnd = new Date(maxNewStartsAtMs + 12 * 60 * 60 * 1000).toISOString();
         if (temporal) {
-          await candidateCache.load([...preloadStartsAtByMapKey].filter(([key]) => !provenanceMap.has(key)).map(([, t]) => t), store);
+          await candidateCache.load([...preloadStartsAtByMapKey].filter(([key]) => !provenanceMap.has(key)).map(([, t]) => t), store,
+            [...preloadActivityByMapKey].filter(([key]) => !provenanceMap.has(key)).map(([, activity]) => activity));
           candidateIndex.prepare(rangeStart, rangeEnd, preloadedActivities);
         } else for (const row of await store.listCandidateActivitiesInRange(rangeStart, rangeEnd)) candidateIndex.set(row.id, row);
       }
@@ -741,6 +749,23 @@ function createSupabaseSortirStore(client) {
       }
       return rows;
     },
+    // Compact candidate projection (DATAtourisme cache): every column read by the comparison, the
+    // index and the INSERT guard, without description/field_confidence/tags or source join.
+    async listCandidateActivitiesCompact(windows, { maxRows = 200000 } = {}) {
+      const rows = [];
+      for (const group of chunkIds(windows, 40)) {
+        const filter = group.map(w => `and(starts_at.gte.${new Date(w.start).toISOString()},starts_at.lt.${new Date(w.end).toISOString()})`).join(",");
+        for (let from = 0; ; from += COMPACT_CANDIDATE_PAGE_SIZE) {
+          const page = await one(client.from("sortir_activities").select(COMPACT_CANDIDATE_COLUMNS)
+            .in("record_status", ["active", "review"]).or(filter).order("id", { ascending: true }).range(from, from + COMPACT_CANDIDATE_PAGE_SIZE - 1));
+          if (rows.length + page.length > maxRows) throw new Error("Budget du chargement candidats dépassé");
+          rows.push(...page);
+          if (page.length < COMPACT_CANDIDATE_PAGE_SIZE) break;
+        }
+      }
+      return rows;
+    },
+    async listSources() { return one(client.from("sortir_sources").select("id,key,connector_type,base_url")); },
     createActivity: (row) => one(client.from("sortir_activities").insert(row).select().single()),
     updateActivity: (id, row) => one(client.from("sortir_activities").update(row).eq("id", id).select().single()),
     markActivityMerged: (id, canonicalId) => one(client.from("sortir_activities").update({ record_status: "merged", merged_into_id: canonicalId, updated_at: new Date().toISOString() }).eq("id", id).select().single()),

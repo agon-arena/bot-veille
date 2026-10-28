@@ -3,7 +3,7 @@
 const { calculatePoiStateBatch, fingerprintCalculatedPoi, processPoiStateBatch, STATE_BATCH_SIZE } = require("./datatourisme-poi-state");
 const { persistSortirIngestion, createSupabaseSortirStore } = require("./supabase-persistence");
 const { sameInterval, matchesLegacyOccurrence } = require("./datatourisme-occurrence-identity");
-const { TemporalCandidateCache } = require("./temporal-candidate-cache");
+const { CompactCandidateCache } = require("./compact-candidate-cache");
 const { evaluateQuarantine } = require("./datatourisme-review-quarantine");
 const { createWriteBehindStore } = require("./write-behind-store");
 const UUID_RE = /^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$/;
@@ -161,7 +161,9 @@ function createSupabasePoiReconciliationStore(client) {
 // Constructed only by a future explicit caller, never by the scheduler.
 // writeBehind (default for this persister only): grouped writes, same sequential decisions.
 // writeBehind: false keeps the sequential reference path (A/B comparisons in tests).
-function createDatatourismePoiPersister({ store, now, candidateCache = new TemporalCandidateCache(), beforeCreateActivity = null, writeBehind = true, writeBehindOptions = {} }) {
+// The candidate cache belongs to ONE persister (one run): a new persister starts empty, and
+// persist.purgeCandidateCache() clears it explicitly at the end of a run.
+function createDatatourismePoiPersister({ store, now, candidateCache = new CompactCandidateCache(), beforeCreateActivity = null, writeBehind = true, writeBehindOptions = {} }) {
   if (now == null || !Number.isFinite(+new Date(now))) throw new Error("Instant explicite obligatoire");
   // Fail closed: reactivation must be able to recognise a REVIEW quarantine.
   if (typeof store?.loadReviewDecisionsBatch !== "function") throw new Error("Lecture des décisions REVIEW obligatoire");
@@ -180,6 +182,7 @@ function createDatatourismePoiPersister({ store, now, candidateCache = new Tempo
     return outcomes;
   };
   persist.candidateCache = candidateCache;
+  persist.purgeCandidateCache = () => (candidateCache.purge ? candidateCache.purge() : candidateCache.clear());
   persist.store = target;
   return persist;
 }

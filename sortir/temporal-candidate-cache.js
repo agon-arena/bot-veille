@@ -103,8 +103,11 @@ class TemporalCandidateCache {
     }
   }
   async load(times, store) {
-    if (this.store && this.store !== store) throw new Error("Un cache candidat appartient à un seul store/writer");
-    this.store = store;
+    // Ownership = the underlying store (a write-behind envelope per persister shares it): the same
+    // cache may serve successive persisters of one run, never two different stores/writers.
+    const owner = store.candidateCacheNamespace || store;
+    if (this.store && this.store !== owner) throw new Error("Un cache candidat appartient à un seul store/writer");
+    this.store = owner;
     const needed = new Set();
     for (const t of times) for (let d = Math.floor((t - HALF_DAY) / DAY); d <= Math.floor((t + HALF_DAY) / DAY); d++) needed.add(d);
     const missing = [...needed].filter(d => !this.covered.has(d)).sort((a, b) => a - b), windows = [];
