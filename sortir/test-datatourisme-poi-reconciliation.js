@@ -53,6 +53,12 @@ class MemoryStore {
     if (this.decisions.some(d => d.left_activity_id === l && d.right_activity_id === r && d.algorithm_version === row.algorithm_version)) return null;
     const d = { id: this.id("decision"), ...row, left_activity_id: l, right_activity_id: r }; this.decisions.push(d); return { ...d };
   }
+  // Grouped primitives (write-behind envelope), same contracts as the unit methods above.
+  async createActivitiesBatch(rows) { this.batchCalls = (this.batchCalls || 0) + 1; const out = []; for (const row of rows) out.push(await this.createActivity(row)); return out.map(a => ({ id: a.id })); }
+  async insertDedupDecisionsBatch(rows) { this.batchCalls = (this.batchCalls || 0) + 1; for (const row of rows) await this.insertDedupDecision(row); }
+  async createProvenancesBatch(rows) { this.batchCalls = (this.batchCalls || 0) + 1; const out = []; for (const row of rows) out.push(await this.createProvenanceIdempotent(row)); return out; }
+  async upsertExternalIdsBatch(rows) { this.batchCalls = (this.batchCalls || 0) + 1; for (const e of rows) await this.upsertExternalIds(e.activity_id, e.source_id, [{ system: e.system, value: e.value }]); }
+  async flipActivitiesBatch(ids, patch) { this.batchCalls = (this.batchCalls || 0) + 1; for (const id of ids) { if (!this.activities.some(a => a.id === id)) throw new Error("Bascule groupée incomplète"); await this.updateActivity(id, patch); } }
   async loadReviewDecisionsBatch(ids) { return this.decisions.filter(d => d.decision === "REVIEW" && (ids.includes(d.left_activity_id) || ids.includes(d.right_activity_id))).map(d => structuredClone(d)); }
   async countFinalActivities() { return this.activities.filter(a => a.record_status === "active").length; }
   async applyDisappearances() { throw new Error("Balayage global interdit dans la réconciliation par POI"); }

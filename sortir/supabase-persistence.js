@@ -235,10 +235,14 @@ async function persistSortirIngestionUnlocked({ sources, store, now = new Date()
     if (temporal) candidateCache.set(row);
   }
   // A stale activity brought back by its own source is republished only if it is not a REVIEW
-  // quarantine (rare path: one read per reactivation, never on the daily fast path).
-  async function reactivatedStatus(activityId) {
+  // quarantine (rare path: one read per reactivation, never on the daily fast path). An activity
+  // never supported by anything but this provenance gets its CREATION status back: a staging row
+  // interrupted before its flip, or an editorial review that disappeared, stays review.
+  async function reactivatedStatus(activityId, { validation, existing, provenanceId } = {}) {
     const decisions = typeof store.loadReviewDecisionsBatch === "function" ? await store.loadReviewDecisionsBatch([activityId]) : [];
-    return reactivationStatus(activityId, decisions);
+    if (reactivationStatus(activityId, decisions) === "review") return "review";
+    if (validation?.status === "NEEDS_REVIEW" && (existing?.provenances || []).every(p => p.id === provenanceId)) return "review";
+    return "active";
   }
 
   for (const descriptor of Array.isArray(sources) ? sources : []) {
@@ -416,7 +420,7 @@ async function persistSortirIngestionUnlocked({ sources, store, now = new Date()
                 const missingIds = validation.activity.externalIds.filter(e => !(existing.external_ids || []).some(x =>
                   x.system === e.system && x.value === e.value && (x.source_id == null || x.source_id === source.id)));
                 if (missingIds.length && !datatourismeRepair) await store.upsertExternalIds(existing.id, source.id, missingIds);
-                const updated = await store.updateActivity(existing.id, { record_status: await reactivatedStatus(existing.id), updated_at: startedAt });
+                const updated = await store.updateActivity(existing.id, { record_status: await reactivatedStatus(existing.id, { validation, existing, provenanceId: provenance.id }), updated_at: startedAt });
                 // Une activité fusionnée peut recevoir plusieurs provenances DANS le même lot :
                 // si un item ultérieur du même lot pointe vers cette même activité, il doit voir
                 // ce nouvel état (record_status), pas la photo prise au début du run. Les clés
@@ -445,7 +449,7 @@ async function persistSortirIngestionUnlocked({ sources, store, now = new Date()
               const merged = mergeActivities(rowToActivity(existing), validation.activity).activity;
               await store.updateProvenance(provenance.id, { last_seen_at: startedAt, active: true, last_seen_run_id: sourceRun.id, payload_hash: hash, source_payload: metadata.sourcePayload });
               await store.upsertExternalIds(existing.id, source.id, validation.activity.externalIds);
-              const updated = await store.updateActivity(existing.id, activityToRow(merged, existing.record_status === "stale" ? await reactivatedStatus(existing.id) : existing.record_status));
+              const updated = await store.updateActivity(existing.id, activityToRow(merged, existing.record_status === "stale" ? await reactivatedStatus(existing.id, { validation, existing, provenanceId: provenance.id }) : existing.record_status));
               activityMap.set(existing.id, { ...existing, ...updated });
               // Contenu fusionné + externalIds de CETTE occurrence upsertés ci-dessus : tient
               // candidateIndex à jour pour les mêmes raisons que la réactivation ci-dessus
@@ -784,6 +788,45 @@ function createSupabaseSortirStore(client) {
         }
       }
       return rows;
+    },
+    // Grouped primitives used ONLY by the write-behind envelope (DATAtourisme persister). Same
+    // constraints and duplicate semantics as the unit methods; never a silent success.
+    async createActivitiesBatch(rows) {
+      if (!rows.length) return [];
+      const data = await one(client.from("sortir_activities").insert(rows).select("id"));
+      if (data.length !== rows.length) throw new Error("Insertion groupée d'activités incomplète");
+      return data;
+    },
+    async insertDedupDecisionsBatch(rows) {
+      const ordered = rows.filter(r => r.left_activity_id !== r.right_activity_id)
+        .map(r => r.left_activity_id < r.right_activity_id ? r : { ...r, left_activity_id: r.right_activity_id, right_activity_id: r.left_activity_id });
+      if (!ordered.length) return;
+      const { error } = await client.from("sortir_dedup_decisions").insert(ordered);
+      if (!error) return;
+      if (error.code !== "23505") throw new Error(error.message);
+      // An existing (pair, version) decision is ignored as by insertDedupDecision: replay row by row.
+      for (const row of ordered) await this.insertDedupDecision(row);
+    },
+    async createProvenancesBatch(rows) {
+      if (!rows.length) return [];
+      const { data, error } = await client.from("sortir_provenances").insert(rows).select("id,activity_id,source_id,source_record_id,source_occurrence_key");
+      if (!error) { if (data.length !== rows.length) throw new Error("Insertion groupée de provenances incomplète"); return data; }
+      if (error.code !== "23505") throw new Error(error.message);
+      // Unique occurrence already present: return what is stored; the caller decides (conflict).
+      const saved = [];
+      for (const row of rows) saved.push(await this.createProvenanceIdempotent(row));
+      return saved;
+    },
+    async upsertExternalIdsBatch(rows) {
+      if (!rows.length) return;
+      const { error } = await client.from("sortir_external_ids").upsert(rows, { onConflict: "activity_id,source_id,system,value", ignoreDuplicates: true });
+      if (error) throw new Error(error.message);
+    },
+    async flipActivitiesBatch(ids, patch) {
+      for (const chunk of chunkIds([...new Set(ids)], UUID_FILTER_CHUNK_SIZE)) {
+        const data = await one(client.from("sortir_activities").update(patch).in("id", chunk).select("id"));
+        if (data.length !== chunk.length) throw new Error("Bascule groupée incomplète");
+      }
     },
     async insertDedupDecision(row) { if (row.left_activity_id === row.right_activity_id) return null; const ordered = row.left_activity_id < row.right_activity_id ? row : { ...row, left_activity_id: row.right_activity_id, right_activity_id: row.left_activity_id }; const { data, error } = await client.from("sortir_dedup_decisions").insert(ordered).select().single(); if (!error) return data; if (error.code === "23505") return null; throw new Error(error.message); },
     // source_record_id est construit par le connecteur : datatourisme:{uuid}:{date}.

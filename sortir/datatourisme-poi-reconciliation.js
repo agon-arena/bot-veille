@@ -5,6 +5,7 @@ const { persistSortirIngestion, createSupabaseSortirStore } = require("./supabas
 const { sameInterval, matchesLegacyOccurrence } = require("./datatourisme-occurrence-identity");
 const { TemporalCandidateCache } = require("./temporal-candidate-cache");
 const { evaluateQuarantine } = require("./datatourisme-review-quarantine");
+const { createWriteBehindStore } = require("./write-behind-store");
 const UUID_RE = /^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$/;
 function requireUuid(id) { if (typeof id !== "string" || !UUID_RE.test(id)) throw new Error("UUID canonique obligatoire"); }
 function batches(rows) { return Array.from({ length: Math.ceil(rows.length / STATE_BATCH_SIZE) }, (_, i) => rows.slice(i * STATE_BATCH_SIZE, (i + 1) * STATE_BATCH_SIZE)); }
@@ -158,15 +159,18 @@ function createSupabasePoiReconciliationStore(client) {
 // Reuse the normal occurrence pipeline, explicitly disabling its GLOBAL age-based
 // disappearance sweep: this batch cannot decide anything about invalid/absent POIs.
 // Constructed only by a future explicit caller, never by the scheduler.
-function createDatatourismePoiPersister({ store, now, candidateCache = new TemporalCandidateCache(), beforeCreateActivity = null }) {
+// writeBehind (default for this persister only): grouped writes, same sequential decisions.
+// writeBehind: false keeps the sequential reference path (A/B comparisons in tests).
+function createDatatourismePoiPersister({ store, now, candidateCache = new TemporalCandidateCache(), beforeCreateActivity = null, writeBehind = true, writeBehindOptions = {} }) {
   if (now == null || !Number.isFinite(+new Date(now))) throw new Error("Instant explicite obligatoire");
   // Fail closed: reactivation must be able to recognise a REVIEW quarantine.
   if (typeof store?.loadReviewDecisionsBatch !== "function") throw new Error("Lecture des décisions REVIEW obligatoire");
+  const target = writeBehind ? createWriteBehindStore(store, writeBehindOptions) : store;
   const persist = async states => {
     const outcomes = [];
     for (let from = 0; from < states.length; from += 100) {
       const chunk = states.slice(from, from + 100);
-      const result = await persistSortirIngestion({ store, now: new Date(now), reconcileDisappearances: false, candidateCache, beforeCreateActivity, sources: [{
+      const result = await persistSortirIngestion({ store: target, now: new Date(now), reconcileDisappearances: false, candidateCache, beforeCreateActivity, sources: [{
         key: "datatourisme-national", connectorType: "datatourisme", baseUrl: "https://api.datatourisme.fr/v1/entertainmentAndEvent",
         results: chunk.flatMap(s => s.editorial === "KEEP" ? s.results : [])
       }] });
@@ -176,6 +180,7 @@ function createDatatourismePoiPersister({ store, now, candidateCache = new Tempo
     return outcomes;
   };
   persist.candidateCache = candidateCache;
+  persist.store = target;
   return persist;
 }
 
