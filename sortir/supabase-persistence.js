@@ -409,7 +409,7 @@ async function persistSortirIngestionUnlocked({ sources, store, now = new Date()
             // existing.record_status n'est pas disponible sur la ligne provenance seule : savoir
             // si l'activité est stale (à réactiver) exige de lire l'activité — via la Map
             // préchargée, jamais via un nouvel appel individuel.
-            const temporalPayloadChanged = descriptor.connectorType === "datatourisme" && item.sourcePayload &&
+            const temporalPayloadChanged = (descriptor.connectorType === "datatourisme" || descriptor.connectorType === "openagenda_json") && item.sourcePayload &&
               stableJson(provenance.source_payload) !== stableJson(metadata.sourcePayload);
             if (provenance.payload_hash === hash) {
               // Fast-path : le hash canonique confirme qu'aucune donnée métier de CETTE source
@@ -814,7 +814,7 @@ function createSupabaseSortirStore(client) {
       }
       return rows;
     },
-    // Grouped primitives used ONLY by the write-behind envelope (DATAtourisme persister). Same
+    // Grouped primitives used by the existing write-behind envelope. Same
     // constraints and duplicate semantics as the unit methods; never a silent success.
     async createActivitiesBatch(rows) {
       if (!rows.length) return [];

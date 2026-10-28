@@ -147,6 +147,16 @@ function compareActivities(leftInput, rightInput) {
   if (originalUrl) signals.push({ type: "same_original_url", value: originalUrl });
   if (locationConflict) signals.push({ type: "location_conflict", value: true });
 
+  // Un UID OpenAgenda identifie un événement, pas sa séance. Deux créneaux structurés
+  // différents du même événement ne fusionnent jamais sur leur UID/URL partagés.
+  // Le chemin de provenance connue traite les corrections d'une occurrence existante.
+  const openAgendaEventIds = new Set(a.externalIds.filter(id => id.system === "openagenda-event").map(id => id.value));
+  const sameOpenAgendaEvent = b.externalIds.some(id => id.system === "openagenda-event" && openAgendaEventIds.has(id.value));
+  if (sameOpenAgendaEvent && [...a.externalIds, ...b.externalIds].some(id => id.system === "openagenda-occurrence") && !sameInterval(a, b)) {
+    signals.push({ type: "openagenda_occurrence_conflict", value: true });
+    return { algorithmVersion: ALGORITHM_VERSION, decision: DECISIONS.DISTINCT, signals };
+  }
+
   const datatourismePoiIds = new Set(a.externalIds.filter(id => id.system === "datatourisme-poi").map(id => id.value));
   const sameDatatourismePoi = b.externalIds.some(id => id.system === "datatourisme-poi" && datatourismePoiIds.has(id.value));
   if (sameDatatourismePoi) {

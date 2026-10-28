@@ -11,6 +11,8 @@
 const { createClient } = require("@supabase/supabase-js");
 const { fetchOpenAgendaJsonEvents } = require("./sortir/connectors/openagenda-json");
 const { fetchDatatourismeEvents } = require("./sortir/connectors/datatourisme");
+const { createSchedulerState, CYCLE_VERSION } = require("./sortir/scheduler-state");
+const { REUNION_SOURCES, runReunionProducer } = require("./sortir/openagenda-reunion-daily");
 const { persistSortirIngestion, createDefaultSupabaseStore } = require("./sortir/supabase-persistence");
 
 // --- OpenAgenda : liste des agendas configurés (étape de validation multi-sources : Senlis +
@@ -21,10 +23,8 @@ const OPENAGENDA_SOURCES = [
   { key: "openagenda-musees-senlis-json", agendaUid: 26110493, sourceName: "Musées de Senlis" },
   { key: "openagenda-mediatheque-senlis-json", agendaUid: 60837943, sourceName: "Médiathèque municipale de Senlis" }
 ];
-// Taille de lot par défaut demandée (10) : avec seulement 3 sources configurées à cette étape,
-// les 3 tiennent dans un seul lot — le découpage en plusieurs lots séquentiels est néanmoins
-// bien exercé par les tests avec une taille réduite, et prêt à l'emploi dès que la liste
-// grandira (aucun changement de code nécessaire pour ça).
+// Taille conservée pour l'utilitaire historique runOpenAgendaBatches. Le scheduler quotidien
+// appelle cet utilitaire avec un producteur à la fois pour isoler collecte et persistance.
 const OPENAGENDA_BATCH_SIZE = Number.isInteger(Number(process.env.SORTIR_OPENAGENDA_BATCH_SIZE)) && Number(process.env.SORTIR_OPENAGENDA_BATCH_SIZE) > 0
   ? Number(process.env.SORTIR_OPENAGENDA_BATCH_SIZE) : 10;
 const OPENAGENDA_MAX_EVENTS_PER_AGENDA = 200; // inchangé par rapport à l'ancien comportement Senlis seul.
@@ -68,21 +68,10 @@ const SORTIR_INGEST_HOUR = "04:00";
 // des ticks sous charge) — réutilisée telle quelle plutôt que d'en inventer une nouvelle sans
 // donnée justifiant une valeur différente.
 const SORTIR_INGEST_TOLERANCE_MIN = 40;
-// "Déjà exécuté aujourd'hui" = un run complété pour cette source dans les 20 heures qui
-// précèdent — évite tout calcul de frontière de journée civile Réunion/UTC (source d'erreurs
-// bien plus probable qu'un vrai double déclenchement à moins de 20h d'écart pour un job
-// quotidien unique). Vérifié sur le PREMIER agenda OpenAgenda configuré (Senlis) comme
-// représentant du cycle quotidien dans son ensemble -- simplification assumée : le garde-fou
-// réel contre un double run simultané reste `inFlight`, ci-dessous.
+// Un run enveloppe completed par producteur dans les 20 dernières heures certifie son passage.
 const SORTIR_RECENT_RUN_LOOKBACK_MS = 20 * 60 * 60 * 1000;
 
-// Garde anti-double-exécution SIMULTANÉE, dans CE process. ingestionQueue (supabase-
-// persistence.js) sérialise déjà les écritures : deux appels à persistSortirIngestion() ne
-// s'exécutent jamais en parallèle, mais rien n'empêche un deuxième appel d'être lancé pendant
-// que le premier tourne encore (il se mettrait juste en attente, puis s'exécuterait quand même
-// — gaspillage d'un appel OpenAgenda, sans risque de corruption grâce à l'idempotence, mais
-// évitable). ingestionQueue ne protège pas non plus entre deux PROCESS/instances différents :
-// c'est AUTO_PIPELINES_ENABLED (server.js), pas ce module, qui réserve l'exécution à Render.
+// Verrou local rapide, complété par le verrou atomique partagé scheduler-state.js.
 let inFlight = false;
 
 function isDue(nowMinutes, scheduledMinutes, toleranceMin) {
@@ -124,11 +113,15 @@ async function runOpenAgendaBatches({ sources, batchSize, fetchEvents, persist, 
     const heapBeforeMB = heapUsedMB();
     const fetchStartedAt = Date.now();
     let descriptors = [];
+    let eventsCollected = 0;
     for (const source of batch) {
-      const { results } = await fetchEvents({
+      const fetched = await fetchEvents({
         agendaUid: source.agendaUid, apiKey: process.env.OPENAGENDA_PUBLIC_KEY,
-        maxEvents: OPENAGENDA_MAX_EVENTS_PER_AGENDA, sourceName: source.sourceName, fetchedAt: now.toISOString()
+        maxEvents: OPENAGENDA_MAX_EVENTS_PER_AGENDA, sourceName: source.sourceName, now, fetchedAt: now.toISOString()
       });
+      if (fetched.truncated) throw new Error(`Lecture OpenAgenda tronquée : ${source.key}`);
+      const { results } = fetched;
+      eventsCollected += fetched.fetchedCount ?? new Set(results.map(r => r.sourcePayload?.eventUid).filter(Boolean)).size;
       descriptors.push({ key: source.key, connectorType: "openagenda_json", baseUrl: `https://api.openagenda.com/v2/agendas/${source.agendaUid}/events`, results });
     }
     const fetchDurationMs = Date.now() - fetchStartedAt;
@@ -141,7 +134,7 @@ async function runOpenAgendaBatches({ sources, batchSize, fetchEvents, persist, 
 
     const summary = {
       type: "openagenda", batchIndex, sourcesCount: batch.length,
-      poisFetched, activitiesProduced: poisFetched,
+      poisFetched, eventsCollected, occurrencesRetained: poisFetched, activitiesProduced: poisFetched,
       fetchDurationMs, persistDurationMs, totalDurationMs: fetchDurationMs + persistDurationMs,
       heapUsedBeforeMB: heapBeforeMB, heapUsedAfterMB: heapAfterMB,
       status: result.status, stats: result.stats
@@ -241,94 +234,145 @@ async function runDatatourismeChunks({ apiKey, maxTotalPois, chunkSize, persist,
   return { skipped: false, summaries };
 }
 
-// Toutes les dépendances réelles sont injectables, jamais invoquées tant que l'appelant
-// n'appelle pas explicitement cette fonction (aucun effet de bord au require() du module).
-async function runSortirIngestTickIfDue({
-  now = new Date(),
-  timeToMinutes,
-  getReunionTimeHHMM,
-  client = null,
-  fetchEvents = fetchOpenAgendaJsonEvents,
-  fetchDatatourisme = fetchDatatourismeEvents,
-  persist = persistSortirIngestion,
-  store = null,
-  openAgendaSources = OPENAGENDA_SOURCES,
-  openAgendaBatchSize = OPENAGENDA_BATCH_SIZE,
-  datatourismeMaxTotalPois = DATATOURISME_MAX_TOTAL_POIS_PILOT,
-  datatourismeChunkSize = DATATOURISME_CHUNK_SIZE,
-  onBatchSummary = null
-} = {}) {
-  const nowMin = timeToMinutes(getReunionTimeHHMM());
-  if (!isDue(nowMin, timeToMinutes(SORTIR_INGEST_HOUR), SORTIR_INGEST_TOLERANCE_MIN)) {
-    return { triggered: false, reason: "not due" };
-  }
-  if (inFlight) {
-    return { triggered: false, reason: "already running" };
-  }
-  // Posé AVANT tout await : si le verrou n'était posé qu'après la vérification « déjà
-  // exécuté » (elle-même asynchrone), deux ticks arrivant à quelques millisecondes d'écart
-  // passeraient tous les deux le test ci-dessus avant que l'un des deux n'ait eu la chance de
-  // poser le verrou — fenêtre de course fermée en le posant ici, synchrone.
-  inFlight = true;
-
-  const activeClient = client || getSupabaseClient();
+// Compteurs observés sur les primitives réelles, sans changer la logique de persistance.
+function measuredStore(store) {
+  const created = new Set(), updated = new Set();
+  const proxy = new Proxy(store, { get(target, key) {
+    const fn = target[key];
+    if (typeof fn !== "function") return fn;
+    return async (...args) => {
+      const result = await fn.apply(target, args);
+      if (key === "createActivity") created.add(result.id);
+      if (key === "createActivitiesBatch") for (const row of result) created.add(row.id);
+      if (key === "updateActivity" || key === "markActivityMerged") updated.add(args[0]);
+      if (key === "flipActivitiesBatch") for (const id of args[0]) updated.add(id);
+      return result;
+    };
+  } });
+  return { store: proxy, counts: () => ({ activitiesCreated: created.size, activitiesUpdated: [...updated].filter(id => !created.has(id)).length }) };
+}
+async function scheduledSource({ source, store, now, work, onBatchSummary }) {
+  let ingestion, sourceRun;
+  const started = Date.now(), measured = measuredStore(store);
+  let result;
   try {
+    ingestion = await store.createIngestionRun({ status: "running", orchestrator_version: CYCLE_VERSION, started_at: now.toISOString() });
+    const registered = await store.ensureSource(source);
+    sourceRun = await store.createSourceRun({ ingestion_run_id: ingestion.id, source_id: registered.id, status: "running", started_at: now.toISOString() });
+    result = await work(measured.store);
+  } catch (error) {
+    result = { eventsCollected: null, eventsRetained: null, occurrencesRetained: null, ...error.details, status: "failed", error: error.message };
+  }
+  result = { ...result, source: source.key, startedAt: now.toISOString(), finishedAt: new Date().toISOString(), durationMs: Date.now() - started, ...measured.counts() };
+  const stats = result.stats || {};
+  const journalRow = () => ({ status: result.status, collected_count: stats.collected || 0, valid_count: stats.VALID || 0,
+    needs_review_count: stats.NEEDS_REVIEW || 0, invalid_count: stats.INVALID || 0, finished_at: result.finishedAt });
+  try {
+    if (sourceRun) await store.updateSourceRun(sourceRun.id, { ...journalRow(), error: result.status === "completed" ? null : JSON.stringify({ error: result.error || "Persistance incomplète", result }) });
+  } catch (error) { result.status = "failed"; result.error = `${result.error || ""} Journal source : ${error.message}`; }
+  // Toujours tenter de fermer le run enveloppe, même si la mise à jour source a échoué.
+  try {
+    if (ingestion) await store.updateIngestionRun(ingestion.id, { ...journalRow(), error_summary: result.status === "completed" ? [] : [{ source: source.key, error: result.error || "Persistance incomplète" }] });
+  } catch (error) { result.status = "failed"; result.error = `${result.error || ""} Journal ingestion : ${error.message}`; }
+  console[result.status === "completed" ? "log" : "error"]("[sortir-auto-ingest] producteur :", JSON.stringify(result));
+  if (onBatchSummary) { try { await onBatchSummary(result); } catch (error) { result.reportingError = error.message; console.error("[sortir-auto-ingest] Callback de suivi :", error.message); } }
+  return result;
+}
+
+// Un seul tick et un seul verrou partagé ; reprise indépendante de chaque producteur complet.
+async function runSortirIngestTickIfDue({
+  now = new Date(), timeToMinutes, getReunionTimeHHMM, client = null,
+  fetchEvents = fetchOpenAgendaJsonEvents, fetchDatatourisme = fetchDatatourismeEvents,
+  persist = persistSortirIngestion, store = null, state = null,
+  openAgendaSources = OPENAGENDA_SOURCES, reunionSources = REUNION_SOURCES,
+  fetchReunionEvents = fetchOpenAgendaJsonEvents, fetchReunionSchema,
+  datatourismeMaxTotalPois = DATATOURISME_MAX_TOTAL_POIS_PILOT,
+  datatourismeChunkSize = DATATOURISME_CHUNK_SIZE, onBatchSummary = null
+} = {}) {
+  if (!isDue(timeToMinutes(getReunionTimeHHMM()), timeToMinutes(SORTIR_INGEST_HOUR), SORTIR_INGEST_TOLERANCE_MIN)) return { triggered: false, reason: "not due" };
+  if (inFlight) return { triggered: false, reason: "already running" };
+  inFlight = true;
+  let schedulerState, locked = false, activeStore, jobs;
+  try {
+    schedulerState = state || createSchedulerState(client || getSupabaseClient());
+    locked = await schedulerState.acquire(now);
+    if (!locked) { inFlight = false; return { triggered: false, reason: "scheduler locked" }; }
+    if (await schedulerState.hasOtherRunning()) {
+      await schedulerState.release(new Date()); locked = false; inFlight = false;
+      return { triggered: false, reason: "another ingestion running" };
+    }
+    activeStore = store || createDefaultSupabaseStore();
+    const legacy = openAgendaSources.map(source => ({ source: { ...source, connectorType: "openagenda_json", baseUrl: `https://api.openagenda.com/v2/agendas/${source.agendaUid}/events` },
+      work: async target => (await runOpenAgendaBatches({ sources: [source], batchSize: 1, fetchEvents, persist, store: target, now }))[0] }));
+    jobs = [...legacy, ...reunionSources.map(source => ({ source,
+      work: target => runReunionProducer({ source, store: target, now, fetchEvents: fetchReunionEvents, fetchSchema: fetchReunionSchema }) }))];
+    if (process.env.DATATOURISME_API_KEY && datatourismeMaxTotalPois) jobs.push({ source: { key: DATATOURISME_SOURCE_KEY, connectorType: "datatourisme", baseUrl: DATATOURISME_BASE_URL },
+      work: async target => {
+        const outcome = await runDatatourismeChunks({ apiKey: process.env.DATATOURISME_API_KEY, maxTotalPois: datatourismeMaxTotalPois,
+          chunkSize: datatourismeChunkSize, persist, store: target, now, fetchChunk: fetchDatatourisme });
+        const statuses = outcome.summaries.map(s => s.status);
+        return { ...outcome, status: statuses.every(s => s === "completed") ? "completed" : "partial",
+          stats: outcome.summaries.reduce((a, s) => { for (const k of ["collected", "VALID", "NEEDS_REVIEW", "INVALID", "merged", "toReview"]) a[k] = (a[k] || 0) + (s.stats?.[k] || 0); return a; }, {}) };
+      } });
     const since = new Date(now.getTime() - SORTIR_RECENT_RUN_LOOKBACK_MS).toISOString();
-    const representativeSourceKey = openAgendaSources[0] ? openAgendaSources[0].key : null;
-    if (representativeSourceKey && await hasRecentCompletedRun(activeClient, since, representativeSourceKey)) {
-      inFlight = false;
+    const pending = [];
+    for (const job of jobs) {
+      try { if (!await schedulerState.recent(job.source.key, since)) pending.push(job); }
+      catch (error) { pending.push({ ...job, work: async () => { throw new Error(`Contrôle de reprise impossible : ${error.message}`); } }); }
+    }
+    jobs = pending;
+    if (!jobs.length) {
+      await schedulerState.release(new Date()); locked = false; inFlight = false;
       return { triggered: false, reason: "already run recently" };
     }
   } catch (error) {
+    if (locked) { try { await schedulerState.release(new Date()); } catch (releaseError) { console.error("[sortir-auto-ingest] Libération verrou :", releaseError.message); } }
     inFlight = false;
-    console.error("[sortir-auto-ingest] Vérification « déjà exécuté » impossible :", error.message);
+    console.error("[sortir-auto-ingest] Préparation impossible :", error.message);
     return { triggered: false, reason: "check failed", error: error.message };
   }
-
   const startedAt = Date.now();
-  // Ne JAMAIS attendre la fin réelle du pipeline avant de répondre : une ingestion avec
-  // beaucoup d'occurrences réellement nouvelles peut prendre plusieurs minutes (mesuré en
-  // conditions réelles le 18/10/2026, ~5 min pour 180 nouvelles activités), largement au-delà
-  // du --max-time du tick GitHub Actions. Même patron que /api/auto-collect-tick, qui ne
-  // bloque pas non plus sur le /refresh qu'il déclenche. workPromise reste exposé pour les
-  // tests (qui veulent attendre la fin de façon déterministe), jamais attendu par la route HTTP.
   const workPromise = (async () => {
+    const summaries = [];
+    let releaseError;
     try {
-      const activeStore = store || createDefaultSupabaseStore();
-      const openAgendaSummaries = await runOpenAgendaBatches({
-        sources: openAgendaSources, batchSize: openAgendaBatchSize, fetchEvents, persist, store: activeStore, now, onBatchSummary
-      });
-      const datatourismeOutcome = await runDatatourismeChunks({
-        apiKey: process.env.DATATOURISME_API_KEY, maxTotalPois: datatourismeMaxTotalPois, chunkSize: datatourismeChunkSize,
-        persist, store: activeStore, now, fetchChunk: fetchDatatourisme, onChunkSummary: onBatchSummary
-      });
-      const summary = {
-        status: "completed",
-        openAgendaBatches: openAgendaSummaries.length,
-        datatourismeChunks: datatourismeOutcome.summaries.length,
-        datatourismeSkipped: datatourismeOutcome.skipped ? datatourismeOutcome.reason : null,
-        durationMs: Date.now() - startedAt,
-        batches: [...openAgendaSummaries, ...datatourismeOutcome.summaries]
-      };
-      console.log("[sortir-auto-ingest] Ingestion quotidienne terminée :", JSON.stringify({ ...summary, batches: undefined }));
-      return summary;
-    } catch (error) {
-      // Capturé ici, jamais relancé : une panne réseau Supabase/OpenAgenda/DATAtourisme
-      // transitoire (déjà observée en conditions réelles) ne doit jamais faire tomber le
-      // process serveur. Le run suivant (demain) reste inchangé.
-      console.error("[sortir-auto-ingest] Échec de l'ingestion quotidienne (capturé) :", error.message);
-      return { status: "failed", error: error.message, durationMs: Date.now() - startedAt };
+      for (const job of jobs) {
+        try { summaries.push(await scheduledSource({ ...job, store: activeStore, now, onBatchSummary })); }
+        catch (error) {
+          const failure = { source: job.source.key, status: "failed", error: error.message };
+          summaries.push(failure);
+          console.error("[sortir-auto-ingest] Échec inattendu du producteur :", JSON.stringify(failure));
+        }
+      }
     } finally {
+      try { await schedulerState.release(new Date()); } catch (error) { releaseError = error.message; console.error("[sortir-auto-ingest] Libération verrou :", releaseError); }
       inFlight = false;
     }
+    const completed = summaries.filter(s => s.status === "completed").length;
+    let status = "failed";
+    if (completed === summaries.length) status = "completed";
+    else if (completed || summaries.some(s => s.status === "partial")) status = "partial";
+    if (summaries.some(s => s.reportingError)) status = "partial";
+    if (releaseError) status = "failed";
+    const summary = {
+      status, durationMs: Date.now() - startedAt,
+      error: releaseError || summaries.filter(s => s.status !== "completed" || s.reportingError)
+        .map(s => `${s.source}: ${s.error || s.reportingError || s.status}`).join("; ") || undefined,
+      sources: summaries,
+      openAgendaBatches: summaries.filter(s => s.source.startsWith("openagenda-")).length,
+      datatourismeChunks: summaries.find(s => s.source === DATATOURISME_SOURCE_KEY)?.summaries?.length || 0
+    };
+    console.log("[sortir-auto-ingest] Cycle terminé :", JSON.stringify({ ...summary, sources: undefined }));
+    return summary;
   })();
-  workPromise.catch(() => {}); // filet explicite : déjà entièrement catché ci-dessus, mais jamais de rejection non gérée si personne n'attend workPromise.
-
+  workPromise.catch(error => console.error("[sortir-auto-ingest] Erreur inattendue :", error.message));
   return { triggered: true, status: "started", workPromise };
 }
 
 module.exports = {
   runSortirIngestTickIfDue,
+  REUNION_SOURCES,
+  scheduledSource,
   isDue,
   hasRecentCompletedRun,
   runOpenAgendaBatches,

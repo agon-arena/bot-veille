@@ -151,7 +151,7 @@
   },
   {
     "nom": "Quotidien",
-    "orientation": "actualité / satire / centre-gauche",
+    "orientation": "généraliste",
     "url": "https://www.youtube.com/@QuotidienTMC",
     "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCpi-4daExRSchtsJzO06rwA"
   },
@@ -1120,5 +1120,305 @@
     "orientation": "droite",
     "url": "https://www.youtube.com/playlist?list=PL_3P3xgnwTL0URgHrMBOd7rYePTCzCa8a",
     "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PL_3P3xgnwTL0URgHrMBOd7rYePTCzCa8a"
+  },
+  {
+    "nom": "Vert le média",
+    "orientation": "écologie",
+    "url": "https://www.youtube.com/@vert_le_media",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCQvVZr4LCFW94hLuzLkiNfQ"
+  },
+  {
+    "nom": "Censored Free Minds",
+    "orientation": "actualité / société",
+    "url": "https://www.youtube.com/@censoredfreeminds",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCtmlVJzVyTCjOy168N018dA"
+  },
+  {
+    "nom": "La Poigne",
+    "orientation": "actualité / société",
+    "url": "https://www.youtube.com/@lapoigne",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCWwbC6aVLV4jcez9Qyf1HTw"
+  },
+  {
+    "nom": "AJ+ français",
+    "orientation": "actualité / international",
+    "url": "https://www.youtube.com/@ajplusfrancais",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCd1jQ_ppmKfphnh4p39HMFg"
+  },
+  {
+    "nom": "RiboDansLaSauce VOD",
+    "orientation": "commentaire politique",
+    "url": "https://www.youtube.com/@RiboDansLaSauceVOD",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UC6jSpt9BDRRCYGaHOHC9Xwg"
+  },
+  {
+    "nom": "L’esprit critique",
+    "orientation": "analyse / esprit critique",
+    "url": "https://www.youtube.com/@lespritcritique",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCxSeJKYcO_4G_VrOlFykbSA"
+  },
+  {
+    "nom": "Akim Omiri",
+    "orientation": "humour / satire politique",
+    "url": "https://www.youtube.com/channel/UCbOdpYBG53zmFuDK0qaTSmw",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCbOdpYBG53zmFuDK0qaTSmw"
+  },
+  {
+    "nom": "Révolution permanente",
+    "orientation": "gauche révolutionnaire",
+    "url": "https://www.youtube.com/@revolution_permanente",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCwLLr_Fo9dpdJ9UHq4A7PjA"
+  },
+  {
+    "nom": "À gauche",
+    "orientation": "gauche",
+    "url": "https://www.youtube.com/@agauche",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UClDye0T4xTEq46sA5evq9fA"
+  },
+  {
+    "nom": "INA Officiel",
+    "orientation": "généraliste",
+    "url": "https://www.youtube.com/channel/UCPlxmWbGbwVM2baH8q7MK6w",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCPlxmWbGbwVM2baH8q7MK6w"
+  },
+  {
+    "nom": "Ina - Daho L'aime Pop !",
+    "orientation": "généraliste",
+    "url": "https://www.youtube.com/channel/UC_400FxkxtTS4KMDFRa1LaA",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UC_400FxkxtTS4KMDFRa1LaA"
+  },
+  {
+    "nom": "INA Actu",
+    "orientation": "généraliste",
+    "url": "https://www.youtube.com/channel/UC4Bw8KLhbLPrcZbOAJa4p0w",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UC4Bw8KLhbLPrcZbOAJa4p0w"
+  },
+  {
+    "nom": "Ina Animaux",
+    "orientation": "généraliste",
+    "url": "https://www.youtube.com/channel/UCLx9m48AhFEJj423jAHBhkw",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCLx9m48AhFEJj423jAHBhkw"
+  },
+  {
+    "nom": "INA Arditube",
+    "orientation": "généraliste",
+    "url": "https://www.youtube.com/channel/UCNBD4uZG6nWH2MMdgGESisw",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCNBD4uZG6nWH2MMdgGESisw"
+  },
+  {
+    "nom": "Ina Au Théâtre Ce Soir 1961 - 1981",
+    "orientation": "généraliste",
+    "url": "https://www.youtube.com/channel/UCCyNBt6Ni89NZy8cXMDrJJA",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCCyNBt6Ni89NZy8cXMDrJJA"
+  },
+  {
+    "nom": "Ina Best Of 60's",
+    "orientation": "généraliste",
+    "url": "https://www.youtube.com/channel/UCgHmXxZxlq7QYZ2icifuqbA",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCgHmXxZxlq7QYZ2icifuqbA"
+  },
+  {
+    "nom": "Ina Best Of 70's",
+    "orientation": "généraliste",
+    "url": "https://www.youtube.com/channel/UCWvsIwkBI_U70n3huR9Ww7A",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCWvsIwkBI_U70n3huR9Ww7A"
+  },
+  {
+    "nom": "Ina Best Of 80's",
+    "orientation": "généraliste",
+    "url": "https://www.youtube.com/channel/UCxXmXHU-dnHAl7LTTC1GquQ",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCxXmXHU-dnHAl7LTTC1GquQ"
+  },
+  {
+    "nom": "Ina Best Of Classic",
+    "orientation": "généraliste",
+    "url": "https://www.youtube.com/channel/UCC_m-TAjfLFHPViYXhsksng",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCC_m-TAjfLFHPViYXhsksng"
+  },
+  {
+    "nom": "Ina Best Of Jazz",
+    "orientation": "généraliste",
+    "url": "https://www.youtube.com/channel/UCVzCkZMie_8qSvoFjlbcmJA",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCVzCkZMie_8qSvoFjlbcmJA"
+  },
+  {
+    "nom": "INA Ça se discute",
+    "orientation": "généraliste",
+    "url": "https://www.youtube.com/channel/UCJzjGwaQ_A9HMKvTWLQpygw",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCJzjGwaQ_A9HMKvTWLQpygw"
+  },
+  {
+    "nom": "INA Café Picouly",
+    "orientation": "généraliste",
+    "url": "https://www.youtube.com/channel/UCqi3LIaeG8HSS9bVoulrnwA",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCqi3LIaeG8HSS9bVoulrnwA"
+  },
+  {
+    "nom": "INA campus",
+    "orientation": "généraliste",
+    "url": "https://www.youtube.com/channel/UC9xWFF_CynBnv_S0DFm96xA",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UC9xWFF_CynBnv_S0DFm96xA"
+  },
+  {
+    "nom": "Ina Chansons",
+    "orientation": "généraliste",
+    "url": "https://www.youtube.com/channel/UCEl9BNpEYebYFYbdkt6lbzQ",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCEl9BNpEYebYFYbdkt6lbzQ"
+  },
+  {
+    "nom": "Ina Clash TV",
+    "orientation": "généraliste",
+    "url": "https://www.youtube.com/channel/UCTdCZBzjamcwc0EQJ-e4vXA",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCTdCZBzjamcwc0EQJ-e4vXA"
+  },
+  {
+    "nom": "Ina Comédie Française",
+    "orientation": "généraliste",
+    "url": "https://www.youtube.com/channel/UC3xKQPuNJ3h1jd13_uNb9Jw",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UC3xKQPuNJ3h1jd13_uNb9Jw"
+  },
+  {
+    "nom": "INA Culte",
+    "orientation": "généraliste",
+    "url": "https://www.youtube.com/channel/UCPjBZT0aJPgJ3e1wAftV6TQ",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCPjBZT0aJPgJ3e1wAftV6TQ"
+  },
+  {
+    "nom": "INA Culture",
+    "orientation": "généraliste",
+    "url": "https://www.youtube.com/channel/UCs-e7ayRI75k-i617JkCrpA",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCs-e7ayRI75k-i617JkCrpA"
+  },
+  {
+    "nom": "Ina French Style",
+    "orientation": "généraliste",
+    "url": "https://www.youtube.com/channel/UCTiOb0psCpXfbNyY_rZTiJA",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCTiOb0psCpXfbNyY_rZTiJA"
+  },
+  {
+    "nom": "INA HIP-HOP",
+    "orientation": "généraliste",
+    "url": "https://www.youtube.com/channel/UC8JfBu08YrIgQxu2ddI5jUg",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UC8JfBu08YrIgQxu2ddI5jUg"
+  },
+  {
+    "nom": "INA Histoire",
+    "orientation": "généraliste",
+    "url": "https://www.youtube.com/channel/UCFdEMYmiimq2uKmOMaBfPLg",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCFdEMYmiimq2uKmOMaBfPLg"
+  },
+  {
+    "nom": "INA Humour",
+    "orientation": "généraliste",
+    "url": "https://www.youtube.com/channel/UCsHd-E4Q3hCgp_fvOf-tBiw",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCsHd-E4Q3hCgp_fvOf-tBiw"
+  },
+  {
+    "nom": "INA Institut",
+    "orientation": "généraliste",
+    "url": "https://www.youtube.com/channel/UCdUi1w8yJfBu3n4Exs8ts6g",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCdUi1w8yJfBu3n4Exs8ts6g"
+  },
+  {
+    "nom": "Ina Les Recettes Vintage",
+    "orientation": "généraliste",
+    "url": "https://www.youtube.com/channel/UC7gnE1bBnH7FCJE_MFgVrzg",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UC7gnE1bBnH7FCJE_MFgVrzg"
+  },
+  {
+    "nom": "INA Les Shadoks : Le ShadokTube",
+    "orientation": "généraliste",
+    "url": "https://www.youtube.com/channel/UCkBv-ua1Kzffs6OiWslnHSg",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCkBv-ua1Kzffs6OiWslnHSg"
+  },
+  {
+    "nom": "INA madelen",
+    "orientation": "généraliste",
+    "url": "https://www.youtube.com/channel/UCpsq1ZAGtJYLZsSpN9AAENw",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCpsq1ZAGtJYLZsSpN9AAENw"
+  },
+  {
+    "nom": "INA Mireille Dumas",
+    "orientation": "généraliste",
+    "url": "https://www.youtube.com/channel/UC5SS2hMs5TCE9MAsNCcuPGA",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UC5SS2hMs5TCE9MAsNCcuPGA"
+  },
+  {
+    "nom": "Ina Music Live / Ina Musique Live",
+    "orientation": "généraliste",
+    "url": "https://www.youtube.com/channel/UC8USS0SAt08of1TfC9Vh4rw",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UC8USS0SAt08of1TfC9Vh4rw"
+  },
+  {
+    "nom": "INA Paris Vintage",
+    "orientation": "généraliste",
+    "url": "https://www.youtube.com/channel/UC8rLuu2Xi0aUvcbaZt6flRg",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UC8rLuu2Xi0aUvcbaZt6flRg"
+  },
+  {
+    "nom": "Ina Pierre Desproges. Étonnant, non ?",
+    "orientation": "généraliste",
+    "url": "https://www.youtube.com/channel/UC1b1ZxhOUrFyPzz49Tq0uvg",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UC1b1ZxhOUrFyPzz49Tq0uvg"
+  },
+  {
+    "nom": "INA Podcasts",
+    "orientation": "généraliste",
+    "url": "https://www.youtube.com/channel/UCMZd1BIo-gi2ScpCcopt2ZQ",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCMZd1BIo-gi2ScpCcopt2ZQ"
+  },
+  {
+    "nom": "INA Politique",
+    "orientation": "généraliste",
+    "url": "https://www.youtube.com/channel/UCi1h68Fys0apnhLaJ-ijQOw",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCi1h68Fys0apnhLaJ-ijQOw"
+  },
+  {
+    "nom": "INA Recherche",
+    "orientation": "généraliste",
+    "url": "https://www.youtube.com/channel/UCOTy21QGMPKimnnVJsv_lFg",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCOTy21QGMPKimnnVJsv_lFg"
+  },
+  {
+    "nom": "Ina Sciences",
+    "orientation": "généraliste",
+    "url": "https://www.youtube.com/channel/UCB02Rbd0DYAFpjp8AiKVrsQ",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCB02Rbd0DYAFpjp8AiKVrsQ"
+  },
+  {
+    "nom": "INA Société",
+    "orientation": "généraliste",
+    "url": "https://www.youtube.com/channel/UCCTuFofVWD9uORhQqgn-d7Q",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCCTuFofVWD9uORhQqgn-d7Q"
+  },
+  {
+    "nom": "Ina Sport",
+    "orientation": "généraliste",
+    "url": "https://www.youtube.com/channel/UC0ZAGkKyKCYjr6Zl2bbR1VQ",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UC0ZAGkKyKCYjr6Zl2bbR1VQ"
+  },
+  {
+    "nom": "INA Stars",
+    "orientation": "généraliste",
+    "url": "https://www.youtube.com/channel/UCBZ-iF-2O5ooVnAm6LQY8MQ",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCBZ-iF-2O5ooVnAm6LQY8MQ"
+  },
+  {
+    "nom": "Ina Styles",
+    "orientation": "généraliste",
+    "url": "https://www.youtube.com/channel/UCj3lQZMZUDwE4T0y4PblBBA",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCj3lQZMZUDwE4T0y4PblBBA"
+  },
+  {
+    "nom": "INA TLMP",
+    "orientation": "généraliste",
+    "url": "https://www.youtube.com/channel/UC9fevBJQEZnMCjxmpfPC0IQ",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UC9fevBJQEZnMCjxmpfPC0IQ"
+  },
+  {
+    "nom": "Ina Voyages",
+    "orientation": "généraliste",
+    "url": "https://www.youtube.com/channel/UCnl6WhqDxlqN3BPTaZvC4UQ",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCnl6WhqDxlqN3BPTaZvC4UQ"
   }
 ]

@@ -7,9 +7,18 @@
 
 const assert = require("assert");
 const {
-  runSortirIngestTickIfDue, isDue, runOpenAgendaBatches, runDatatourismeChunks, chunkArray,
+  runSortirIngestTickIfDue: realTick, hasRecentCompletedRun, isDue, runOpenAgendaBatches, runDatatourismeChunks, chunkArray,
   OPENAGENDA_SOURCES, SORTIR_INGEST_HOUR, SORTIR_INGEST_TOLERANCE_MIN, DATATOURISME_SOURCE_KEY
 } = require("./sortir-auto-ingest");
+
+const { MemoryStore } = require("./sortir/test-helpers/memory-store");
+// La suite historique conserve son périmètre Senlis ; les huit sources et le verrou partagé
+// sont exercés par test-sortir-scheduler-reunion.js avec leur vraie orchestration.
+function runSortirIngestTickIfDue(args) {
+  return realTick({ ...args, reunionSources: [], store: Object.assign(new MemoryStore(), args.store || {}),
+    state: { acquire: async () => true, release: async () => {}, hasOtherRunning: async () => false,
+      recent: (key, since) => hasRecentCompletedRun(args.client, since, key) } });
+}
 
 let passed = 0, failed = 0;
 async function test(name, fn) { try { await fn(); passed += 1; console.log(`✓ ${name}`); } catch (error) { failed += 1; console.error(`✗ ${error.name ? "" : ""}${name}: ${error.stack || error.message}`); } }
@@ -110,7 +119,7 @@ function fakeSources(n) { return Array.from({ length: n }, (_, i) => ({ key: `sr
     assert.strictEqual(maxSourcesSeenAtOnce, 2, "jamais plus que la taille d'un lot en une seule persistance");
   });
 
-  await test("J — un échec d'un lot n'empêche pas le lot suivant et ne crée aucune concurrence avec lui", async () => {
+  await test("J — l’utilitaire remonte une exception ; l’enveloppe du scheduler isole les producteurs", async () => {
     const sources = fakeSources(4);
     const persistOrder = [];
     const fetchEvents = async () => ({ results: sampleResults(1) });
@@ -129,7 +138,7 @@ function fakeSources(n) { return Array.from({ length: n }, (_, i) => ({ key: `sr
     assert.deepStrictEqual(persistOrder, ["src-0,src-1"], "le lot 2 ne doit jamais être tenté après l'échec du lot 1 dans cette boucle séquentielle");
   });
 
-  await test("A' — déclenche bien les 3 agendas OpenAgenda configurés (regroupés en 1 seul lot par défaut)", async () => {
+  await test("A' — déclenche les 3 agendas historiques dans des enveloppes isolées", async () => {
     let persistArgsList = [];
     const result = await runSortirIngestTickIfDue({
       timeToMinutes, getReunionTimeHHMM: fixedTimeClient(SORTIR_INGEST_HOUR),
@@ -141,10 +150,10 @@ function fakeSources(n) { return Array.from({ length: n }, (_, i) => ({ key: `sr
     assert.strictEqual(result.triggered, true);
     const summary = await result.workPromise;
     assert.strictEqual(summary.status, "completed");
-    assert.strictEqual(summary.openAgendaBatches, 1, "3 sources configurées, lot par défaut de 10 : un seul lot");
+    assert.strictEqual(summary.openAgendaBatches, 3, "trois producteurs isolés séquentiellement");
     const openAgendaCall = persistArgsList.find((a) => a.sources[0].connectorType === "openagenda_json");
-    assert.strictEqual(openAgendaCall.sources.length, OPENAGENDA_SOURCES.length);
-    assert.deepStrictEqual(openAgendaCall.sources.map((s) => s.key), OPENAGENDA_SOURCES.map((s) => s.key));
+    assert.strictEqual(openAgendaCall.sources.length, 1);
+    assert.deepStrictEqual(persistArgsList.filter(a => a.sources[0].connectorType === "openagenda_json").flatMap(a => a.sources.map(s => s.key)), OPENAGENDA_SOURCES.map(s => s.key));
   });
 
   await test("C — une erreur du pipeline est capturée sans crash du process", async () => {

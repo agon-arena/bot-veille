@@ -20,7 +20,7 @@ function test(name, fn) {
   catch (error) { failed += 1; console.error(`✗ ${name}: ${error.message}`); }
 }
 
-const BASE_OPTIONS = { sourceName: "Senlis — Agenda officiel de la ville", fetchedAt: "2026-10-18T10:00:00.000Z" };
+const BASE_OPTIONS = { now: "2025-01-01T00:00:00Z", sourceName: "Senlis — Agenda officiel de la ville", fetchedAt: "2026-10-18T10:00:00.000Z" };
 
 // Fixtures construites à partir de la forme réelle observée via l'API v2 (champs et
 // conventions vérifiés en direct le 18/10/2026), pas de réseau dans ce fichier de test.
@@ -209,7 +209,7 @@ async function run() {
       { status: 200, body: { total: 3, events: [{ ...SIMPLE_EVENT, uid: 1 }, { ...SIMPLE_EVENT, uid: 2 }], after: "cursor-2" } },
       { status: 200, body: { total: 3, events: [{ ...SIMPLE_EVENT, uid: 3 }], after: null } }
     ]);
-    const result = await fetchOpenAgendaJsonEvents({ agendaUid: 1, apiKey: "test-key", pageSize: 2, maxEvents: 10 });
+    const result = await fetchOpenAgendaJsonEvents({ now: BASE_OPTIONS.now, agendaUid: 1, apiKey: "test-key", pageSize: 2, maxEvents: 10 });
     test("pagination: parcourt plusieurs pages via `after` jusqu'à épuisement", () => {
       assert.strictEqual(result.fetchedCount, 3);
       assert.strictEqual(result.results.length, 3);
@@ -218,7 +218,7 @@ async function run() {
 
   await (async () => {
     mockFetchSequence([{ status: 200, body: { total: 100, events: [{ ...SIMPLE_EVENT, uid: 1 }], after: "more" } }]);
-    const result = await fetchOpenAgendaJsonEvents({ agendaUid: 1, apiKey: "test-key", pageSize: 1, maxEvents: 1 });
+    const result = await fetchOpenAgendaJsonEvents({ now: BASE_OPTIONS.now, agendaUid: 1, apiKey: "test-key", pageSize: 1, maxEvents: 1 });
     test("maxEvents borne la collecte même si l'API indique plus de résultats", () => {
       assert.strictEqual(result.fetchedCount, 1);
       assert.strictEqual(result.truncated, true);
@@ -228,7 +228,7 @@ async function run() {
   await (async () => {
     mockFetchSequence([{ status: 403, body: { message: "could not find user or agenda matching key" } }]);
     let threw = false;
-    try { await fetchOpenAgendaJsonEvents({ agendaUid: 1, apiKey: "bad-key", maxEvents: 5 }); }
+    try { await fetchOpenAgendaJsonEvents({ now: BASE_OPTIONS.now, agendaUid: 1, apiKey: "bad-key", maxEvents: 5 }); }
     catch (_) { threw = true; }
     test("erreur HTTP (ex. clé invalide) rejette proprement sans crasher le process", () => assert.strictEqual(threw, true));
   })();
@@ -236,7 +236,7 @@ async function run() {
   await (async () => {
     mockFetchSequence([{ status: 200, body: { total: 1 } }]); // events absent
     let threw = false;
-    try { await fetchOpenAgendaJsonEvents({ agendaUid: 1, apiKey: "test-key", maxEvents: 5 }); }
+    try { await fetchOpenAgendaJsonEvents({ now: BASE_OPTIONS.now, agendaUid: 1, apiKey: "test-key", maxEvents: 5 }); }
     catch (_) { threw = true; }
     test("réponse invalide (events absent) rejette proprement", () => assert.strictEqual(threw, true));
   })();
