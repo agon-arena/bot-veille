@@ -28,3 +28,6 @@ certamen-batch-benchmark-*.json
 certamen-temp-batch-experiment-*.json
 certamen-separated-experiment-*.json
 certamen-experiment-corpus-*.json
+
+youtube-api-state.json
+youtube-api-state.json.tmp

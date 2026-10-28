@@ -103,12 +103,12 @@ test('YouTube 404 diagnostic stays temporary and other RSS 404 stays unchanged',
   await assert.rejects(fn('https://example.com/rss', 'RSS'), /URL RSS à remplacer/);
 });
 
-test('app collector catches up a six-day-old Short despite a recent global session', async () => {
+test('app collector catches up a six-hour-old Short within the 24-hour window', async () => {
   const dayjs = require('dayjs');
-  const date = new Date(Date.now() - 6 * 86400000).toISOString();
+  const date = new Date(Date.now() - 6 * 3600000).toISOString();
   const fn = appFunction('collectYouTubeVideos', 'function groupContentsBySubject', {
     fs: { readFileSync: () => JSON.stringify([channel]) },
-    CHANNELS_FILE: 'youtube-chaines.json', HISTORY_FILE: 'sessions-mixte.json', HOURS_BACK_YOUTUBE: 168,
+    CHANNELS_FILE: 'youtube-chaines.json', HISTORY_FILE: 'sessions-mixte.json', HOURS_BACK_YOUTUBE: 24,
     loadSessions: () => [{ generatedAt: new Date().toISOString() }],
     collectWithRecovery, isSourcePaused: () => false, extractHttpStatus: e => e.httpStatus,
     setProgress: () => {}, console: { log: () => {} }, dayjs,

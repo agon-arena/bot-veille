@@ -39,7 +39,8 @@ const SENT_TO_AGON_FILE = "sent-to-agon.json";
 const API_PORT = 3002;
 
 const HOURS_BACK_ARTICLES = 24;
-const HOURS_BACK_YOUTUBE = 168;
+const HOURS_BACK_YOUTUBE = 24;
+const HOURS_BACK_YOUTUBE_CERTAMEN = 168;
 // Sources à faible fréquence de publication (blogs "nouvelles positives", titres régionaux
 // actu.fr peu actifs) : avec 2 collectes/jour, le filtre isFreshSinceLastSession (fenêtre de
 // quelques heures depuis la session précédente) les excluait presque toujours même quand
@@ -949,6 +950,22 @@ async function collectArticles(lastSessionCutoff = null, knownSources = new Set(
 
 async function collectYouTubeVideos(lastSessionCutoff = null, knownSources = new Set(), sourceFile = CHANNELS_FILE) {
   const channels = JSON.parse(fs.readFileSync(sourceFile, "utf8"));
+  // API state has one writer (server.js); the editorial process only reads it.
+  // Autres actus receives the durable queue directly, even between sessions.
+  if (sourceFile === CHANNELS_FILE && typeof process !== "undefined" && process.env.YOUTUBE_API_KEY) {
+    const youtubeApi = require("./youtube-api");
+    if (fs.existsSync(youtubeApi.STORE_FILE)) {
+      const store = youtubeApi.loadStore();
+      const keys = new Set(channels.map(channel => channel.rss || channel.url || channel.nom));
+      const contents = Object.values(store.videos).filter(item =>
+        item.sourceKeys.some(key => keys.has(key)) && Date.parse(item.date) >= Date.now() - HOURS_BACK_YOUTUBE * 3600000)
+        .map(item => ({ type: item.type, source: item.source, orientation: item.orientation,
+          title: item.title, link: item.link, date: item.date, summary: item.summary,
+          thumbnail: item.thumbnail, comparableText: cleanText(item.title) }));
+      return { contents, report: { sources: (store.report || []).map(source => ({ ...source,
+        kept: contents.filter(item => item.source === source.nom).length, skipped: 0 })) }, state: {} };
+    }
+  }
   const historyFile = sourceFile === CHANNELS_FILE ? HISTORY_FILE : "certamen-sessions.json";
   let latest;
   try {
@@ -963,7 +980,7 @@ async function collectYouTubeVideos(lastSessionCutoff = null, knownSources = new
     fetchFeed: getWorkingYouTubeRssUrl,
     previousState: latest?.youtubeCollectionState || {},
     previousContents,
-    hoursBack: HOURS_BACK_YOUTUBE,
+    hoursBack: sourceFile === CHANNELS_FILE ? HOURS_BACK_YOUTUBE : HOURS_BACK_YOUTUBE_CERTAMEN,
     isPaused: isSourcePaused,
     statusOf: extractHttpStatus,
     onAttempt(channel, attempt) {

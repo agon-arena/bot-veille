@@ -26,6 +26,7 @@ const FILES_TO_SYNC = [
   "auto-publish-config.json",
   "auto-publish-certamen-config.json",
   "youtube-chaines.json",
+  "youtube-api-state.json",
   "medias.json",
   "pending-ideas.json",
   "certamen-pending-ideas.json",
@@ -39,6 +40,8 @@ let enabled = false;
 // faite par downloadAll(), sous peine d'écraser Supabase avec des fichiers locaux
 // potentiellement obsolètes (ex: juste après un redéploiement Render).
 let downloadCompleted = false;
+const restoreFailures = new Set();
+function isRestored(filename) { return downloadCompleted && !restoreFailures.has(filename); }
 
 function init() {
   if (!SUPABASE_URL || !SUPABASE_KEY) {
@@ -135,6 +138,7 @@ async function downloadAll() {
     return;
   }
 
+  restoreFailures.clear();
   const forceDownload = process.env.FORCE_SUPABASE_DOWNLOAD === "true";
   console.log(
     `[storage-sync] Démarrage downloadAll() — mode: ${forceDownload ? "FORCE_SUPABASE_DOWNLOAD (tout retélécharger)" : "normal (comparaison local/Supabase)"}`
@@ -209,6 +213,8 @@ async function downloadAll() {
       setFileState(state, filename, { updatedAt: remoteEntry.updated_at, hash: hashContent(text) });
       downloadedNewerOrUnknown.push(filename);
     } catch (err) {
+      // A fresh queue has no remote file on its first deployment.
+      if (!/not found|not_found|does not exist/i.test(err.message)) restoreFailures.add(filename);
       errored.push(filename);
       console.warn(`[storage-sync] Erreur download ${filename}:`, err.message);
     }
@@ -249,7 +255,7 @@ async function uploadAll() {
 
   for (const filename of FILES_TO_SYNC) {
     const localPath = path.join(__dirname, filename);
-    if (!fs.existsSync(localPath)) continue;
+    if (!fs.existsSync(localPath) || restoreFailures.has(filename)) continue;
     try {
       const content = fs.readFileSync(localPath, "utf8");
       const hash = hashContent(content);
@@ -309,4 +315,4 @@ function startPeriodicSync() {
   );
 }
 
-module.exports = { init, downloadAll, uploadAll, startPeriodicSync };
+module.exports = { isRestored, init, downloadAll, uploadAll, startPeriodicSync };

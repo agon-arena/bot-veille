@@ -1,6 +1,12 @@
 require("dotenv").config();
 
 const storageSync = require("./storage-sync");
+const youtubeApi = require("./youtube-api");
+let youtubeApiStore = null;
+function getYoutubeApiStore() {
+  if (!storageSync.isRestored("youtube-api-state.json")) throw new Error("Mémoire YouTube non restaurée depuis Supabase ; collecte suspendue pour éviter un écrasement");
+  return youtubeApiStore ||= youtubeApi.loadStore();
+}
 const {
   loadAutoCollectCertamenConfig,
   saveAutoCollectCertamenConfig,
@@ -394,7 +400,6 @@ function saveSentToAgonItems(items) {
 // plus rien de neuf dans opinion_articles depuis le 8 août). Un changement de sessionKey vide
 // la mémoire locale pour que le contenu de la session courante reparte intégralement vers Agôn,
 // au même rythme que sa purge.
-const SENT_OPINIONS_TO_AGON_MAX = 2000;
 
 function loadSentOpinionState() {
   if (!fs.existsSync(SENT_OPINIONS_TO_AGON_FILE)) return { sessionKey: null, links: new Set() };
@@ -416,8 +421,8 @@ function loadSentOpinionState() {
 
 function saveSentOpinionState(sessionKey, linksSet) {
   const links = [...linksSet];
-  const trimmed = links.length > SENT_OPINIONS_TO_AGON_MAX ? links.slice(-SENT_OPINIONS_TO_AGON_MAX) : links;
-  fs.writeFileSync(SENT_OPINIONS_TO_AGON_FILE, JSON.stringify({ sessionKey, links: trimmed }, null, 2), "utf8");
+  // Keep all acknowledgements in this session; truncation re-sends earlier batches.
+  fs.writeFileSync(SENT_OPINIONS_TO_AGON_FILE, JSON.stringify({ sessionKey, links }, null, 2), "utf8");
 }
 
 // Copie conforme de cleanText (veille-mixte.js) : les deux processus n'ont pas
@@ -464,7 +469,13 @@ async function removeOpinionArticlesFromAgon(links, subjectTitle = "") {
 // pas de génération IA ni de fiche débat : un simple lien vers l'article d'origine, affiché
 // sur la page /tribunes d'Agôn. Appelé aux mêmes endroits que runAutoPublishPipeline (tick
 // auto et déclenchement manuel), donc à chaque lancement du pipeline veille mixte.
-async function publishOpinionItemsToAgon() {
+let opinionPublishPromise = null;
+function publishOpinionItemsToAgon() {
+  if (opinionPublishPromise) return opinionPublishPromise;
+  opinionPublishPromise = publishOpinionItemsToAgonOnce().finally(() => { opinionPublishPromise = null; });
+  return opinionPublishPromise;
+}
+async function publishOpinionItemsToAgonOnce() {
   const sessionsFile = path.join(__dirname, "sessions-mixte.json");
   if (!fs.existsSync(sessionsFile)) return;
   let sessions;
@@ -473,7 +484,20 @@ async function publishOpinionItemsToAgon() {
 
   const latestSession = sessions[0];
   const sessionKey = latestSession.generatedAt || null;
-  const opinionItems = Array.isArray(latestSession.opinionItems) ? latestSession.opinionItems : [];
+  const sessionItems = (Array.isArray(latestSession.opinionItems) ? latestSession.opinionItems : [])
+    .filter(item => item.type !== 'youtube' || Date.parse(item.date) >= Date.now() - 86400000);
+  const apiStore = process.env.YOUTUBE_API_KEY ? getYoutubeApiStore() : null;
+  if (apiStore && !storageSync.isRestored("sessions-mixte.json"))
+    throw new Error("Session mixte non restaurée : envoi suspendu pour préserver Autres actus");
+  const publishedItems = loadSentToAgonItems().filter(isSentToAgonPublishedItem);
+  const publishedLinks = new Set(publishedItems.flatMap(item => item.links || [])
+    .map(link => typeof link === 'string' ? link : link?.link || link?.url).filter(Boolean).map(youtubeApi.canonicalLink));
+  const queueItems = apiStore ? youtubeApi.deliveryItems(apiStore, { publishedLinks }) : [];
+  const opinionItems = [...new Map([...queueItems, ...sessionItems].map(item => {
+    const link = youtubeApi.canonicalLink(item.link);
+    return [link, { ...item, link }];
+  })).values()]
+    .filter(item => !publishedLinks.has(item.link));
   if (!opinionItems.length) return;
 
   // Ré-exclusion au moment de l'envoi : les opinionItems de la session ont été
@@ -481,10 +505,10 @@ async function publishOpinionItemsToAgon() {
   // session — on écarte donc ici les articles dont le sujet (subjectKey posé
   // par extractOpinionItems côté veille-mixte.js) vient d'être publié en arène.
   const publishedSubjectKeys = new Set(
-    loadSentToAgonItems().map(item => cleanSubjectKeyText(item.subject)).filter(Boolean)
+    publishedItems.map(item => cleanSubjectKeyText(item.subject)).filter(Boolean)
   );
   const unpublishedItems = opinionItems.filter(
-    item => !item.subjectKey || !publishedSubjectKeys.has(item.subjectKey)
+    item => !publishedSubjectKeys.has(item.subjectKey || cleanSubjectKeyText(item.title))
   );
   const skippedAsPublished = opinionItems.length - unpublishedItems.length;
   if (skippedAsPublished > 0) {
@@ -494,7 +518,7 @@ async function publishOpinionItemsToAgon() {
   const sentState = loadSentOpinionState();
   // Nouvelle session (generatedAt différent) : Agôn vient de purger opinion_articles pour
   // cette même transition, la mémoire locale des liens "déjà envoyés" n'a plus lieu d'être.
-  const sentLinks = sessionKey && sentState.sessionKey === sessionKey ? sentState.links : new Set();
+  const sentLinks = sessionKey && sentState.sessionKey === sessionKey ? new Set([...sentState.links].map(youtubeApi.canonicalLink)) : new Set();
   const newItems = unpublishedItems
     .filter(item => item.link && !sentLinks.has(item.link))
     // subjectKey est un champ interne au bot : on ne l'envoie pas à Agôn.
@@ -533,11 +557,16 @@ async function publishOpinionItemsToAgon() {
       const response = await fetch(`${AGON_URL}/api/veille/opinion-articles`, {
         method: "POST",
         headers: botAuthHeaders({ "Content-Type": "application/json" }),
-        body: JSON.stringify({ items: batch, sessionKey })
+        body: JSON.stringify({ items: batch, sessionKey }),
+        signal: AbortSignal.timeout(30000)
       });
       if (response.ok) {
         batch.forEach(item => sentLinks.add(item.link));
         saveSentOpinionState(sessionKey, sentLinks);
+        if (apiStore) {
+          youtubeApi.acknowledge(apiStore, batch, sessionKey);
+          youtubeApi.saveStore(apiStore);
+        }
         return batch.length;
       }
       if (response.status === 413 && batch.length > MIN_SPLIT_BATCH_SIZE) {
@@ -5588,6 +5617,13 @@ app.post("/api/auto-collect-tick", requireMixteAuth, async (req, res) => {
   if (!AUTO_PIPELINES_ENABLED) {
     return res.json({ triggered: false, reason: "auto pipelines disabled on this instance" });
   }
+  if (process.env.YOUTUBE_API_KEY) {
+    try {
+      const lastRunAt = getYoutubeApiStore().lastRunAt;
+      if (!lastRunAt || Date.now() - Date.parse(lastRunAt) >= 60 * 60 * 1000)
+        runYoutubeHourly().catch(error => console.error("[youtube-api]", error.message));
+    } catch (error) { console.error("[youtube-api]", error.message); }
+  }
   const config = loadAutoCollectConfig();
   if (!config.enabled || !Array.isArray(config.entries) || !config.entries.length) {
     return res.json({ triggered: false, reason: "disabled" });
@@ -6596,6 +6632,44 @@ app.post("/api/auto-publish-certamen", (req, res) => {
   }
 });
 
+// YouTube collection runs independently of the editorial/AI session schedule.
+let youtubeHourlyPromise = null;
+function runYoutubeHourly() {
+  if (youtubeHourlyPromise) return youtubeHourlyPromise;
+  youtubeHourlyPromise = (async () => {
+    if (!process.env.YOUTUBE_API_KEY) return;
+    const channels = JSON.parse(fs.readFileSync(path.join(__dirname, "youtube-chaines.json"), "utf8"));
+    const store = getYoutubeApiStore();
+    const report = await youtubeApi.collectApi(channels, {
+      store, api: youtubeApi.createApi({ key: process.env.YOUTUBE_API_KEY,
+        onRequest: () => youtubeApi.consumeQuota(store)
+      }), persist: youtubeApi.saveStore
+    });
+    console.log(`[youtube-api] ${report.filter(s => s.statut === 'ok').length}/${channels.length} sources à jour ; ${Object.keys(store.videos).length} vidéos mémorisées.`);
+    // Back up discovery/cursors before delivery; acknowledgements are backed up
+    // even if publication fails. Google can be re-read after a lost container.
+    await storageSync.uploadAll();
+    try { await publishOpinionItemsToAgon(); }
+    finally { await storageSync.uploadAll(); }
+  })().finally(() => { youtubeHourlyPromise = null; });
+  return youtubeHourlyPromise;
+}
+
+app.get("/api/youtube-status", requireMixteAuth, (req, res) => {
+  try {
+    const store = getYoutubeApiStore();
+    const videos = Object.values(store.videos);
+    res.json({ enabled: Boolean(process.env.YOUTUBE_API_KEY), lastRunAt: store.lastRunAt || null,
+      total: videos.length, pending: videos.filter(v => v.status !== 'sent').length,
+      quota: store.quota || null, sources: store.sources, report: store.report || [] });
+  } catch (error) { res.status(500).json({ error: error.message }); }
+});
+app.post("/api/youtube/run", requireMixteAuth, (req, res) => {
+  if (!AUTO_PIPELINES_ENABLED || !process.env.YOUTUBE_API_KEY) return res.status(409).json({ error: "Collecte API inactive sur cette instance" });
+  res.json({ ok: true });
+  runYoutubeHourly().catch(error => console.error("[youtube-api]", error.message));
+});
+
 // ==================== FIN ROUTES CERTAMEN ====================
 
 app.get("/ping", (req, res) => {
@@ -6609,6 +6683,11 @@ storageSync.downloadAll().then(() => {
     if (AUTO_PIPELINES_ENABLED) {
       scheduleAutoCollect(loadAutoCollectConfig());
       scheduleAutoCollectCertamen(loadAutoCollectCertamenConfig(), onCertamenAutoCollectFinished);
+      if (process.env.YOUTUBE_API_KEY) {
+        const tick = () => runYoutubeHourly().catch(error => console.error("[youtube-api]", error.message));
+        tick();
+        setInterval(tick, 60 * 60 * 1000);
+      }
       resumePendingIdeasOnStartup();
       resumeCertamenPendingIdeasOnStartup();
     } else {
