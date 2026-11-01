@@ -310,6 +310,35 @@ function autoCollectSlotInstant(runKey) {
 
 let scheduledCollectInProgress = false;
 
+// veille-mixte.js garde ~250 Mo après une collecte (V8 ne les rend pas) : start.js le relance
+// avant l'auto-publish, l'étape qui a fait déborder les 512 Mo de Render le 31/10/2026. Sans
+// effet sur le résultat (la publication lit la session sur disque) ; on attend que le nouveau
+// process réponde, la publication l'appelant pour certains sujets.
+async function recycleVeilleMixteProcess() {
+  try {
+    const response = await fetch("http://127.0.0.1:3002/recycle", { method: "POST" });
+    if (!response.ok) {
+      console.warn(`[auto-collect] Recyclage de veille-mixte refusé (HTTP ${response.status}).`);
+      return;
+    }
+  } catch (err) {
+    console.warn("[auto-collect] Recyclage de veille-mixte impossible :", err.message);
+    return;
+  }
+  await new Promise(resolve => setTimeout(resolve, 1000));
+  for (let attempt = 0; attempt < 30; attempt++) {
+    try {
+      const response = await fetch("http://127.0.0.1:3002/progress");
+      if (response.ok) {
+        console.log("[auto-collect] veille-mixte relancé, mémoire de collecte libérée.");
+        return;
+      }
+    } catch (_) {}
+    await new Promise(resolve => setTimeout(resolve, 1000));
+  }
+  console.warn("[auto-collect] veille-mixte ne répond plus après recyclage, publication lancée quand même.");
+}
+
 // Seul point d'entrée des collectes programmées (timer interne, tick GitHub, rattrapage au
 // démarrage). lastRun est posé avant le premier await : le second déclencheur du même créneau
 // s'arrête net (le 31/10/2026, timer + tick lançaient l'auto-publish deux fois en parallèle).
@@ -337,6 +366,7 @@ async function runScheduledCollect(runKey, { skipCollect = false } = {}) {
       }
       // Session sauvegardée avant la publication, l'étape la plus gourmande en mémoire.
       await storageSync.uploadFiles(["sessions-mixte.json", "veille-mixte.json"]);
+      await recycleVeilleMixteProcess();
     }
 
     if (loadAutoPublishConfig().enabled) await runAutoPublishPipeline();
@@ -446,13 +476,41 @@ function buildAgonDebateUrl(debateId) {
   return `${AGON_URL.replace(/\/$/, "")}/debate?id=${encodeURIComponent(normalizedId)}`;
 }
 
+// Cache mémoire : la publication relisait et réécrivait ce fichier (~6 Mo) à chaque sujet,
+// ~70 Mo de tas par passage, ce qui contribuait au dépassement des 512 Mo de Render (31/10/2026).
+// Invalidé si le fichier change sur disque (restauration Supabase, édition manuelle).
+// Lecture seule pour les appelants : seul upsertSentToAgonItem modifie, puis sauvegarde.
+let sentToAgonCache = null;
+
 function loadSentToAgonItems() {
-  if (!fs.existsSync(SENT_TO_AGON_FILE)) return [];
+  let stat;
+  try { stat = fs.statSync(SENT_TO_AGON_FILE); } catch { return []; }
+  if (sentToAgonCache && sentToAgonCache.mtimeMs === stat.mtimeMs && sentToAgonCache.size === stat.size) {
+    return sentToAgonCache.items;
+  }
   try {
-    return JSON.parse(fs.readFileSync(SENT_TO_AGON_FILE, "utf8"));
+    const items = JSON.parse(fs.readFileSync(SENT_TO_AGON_FILE, "utf8"));
+    sentToAgonCache = { items, mtimeMs: stat.mtimeMs, size: stat.size };
+    return items;
   } catch {
     return [];
   }
+}
+
+// Au plus un envoi en cours + un en attente : les écritures faites pendant un envoi partent
+// ensemble au suivant, au lieu d'un envoi complet du fichier par sujet publié.
+let sentToAgonUploading = false;
+let sentToAgonUploadDirty = false;
+
+function uploadSentToAgonSoon() {
+  if (sentToAgonUploading) { sentToAgonUploadDirty = true; return; }
+  sentToAgonUploading = true;
+  storageSync.uploadFiles([path.basename(SENT_TO_AGON_FILE)])
+    .catch(err => console.warn("[storage-sync] Envoi sent-to-agon.json impossible :", err.message))
+    .finally(() => {
+      sentToAgonUploading = false;
+      if (sentToAgonUploadDirty) { sentToAgonUploadDirty = false; uploadSentToAgonSoon(); }
+    });
 }
 
 // Conserve les N entrées les plus récentes (index 0 = le plus récent, via unshift).
@@ -462,11 +520,13 @@ const SENT_TO_AGON_MAX = 500;
 
 function saveSentToAgonItems(items) {
   const trimmed = items.length > SENT_TO_AGON_MAX ? items.slice(0, SENT_TO_AGON_MAX) : items;
-  fs.writeFileSync(SENT_TO_AGON_FILE, JSON.stringify(trimmed, null, 2), "utf8");
+  // JSON compact : l'indentation gonflait fichier et chaînes en mémoire d'environ 20 %.
+  fs.writeFileSync(SENT_TO_AGON_FILE, JSON.stringify(trimmed), "utf8");
+  const stat = fs.statSync(SENT_TO_AGON_FILE);
+  sentToAgonCache = { items: trimmed, mtimeMs: stat.mtimeMs, size: stat.size };
   // Envoyé tout de suite : sans ça, un redémarrage en pleine publication restaurait l'ancienne
   // version depuis Supabase et le rattrapage republiait en double les sujets déjà envoyés.
-  storageSync.uploadFiles([path.basename(SENT_TO_AGON_FILE)])
-    .catch(err => console.warn("[storage-sync] Envoi sent-to-agon.json impossible :", err.message));
+  uploadSentToAgonSoon();
 }
 
 // Suivi séparé des liens de presse d'opinion déjà envoyés vers Agôn (/api/veille/opinion-articles) :
@@ -3248,19 +3308,23 @@ app.get("/", (req, res) => {
   res.redirect("/mixte");
 });
 
-app.get("/veille-mixte.html", requireMixteAuth, (req, res) => {
+// La page n'est plus générée d'office (démarrage, fin de collecte) pour économiser la mémoire :
+// on demande à veille-mixte.js de la rendre à la première consultation.
+async function sendVeilleMixtePage(res) {
   if (!fs.existsSync(VEILLE_MIXTE_HTML)) {
-    return sendEmptyMixtePage(res);
+    try {
+      await fetch("http://127.0.0.1:3002/render-html", { method: "POST" });
+    } catch (err) {
+      console.warn("[mixte] Rendu de veille-mixte.html impossible :", err.message);
+    }
   }
+  if (!fs.existsSync(VEILLE_MIXTE_HTML)) return sendEmptyMixtePage(res);
   res.sendFile(VEILLE_MIXTE_HTML);
-});
+}
 
-app.get("/mixte", requireMixteAuth, (req, res) => {
-  if (!fs.existsSync(VEILLE_MIXTE_HTML)) {
-    return sendEmptyMixtePage(res);
-  }
-  res.sendFile(VEILLE_MIXTE_HTML);
-});
+app.get("/veille-mixte.html", requireMixteAuth, (req, res) => sendVeilleMixtePage(res));
+
+app.get("/mixte", requireMixteAuth, (req, res) => sendVeilleMixtePage(res));
 
 app.get("/veille-mixte.json", (req, res) => {
   const filePath = path.join(__dirname, "veille-mixte.json");

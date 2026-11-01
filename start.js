@@ -157,8 +157,17 @@ async function clearOccupiedPorts() {
   }
 }
 
+// Plafond de tas par process enfant : les 3 process Node partagent les 512 Mo de Render et,
+// sans plafond, V8 laissait gonfler chaque tas bien au-delà de ses données vivantes (OOM du
+// 31/10/2026). Mesuré le 01/11 : collecte complète OK à 128 Mo, publication < 72 Mo.
+const CHILD_HEAP_MB = Number(process.env.BOT_CHILD_HEAP_MB) || 160;
+
+// veille-mixte.js sort avec ce code quand server.js lui demande de se recycler (POST /recycle) :
+// on le relance seul au lieu d'arrêter tout le bot.
+const RECYCLE_EXIT_CODE = 75;
+
 function spawnChild(label, script) {
-  const child = spawn("node", [script], {
+  const child = spawn("node", [`--max-old-space-size=${CHILD_HEAP_MB}`, script], {
     cwd: __dirname,
     stdio: ["inherit", "pipe", "pipe"]
   });
@@ -166,6 +175,12 @@ function spawnChild(label, script) {
 
   child.on("exit", (code, signal) => {
     if (shuttingDown) return;
+    if (code === RECYCLE_EXIT_CODE && child === veilleMixteProcess) {
+      console.log(label + " recyclé (mémoire libérée), relance...");
+      veilleMixteProcess = spawnChild(label, script);
+      writeRuntimeMeta();
+      return;
+    }
     console.warn(label + " s'est arrêté" + (signal ? " (signal " + signal + ")" : " (code " + code + ")") + ".");
     void stopChildren(1);
   });
