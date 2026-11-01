@@ -1,0 +1,315 @@
+{
+  "date": "2026-10-29",
+  "branch": "main",
+  "head": "3539d309fe660a7aab4f8696e77fe46ca5f0fb81",
+  "productionWrites": 0,
+  "productionMigrations": 0,
+  "ingestionsTriggered": 0,
+  "regression": {
+    "suites": 45,
+    "passedCases": 732,
+    "files": [
+      {
+        "file": "sortir/test-activity-deduplication.js",
+        "exit": 0,
+        "passedCases": 11
+      },
+      {
+        "file": "sortir/test-activity-validation.js",
+        "exit": 0,
+        "passedCases": 41
+      },
+      {
+        "file": "sortir/test-apply-disappearances.js",
+        "exit": 0,
+        "passedCases": 5
+      },
+      {
+        "file": "sortir/test-candidate-index-store.js",
+        "exit": 0,
+        "passedCases": 3
+      },
+      {
+        "file": "sortir/test-canonical-activity-payload.js",
+        "exit": 0,
+        "passedCases": 15
+      },
+      {
+        "file": "sortir/test-datatourisme-activity-safety.js",
+        "exit": 0,
+        "passedCases": 8
+      },
+      {
+        "file": "sortir/test-datatourisme-batch-checkpoint.js",
+        "exit": 0,
+        "passedCases": 17
+      },
+      {
+        "file": "sortir/test-datatourisme-chunking-disappearances.js",
+        "exit": 0,
+        "passedCases": 4
+      },
+      {
+        "file": "sortir/test-datatourisme-compact-candidate-cache.js",
+        "exit": 0,
+        "passedCases": 14
+      },
+      {
+        "file": "sortir/test-datatourisme-get-preflight.js",
+        "exit": 0,
+        "passedCases": 22
+      },
+      {
+        "file": "sortir/test-datatourisme-inter-poi.js",
+        "exit": 0,
+        "passedCases": 27
+      },
+      {
+        "file": "sortir/test-datatourisme-migration-static.js",
+        "exit": 0,
+        "passedCases": 5
+      },
+      {
+        "file": "sortir/test-datatourisme-national-scan.js",
+        "exit": 0,
+        "passedCases": 22
+      },
+      {
+        "file": "sortir/test-datatourisme-occurrence-window.js",
+        "exit": 0,
+        "passedCases": 19
+      },
+      {
+        "file": "sortir/test-datatourisme-poi-reconciliation.js",
+        "exit": 0,
+        "passedCases": 46
+      },
+      {
+        "file": "sortir/test-datatourisme-poi-repair.js",
+        "exit": 0,
+        "passedCases": 12
+      },
+      {
+        "file": "sortir/test-datatourisme-poi-state.js",
+        "exit": 0,
+        "passedCases": 32
+      },
+      {
+        "file": "sortir/test-datatourisme-reactivation.js",
+        "exit": 0,
+        "passedCases": 7
+      },
+      {
+        "file": "sortir/test-datatourisme-refusals.js",
+        "exit": 0,
+        "passedCases": 28
+      },
+      {
+        "file": "sortir/test-datatourisme-reopen-checkpoint.js",
+        "exit": 0,
+        "passedCases": 4
+      },
+      {
+        "file": "sortir/test-datatourisme-review-quarantine.js",
+        "exit": 0,
+        "passedCases": 30
+      },
+      {
+        "file": "sortir/test-datatourisme-selection-clock-sql.js",
+        "exit": 0,
+        "passedCases": 4
+      },
+      {
+        "file": "sortir/test-datatourisme-source-drift.js",
+        "exit": 0,
+        "passedCases": 17
+      },
+      {
+        "file": "sortir/test-datatourisme-temporal.js",
+        "exit": 0,
+        "passedCases": 43
+      },
+      {
+        "file": "sortir/test-datatourisme-write-behind.js",
+        "exit": 0,
+        "passedCases": 39
+      },
+      {
+        "file": "sortir/test-datatourisme.js",
+        "exit": 0,
+        "passedCases": 51
+      },
+      {
+        "file": "sortir/test-ingestion-orchestrator.js",
+        "exit": 0,
+        "passedCases": 6
+      },
+      {
+        "file": "sortir/test-known-provenance-batch-preload.js",
+        "exit": 0,
+        "passedCases": 10
+      },
+      {
+        "file": "sortir/test-known-provenance-batched-writes.js",
+        "exit": 0,
+        "passedCases": 9
+      },
+      {
+        "file": "sortir/test-known-provenance-fast-path.js",
+        "exit": 0,
+        "passedCases": 7
+      },
+      {
+        "file": "sortir/test-list-candidates-batch-prototype.js",
+        "exit": 0,
+        "passedCases": 8
+      },
+      {
+        "file": "sortir/test-mobilizon.js",
+        "exit": 0,
+        "passedCases": 19
+      },
+      {
+        "file": "sortir/test-new-occurrence-collection-items-batch.js",
+        "exit": 0,
+        "passedCases": 5
+      },
+      {
+        "file": "sortir/test-openagenda-json.js",
+        "exit": 0,
+        "passedCases": 22
+      },
+      {
+        "file": "sortir/test-openagenda-reunion-v1.js",
+        "exit": 0,
+        "passedCases": 0
+      },
+      {
+        "file": "sortir/test-openagenda-v1.js",
+        "exit": 0,
+        "passedCases": 0
+      },
+      {
+        "file": "sortir/test-organizer-review-policy.js",
+        "exit": 0,
+        "passedCases": 22
+      },
+      {
+        "file": "sortir/test-organizer-review-recovery.js",
+        "exit": 0,
+        "passedCases": 16
+      },
+      {
+        "file": "sortir/test-organizer-review-writer.js",
+        "exit": 0,
+        "passedCases": 18
+      },
+      {
+        "file": "sortir/test-paris-events.js",
+        "exit": 0,
+        "passedCases": 11
+      },
+      {
+        "file": "sortir/test-supabase-multisource-smoke.js",
+        "exit": 0,
+        "passedCases": 1
+      },
+      {
+        "file": "sortir/test-supabase-persistence.js",
+        "exit": 0,
+        "passedCases": 20
+      },
+      {
+        "file": "sortir/test-temporal-candidate-cache.js",
+        "exit": 0,
+        "passedCases": 10
+      },
+      {
+        "file": "test-sortir-scheduler-reunion.js",
+        "exit": 0,
+        "passedCases": 0
+      },
+      {
+        "file": "test-sortir-auto-ingest.js",
+        "exit": 0,
+        "passedCases": 22
+      }
+    ]
+  },
+  "postgres": {
+    "engine": "PostgreSQL 18.4 local, 127.0.0.1:55439/organizer_writer_test",
+    "passed": 22,
+    "failed": 0,
+    "skipped": 0,
+    "checks": [
+      "✓ mode écriture désactivé par défaut et autorisation exacte obligatoire",
+      "✓ plan altéré, doublon ou entrée sensible forcée : refus sécurisé",
+      "✓ référence nationale : 35 269 + 630 concernés, 646 hors diagnostic ; pilote 50/25 concordant",
+      "✓ CLI dry-run scelle un plan équivalent puis writer SQL local",
+      "✓ 75 dossiers : 50 ACTIVE, 25 REVIEW ; 646 hors diagnostic préservés ; identités inchangées",
+      "✓ interruption au milieu du lot : rollback activité ET journal",
+      "✓ erreur SQL dans le lot : transaction avortée et rollback intégral",
+      "✓ checkpoint incohérent : arrêt sans changer les activités",
+      "✓ échec avant COMMIT : rollback intégral puis reprise",
+      "✓ réponse perdue après COMMIT : checkpoint atomique et second replay sans écriture",
+      "✓ trigger SQL modifiant un intervalle : détecté et rollback",
+      "✓ activité changée depuis dry-run : arrêt et aucune promotion",
+      "✓ nouvelle quarantaine depuis dry-run : refus du lot",
+      "✓ nouveau candidat MATCH actuel : arrêt, aucune fusion ni promotion",
+      "✓ scheduler actif : refus avant toute écriture",
+      "✓ ingestion manuelle active : refus avant écriture",
+      "✓ fonction de verrouillage absente ou incorrecte : refus sans promotion",
+      "✓ checkpoint entre lots, interruption et replay de chaque lot",
+      "✓ deux sessions : ingestion déjà dans une transaction bloque immédiatement le writer NOWAIT",
+      "✓ deux sessions : tentative acquisition scheduler pendant le lot bloquée jusqu’au COMMIT",
+      "✓ RLS restrictive cachant un candidat : arrêt plutôt que comparaison incomplète",
+      "✓ rôle dédié : INSERT/DELETE identités et modification des horaires interdits"
+    ]
+  },
+  "explorer": {
+    "tests": 82,
+    "passed": 81,
+    "failed": 1,
+    "preexistingFailureReproducedOnHead": true,
+    "failure": "frontend: ordre Course/Exposition/Réunion publique"
+  },
+  "national": {
+    "referenceOnly": true,
+    "source": "sortir/organizer-review-validation-results.json",
+    "potentialPromotions": 35269,
+    "retainedAffected": 630,
+    "withoutTargetDiagnostic": 646,
+    "newLiveNationalSimulation": false,
+    "oldSnapshotsAvailable": false
+  },
+  "pilot": {
+    "synthetic": true,
+    "targetedActivities": 75,
+    "promoted": 50,
+    "retained": 25,
+    "untargetedWithoutDiagnostic": 646,
+    "identitiesUnchanged": true
+  },
+  "migration": {
+    "prepared": true,
+    "appliedToProduction": false,
+    "requiredBeforeRealBatch": true
+  },
+  "readyForRealBatchNow": false,
+  "blockers": [
+    "Migration/role/login non déployés ni autorisés",
+    "Snapshot frais et plan exact du pilote réel manquants"
+  ],
+  "hashes": {
+    "package.json": "844b6b9cfb0697a22e4ca6092999a99524e39df45ad9254927cfecb29ee0a7ee",
+    "package-lock.json": "4c4157eb45f01102409e854423cf78869e7bf875a986b96b88cdb2f4a9728c9b",
+    "migrations/2026-10-29-sortir-organizer-recovery-journal.sql": "b7ea43a919973ed6626333e6cf26090fdd3e72ba3ffba466d7fb7e6dd8784ec2",
+    "sortir/organizer-review-writer.js": "c977bb1b974f2d7d94332ef7fd0f10fc26884cdd63dbafb28757478514517bf7",
+    "sortir/run-organizer-review-writer.js": "e8d62052ae20818487ab34ebbb7231e13039e2c493bd395d58cdb5733d9f3026",
+    "sortir/run-organizer-review-dry-run.js": "ff982282a43b78d1898612a6d021664fed2b0d4e97bc87b2ab919fb7c2dead97",
+    "sortir/test-organizer-review-writer.js": "b9fad2fe579652f6725b309c01d15669c33b7426ae1bd6a58fff3c8d782891e0",
+    "sortir/test-helpers/organizer-writer-fixture.js": "be11b90c54fc6c1434df8707ff98e9792137fa045f73813d83ad4aca6c337609",
+    "sortir/test-organizer-review-recovery.js": "4c7a6e480ea8c4329154533d9f9dc1e0a01fc6e02401575744205508e64deb39",
+    "sortir/organizer-review-recovery-plan.md": "a7cee9ce2a36e17e72766d7ddccd07e88cf2787747bb77d04700ae4b783704b0"
+  }
+}

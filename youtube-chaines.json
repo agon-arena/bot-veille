@@ -58,8 +58,8 @@
   {
     "nom": "Regards",
     "orientation": "gauche / société",
-    "url": "https://www.youtube.com/@RegardsMedia",
-    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UC6x8XQshyp9lsw3M0OwEQ0g",
+    "url": "https://www.youtube.com/@RegardsFr",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UC45NsEyqTGMtOeEM-UvlTuQ",
     "opinionOnly": true
   },
   {
@@ -1055,12 +1055,6 @@
     "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PL9wDNu3ZrVQ4DktiNgLclEUeAjUtkLtFR"
   },
   {
-    "nom": "Regards (chaîne secondaire)",
-    "orientation": "généraliste / neutre",
-    "url": "https://www.youtube.com/channel/UC45NsEyqTGMtOeEM-UvlTuQ",
-    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UC45NsEyqTGMtOeEM-UvlTuQ"
-  },
-  {
     "nom": "Reservoir Apps",
     "orientation": "généraliste / neutre",
     "url": "https://www.youtube.com/channel/UCTFpJ5uRFY25i23Vd_--s8w",
@@ -1438,5 +1432,113 @@
     "orientation": "généraliste",
     "url": "https://www.youtube.com/channel/UCnl6WhqDxlqN3BPTaZvC4UQ",
     "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCnl6WhqDxlqN3BPTaZvC4UQ"
+  },
+  {
+    "nom": "LeSage REACTS",
+    "orientation": "gauche / commentaire politique",
+    "url": "https://www.youtube.com/@lesagereacts",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCdMMTVKABzOcanBYuEYq80w"
+  },
+  {
+    "nom": "Le Monde Moderne",
+    "orientation": "gauche / société",
+    "url": "https://www.youtube.com/@LeMondeModerne",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCA3dZqGawAvJO6Lexbj8EGg"
+  },
+  {
+    "nom": "QG TV",
+    "orientation": "gauche / critique sociale",
+    "url": "https://www.youtube.com/@LibreQg",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCCDPdHuBGfjMxlM3xZANgGQ"
+  },
+  {
+    "nom": "Paroles D'Honneur",
+    "orientation": "gauche / quartiers populaires",
+    "url": "https://www.youtube.com/@ParolesDHonneur",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCTth6-5ZiCD_CUJ6xOMug_w"
+  },
+  {
+    "nom": "L'Insoumission",
+    "orientation": "gauche / insoumis",
+    "url": "https://www.youtube.com/@CanalFi",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCxc4L2LKEeViVyNA5taSBIA"
+  },
+  {
+    "nom": "Le Vent Se Lève",
+    "orientation": "gauche / idées",
+    "url": "https://www.youtube.com/@lvslmedia",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCNsyUg9n7TB365g4n13UOIg"
+  },
+  {
+    "nom": "Au Poste",
+    "orientation": "gauche / libertés publiques",
+    "url": "https://www.youtube.com/@au_poste",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UC8-FN_ftL-crIaXMouuykyQ"
+  },
+  {
+    "nom": "Mr Mondialisation",
+    "orientation": "écologie / gauche",
+    "url": "https://www.youtube.com/@MrMondialisation_Officiel",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UChr5O2aamBLN1ZVkiIj8FdQ"
+  },
+  {
+    "nom": "Cerveaux Non Disponibles",
+    "orientation": "gauche radicale",
+    "url": "https://www.youtube.com/@cerveauxnondisponibles2687",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCyZvhM3scPMcemgiNSv4UtA"
+  },
+  {
+    "nom": "Contre Attaque",
+    "orientation": "gauche radicale",
+    "url": "https://www.youtube.com/@contreattaque1881",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCTlSHe68QnKiZfj2kVi4XZA"
+  },
+  {
+    "nom": "Basta!",
+    "orientation": "gauche / social / écologie",
+    "url": "https://www.youtube.com/@Bastamedia",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCl2DC-Gr2Ym2qfsyvesTBdA"
+  },
+  {
+    "nom": "Hors-Série",
+    "orientation": "gauche / idées",
+    "url": "https://www.youtube.com/@hors-serie5965",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UC11tPrPcudLv8J2ladG2DsA"
+  },
+  {
+    "nom": "Juan Branco",
+    "orientation": "gauche / commentaire politique",
+    "url": "https://www.youtube.com/@JuanBrancoFR",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCMOrzCo7Jdp6qqEX24CXuog"
+  },
+  {
+    "nom": "Partager C'est Sympa",
+    "orientation": "écologie / gauche",
+    "url": "https://www.youtube.com/@PartagerCestSympa",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCr_3nQ4eRCwm_XUDpf62MAg"
+  },
+  {
+    "nom": "Bon Pote",
+    "orientation": "écologie / climat",
+    "url": "https://www.youtube.com/@bonpoteofficiel",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UC9mes7ZXbrZ_UXn0jzBt21A"
+  },
+  {
+    "nom": "Cemil Şanlı",
+    "orientation": "gauche / commentaire politique",
+    "url": "https://www.youtube.com/@CemilSanli",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UC6-BWVphnrCj5xNL73qOd0w"
+  },
+  {
+    "nom": "Clément Viktorovitch",
+    "orientation": "gauche",
+    "url": "https://www.youtube.com/@Clemovitch",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCQcas4dulTzVUrAo0fMfWWg"
+  },
+  {
+    "nom": "POLITICO Europe",
+    "orientation": "européen / libéral",
+    "url": "https://www.youtube.com/@POLITICO",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCgjtvMmHXbutALaw9XzRkAg"
   }
 ]

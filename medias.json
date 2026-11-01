@@ -903,5 +903,15 @@
     "orientation": "gauche / démocratie / analyse",
     "rss": "https://praxismedia.fr/feed/",
     "opinionOnly": true
+  },
+  {
+    "nom": "Global Goodness",
+    "orientation": "nouvelles positives",
+    "rss": "https://globalgoodness.ca/feed/"
+  },
+  {
+    "nom": "L’Optimisme",
+    "orientation": "nouvelles positives",
+    "rss": "https://loptimisme.com/feed/"
   }
 ]

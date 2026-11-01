@@ -1,5 +1,9 @@
 # Correction organizer_name_missing et reprise historique
 
+> Mise à jour du 29 octobre 2026 : le writer est implémenté et testé hors
+> production, mais non déployé. Voir `organizer-review-writer-report.md` et la
+> dernière section de ce document. Les sections prototype retracent l'étape précédente.
+
 La correction est limitée à DATAtourisme. Le diagnostic reste NEEDS_REVIEW et est
 conservé dans collection_items. Il cesse seulement d'imposer le statut review à
 un nouveau DISTINCT si aucune autre alerte ou erreur n'existe. Les décisions
@@ -26,7 +30,7 @@ connecteurs gardent leur comportement.
 Aucun changement au validateur, comparateur, zonage, règles de périodes,
 fingerprints POI, scheduler ou filtre éditorial Explorer.
 
-## Outil actuellement disponible : dry-run hors ligne uniquement
+## Prototype validé le 28 octobre : dry-run hors ligne
 
 `run-organizer-review-dry-run.js` n'importe aucun store d'écriture, ne charge pas
 les credentials et n'a volontairement aucun mode `--apply`. Aucun changement
@@ -89,7 +93,7 @@ existants ; aucun seuil n'est changé. La publicabilité Explorer est un contrô
 supplémentaire : une occurrence avec un code géographique refusé par Explorer
 ne gagne pas une carte par simple changement de statut.
 
-## Protocole d'écriture proposé — à implémenter/autoriser séparément
+## Protocole initial d'écriture — implémentation du 29 octobre décrite plus bas
 
 Le présent outil est un préparateur vérifiable, **pas un writer de production**.
 Aucun SQL massif review → active et aucune migration n'ont été ajoutés.
@@ -150,3 +154,40 @@ après rejeu demeure vérifiée.
 Les résultats mesurés et les commandes exactes de simulation/pilote figurent dans
 `organizer-review-correction-report.md`. Aucune reprise réelle n'est autorisée par
 la seule réussite de ces tests.
+
+## Mise à jour du 29 octobre 2026 : writer implémenté, non déployé
+
+Les sections décrivant le prototype dry-run et la proposition d'écriture
+ci-dessus retracent l'étape du 28 octobre. Le writer est maintenant livré dans
+`organizer-review-writer.js`, avec le CLI `run-organizer-review-writer.js`.
+Voir `organizer-review-writer-report.md` pour la validation actuelle.
+
+Le CLI existant reste dry-run par défaut. `--prepare-write-plan FICHIER` scelle
+un plan complet (décisions, empreintes des activités/provenances/IDs/diagnostics
+et décisions, code, migration et taille des lots). `--apply` exige le fichier de
+plan, son hash explicitement autorisé, une variable d'autorisation distincte et
+une connexion PostgreSQL dédiée ; aucun chargement automatique de .env ni de
+clé Supabase REST. Par défaut, un seul nouveau lot est exécuté au maximum.
+
+Chaque lot prend dans sa transaction tous les verrous d'exclusion nécessaires,
+contrôle le verrou partagé du scheduler et les runs actifs, puis relit l'état
+courant. Une activité changée depuis le plan, une nouvelle quarantaine ou un
+nouveau MATCH annule le lot entier. Les verrous sont contrôlés dans pg_locks.
+Ils bloquent également les ingestions manuelles qui n'utilisent pas le verrou
+du scheduler. Un NOWAIT échoué arrête le writer ; aucun retry aveugle.
+
+La migration proposée crée `sortir_organizer_recovery_batches` : journal et
+checkpoint sont insérés dans la même transaction que les promotions. La clé
+(plan_hash,batch_number) permet de réconcilier un COMMIT dont la réponse est
+perdue. Un échec annule aussi le checkpoint. Les champs de statut et updated_at
+avant/après et les compteurs sont conservés dans le journal.
+
+Le rôle NOLOGIN dédié ne peut mettre à jour que record_status et updated_at.
+Les INSERT/DELETE d'identités et les modifications d'horaires lui sont refusés.
+Une fonction SECURITY DEFINER limitée aux verrous permet cette exclusion sans
+donner au rôle le droit de modifier toutes les tables. Aucun SQL utilisateur
+n'est accepté par cette fonction. Les accès REST publics sont révoqués.
+
+Aucune migration ni écriture n'a été exécutée en production. Les snapshots
+précédents stockés dans /tmp ne sont plus présents : un snapshot frais et un
+nouveau plan pilote sont nécessaires avant toute autorisation de lot réel.

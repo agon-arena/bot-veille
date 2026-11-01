@@ -1,5 +1,5 @@
 "use strict";
-// Offline only. Deliberately no --apply mode, credentials or Supabase dependency.
+// Offline by default. Explicit authorized writer is isolated in a separate CLI.
 const fs = require('fs'), path = require('path'), crypto = require('crypto');
 const { TemporalCandidateIndex } = require('./temporal-candidate-cache');
 const { rowToActivity } = require('./supabase-persistence');
@@ -11,7 +11,7 @@ function runDryRun({ rows, decisions, diagnosticIds, asOf, outputDir, batchSize 
   if (!(maxBatches === Infinity || Number.isInteger(maxBatches) && maxBatches >= 0)) throw Error('Invalid maxBatches');
   if (!Number.isFinite(Date.parse(asOf))) throw Error('Explicit asOf required');
   if (!snapshotKey) throw Error('Immutable snapshotKey required');
-  const inputs = { snapshotKey, asOf, batchSize, targetIds: targetIds && [...targetIds].sort(), code: ['run-organizer-review-dry-run.js','organizer-review-policy.js','organizer-review-recovery.js','activity-validation.js','activity-deduplication.js','supabase-persistence.js','temporal-candidate-cache.js','datatourisme-review-quarantine.js','datatourisme-occurrence-identity.js'].map(f => [f, digest(fs.readFileSync(path.join(__dirname, f)))]) };
+  const inputs = { snapshotKey, asOf, batchSize, targetIds: targetIds && [...targetIds].sort(), code: ['run-organizer-review-dry-run.js','organizer-review-policy.js','datatourisme-geography-policy.js','data/insee-not-postal-codes.json','data/datatourisme-geographic-review-watchlist.json','organizer-review-recovery.js','activity-validation.js','activity-deduplication.js','supabase-persistence.js','temporal-candidate-cache.js','datatourisme-review-quarantine.js','datatourisme-occurrence-identity.js'].map(f => [f, digest(fs.readFileSync(path.join(__dirname, f)))]) };
   const key = digest(JSON.stringify(inputs));
   fs.mkdirSync(outputDir, { recursive: true });
   const manifestFile = path.join(outputDir, 'manifest.json');
@@ -61,22 +61,30 @@ function loadSnapshot(dir) {
   const legacyFile=path.join(dir,'legacy-payloads.json'),legacy=fs.existsSync(legacyFile)?fs.readFileSync(legacyFile):null,legacyMap=new Map(legacy?JSON.parse(legacy).map(p=>[p.id,p.source_payload]):[]);
   if(legacy) hashes.push(['legacy-payloads.json',digest(legacy)]);
   for(const r of rows){r.provenances=[];r.external_ids=[];}
-  for(const p of data['sortir_provenances.json']) {const meta=periods.get(p.id);p.source=sourceMap.get(p.source_id);p.source_payload=legacyMap.get(p.id)||p.source_payload||(meta&&{version:meta.version,period:meta.period,normalized:meta.normalized});if(!rowMap.has(p.activity_id))throw Error('Orphan provenance');rowMap.get(p.activity_id).provenances.push(p);}
+  for(const p of data['sortir_provenances.json']) {const meta=periods.get(p.id);p.source=sourceMap.get(p.source_id);p.source_payload=legacyMap.get(p.id)||p.source_payload||(meta&&{version:meta.version,period:meta.period,normalized:meta.normalized,timezoneContext:meta.timezoneContext});if(!rowMap.has(p.activity_id))throw Error('Orphan provenance');rowMap.get(p.activity_id).provenances.push(p);}
   for(const e of data['sortir_external_ids.json']) {if(!rowMap.has(e.activity_id))throw Error('Orphan external ID');rowMap.get(e.activity_id).external_ids.push(e);}
   const expected=data['baseline.json'].before;
   for(const [name,array]of [['sortir_activities',rows],['sortir_provenances',data['sortir_provenances.json']],['sortir_external_ids',data['sortir_external_ids.json']],['sortir_collection_items',data['sortir_collection_items.json']]])if(array.length!==expected[name])throw Error('Incomplete snapshot '+name);
   const diagnosticIds=new Set(data['sortir_collection_items.json'].filter(i=>[...(i.diagnostics?.warnings||[]),...(i.diagnostics?.errors||[])].some(w=>w.code==='organizer_name_missing')).map(i=>i.activity_id));
-  return { rows, decisions:data['decisions.json'], diagnosticIds, snapshotKey:digest(JSON.stringify(hashes)), asOf:data['baseline.json'].at };
+  return { rows, decisions:data['decisions.json'], collectionItems:data['sortir_collection_items.json'], diagnosticIds, snapshotKey:digest(JSON.stringify(hashes)), asOf:data['baseline.json'].at };
 }
 if(require.main===module){
+  if(process.argv.includes('--apply')) {
+    require('./run-organizer-review-writer').main(process.argv.slice(2)).catch(e=>{console.error(e.message);process.exitCode=1;});
+  } else {
   global.fetch=async()=>{throw Error('Network forbidden: offline dry-run only');};
   try {
     const args=process.argv.slice(2),options={};
-    while(args.length){const flag=args.shift();if(flag==='--resume')options.resume=true;else if(['--snapshot-dir','--output-dir','--batch-size','--max-batches','--ids-file','--as-of'].includes(flag)&&args.length&&!args[0].startsWith('--'))options[flag.slice(2)]=args.shift();else throw Error('Unknown/missing option '+flag);}
+    while(args.length){const flag=args.shift();if(flag==='--resume')options.resume=true;else if(['--snapshot-dir','--output-dir','--batch-size','--max-batches','--ids-file','--as-of','--prepare-write-plan'].includes(flag)&&args.length&&!args[0].startsWith('--'))options[flag.slice(2)]=args.shift();else throw Error('Unknown/missing option '+flag);}
     if(!options['snapshot-dir']||!options['output-dir'])throw Error('Required: --snapshot-dir DIR --output-dir DIR [--batch-size 100] [--max-batches N] [--resume] [--ids-file JSON] [--as-of ISO]');
     const input=fs.realpathSync(options['snapshot-dir']),output=path.resolve(options['output-dir']);if(output===input||output.startsWith(input+path.sep))throw Error('Output must be outside immutable snapshot');
     const snapshot=loadSnapshot(input),result=runDryRun({...snapshot,asOf:options['as-of']||snapshot.asOf,outputDir:output,batchSize:Number(options['batch-size']||100),maxBatches:options['max-batches']===undefined?Infinity:Number(options['max-batches']),targetIds:options['ids-file']?new Set(JSON.parse(fs.readFileSync(options['ids-file']))):null,resume:options.resume});
+    if(options['prepare-write-plan']) {
+      const plan=require('./organizer-review-writer').buildWritePlan({snapshot,result,batchSize:Math.min(100,Number(options['batch-size']||75))});
+      fs.writeFileSync(path.resolve(options['prepare-write-plan']),JSON.stringify(plan,null,2),{flag:'wx'});
+    }
     console.log(JSON.stringify({...result,results:undefined},null,2));if(result.totals.errors)process.exitCode=1;
   }catch(e){console.error(e.message);process.exitCode=1;}
+  }
 }
 module.exports={runDryRun,loadSnapshot};
