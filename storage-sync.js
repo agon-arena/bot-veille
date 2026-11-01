@@ -242,7 +242,25 @@ async function downloadAll() {
   downloadCompleted = true;
 }
 
-async function uploadAll() {
+// Toutes les écritures vers Supabase passent par cette file : uploadAll() périodique et
+// uploadFiles() ciblé (session juste générée, sent-to-agon.json après chaque publication)
+// lisent/écrivent le même fichier d'état, jamais en parallèle.
+let uploadChain = Promise.resolve();
+
+function uploadAll() {
+  return uploadFiles(FILES_TO_SYNC);
+}
+
+// Envoi immédiat de quelques fichiers, sans attendre la sync périodique : le disque Render est
+// éphémère, un fichier non encore envoyé est perdu au redémarrage (incident du 31/10/2026 :
+// conteneur tué pour mémoire > 512 Mo pendant l'auto-publish, session du jour perdue).
+function uploadFiles(filenames) {
+  const run = uploadChain.then(() => uploadFilesNow(filenames));
+  uploadChain = run.catch(() => {});
+  return run;
+}
+
+async function uploadFilesNow(filenames) {
   if (!enabled) return;
   if (!downloadCompleted) {
     console.warn("[storage-sync] uploadAll() ignoré : downloadAll() n'est pas encore terminé (protection anti-écrasement).");
@@ -253,7 +271,7 @@ async function uploadAll() {
   const uploaded = [];
   const unchanged = [];
 
-  for (const filename of FILES_TO_SYNC) {
+  for (const filename of FILES_TO_SYNC.filter(name => filenames.includes(name))) {
     const localPath = path.join(__dirname, filename);
     if (!fs.existsSync(localPath) || restoreFailures.has(filename)) continue;
     try {
@@ -315,4 +333,4 @@ function startPeriodicSync() {
   );
 }
 
-module.exports = { isRestored, init, downloadAll, uploadAll, startPeriodicSync };
+module.exports = { isRestored, init, downloadAll, uploadAll, uploadFiles, startPeriodicSync };

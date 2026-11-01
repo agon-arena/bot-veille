@@ -134,6 +134,8 @@ function migrateAutoCollectConfig(config) {
   const base = { enabled: !!config.enabled };
   if (config.minSources) base.minSources = config.minSources;
   if (config.lastRun) base.lastRun = config.lastRun;
+  if (config.lastPublished) base.lastPublished = config.lastPublished;
+  if (config.resumeAttempts) base.resumeAttempts = config.resumeAttempts;
   if (Array.isArray(config.entries) && config.entries.length) {
     base.entries = config.entries;
     return base;
@@ -146,6 +148,10 @@ function migrateAutoCollectConfig(config) {
 function loadAutoCollectConfig() {
   try { return migrateAutoCollectConfig(JSON.parse(fs.readFileSync(AUTO_COLLECT_FILE, "utf8"))); }
   catch { return { enabled: false, entries: [{ time: "08:00", days: AUTO_COLLECT_ALL_DAYS.slice() }] }; }
+}
+
+function saveAutoCollectConfig(config) {
+  fs.writeFileSync(AUTO_COLLECT_FILE, JSON.stringify(config, null, 2), "utf8");
 }
 
 function getReunionWeekday() {
@@ -276,22 +282,15 @@ function scheduleOneAutoCollect(entry) {
     console.log(`[auto-collect] Déclenchement à ${timeStr}`);
     const cfg = loadAutoCollectConfig();
     if (cfg.enabled) {
-      try {
-        await fetch("http://127.0.0.1:3002/refresh", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ minSources: cfg.minSources || 2 })
-        });
-        const autoPub = loadAutoPublishConfig();
-        const finished = await waitForVeilleMixteIdle();
-        if (finished) {
-          if (autoPub.enabled) await runAutoPublishPipeline();
-          await publishOpinionItemsToAgon();
-        } else {
-          console.warn("[auto-collect] Délai d'attente dépassé, auto-publish annulé pour cette session.");
+      const runKey = `${getReunionDateStr()}_${timeStr}`;
+      if (cfg.lastRun === runKey) {
+        console.log(`[auto-collect] Créneau ${runKey} déjà lancé (tick), rien à faire.`);
+      } else {
+        try {
+          await runScheduledCollect(runKey);
+        } catch (err) {
+          console.error(`[auto-collect] Erreur: ${err.message}`);
         }
-      } catch (err) {
-        console.error(`[auto-collect] Erreur: ${err.message}`);
       }
       scheduleOneAutoCollect(entry);
     }
@@ -299,6 +298,118 @@ function scheduleOneAutoCollect(entry) {
   autoCollectTimers.push(timer);
   const nextDate = new Date(Date.now() + delay);
   console.log(`[auto-collect] Prochaine collecte ${timeStr} (jours ${days.join(",")}) → ${nextDate.toLocaleDateString("fr-FR")} à ${nextDate.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}`);
+}
+
+// Clé de créneau "AAAA-MM-JJ_HH:MM" (heure de la Réunion) → instant UTC du créneau.
+function autoCollectSlotInstant(runKey) {
+  const [date, time] = runKey.split("_");
+  const [y, mo, d] = date.split("-").map(Number);
+  const [h, m] = time.split(":").map(Number);
+  return new Date(Date.UTC(y, mo - 1, d, h - REUNION_UTC_OFFSET_HOURS, m));
+}
+
+let scheduledCollectInProgress = false;
+
+// veille-mixte.js garde ~250 Mo après une collecte (V8 ne les rend pas) : start.js le relance
+// avant l'auto-publish, l'étape qui a fait déborder les 512 Mo de Render le 31/10/2026. Sans
+// effet sur le résultat (la publication lit la session sur disque) ; on attend que le nouveau
+// process réponde, la publication l'appelant pour certains sujets.
+async function recycleVeilleMixteProcess() {
+  try {
+    const response = await fetch("http://127.0.0.1:3002/recycle", { method: "POST" });
+    if (!response.ok) {
+      console.warn(`[auto-collect] Recyclage de veille-mixte refusé (HTTP ${response.status}).`);
+      return;
+    }
+  } catch (err) {
+    console.warn("[auto-collect] Recyclage de veille-mixte impossible :", err.message);
+    return;
+  }
+  await new Promise(resolve => setTimeout(resolve, 1000));
+  for (let attempt = 0; attempt < 30; attempt++) {
+    try {
+      const response = await fetch("http://127.0.0.1:3002/progress");
+      if (response.ok) {
+        console.log("[auto-collect] veille-mixte relancé, mémoire de collecte libérée.");
+        return;
+      }
+    } catch (_) {}
+    await new Promise(resolve => setTimeout(resolve, 1000));
+  }
+  console.warn("[auto-collect] veille-mixte ne répond plus après recyclage, publication lancée quand même.");
+}
+
+// Seul point d'entrée des collectes programmées (timer interne, tick GitHub, rattrapage au
+// démarrage). lastRun est posé avant le premier await : le second déclencheur du même créneau
+// s'arrête net (le 31/10/2026, timer + tick lançaient l'auto-publish deux fois en parallèle).
+// lastPublished n'est posé qu'une fois la publication terminée : c'est lui qui permet de
+// rattraper au redémarrage un créneau lancé mais jamais publié.
+async function runScheduledCollect(runKey, { skipCollect = false } = {}) {
+  if (scheduledCollectInProgress) return false;
+  scheduledCollectInProgress = true;
+  try {
+    const config = loadAutoCollectConfig();
+    config.lastRun = runKey;
+    saveAutoCollectConfig(config);
+    await storageSync.uploadFiles(["auto-collect-config.json"]);
+
+    if (!skipCollect) {
+      await fetch("http://127.0.0.1:3002/refresh", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ minSources: config.minSources || 2 })
+      });
+      const finished = await waitForVeilleMixteIdle();
+      if (!finished) {
+        console.warn(`[auto-collect] Délai d'attente dépassé, auto-publish annulé pour ${runKey}.`);
+        return true;
+      }
+      // Session sauvegardée avant la publication, l'étape la plus gourmande en mémoire.
+      await storageSync.uploadFiles(["sessions-mixte.json", "veille-mixte.json"]);
+      await recycleVeilleMixteProcess();
+    }
+
+    if (loadAutoPublishConfig().enabled) await runAutoPublishPipeline();
+    await publishOpinionItemsToAgon();
+
+    const after = loadAutoCollectConfig();
+    after.lastPublished = runKey;
+    saveAutoCollectConfig(after);
+    await storageSync.uploadFiles(["auto-collect-config.json"]);
+    console.log(`[auto-collect] Créneau ${runKey} collecté et publié.`);
+    return true;
+  } finally {
+    scheduledCollectInProgress = false;
+  }
+}
+
+// Rattrapage après redémarrage (mémoire dépassée, redéploiement) d'un créneau du jour lancé mais
+// jamais publié jusqu'au bout. Session du créneau sauvegardée → publication seule ; sinon
+// collecte complète. Deux tentatives au plus par créneau, pour ne pas boucler si c'est la
+// tentative elle-même qui fait retomber le conteneur.
+const AUTO_COLLECT_MAX_RESUME_ATTEMPTS = 2;
+
+function resumeInterruptedAutoCollect() {
+  const config = loadAutoCollectConfig();
+  const runKey = config.lastRun;
+  if (!config.enabled || !runKey || config.lastPublished === runKey) return;
+  if (!runKey.startsWith(`${getReunionDateStr()}_`)) return;
+  const attempts = config.resumeAttempts?.runKey === runKey ? config.resumeAttempts.count : 0;
+  if (attempts >= AUTO_COLLECT_MAX_RESUME_ATTEMPTS) {
+    console.warn(`[auto-collect] Créneau ${runKey} toujours inachevé après ${attempts} rattrapage(s), abandon.`);
+    return;
+  }
+  config.resumeAttempts = { runKey, count: attempts + 1 };
+  saveAutoCollectConfig(config);
+
+  let sessionSaved = false;
+  try {
+    const sessions = JSON.parse(fs.readFileSync(path.join(__dirname, "sessions-mixte.json"), "utf8"));
+    sessionSaved = Date.parse(sessions[0]?.generatedAt) >= autoCollectSlotInstant(runKey).getTime() - 60 * 1000;
+  } catch (_) {}
+  console.log(`[auto-collect] Rattrapage ${attempts + 1}/${AUTO_COLLECT_MAX_RESUME_ATTEMPTS} du créneau ${runKey} : ${sessionSaved ? "publication de la session sauvegardée" : "collecte complète"}.`);
+  runScheduledCollect(runKey, { skipCollect: sessionSaved })
+    .catch(err => console.error(`[auto-collect] Erreur rattrapage ${runKey} : ${err.message}`));
 }
 
 function scheduleAutoCollect(config) {
@@ -365,13 +476,41 @@ function buildAgonDebateUrl(debateId) {
   return `${AGON_URL.replace(/\/$/, "")}/debate?id=${encodeURIComponent(normalizedId)}`;
 }
 
+// Cache mémoire : la publication relisait et réécrivait ce fichier (~6 Mo) à chaque sujet,
+// ~70 Mo de tas par passage, ce qui contribuait au dépassement des 512 Mo de Render (31/10/2026).
+// Invalidé si le fichier change sur disque (restauration Supabase, édition manuelle).
+// Lecture seule pour les appelants : seul upsertSentToAgonItem modifie, puis sauvegarde.
+let sentToAgonCache = null;
+
 function loadSentToAgonItems() {
-  if (!fs.existsSync(SENT_TO_AGON_FILE)) return [];
+  let stat;
+  try { stat = fs.statSync(SENT_TO_AGON_FILE); } catch { return []; }
+  if (sentToAgonCache && sentToAgonCache.mtimeMs === stat.mtimeMs && sentToAgonCache.size === stat.size) {
+    return sentToAgonCache.items;
+  }
   try {
-    return JSON.parse(fs.readFileSync(SENT_TO_AGON_FILE, "utf8"));
+    const items = JSON.parse(fs.readFileSync(SENT_TO_AGON_FILE, "utf8"));
+    sentToAgonCache = { items, mtimeMs: stat.mtimeMs, size: stat.size };
+    return items;
   } catch {
     return [];
   }
+}
+
+// Au plus un envoi en cours + un en attente : les écritures faites pendant un envoi partent
+// ensemble au suivant, au lieu d'un envoi complet du fichier par sujet publié.
+let sentToAgonUploading = false;
+let sentToAgonUploadDirty = false;
+
+function uploadSentToAgonSoon() {
+  if (sentToAgonUploading) { sentToAgonUploadDirty = true; return; }
+  sentToAgonUploading = true;
+  storageSync.uploadFiles([path.basename(SENT_TO_AGON_FILE)])
+    .catch(err => console.warn("[storage-sync] Envoi sent-to-agon.json impossible :", err.message))
+    .finally(() => {
+      sentToAgonUploading = false;
+      if (sentToAgonUploadDirty) { sentToAgonUploadDirty = false; uploadSentToAgonSoon(); }
+    });
 }
 
 // Conserve les N entrées les plus récentes (index 0 = le plus récent, via unshift).
@@ -381,7 +520,13 @@ const SENT_TO_AGON_MAX = 500;
 
 function saveSentToAgonItems(items) {
   const trimmed = items.length > SENT_TO_AGON_MAX ? items.slice(0, SENT_TO_AGON_MAX) : items;
-  fs.writeFileSync(SENT_TO_AGON_FILE, JSON.stringify(trimmed, null, 2), "utf8");
+  // JSON compact : l'indentation gonflait fichier et chaînes en mémoire d'environ 20 %.
+  fs.writeFileSync(SENT_TO_AGON_FILE, JSON.stringify(trimmed), "utf8");
+  const stat = fs.statSync(SENT_TO_AGON_FILE);
+  sentToAgonCache = { items: trimmed, mtimeMs: stat.mtimeMs, size: stat.size };
+  // Envoyé tout de suite : sans ça, un redémarrage en pleine publication restaurait l'ancienne
+  // version depuis Supabase et le rattrapage republiait en double les sujets déjà envoyés.
+  uploadSentToAgonSoon();
 }
 
 // Suivi séparé des liens de presse d'opinion déjà envoyés vers Agôn (/api/veille/opinion-articles) :
@@ -3163,19 +3308,23 @@ app.get("/", (req, res) => {
   res.redirect("/mixte");
 });
 
-app.get("/veille-mixte.html", requireMixteAuth, (req, res) => {
+// La page n'est plus générée d'office (démarrage, fin de collecte) pour économiser la mémoire :
+// on demande à veille-mixte.js de la rendre à la première consultation.
+async function sendVeilleMixtePage(res) {
   if (!fs.existsSync(VEILLE_MIXTE_HTML)) {
-    return sendEmptyMixtePage(res);
+    try {
+      await fetch("http://127.0.0.1:3002/render-html", { method: "POST" });
+    } catch (err) {
+      console.warn("[mixte] Rendu de veille-mixte.html impossible :", err.message);
+    }
   }
+  if (!fs.existsSync(VEILLE_MIXTE_HTML)) return sendEmptyMixtePage(res);
   res.sendFile(VEILLE_MIXTE_HTML);
-});
+}
 
-app.get("/mixte", requireMixteAuth, (req, res) => {
-  if (!fs.existsSync(VEILLE_MIXTE_HTML)) {
-    return sendEmptyMixtePage(res);
-  }
-  res.sendFile(VEILLE_MIXTE_HTML);
-});
+app.get("/veille-mixte.html", requireMixteAuth, (req, res) => sendVeilleMixtePage(res));
+
+app.get("/mixte", requireMixteAuth, (req, res) => sendVeilleMixtePage(res));
 
 app.get("/veille-mixte.json", (req, res) => {
   const filePath = path.join(__dirname, "veille-mixte.json");
@@ -5645,32 +5794,12 @@ app.post("/api/auto-collect-tick", requireMixteAuth, async (req, res) => {
   if (config.lastRun === runKey) {
     return res.json({ triggered: false, reason: "already run" });
   }
-  try {
-    await fetch("http://127.0.0.1:3002/refresh", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ minSources: config.minSources || 2 })
-    });
-    config.lastRun = runKey;
-    fs.writeFileSync(AUTO_COLLECT_FILE, JSON.stringify(config, null, 2), "utf8");
-    res.json({ triggered: true, time: due.time });
-
-    // Publication auto une fois la collecte réellement terminée, en tâche de fond :
-    // ne pas faire attendre la réponse HTTP (GitHub Actions a un --max-time de 60s).
-    // publishOpinionItemsToAgon() est indépendant du réglage auto-publish (débats) : la presse
-    // d'opinion n'a pas de fiche débat à générer, donc pas de raison de la conditionner à ça.
-    const autoPub = loadAutoPublishConfig();
-    waitForVeilleMixteIdle().then(async (finished) => {
-      if (!finished) {
-        console.warn("[auto-collect-tick] Délai d'attente dépassé, auto-publish annulé.");
-        return;
-      }
-      if (autoPub.enabled) await runAutoPublishPipeline();
-      await publishOpinionItemsToAgon();
-    }).catch((err) => console.error("[auto-collect-tick] Erreur auto-publish :", err.message));
-  } catch (err) {
-    res.status(500).json({ triggered: false, error: err.message });
-  }
+  // Collecte + publication en tâche de fond : ne pas faire attendre la réponse HTTP (GitHub
+  // Actions a un --max-time de 60s). lastRun est posé de façon synchrone au lancement.
+  if (scheduledCollectInProgress) return res.json({ triggered: false, reason: "collect in progress" });
+  runScheduledCollect(runKey)
+    .catch((err) => console.error("[auto-collect-tick] Erreur collecte/publication :", err.message));
+  res.json({ triggered: true, time: due.time });
 });
 
 // Même patron que /api/auto-collect-tick ci-dessus, pour l'ingestion quotidienne Sortir/
@@ -6686,6 +6815,8 @@ storageSync.downloadAll().then(() => {
     console.log(`Serveur lancé sur le port ${PORT}`);
     if (AUTO_PIPELINES_ENABLED) {
       scheduleAutoCollect(loadAutoCollectConfig());
+      // Laisse veille-mixte.js (lancé en parallèle par start.js) ouvrir le port 3002.
+      setTimeout(resumeInterruptedAutoCollect, 30 * 1000);
       scheduleAutoCollectCertamen(loadAutoCollectCertamenConfig(), onCertamenAutoCollectFinished);
       if (process.env.YOUTUBE_API_KEY) {
         const tick = () => runYoutubeHourly().catch(error => console.error("[youtube-api]", error.message));

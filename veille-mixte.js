@@ -83,7 +83,9 @@ const UPDATE_INTERVAL_MINUTES = 720;
 // reparsé à chaque loadSessions() (7 appels dans ce fichier) qui a contribué au crash
 // OOM (limite 512MB) de l'instance Render. 6 sessions = 3-4 jours d'historique, largement
 // suffisant pour la fraîcheur/dédup inter-session qui ne regarde que sessions[0].
-const MAX_SESSIONS_TO_KEEP = 6;
+// Abaissé de 6 à 3 (01/11/2026) : nouveau crash OOM Render le 31/10, chaque lecture+écriture
+// complète du fichier (11 Mo) coûtait jusqu'à ~130 Mo de mémoire.
+const MAX_SESSIONS_TO_KEEP = 3;
 const MAX_SUBJECTS_TO_ANALYZE_WITH_AI = 25;
 // Les sessions réelles collectent entre 100 et 195 sujets bruts (contenus multi-sources)
 // avant déduplication : un plafond de 80 laissait 20 à 115 sujets par session ne jamais
@@ -780,7 +782,8 @@ function loadSessions() {
 }
 
 function saveSessions(sessions) {
-  fs.writeFileSync(HISTORY_FILE, JSON.stringify(sessions, null, 2), "utf8");
+  // JSON compact : l'indentation gonflait le fichier et les chaînes en mémoire d'environ 20 %.
+  fs.writeFileSync(HISTORY_FILE, JSON.stringify(sessions), "utf8");
   sessionsCache = sessions;
 }
 
@@ -2162,6 +2165,31 @@ apiApp.post("/refresh", async (req, res) => {
   });
 
   res.json({ ok: true, started: true });
+});
+
+// Code de sortie convenu avec start.js : « relance-moi », et non arrêt du bot. Appelé par
+// server.js après chaque collecte programmée : V8 ne rend pas au système les ~250 Mo pris
+// pendant la collecte, et l'auto-publish qui suit a fait déborder les 512 Mo de Render
+// (31/10/2026). Tout l'état utile est déjà sur disque (sessions, sujets, historique).
+const RECYCLE_EXIT_CODE = 75;
+
+apiApp.post("/recycle", (req, res) => {
+  if (isRunning || certamenIsRunning) {
+    return res.status(409).json({ ok: false, error: "Collecte en cours, recyclage refusé" });
+  }
+  res.json({ ok: true });
+  setTimeout(() => process.exit(RECYCLE_EXIT_CODE), 100);
+});
+
+// Rendu à la demande de veille-mixte.html (absente au démarrage sur Render, disque éphémère,
+// et supprimée après chaque collecte) : la régénérer d'office au démarrage coûtait ~115 Mo.
+apiApp.post("/render-html", (req, res) => {
+  try {
+    if (!fs.existsSync(OUTPUT_HTML) && loadSessions().length > 0) renderMixteHtmlFromHistory();
+    res.json({ ok: true, rendered: fs.existsSync(OUTPUT_HTML) });
+  } catch (error) {
+    res.status(500).json({ ok: false, error: error.message });
+  }
 });
 
 apiApp.post("/save", (req, res) => {
@@ -7835,7 +7863,9 @@ async function runWatchSession(minSources = MIN_DISTINCT_SOURCES) {
 
   setProgress(6, "Génération de la page", "");
   fs.writeFileSync(OUTPUT_JSON, JSON.stringify(analyzedSubjects, null, 2), "utf8");
-  fs.writeFileSync(OUTPUT_HTML, generateHtml(limitedSessions), "utf8");
+  // Page régénérée à la première consultation (POST /render-html), pas ici : la rendre en fin
+  // de collecte ajoutait un gros pic mémoire juste avant l'auto-publish (OOM Render du 31/10/2026).
+  fs.rmSync(OUTPUT_HTML, { force: true });
 
   console.log(`Fichier généré : ${OUTPUT_HTML}`);
   console.log(`Historique généré : ${HISTORY_FILE}`);
@@ -11668,13 +11698,6 @@ if (process.argv.includes("--certamen-batch-benchmark")) {
       process.exit(1);
     });
 } else {
-  if (!fs.existsSync(OUTPUT_HTML)) {
-    const existingSessions = loadSessions();
-    if (existingSessions.length > 0) {
-      renderMixteHtmlFromHistory();
-    }
-  }
-
   // Reprend les créativités Certamen non régénérées après un redémarrage — sans effet si
   // certamen-pending-creative.json n'existe pas encore ou ne contient rien de "pending"
   // (cas normal tant que CERTAMEN_SEPARATED_ANALYZE n'a jamais été activé).
