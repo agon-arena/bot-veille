@@ -2,6 +2,8 @@
 
 const { validateNormalizedActivity } = require("../activity-validation");
 
+const { requireOpenAgendaKey, openAgendaHttpError } = require("../openagenda-auth");
+
 const DEFAULT_TIMEOUT_MS = 15000;
 const DEFAULT_PAGE_SIZE = 50;
 const MAX_PAGE_SIZE = 300;
@@ -276,6 +278,7 @@ function convertOpenAgendaJsonEvents(events, options = {}) {
 }
 
 async function requestPage({ agendaUid, apiKey, params, timeoutMs, userAgent }) {
+  apiKey = requireOpenAgendaKey(apiKey);
   const url = new URL(`https://api.openagenda.com/v2/agendas/${agendaUid}/events`);
   for (const [key, value] of Object.entries(params)) {
     if (value === undefined || value === null) continue;
@@ -287,10 +290,11 @@ async function requestPage({ agendaUid, apiKey, params, timeoutMs, userAgent }) 
   try {
     // La clé est transmise en en-tête HTTP, jamais dans l'URL/la query string.
     const response = await fetch(url, { headers: { key: apiKey, "User-Agent": userAgent || "MnoriaBotSortir/1.0" }, signal: controller.signal });
+    if (!response.ok) throw openAgendaHttpError(response.status, agendaUid, "events");
     const text = await response.text();
     let json;
     try { json = JSON.parse(text); } catch (_) { throw new Error(`Réponse OpenAgenda non-JSON (HTTP ${response.status})`); }
-    if (!response.ok) throw new Error(`OpenAgenda API a répondu HTTP ${response.status}: ${json && json.message || text.slice(0, 200)}`);
+
     if (!Array.isArray(json.events)) throw new Error("Réponse OpenAgenda invalide: events absent");
     return json;
   } finally {
@@ -317,7 +321,7 @@ function geographicParams(bounds) {
 
 async function fetchOpenAgendaJsonEvents(options = {}) {
   if (!options.agendaUid) throw new Error("agendaUid est obligatoire");
-  if (!options.apiKey) throw new Error("apiKey est obligatoire (clé publique OpenAgenda, jamais hardcodée)");
+  options = { ...options, apiKey: requireOpenAgendaKey(options.apiKey) };
   const maxEvents = Number.isInteger(options.maxEvents) && options.maxEvents > 0 ? options.maxEvents : 20;
   const pageSize = Math.min(options.pageSize || DEFAULT_PAGE_SIZE, MAX_PAGE_SIZE, maxEvents);
   const sourceUrl = `https://api.openagenda.com/v2/agendas/${options.agendaUid}/events`;

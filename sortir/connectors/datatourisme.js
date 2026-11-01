@@ -261,6 +261,12 @@ function mapDatatourismeOccurrence(poi, period, options = {}) {
   const evidence = [];
   if (!period?.startTime) evidence.push({ field: "startsAt", excerpt: UNSPECIFIED_START });
   const fieldConfidence = {};
+  const communeInsee = poi?.isLocatedAt?.[0]?.address?.[0]?.hasAddressCity?.insee;
+  if (require('../datatourisme-geography-policy').inseeUsedAsPostal(location.postalCode, communeInsee)) {
+    fieldConfidence.postalCode = 0.5;
+    evidence.push({ field: 'postalCode', sourceValue: JSON.stringify({ postalCode: location.postalCode, communeInsee }),
+      excerpt: 'datatourisme_insee_as_postal_code : code INSEE dans le champ postal, revue géographique requise ; aucune valeur remplacée.' });
+  }
   if (isRecurring) {
     fieldConfidence.startsAt = 0.5; fieldConfidence.endsAt = 0.5;
     evidence.push({ field: "startsAt", sourceValue: JSON.stringify(period), excerpt: "Période récurrente (appliesOnDay/weekOfMonth) : une seule occurrence représentative produite, pas d'expansion de la récurrence." });

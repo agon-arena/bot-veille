@@ -5674,16 +5674,20 @@ app.post("/api/auto-collect-tick", requireMixteAuth, async (req, res) => {
 });
 
 // Même patron que /api/auto-collect-tick ci-dessus, pour l'ingestion quotidienne Sortir/
-// OpenAgenda (sortir-auto-ingest.js) : un tick HTTP externe fréquent (GitHub Actions), le
-// serveur décide lui-même si l'heure configurée (Réunion) est atteinte et si ce n'est pas déjà
-// fait. AUTO_PIPELINES_ENABLED réserve l'exécution à l'instance Render, comme pour la veille
+// OpenAgenda (sortir-auto-ingest.js) : un tick HTTP externe (GitHub Actions, livraison irrégulière),
+// le serveur décide lui-même si le cycle du jour (dès 04:00 Réunion, avec rattrapage borné) reste
+// à faire. AUTO_PIPELINES_ENABLED réserve l'exécution à l'instance Render, comme pour la veille
 // presse — sans ça, une instance locale lancée en parallèle dupliquerait l'ingestion.
+// Lecture seule des résultats persistants ; ne déclenche aucun pipeline.
+app.get("/api/sortir-ingest-status", requireMixteAuth,
+  require("./sortir/scheduler-cycle-status").createCycleStatusHandler(() =>
+    require("@supabase/supabase-js").createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SECRET_KEY, { auth: { persistSession: false, autoRefreshToken: false } })));
 app.post("/api/sortir-ingest-tick", requireMixteAuth, async (req, res) => {
   if (!AUTO_PIPELINES_ENABLED) {
     return res.json({ triggered: false, reason: "auto pipelines disabled on this instance" });
   }
   try {
-    const { workPromise, ...result } = await runSortirIngestTickIfDue({ timeToMinutes, getReunionTimeHHMM });
+    const { workPromise, ...result } = await runSortirIngestTickIfDue();
     res.json(result); // workPromise jamais attendu ni sérialisé : le pipeline continue en tâche de fond.
   } catch (error) {
     console.error("[sortir-ingest-tick] Erreur inattendue :", error.message);

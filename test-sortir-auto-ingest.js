@@ -7,8 +7,8 @@
 
 const assert = require("assert");
 const {
-  runSortirIngestTickIfDue: realTick, hasRecentCompletedRun, isDue, runOpenAgendaBatches, runDatatourismeChunks, chunkArray,
-  OPENAGENDA_SOURCES, SORTIR_INGEST_HOUR, SORTIR_INGEST_TOLERANCE_MIN, DATATOURISME_SOURCE_KEY
+  runSortirIngestTickIfDue: realTick, hasRecentCompletedRun, cycleDayStart, runOpenAgendaBatches, runDatatourismeChunks, chunkArray,
+  OPENAGENDA_SOURCES, SORTIR_INGEST_HOUR, DATATOURISME_SOURCE_KEY
 } = require("./sortir-auto-ingest");
 
 const { MemoryStore } = require("./sortir/test-helpers/memory-store");
@@ -23,8 +23,6 @@ function runSortirIngestTickIfDue(args) {
 let passed = 0, failed = 0;
 async function test(name, fn) { try { await fn(); passed += 1; console.log(`✓ ${name}`); } catch (error) { failed += 1; console.error(`✗ ${error.name ? "" : ""}${name}: ${error.stack || error.message}`); } }
 
-function timeToMinutes(hhmm) { const [h, m] = hhmm.split(":").map(Number); return h * 60 + m; }
-function fixedTimeClient(hhmm) { return () => hhmm; }
 function neverRanClient() {
   return {
     from() {
@@ -52,13 +50,13 @@ function sampleResults(n = 1) {
 function fakeSources(n) { return Array.from({ length: n }, (_, i) => ({ key: `src-${i}`, agendaUid: 1000 + i, sourceName: `Source ${i}` })); }
 
 (async () => {
-  await test("E — isDue() correspond bien à une fenêtre quotidienne autour de l'heure/fuseau choisis", async () => {
-    const scheduled = timeToMinutes(SORTIR_INGEST_HOUR);
+  await test("E — cycleDayStart() : journée de cycle à partir de 04:00 heure de La Réunion (UTC+4)", async () => {
     assert.strictEqual(SORTIR_INGEST_HOUR, "04:00", "heure de La Réunion (Indian/Reunion, UTC+4) documentée");
-    assert.strictEqual(isDue(scheduled - 1, scheduled, SORTIR_INGEST_TOLERANCE_MIN), false, "avant l'heure : pas dû");
-    assert.strictEqual(isDue(scheduled, scheduled, SORTIR_INGEST_TOLERANCE_MIN), true, "exactement à l'heure : dû");
-    assert.strictEqual(isDue(scheduled + SORTIR_INGEST_TOLERANCE_MIN - 1, scheduled, SORTIR_INGEST_TOLERANCE_MIN), true, "dans la tolérance : dû");
-    assert.strictEqual(isDue(scheduled + SORTIR_INGEST_TOLERANCE_MIN, scheduled, SORTIR_INGEST_TOLERANCE_MIN), false, "tolérance dépassée : plus dû");
+    const start = iso => cycleDayStart(new Date(iso)).toISOString();
+    assert.strictEqual(start("2026-11-01T00:00:00.000Z"), "2026-11-01T00:00:00.000Z", "04:00 Réunion : nouvelle journée");
+    assert.strictEqual(start("2026-10-31T23:59:00.000Z"), "2026-10-31T00:00:00.000Z", "03:59 Réunion : encore la veille");
+    assert.strictEqual(start("2026-11-01T19:59:00.000Z"), "2026-11-01T00:00:00.000Z", "23:59 Réunion : même journée");
+    assert.strictEqual(start("2026-11-01T20:30:00.000Z"), "2026-11-01T00:00:00.000Z", "00:30 Réunion le lendemain : rattrapage encore possible");
   });
 
   await test("F — aucune ingestion au simple chargement du module (pas d'appel réseau implicite)", async () => {
@@ -141,7 +139,6 @@ function fakeSources(n) { return Array.from({ length: n }, (_, i) => ({ key: `sr
   await test("A' — déclenche les 3 agendas historiques dans des enveloppes isolées", async () => {
     let persistArgsList = [];
     const result = await runSortirIngestTickIfDue({
-      timeToMinutes, getReunionTimeHHMM: fixedTimeClient(SORTIR_INGEST_HOUR),
       client: neverRanClient(),
       fetchEvents: async () => ({ results: sampleResults(1) }),
       persist: async (args) => { persistArgsList.push(args); return { status: "completed", stats: { collected: 1 } }; },
@@ -158,7 +155,6 @@ function fakeSources(n) { return Array.from({ length: n }, (_, i) => ({ key: `sr
 
   await test("C — une erreur du pipeline est capturée sans crash du process", async () => {
     const result = await runSortirIngestTickIfDue({
-      timeToMinutes, getReunionTimeHHMM: fixedTimeClient(SORTIR_INGEST_HOUR),
       client: neverRanClient(),
       fetchEvents: async () => ({ results: sampleResults(1) }),
       persist: async () => { throw new Error("panne Supabase simulée"); },
@@ -175,7 +171,7 @@ function fakeSources(n) { return Array.from({ length: n }, (_, i) => ({ key: `sr
     let fetchCallCount = 0;
     const fetchEvents = async () => { fetchCallCount += 1; await new Promise((r) => setTimeout(r, 30)); return { results: sampleResults(1) }; };
     const persist = async () => ({ status: "completed", stats: {} });
-    const opts = { timeToMinutes, getReunionTimeHHMM: fixedTimeClient(SORTIR_INGEST_HOUR), client: neverRanClient(), fetchEvents, persist, store: {}, datatourismeMaxTotalPois: 0 };
+    const opts = { client: neverRanClient(), fetchEvents, persist, store: {}, datatourismeMaxTotalPois: 0 };
     const [first, second] = await Promise.all([runSortirIngestTickIfDue(opts), runSortirIngestTickIfDue(opts)]);
     const results = [first, second];
     const started = results.filter((r) => r.triggered && r.status === "started");
@@ -187,12 +183,13 @@ function fakeSources(n) { return Array.from({ length: n }, (_, i) => ({ key: `sr
     assert.strictEqual(fetchCallCount, OPENAGENDA_SOURCES.length, "un seul cycle réel, un fetch par agenda configuré");
   });
 
-  await test("ne se déclenche pas hors de la fenêtre horaire", async () => {
+  await test("rattrapage : un tick à 12:00 Réunion lance le cycle du jour encore jamais exécuté", async () => {
     const result = await runSortirIngestTickIfDue({
-      timeToMinutes, getReunionTimeHHMM: fixedTimeClient("12:00"),
-      client: neverRanClient(), fetchEvents: async () => { throw new Error("ne doit jamais être appelé"); }, persist: async () => { throw new Error("ne doit jamais être appelé"); }
+      now: new Date("2026-11-01T08:00:00.000Z"), client: neverRanClient(), datatourismeMaxTotalPois: 0,
+      fetchEvents: async () => ({ results: [] }), persist: async () => ({ status: "completed", stats: {} })
     });
-    assert.deepStrictEqual(result, { triggered: false, reason: "not due" });
+    assert.strictEqual(result.triggered, true);
+    assert.strictEqual((await result.workPromise).status, "completed");
   });
 
   await test("ne se déclenche pas si un run a déjà été complété récemment", async () => {
@@ -203,7 +200,6 @@ function fakeSources(n) { return Array.from({ length: n }, (_, i) => ({ key: `sr
       }
     };
     const result = await runSortirIngestTickIfDue({
-      timeToMinutes, getReunionTimeHHMM: fixedTimeClient(SORTIR_INGEST_HOUR),
       client: alreadyRanClient, fetchEvents: async () => { throw new Error("ne doit jamais être appelé"); }, persist: async () => { throw new Error("ne doit jamais être appelé"); }
     });
     assert.deepStrictEqual(result, { triggered: false, reason: "already run recently" });

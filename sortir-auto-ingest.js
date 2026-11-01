@@ -11,7 +11,8 @@
 const { createClient } = require("@supabase/supabase-js");
 const { fetchOpenAgendaJsonEvents } = require("./sortir/connectors/openagenda-json");
 const { fetchDatatourismeEvents } = require("./sortir/connectors/datatourisme");
-const { createSchedulerState, CYCLE_VERSION } = require("./sortir/scheduler-state");
+const { safeMessage, cycleResult, retryTransient, listCycleAttempts, CYCLE_ROOT_VERSION } = require("./sortir/scheduler-cycle-status");
+const { createSchedulerState, CYCLE_VERSION, LOCK_ID } = require("./sortir/scheduler-state");
 const { REUNION_SOURCES, runReunionProducer } = require("./sortir/openagenda-reunion-daily");
 const { persistSortirIngestion, createDefaultSupabaseStore } = require("./sortir/supabase-persistence");
 
@@ -64,18 +65,28 @@ const DATATOURISME_STALE_AFTER_MS = 365 * 24 * 60 * 60 * 1000;
 // une autre heure à ce stade (la réingestion d'un lot déjà connu prend ~6-10 s en conditions
 // réelles, voir validation du 18/10/2026).
 const SORTIR_INGEST_HOUR = "04:00";
-// Même tolérance que /api/auto-collect-tick (incident du 10/07/2026 : GitHub Actions a sauté
-// des ticks sous charge) — réutilisée telle quelle plutôt que d'en inventer une nouvelle sans
-// donnée justifiant une valeur différente.
-const SORTIR_INGEST_TOLERANCE_MIN = 40;
-// Un run enveloppe completed par producteur dans les 20 dernières heures certifie son passage.
-const SORTIR_RECENT_RUN_LOOKBACK_MS = 20 * 60 * 60 * 1000;
+const REUNION_UTC_OFFSET_MIN = 240;
+// Rattrapage quotidien : GitHub Actions ne livre qu'environ 5 ticks/jour (octobre 2026, écart
+// médian 4 h 20) au lieu d'un toutes les 5 min, une fenêtre stricte de 40 min était donc ratée
+// la plupart des jours. Le cycle est dû dès 04:00 Réunion tant que chaque producteur n'a pas un
+// run completed depuis ce 04:00 ; tentatives bornées par jour et espacées.
+const SORTIR_MAX_CYCLE_ATTEMPTS_PER_DAY = 3;
+const SORTIR_CYCLE_RETRY_SPACING_MS = 60 * 60 * 1000;
+// Clôture du run enveloppe : 6 essais sur ~1 min 50 s, verrou tenu pendant toute la durée
+// (les pannes Supabase observées durent de quelques secondes à quelques minutes).
+const CYCLE_CLOSE_RETRY_DELAYS_MS = Object.freeze([2000, 5000, 15000, 30000, 60000]);
+const defaultSleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
 // Verrou local rapide, complété par le verrou atomique partagé scheduler-state.js.
 let inFlight = false;
 
-function isDue(nowMinutes, scheduledMinutes, toleranceMin) {
-  return nowMinutes >= scheduledMinutes && nowMinutes - scheduledMinutes < toleranceMin;
+// Début de la journée de cycle courante : dernier passage à SORTIR_INGEST_HOUR heure de La Réunion.
+function cycleDayStart(now) {
+  const [h, m] = SORTIR_INGEST_HOUR.split(":").map(Number), offsetMs = REUNION_UTC_OFFSET_MIN * 60000;
+  const local = new Date(now.getTime() + offsetMs);
+  let start = Date.UTC(local.getUTCFullYear(), local.getUTCMonth(), local.getUTCDate(), h, m) - offsetMs;
+  if (start > now.getTime()) start -= 24 * 60 * 60 * 1000;
+  return new Date(start);
 }
 
 function getSupabaseClient() {
@@ -261,40 +272,41 @@ async function scheduledSource({ source, store, now, work, onBatchSummary }) {
     sourceRun = await store.createSourceRun({ ingestion_run_id: ingestion.id, source_id: registered.id, status: "running", started_at: now.toISOString() });
     result = await work(measured.store);
   } catch (error) {
-    result = { eventsCollected: null, eventsRetained: null, occurrencesRetained: null, ...error.details, status: "failed", error: error.message };
+    result = { eventsCollected: null, eventsRetained: null, occurrencesRetained: null, ...error.details, status: "failed", error: safeMessage(error.message), errorCode: error.code || null, httpStatus: error.httpStatus || null };
   }
-  result = { ...result, source: source.key, startedAt: now.toISOString(), finishedAt: new Date().toISOString(), durationMs: Date.now() - started, ...measured.counts() };
+  result = { ...result, ingestionRunId: ingestion?.id || null, sourceRunId: sourceRun?.id || null, source: source.key, startedAt: now.toISOString(), finishedAt: new Date().toISOString(), durationMs: Date.now() - started, ...measured.counts() };
   const stats = result.stats || {};
   const journalRow = () => ({ status: result.status, collected_count: stats.collected || 0, valid_count: stats.VALID || 0,
     needs_review_count: stats.NEEDS_REVIEW || 0, invalid_count: stats.INVALID || 0, finished_at: result.finishedAt });
   try {
     if (sourceRun) await store.updateSourceRun(sourceRun.id, { ...journalRow(), error: result.status === "completed" ? null : JSON.stringify({ error: result.error || "Persistance incomplète", result }) });
-  } catch (error) { result.status = "failed"; result.error = `${result.error || ""} Journal source : ${error.message}`; }
+  } catch (error) { result.status = "failed"; result.error = `${result.error || ""} Journal source : ${safeMessage(error.message)}`; }
   // Toujours tenter de fermer le run enveloppe, même si la mise à jour source a échoué.
   try {
     if (ingestion) await store.updateIngestionRun(ingestion.id, { ...journalRow(), error_summary: result.status === "completed" ? [] : [{ source: source.key, error: result.error || "Persistance incomplète" }] });
-  } catch (error) { result.status = "failed"; result.error = `${result.error || ""} Journal ingestion : ${error.message}`; }
+  } catch (error) { result.status = "failed"; result.error = `${result.error || ""} Journal ingestion : ${safeMessage(error.message)}`; }
   console[result.status === "completed" ? "log" : "error"]("[sortir-auto-ingest] producteur :", JSON.stringify(result));
-  if (onBatchSummary) { try { await onBatchSummary(result); } catch (error) { result.reportingError = error.message; console.error("[sortir-auto-ingest] Callback de suivi :", error.message); } }
+  if (onBatchSummary) { try { await onBatchSummary(result); } catch (error) { result.reportingError = safeMessage(error.message); console.error("[sortir-auto-ingest] Callback de suivi :", error.message); } }
   return result;
 }
 
 // Un seul tick et un seul verrou partagé ; reprise indépendante de chaque producteur complet.
 async function runSortirIngestTickIfDue({
-  now = new Date(), timeToMinutes, getReunionTimeHHMM, client = null,
+  now = new Date(), client = null,
   fetchEvents = fetchOpenAgendaJsonEvents, fetchDatatourisme = fetchDatatourismeEvents,
   persist = persistSortirIngestion, store = null, state = null,
   openAgendaSources = OPENAGENDA_SOURCES, reunionSources = REUNION_SOURCES,
   fetchReunionEvents = fetchOpenAgendaJsonEvents, fetchReunionSchema,
   datatourismeMaxTotalPois = DATATOURISME_MAX_TOTAL_POIS_PILOT,
-  datatourismeChunkSize = DATATOURISME_CHUNK_SIZE, onBatchSummary = null
+  datatourismeChunkSize = DATATOURISME_CHUNK_SIZE, onBatchSummary = null,
+  closeRetryDelaysMs = CYCLE_CLOSE_RETRY_DELAYS_MS, sleep = defaultSleep
 } = {}) {
-  if (!isDue(timeToMinutes(getReunionTimeHHMM()), timeToMinutes(SORTIR_INGEST_HOUR), SORTIR_INGEST_TOLERANCE_MIN)) return { triggered: false, reason: "not due" };
   if (inFlight) return { triggered: false, reason: "already running" };
   inFlight = true;
-  let schedulerState, locked = false, activeStore, jobs;
+  let schedulerState, locked = false, activeStore, jobs, cycleRun;
   try {
-    schedulerState = state || createSchedulerState(client || getSupabaseClient());
+    if (!state && !client) client = getSupabaseClient();
+    schedulerState = state || createSchedulerState(client);
     locked = await schedulerState.acquire(now);
     if (!locked) { inFlight = false; return { triggered: false, reason: "scheduler locked" }; }
     if (await schedulerState.hasOtherRunning()) {
@@ -314,7 +326,7 @@ async function runSortirIngestTickIfDue({
         return { ...outcome, status: statuses.every(s => s === "completed") ? "completed" : "partial",
           stats: outcome.summaries.reduce((a, s) => { for (const k of ["collected", "VALID", "NEEDS_REVIEW", "INVALID", "merged", "toReview"]) a[k] = (a[k] || 0) + (s.stats?.[k] || 0); return a; }, {}) };
       } });
-    const since = new Date(now.getTime() - SORTIR_RECENT_RUN_LOOKBACK_MS).toISOString();
+    const since = cycleDayStart(now).toISOString();
     const pending = [];
     for (const job of jobs) {
       try { if (!await schedulerState.recent(job.source.key, since)) pending.push(job); }
@@ -325,6 +337,18 @@ async function runSortirIngestTickIfDue({
       await schedulerState.release(new Date()); locked = false; inFlight = false;
       return { triggered: false, reason: "already run recently" };
     }
+    // Les tentatives du jour (runs enveloppe, quel que soit leur statut) bornent les relances des
+    // producteurs encore en échec : jamais plus de N cycles par jour, jamais deux à moins d'1 h.
+    const attempts = await listCycleAttempts(client, since);
+    const lastAttempt = Math.max(...attempts.map(a => Date.parse(a.started_at)).filter(Number.isFinite), -Infinity);
+    const skip = attempts.length >= SORTIR_MAX_CYCLE_ATTEMPTS_PER_DAY ? "daily attempts exhausted"
+      : now.getTime() - lastAttempt < SORTIR_CYCLE_RETRY_SPACING_MS ? "retry spacing" : null;
+    if (skip) {
+      await schedulerState.release(new Date()); locked = false; inFlight = false;
+      return { triggered: false, reason: skip, attemptsToday: attempts.length };
+    }
+    cycleRun =await activeStore.createIngestionRun({ status: "running", orchestrator_version: CYCLE_ROOT_VERSION,
+      started_at: now.toISOString(), error_summary: [cycleResult({ cycleId: null, expectedSources: jobs.map(j=>j.source.key), sources: [] })] });
   } catch (error) {
     if (locked) { try { await schedulerState.release(new Date()); } catch (releaseError) { console.error("[sortir-auto-ingest] Libération verrou :", releaseError.message); } }
     inFlight = false;
@@ -334,28 +358,68 @@ async function runSortirIngestTickIfDue({
   const startedAt = Date.now();
   const workPromise = (async () => {
     const summaries = [];
-    let releaseError;
+    let releaseError, cycleJournalError;
+    const cycleState = () => cycleResult({ cycleId: cycleRun.id, expectedSources: jobs.map(j=>j.source.key), sources: summaries, releaseError: releaseError || cycleJournalError || null });
+    const retry = { delaysMs: closeRetryDelaysMs, sleep };
+    // Run et verrou laissés running : ni libération ni statut final tant que la clôture n'est pas
+    // durable. Le prochain tick répond "scheduler locked" jusqu'au contrôle opérateur.
+    const operatorStop = (stage, error, cycle) => {
+      inFlight = false;
+      const closeError = safeMessage(error?.message);
+      console.error("[sortir-auto-ingest] INTERVENTION OPÉRATEUR REQUISE :", JSON.stringify({ stage, cycleId: cycleRun.id, lockId: LOCK_ID,
+        attempts: error?.attempts || 1, transient: error?.transient ?? null, error: closeError }));
+      return { ...cycle, status: "failed", successConfirmed: false, closeError, operatorActionRequired: true,
+        durationMs: Date.now() - startedAt, sources: summaries };
+    };
     try {
       for (const job of jobs) {
         try { summaries.push(await scheduledSource({ ...job, store: activeStore, now, onBatchSummary })); }
         catch (error) {
-          const failure = { source: job.source.key, status: "failed", error: error.message };
+          const failure = { source: job.source.key, status: "failed", error: safeMessage(error.message) };
           summaries.push(failure);
           console.error("[sortir-auto-ingest] Échec inattendu du producteur :", JSON.stringify(failure));
         }
+        try { await activeStore.updateIngestionRun(cycleRun.id, { error_summary: [cycleState()] }); }
+        catch { cycleJournalError = "Journal de cycle indisponible"; }
+      }
+    } catch (error) {
+      return operatorStop("producteurs", error, cycleState());
+    }
+    // Patch figé une seule fois (finished_at compris) : chaque essai réécrit exactement les mêmes
+    // valeurs, une réponse perdue après écriture ne produit donc ni divergence ni double clôture.
+    const finishedAt = new Date().toISOString();
+    const closingPatch = cycle => ({ status: cycle.status, finished_at: finishedAt,
+      collected_count: summaries.reduce((n,s)=>n+(s.stats?.collected||0),0),
+      valid_count: summaries.reduce((n,s)=>n+(s.stats?.VALID||0),0),
+      needs_review_count: summaries.reduce((n,s)=>n+(s.stats?.NEEDS_REVIEW||0),0),
+      invalid_count: summaries.reduce((n,s)=>n+(s.stats?.INVALID||0),0), error_summary: [cycle] });
+    let cycle = cycleState();
+    try {
+      const patch = closingPatch(cycle);
+      await retryTransient(() => activeStore.updateIngestionRun(cycleRun.id, patch), { ...retry, label: "Clôture du cycle" });
+    } catch (error) {
+      return operatorStop("clôture du cycle", error, cycle);
+    }
+    try {
+      await retryTransient(() => schedulerState.release(new Date()), { ...retry, label: "Libération du verrou" });
+    } catch (error) {
+      // Libération non confirmée (y compris réponse perdue après succès) : le cycle durable est
+      // rétrogradé en failed, jamais laissé completed.
+      releaseError = safeMessage(error.message);
+      console.error("[sortir-auto-ingest] Libération verrou :", releaseError);
+      cycle = cycleState();
+      try {
+        const patch = closingPatch(cycle);
+        await retryTransient(() => activeStore.updateIngestionRun(cycleRun.id, patch), { ...retry, label: "Statut après libération" });
+      } catch (amendError) {
+        return operatorStop("statut après libération du verrou", amendError, cycle);
       }
     } finally {
-      try { await schedulerState.release(new Date()); } catch (error) { releaseError = error.message; console.error("[sortir-auto-ingest] Libération verrou :", releaseError); }
       inFlight = false;
     }
-    const completed = summaries.filter(s => s.status === "completed").length;
-    let status = "failed";
-    if (completed === summaries.length) status = "completed";
-    else if (completed || summaries.some(s => s.status === "partial")) status = "partial";
-    if (summaries.some(s => s.reportingError)) status = "partial";
-    if (releaseError) status = "failed";
+    const status = cycle.status;
     const summary = {
-      status, durationMs: Date.now() - startedAt,
+      ...cycle, status, durationMs: Date.now() - startedAt,
       error: releaseError || summaries.filter(s => s.status !== "completed" || s.reportingError)
         .map(s => `${s.source}: ${s.error || s.reportingError || s.status}`).join("; ") || undefined,
       sources: summaries,
@@ -366,14 +430,15 @@ async function runSortirIngestTickIfDue({
     return summary;
   })();
   workPromise.catch(error => console.error("[sortir-auto-ingest] Erreur inattendue :", error.message));
-  return { triggered: true, status: "started", workPromise };
+  return { triggered: true, status: "started", cycleId: cycleRun.id, successConfirmed: false,
+    statusPath: `/api/sortir-ingest-status?cycleId=${cycleRun.id}`, workPromise };
 }
 
 module.exports = {
   runSortirIngestTickIfDue,
   REUNION_SOURCES,
   scheduledSource,
-  isDue,
+  cycleDayStart,
   hasRecentCompletedRun,
   runOpenAgendaBatches,
   runDatatourismeChunks,
@@ -387,6 +452,7 @@ module.exports = {
   DATATOURISME_MAX_TOTAL_POIS_PILOT,
   DATATOURISME_STALE_AFTER_MS,
   SORTIR_INGEST_HOUR,
-  SORTIR_INGEST_TOLERANCE_MIN,
-  SORTIR_RECENT_RUN_LOOKBACK_MS
+  SORTIR_MAX_CYCLE_ATTEMPTS_PER_DAY,
+  SORTIR_CYCLE_RETRY_SPACING_MS,
+  CYCLE_CLOSE_RETRY_DELAYS_MS
 };

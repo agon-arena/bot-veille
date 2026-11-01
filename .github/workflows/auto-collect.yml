@@ -12,11 +12,17 @@ on:
     - cron: '*/5 * * * *'
   workflow_dispatch:  # déclenchement manuel depuis l'onglet Actions
 
+permissions:
+  contents: read
+
 jobs:
   collect:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - name: Vérifier/déclencher la collecte
         run: |
           HTTP_STATUS=$(curl -s -o /tmp/response.txt -w "%{http_code}" \
@@ -48,3 +54,29 @@ jobs:
           if [ "$HTTP_STATUS" != "200" ]; then
             echo "Erreur (HTTP $HTTP_STATUS)" && exit 1
           fi
+
+          # started confirme une acceptation, jamais la réussite d'une collecte.
+          node sortir/check-scheduler-response.js tick /tmp/response-sortir.txt > /tmp/tick-check.json
+          ACTION=$(jq -r .action /tmp/tick-check.json)
+          if [ "$ACTION" = "skipped" ]; then
+            echo "Tick sans nouvelle ingestion ; aucune réussite de collecte affirmée."
+            exit 0
+          fi
+          CYCLE_ID=$(jq -r .cycleId /tmp/tick-check.json)
+          DEADLINE=$((SECONDS + 150))
+          while [ "$SECONDS" -lt "$DEADLINE" ]; do
+            STATUS=$(curl -sS -o /tmp/cycle-status.json -w "%{http_code}" \
+              "${{ secrets.BOT_VEILLE_URL }}/api/sortir-ingest-status?cycleId=$CYCLE_ID&token=${{ secrets.BOT_VEILLE_TOKEN }}" \
+              --max-time 15)
+            if [ "$STATUS" != "200" ]; then
+              echo "Statut durable inaccessible (HTTP $STATUS) ; cycle non confirmé."; exit 1
+            fi
+            cat /tmp/cycle-status.json
+            node sortir/check-scheduler-response.js cycle /tmp/cycle-status.json > /tmp/cycle-check.json
+            if [ "$(jq -r .action /tmp/cycle-check.json)" = "success" ]; then
+              echo "Cycle terminé et producteurs réussis, résultat durable confirmé."; exit 0
+            fi
+            sleep 5
+          done
+          echo "Cycle encore en cours : résultat non confirmé, consulter le journal durable."
+          exit 1

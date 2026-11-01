@@ -6,6 +6,7 @@ const { validateNormalizedActivity } = require('./activity-validation');
 const { compareActivities } = require('./activity-deduplication');
 const { organizerWarningNonBlocking } = require('./organizer-review-policy');
 const { quarantinedBy } = require('./datatourisme-review-quarantine');
+const { inseeUsedAsPostal, historicalReviewIds } = require("./datatourisme-geography-policy");
 const { sameInterval } = require('./datatourisme-occurrence-identity');
 
 function evaluateOrganizerRecovery({ row, candidates, decisions, hasDiagnostic, asOf, toActivity = rowToActivity }) {
@@ -20,6 +21,7 @@ function evaluateOrganizerRecovery({ row, candidates, decisions, hasDiagnostic, 
   const supports = (row.provenances || []).filter(p => p.active === true);
   if (!supports.length) return retain('no_active_support');
   if (supports.some(p => p.source?.connector_type !== 'datatourisme')) return retain('connector_out_of_scope');
+  if (historicalReviewIds.has(row.id) || supports.some(p => inseeUsedAsPostal(row.postal_code, p.source_payload?.timezoneContext?.communeInsee))) return retain('geography_insee_as_postal');
   const activity = toActivity(row), validation = validateNormalizedActivity(activity);
   if (!organizerWarningNonBlocking(validation, 'datatourisme')) return retain('other_validation');
   for (const p of supports) {

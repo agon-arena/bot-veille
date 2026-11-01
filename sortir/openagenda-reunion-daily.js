@@ -2,16 +2,19 @@
 const { fetchOpenAgendaJsonEvents } = require("./connectors/openagenda-json");
 const { PRODUCERS, prepareItemForV1 } = require("./openagenda-reunion-v1");
 const { createOpenAgendaBatchPersister } = require("./openagenda-batch-persister");
+const { requireOpenAgendaKey, openAgendaHttpError } = require("./openagenda-auth");
 const REUNION_SOURCES = Object.freeze(PRODUCERS.map(p => Object.freeze({ ...p, key: `openagenda-${p.agendaUid}-json`, connectorType: "openagenda_json", baseUrl: `https://api.openagenda.com/v2/agendas/${p.agendaUid}/events` })));
 async function loadAgendaSchema(uid, apiKey) {
+  apiKey = requireOpenAgendaKey(apiKey);
   const r = await fetch(`https://api.openagenda.com/v2/agendas/${uid}`, { headers: { key: apiKey }, signal: AbortSignal.timeout(30000) });
-  if (!r.ok) throw new Error(`Configuration OpenAgenda ${uid} : HTTP ${r.status}`);
+  if (!r.ok) throw openAgendaHttpError(r.status, uid, "configuration");
   return (await r.json()).schema;
 }
-async function runReunionProducer({ source, store, now, fetchEvents = fetchOpenAgendaJsonEvents, fetchSchema = loadAgendaSchema }) {
-  const agendaSchema = await fetchSchema(source.agendaUid, process.env.OPENAGENDA_PUBLIC_KEY);
+async function runReunionProducer({ source, store, now, fetchEvents = fetchOpenAgendaJsonEvents, fetchSchema = loadAgendaSchema, apiKey = process.env.OPENAGENDA_PUBLIC_KEY }) {
+  apiKey = requireOpenAgendaKey(apiKey);
+  const agendaSchema = await fetchSchema(source.agendaUid, apiKey);
   const results = [];
-  const fetched = await fetchEvents({ ...source, apiKey: process.env.OPENAGENDA_PUBLIC_KEY, now, fetchedAt: now.toISOString(),
+  const fetched = await fetchEvents({ ...source, apiKey, now, fetchedAt: now.toISOString(),
     maxEvents: 200, pageSize: 50, geoBounding: { northEast: { lat: -20.6, lng: 56 }, southWest: { lat: -21.5, lng: 55 } }, agendaSchema,
     onBatch: async batch => { for (const item of batch) { const selected = prepareItemForV1(item); if (selected) results.push(selected); } }
   });

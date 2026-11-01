@@ -1,0 +1,350 @@
+{
+  "observedAt": "2026-10-30T02:36:15.447Z",
+  "reason": "INSEE source recopié dans postal_code, absent du référentiel postal ; revue géographique requise avant reprise historique",
+  "activities": [
+    {
+      "id": "03d4f54d-2202-4128-a6fe-e462c6c483be",
+      "poiUuid": "a9b0903f-ac36-35c7-b0f2-6270941de327",
+      "postalCode": "13055",
+      "communeInsee": "13055",
+      "city": "Marseille",
+      "observedStatus": "review"
+    },
+    {
+      "id": "071a0301-0b34-4831-9017-f093b024a3ea",
+      "poiUuid": "cfe427b4-e9fc-38b1-aeec-5b465b94e9bb",
+      "postalCode": "24067",
+      "communeInsee": "24067",
+      "city": "Le Bugue",
+      "observedStatus": "active"
+    },
+    {
+      "id": "0dc0c0b1-61a7-4feb-8477-31c2dec019a7",
+      "poiUuid": "844b26bd-608e-3971-a7a3-209cf9fc6168",
+      "postalCode": "24567",
+      "communeInsee": "24567",
+      "city": "Vaunac",
+      "observedStatus": "active"
+    },
+    {
+      "id": "1223d3e3-8ada-4e6f-8784-cd597b608ebf",
+      "poiUuid": "8a51d480-c8c1-3a21-ad29-0b71399aa7f6",
+      "postalCode": "24486",
+      "communeInsee": "24486",
+      "city": "Saint-Pierre-de-Frugie",
+      "observedStatus": "active"
+    },
+    {
+      "id": "162c0c84-723d-4a46-8530-2c93447cecad",
+      "poiUuid": "f919d837-4251-3e5e-ba7d-8b3eadb2997c",
+      "postalCode": "24481",
+      "communeInsee": "24481",
+      "city": "Saint-Paul-la-Roche",
+      "observedStatus": "active"
+    },
+    {
+      "id": "1b27b21e-ba6d-473a-a18d-fe4ccb8ad4fb",
+      "poiUuid": "fc86e7d6-bea8-3192-9e63-3e1b02d00244",
+      "postalCode": "24067",
+      "communeInsee": "24067",
+      "city": "Le Bugue",
+      "observedStatus": "active"
+    },
+    {
+      "id": "1b548096-501f-490e-8a6c-0ca42cf42e10",
+      "poiUuid": "b354f331-fc4d-36d4-b694-a45733aa823f",
+      "postalCode": "24489",
+      "communeInsee": "24489",
+      "city": "Saint-Priest-les-Fougères",
+      "observedStatus": "active"
+    },
+    {
+      "id": "1e1f9f80-d3a2-4c94-9554-e9eb8a7ee806",
+      "poiUuid": "ba4d3289-15b2-3fea-a3dd-36b1106cc658",
+      "postalCode": "24486",
+      "communeInsee": "24486",
+      "city": "Saint-Pierre-de-Frugie",
+      "observedStatus": "active"
+    },
+    {
+      "id": "211fc6b7-a7f6-4c5f-97e6-cacb9361def4",
+      "poiUuid": "a9c87c23-7e16-3a3c-b54b-2c5b8ddba751",
+      "postalCode": "24489",
+      "communeInsee": "24489",
+      "city": "Saint-Priest-les-Fougères",
+      "observedStatus": "active"
+    },
+    {
+      "id": "2596517d-3f5b-4cad-bd8f-67e40bbef502",
+      "poiUuid": "0fd8d668-a617-3813-97b3-681514fdb17f",
+      "postalCode": "24486",
+      "communeInsee": "24486",
+      "city": "Saint-Pierre-de-Frugie",
+      "observedStatus": "active"
+    },
+    {
+      "id": "3b5d93e7-b7be-4635-a19e-fa9101014b97",
+      "poiUuid": "f919d837-4251-3e5e-ba7d-8b3eadb2997c",
+      "postalCode": "24481",
+      "communeInsee": "24481",
+      "city": "Saint-Paul-la-Roche",
+      "observedStatus": "active"
+    },
+    {
+      "id": "431ea32c-9d0b-423e-bae8-6990c19ff2a6",
+      "poiUuid": "a9b0903f-ac36-35c7-b0f2-6270941de327",
+      "postalCode": "13055",
+      "communeInsee": "13055",
+      "city": "Marseille",
+      "observedStatus": "review"
+    },
+    {
+      "id": "4560b6b9-95a0-41b5-a00e-1e48adc99540",
+      "poiUuid": "a9b0903f-ac36-35c7-b0f2-6270941de327",
+      "postalCode": "13055",
+      "communeInsee": "13055",
+      "city": "Marseille",
+      "observedStatus": "review"
+    },
+    {
+      "id": "4566bdc6-4b6c-4132-812c-32a6b0d84494",
+      "poiUuid": "8a51d480-c8c1-3a21-ad29-0b71399aa7f6",
+      "postalCode": "24486",
+      "communeInsee": "24486",
+      "city": "Saint-Pierre-de-Frugie",
+      "observedStatus": "active"
+    },
+    {
+      "id": "4785572e-de2d-4d6e-bb07-9f829c6ea956",
+      "poiUuid": "f919d837-4251-3e5e-ba7d-8b3eadb2997c",
+      "postalCode": "24481",
+      "communeInsee": "24481",
+      "city": "Saint-Paul-la-Roche",
+      "observedStatus": "active"
+    },
+    {
+      "id": "4ea8f04d-31b2-408b-9b5a-8bdf5a61f42c",
+      "poiUuid": "a9b0903f-ac36-35c7-b0f2-6270941de327",
+      "postalCode": "13055",
+      "communeInsee": "13055",
+      "city": "Marseille",
+      "observedStatus": "review"
+    },
+    {
+      "id": "527835e9-92a4-412f-9d56-8787064f471a",
+      "poiUuid": "b354f331-fc4d-36d4-b694-a45733aa823f",
+      "postalCode": "24489",
+      "communeInsee": "24489",
+      "city": "Saint-Priest-les-Fougères",
+      "observedStatus": "active"
+    },
+    {
+      "id": "59f5681f-cf27-4384-bf1d-85dda6153a27",
+      "poiUuid": "a9b0903f-ac36-35c7-b0f2-6270941de327",
+      "postalCode": "13055",
+      "communeInsee": "13055",
+      "city": "Marseille",
+      "observedStatus": "review"
+    },
+    {
+      "id": "5dbf5b3f-0754-48d3-b550-3e77693ff2db",
+      "poiUuid": "297928e4-ffb3-3c96-afd2-99eebb08450b",
+      "postalCode": "24489",
+      "communeInsee": "24489",
+      "city": "Saint-Priest-les-Fougères",
+      "observedStatus": "active"
+    },
+    {
+      "id": "60c7c52e-28c1-4357-964e-2cb823c9f855",
+      "poiUuid": "a9b0903f-ac36-35c7-b0f2-6270941de327",
+      "postalCode": "13055",
+      "communeInsee": "13055",
+      "city": "Marseille",
+      "observedStatus": "review"
+    },
+    {
+      "id": "611d18de-c5df-4f90-bad8-a5c0ccaf7f71",
+      "poiUuid": "a9b0903f-ac36-35c7-b0f2-6270941de327",
+      "postalCode": "13055",
+      "communeInsee": "13055",
+      "city": "Marseille",
+      "observedStatus": "review"
+    },
+    {
+      "id": "70f71d88-e0ce-4758-8355-e0a15cdc2cf8",
+      "poiUuid": "e2d5995e-2d4d-345d-9401-3b51d9b76c7c",
+      "postalCode": "24067",
+      "communeInsee": "24067",
+      "city": "Le Bugue",
+      "observedStatus": "active"
+    },
+    {
+      "id": "79a9f43c-aa18-45c1-914a-97a3945dda8c",
+      "poiUuid": "6db62d21-443f-3468-9c7f-bbbfc45eccd0",
+      "postalCode": "69123",
+      "communeInsee": "69123",
+      "city": "Lyon",
+      "observedStatus": "review"
+    },
+    {
+      "id": "7fe61c2c-3ebe-46e4-a138-f923f6bc3383",
+      "poiUuid": "0fd8d668-a617-3813-97b3-681514fdb17f",
+      "postalCode": "24486",
+      "communeInsee": "24486",
+      "city": "Saint-Pierre-de-Frugie",
+      "observedStatus": "active"
+    },
+    {
+      "id": "82f06ebf-6e64-487b-9071-ac1bfcdb011b",
+      "poiUuid": "297928e4-ffb3-3c96-afd2-99eebb08450b",
+      "postalCode": "24489",
+      "communeInsee": "24489",
+      "city": "Saint-Priest-les-Fougères",
+      "observedStatus": "active"
+    },
+    {
+      "id": "83825af0-16c4-4d2e-bd5b-1e765858d281",
+      "poiUuid": "a9c87c23-7e16-3a3c-b54b-2c5b8ddba751",
+      "postalCode": "24489",
+      "communeInsee": "24489",
+      "city": "Saint-Priest-les-Fougères",
+      "observedStatus": "active"
+    },
+    {
+      "id": "87739521-4080-4735-a7c2-8a85e405446f",
+      "poiUuid": "297928e4-ffb3-3c96-afd2-99eebb08450b",
+      "postalCode": "24489",
+      "communeInsee": "24489",
+      "city": "Saint-Priest-les-Fougères",
+      "observedStatus": "active"
+    },
+    {
+      "id": "8a085064-6939-49ed-8547-b931764b4ec4",
+      "poiUuid": "f919d837-4251-3e5e-ba7d-8b3eadb2997c",
+      "postalCode": "24481",
+      "communeInsee": "24481",
+      "city": "Saint-Paul-la-Roche",
+      "observedStatus": "active"
+    },
+    {
+      "id": "8a83af5b-3416-45cb-93e7-9e21fd25ff19",
+      "poiUuid": "a9b0903f-ac36-35c7-b0f2-6270941de327",
+      "postalCode": "13055",
+      "communeInsee": "13055",
+      "city": "Marseille",
+      "observedStatus": "review"
+    },
+    {
+      "id": "8f47ee9f-a864-4b16-9bbe-a7766eeea146",
+      "poiUuid": "d52db18b-72d1-38a9-a765-3a33b4ade829",
+      "postalCode": "24067",
+      "communeInsee": "24067",
+      "city": "Le Bugue",
+      "observedStatus": "active"
+    },
+    {
+      "id": "927b872d-778f-40cd-8e19-96d55fce139c",
+      "poiUuid": "a9b0903f-ac36-35c7-b0f2-6270941de327",
+      "postalCode": "13055",
+      "communeInsee": "13055",
+      "city": "Marseille",
+      "observedStatus": "review"
+    },
+    {
+      "id": "95452e1c-a6ad-4030-a9c1-665f3c95602b",
+      "poiUuid": "d3671fa5-fc55-3741-b7fb-438292779819",
+      "postalCode": "24486",
+      "communeInsee": "24486",
+      "city": "Saint-Pierre-de-Frugie",
+      "observedStatus": "active"
+    },
+    {
+      "id": "9ade967c-d5ef-4d41-8186-d40360f98c34",
+      "poiUuid": "a9b0903f-ac36-35c7-b0f2-6270941de327",
+      "postalCode": "13055",
+      "communeInsee": "13055",
+      "city": "Marseille",
+      "observedStatus": "review"
+    },
+    {
+      "id": "9eee49d3-5135-4060-b073-f22d5c278b2f",
+      "poiUuid": "a9b0903f-ac36-35c7-b0f2-6270941de327",
+      "postalCode": "13055",
+      "communeInsee": "13055",
+      "city": "Marseille",
+      "observedStatus": "review"
+    },
+    {
+      "id": "a379860f-c468-4ccc-8f35-303845426130",
+      "poiUuid": "a9b0903f-ac36-35c7-b0f2-6270941de327",
+      "postalCode": "13055",
+      "communeInsee": "13055",
+      "city": "Marseille",
+      "observedStatus": "review"
+    },
+    {
+      "id": "b5459c65-5856-4f99-ade5-30840866a941",
+      "poiUuid": "b354f331-fc4d-36d4-b694-a45733aa823f",
+      "postalCode": "24489",
+      "communeInsee": "24489",
+      "city": "Saint-Priest-les-Fougères",
+      "observedStatus": "active"
+    },
+    {
+      "id": "c250bcac-cb1f-411a-9039-fb78dc97f776",
+      "poiUuid": "b354f331-fc4d-36d4-b694-a45733aa823f",
+      "postalCode": "24489",
+      "communeInsee": "24489",
+      "city": "Saint-Priest-les-Fougères",
+      "observedStatus": "active"
+    },
+    {
+      "id": "c284b6ad-8d20-4716-a156-dcd6425efb4f",
+      "poiUuid": "f919d837-4251-3e5e-ba7d-8b3eadb2997c",
+      "postalCode": "24481",
+      "communeInsee": "24481",
+      "city": "Saint-Paul-la-Roche",
+      "observedStatus": "active"
+    },
+    {
+      "id": "cbb83920-f4d3-4904-b720-ac2019f79dc6",
+      "poiUuid": "f919d837-4251-3e5e-ba7d-8b3eadb2997c",
+      "postalCode": "24481",
+      "communeInsee": "24481",
+      "city": "Saint-Paul-la-Roche",
+      "observedStatus": "active"
+    },
+    {
+      "id": "dfa5cf55-b628-4aff-b5d8-85faf457e022",
+      "poiUuid": "a9b0903f-ac36-35c7-b0f2-6270941de327",
+      "postalCode": "13055",
+      "communeInsee": "13055",
+      "city": "Marseille",
+      "observedStatus": "review"
+    },
+    {
+      "id": "e80d69f1-1f21-4fc7-afef-5c23586decb7",
+      "poiUuid": "297928e4-ffb3-3c96-afd2-99eebb08450b",
+      "postalCode": "24489",
+      "communeInsee": "24489",
+      "city": "Saint-Priest-les-Fougères",
+      "observedStatus": "active"
+    },
+    {
+      "id": "ee87a755-5ed7-40fb-81c0-371fa8372240",
+      "poiUuid": "a9c87c23-7e16-3a3c-b54b-2c5b8ddba751",
+      "postalCode": "24489",
+      "communeInsee": "24489",
+      "city": "Saint-Priest-les-Fougères",
+      "observedStatus": "active"
+    },
+    {
+      "id": "f9c895c3-9d23-4532-86e9-4a5749b0522c",
+      "poiUuid": "a9b0903f-ac36-35c7-b0f2-6270941de327",
+      "postalCode": "13055",
+      "communeInsee": "13055",
+      "city": "Marseille",
+      "observedStatus": "review"
+    }
+  ]
+}

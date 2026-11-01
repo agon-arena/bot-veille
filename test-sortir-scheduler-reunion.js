@@ -9,9 +9,10 @@ const fixture=require('./sortir/fixtures/openagenda-reunion-v1-archived.json');
 const {createExplorerCache}=require('../SUPABASE copie 3/lib/explorer');
 const {makeFakeExplorerSupabase}=require('../SUPABASE copie 3/test/helpers/fake-explorer-supabase');
 const now=new Date(fixture.asOf);process.env.OPENAGENDA_PUBLIC_KEY='cle-publique-factice-tests';
-function setup(){const db=new MemoryStore(),client=schedulerClient(db),state=createSchedulerState(client);return{db,client,state};}
-const base={now,timeToMinutes:s=>{const[h,m]=s.split(':');return +h*60 + +m},getReunionTimeHHMM:()=> '04:05',datatourismeMaxTotalPois:0,fetchEvents:async()=>({results:[],fetchedCount:0})};
-async function tick(h,opts={}){const r=await runSortirIngestTickIfDue({...base,store:h.db,state:h.state,...opts});return r.workPromise?{tick:r,summary:await r.workPromise}:{tick:r};}
+// Relances espacées d'au moins 1 h (rattrapage quotidien) : le k-ième tick d'un test a lieu k×61 min plus tard, même journée de cycle.
+function setup(){const db=new MemoryStore(),client=schedulerClient(db),state=createSchedulerState(client);return{db,client,state,ticks:0};}
+const base={now,datatourismeMaxTotalPois:0,fetchEvents:async()=>({results:[],fetchedCount:0})};
+async function tick(h,opts={}){const r=await runSortirIngestTickIfDue({...base,now:new Date(now.getTime()+61*60000*h.ticks++),store:h.db,state:h.state,client:h.client,...opts});return r.workPromise?{tick:r,summary:await r.workPromise}:{tick:r};}
 async function fixtureHttp(fn,{failUid,extra=false}={}){
  const old=global.fetch,calls=[];global.fetch=async(input,init={})=>{const u=new URL(input);assert.equal(u.hostname,'api.openagenda.com');assert.equal(init.method||'GET','GET');const match=u.pathname.match(/^\/v2\/agendas\/(\d+)(\/events)?$/);assert.ok(match,'URL fixture inconnue');const uid=+match[1];calls.push({uid,path:u.pathname,query:u.search});if(uid===failUid)throw Error('Panne producteur injectée');const group=fixture.producers.find(g=>g.uid===uid);assert.ok(group);if(!match[2])return new Response(JSON.stringify({schema:{fields:[]}}));let events=structuredClone(group.events);if(extra&&uid===50316469){for(const id of [5246977,68345357,44566861,2664063,41861302])events.push({...structuredClone(events.find(e=>e.uid===14738514)),uid:id,title:'Hors liste '+id});}return new Response(JSON.stringify({events,total:events.length,after:null}));};
  try{return await fn(calls)}finally{global.fetch=old;}
@@ -69,7 +70,7 @@ test('un source_run running sans ingestion running empêche un chevauchement',as
 
 test('deux ticks simultanés ne démarrent qu’un cycle ; l’autre est refusé avant collecte',async()=>{
  const h=setup();let count=0;const fetchEvents=async()=>{count++;await new Promise(r=>setTimeout(r,5));return{results:[]}};
- const opts={...base,store:h.db,state:h.state,reunionSources:[],fetchEvents};const both=await Promise.all([runSortirIngestTickIfDue(opts),runSortirIngestTickIfDue(opts)]);assert.equal(both.filter(r=>r.triggered).length,1);assert.equal(both.find(r=>!r.triggered).reason,'already running');await both.find(r=>r.triggered).workPromise;assert.equal(count,3);
+ const opts={...base,store:h.db,state:h.state,client:h.client,reunionSources:[],fetchEvents};const both=await Promise.all([runSortirIngestTickIfDue(opts),runSortirIngestTickIfDue(opts)]);assert.equal(both.filter(r=>r.triggered).length,1);assert.equal(both.find(r=>!r.triggered).reason,'already running');await both.find(r=>r.triggered).workPromise;assert.equal(count,3);
 });
 
 test('journalisation indisponible pour une source : erreur visible et sources suivantes traitées',async()=>{

@@ -31,3 +31,6 @@ certamen-experiment-corpus-*.json
 
 youtube-api-state.json
 youtube-api-state.json.tmp
+
+# Snapshots et preuves de reprise issus de la production (locaux uniquement).
+sortir/recovery-data/
