@@ -5,6 +5,13 @@ const { videoId, sourceKey } = require('./youtube-collection');
 const DAY = 86400000;
 const STORE_FILE = path.join(__dirname, 'youtube-api-state.json');
 
+// Coupe sans laisser de moitié d'emoji : Postgres rejette ce caractère et, côté Mnoria,
+// tout le lot d'opinion-articles tombait avec lui (incident du 31/10/2026).
+function truncateText(text, max) {
+  const cut = String(text).slice(0, max);
+  return /[\ud800-\udbff]$/.test(cut) ? cut.slice(0, -1) : cut;
+}
+
 function loadStore(file = STORE_FILE) {
   try {
     const data = JSON.parse(fs.readFileSync(file, 'utf8'));
@@ -106,7 +113,7 @@ async function collectApi(channels, { store, api, now = Date.now(), persist = ()
           store.videos[id] = {
             ...existing, id, type: 'youtube', source: existing?.source || channel.nom,
             orientation: existing?.orientation || channel.orientation || '',
-            title: snippet.title || 'Sans titre', summary: (snippet.description || '').slice(0, 1500),
+            title: snippet.title || 'Sans titre', summary: truncateText(snippet.description || '', 1500),
             link: `https://www.youtube.com/watch?v=${id}`, date,
             thumbnail: snippet.thumbnails?.high?.url || `https://i.ytimg.com/vi/${id}/hqdefault.jpg`,
             discoveredAt: existing?.discoveredAt || new Date(now).toISOString(),
