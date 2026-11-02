@@ -308,3 +308,11 @@ test('quiet sources are still polled when a catch-up, an error retry or the dail
   await collectApi([channel], { store, now: now + day + 3600000, api: stub({ first: { items: [] } }, calls) });
   assert.equal(calls.length, 1);
 });
+
+test('a reclassified channel updates the orientation of its videos still in the window', async () => {
+  const store = empty();
+  await collectApi([{ ...channel, orientation: 'généraliste / neutre' }, { ...playlist, orientation: 'droite' }], { store, now, api: stub({ first: { items: [entry(id1, 0)] } }) });
+  assert.equal(store.videos[id1].orientation, 'généraliste / neutre');
+  await collectApi([{ ...channel, orientation: 'gauche' }, { ...playlist, orientation: 'droite' }], { store, now: now + 3600000, api: stub({ first: { items: [entry(id1, 0)] } }) });
+  assert.equal(store.videos[id1].orientation, 'gauche');
+});

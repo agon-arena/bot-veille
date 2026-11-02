@@ -138,7 +138,9 @@ async function collectApi(channels, { store, api, now = Date.now(), persist = ()
           if (!existing) discovered++;
           store.videos[id] = {
             ...existing, id, type: 'youtube', source: existing?.source || channel.nom,
-            orientation: existing?.orientation || channel.orientation || '',
+            // A reclassified channel (youtube-chaines.json) applies to its videos
+            // still in the 24-hour window, re-sent after each session purge.
+            orientation: (!existing || existing.source === channel.nom ? channel.orientation : existing.orientation) || existing?.orientation || '',
             title: snippet.title || 'Sans titre', summary: truncateText(snippet.description || '', 1500),
             link: `https://www.youtube.com/watch?v=${id}`, date,
             thumbnail: snippet.thumbnails?.high?.url || `https://i.ytimg.com/vi/${id}/hqdefault.jpg`,

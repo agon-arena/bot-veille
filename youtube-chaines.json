@@ -357,7 +357,7 @@
   },
   {
     "nom": "Off Investigation",
-    "orientation": "investigation / critique",
+    "orientation": "gauche / investigation",
     "url": "https://www.youtube.com/@OffInvestigation",
     "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCEFGCs68E9Vr5te5qZuJsbg",
     "opinionOnly": true
@@ -894,7 +894,7 @@
   },
   {
     "nom": "Fakir TV",
-    "orientation": "généraliste / neutre",
+    "orientation": "gauche sociale",
     "url": "https://www.youtube.com/channel/UCDvIeLuH5wmndQ55cXeKtXw",
     "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCDvIeLuH5wmndQ55cXeKtXw"
   },
@@ -1008,49 +1008,49 @@
   },
   {
     "nom": "PaduTeam",
-    "orientation": "généraliste / neutre",
+    "orientation": "gauche / commentaire politique",
     "url": "https://www.youtube.com/channel/UCbbmy1wFvL1Xq0G9I-mLtQg",
     "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCbbmy1wFvL1Xq0G9I-mLtQg"
   },
   {
     "nom": "Radio Nova : Aymeric Lompret dans \"La dernière\" (playlist)",
-    "orientation": "généraliste / neutre",
+    "orientation": "gauche / humour / critique sociale",
     "url": "https://www.youtube.com/playlist?list=PL9wDNu3ZrVQ5iAj77ot9CnDYWnZbbcc5v",
     "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PL9wDNu3ZrVQ5iAj77ot9CnDYWnZbbcc5v"
   },
   {
     "nom": "Radio Nova : Guillaume Meurice dans \"La dernière\" (playlist)",
-    "orientation": "généraliste / neutre",
+    "orientation": "gauche / humour / critique sociale",
     "url": "https://www.youtube.com/playlist?list=PL9wDNu3ZrVQ5NtNHF1dYQa0MdB2YYWoCF",
     "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PL9wDNu3ZrVQ5NtNHF1dYQa0MdB2YYWoCF"
   },
   {
     "nom": "Radio Nova : Juliette Arnaud dans \"La dernière\" (playlist)",
-    "orientation": "généraliste / neutre",
+    "orientation": "gauche / humour / critique sociale",
     "url": "https://www.youtube.com/playlist?list=PL9wDNu3ZrVQ5hRncHFA91UR3_1XlNZApX",
     "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PL9wDNu3ZrVQ5hRncHFA91UR3_1XlNZApX"
   },
   {
     "nom": "Radio Nova : La dernière (playlist)",
-    "orientation": "généraliste / neutre",
+    "orientation": "gauche / humour / critique sociale",
     "url": "https://www.youtube.com/playlist?list=PL9wDNu3ZrVQ4N-MrQP2hNlPgpt7KOW-2E",
     "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PL9wDNu3ZrVQ4N-MrQP2hNlPgpt7KOW-2E"
   },
   {
     "nom": "Radio Nova : Les extraits de \"La dernière\" (playlist)",
-    "orientation": "généraliste / neutre",
+    "orientation": "gauche / humour / critique sociale",
     "url": "https://www.youtube.com/playlist?list=PL9wDNu3ZrVQ6y2SYIfOLTgDpjSbBxi-AE",
     "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PL9wDNu3ZrVQ6y2SYIfOLTgDpjSbBxi-AE"
   },
   {
     "nom": "Radio Nova : Les invité.e.s humour de \"La dernière\" (playlist)",
-    "orientation": "généraliste / neutre",
+    "orientation": "gauche / humour / critique sociale",
     "url": "https://www.youtube.com/playlist?list=PL9wDNu3ZrVQ5LgBk-IdeAf-bLLBGzivCl",
     "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PL9wDNu3ZrVQ5LgBk-IdeAf-bLLBGzivCl"
   },
   {
     "nom": "Radio Nova : Pierre-Emmanuel Barré dans \"La dernière\" (playlist)",
-    "orientation": "généraliste / neutre",
+    "orientation": "gauche / humour / critique sociale",
     "url": "https://www.youtube.com/playlist?list=PL9wDNu3ZrVQ4DktiNgLclEUeAjUtkLtFR",
     "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PL9wDNu3ZrVQ4DktiNgLclEUeAjUtkLtFR"
   },
@@ -1141,7 +1141,7 @@
   },
   {
     "nom": "Censored Free Minds",
-    "orientation": "actualité / société",
+    "orientation": "gauche / actualité / société",
     "url": "https://www.youtube.com/@censoredfreeminds",
     "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCtmlVJzVyTCjOy168N018dA"
   },
@@ -1153,13 +1153,13 @@
   },
   {
     "nom": "AJ+ français",
-    "orientation": "actualité / international",
+    "orientation": "gauche / actualité / international",
     "url": "https://www.youtube.com/@ajplusfrancais",
     "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCd1jQ_ppmKfphnh4p39HMFg"
   },
   {
     "nom": "RiboDansLaSauce VOD",
-    "orientation": "commentaire politique",
+    "orientation": "gauche / commentaire politique",
     "url": "https://www.youtube.com/@RiboDansLaSauceVOD",
     "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UC6jSpt9BDRRCYGaHOHC9Xwg"
   },
@@ -1171,7 +1171,7 @@
   },
   {
     "nom": "Akim Omiri",
-    "orientation": "humour / satire politique",
+    "orientation": "gauche / humour / satire politique",
     "url": "https://www.youtube.com/channel/UCbOdpYBG53zmFuDK0qaTSmw",
     "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCbOdpYBG53zmFuDK0qaTSmw"
   },

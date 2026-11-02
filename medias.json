@@ -269,7 +269,7 @@
   },
   {
     "nom": "Off Investigation",
-    "orientation": "investigation",
+    "orientation": "gauche / investigation",
     "rss": "https://www.off-investigation.fr/feed/",
     "opinionOnly": true
   },
