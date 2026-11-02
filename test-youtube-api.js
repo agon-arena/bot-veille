@@ -278,3 +278,33 @@ test('old session videos are not reintroduced by the editorial list', async () =
   await h.send();
   assert.equal(h.requests.length, 0);
 });
+
+test('quiet sources (no video for 48 h) are polled every 3 hours, active ones every hour', async () => {
+  const store = empty();
+  const active = { nom: 'Active', rss: 'https://www.youtube.com/feeds/videos.xml?channel_id=UCact' };
+  await collectApi([channel, active], { store, now, api: stub({ first: { items: [] } }) });
+  store.videos[id1] = { id: id1, date: new Date(now - 3600000).toISOString(), status: 'sent', sourceKeys: [active.rss] };
+  const calls = [];
+  await collectApi([channel, active], { store, now: now + 3600000, api: stub({ first: { items: [] } }, calls) });
+  assert.equal(calls.filter(x => x.endpoint === 'playlistItems').length, 1);
+  assert.equal(store.report.find(r => r.nom === 'Chaîne').enVeille, true);
+  calls.length = 0;
+  await collectApi([channel, active], { store, now: now + 3 * 3600000, api: stub({ first: { items: [] } }, calls) });
+  assert.equal(calls.filter(x => x.endpoint === 'playlistItems').length, 2);
+});
+
+test('quiet sources are still polled when a catch-up, an error retry or the daily scan is pending', async () => {
+  const store = empty();
+  await collectApi([channel], { store, now, api: stub({ first: { items: [] } }) });
+  store.sources[channel.rss].nextPageToken = 'next';
+  const calls = [];
+  await collectApi([channel], { store, now: now + 3600000, api: stub({ next: { items: [] } }, calls) });
+  assert.equal(calls[0].pageToken, 'next');
+  store.sources[channel.rss].lastError = 'offline';
+  calls.length = 0;
+  await collectApi([channel], { store, now: now + 2 * 3600000, api: stub({ first: { items: [] } }, calls) });
+  assert.equal(calls.length, 1);
+  calls.length = 0;
+  await collectApi([channel], { store, now: now + day + 3600000, api: stub({ first: { items: [] } }, calls) });
+  assert.equal(calls.length, 1);
+});

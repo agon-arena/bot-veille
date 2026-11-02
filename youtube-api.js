@@ -72,13 +72,39 @@ async function resolvePlaylist(channel, old, api) {
   return { playlistId, customPlaylist: false };
 }
 
+// Quota budget (8 000 requests/day) ran out overnight on 02/11/2026 with 251
+// sources polled every hour, while 143 of them had published nothing for 48 h.
+// Quiet sources are polled every 3 hours instead: still well inside the 24-hour
+// window, so no video is missed, only delivered up to 3 hours later.
+const QUIET_AFTER_MS = 2 * DAY;
+const QUIET_POLL_INTERVAL_MS = 3 * 3600000;
+
+function lastVideoDates(store) {
+  const dates = new Map();
+  for (const video of Object.values(store.videos)) {
+    const date = Date.parse(video.date);
+    if (!Number.isFinite(date)) continue;
+    for (const key of video.sourceKeys || []) dates.set(key, Math.max(dates.get(key) || 0, date));
+  }
+  return dates;
+}
+
 // One process owns this file (server.js). Save after EACH page, including an
 // unfinished catch-up, before advancing any successful-source checkpoint.
 async function collectApi(channels, { store, api, now = Date.now(), persist = () => {}, maxPages = 25 }) {
   const report = [];
+  const lastVideoAt = lastVideoDates(store);
   for (const channel of channels) {
     const key = sourceKey(channel);
     const old = store.sources[key] || {};
+    const quiet = now - (lastVideoAt.get(key) || 0) >= QUIET_AFTER_MS;
+    const recentlyPolled = now - (Date.parse(old.lastPolledAt) || 0) < QUIET_POLL_INTERVAL_MS;
+    const dailyScanDue = !old.lastFullScanAt || now - Date.parse(old.lastFullScanAt) >= DAY;
+    if (quiet && recentlyPolled && !old.nextPageToken && !old.lastError && !dailyScanDue) {
+      report.push({ nom: channel.nom, statut: 'ok', pages: 0, discovered: 0, enVeille: true,
+        lastSuccessfulAt: old.lastSuccessfulAt || null });
+      continue;
+    }
     try {
       const resolved = await resolvePlaylist(channel, old, api);
       const source = store.sources[key] = { ...old, ...resolved, nom: channel.nom };
