@@ -10,6 +10,7 @@ const path = require("path");
 const { renderAutoCollectCertamenWidgetHtml } = require("./certamen-auto-collect-widget");
 const { renderAutoCollectMixteWidgetHtml } = require("./auto-collect-mixte-widget");
 const { renderCertamenPublishWidgetHtml } = require("./certamen-publish-widget");
+const { filterIncoherentMergeSubjects } = require("./subject-merge-guard");
 const { MAX_CHECKED_SUBJECTS } = require("./certamen-checked-subjects");
 const { cleanCertamenGeneratedText } = require("./certamen-text-cleanup");
 const { isRoundupTitle } = require("./recap-filter");
@@ -2464,11 +2465,19 @@ function applySubjectMergeGroups(subjects, mergeResult) {
     if (!keepId || !mergeIds.length || consumed.has(keepId)) return;
 
     const keepSubject = byId.get(keepId);
-    const mergeSubjects = mergeIds
+    const proposedSubjects = mergeIds
       .filter((id) => !consumed.has(id))
       .map((id) => byId.get(id))
       .filter(Boolean);
-    if (!keepSubject || !mergeSubjects.length) return;
+    if (!keepSubject || !proposedSubjects.length) return;
+
+    // L'IA glisse parfois dans un groupe un subjectId sans rapport (cf. subject-merge-guard.js) :
+    // ces sujets restent séparés au lieu de polluer les liens de l'arène fusionnée.
+    const { accepted: mergeSubjects, rejected } = filterIncoherentMergeSubjects(keepSubject, proposedSubjects, getKeywords);
+    if (rejected.length) {
+      console.warn(`Déduplication IA : ${rejected.length} sujet(s) hors sujet écarté(s) de la fusion « ${String(keepSubject.subject || "").slice(0, 60)} » : ${rejected.map((subject) => `« ${String(subject.subject || "").slice(0, 60)} »`).join(", ")}`);
+    }
+    if (!mergeSubjects.length) return;
 
     const mergedSubject = mergeSubjectRecords(keepSubject, mergeSubjects, group?.suggestedTitle || "");
     merged.push(mergedSubject);
@@ -2479,7 +2488,8 @@ function applySubjectMergeGroups(subjects, mergeResult) {
       mergeSubjectIds: mergeSubjects.map((subject) => String(subject.subjectId)),
       suggestedTitle: String(group?.suggestedTitle || "").trim(),
       confidence,
-      reason: String(group?.reason || "").trim()
+      reason: String(group?.reason || "").trim(),
+      ...(rejected.length ? { rejectedSubjectIds: rejected.map((subject) => String(subject.subjectId)) } : {})
     });
   });
 
