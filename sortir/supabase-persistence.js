@@ -7,6 +7,7 @@ const { validateNormalizedActivity } = require("./activity-validation");
 const { ALGORITHM_VERSION, DECISIONS, compareActivities, mergeActivities, canonicalUrl, normalizedText } = require("./activity-deduplication");
 const { ORCHESTRATOR_VERSION } = require("./ingestion-orchestrator");
 const { TemporalCandidateView } = require("./temporal-candidate-cache");
+const { createCandidatePrefilter } = require("./candidate-prefilter");
 const { quarantineSignal, reactivationStatus } = require("./datatourisme-review-quarantine");
 const { organizerWarningNonBlocking } = require("./organizer-review-policy");
 
@@ -368,7 +369,18 @@ async function persistSortirIngestionUnlocked({ sources, store, now = new Date()
           await candidateCache.load([...preloadStartsAtByMapKey].filter(([key]) => !provenanceMap.has(key)).map(([, t]) => t), store,
             [...preloadActivityByMapKey].filter(([key]) => !provenanceMap.has(key)).map(([, activity]) => activity));
           candidateIndex.prepare(rangeStart, rangeEnd, preloadedActivities);
-        } else for (const row of await store.listCandidateActivitiesInRange(rangeStart, rangeEnd)) candidateIndex.set(row.id, row);
+        } else {
+          // Balayage allégé page par page, seuls les candidats pouvant être non-DISTINCT sont
+          // ensuite relus en entier (voir candidate-prefilter.js) ; repli sur le chargement
+          // complet si le préfiltre ne s'applique pas ou si le store ne sait pas balayer.
+          const mayMatch = typeof store.scanCandidateKeysInRange === "function" && createCandidatePrefilter(
+            [...preloadActivityByMapKey].filter(([key]) => !provenanceMap.has(key)).map(([, activity]) => activity), rowToActivity);
+          if (mayMatch) {
+            const ids = [];
+            await store.scanCandidateKeysInRange(rangeStart, rangeEnd, page => { for (const row of page) if (mayMatch(row)) ids.push(row.id); });
+            for (const row of await store.getActivitiesBatch(ids)) candidateIndex.set(row.id, row);
+          } else for (const row of await store.listCandidateActivitiesInRange(rangeStart, rangeEnd)) candidateIndex.set(row.id, row);
+        }
       }
       // pendingProvenanceTouchIds : cas ultra-fréquent uniquement (occurrence connue, hash
       // identique, activité non-stale) — les écritures ne varient pas d'un item à l'autre
@@ -747,6 +759,15 @@ function createSupabaseSortirStore(client) {
         from += CANDIDATE_RANGE_PAGE_SIZE;
       }
       return rows;
+    },
+    // Même filtre et même pagination que listCandidateActivitiesInRange, colonnes réduites aux
+    // clés du préfiltre ; chaque page est remise à onPage puis abandonnée (mémoire bornée).
+    async scanCandidateKeysInRange(startIso, endIso, onPage) {
+      for (let from = 0; ; from += CANDIDATE_RANGE_PAGE_SIZE) {
+        const page = await one(client.from("sortir_activities").select("id,starts_at,city,address,latitude,longitude,provenances:sortir_provenances(original_event_url),external_ids:sortir_external_ids(system,value)").in("record_status", ["active", "review"]).gte("starts_at", startIso).lte("starts_at", endIso).order("id", { ascending: true }).range(from, from + CANDIDATE_RANGE_PAGE_SIZE - 1));
+        onPage(page);
+        if (page.length < CANDIDATE_RANGE_PAGE_SIZE) return;
+      }
     },
     async listCandidateActivitiesInWindows(windows, { maxRows = 100000, maxBytes = 256 * 1048576 } = {}) {
       const rows = []; let bytes = 0;
