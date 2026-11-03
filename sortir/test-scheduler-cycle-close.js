@@ -8,7 +8,7 @@ const {readCycleStatus,isTransientStoreError,CYCLE_ROOT_VERSION}=require('./sche
 const ingestPath=require.resolve('../sortir-auto-ingest');
 let {runSortirIngestTickIfDue,CYCLE_CLOSE_RETRY_DELAYS_MS}=require(ingestPath);
 const now=new Date('2026-11-01T00:05:00Z');
-const base={now,datatourismeMaxTotalPois:0,reunionSources:[]};
+const base={now,datatourismeMaxTotalPois:0,reunionSources:[],parisSources:[]};
 global.fetch=async()=>{throw Error('Réseau réel interdit');};
 
 function setup(){

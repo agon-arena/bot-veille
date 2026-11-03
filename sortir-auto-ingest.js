@@ -14,7 +14,18 @@ const { fetchDatatourismeEvents } = require("./sortir/connectors/datatourisme");
 const { safeMessage, cycleResult, retryTransient, listCycleAttempts, CYCLE_ROOT_VERSION } = require("./sortir/scheduler-cycle-status");
 const { createSchedulerState, CYCLE_VERSION, LOCK_ID } = require("./sortir/scheduler-state");
 const { REUNION_SOURCES, runReunionProducer } = require("./sortir/openagenda-reunion-daily");
+const { fetchAllParisEvents, DEFAULT_ENDPOINT: PARIS_ENDPOINT } = require("./sortir/connectors/paris-events");
 const { persistSortirIngestion, createDefaultSupabaseStore } = require("./sortir/supabase-persistence");
+
+// --- Que faire à Paris : même clé et mêmes identifiants d'occurrence que l'essai du 18/10/2026,
+// lecture complète puis filtre éditorial (voir connectors/paris-events.js). ---
+const PARIS_SOURCES = Object.freeze([Object.freeze({ key: "paris-data-que-faire", connectorType: "paris_data", baseUrl: PARIS_ENDPOINT, sourceName: "Que Faire à Paris ?" })]);
+async function runParisProducer({ source, store, now, fetchParis, persist }) {
+  const fetched = await fetchParis({ endpoint: source.baseUrl, sourceName: source.sourceName, fetchedAt: now.toISOString() });
+  const result = await persist({ store, now, sources: [{ key: source.key, connectorType: source.connectorType, baseUrl: source.baseUrl, results: fetched.results }] });
+  console.log("[sortir-auto-ingest] Paris :", JSON.stringify({ total: fetched.total, retained: fetched.retained, status: result.status, stats: result.stats }));
+  return { status: result.status, stats: result.stats, eventsCollected: fetched.scanned, eventsRetained: fetched.retained, occurrencesRetained: fetched.results.length };
+}
 
 // --- OpenAgenda : liste des agendas configurés (étape de validation multi-sources : Senlis +
 // 2 agendas réels supplémentaires déjà vérifiés avec de vrais événements le 19/10/2026 — pas
@@ -297,6 +308,7 @@ async function runSortirIngestTickIfDue({
   persist = persistSortirIngestion, store = null, state = null,
   openAgendaSources = OPENAGENDA_SOURCES, reunionSources = REUNION_SOURCES,
   fetchReunionEvents = fetchOpenAgendaJsonEvents, fetchReunionSchema,
+  parisSources = PARIS_SOURCES, fetchParis = fetchAllParisEvents,
   datatourismeMaxTotalPois = DATATOURISME_MAX_TOTAL_POIS_PILOT,
   datatourismeChunkSize = DATATOURISME_CHUNK_SIZE, onBatchSummary = null,
   closeRetryDelaysMs = CYCLE_CLOSE_RETRY_DELAYS_MS, sleep = defaultSleep
@@ -317,7 +329,8 @@ async function runSortirIngestTickIfDue({
     const legacy = openAgendaSources.map(source => ({ source: { ...source, connectorType: "openagenda_json", baseUrl: `https://api.openagenda.com/v2/agendas/${source.agendaUid}/events` },
       work: async target => (await runOpenAgendaBatches({ sources: [source], batchSize: 1, fetchEvents, persist, store: target, now }))[0] }));
     jobs = [...legacy, ...reunionSources.map(source => ({ source,
-      work: target => runReunionProducer({ source, store: target, now, fetchEvents: fetchReunionEvents, fetchSchema: fetchReunionSchema }) }))];
+      work: target => runReunionProducer({ source, store: target, now, fetchEvents: fetchReunionEvents, fetchSchema: fetchReunionSchema }) })),
+      ...parisSources.map(source => ({ source, work: target => runParisProducer({ source, store: target, now, fetchParis, persist }) }))];
     if (process.env.DATATOURISME_API_KEY && datatourismeMaxTotalPois) jobs.push({ source: { key: DATATOURISME_SOURCE_KEY, connectorType: "datatourisme", baseUrl: DATATOURISME_BASE_URL },
       work: async target => {
         const outcome = await runDatatourismeChunks({ apiKey: process.env.DATATOURISME_API_KEY, maxTotalPois: datatourismeMaxTotalPois,
@@ -437,6 +450,8 @@ async function runSortirIngestTickIfDue({
 module.exports = {
   runSortirIngestTickIfDue,
   REUNION_SOURCES,
+  PARIS_SOURCES,
+  runParisProducer,
   scheduledSource,
   cycleDayStart,
   hasRecentCompletedRun,

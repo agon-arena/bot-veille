@@ -12,7 +12,7 @@ const at=iso=>new Date(iso);
 
 function setup(){
   const db=new MemoryStore(),client=schedulerClient(db),state=createSchedulerState(client),fetched=[];let failing=new Set();
-  const tick=(iso,extra={})=>runSortirIngestTickIfDue({now:at(iso),store:db,state,client,datatourismeMaxTotalPois:0,reunionSources:[],
+  const tick=(iso,extra={})=>runSortirIngestTickIfDue({now:at(iso),store:db,state,client,datatourismeMaxTotalPois:0,reunionSources:[],parisSources:[],
     fetchEvents:async({agendaUid})=>{fetched.push(agendaUid);if(failing.has(agendaUid))throw Error('HTTP 503 simulé');return{results:[],fetchedCount:0};},...extra});
   const done=async(iso,extra)=>{const t=await tick(iso,extra);if(t.workPromise)t.summary=await t.workPromise;return t;};
   return {db,client,state,fetched,done,setFailing(uids){failing=new Set(uids);},cycles(){return db.ingestions.filter(r=>r.orchestrator_version===CYCLE_ROOT_VERSION);},lock(){return db.ingestions.find(r=>r.id===LOCK_ID);}};

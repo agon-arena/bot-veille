@@ -15,7 +15,7 @@ const { MemoryStore } = require("./sortir/test-helpers/memory-store");
 // La suite historique conserve son périmètre Senlis ; les huit sources et le verrou partagé
 // sont exercés par test-sortir-scheduler-reunion.js avec leur vraie orchestration.
 function runSortirIngestTickIfDue(args) {
-  return realTick({ ...args, reunionSources: [], store: Object.assign(new MemoryStore(), args.store || {}),
+  return realTick({ ...args, reunionSources: [], parisSources: [], store: Object.assign(new MemoryStore(), args.store || {}),
     state: { acquire: async () => true, release: async () => {}, hasOtherRunning: async () => false,
       recent: (key, since) => hasRecentCompletedRun(args.client, since, key) } });
 }

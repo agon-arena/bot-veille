@@ -6,7 +6,7 @@ const {MemoryStore}=require('./test-helpers/memory-store'),{schedulerClient}=req
 const {createSchedulerState}=require('./scheduler-state'),{runSortirIngestTickIfDue,OPENAGENDA_SOURCES}=require('../sortir-auto-ingest');
 const {readCycleStatus}=require('./scheduler-cycle-status'),{inspectTick,inspectCycle}=require('./check-scheduler-response');
 const now=new Date('2026-11-01T00:05:00Z');
-const base={now,datatourismeMaxTotalPois:0};
+const base={now,datatourismeMaxTotalPois:0,parisSources:[]};
 function setup(){const db=new MemoryStore(),client=schedulerClient(db);return{db,client,state:createSchedulerState(client)};}
 async function withKey(value,fn){const old=process.env.OPENAGENDA_PUBLIC_KEY;value===undefined?delete process.env.OPENAGENDA_PUBLIC_KEY:process.env.OPENAGENDA_PUBLIC_KEY=value;try{return await fn();}finally{old===undefined?delete process.env.OPENAGENDA_PUBLIC_KEY:process.env.OPENAGENDA_PUBLIC_KEY=old;}}
 async function withFetch(fetcher,fn){const old=global.fetch;global.fetch=fetcher;try{return await fn();}finally{global.fetch=old;}}

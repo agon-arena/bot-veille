@@ -112,4 +112,51 @@ async function fetchParisEvents(options = {}) {
   } finally { clearTimeout(timeout); }
 }
 
-module.exports = { DEFAULT_ENDPOINT, htmlToText, mapAdmissionType, mapParisEvent, convertParisEvents, fetchParisEvents };
+// Ligne éditoriale Explorer appliquée aux thèmes de la source (qfap_tags) : un enregistrement est
+// retenu s'il porte au moins un thème retenu et aucun thème exclu. Concerts seuls, loisirs,
+// ateliers bien-être, santé et sport ne sont pas repris.
+const PARIS_EDITORIAL_TAGS = Object.freeze(["Théâtre", "Conférence", "Débat", "Expo", "Art contemporain", "Photo", "Peinture",
+  "Littérature", "Ecrans", "Histoire", "Sciences", "Solidarité"]);
+const PARIS_EXCLUDED_TAGS = Object.freeze(["Sport"]);
+function isEditorialParisRecord(record) {
+  const recordTags = new Set(tags(record && record.qfap_tags));
+  return PARIS_EDITORIAL_TAGS.some(tag => recordTags.has(tag)) && !PARIS_EXCLUDED_TAGS.some(tag => recordTags.has(tag));
+}
+
+const PARIS_PAGE_SIZE = 100; // maximum de l'API Explore v2.1
+const PARIS_MAX_RECORDS = 5000; // l'API refuse offset + limit > 10 000
+
+// Lecture complète des événements à venir ou en cours, page par page, AVANT toute écriture :
+// une page en échec, un total qui change en cours de lecture ou un dépassement du plafond font
+// échouer le producteur au lieu de persister un jeu partiel.
+async function fetchAllParisEvents(options = {}) {
+  const endpoint = options.endpoint || DEFAULT_ENDPOINT;
+  const fetchedAt = options.fetchedAt || new Date().toISOString();
+  const maxRecords = options.maxRecords || PARIS_MAX_RECORDS;
+  const records = [];
+  let total = null;
+  for (let offset = 0; total === null || offset < total; offset += PARIS_PAGE_SIZE) {
+    const url = new URL(endpoint);
+    url.searchParams.set("where", "date_end >= now()");
+    url.searchParams.set("order_by", "id");
+    url.searchParams.set("limit", String(PARIS_PAGE_SIZE));
+    url.searchParams.set("offset", String(offset));
+    url.searchParams.set("timezone", "UTC");
+    const response = await fetch(url, { headers: { Accept: "application/json", "User-Agent": options.userAgent || "MnoriaBotSortir/1.0" }, signal: AbortSignal.timeout(options.timeoutMs || 30000) });
+    if (!response.ok) throw new Error(`Paris Data a répondu HTTP ${response.status}`);
+    const payload = await response.json();
+    if (!Array.isArray(payload.results) || !Number.isInteger(payload.total_count)) throw new Error("Réponse Paris Data invalide");
+    if (total === null) {
+      total = payload.total_count;
+      if (total > maxRecords) throw new Error(`Paris Data : ${total} enregistrements, au-delà du plafond de ${maxRecords}`);
+    } else if (payload.total_count !== total) throw new Error("Paris Data : total modifié pendant la lecture");
+    records.push(...payload.results);
+    if (!payload.results.length) break;
+  }
+  if (records.length !== total || new Set(records.map(r => r && r.id)).size !== records.length) throw new Error("Paris Data : lecture incomplète ou doublonnée");
+  const retained = records.filter(isEditorialParisRecord);
+  return { total, scanned: records.length, retained: retained.length, results: convertParisEvents(retained, { ...options, endpoint, fetchedAt }) };
+}
+
+module.exports = { DEFAULT_ENDPOINT, PARIS_EDITORIAL_TAGS, PARIS_EXCLUDED_TAGS, PARIS_PAGE_SIZE, PARIS_MAX_RECORDS,
+  htmlToText, mapAdmissionType, mapParisEvent, convertParisEvents, isEditorialParisRecord, fetchParisEvents, fetchAllParisEvents };
