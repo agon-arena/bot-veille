@@ -24,6 +24,12 @@
     "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCHXyS9njDTc-HbnfRr1k6uA"
   },
   {
+    "nom": "The Black Elephant Experience",
+    "orientation": "gauche",
+    "url": "https://www.youtube.com/@TheBlackElephantExperience",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCGlhit-iMv60fID9rshSU8g"
+  },
+  {
     "nom": "Radio Nova",
     "orientation": "gauche / critique sociale",
     "url": "https://www.youtube.com/@radionova",

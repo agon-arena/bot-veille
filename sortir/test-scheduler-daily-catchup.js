@@ -24,7 +24,7 @@ test('tick tardif (13:00 Réunion) : le cycle du jour jamais lancé démarre, pu
   assert.equal(t.triggered,true);assert.equal(t.summary.status,'completed');assert.equal(h.fetched.length,3);
   const again=await h.done('2026-11-01T15:00:00Z');assert.deepEqual(again,{triggered:false,reason:'already run recently'});
   assert.equal(h.fetched.length,3);assert.equal(h.cycles().length,1);assert.equal(h.lock().status,'completed');
-  assert.equal(inspectTick(again).action,'skipped');
+  assert.equal(inspectTick(again).action,'verify');
 });
 
 test('journée suivante : le succès de la veille ne compte plus, nouveau cycle dès 04:00 Réunion',async()=>{
@@ -38,7 +38,7 @@ test('échec partiel : relance limitée au producteur en échec, espacement 1 h,
   const h=setup();h.setFailing([B]);
   const first=await h.done('2026-11-01T00:05:00Z');assert.equal(first.summary.status,'partial');
   const tooSoon=await h.done('2026-11-01T00:50:00Z');assert.deepEqual(tooSoon,{triggered:false,reason:'retry spacing',attemptsToday:1});
-  assert.equal(inspectTick(tooSoon).action,'skipped');assert.equal(h.lock().status,'completed','verrou rendu après le refus');
+  assert.equal(inspectTick(tooSoon).action,'verify');assert.equal(h.lock().status,'completed','verrou rendu après le refus');
   const second=await h.done('2026-11-01T01:10:00Z');assert.deepEqual(second.summary.expectedSources,[OPENAGENDA_SOURCES[1].key]);
   assert.equal(second.summary.status,'failed');
   const third=await h.done('2026-11-01T02:20:00Z');assert.equal(third.summary.status,'failed');
@@ -71,6 +71,6 @@ test('lecture des tentatives impossible : check failed, verrou rendu, aucune ing
   assert.equal(h.lock().status,'completed');assert.equal(h.fetched.length,0);assert.equal(h.cycles().length,0);
 });
 
-test('transition de déploiement : "not due" d’un serveur pas encore redéployé reste un simple skip',()=>{
-  assert.equal(inspectTick({triggered:false,reason:'not due'}).action,'skipped');
+test('transition de déploiement : "not due" d’un serveur pas encore redéployé exige aussi une preuve durable',()=>{
+  assert.equal(inspectTick({triggered:false,reason:'not due'}).action,'verify');
 });

@@ -1,8 +1,8 @@
 "use strict";
 function inspectTick(tick) {
   if(tick?.triggered===true && tick.status==='started' && typeof tick.cycleId==='string')return {action:'poll',cycleId:tick.cycleId,successConfirmed:false};
-  // "not due" : réponse d'un serveur pas encore redéployé (fenêtre stricte), transition seulement.
-  if(tick?.triggered===false && ['not due','already run recently','retry spacing','scheduler locked','already running','another ingestion running'].includes(tick.reason))return {action:'skipped',reason:tick.reason,successConfirmed:false};
+  // Toute absence de lancement doit être vérifiée dans le journal durable.
+  if(tick?.triggered===false && ['not due','already run recently','retry spacing','scheduler locked','already running','another ingestion running'].includes(tick.reason))return {action:'verify',reason:tick.reason,successConfirmed:false};
   // Rattrapage épuisé : des producteurs restent en échec pour la journée, jamais un simple skip.
   if(tick?.triggered===false && tick.reason==='daily attempts exhausted')throw Error(`Cycle du jour inachevé après ${tick.attemptsToday} tentatives : producteurs en échec, intervention requise`);
   throw Error('Tick rejeté, configuration inactive ou résultat sans identifiant durable');

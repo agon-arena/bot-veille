@@ -5810,7 +5810,13 @@ app.post("/api/auto-collect-tick", requireMixteAuth, async (req, res) => {
 // Lecture seule des résultats persistants ; ne déclenche aucun pipeline.
 app.get("/api/sortir-ingest-status", requireMixteAuth,
   require("./sortir/scheduler-cycle-status").createCycleStatusHandler(() =>
-    require("@supabase/supabase-js").createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SECRET_KEY, { auth: { persistSession: false, autoRefreshToken: false } })));
+    require("@supabase/supabase-js").createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SECRET_KEY, { auth: { persistSession: false, autoRefreshToken: false } }), {
+      getExpectedSources: () => {
+        const s = require('./sortir-auto-ingest');
+        return [...s.OPENAGENDA_SOURCES, ...s.REUNION_SOURCES, ...s.PARIS_SOURCES].map(p => p.key)
+          .concat(process.env.DATATOURISME_API_KEY && s.DATATOURISME_MAX_TOTAL_POIS_PILOT ? [s.DATATOURISME_SOURCE_KEY] : []);
+      }
+    }));
 app.post("/api/sortir-ingest-tick", requireMixteAuth, async (req, res) => {
   if (!AUTO_PIPELINES_ENABLED) {
     return res.json({ triggered: false, reason: "auto pipelines disabled on this instance" });

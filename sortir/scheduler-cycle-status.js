@@ -50,6 +50,9 @@ async function readCycleStatus(client, cycleId) {
   const {data,error} = await query;
   if(error) throw new Error('Lecture du journal de cycle indisponible');
   if(!data) return null;
+  return cycleStatusFromRow(data);
+}
+function cycleStatusFromRow(data) {
   const saved = data.error_summary?.find(e => e?.kind === KIND);
   if(!saved || !Array.isArray(saved.expectedSources) || !saved.expectedSources.length || !Array.isArray(saved.sources)) throw new Error('Journal de cycle incomplet');
   if(new Set(saved.expectedSources).size!==saved.expectedSources.length || new Set(saved.sources.map(s=>s.source)).size!==saved.sources.length || saved.sources.some(s=>!saved.expectedSources.includes(s.source))) throw new Error('Journal de cycle incohérent');
@@ -61,6 +64,39 @@ async function readCycleStatus(client, cycleId) {
     finished:data.status!=='running' && !!data.finished_at,startedAt:data.started_at,finishedAt:data.finished_at,
     inconsistent:data.status!=='running' && data.status!==computed.status};
 }
+// Projection de supervision uniquement : jamais de prise/libération de verrou.
+async function readSchedulerStatus(client, expectedSources, now = new Date()) {
+  if (!Array.isArray(expectedSources) || !expectedSources.length || new Set(expectedSources).size !== expectedSources.length)
+    throw new Error('Producteurs attendus non configurés');
+  const { LOCK_ID, LOCK_VERSION } = require('./scheduler-state');
+  // 04:00 Indian/Reunion = 00:00 UTC, sans changement saisonnier.
+  const since = new Date(now); since.setUTCHours(0, 0, 0, 0);
+  const read = async query => {
+    if (typeof query.abortSignal === 'function') query.abortSignal(AbortSignal.timeout(10000));
+    const r = await query; if (r.error) throw new Error('Lecture de supervision indisponible'); return r.data;
+  };
+  const columns = 'id,status,orchestrator_version,started_at,finished_at,error_summary';
+  const dailyRows = await read(client.from('sortir_ingestion_runs').select(columns)
+    .eq('orchestrator_version', CYCLE_ROOT_VERSION).gte('started_at', since.toISOString()).limit(51));
+  if (dailyRows.length > 50) throw new Error('Journal quotidien au-delà de la borne de supervision');
+  const running = await read(client.from('sortir_ingestion_runs').select(columns).eq('status', 'running').neq('id', LOCK_ID).limit(51));
+  const sourceRuns = await read(client.from('sortir_source_runs').select('id,started_at,status').eq('status', 'running').limit(51));
+  const lock = await read(client.from('sortir_ingestion_runs').select(columns).eq('id', LOCK_ID).maybeSingle());
+  if (!lock || lock.orchestrator_version !== LOCK_VERSION || !['running', 'completed'].includes(lock.status))
+    throw new Error('Verrou scheduler absent ou incohérent');
+  const cycles = dailyRows.map(cycleStatusFromRow).sort((a,b) => Date.parse(b.startedAt) - Date.parse(a.startedAt));
+  const runningCycles = running.filter(r => r.orchestrator_version === CYCLE_ROOT_VERSION).map(cycleStatusFromRow);
+  const completedSources = new Set();
+  for (const c of cycles) if (c.finished && !c.inconsistent && !c.releaseError && ['completed','partial'].includes(c.status))
+    for (const s of c.sources) if (s.status === 'completed' && !s.reportingError) completedSources.add(s.source);
+  const blockers = [...running, ...sourceRuns];
+  return { kind: 'sortir_scheduler_monitor', checkedAt: now.toISOString(), cycleDayStart: since.toISOString(),
+    lock: { status: lock.status, startedAt: lock.started_at },
+    runningCycles, latestCycle: cycles[0] || null,
+    blockers: blockers.map(r => ({ id: r.id, startedAt: r.started_at })),
+    daily: { expectedSources, completedSources: [...completedSources],
+      successConfirmed: lock.status === 'completed' && blockers.length === 0 && expectedSources.every(s => completedSources.has(s)) } };
+}
 // Runs enveloppe démarrés depuis le début de la journée de cycle (lecture seule, bornée).
 async function listCycleAttempts(client, sinceIso) {
   const {data,error} = await client.from('sortir_ingestion_runs').select('id,started_at')
@@ -68,11 +104,16 @@ async function listCycleAttempts(client, sinceIso) {
   if(error) throw new Error(error.message);
   return data || [];
 }
-function createCycleStatusHandler(getClient) {
+function createCycleStatusHandler(getClient, { getExpectedSources, now = () => new Date() } = {}) {
   return async(req,res)=>{
+    res.set?.('Cache-Control', 'no-store');
+    if (req.query.current === '1') {
+      try { return res.json(await readSchedulerStatus(getClient(), getExpectedSources?.(), now())); }
+      catch { return res.status(503).json({error:'Supervision du scheduler indisponible',successConfirmed:false}); }
+    }
     if(!/^[a-f0-9-]{36}$/i.test(req.query.cycleId||''))return res.status(400).json({error:'cycleId requis et valide'});
     try {const result=await readCycleStatus(getClient(),req.query.cycleId);return result?res.json(result):res.status(404).json({error:'Cycle introuvable'});}
     catch {return res.status(503).json({error:'Statut du cycle indisponible',successConfirmed:false});}
   };
 }
-module.exports={safeMessage,isTransientStoreError,retryTransient,CYCLE_ROOT_VERSION,KIND,producerResult,cycleResult,readCycleStatus,listCycleAttempts,createCycleStatusHandler};
+module.exports={safeMessage,isTransientStoreError,retryTransient,CYCLE_ROOT_VERSION,KIND,producerResult,cycleResult,readCycleStatus,cycleStatusFromRow,readSchedulerStatus,listCycleAttempts,createCycleStatusHandler};
