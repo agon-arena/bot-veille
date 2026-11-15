@@ -210,6 +210,12 @@
     "rss": "https://www.youtube.com/feeds/videos.xml?playlist_id=PL43OynbWaTMK5OauwuzHhGqXdeZDRrFyD"
   },
   {
+    "nom": "La Minute Géographie",
+    "orientation": "généraliste",
+    "url": "https://www.youtube.com/@laminutegeographie",
+    "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCthRhHB--QlaoNoV3nY2J8A"
+  },
+  {
     "nom": "L'Obs",
     "orientation": "généraliste",
     "url": "https://www.youtube.com/channel/UC1ObaaFz4XHVPN2T5IFsU4w",
