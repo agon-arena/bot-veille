@@ -1,3 +1,4 @@
+const { runtimePolicy } = require("./runtime-policy");
 const { createClient } = require("@supabase/supabase-js");
 const fs = require("fs");
 const path = require("path");
@@ -255,6 +256,7 @@ function uploadAll() {
 // éphémère, un fichier non encore envoyé est perdu au redémarrage (incident du 31/10/2026 :
 // conteneur tué pour mémoire > 512 Mo pendant l'auto-publish, session du jour perdue).
 function uploadFiles(filenames) {
+  if (runtimePolicy.safeStart) return Promise.resolve();
   const run = uploadChain.then(() => uploadFilesNow(filenames));
   uploadChain = run.catch(() => {});
   return run;
@@ -324,6 +326,7 @@ async function uploadFilesNow(filenames) {
 }
 
 function startPeriodicSync() {
+  if (runtimePolicy.safeStart) return;
   if (!enabled) return;
   setInterval(async () => {
     await uploadAll();

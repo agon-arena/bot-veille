@@ -1,4 +1,5 @@
 require("dotenv").config();
+const { runtimePolicy, runAutomaticStartup, safeStartMiddleware } = require("./runtime-policy");
 
 const storageSync = require("./storage-sync");
 const youtubeApi = require("./youtube-api");
@@ -32,6 +33,7 @@ const { extractFromHtml } = require("@extractus/article-extractor");
 const { fetchTranscript } = require("youtube-transcript");
 
 const app = express();
+app.use(safeStartMiddleware({ allowLogin: true }));
 app.use(compression());
 app.use(express.json());
 
@@ -84,13 +86,8 @@ function buildIdeasModelRequest(request) {
 // OpenAI). Render définit automatiquement la variable RENDER ; BOT_AUTO_PIPELINES=on|off
 // force le comportement quel que soit l'environnement (ex. =on en local pour reprendre
 // la main si Render est down). Les routes manuelles (/refresh, /run-auto-publish, admin)
-// restent utilisables sur les deux instances.
-const AUTO_PIPELINES_ENABLED = (() => {
-  const forced = String(process.env.BOT_AUTO_PIPELINES || "").trim().toLowerCase();
-  if (forced === "on") return true;
-  if (forced === "off") return false;
-  return Boolean(process.env.RENDER);
-})();
+// restent utilisables sur les deux instances, sauf en mode BOT_SAFE_START.
+const AUTO_PIPELINES_ENABLED = runtimePolicy.automaticPipelines;
 
 // Les modèles gpt-5 ignorent temperature (l'API la refuse) et raisonnent avant de
 // répondre : effort minimal, sinon les tokens de raisonnement — facturés en sortie —
@@ -6812,29 +6809,31 @@ app.post("/api/youtube/run", requireMixteAuth, (req, res) => {
 // ==================== FIN ROUTES CERTAMEN ====================
 
 app.get("/ping", (req, res) => {
-  res.json({ ok: true, ts: Date.now() });
+  res.json({ ok: true, ts: Date.now(), safeStart: runtimePolicy.safeStart, automaticPipelines: AUTO_PIPELINES_ENABLED });
 });
 
 storageSync.init();
 storageSync.downloadAll().then(() => {
   const httpServer = app.listen(PORT, () => {
     console.log(`Serveur lancé sur le port ${PORT}`);
-    if (AUTO_PIPELINES_ENABLED) {
-      scheduleAutoCollect(loadAutoCollectConfig());
-      // Laisse veille-mixte.js (lancé en parallèle par start.js) ouvrir le port 3002.
-      setTimeout(resumeInterruptedAutoCollect, 30 * 1000);
-      scheduleAutoCollectCertamen(loadAutoCollectCertamenConfig(), onCertamenAutoCollectFinished);
-      if (process.env.YOUTUBE_API_KEY) {
-        const tick = () => runYoutubeHourly().catch(error => console.error("[youtube-api]", error.message));
-        tick();
-        setInterval(tick, 60 * 60 * 1000);
+    runAutomaticStartup(() => {
+      if (AUTO_PIPELINES_ENABLED) {
+        scheduleAutoCollect(loadAutoCollectConfig());
+        // Laisse veille-mixte.js (lancé en parallèle par start.js) ouvrir le port 3002.
+        setTimeout(resumeInterruptedAutoCollect, 30 * 1000);
+        scheduleAutoCollectCertamen(loadAutoCollectCertamenConfig(), onCertamenAutoCollectFinished);
+        if (process.env.YOUTUBE_API_KEY) {
+          const tick = () => runYoutubeHourly().catch(error => console.error("[youtube-api]", error.message));
+          tick();
+          setInterval(tick, 60 * 60 * 1000);
+        }
+        resumePendingIdeasOnStartup();
+        resumeCertamenPendingIdeasOnStartup();
+      } else {
+        console.log("[auto-pipelines] Instance passive (hors Render, ou BOT_AUTO_PIPELINES=off) : collecte auto, tick GitHub Actions, auto-publish et reprise d'idées désactivés. Seule l'instance Render publie.");
       }
-      resumePendingIdeasOnStartup();
-      resumeCertamenPendingIdeasOnStartup();
-    } else {
-      console.log("[auto-pipelines] Instance passive (hors Render, ou BOT_AUTO_PIPELINES=off) : collecte auto, tick GitHub Actions, auto-publish et reprise d'idées désactivés. Seule l'instance Render publie.");
-    }
-    storageSync.startPeriodicSync();
+      storageSync.startPeriodicSync();
+    }, "server");
   });
 
   httpServer.on("error", (error) => {

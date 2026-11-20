@@ -99,7 +99,11 @@ test('compteurs de mise à jour mesurés sur le store, sans confondre une bascul
  const updated=await tick(h,{...opts,state:{...h.state,recent:async()=>false}});assert.equal(updated.summary.status,'completed');assert.equal(updated.summary.sources[0].activitiesCreated,0);assert.equal(updated.summary.sources[0].activitiesUpdated,1);assert.equal(h.db.activities.length,1);
 });
 
-test('échec de fermeture du source_run : tentative de fermeture du run enveloppe et poursuite des autres producteurs',async()=>{
+test('échec durable de fermeture du source_run : enveloppe failed, mutex conservé, pas de producteur suivant',async()=>{
  const h=setup(),update=h.db.updateSourceRun.bind(h.db);h.db.updateSourceRun=async(id,row)=>{const source=h.db.sourceRuns.find(r=>r.id===id);if(source.source_id===h.db.sources[0]?.id)throw Error('journal source indisponible');return update(id,row)};
- const r=await tick(h,{reunionSources:[],persist:async()=>({status:'completed',stats:{}})});assert.equal(r.summary.status,'partial');assert.match(r.summary.error,/journal source indisponible/);assert.equal(h.db.ingestions.find(i=>i.orchestrator_version===CYCLE_VERSION).status,'failed');assert.equal(r.summary.sources[2].status,'completed');
+ const r=await tick(h,{reunionSources:[],persist:async()=>({status:'completed',stats:{}})});
+ assert.equal(r.summary.status,'failed');assert.equal(r.summary.operatorActionRequired,true);
+ assert.match(r.summary.error,/journal source indisponible/);
+ assert.equal(h.db.ingestions.find(i=>i.orchestrator_version===CYCLE_VERSION).status,'failed');
+ assert.equal(r.summary.sources.length,1);assert.equal(h.db.ingestions.find(i=>i.id===LOCK_ID).status,'running');
 });

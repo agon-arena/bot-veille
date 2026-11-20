@@ -8,10 +8,12 @@
 // Déclenchée par un tick HTTP externe (voir server.js /api/sortir-ingest-tick), même patron que
 // /api/auto-collect-tick déjà en place pour la veille presse.
 
+const { randomUUID } = require("node:crypto");
 const { createClient } = require("@supabase/supabase-js");
+const { createDailyRunLifecycle, errorInfo, errorText } = require("./sortir/daily-run-lifecycle");
 const { fetchOpenAgendaJsonEvents } = require("./sortir/connectors/openagenda-json");
 const { fetchDatatourismeEvents } = require("./sortir/connectors/datatourisme");
-const { safeMessage, cycleResult, retryTransient, listCycleAttempts, CYCLE_ROOT_VERSION } = require("./sortir/scheduler-cycle-status");
+const { safeMessage, cycleResult, retryTransient, isTransientStoreError, listCycleAttempts, CYCLE_ROOT_VERSION } = require("./sortir/scheduler-cycle-status");
 const { createSchedulerState, CYCLE_VERSION, LOCK_ID } = require("./sortir/scheduler-state");
 const { REUNION_SOURCES, runReunionProducer } = require("./sortir/openagenda-reunion-daily");
 const { fetchAllParisEvents, DEFAULT_ENDPOINT: PARIS_ENDPOINT } = require("./sortir/connectors/paris-events");
@@ -273,31 +275,47 @@ function measuredStore(store) {
   } });
   return { store: proxy, counts: () => ({ activitiesCreated: created.size, activitiesUpdated: [...updated].filter(id => !created.has(id)).length }) };
 }
-async function scheduledSource({ source, store, now, work, onBatchSummary }) {
-  let ingestion, sourceRun;
-  const started = Date.now(), measured = measuredStore(store);
+async function scheduledSource({ source, store, now, work, onBatchSummary,
+  closeRetryDelaysMs = CYCLE_CLOSE_RETRY_DELAYS_MS, sleep = defaultSleep }) {
+  let ingestion, sourceRun, primaryError;
+  const lifecycle = createDailyRunLifecycle(store, { delaysMs: closeRetryDelaysMs, sleep });
+  const journal = lifecycle.store, started = Date.now(), measured = measuredStore(journal);
   let result;
   try {
-    ingestion = await store.createIngestionRun({ status: "running", orchestrator_version: CYCLE_VERSION, started_at: now.toISOString() });
-    const registered = await store.ensureSource(source);
-    sourceRun = await store.createSourceRun({ ingestion_run_id: ingestion.id, source_id: registered.id, status: "running", started_at: now.toISOString() });
+    ingestion = await journal.createIngestionRun({ status: "running", orchestrator_version: CYCLE_VERSION, started_at: now.toISOString() });
+    const registered = await journal.ensureSource(source);
+    sourceRun = await journal.createSourceRun({ ingestion_run_id: ingestion.id, source_id: registered.id, status: "running", started_at: now.toISOString() });
     result = await work(measured.store);
   } catch (error) {
-    result = { eventsCollected: null, eventsRetained: null, occurrencesRetained: null, ...error.details, status: "failed", error: safeMessage(error.message), errorCode: error.code || null, httpStatus: error.httpStatus || null };
+    primaryError = error;
+    result = { eventsCollected: null, eventsRetained: null, occurrencesRetained: null, ...(error?.details && typeof error.details === "object" ? error.details : {}),
+      status: "failed", error: errorText(error), errorCode: errorInfo(error).code, httpStatus: errorInfo(error).httpStatus };
   }
-  result = { ...result, ingestionRunId: ingestion?.id || null, sourceRunId: sourceRun?.id || null, source: source.key, startedAt: now.toISOString(), finishedAt: new Date().toISOString(), durationMs: Date.now() - started, ...measured.counts() };
-  const stats = result.stats || {};
-  const journalRow = () => ({ status: result.status, collected_count: stats.collected || 0, valid_count: stats.VALID || 0,
-    needs_review_count: stats.NEEDS_REVIEW || 0, invalid_count: stats.INVALID || 0, finished_at: result.finishedAt });
+  const excluded = new Set([ingestion?.id, sourceRun?.id]);
+  const internal = await lifecycle.closeDangling(primaryError, excluded);
+  if (internal.repaired || internal.operatorActionRequired) {
+    result.status = "failed";
+    result.error ||= "Clôture interne du producteur non confirmée à son retour";
+  }
+  result = { ...result, stats: result.stats || lifecycle.stats(), ingestionRunId: ingestion?.id || null,
+    sourceRunId: sourceRun?.id || null, source: source.key, startedAt: now.toISOString(),
+    finishedAt: new Date().toISOString(), durationMs: Date.now() - started, ...measured.counts() };
+  const journalRow = () => ({ status: result.status, collected_count: result.stats.collected || 0, valid_count: result.stats.VALID || 0,
+    needs_review_count: result.stats.NEEDS_REVIEW || 0, invalid_count: result.stats.INVALID || 0, finished_at: result.finishedAt });
   try {
-    if (sourceRun) await store.updateSourceRun(sourceRun.id, { ...journalRow(), error: result.status === "completed" ? null : JSON.stringify({ error: result.error || "Persistance incomplète", result }) });
-  } catch (error) { result.status = "failed"; result.error = `${result.error || ""} Journal source : ${safeMessage(error.message)}`; }
-  // Toujours tenter de fermer le run enveloppe, même si la mise à jour source a échoué.
+    if (sourceRun) await journal.updateSourceRun(sourceRun.id, { ...journalRow(), error: result.status === "completed" ? null : JSON.stringify({ error: result.error || "Persistance incomplète", result }) });
+  } catch (error) { result.status = "failed"; result.error = `${result.error || ""} Journal source : ${errorText(error)}`; }
   try {
-    if (ingestion) await store.updateIngestionRun(ingestion.id, { ...journalRow(), error_summary: result.status === "completed" ? [] : [{ source: source.key, error: result.error || "Persistance incomplète" }] });
-  } catch (error) { result.status = "failed"; result.error = `${result.error || ""} Journal ingestion : ${safeMessage(error.message)}`; }
+    if (ingestion) await journal.updateIngestionRun(ingestion.id, { ...journalRow(), error_summary: result.status === "completed" ? [] : [{ source: source.key, error: result.error || "Persistance incomplète" }] });
+  } catch (error) { result.status = "failed"; result.error = `${result.error || ""} Journal ingestion : ${errorText(error)}`; }
+  const final = await lifecycle.closeDangling(primaryError);
+  if (final.operatorActionRequired) {
+    result.status = "failed"; result.operatorActionRequired = true;
+    result.error ||= "Écriture ou clôture non confirmée : réconciliation requise avant toute reprise";
+  }
+  if (lifecycle.diagnostics.length) result.journalErrors = lifecycle.diagnostics.slice();
   console[result.status === "completed" ? "log" : "error"]("[sortir-auto-ingest] producteur :", JSON.stringify(result));
-  if (onBatchSummary) { try { await onBatchSummary(result); } catch (error) { result.reportingError = safeMessage(error.message); console.error("[sortir-auto-ingest] Callback de suivi :", error.message); } }
+  if (onBatchSummary) { try { await onBatchSummary(result); } catch (error) { result.reportingError = errorText(error); console.error("[sortir-auto-ingest] Callback de suivi :", errorText(error)); } }
   return result;
 }
 
@@ -315,7 +333,7 @@ async function runSortirIngestTickIfDue({
 } = {}) {
   if (inFlight) return { triggered: false, reason: "already running" };
   inFlight = true;
-  let schedulerState, locked = false, activeStore, jobs, cycleRun;
+  let schedulerState, locked = false, activeStore, jobs, cycleRun, cycleCreationAttempted = false;
   try {
     if (!state && !client) client = getSupabaseClient();
     schedulerState = state || createSchedulerState(client);
@@ -360,9 +378,20 @@ async function runSortirIngestTickIfDue({
       await schedulerState.release(new Date()); locked = false; inFlight = false;
       return { triggered: false, reason: skip, attemptsToday: attempts.length };
     }
-    cycleRun =await activeStore.createIngestionRun({ status: "running", orchestrator_version: CYCLE_ROOT_VERSION,
-      started_at: now.toISOString(), error_summary: [cycleResult({ cycleId: null, expectedSources: jobs.map(j=>j.source.key), sources: [] })] });
+    cycleRun = { id: randomUUID() }; cycleCreationAttempted = true;
+    const createdCycle = await activeStore.createIngestionRun({ id: cycleRun.id, status: "running", orchestrator_version: CYCLE_ROOT_VERSION,
+      started_at: now.toISOString(), error_summary: [cycleResult({ cycleId: cycleRun.id, expectedSources: jobs.map(j=>j.source.key), sources: [] })] });
+    if (createdCycle?.id !== cycleRun.id) throw Object.assign(new Error("Identité du cycle créé non confirmée"), { code: "DAILY_WRITE_UNCERTAIN" });
+    cycleRun = createdCycle;
   } catch (error) {
+    // Lost INSERT response: its durable identity is known, but no producer may be retried
+    // until reconciliation. In particular, do not release the shared mutex here.
+    if (cycleCreationAttempted && (isTransientStoreError(error) || error?.code === "DAILY_WRITE_UNCERTAIN")) {
+      inFlight = false;
+      console.error("[sortir-auto-ingest] Création de cycle non confirmée :", cycleRun?.id, errorText(error));
+      return { triggered: false, reason: "check failed", cycleId: cycleRun?.id,
+        operatorActionRequired: true, error: errorText(error) };
+    }
     if (locked) { try { await schedulerState.release(new Date()); } catch (releaseError) { console.error("[sortir-auto-ingest] Libération verrou :", releaseError.message); } }
     inFlight = false;
     console.error("[sortir-auto-ingest] Préparation impossible :", error.message);
@@ -381,12 +410,12 @@ async function runSortirIngestTickIfDue({
       const closeError = safeMessage(error?.message);
       console.error("[sortir-auto-ingest] INTERVENTION OPÉRATEUR REQUISE :", JSON.stringify({ stage, cycleId: cycleRun.id, lockId: LOCK_ID,
         attempts: error?.attempts || 1, transient: error?.transient ?? null, error: closeError }));
-      return { ...cycle, status: "failed", successConfirmed: false, closeError, operatorActionRequired: true,
+      return { ...cycle, status: "failed", successConfirmed: false, error: closeError, closeError, operatorActionRequired: true,
         durationMs: Date.now() - startedAt, sources: summaries };
     };
     try {
       for (const job of jobs) {
-        try { summaries.push(await scheduledSource({ ...job, store: activeStore, now, onBatchSummary })); }
+        try { summaries.push(await scheduledSource({ ...job, store: activeStore, now, onBatchSummary, closeRetryDelaysMs, sleep })); }
         catch (error) {
           const failure = { source: job.source.key, status: "failed", error: safeMessage(error.message) };
           summaries.push(failure);
@@ -394,6 +423,8 @@ async function runSortirIngestTickIfDue({
         }
         try { await activeStore.updateIngestionRun(cycleRun.id, { error_summary: [cycleState()] }); }
         catch { cycleJournalError = "Journal de cycle indisponible"; }
+        if (summaries.at(-1).operatorActionRequired)
+          return operatorStop("réconciliation du producteur", new Error(summaries.at(-1).error), cycleState());
       }
     } catch (error) {
       return operatorStop("producteurs", error, cycleState());

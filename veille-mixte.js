@@ -1,4 +1,5 @@
 require("dotenv").config();
+const { runAutomaticStartup, safeStartMiddleware } = require("./runtime-policy");
 
 const express = require("express");
 const fs = require("fs");
@@ -19,6 +20,7 @@ const certamenComparisonStore = require("./certamen-comparison-store");
 const { videoId: youtubeVideoId, collectWithRecovery } = require("./youtube-collection");
 
 const apiApp = express();
+apiApp.use(safeStartMiddleware());
 apiApp.use(express.json({ limit: "2mb" }));
 
 const BOT_USER_AGENT = "AgonBot/1.0 (+contact: kevinbruyat@live.fr ; N'hésitez pas à me contacter.)";
@@ -11711,7 +11713,7 @@ if (process.argv.includes("--certamen-batch-benchmark")) {
   // Reprend les créativités Certamen non régénérées après un redémarrage — sans effet si
   // certamen-pending-creative.json n'existe pas encore ou ne contient rien de "pending"
   // (cas normal tant que CERTAMEN_SEPARATED_ANALYZE n'a jamais été activé).
-  resumeCertamenPendingCreativeOnStartup();
+  runAutomaticStartup(resumeCertamenPendingCreativeOnStartup, "veille-mixte");
 
   const localApiServer = apiApp.listen(API_PORT, "127.0.0.1", () => {
     console.log(`API mixte lancée sur 127.0.0.1:${API_PORT}`);

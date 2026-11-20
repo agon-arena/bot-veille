@@ -30,7 +30,7 @@ async function retryTransient(operation, { delaysMs, sleep, label }) {
   }
 }
 function producerResult(r) {
-  return Object.fromEntries(['source','status','error','errorCode','httpStatus','eventsCollected','eventsRetained','occurrencesRetained','activitiesCreated','activitiesUpdated','startedAt','finishedAt','durationMs','ingestionRunId','sourceRunId','reportingError'].filter(k => r[k] !== undefined).map(k => [k,r[k]]));
+  return Object.fromEntries(['source','status','error','errorCode','httpStatus','eventsCollected','eventsRetained','occurrencesRetained','activitiesCreated','activitiesUpdated','startedAt','finishedAt','durationMs','ingestionRunId','sourceRunId','reportingError','operatorActionRequired','journalErrors'].filter(k => r[k] !== undefined).map(k => [k,r[k]]));
 }
 function cycleResult({ cycleId, expectedSources, sources, releaseError = null }) {
   sources = sources.map(producerResult);
@@ -93,7 +93,10 @@ async function readSchedulerStatus(client, expectedSources, now = new Date()) {
   return { kind: 'sortir_scheduler_monitor', checkedAt: now.toISOString(), cycleDayStart: since.toISOString(),
     lock: { status: lock.status, startedAt: lock.started_at },
     runningCycles, latestCycle: cycles[0] || null,
-    blockers: blockers.map(r => ({ id: r.id, startedAt: r.started_at })),
+    // Suspected abandonment is diagnostic only: age never grants ownership or a lease.
+    blockers: blockers.map(r => ({ id: r.id, startedAt: r.started_at, version: r.orchestrator_version || null,
+      abandonmentSuspected: Number.isFinite(Date.parse(r.started_at)) && now.getTime() - Date.parse(r.started_at) >= 40 * 60 * 1000,
+      automaticRecoveryAllowed: false })),
     daily: { expectedSources, completedSources: [...completedSources],
       successConfirmed: lock.status === 'completed' && blockers.length === 0 && expectedSources.every(s => completedSources.has(s)) } };
 }
