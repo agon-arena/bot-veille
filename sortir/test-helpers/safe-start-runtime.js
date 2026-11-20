@@ -5,7 +5,9 @@ const fs = require('node:fs'), path = require('node:path'), vm = require('node:v
 const ROOT = path.resolve(__dirname, '../..');
 function fixtureRuntime(extraEnv = {}) {
   const env = { RENDER: 'true', OPENAI_API_KEY: 'offline-ai', YOUTUBE_API_KEY: 'offline-youtube',
-    SUPABASE_URL: 'https://supabase.invalid', SUPABASE_SECRET_KEY: 'offline-supabase', ...extraEnv };
+    SUPABASE_URL: 'https://supabase.invalid', SUPABASE_SECRET_KEY: 'offline-supabase',
+    SORTIR_MONITOR_SUPABASE_URL:'https://monitor.invalid',SORTIR_MONITOR_PUBLISHABLE_KEY:'sb_publishable_offline',
+    SORTIR_MONITOR_ACCESS_TOKEN:[{alg:'HS256'},{role:'sortir_monitor_reader',iss:'https://monitor.invalid/auth/v1',exp:Date.parse('2030-01-01')/1000}].map(v=>Buffer.from(JSON.stringify(v)).toString('base64url')).join('.')+'.offline', ...extraEnv };
   let now = Date.parse('2026-11-20T00:05:00Z'), seq = 0;
   const timers = new Map(), contexts = [], apps = [], calls = [], fileWrites = [], children = [];
   const files = new Map(), restored = new Map();

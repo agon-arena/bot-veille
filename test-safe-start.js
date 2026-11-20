@@ -13,10 +13,10 @@ test('central policy preserves old defaults, and safe mode wins over Render and 
   for(const value of ['on','1','true','unexpected-value'])assert.deepEqual(getRuntimePolicy({RENDER:'true',BOT_AUTO_PIPELINES:'on',BOT_SAFE_START:value}),{safeStart:true,automaticPipelines:false});
   for(const value of ['', 'off','0','false'])assert.equal(getRuntimePolicy({RENDER:'true',BOT_SAFE_START:value}).automaticPipelines,true);
 });
-test('safe server boots with active configs and pending queues: reads restored, no jobs even after 48h',async()=>{
+test('safe server boots with credentials and pending queues: no Storage restoration or jobs even after 48h',async()=>{
   const h=fixtureRuntime(SAFE);h.loadProcess('server.js');await h.settle();
   assert.equal(h.apps.length,1);assert.equal(h.apps[0].port,3000);
-  assert(h.calls.some(c=>c.kind==='storage-download'));
+  assert(!h.calls.some(c=>c.kind.startsWith('storage-')),'safe startup must not contact Storage, even with configured credentials');
   assert.equal(h.timers.size,0);await h.advance(48*3600000);assert.equal(h.timers.size,0);assertNoBusiness(h);
   const ping=await h.request(h.apps[0],'GET','/ping');assert.equal(ping.payload.safeStart,true);assert.equal(ping.payload.automaticPipelines,false);
   const status=await h.request(h.apps[0],'GET','/api/sortir-ingest-status?current=1');
@@ -84,4 +84,24 @@ test('normal mode preserves manual configuration routes',async()=>{
   const h=fixtureRuntime({BOT_AUTO_PIPELINES:'off'});h.loadProcess('server.js');await h.settle();
   const result=await h.request(h.apps[0],'POST','/api/auto-publish',{body:{enabled:false}});
   assert.equal(result.statusCode,200);assert.equal(JSON.parse(h.files.get('auto-publish-config.json')).enabled,false);
+});
+
+
+test('safe Storage stays disabled for explicit init/download calls with configured credentials',async()=>{
+  const h=fixtureRuntime(SAFE),server=h.loadProcess('server.js');await h.settle();
+  const storage=server.load(require.resolve('./storage-sync'));
+  storage.init();await storage.downloadAll();await storage.uploadAll();
+  await storage.uploadFiles(['saved-subjects.json']);storage.startPeriodicSync();
+  await h.advance(48*3600000);
+  assert(!h.calls.some(c=>c.kind.startsWith('storage-')));
+  assert.equal(h.fileWrites.filter(w=>w.restore).length,0);
+  assert.equal(h.timers.size,0);assertNoBusiness(h);
+});
+
+test('server supervision fails closed without dedicated credentials even when business keys exist',async()=>{
+  const h=fixtureRuntime({...SAFE,SORTIR_MONITOR_SUPABASE_URL:'',SORTIR_MONITOR_PUBLISHABLE_KEY:'',SORTIR_MONITOR_ACCESS_TOKEN:''});
+  h.loadProcess('server.js');await h.settle();
+  const ping=await h.request(h.apps[0],'GET','/ping');assert.equal(ping.payload.supervisionConfigured,false);
+  const status=await h.request(h.apps[0],'GET','/api/sortir-ingest-status?current=1');assert.equal(status.statusCode,503);
+  assert.equal(h.calls.filter(c=>c.kind==='sql-read').length,0);assert(!h.calls.some(c=>c.kind.startsWith('storage-')));assertNoBusiness(h);
 });

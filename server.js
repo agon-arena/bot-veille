@@ -1,5 +1,6 @@
 require("dotenv").config();
 const { runtimePolicy, runAutomaticStartup, safeStartMiddleware } = require("./runtime-policy");
+const { createMonitorReadClient, monitoringConfigured } = require("./sortir/monitor-read-client");
 
 const storageSync = require("./storage-sync");
 const youtubeApi = require("./youtube-api");
@@ -5806,8 +5807,7 @@ app.post("/api/auto-collect-tick", requireMixteAuth, async (req, res) => {
 // presse — sans ça, une instance locale lancée en parallèle dupliquerait l'ingestion.
 // Lecture seule des résultats persistants ; ne déclenche aucun pipeline.
 app.get("/api/sortir-ingest-status", requireMixteAuth,
-  require("./sortir/scheduler-cycle-status").createCycleStatusHandler(() =>
-    require("@supabase/supabase-js").createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SECRET_KEY, { auth: { persistSession: false, autoRefreshToken: false } }), {
+  require("./sortir/scheduler-cycle-status").createCycleStatusHandler(() => createMonitorReadClient(), {
       getExpectedSources: () => {
         const s = require('./sortir-auto-ingest');
         return [...s.OPENAGENDA_SOURCES, ...s.REUNION_SOURCES, ...s.PARIS_SOURCES].map(p => p.key)
@@ -6809,7 +6809,7 @@ app.post("/api/youtube/run", requireMixteAuth, (req, res) => {
 // ==================== FIN ROUTES CERTAMEN ====================
 
 app.get("/ping", (req, res) => {
-  res.json({ ok: true, ts: Date.now(), safeStart: runtimePolicy.safeStart, automaticPipelines: AUTO_PIPELINES_ENABLED });
+  res.json({ ok: true, ts: Date.now(), safeStart: runtimePolicy.safeStart, automaticPipelines: AUTO_PIPELINES_ENABLED, supervisionConfigured: monitoringConfigured() });
 });
 
 storageSync.init();

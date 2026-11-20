@@ -45,6 +45,10 @@ const restoreFailures = new Set();
 function isRestored(filename) { return downloadCompleted && !restoreFailures.has(filename); }
 
 function init() {
+  if (runtimePolicy.safeStart) {
+    console.log("[storage-sync] BOT_SAFE_START actif — toute synchronisation Storage désactivée, restauration comprise");
+    return;
+  }
   if (!SUPABASE_URL || !SUPABASE_KEY) {
     console.log("[storage-sync] Variables SUPABASE_URL / SUPABASE_SECRET_KEY absentes — sync désactivé (mode local)");
     return;

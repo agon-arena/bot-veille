@@ -14,7 +14,7 @@
     "@extractus/article-extractor": "^8.1.0",
     "@js-temporal/polyfill": "^0.5.1",
     "@supabase/supabase-js": "^2.108.2",
-    "compression": "^1.8.1",
+    "compression": "1.8.2",
     "dayjs": "^1.11.20",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
@@ -26,5 +26,14 @@
   },
   "devDependencies": {
     "@electric-sql/pglite": "0.5.13"
+  },
+  "overrides": {
+    "body-parser": "2.4.0",
+    "nanoid": "3.3.18",
+    "postcss": "8.5.27",
+    "proxy-addr": "2.0.8",
+    "qs": "6.16.1",
+    "sanitize-html": "2.18.1",
+    "source-map-js": "1.2.2"
   }
 }
