@@ -40,7 +40,7 @@ function fixtureRuntime(extraEnv = {}) {
     {id:'caa4ae36-7a50-464a-aaed-52b1f14523e7',orchestrator_version:'sortir-ingestion-v1',status:'running',started_at:'2026-11-10T10:05:19.738Z'}]};
   function query(table) {
     const filters=[];let single=false,limit=Infinity;
-    const q={select(){return q;},eq(k,v){filters.push(r=>r[k]===v);return q;},neq(k,v){filters.push(r=>r[k]!==v);return q;},
+    const q={retry(enabled){if(enabled!==false)throw Error('Monitoring retries must be disabled');return q;},select(){return q;},eq(k,v){filters.push(r=>r[k]===v);return q;},neq(k,v){filters.push(r=>r[k]!==v);return q;},
       gte(k,v){filters.push(r=>r[k]>=v);return q;},limit(n){limit=n;return q;},order(){return q;},maybeSingle(){single=true;return q;},abortSignal(){return q;},
       then(resolve,reject){calls.push({kind:'sql-read',table});const rows=(tables[table]||[]).filter(r=>filters.every(f=>f(r))).slice(0,limit);return Promise.resolve({data:single?rows[0]||null:rows,error:null}).then(resolve,reject);}};
     for(const method of ['insert','update','upsert','delete'])q[method]=()=>{calls.push({kind:'sql-write',table,method});throw Error('SQL write attempted in fake runtime');};

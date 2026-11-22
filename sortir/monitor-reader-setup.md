@@ -1,3 +1,27 @@
+## Préparation locale du renouvellement — 22 novembre 2026
+
+Le rôle et le compte existants ont été validés séparément. Le renouvellement à la demande est maintenant implémenté localement ; aucune configuration Render n’a été appliquée. Le reste de ce document conserve la préparation historique et ses anciens points de blocage, qui ne décrivent plus tous l’état actuel. Voir `jwt-renewal-preparation-2026-11-22.txt` pour la livraison locale.
+
+Pour le futur raccordement, conserver `BOT_SAFE_START=on`, `BOT_AUTO_PIPELINES=off` et Auto-Deploy désactivé. Utiliser uniquement les variables dédiées suivantes sur le nouveau service :
+
+- `SORTIR_MONITOR_SUPABASE_URL` : origine HTTPS du projet.
+- `SORTIR_MONITOR_PUBLISHABLE_KEY` : clé publique dédiée au transport.
+- `SORTIR_MONITOR_AUTH_EMAIL` : adresse du compte technique existant.
+- `SORTIR_MONITOR_AUTH_USER_ID` : UUID exact de ce compte, vérifié dans chaque JWT.
+- `SORTIR_MONITOR_AUTH_PASSWORD` : mot de passe existant, à fournir uniquement via les variables d’environnement du service dans Render. Ne pas mettre la valeur dans ce document, un fichier versionné, une commande shell ou un groupe partagé avec d’autres services.
+
+Ne pas configurer `SORTIR_MONITOR_ACCESS_TOKEN` pour ce mode : cette variable conserve la compatibilité avec l’ancien mode de JWT fixe et prend priorité si elle est renseignée. Un JWT fixe invalide échoue sans repli vers Auth.
+
+Le fournisseur ne lit aucun identifiant métier. Le transport PostgREST ne reçoit que la clé publique et le JWT éphémère. Le mot de passe reste dans la configuration privée du fournisseur ; un autre module du même processus n’est pas une isolation contre une compromission complète de Node.
+
+Aucun appel Auth à l’import, à la construction du client ou à `/ping`. La première lecture autorisée récupère les clés publiques JWKS, authentifie le compte, clôture immédiatement sa session, vérifie signature ES256/identité/rôle/expiration et exige que GET Auth user soit refusé avec `session_not_found`. Le JWT est ensuite gardé en mémoire uniquement. Renouvellement à la demande lorsque moins de cinq minutes restent, avec une seule promesse partagée par processus. Aucun timer, cron, fichier de jeton ou refresh token réutilisé. Chaque appel HTTP est borné à dix secondes et interdit les redirections.
+
+Les erreurs transitoires vident le cache et imposent trente secondes avant une nouvelle tentative déclenchée par une lecture. Les 401/403 PostgREST invalident le cache, sans retry automatique. Un ancien JWT encore valide ne sert pas de secours après un renouvellement échoué. Une réponse de connexion perdue, une clôture incertaine ou un refus Auth incohérent bloque le fournisseur jusqu’à son remplacement après diagnostic. Une session peut subsister côté Auth si le réseau empêche la déconnexion : le bot ne prétend pas l’avoir révoquée et n’utilise aucun JWT dans ce cas.
+
+Gestion des secrets Render : https://render.com/docs/configure-environment-variables et https://render.com/articles/how-render-handles-secrets-and-environment-variables . Une future saisie autorisée doit rester limitée au nouveau service. L’option « Save only » n’applique les nouvelles variables qu’au prochain déploiement ; aucune de ces opérations n’est réalisée ici. Le compte technique et son mot de passe restent inchangés, le Trousseau local n’a pas été consulté pour cette livraison.
+
+---
+
 # Supervision SORTIR en lecture seule
 
 Le client `monitor-read-client.js` est distinct du client métier. Il ne lit ni `SUPABASE_URL` ni `SUPABASE_SECRET_KEY`. Sans configuration dédiée valide, la route de supervision authentifiée renvoie 503 ; elle ne crée pas de client privilégié de secours. `/ping` reste disponible et expose seulement `supervisionConfigured`.
