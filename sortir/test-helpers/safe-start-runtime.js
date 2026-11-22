@@ -108,9 +108,10 @@ function fixtureRuntime(extraEnv = {}) {
   }
   async function settle(){for(let i=0;i<250;i++)await Promise.resolve();}
   async function advance(ms){const end=now+ms;let runs=0;while(true){await settle();const next=[...timers.entries()].sort((a,b)=>a[1].at-b[1].at)[0];if(!next||next[1].at>end)break;if(++runs>10000)throw Error('Timer runaway');const[id,t]=next;now=t.at;timers.delete(id);if(t.repeat)timers.set(id,{...t,at:now+t.delay});await t.fn();}now=end;await settle();}
-  async function request(app,method,url,{body={},query={},cookies={}}={}) {
+  async function request(app,method,url,{body={},query={},cookies={},headers={}}={}) {
     const parsed=new URL(url,'http://fixture.invalid'),pathname=parsed.pathname;
-    const req={method,path:pathname,originalUrl:parsed.pathname+parsed.search,query:{...Object.fromEntries(parsed.searchParams),...query},body,cookies,headers:{},get:()=>''};
+    const lower=Object.fromEntries(Object.entries(headers).map(([k,v])=>[k.toLowerCase(),v]));
+    const req={method,path:pathname,originalUrl:parsed.pathname+parsed.search,query:{...Object.fromEntries(parsed.searchParams),...query},body,cookies,headers:lower,get:name=>lower[String(name).toLowerCase()]||''};
     const res={statusCode:200,headers:{},finished:false,set(k,v){this.headers[k]=v;return this;},setHeader(k,v){this.headers[k]=v;},status(n){this.statusCode=n;return this;},
       json(value){this.payload=value;this.finished=true;return this;},send(value){this.payload=value;this.finished=true;return this;},redirect(url){this.statusCode=302;this.payload=url;this.finished=true;return this;}};
     const route=app.routes.find(r=>r.method===method&&r.route===pathname);

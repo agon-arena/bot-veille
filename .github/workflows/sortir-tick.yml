@@ -1,0 +1,31 @@
+name: SORTIR - tick d'ingestion quotidienne
+
+# Workflow dédié au seul service SORTIR (bot-sortir-safe-20261120).
+# Aucun tick Actualités. Déclenchement MANUEL uniquement tant que la reprise n'est pas validée :
+# le cron ne doit être ajouté qu'après autorisation explicite (étape 8 du plan de la phase 3).
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# Jamais deux contrôleurs simultanés (le mutex serveur reste la garantie principale).
+concurrency:
+  group: sortir-tick
+  cancel-in-progress: false
+
+jobs:
+  tick:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      # Un tick POST puis uniquement des GET de supervision ; le jeton part en en-tête X-Bot-Token,
+      # jamais dans l'URL. Secrets propres au nouveau service, distincts de BOT_VEILLE_*.
+      - name: Tick SORTIR et suivi du cycle
+        env:
+          BOT_VEILLE_URL: ${{ secrets.SORTIR_BOT_URL }}
+          BOT_VEILLE_TOKEN: ${{ secrets.SORTIR_BOT_TOKEN }}
+        run: node sortir/monitor-scheduler.js

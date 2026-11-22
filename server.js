@@ -3112,9 +3112,18 @@ function getMixteCookie(req) {
   return match ? match[1] : "";
 }
 
+// Machine clients (GitHub controller) send the token in a header, never in the URL, so it cannot
+// end up in proxy/access logs. Constant-time comparison; no cookie is issued for this path.
+function hasMixteHeaderToken(req) {
+  const given = Buffer.from(String(req.get("x-bot-token") || ""), "utf8");
+  const expected = Buffer.from(String(MIXTE_PASSWORD), "utf8");
+  return given.length > 0 && given.length === expected.length && require("crypto").timingSafeEqual(given, expected);
+}
+
 function requireMixteAuth(req, res, next) {
   if (!MIXTE_PASSWORD) return next();
   if (getMixteCookie(req) === MIXTE_PASSWORD) return next();
+  if (hasMixteHeaderToken(req)) return next();
   if (req.query.token === MIXTE_PASSWORD) {
     res.setHeader("Set-Cookie", `mixte_auth=${MIXTE_PASSWORD}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${60 * 60 * 24 * 30}`);
     return next();
@@ -5815,7 +5824,7 @@ app.get("/api/sortir-ingest-status", requireMixteAuth,
       }
     }));
 app.post("/api/sortir-ingest-tick", requireMixteAuth, async (req, res) => {
-  if (!AUTO_PIPELINES_ENABLED) {
+  if (!AUTO_PIPELINES_ENABLED && !runtimePolicy.sortirIngest) {
     return res.json({ triggered: false, reason: "auto pipelines disabled on this instance" });
   }
   try {
@@ -6809,7 +6818,7 @@ app.post("/api/youtube/run", requireMixteAuth, (req, res) => {
 // ==================== FIN ROUTES CERTAMEN ====================
 
 app.get("/ping", (req, res) => {
-  res.json({ ok: true, ts: Date.now(), safeStart: runtimePolicy.safeStart, automaticPipelines: AUTO_PIPELINES_ENABLED, supervisionConfigured: monitoringConfigured() });
+  res.json({ ok: true, ts: Date.now(), safeStart: runtimePolicy.safeStart, automaticPipelines: AUTO_PIPELINES_ENABLED, sortirIngest: runtimePolicy.sortirIngest, supervisionConfigured: monitoringConfigured() });
 });
 
 storageSync.init();

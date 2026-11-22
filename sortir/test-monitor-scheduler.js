@@ -28,7 +28,9 @@ function harness(handler) {
       sleep: async ms => { sleeps.push(ms); time += ms; }, log: line => logs.push(line),
       request: async (url, options) => {
         const u = new URL(url); calls.push({ path: u.pathname, cycleId: u.searchParams.get('cycleId'), current: u.searchParams.get('current'), method: options.method });
-        assert.equal(u.searchParams.get('token'), 'do-not-log-this-token');
+        assert.equal(u.searchParams.get('token'), null, 'token never in the URL');
+        assert(!url.includes('do-not-log-this-token'));
+        assert.equal(options.headers['X-Bot-Token'], 'do-not-log-this-token');
         return handler({ url: u, options, time, calls });
       } }) };
 }
@@ -173,4 +175,17 @@ test('contrat workflow : 45 minutes, secrets en environnement et contrôleur uni
   assert.match(workflow,/BOT_VEILLE_TOKEN: \$\{\{ secrets\.BOT_VEILLE_TOKEN \}\}/);
   assert(!workflow.includes('SECONDS + 150'));
   assert.equal(MAX_WAIT_MS,2400000); assert.equal(POLL_MS,30000);
+});
+test('contrat workflow SORTIR dédié : contrôleur seul, manuel uniquement, secrets dédiés, aucun tick Actualités', () => {
+  const fs=require('fs'),path=require('path');
+  const wf=fs.readFileSync(path.join(__dirname,'../.github/workflows/sortir-tick.yml'),'utf8');
+  assert.match(wf,/workflow_dispatch:/);
+  assert(!/^\s*schedule:/m.test(wf),'pas de cron avant autorisation explicite');
+  assert.match(wf,/timeout-minutes: 45/);
+  assert.match(wf,/run: node sortir\/monitor-scheduler\.js/);
+  assert.match(wf,/BOT_VEILLE_URL: \$\{\{ secrets\.SORTIR_BOT_URL \}\}/);
+  assert.match(wf,/BOT_VEILLE_TOKEN: \$\{\{ secrets\.SORTIR_BOT_TOKEN \}\}/);
+  assert(!wf.includes('auto-collect-tick'),'aucun tick Actualités');
+  assert(!/curl|token=/.test(wf),'aucun jeton en URL');
+  assert.match(wf,/concurrency:/);
 });

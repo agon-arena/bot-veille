@@ -9,8 +9,8 @@ function assertNoBusiness(h) {
 }
 test('central policy preserves old defaults, and safe mode wins over Render and forced on',()=>{
   for(const [env,expected]of [[{},false],[{RENDER:'true'},true],[{BOT_AUTO_PIPELINES:'on'},true],[{RENDER:'true',BOT_AUTO_PIPELINES:'off'},false]])
-    assert.deepEqual(getRuntimePolicy(env),{safeStart:false,automaticPipelines:expected});
-  for(const value of ['on','1','true','unexpected-value'])assert.deepEqual(getRuntimePolicy({RENDER:'true',BOT_AUTO_PIPELINES:'on',BOT_SAFE_START:value}),{safeStart:true,automaticPipelines:false});
+    assert.deepEqual(getRuntimePolicy(env),{safeStart:false,automaticPipelines:expected,sortirIngest:false});
+  for(const value of ['on','1','true','unexpected-value'])assert.deepEqual(getRuntimePolicy({RENDER:'true',BOT_AUTO_PIPELINES:'on',BOT_SAFE_START:value}),{safeStart:true,automaticPipelines:false,sortirIngest:false});
   for(const value of ['', 'off','0','false'])assert.equal(getRuntimePolicy({RENDER:'true',BOT_SAFE_START:value}).automaticPipelines,true);
 });
 test('safe server boots with credentials and pending queues: no Storage restoration or jobs even after 48h',async()=>{
@@ -104,4 +104,43 @@ test('server supervision fails closed without dedicated credentials even when bu
   const ping=await h.request(h.apps[0],'GET','/ping');assert.equal(ping.payload.supervisionConfigured,false);
   const status=await h.request(h.apps[0],'GET','/api/sortir-ingest-status?current=1');assert.equal(status.statusCode,503);
   assert.equal(h.calls.filter(c=>c.kind==='sql-read').length,0);assert(!h.calls.some(c=>c.kind.startsWith('storage-')));assertNoBusiness(h);
+});
+test('SORTIR-only flag: exact "on" inside safe mode only, fails closed otherwise',()=>{
+  assert.equal(getRuntimePolicy({BOT_SAFE_START:'on',BOT_SORTIR_INGEST:'on'}).sortirIngest,true);
+  assert.equal(getRuntimePolicy({BOT_SAFE_START:'on',BOT_SORTIR_INGEST:' ON '}).sortirIngest,true);
+  for(const v of ['','off','1','true','yes','enabled'])assert.equal(getRuntimePolicy({BOT_SAFE_START:'on',BOT_SORTIR_INGEST:v}).sortirIngest,false,v);
+  assert.equal(getRuntimePolicy({BOT_SORTIR_INGEST:'on',RENDER:'true'}).sortirIngest,false,'never outside safe mode');
+  const p=getRuntimePolicy({BOT_SAFE_START:'on',BOT_SORTIR_INGEST:'on',RENDER:'true',BOT_AUTO_PIPELINES:'on'});
+  assert.equal(p.safeStart,true);assert.equal(p.automaticPipelines,false,'SORTIR flag never re-enables other pipelines');
+});
+test('SORTIR-only mode: only the SORTIR tick crosses the fence; Storage, jobs and every other mutation stay blocked',async()=>{
+  const h=fixtureRuntime({...SAFE,BOT_SORTIR_INGEST:'on'});h.loadProcess('server.js');h.loadProcess('veille-mixte.js');await h.settle();
+  assert(!h.calls.some(c=>c.kind.startsWith('storage-')),'no Storage restoration');assert.equal(h.timers.size,0);
+  await h.advance(48*3600000);assert.equal(h.timers.size,0);assertNoBusiness(h);
+  const ping=await h.request(h.apps[0],'GET','/ping');
+  assert.equal(ping.payload.safeStart,true);assert.equal(ping.payload.automaticPipelines,false);assert.equal(ping.payload.sortirIngest,true);
+  let blocked=0;
+  for(const app of h.apps)for(const route of app.routes)if(!['GET','HEAD','OPTIONS'].includes(route.method)&&!['/mixte-login','/api/sortir-ingest-tick'].includes(route.route)){
+    const r=await h.request(app,route.method,route.route);assert.equal(r.statusCode,503,route.route);assert.equal(r.payload.code,'BOT_SAFE_START');blocked++;
+  }
+  assert(blocked>=40,'all other mutations still fenced');
+  assertNoBusiness(h);
+});
+test('X-Bot-Token header authenticates machine reads without URL token or cookie; wrong values refused',async()=>{
+  const h=fixtureRuntime({...SAFE,MIXTE_PASSWORD:'offline-password'});h.loadProcess('server.js');await h.settle();
+  const ok=await h.request(h.apps[0],'GET','/api/sortir-ingest-status?current=1',{headers:{'X-Bot-Token':'offline-password'}});
+  assert.equal(ok.statusCode,200);assert.equal(ok.headers['Set-Cookie'],undefined,'header auth issues no cookie');
+  for(const bad of ['','offline-passwor','offline-password ','OFFLINE-PASSWORD','offline-password-extra']){
+    const r=await h.request(h.apps[0],'GET','/api/sortir-ingest-status?current=1',{headers:{'X-Bot-Token':bad}});assert.equal(r.statusCode,401,JSON.stringify(bad));
+  }
+  const none=await h.request(h.apps[0],'GET','/api/sortir-ingest-status?current=1');assert.equal(none.statusCode,401);
+  assertNoBusiness(h);
+});
+test('SORTIR tick route admitted past the fence only with the flag (handler reached, not 503)',async()=>{
+  for(const [env,fenced] of [[SAFE,true],[{...SAFE,BOT_SORTIR_INGEST:'on'},false]]){
+    const h=fixtureRuntime({...env,MIXTE_PASSWORD:'offline-password'});h.loadProcess('server.js');await h.settle();
+    const r=await h.request(h.apps[0],'POST','/api/sortir-ingest-tick');
+    if(fenced){assert.equal(r.statusCode,503);assert.equal(r.payload.code,'BOT_SAFE_START');}
+    else assert.equal(r.statusCode,401,'fence passed, mixte auth still required');
+  }
 });

@@ -60,12 +60,13 @@ async function monitorScheduler({ baseUrl, token, request = globalThis.fetch, no
     return ms;
   };
   async function json(path, method = 'GET') {
-    const url = new URL(path, root); url.searchParams.set('token', token);
+    // Token in a header only: never in the URL, where proxies and access logs could keep it.
+    const url = new URL(path, root);
     for (let attempt = 0; ; attempt++) {
       let error, transient = false;
       try {
         const response = await request(url.toString(), { method, redirect: 'error',
-          headers: { Accept: 'application/json' }, signal: AbortSignal.timeout(Math.min(15000, remaining())) });
+          headers: { Accept: 'application/json', 'X-Bot-Token': token }, signal: AbortSignal.timeout(Math.min(15000, remaining())) });
         if (!response.ok) {
           transient = response.status === 429 || response.status >= 500;
           error = new MonitorError('HTTP', `${method} ${url.pathname} : HTTP ${response.status}.`);
