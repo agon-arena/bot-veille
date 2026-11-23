@@ -167,3 +167,31 @@ test('unconfirmed journal INSERT identity is never considered a safe ordinary fa
   const result = await run(db);
   assert.equal(result.operatorActionRequired, true); assert.match(result.error, /identifiant/);
 });
+// 23/11/2026 : comptage final coupé par statement_timeout (HTTP 500 vide, ~8,2 s) juste après une vague
+// d'écritures ; il ne prend normalement que ~50 ms. Seule cette lecture est rejouée, avec bornes.
+test('final count transient timeout (empty 500) is replayed once and the producer completes', async () => {
+  const { db } = setup(), count = db.countFinalActivities.bind(db); let calls = 0;
+  db.countFinalActivities = async () => { calls++; if (calls === 1) throw Error(''); return count(); };
+  const r = await run(db), inner = db.ingestions.find(x => x.orchestrator_version === 'sortir-ingestion-v1');
+  assert.equal(r.status, 'completed'); assert.equal(calls, 2); assert.equal(running(db).length, 0);
+  assert.equal(inner.status, 'completed'); assert.equal(inner.final_count, 1);
+  assert.equal(db.activities.length, 1); assert.equal(db.provenances.length, 1);
+});
+test('final count replay is bounded: persistent transient failure still fails cleanly after 1 + delays attempts', async () => {
+  const { db } = setup(); let calls = 0;
+  db.countFinalActivities = async () => { calls++; throw Object.assign(Error('canceling statement due to statement timeout'), { status: 500 }); };
+  const r = await run(db);
+  assert.equal(calls, 3, 'closeRetryDelaysMs [0,0] => 3 attempts'); assert.equal(r.status, 'failed');
+  assert.equal(r.operatorActionRequired, undefined); assert.equal(running(db).length, 0); assert.equal(db.activities.length, 1);
+});
+test('final count definitive error (permission) is not replayed', async () => {
+  const { db } = setup(); let calls = 0;
+  db.countFinalActivities = async () => { calls++; throw Object.assign(Error('permission denied for table sortir_activities'), { status: 403 }); };
+  const r = await run(db); assert.equal(calls, 1); assert.equal(r.status, 'failed'); assert.equal(running(db).length, 0);
+});
+test('only countFinalActivities is replayed: other reads keep their single attempt', async () => {
+  const { db } = setup(); let calls = 0; const get = db.getActivitiesBatch.bind(db);
+  db.getActivitiesBatch = async (...a) => { calls++; if (calls === 1) throw Error('read timeout'); return get(...a); };
+  await run(db, { work: async store => { await assert.rejects(store.getActivitiesBatch(['x']), /read timeout/); return { status: 'completed', stats: {} }; } });
+  assert.equal(calls, 1);
+});

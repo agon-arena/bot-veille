@@ -3,6 +3,11 @@
 const { safeMessage, isTransientStoreError, retryTransient } = require('./scheduler-cycle-status');
 const TERMINAL = new Set(['completed', 'partial', 'failed']);
 const READ_METHOD = /^(get|find|list|scan|count)/;
+// Pure reads safe to replay on a transient failure. countFinalActivities() runs after all business
+// writes; PostgREST cut it at statement_timeout=8s right after heavy write bursts (10/11 and 23/11,
+// HTTP 500 in 8.2 s, normally ~50 ms). Replaying it never repeats a write; a persistent failure still
+// fails the producer exactly as before, and no count value is ever invented.
+const REPLAYABLE_READS = new Set(['countFinalActivities']);
 function errorInfo(error) {
   const text = typeof error === 'string' ? error : error?.message || error?.details || error?.code || 'Erreur sans message';
   return { message: safeMessage(text).slice(0, 2000), code: typeof error?.code === 'string' ? error.code : null,
@@ -45,7 +50,20 @@ function createDailyRunLifecycle(target, { delaysMs, sleep, log = value => conso
           throw asError(error);
         }
       };
-      const result = closing ? await retryTransient(operation, { delaysMs, sleep, label: method }) : await operation();
+      // Transience is judged on the ORIGINAL error: asError() turns an empty PostgREST 500 into
+      // "Erreur sans message", which would otherwise look definitive and never be replayed.
+      const replayRead = async () => {
+        for (let attempt = 0; ; attempt++) {
+          try { return await fn.apply(store, args); }
+          catch (error) {
+            record(method, error, null);
+            if (!isTransientStoreError(error) || attempt >= delaysMs.length) throw Object.assign(asError(error), { attempts: attempt + 1 });
+            await sleep(delaysMs[attempt]);
+          }
+        }
+      };
+      const result = closing ? await retryTransient(operation, { delaysMs, sleep, label: method })
+        : REPLAYABLE_READS.has(method) ? await replayRead() : await operation();
       if (map && method.startsWith('create')) {
         if (!result?.id) {
           uncertainWrite = true;
