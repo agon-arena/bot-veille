@@ -19,10 +19,8 @@ jobs:
   collect:
     runs-on: ubuntu-latest
     timeout-minutes: 45
+    # Actualités uniquement : l'ingestion SORTIR est pilotée à part, sur son propre service.
     steps:
-      - uses: actions/checkout@v4
-        with:
-          persist-credentials: false
       - name: Vérifier/déclencher la collecte
         run: |
           HTTP_STATUS=$(curl -s -o /tmp/response.txt -w "%{http_code}" \
@@ -36,13 +34,3 @@ jobs:
           if [ "$HTTP_STATUS" != "200" ]; then
             echo "Erreur (HTTP $HTTP_STATUS)" && exit 1
           fi
-
-      # Même tick externe, même serveur, mais endpoint/pipeline indépendant (sortir-auto-ingest.js) :
-      # if: always() pour qu'un échec de la collecte presse ci-dessus n'empêche jamais ce tick d'être
-      # tenté — ce sont deux pipelines indépendants, aucune raison que l'un bloque l'autre.
-      - name: Vérifier/déclencher l'ingestion Sortir (OpenAgenda)
-        if: always()
-        env:
-          BOT_VEILLE_URL: ${{ secrets.BOT_VEILLE_URL }}
-          BOT_VEILLE_TOKEN: ${{ secrets.BOT_VEILLE_TOKEN }}
-        run: node sortir/monitor-scheduler.js
