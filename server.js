@@ -20,7 +20,6 @@ const { renderCertamenPublishWidgetHtml } = require("./certamen-publish-widget")
 const { enqueueIdeaJob } = require("./idea-post-queue");
 const { isRoundupTitle } = require("./recap-filter");
 const { enforceTitleLimit } = require("./title-limit");
-const { runSortirIngestTickIfDue } = require("./sortir-auto-ingest");
 
 const express = require("express");
 const compression = require("compression");
@@ -5802,33 +5801,16 @@ app.post("/api/auto-collect-tick", requireMixteAuth, async (req, res) => {
   res.json({ triggered: true, time: due.time });
 });
 
-// Même patron que /api/auto-collect-tick ci-dessus, pour l'ingestion quotidienne Sortir/
-// OpenAgenda (sortir-auto-ingest.js) : un tick HTTP externe (GitHub Actions, livraison irrégulière),
-// le serveur décide lui-même si le cycle du jour (dès 04:00 Réunion, avec rattrapage borné) reste
-// à faire. AUTO_PIPELINES_ENABLED réserve l'exécution à l'instance Render, comme pour la veille
-// presse — sans ça, une instance locale lancée en parallèle dupliquerait l'ingestion.
-// Lecture seule des résultats persistants ; ne déclenche aucun pipeline.
-app.get("/api/sortir-ingest-status", requireMixteAuth,
-  require("./sortir/scheduler-cycle-status").createCycleStatusHandler(() =>
-    require("@supabase/supabase-js").createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SECRET_KEY, { auth: { persistSession: false, autoRefreshToken: false } }), {
-      getExpectedSources: () => {
-        const s = require('./sortir-auto-ingest');
-        return [...s.OPENAGENDA_SOURCES, ...s.REUNION_SOURCES, ...s.PARIS_SOURCES].map(p => p.key)
-          .concat(process.env.DATATOURISME_API_KEY && s.DATATOURISME_MAX_TOTAL_POIS_PILOT ? [s.DATATOURISME_SOURCE_KEY] : []);
-      }
-    }));
-app.post("/api/sortir-ingest-tick", requireMixteAuth, async (req, res) => {
-  if (!AUTO_PIPELINES_ENABLED) {
-    return res.json({ triggered: false, reason: "auto pipelines disabled on this instance" });
-  }
-  try {
-    const { workPromise, ...result } = await runSortirIngestTickIfDue();
-    res.json(result); // workPromise jamais attendu ni sérialisé : le pipeline continue en tâche de fond.
-  } catch (error) {
-    console.error("[sortir-ingest-tick] Erreur inattendue :", error.message);
-    res.status(500).json({ triggered: false, error: error.message });
-  }
-});
+// SORTIR est désactivé sur cette instance (branche actus-only) : l'ingestion quotidienne tourne
+// uniquement sur le service SORTIR dédié (branche codex/sortir-safe-start-20261120). Ces deux routes
+// ne lisent ni n'écrivent rien dans Supabase : le tick GitHub d'auto-collect.yml ne peut ni prendre
+// le verrou partagé be127190 ni lancer un cycle avec l'ancien code.
+const sortirDisabledOnThisInstance = (req, res) => {
+  res.set("Cache-Control", "no-store");
+  res.status(410).json({ triggered: false, reason: "sortir disabled on this instance" });
+};
+app.get("/api/sortir-ingest-status", requireMixteAuth, sortirDisabledOnThisInstance);
+app.post("/api/sortir-ingest-tick", requireMixteAuth, sortirDisabledOnThisInstance);
 
 // ==================== PIPELINE AUTO-PUBLISH ====================
 
